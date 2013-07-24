@@ -2,4 +2,6 @@
 #
 2373512464abcee3eaf50f265c4a4e428dab634e	Administrators
 31b0a19ef33c31d34795216d947c4e1a054f3ca8	Non-interactive openflowjava users
+global:Anonymous-Users                  	Anonymous Users
+global:Registered-Users                 	Registered Users
 ldap:cn=gerrit-openflowjava-commiters,ou=Groups,dc=opendaylight,dc=org	ldap/gerrit-openflowjava-commiters
