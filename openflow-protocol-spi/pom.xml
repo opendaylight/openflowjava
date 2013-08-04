@@ -7,8 +7,8 @@
         <version>0.1-SNAPSHOT</version>
     </parent>
     <artifactId>openflow-protocol-spi</artifactId>
-    <packaging>pom</packaging>
-
+	<name>Openflow Protocol Library SPI</name>
+	
     <dependencies>
     	<dependency>
     	    <groupId>org.opendaylight.openflow</groupId>
