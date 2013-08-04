@@ -1,0 +1,737 @@
+module openflow-extensible-match {
+	namespace "urn:openflowopenflow:oxm";
+	prefix "oxm";
+
+	revision "2013-07-31" {
+		description "Initial model";
+	}
+	
+	import ietf-yang-types {prefix yang;}
+	import ietf-inet-types {prefix inet;}
+	import openflow-types {prefix oft;}
+
+	identity oxm-match-type {
+		description 
+		   "The OpenFlow Extensible Match type must be supported by all OpenFlow
+			switches.";
+		base oft:match-type;
+	}
+
+	// oxm classes
+		identity class {
+			description "Base identity for OXM classes";
+		}
+
+
+		identity nxm-0-class {
+			description "Backward compatibility with NXM";
+			base class;
+		}
+		identity nxm-1-class {
+			description "Backward compatibility with NXM";
+			base class;
+		}
+		identity openflow-basic-class {
+			description "Basic class for OpenFlow";
+			base class;
+		}
+		identity experimenter-class {
+			description 
+				"Marks Experimenter match type class.
+				All experimenter match classes MUST use this class as a base.";
+			base class;
+		}
+
+
+
+	// field types
+		identity match-field {
+			description "Base identity for OXM Fields";
+		}
+
+	    identity in_port {
+	    	base match-field;
+	    	description "Match for Switch input port.";
+	    }
+	    identity in_phy_port {
+	    	base match-field;
+	    	description "Match for Switch physical input port.";
+	    }
+	    identity metadata {
+	    	base match-field;
+	    	description "Match for Metadata passed between tables.";
+	    }
+	    identity eth_dst {
+	    	base match-field;
+	    	description "Match for Ethernet destination address.";
+	    }
+	    identity eth_src {
+	    	base match-field;
+	    	description "Match for Ethernet source address.";
+	    }
+	    identity eth_type {
+	    	base match-field;
+	    	description "Match for Ethernet frame type.";
+	    }
+	    identity vlan_vid {
+	    	base match-field;
+	    	description "Match for VLAN id.";
+	    }
+	    identity vlan_pcp {
+	    	base match-field;
+	    	description "Match for VLAN priority.";
+	    }
+	    identity ip_dscp {
+	    	base match-field;
+	    	description "Match for IP DSCP (6 bits in ToS field).";
+	    }
+	    identity ip_ecn {
+	    	base match-field;
+	    	description "Match for IP ECN (2 bits in ToS field).";
+	    }
+	    identity ip_proto {
+	    	base match-field;
+	    	description "Match for IP protocol.";
+	    }
+	    identity ipv4_src {
+	    	base match-field;
+	    	description "Match for IPv4 source address.";
+	    }
+	    identity ipv4_dst {
+	    	base match-field;
+	    	description "Match for IPv4 destination address.";
+	    }
+	    identity tcp_src {
+	    	base match-field;
+	    	description "Match for TCP source port.";
+	    }
+	    identity tcp_dst {
+	    	base match-field;
+	    	description "Match for TCP destination port.";
+	    }
+	    identity udp_src {
+	    	base match-field;
+	    	description "Match for UDP source port.";
+	    }
+	    identity udp_dst {
+	    	base match-field;
+	    	description "Match for UDP destination port.";
+	    }
+	    identity sctp_src {
+	    	base match-field;
+	    	description "Match for SCTP source port.";
+	    }
+	    identity sctp_dst {
+	    	base match-field;
+	    	description "Match for SCTP destination port.";
+	    }
+	    identity icmpv4_type {
+	    	base match-field;
+	    	description "Match for ICMP type.";
+	    }
+	    identity icmpv4_code {
+	    	base match-field;
+	    	description "Match for ICMP code.";
+	    }
+	    identity arp_op {
+	    	base match-field;
+	    	description "Match for ARP opcode.";
+	    }
+	    identity arp_spa {
+	    	base match-field;
+	    	description "Match for ARP source IPv4 address.";
+	    }
+	    identity arp_tpa {
+	    	base match-field;
+	    	description "Match for ARP target IPv4 address.";
+	    }
+	    identity arp_sha {
+	    	base match-field;
+	    	description "Match for ARP source hardware address.";
+	    }
+	    identity arp_tha {
+	    	base match-field;
+	    	description "Match for ARP target hardware address.";
+	    }
+	    identity ipv6_src {
+	    	base match-field;
+	    	description "Match for IPv6 source address.";
+	    }
+	    identity ipv6_dst {
+	    	base match-field;
+	    	description "Match for IPv6 destination address.";
+	    }
+	    identity ipv6_flabel {
+	    	base match-field;
+	    	description "Match for IPv6 Flow Label";
+	    }
+	    identity icmpv6_type {
+	    	base match-field;
+	    	description "Match for ICMPv6 type.";
+	    }
+	    identity icmpv6_code {
+	    	base match-field;
+	    	description "Match for ICMPv6 code.";
+	    }
+	    identity ipv6_nd_target {
+	    	base match-field;
+	    	description "Match for Target address for ND.";
+	    }
+	    identity ipv6_nd_sll {
+	    	base match-field;
+	    	description "Match for Source link-layer for ND.";
+	    }
+	    identity ipv6_nd_tll {
+	    	base match-field;
+	    	description "Match for Target link-layer for ND.";
+	    }
+	    identity mpls_label {
+	    	base match-field;
+	    	description "Match for MPLS label.";
+	    }
+	    identity mpls_tc {
+	    	base match-field;
+	    	description "Match for MPLS TC.";
+	    }
+	    identity mpls_bos {
+	    	base match-field;
+	    	description "Match for MPLS BoS bit.";
+	    }
+	    identity pbb_isid {
+	    	base match-field;
+	    	description "Match for PBB I-SID.";
+	    }
+	    identity tunnel_id {
+	    	base match-field;
+	    	description "Match for Logical Port Metadata";
+	    }
+	    identity ipv6_exthdr {
+	    	base match-field;
+	    	description "Match for IPv6 Extension Header pseudo-field";
+	    }
+
+	// Abstract definitions of fields structure
+
+		grouping in_port {
+			description 
+				"Ingress port. Numerical representation of incoming port, starting at 1. This may be a physical or switch-defined logical port.";
+			leaf port-number {
+				type oft:port-number;
+			}
+		}
+		grouping in_phy_port {
+			description "Physical port. In ofp_packet_in messages, underlying physical port when packet received on a logical port.";
+			leaf port-number {
+				type oft:port-number;
+			}
+		}
+		grouping metadata {
+			description "Metadata passed between tables.";
+			leaf value {
+				type oft:metadata;
+			}
+			leaf mask {
+				type oft:metadata;
+			}
+		}
+		grouping eth_dst {
+			description "Ethernet destination address.";
+			leaf address {
+				type yang:mac-address;
+			}
+		}
+		grouping eth_src {
+			description "Ethernet source address.";
+			leaf address {
+				type yang:mac-address;
+			}
+			leaf mask {
+				type binary;
+			}
+		}
+		grouping eth_type {
+			description "Ethernet frame type.";
+			leaf type {
+				type eth:ether-type; // Needs to define that as general model
+			}
+			leaf mask {
+				type binary;
+			}
+		}
+		grouping vlan_vid {
+			description "VLAN id.";
+			leaf vlan-id {
+				type uint16; // TODO: Define proper vlan id type.
+			}
+			leaf mask {
+				type binary;
+			}
+		}
+		grouping vlan_pcp {
+			description "VLAN priority.";
+			leaf vlan-pcp {
+				type uint8; // TODO: Define PCP type
+			}
+		}
+		grouping ip_dscp {
+			description "IP DSCP (6 bits in ToS field).";
+
+			leaf dscp {
+				type inet:dscp; // TODO: Define DSCP type
+			}
+		}
+		grouping ip_ecn {
+			description "IP ECN (2 bits in ToS field).";
+			leaf ecn {
+				type uint8; // TODO define ECN
+			}
+		}
+		grouping ip_proto {
+			description "IP protocol.";
+			leaf protocol-number {
+				type uint8; // TODO define IP protocol number
+			}
+		}
+		grouping ipv4_src {
+			description "IPv4 source address.";
+			leaf prefix {
+				type inet:ipv4-prefix;
+			}
+		}
+		grouping ipv4_dst {
+			description "IPv4 destination address.";
+			leaf prefix {
+				type inet:ipv4-prefix;
+			}
+		}
+		grouping tcp_src {
+			description "TCP source port.";
+			leaf port {
+				type inet:port-number;
+			}
+		}
+		grouping tcp_dst {
+			description "TCP destination port.";
+					leaf port {
+				type inet:port-number;
+			}
+		}
+		grouping udp_src {
+			description "UDP source port.";
+			leaf port {
+				type inet:port-number;
+			}
+		}
+		grouping udp_dst {
+			description "UDP destination port.";
+			leaf port {
+				type inet:port-number;
+			}
+		}
+		grouping sctp_src {
+			description "SCTP source port.";
+			leaf port {
+				type inet:port-number;
+			}
+		}
+		grouping sctp_dst {
+			description "SCTP destination port.";
+			leaf port {
+				type inet:port-number;
+			}
+		}
+		grouping icmpv4_type {
+			description "ICMP type.";
+			leaf type {
+				type uint8; // Define ICMP Type
+			}
+		}
+		grouping icmpv4_code {
+			description "ICMP code.";
+			leaf code {
+				type uint8; // Define ICMP Code
+			}
+		}
+		grouping arp_op {
+			description "ARP opcode.";
+			leaf op-code {
+				type uint16;
+			}
+		}
+		grouping arp_spa {
+			description "ARP source IPv4 address.";
+			leaf prefix {
+				type inet:ipv4-prefix;
+			}
+		}
+		grouping arp_tpa {
+			description "ARP target IPv4 address.";
+			leaf prefix {
+				type inet:ipv4-prefix;
+			}
+		}
+		grouping arp_sha {
+			description "ARP source hardware address.";
+			leaf address {
+				type yang:mac-address;
+			}
+			leaf mask {
+				type binary;
+			}
+		}
+		grouping arp_tha {
+			description "ARP target hardware address.";
+			leaf address {
+				type yang:mac-address;
+			}
+			leaf mask {
+				type binary;
+			}
+		}
+		grouping ipv6_src {
+			description "IPv6 source address.";
+			leaf prefix {
+				type inet:ipv6-prefix;
+			}
+		}
+		grouping ipv6_dst {
+			description "IPv6 destination address.";
+			leaf prefix {
+				type inet:ipv6-prefix;
+			}
+		}
+		grouping ipv6_flabel {
+			description "IPv6 Flow Label";
+			leaf label {
+				type inet:ipv6-flow-label;
+			}
+		}
+		grouping icmpv6_type {
+			description "ICMPv6 type.";
+			leaf type {
+				type uint8;
+			}
+		}
+		grouping icmpv6_code {
+			description "ICMPv6 code.";
+			leaf code {
+				type uint8;
+			}
+		}
+		grouping ipv6_nd_target {
+			description "Target address for ND.";
+			leaf address {
+				type inet:ipv6-address;
+			}
+		}
+		grouping ipv6_nd_sll {
+			description "Source link-layer for ND.";
+			leaf address {
+				type yang:mac-address;
+			}
+		}
+		grouping ipv6_nd_tll {
+			description "Target link-layer for ND.";
+			leaf address {
+				type yang:mac-address;
+			}
+		}
+		grouping mpls_label {
+			description "MPLS label.";
+			leaf label {
+				type uint32; // TODO define type
+			}
+		}
+		grouping mpls_tc {
+			description "MPLS TC.";
+			leaf tc {
+				type uint8;
+			}
+		}
+		grouping mpls_bos {
+			description "MPLS BoS bit.";
+			leaf bos {
+				type boolean;
+			}
+		}
+		grouping pbb_isid {
+			description "PBB I-SID.";
+			leaf isid {
+				type uint32;
+			}
+			leaf mask {
+				type binary;
+			}
+		}
+		grouping tunnel_id {
+			description "Logical Port Metadata.";
+			leaf value {
+				type oft:metadata; 
+			}
+			leaf mask {
+				type oft:metadata;
+			}
+		}
+		grouping ipv6_exthdr {
+			description "IPv6 Extension Header pseudo-field";
+			leaf pseudo-field {
+				type bits {
+					bit nonext {
+						description "<No next header> encountered.";
+						position 0;
+					}
+					bit esp {
+						description "Encrypted Sec Payload header present.";
+						position 1;
+					}
+					bit auth {
+						description "Authentication header present.";
+						position 2;
+					}
+					bit dest {
+						description "1 or 2 dest headers present.";
+						position 3;
+					}
+					bit frag {
+						description "Fragment header present.";
+						position 4;
+					}
+					bit router {
+						description "Router header present.";
+						position 5;
+					}
+					bit hop {
+						description "Hop-by-hop header present.";
+						position 6;
+					}
+					bit unrep {
+						description "Unexpected repeats encountered.";
+						position 7;
+					}
+					bit unseq {
+						description "Unexpected sequencing encountered.";
+						position 8;
+						}					
+				}
+			}
+			leaf mask {
+				type binary;
+			}
+		}
+
+	/* Basic Match Fields : 
+	   - Maybe it will be better to split into several groupings
+	     based on protocol types:
+	     	- L2 match
+	     	- L3 match
+	     	   - IPv4 match
+	     	   - IPv6 match
+	     	- L4 match
+	     	- ARP match
+	     	etc...
+	    Maybe this works belongs to other module.
+	*/
+
+		grouping basic-match-fields {
+			container in_port {
+				presence;
+				uses in_port; 
+		
+			}
+			container in_phy_port {
+				presence;
+				uses in_phy_port; 
+				
+			}
+			container metadata {
+				presence;
+				uses metadata; 
+				
+			}
+			container eth_dst {
+				presence;
+				uses eth_dst; 
+				
+			}
+			container eth_src {
+				presence;
+				uses eth_src; 
+				
+			}
+			container eth_type {
+				presence;
+				uses eth_type; 
+				
+			}
+			container vlan_vid {
+				presence;
+				uses vlan_vid; 
+				
+			}
+			container vlan_pcp {
+				presence;
+				uses vlan_pcp; 
+				
+			}
+			container ip_dscp {
+				presence;
+				uses ip_dscp; 
+				
+			}
+			container ip_ecn {
+				presence;
+				uses ip_ecn; 
+				
+			}
+			container ip_proto {
+				presence;
+				uses ip_proto; 
+				
+			}
+			container ipv4_src {
+				presence;
+				uses ipv4_src; 
+				
+			}
+			container ipv4_dst {
+				presence;
+				uses ipv4_dst; 
+				
+			}
+			container tcp_src {
+				presence;
+				uses tcp_src; 
+				
+			}
+			container tcp_dst {
+				presence;
+				uses tcp_dst; 
+				
+			}
+			container udp_src {
+				presence;
+				uses udp_src; 
+				
+			}
+			container udp_dst {
+				presence;
+				uses udp_dst; 
+				
+			}
+			container sctp_src {
+				presence;
+				uses sctp_src; 
+				
+			}
+			container sctp_dst {
+				presence;
+				uses sctp_dst; 
+				
+			}
+			container icmpv4_type {
+				presence;
+				uses icmpv4_type; 
+				
+			}
+			container icmpv4_code {
+				presence;
+				uses icmpv4_code; 
+				
+			}
+			container arp_op {
+				presence;
+				uses arp_op; 
+				
+			}
+			container arp_spa {
+				presence;
+				uses arp_spa; 
+				
+			}
+			container arp_tpa {
+				presence;
+				uses arp_tpa; 
+				
+			}
+			container arp_sha {
+				presence;
+				uses arp_sha; 
+				
+			}
+			container arp_tha {
+				presence;
+				uses arp_tha; 
+				
+			}
+			container ipv6_src {
+				presence;
+				uses ipv6_src; 
+				
+			}
+			container ipv6_dst {
+				presence;
+				uses ipv6_dst; 
+				
+			}
+			container ipv6_flabel {
+				presence;
+				uses ipv6_flabel; 
+				
+			}
+			container icmpv6_type {
+				presence;
+				uses icmpv6_type; 
+				
+			}
+			container icmpv6_code {
+				presence;
+				uses icmpv6_code; 
+				
+			}
+			container ipv6_nd_target {
+				presence;
+				uses ipv6_nd_target; 
+				
+			}
+			container ipv6_nd_sll {
+				presence;
+				uses ipv6_nd_sll; 
+				
+			}
+			container ipv6_nd_tll {
+				presence;
+				uses ipv6_nd_tll; 
+				
+			}
+			container mpls_label {
+				presence;
+				uses mpls_label; 
+				
+			}
+			container mpls_tc {
+				presence;
+				uses mpls_tc; 
+				
+			}
+			container mpls_bos {
+				presence;
+				uses mpls_bos; 
+				
+			}
+			container pbb_isid {
+				presence;
+				uses pbb_isid; 
+				
+			}
+			container tunnel_id {
+				presence;
+				uses tunnel_id; 
+				
+			}
+			container ipv6_exthdr {
+				presence;
+				uses ipv6_exthdr; 
+				
+			}
+		}
+}

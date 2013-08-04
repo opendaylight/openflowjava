@@ -1,0 +1,85 @@
+module openflow-instruction {
+	namespace "urn:opendaylight:openflow:common:instruction";
+	prefix "ofinstruction";
+
+	revision "2013-07-31" {
+		description "Initial model";
+	}
+
+	import openflow-types { prefix oft;	}	
+
+	// Instructions
+
+	identity goto_table {
+		description " Setup the next table in the lookup pipeline";
+		base oft:instruction;
+	}
+	identity write_metadata {
+		description " Setup the metadata field for use later in 	pipeline";
+		base oft:instruction;
+	}
+	identity write_actions {
+		description " Write the action(s) onto the datapath action set";
+		base oft:instruction;
+	}
+	identity apply_actions {
+		description " Applies the action(s) immediately";
+		base oft:instruction;
+	}
+	identity clear_actions {
+		description " Clears all actions from the datapath action set";
+		base oft:instruction;
+	}
+	identity meter {
+		description " Apply meter (rate limiter)";
+		base oft:instruction;
+	}
+	identity experimenter {
+		description "Experimenter instruction";
+		base oft:instruction;
+	}
+
+	// Structures
+
+	grouping goto_table {
+		description " Setup the next table in the lookup pipeline";
+		leaf table {
+			type oft:table-id; // 
+		}
+	}
+	grouping write_metadata {
+		description " Setup the metadata field for use later in 	pipeline";
+		leaf metadata {
+			type oft:metadata;
+		}
+		leaf mask {
+			tyxe oft:metadata;
+		}
+	}
+	grouping actions {
+		leaf type {
+			type enumeration {
+				enum write {
+					description " Write the action(s) onto the datapath action set";			
+				}
+				enum apply {
+					description " Applies the action(s) immediately";
+				}
+				enum clear {
+					description " Clears all actions from the datapath action set";
+				}
+			}
+		}
+		container actions {
+			// TBD
+		}
+	}
+	
+	grouping meter {
+		description " Apply meter (rate limiter)";
+		leaf meter-id {
+			type oft:meter-id;
+		}
+	}
+
+}
