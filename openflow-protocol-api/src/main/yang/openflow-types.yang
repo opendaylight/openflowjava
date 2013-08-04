@@ -1,0 +1,209 @@
+module openflow-types {
+    namespace "urn:opendaylight:openflow:common:types";
+    prefix "oft";
+
+    revision "2013-07-31" {
+        //description "Initial model";
+    }
+
+    typedef port-number {
+        type uint32 {
+                range "0..4294967040"; // 0xffffff00 See for actual value
+        }
+    }
+
+    typedef special-port-number {
+        type enumeration {
+            enum in_port { 
+                //value "4294967288";
+                //description "Send the packet out the input port. This virtual port must be explicitly used in order to send back out of the input port."
+            }
+            enum table { 
+                //value "4294967289"; // 0xfffffff9;
+                //description "Perform actions in flow table. NB: This can only be the destination port for packet-out messages."
+            }
+            enum normal { 
+                //value "4294967290"; // 0xfffffffa;
+                //description "Process with normal L2/L3 switching."
+            }
+            enum flood { 
+                //value "4294967291"; // 0xfffffffb;
+                //description "All physical ports except input port and those disabled by STP."
+            }
+            enum all { 
+                //value "4294967292"; // 0xfffffffc;
+                //description "All physical ports except input port."
+            }
+            enum controller { 
+                //value "4294967293";  // 0xfffffffd;
+                //description "Send to controller."
+            }
+            enum local { 
+                //value "4294967294"; // 0xfffffffe;
+                //description "Local openflow port."
+            }
+            enum none { 
+                //value "4294967295"; // 0xffffffff;
+                //description "not associated with a physical port."
+            }
+        }
+    }
+
+    typedef any-port-number {
+        type union {
+            type port-number;
+            type special-port-number;
+        }
+    }
+
+
+    typedef port-features {
+        ////description "Features of ports available in datapath.";
+        //reference "ofp_port_features";
+        type bits {
+            bit 10mb_hd { 
+                position 0;
+                //description "10 Mb half-duplex rate support.";
+            }
+            bit 10mb_fd { 
+                position 1;
+                //description "10 Mb full-duplex rate support.";
+            }
+            bit 100mb_hd { 
+                position 2;
+                //description "100 Mb half-duplex rate support.";
+            }
+            bit 100mb_fd { 
+                position 3;
+                //description "100 Mb full-duplex rate support.";
+            }
+            bit 1gb_hd { 
+                position 4;
+                //description "1 Gb half-duplex rate support.";
+            }
+            bit 1gb_fd { 
+                position 5;
+                //description "1 Gb full-duplex rate support.";
+            }
+            bit 10gb_fd { 
+                position 6;
+                //description "10 Gb full-duplex rate support.";
+            }
+            bit 40gb_fd { 
+                position 7;
+                //description "40 Gb full-duplex rate support.";
+            }
+            bit 100gb_fd { 
+                position 8;
+                //description "100 Gb full-duplex rate support.";
+            }
+            bit 1tb_fd { 
+                position 9;
+                //description "1 Tb full-duplex rate support.";
+            }
+            bit other { 
+                position 10;
+                //description "Other rate, not in the list.";
+            }
+            bit copper { 
+                position 11;
+                //description "Copper medium.";
+            }
+            bit fiber { 
+                position 12;
+                //description "Fiber medium.";
+            }
+            bit autoneg { 
+                position 13;
+                //description "Auto-negotiation.";
+            }
+            bit pause { 
+                position 14;
+                //description "Pause.";
+            }
+            bit pause_asym { 
+                position 15;
+                //description "Asymmetric pause.";
+            }
+        }
+    }
+
+    typedef port_config {
+        description 
+           "Flags to indicate behavior of the physical port. These flags are
+            describe the current configuration and used port_mod message 
+            to configure the port's behavior.";
+        type bits {
+            bit port_down { 
+                //description " Port is administratively down.";
+                position 0;
+            }
+            bit no_recv { 
+                //description " Drop all packets received by port.";
+                position 2;
+            }
+            bit no_fwd { 
+                //description " Drop packets forwarded to port.";
+                position 5;
+            }
+            bit no_packet_in { 
+                //description "Do not send packet-in msgs for port.";
+                position 6;
+            }
+        }
+    }
+
+    typedef ofp_port_state {
+        description 
+            "Current state of the physical port. These are not configurable from
+            the controller.";
+        type bits {
+            bit link_down {
+                //description "No physical link present.";
+                position 0;
+            }
+            bit blocked {
+                //description "Port is blocked";
+                position 1;
+            }
+            bit live {
+                //description "Live for Fast Failover Group.";
+                position 2;
+            }
+        }
+    }
+
+    identity match-type {
+        description 
+           "The match type indicates the match structure (set of fields that compose the
+            match) in use. The match type is placed in the type field at the beginning
+            of all match structures.Extensions that define match types may be 
+            published on the ONF wiki. Support for extensions is optional.";
+    }
+
+    identity standard-match-type {
+        deprecated true;
+        base oft:match-type;
+    }
+
+    typedef match-type {
+        type identityref {
+            base oft:match-type;
+        }
+    }
+
+    identity instruction {
+
+    }
+
+    identity action {
+
+    }
+
+
+    typedef metadata {
+        type binary;
+    }
+
+
+}

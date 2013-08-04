@@ -1,24 +1,31 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.opendaylight.openflow</groupId>
-        <artifactId>openflow-protocol-parent</artifactId>
-        <version>0.1-SNAPSHOT</version>
-    </parent>
-    <artifactId>openflow-protocol-impl</artifactId>
-    <packaging>pom</packaging>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.opendaylight.openflow</groupId>
+		<artifactId>openflow-protocol-parent</artifactId>
+		<version>0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>openflow-protocol-impl</artifactId>
+	<name>Openflow Protocol Library - Implementation</name>
 
-    <dependencies>
-    	<dependency>
-    	    <groupId>org.opendaylight.openflow</groupId>
-            <artifactId>openflow-protocol-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.openflow</groupId>
-            <artifactId>openflow-protocol-spi</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.opendaylight.openflow</groupId>
+			<artifactId>openflow-protocol-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.opendaylight.openflow</groupId>
+			<artifactId>openflow-protocol-spi</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<!-- TODO: Pick netty-* dependencies which are required, leave all optional -->
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.0.4.Final</version>
+		</dependency>
+	</dependencies>
 </project>
