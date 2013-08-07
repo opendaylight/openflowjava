@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "AAAAE3//+bs\u003d",
+        "filename": "openflow-protocol-api/src/main/yang/openflow-types.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 9
+      },
+      "writtenOn": "2013-08-07T21:10:36Z",
+      "side": 1,
+      "message": "Model identifiers that start with numbers result in Java identifiers that start with numbers.  Valid Java identifiers cannot start with numbers :(  It violates the spec and the compiler becomes grumpy.  As a result this doesn\u0027t actually build.",
+      "revId": "51d21ed6a859c6e81045ba6235293f632022a99c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
