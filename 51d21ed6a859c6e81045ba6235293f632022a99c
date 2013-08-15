@@ -16,6 +16,24 @@
       "revId": "51d21ed6a859c6e81045ba6235293f632022a99c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAAE3//9/Y\u003d",
+        "filename": "openflow-protocol-api/src/main/yang/openflow-types.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2013-08-15T21:47:18Z",
+      "side": 1,
+      "message": "Sounds like a candidate for an improvement to codegen. It obviously needs to be able to process any valid yang file -- leaking language specifics into models would be the wrong thing to do here.",
+      "parentUuid": "AAAAE3//+bs\u003d",
+      "revId": "51d21ed6a859c6e81045ba6235293f632022a99c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
