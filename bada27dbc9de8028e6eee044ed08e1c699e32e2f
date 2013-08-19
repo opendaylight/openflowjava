@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "AAAAE3//94A\u003d",
+        "filename": ".gitignore",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2013-08-19T10:20:10Z",
+      "side": 1,
+      "message": "use wildcards to unify ignored folders with same name",
+      "revId": "bada27dbc9de8028e6eee044ed08e1c699e32e2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAAE3//938\u003d",
+        "filename": "openflow-protocol-impl/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2013-08-19T10:20:10Z",
+      "side": 1,
+      "message": "use spaces for indent",
+      "revId": "bada27dbc9de8028e6eee044ed08e1c699e32e2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAAE3//934\u003d",
+        "filename": "openflow-protocol-impl/src/main/java/org/openflow/example/OFFrameDecoder.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2013-08-19T10:20:10Z",
+      "side": 1,
+      "message": "pull version constant \u00274\u0027 to public constant",
+      "revId": "bada27dbc9de8028e6eee044ed08e1c699e32e2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAAE3//930\u003d",
+        "filename": "openflow-protocol-impl/src/main/java/org/openflow/example/SslContextFactory.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2013-08-19T10:20:10Z",
+      "side": 1,
+      "message": "remove unused methods/code and copyright",
+      "revId": "bada27dbc9de8028e6eee044ed08e1c699e32e2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAAE3//93w\u003d",
+        "filename": "openflow-protocol-impl/src/main/java/org/openflow/example/SslKeyStore.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2013-08-19T10:20:10Z",
+      "side": 1,
+      "message": "move data into file",
+      "revId": "bada27dbc9de8028e6eee044ed08e1c699e32e2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAAE3//93o\u003d",
+        "filename": "openflow-protocol-impl/src/main/java/org/openflow/example/TLSDetector.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2013-08-19T10:20:10Z",
+      "side": 1,
+      "message": "move remove statement into decode or separate method",
+      "revId": "bada27dbc9de8028e6eee044ed08e1c699e32e2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAAE3//93k\u003d",
+        "filename": "openflow-protocol-impl/src/main/java/org/openflow/example/clients/SecureSimpleClientInitializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2013-08-19T10:20:10Z",
+      "side": 1,
+      "message": "missing comment",
+      "revId": "bada27dbc9de8028e6eee044ed08e1c699e32e2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAAE3//93g\u003d",
+        "filename": "openflow-protocol-impl/src/main/resources/log4j.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2013-08-19T10:20:10Z",
+      "side": 1,
+      "message": "remove useless whitespace, use spaces instead tabs",
+      "revId": "bada27dbc9de8028e6eee044ed08e1c699e32e2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
