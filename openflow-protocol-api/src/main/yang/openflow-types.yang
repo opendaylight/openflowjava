@@ -221,4 +221,70 @@ module openflow-types {
     typedef ether-type {
         type uint16;
     }
+    
+    typedef error-type {
+        type enumeration {
+            enum HELLO_FAILED {
+                value 0; 
+                description "Hello Protocol failed.";
+            }
+            enum BAD_REQUEST {
+                value 1; 
+                description "Request was not understood.";
+            }
+            enum BAD_ACTION {
+                value 2; 
+                description "Error in action description.";
+            }
+            enum BAD_INSTRUCTION {
+                value 3; 
+                description "Error in instruction list.";
+            }
+            enum BAD_MATCH {
+                value 4; 
+                description "Error in match.";
+            }
+            enum FLOW_MOD_FAILED {
+                value 5; 
+                description "Problem modifying flow entry.";
+            }
+            enum GROUP_MOD_FAILED {
+                value 6; 
+                description "Problem modifying group entry.";
+            }
+            enum PORT_MOD_FAILED {
+                value 7; 
+                description "Port mod request failed.";
+            }
+            enum TABLE_MOD_FAILED {
+                value 8; 
+                description "Table mod request failed.";
+            }
+            enum QUEUE_OP_FAILED {
+                value 9; 
+                description "Queue operation failed.";
+            }
+            enum SWITCH_CONFIG_FAILED {
+                value 10; 
+                description "Switch config request failed.";
+            }
+            enum ROLE_REQUEST_FAILED {
+                value 11; 
+                description "Controller Role request failed.";
+            }
+            enum METER_MOD_FAILED {
+                value 12; 
+                description "Error in meter.";
+            }
+            enum TABLE_FEATURES_FAILED {
+                value 13; 
+                description "Setting table features failed.";
+            }
+            enum EXPERIMENTER {
+                value 65535; //0xffff 
+                description "Experimenter error messages.";
+            }
+            
+        }
+    }
 }

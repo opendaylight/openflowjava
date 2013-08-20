@@ -114,43 +114,43 @@ module openflow-action {
 		}
 	}
 
-	grouping set_queue {
+	grouping set-queue {
 		leaf queue {
 			type oft:queue-id;
 		}
 	}
 
-	grouping set_mpls_ttl {
+	grouping set-mpls-ttl {
 		leaf mpls_ttl {
 			type uint8;
 		}
 	}
 
-	grouping set_nw_ttl {
+	grouping set-nw-ttl {
 		leaf nw_ttl {
 			type uint8;
 		}
 	}
 
-	grouping push_pbb {
+	grouping push-pbb {
 
 	}
 
-	grouping push_mpls {
+	grouping push-mpls {
 
 	}
 
-	grouping push_vlan {
+	grouping push-vlan {
 
 	}
 
-	grouping pop_mpls {
+	grouping pop-mpls {
 		leaf ethertype {
 			type uint16; // TODO: define ethertype type
 		}
 	}
 
-	grouping set_field {
+	grouping set-field {
 		container field {
 			// TODO: figure definition
 		}

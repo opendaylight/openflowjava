@@ -39,13 +39,13 @@ module openflow-instruction {
     */
     // Structures
 
-    grouping goto_table {
+    grouping goto-table {
         description " Setup the next table in the lookup pipeline";
         leaf table {
             type oft:table-id; // 
         }
     }
-    grouping write_metadata {
+    grouping write-metadata {
         description " Setup the metadata field for use later in     pipeline";
         leaf metadata {
             type oft:metadata;
