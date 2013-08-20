@@ -1,0 +1,158 @@
+module openflow-action {
+	namespace "urn:opendaylight:openflow:common:action";
+	prefix "ofaction";
+
+    import openflow-types { prefix oft; }
+
+	revision "2013-07-31" {
+		description "Initial model";
+	}
+
+    /*
+	identity output {
+		description " Output to switch port. ";
+		base oft:action;
+	}
+	identity copy_ttl_out {
+		description " Copy TTL "outwards" -- from next-to-outermost to outermost ";
+		base oft:action;
+	}
+	identity copy_ttl_in {
+		description " Copy TTL "inwards" -- from outermost to next-to-outermost ";
+		base oft:action;
+	}
+	identity set_mpls_ttl {
+		description " MPLS TTL ";
+		base oft:action;
+	}
+	identity dec_mpls_ttl {
+		description " Decrement MPLS TTL ";
+		base oft:action;
+	}
+	identity push_vlan {
+		description " Push a new VLAN tag ";
+		base oft:action;
+	}
+	identity pop_vlan {
+		description " Pop the outer VLAN tag ";
+		base oft:action;
+	}
+	identity push_mpls {
+		description " Push a new MPLS tag ";
+		base oft:action;
+	}
+	identity pop_mpls {
+		description " Pop the outer MPLS tag ";
+		base oft:action;
+	}
+	identity set_queue {
+		description " Set queue id when outputting to a port ";
+		base oft:action;
+	}
+	identity group {
+		description " Apply group. ";
+		base oft:action;
+	}
+	identity set_nw_ttl {
+		description " IP TTL. ";
+		base oft:action;
+	}
+	identity dec_nw_ttl {
+		description " Decrement IP TTL. ";
+		base oft:action;
+	}
+	identity set_field {
+		description " Set a header field using OXM TLV format. ";
+		base oft:action;
+	}
+	identity push_pbb {
+		description " Push a new PBB service tag (I-TAG) ";
+		base oft:action;
+	}
+	identity pop_pbb {
+		description " Pop the outer PBB service tag (I-TAG) ";
+		base oft:action;
+	}
+	identity experimenter {
+		description "";
+		base oft:action;
+	}
+    */
+	grouping output {
+		description 
+			"Action structure for OFPAT_OUTPUT, which sends packets out 'port'.
+			When the 'port' is the OFPP_CONTROLLER, 'max_len' indicates the max
+			number of bytes to send. A 'max_len' of zero means no bytes of the
+			packet should be sent. A 'max_len' of OFPCML_NO_BUFFER means that
+			the packet is not buffered and the complete packet is to be sent to
+			the controller.";
+		leaf port {
+			type oft:any-port-number;
+		}
+		leaf max-length {
+			description "Maximum packet length to be send to controller.";
+			type union {
+				type uint16 {
+					range "0..65294"; // 0..0xff0e
+				}
+				type enumeration {
+					enum no-buffer {
+						description 
+							"indicates that no buffering should be
+							 applied and the whole packet is to be
+							 sent to the controller";
+						value 65535; //0xffff
+					}
+				}
+			}
+		}
+	}
+
+	grouping group {
+		leaf group {
+			type oft:group-id; // define action group-id type;
+		}
+	}
+
+	grouping set_queue {
+		leaf queue {
+			type oft:queue-id;
+		}
+	}
+
+	grouping set_mpls_ttl {
+		leaf mpls_ttl {
+			type uint8;
+		}
+	}
+
+	grouping set_nw_ttl {
+		leaf nw_ttl {
+			type uint8;
+		}
+	}
+
+	grouping push_pbb {
+
+	}
+
+	grouping push_mpls {
+
+	}
+
+	grouping push_vlan {
+
+	}
+
+	grouping pop_mpls {
+		leaf ethertype {
+			type uint16; // TODO: define ethertype type
+		}
+	}
+
+	grouping set_field {
+		container field {
+			// TODO: figure definition
+		}
+	}
+}
