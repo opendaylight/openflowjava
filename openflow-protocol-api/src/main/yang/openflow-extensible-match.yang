@@ -538,202 +538,202 @@ module openflow-extensible-match {
 
 		grouping basic-match-fields {
 			container in_port {
-				presence;
+				presence "";
 				uses in_port; 
 		
 			}
 			container in_phy_port {
-				presence;
+				presence "";
 				uses in_phy_port; 
 				
 			}
 			container metadata {
-				presence;
+				presence "";
 				uses metadata; 
 				
 			}
 			container eth_dst {
-				presence;
+				presence "";
 				uses eth_dst; 
 				
 			}
 			container eth_src {
-				presence;
+				presence "";
 				uses eth_src; 
 				
 			}
 			container eth_type {
-				presence;
+				presence "";
 				uses eth_type; 
 				
 			}
 			container vlan_vid {
-				presence;
+				presence "";
 				uses vlan_vid; 
 				
 			}
 			container vlan_pcp {
-				presence;
+				presence "";
 				uses vlan_pcp; 
 				
 			}
 			container ip_dscp {
-				presence;
+				presence "";
 				uses ip_dscp; 
 				
 			}
 			container ip_ecn {
-				presence;
+				presence "";
 				uses ip_ecn; 
 				
 			}
 			container ip_proto {
-				presence;
+				presence "";
 				uses ip_proto; 
 				
 			}
 			container ipv4_src {
-				presence;
+				presence "";
 				uses ipv4_src; 
 				
 			}
 			container ipv4_dst {
-				presence;
+				presence "";
 				uses ipv4_dst; 
 				
 			}
 			container tcp_src {
-				presence;
+				presence "";
 				uses tcp_src; 
 				
 			}
 			container tcp_dst {
-				presence;
+				presence "";
 				uses tcp_dst; 
 				
 			}
 			container udp_src {
-				presence;
+				presence "";
 				uses udp_src; 
 				
 			}
 			container udp_dst {
-				presence;
+				presence "";
 				uses udp_dst; 
 				
 			}
 			container sctp_src {
-				presence;
+				presence "";
 				uses sctp_src; 
 				
 			}
 			container sctp_dst {
-				presence;
+				presence "";
 				uses sctp_dst; 
 				
 			}
 			container icmpv4_type {
-				presence;
+				presence "";
 				uses icmpv4_type; 
 				
 			}
 			container icmpv4_code {
-				presence;
+				presence "";
 				uses icmpv4_code; 
 				
 			}
 			container arp_op {
-				presence;
+				presence "";
 				uses arp_op; 
 				
 			}
 			container arp_spa {
-				presence;
+				presence "";
 				uses arp_spa; 
 				
 			}
 			container arp_tpa {
-				presence;
+				presence "";
 				uses arp_tpa; 
 				
 			}
 			container arp_sha {
-				presence;
+				presence "";
 				uses arp_sha; 
 				
 			}
 			container arp_tha {
-				presence;
+				presence "";
 				uses arp_tha; 
 				
 			}
 			container ipv6_src {
-				presence;
+				presence "";
 				uses ipv6_src; 
 				
 			}
 			container ipv6_dst {
-				presence;
+				presence "";
 				uses ipv6_dst; 
 				
 			}
 			container ipv6_flabel {
-				presence;
+				presence "";
 				uses ipv6_flabel; 
 				
 			}
 			container icmpv6_type {
-				presence;
+				presence "";
 				uses icmpv6_type; 
 				
 			}
 			container icmpv6_code {
-				presence;
+				presence "";
 				uses icmpv6_code; 
 				
 			}
 			container ipv6_nd_target {
-				presence;
+				presence "";
 				uses ipv6_nd_target; 
 				
 			}
 			container ipv6_nd_sll {
-				presence;
+				presence "";
 				uses ipv6_nd_sll; 
 				
 			}
 			container ipv6_nd_tll {
-				presence;
+				presence "";
 				uses ipv6_nd_tll; 
 				
 			}
 			container mpls_label {
-				presence;
+				presence "";
 				uses mpls_label; 
 				
 			}
 			container mpls_tc {
-				presence;
+				presence "";
 				uses mpls_tc; 
 				
 			}
 			container mpls_bos {
-				presence;
+				presence "";
 				uses mpls_bos; 
 				
 			}
 			container pbb_isid {
-				presence;
+				presence "";
 				uses pbb_isid; 
 				
 			}
 			container tunnel_id {
-				presence;
+				presence "";
 				uses tunnel_id; 
 				
 			}
 			container ipv6_exthdr {
-				presence;
+				presence "";
 				uses ipv6_exthdr; 
 				
 			}
