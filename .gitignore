@@ -1,3 +1,6 @@
-/openflow-protocol-impl/target/
-/openflow-protocol-api/target/
-/openflow-protocol-spi/target/
+**/target
+**/.classpath
+**/.project
+**/.settings
+**/.externalToolBuilders
+**/maven-eclipse.xml

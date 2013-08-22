@@ -1,19 +1,5 @@
 /* Copyright (C)2013 Pantheon Technologies, s.r.o. All rights reserved. */
-/*
- * Copyright 2012 The Netty Project
- *
- * The Netty Project licenses this file to you under the Apache License,
- * version 2.0 (the "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at:
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations
- * under the License.
- */
+
 package org.openflow.example;
 
 import javax.net.ssl.ManagerFactoryParameters;
@@ -24,12 +10,19 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.cert.X509Certificate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Bogus {@link TrustManagerFactorySpi} which accepts any certificate
- * even if it is invalid.
+ * 
+ * @author michal.polkorab
  */
 public class SslTrustManagerFactory extends TrustManagerFactorySpi {
+    
+    /**
+     * Logger for SslTrustManagerFactory
+     */
+    public static final Logger logger = LoggerFactory.getLogger(SslTrustManagerFactory.class);
 
     private static final TrustManager DUMMY_TRUST_MANAGER = new X509TrustManager() {
         @Override
@@ -39,23 +32,19 @@ public class SslTrustManagerFactory extends TrustManagerFactorySpi {
 
         @Override
         public void checkClientTrusted(X509Certificate[] chain, String authType) {
-            // Always trust - it is an example.
-            // You should do something in the real world.
-            // You will reach here only if you enabled client certificate auth,
-            // as described in SecureChatSslContextFactory.
-            System.err.println(
-                    "UNKNOWN CLIENT CERTIFICATE: " + chain[0].getSubjectDN());
+            logger.error("UNKNOWN CLIENT CERTIFICATE: " + chain[0].getSubjectDN());
         }
 
         @Override
         public void checkServerTrusted(X509Certificate[] chain, String authType) {
-            // Always trust - it is an example.
-            // You should do something in the real world.
-            System.err.println(
-                    "UNKNOWN SERVER CERTIFICATE: " + chain[0].getSubjectDN());
+            logger.error("UNKNOWN SERVER CERTIFICATE: " + chain[0].getSubjectDN());
         }
     };
 
+    /** Getter for TrustManagers
+     * 
+     * @return TrustManager[]
+     */
     public static TrustManager[] getTrustManagers() {
         return new TrustManager[] { DUMMY_TRUST_MANAGER };
     }
@@ -66,13 +55,13 @@ public class SslTrustManagerFactory extends TrustManagerFactorySpi {
     }
 
     @Override
-    protected void engineInit(KeyStore keystore) throws KeyStoreException {
-        // Unused
+    protected void engineInit(KeyStore ks) throws KeyStoreException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    protected void engineInit(ManagerFactoryParameters managerFactoryParameters)
-            throws InvalidAlgorithmParameterException {
-        // Unused
+    protected void engineInit(ManagerFactoryParameters mfp) throws InvalidAlgorithmParameterException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
 }

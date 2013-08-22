@@ -8,27 +8,34 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author michal.polkorab
- */
+/** Simple client
+*
+* @author michal.polkorab
+*/
 public class SimpleClient {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleClient.class);
     private static String filename = null;
 
+    /** 
+     * Starts the client with passed parameters or tries default settings
+     * @param args 
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         String host;
         int port;
-        if (args.length != 2) {
+        if (args.length != 3) {
             logger.error("Usage: " + SimpleClient.class.getSimpleName()
                     + " <host> <port> <filename>");
             logger.error("Trying to use default setting.");
@@ -36,6 +43,7 @@ public class SimpleClient {
             InetAddress[] all = InetAddress.getAllByName(ia.getHostName());
             host = all[0].getHostAddress();
             port = 6633;
+            filename = null;
         } else {
             host = args[0];
             port = Integer.parseInt(args[1]);
@@ -43,10 +51,8 @@ public class SimpleClient {
         }
 
         EventLoopGroup group = new NioEventLoopGroup();
-        ChannelFuture close = null;
         ByteBuf buffy = null;
         Channel ch = null;
-        ChannelFuture lastWriteFuture = null;
         Bootstrap b = null;
         byte[] bytearray = new byte[64];
 
@@ -92,6 +98,8 @@ public class SimpleClient {
                 buffy.writeBytes(line.getBytes());
                 ch.writeAndFlush(buffy);
             }
+
+            ch.closeFuture().sync();
         } finally {
             logger.info("Exiting");
             group.shutdownGracefully();

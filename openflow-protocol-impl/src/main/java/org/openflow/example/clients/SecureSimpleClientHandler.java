@@ -1,40 +1,27 @@
 /* Copyright (C)2013 Pantheon Technologies, s.r.o. All rights reserved. */
-/*
- * Copyright 2012 The Netty Project
- *
- * The Netty Project licenses this file to you under the Apache License,
- * version 2.0 (the "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at:
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations
- * under the License.
- */
+
 package org.openflow.example.clients;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 
-public class SecureSimpleClientHandler extends SimpleChannelInboundHandler<String> {
+/** InboundHanler for {@link SecureSimpleClient}
+ * 
+ * @author michal.polkorab
+ */
+public class SecureSimpleClientHandler extends ChannelInboundHandlerAdapter/*SimpleChannelInboundHandler<Object>*/ {
 
     private static final Logger logger = LoggerFactory.getLogger(SecureSimpleClientHandler.class);
 
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
-        logger.info(msg);
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.warn("Unexpected exception from downstream.", cause);
-        ctx.close();
+    public void channelRead(ChannelHandlerContext ctx, Object msg)
+            throws Exception {
+        // TODO Auto-generated method stub
+        logger.info(msg.toString());
     }
 }

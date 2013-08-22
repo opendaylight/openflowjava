@@ -16,7 +16,7 @@ import java.net.InetAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/** Simple client with TLS connection to host
  *
  * @author michal.polkorab
  */
@@ -27,11 +27,22 @@ public class SecureSimpleClient {
     private static String filename;
     private static final Logger logger = LoggerFactory.getLogger(SecureSimpleClient.class);
 
+    
+    /** Constructor of class
+     * 
+     * @param host address of host
+     * @param port host listening port
+     */
     public SecureSimpleClient(String host, int port) {
         this.host = host;
         this.port = port;
     }
 
+    
+    /** Starting class of {@link SecureSimpleClient}
+     * 
+     * @throws Exception connection exception
+     */
     public void run() throws Exception {
         EventLoopGroup group = new NioEventLoopGroup();
         try {
@@ -82,10 +93,15 @@ public class SecureSimpleClient {
         }
     }
 
+    /** Sets up {@link SecureSimpleClient} and fires run()
+     * 
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         String host;
         int port;
-        if (args.length != 2) {
+        if (args.length != 3) {
             logger.error("Usage: " + SecureSimpleClient.class.getSimpleName()
                     + " <host> <port> <filename>");
             logger.error("Trying to use default setting.");
@@ -93,7 +109,7 @@ public class SecureSimpleClient {
             InetAddress[] all = InetAddress.getAllByName(ia.getHostName());
             host = all[0].getHostAddress();
             port = 6633;
-            filename = "C:/Users/michal.polkorab/Desktop/oftest.txt";
+            filename = null;
         } else {
             host = args[0];
             port = Integer.parseInt(args[1]);

@@ -1,5 +1,4 @@
 /* Copyright (C)2013 Pantheon Technologies, s.r.o. All rights reserved. */
-
 package org.openflow.example;
 
 import io.netty.buffer.ByteBuf;
@@ -11,17 +10,24 @@ import java.util.List;
 import javax.net.ssl.SSLEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.openflow.example.TCPHandler.COMPONENT_NAMES;
 
 /**
+ * Class for detecting TLS encrypted connection. If TLS encrypted connection is detected,
+ * TLSDetector engages SSLHandler and OFFrameDecoder into pipeline else it engages only
+ * OFFrameDecoder.
  *
  * @author michal.polkorab
  */
 public class TLSDetector extends ByteToMessageDecoder {
 
     private boolean detectSsl;
-    private ByteBuf buf;
-    private static final Logger logger = LoggerFactory.getLogger(TLSDetector.class);
+    private static final Logger logger = LoggerFactory
+            .getLogger(TLSDetector.class);
 
+    /**
+     * Constructor of class
+     */
     public TLSDetector() {
         logger.info("TLS Detector - Creating TLS Detector");
         detectSsl = true;
@@ -29,7 +35,8 @@ public class TLSDetector extends ByteToMessageDecoder {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        logger.warn("TLS Detector - Unexpected exception from downstream.", cause);
+        logger.warn("TLS Detector - Unexpected exception from downstream.",
+                cause);
         cause.printStackTrace();
         ctx.close();
     }
@@ -42,36 +49,38 @@ public class TLSDetector extends ByteToMessageDecoder {
         return false;
     }
 
-    private void enableSsl(ChannelHandlerContext ctx) {
-        if (ctx.pipeline().get("ssl") == null) {
+    private static void enableSsl(ChannelHandlerContext ctx) {
+        if (ctx.pipeline().get(COMPONENT_NAMES.SSL_HANDLER.name()) == null) {
             logger.info("TLS Detector - Engaging TLS handler");
             ChannelPipeline p = ctx.channel().pipeline();
-            SSLEngine engine =
-                    SslContextFactory.getServerContext().createSSLEngine();
+            SSLEngine engine = SslContextFactory.getServerContext()
+                    .createSSLEngine();
             engine.setUseClientMode(false);
-            p.addLast("ssl", new SslHandler(engine));
+            p.addLast(COMPONENT_NAMES.SSL_HANDLER.name(),
+                    new SslHandler(engine));
         }
     }
 
-    private void enableOFFrameDecoder(ChannelHandlerContext ctx) {
-        logger.info("TLS Detector - Engaging OFFrameDecoder");
+    private static void enableOFFrameDecoder(ChannelHandlerContext ctx) {
+        logger.debug("TLS Detector - Engaging OFFrameDecoder");
         ChannelPipeline p = ctx.channel().pipeline();
-        p.addLast("offramedecoder", new OFFrameDecoder());
-        p.remove("tlsdetector");
+        p.addLast(COMPONENT_NAMES.OF_FRAME_DECODER.name(), new OFFrameDecoder());
     }
 
     @Override
-    protected void decode(ChannelHandlerContext chc, ByteBuf bb, List<Object> list) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf bb,
+            List<Object> list) throws Exception {
         if (bb.readableBytes() < 5) {
             return;
         }
         if (isSsl(bb)) {
-            logger.info("TLS Detector - connection is encrypted");
-            enableSsl(chc);
+            logger.info("TLS Detector - Connection is encrypted");
+            enableSsl(ctx);
         } else {
-            logger.info("TLS Detector - connection is not encrypted");
+            logger.info("TLS Detector - Connection is not encrypted");
         }
-        enableOFFrameDecoder(chc);
+        enableOFFrameDecoder(ctx);
+        ctx.pipeline().remove(COMPONENT_NAMES.TLS_DETECTOR.name());
     }
-    
+
 }

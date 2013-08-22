@@ -2,10 +2,11 @@
 
 package org.openflow.example.clients;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelOutboundHandlerAdapter;
-import io.netty.channel.ChannelPromise;
-import java.net.SocketAddress;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import org.openflow.util.ByteBufUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,32 +14,19 @@ import org.slf4j.LoggerFactory;
  *
  * @author michal.polkorab
  */
-public class SimpleClientHandler extends ChannelOutboundHandlerAdapter {
+public class SimpleClientHandler extends ChannelInboundHandlerAdapter/*ChannelOutboundHandlerAdapter*/ {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleClientHandler.class);
 
     @Override
-    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        logger.info("Writing...");
-        super.write(ctx, msg, promise);
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        logger.info("SimpleClientHandler - start of read");
+        ByteBuf bb = (ByteBuf) msg;
+        if (logger.isDebugEnabled()) {
+            logger.debug(ByteBufUtils.byteBufToHexString(bb));
+        }
+        logger.info(msg.toString());
+        logger.info("SimpleClientHandler - end of read");
     }
-
-    @Override
-    public void connect(ChannelHandlerContext ctx, SocketAddress remoteAddress,
-            SocketAddress localAddress, ChannelPromise promise) throws Exception {
-        logger.debug("Connected");
-        super.connect(ctx, remoteAddress, localAddress, promise);
-    }
-
-    @Override
-    public void disconnect(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
-        logger.info("Disconnected");
-        super.disconnect(ctx, promise);
-    }
-
-    @Override
-    public void flush(ChannelHandlerContext ctx) throws Exception {
-        super.flush(ctx);
-        logger.debug("Flushed");
-    }
+    
 }

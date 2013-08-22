@@ -8,19 +8,24 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.openflow.example.TCPHandler.COMPONENT_NAMES;
 
-/**
+/** Class for decoding incoming messages into message frames
  *
  * @author michal.polkorab
  */
 public class OFFrameDecoder extends ByteToMessageDecoder {
     
+    public static final byte OF13_VERSION_ID = 0x04;
     private final int MESSAGE_TYPES = 29;
-    private final byte LATEST_WIRE_PROTOCOL = 4;
+    private final byte LATEST_WIRE_PROTOCOL = 0x04;
     private static final Logger logger = LoggerFactory.getLogger(OFFrameDecoder.class);
     
+    /**
+     *  Constructor of class
+     */
     public OFFrameDecoder(){
-        logger.info("OFFD - creating OFFrameDecoder");
+        logger.info("OFFD - Creating OFFrameDecoder");
     }
     
     @Override
@@ -44,18 +49,17 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
             bb.discardReadBytes();
             logger.info("OFFD - Non-OF Protocol message received (discarding)");
             return;
-        } else {
-            logger.info("OFFD - OF Protocol message received");
-        }
+        } 
         
-        logger.info("OFFD - Wire protocol version: " + version);
+        logger.info("OFFD - OF Protocol message received");
+        logger.debug("OFFD - Wire protocol version: " + version);
         
-        if (version == 4){
-            if (chc.pipeline().get("ofversiondetector") == null){
-                logger.info("OFFD - adding OFVD (for version " + version + " wire protocol)");
-                chc.pipeline().addLast("ofversiondetector", new OFVersionDetector());
+        if (version == OF13_VERSION_ID){
+            if (chc.pipeline().get(COMPONENT_NAMES.OF_VERSION_DETECTOR.name()) == null){
+                logger.info("OFFD - Adding OFVD (for version " + version + " wire protocol)");
+                chc.pipeline().addLast(COMPONENT_NAMES.OF_VERSION_DETECTOR.name(), new OFVersionDetector());
             } else {
-                logger.info("OFFD - OFVD already in pipeline");
+                logger.debug("OFFD - OFVD already in pipeline");
             }
         } else {
             logger.warn("OFFD - Received version is not supported");
@@ -64,8 +68,8 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
         logger.debug("OFFD: Version: " + version + " type: " + type + " length: " + length + " xid: " + xid);
         bb.resetReaderIndex();
         
-        List<String> zoznam = chc.pipeline().names();
-        logger.debug("OFFD: " + zoznam.toString());
+        List<String> componentList = chc.pipeline().names();
+        logger.debug("OFFD: " + componentList.toString());
         list.add(bb.readBytes(length));
     }
     
