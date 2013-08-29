@@ -9,6 +9,8 @@
 		<module>openflow-protocol-api</module>
 		<module>openflow-protocol-spi</module>
 		<module>openflow-protocol-impl</module>
+        <module>third-party/openflow-codec</module>
+        <module>third-party/openflowj_netty</module>
 	</modules>
 
 	<name>Openflow Protocol Library</name>
