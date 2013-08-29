@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <!-- Get some common settings for the project we are using it in -->
   <parent>
-    <groupId>org.opendaylight.openflow</groupId>
+    <groupId>org.opendaylight.openflowjava</groupId>
     <artifactId>openflow-protocol-parent</artifactId>
     <version>0.1-SNAPSHOT</version>
     <relativePath>../../</relativePath>
