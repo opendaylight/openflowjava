@@ -95,13 +95,13 @@ public class OFPHello extends OFPMessage {
             if (tempElem.getLengthU() > data.remaining() || (data.position() + tempElem.getLengthU()) > end)
                 return results;
 
-            if (null == tempElem.getOFHelloElemType()) {
+            if (null == tempElem.getType()) {
                 // element is not supported, so forward the position
                 data.position(data.position() + tempElem.getLengthU());
                 continue;
             }
             // create instance of element type
-            ofHelloElem = tempElem.getOFHelloElemType().newInstance();
+            ofHelloElem = tempElem.getType().newInstance();
             // read hello element from data
             ofHelloElem.readFrom(data);
             if (null == results) {

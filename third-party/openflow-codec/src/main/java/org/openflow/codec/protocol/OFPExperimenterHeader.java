@@ -71,6 +71,7 @@ public class OFPExperimenterHeader extends OFPMessage {
             this.data = new byte[this.length - MINIMUM_LENGTH];
             data.get(this.data);
         }
+        /* Vendor should take care of padding here to make the structure align*/
     }
 
     @Override
@@ -80,6 +81,7 @@ public class OFPExperimenterHeader extends OFPMessage {
         data.putInt(this.expType);
         if (this.data != null)
             data.put(this.data);
+        /* Vendor should take care of padding here to make the structure align*/
     }
 
     /**

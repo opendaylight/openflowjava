@@ -19,5 +19,9 @@ public class OFPMultipartTypeTest extends TestCase {
                 OFPMultipartTypes.valueOf((short) 4, OFPType.MULTIPART_REQUEST));
         TestCase.assertEquals(OFPMultipartTypes.PORT_DESC,
                 OFPMultipartTypes.valueOf((short) 13, OFPType.MULTIPART_REQUEST));
+        TestCase.assertEquals(OFPMultipartTypes.GROUP_FEATURES,
+                OFPMultipartTypes.valueOf((short) 8, OFPType.MULTIPART_REPLY));
+        TestCase.assertEquals(OFPMultipartTypes.GROUP_DESC,
+                OFPMultipartTypes.valueOf((short) 7, OFPType.MULTIPART_REPLY));
     }
 }

@@ -10,9 +10,9 @@ import org.openflow.codec.util.U16;
 
 /**
  * Represents an ofp_multipart_types enum
- *
+ * 
  * @author AnilGujele
- *
+ * 
  */
 public enum OFPMultipartTypes {
     DESC(0, OFPDescriptionStatistics.class, OFPDescriptionStatistics.class, new Instantiable<OFPStatistics>() {
@@ -76,6 +76,26 @@ public enum OFPMultipartTypes {
         public OFPStatistics instantiate() {
             return new OFPQueueStatisticsReply();
         }
+    }), GROUP_DESC(7, OFPGroupDescription.class, OFPGroupDescription.class, new Instantiable<OFPStatistics>() {
+        @Override
+        public OFPStatistics instantiate() {
+            return new OFPGroupDescription();
+        }
+    }, new Instantiable<OFPStatistics>() {
+        @Override
+        public OFPStatistics instantiate() {
+            return new OFPGroupDescription();
+        }
+    }), GROUP_FEATURES(8, OFPGroupFeatures.class, OFPGroupFeatures.class, new Instantiable<OFPStatistics>() {
+        @Override
+        public OFPStatistics instantiate() {
+            return new OFPGroupFeatures();
+        }
+    }, new Instantiable<OFPStatistics>() {
+        @Override
+        public OFPStatistics instantiate() {
+            return new OFPGroupFeatures();
+        }
     }), TABLE_FEATURES(12, OFPTableFeatures.class, OFPTableFeatures.class, new Instantiable<OFPStatistics>() {
         @Override
         public OFPStatistics instantiate() {
@@ -126,7 +146,7 @@ public enum OFPMultipartTypes {
     /**
      * Store some information about the OpenFlow Statistic type, including wire
      * protocol type number, and derived class
-     *
+     * 
      * @param type
      *            Wire protocol number associated with this OFPMultipartType
      * @param requestClass
@@ -160,7 +180,7 @@ public enum OFPMultipartTypes {
 
     /**
      * Adds a mapping from type value to OFStatisticsType enum
-     *
+     * 
      * @param i
      *            OpenFlow wire protocol type
      * @param t
@@ -186,7 +206,7 @@ public enum OFPMultipartTypes {
 
     /**
      * Remove a mapping from type value to OFPMultipartType enum
-     *
+     * 
      * @param i
      *            OpenFlow wire protocol type
      * @param t
@@ -206,7 +226,7 @@ public enum OFPMultipartTypes {
     /**
      * Given a wire protocol OpenFlow type number, return the OFPMultipartType
      * associated with it
-     *
+     * 
      * @param i
      *            wire protocol number
      * @param t
@@ -260,7 +280,7 @@ public enum OFPMultipartTypes {
     /**
      * Returns the no-argument Constructor of the implementation class for this
      * OFPMultipartType, either request or reply based on the supplied OFPType
-     *
+     * 
      * @param t
      * @return
      */
@@ -307,7 +327,7 @@ public enum OFPMultipartTypes {
     /**
      * Returns a new instance of the implementation class for this
      * OFPMultipartType, either request or reply based on the supplied OFPType
-     *
+     * 
      * @param t
      * @return
      */
