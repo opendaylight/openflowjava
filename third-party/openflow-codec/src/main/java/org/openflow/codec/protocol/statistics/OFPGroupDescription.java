@@ -1,5 +1,6 @@
-package org.openflow.codec.protocol;
+package org.openflow.codec.protocol.statistics;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,56 +9,27 @@ import org.openflow.codec.io.IDataBuffer;
 import org.openflow.codec.protocol.action.OFPBucket;
 import org.openflow.codec.protocol.factory.OFPActionFactory;
 import org.openflow.codec.protocol.factory.OFPActionFactoryAware;
-import org.openflow.codec.util.U16;
 
 /**
- * Represents an ofp_group_mod message
+ * Represents an ofp_group_desc_stats structure
  *
- * @author Yugandhar Sarraju (ysarraju@in.ibm.com)
- *
+ * @author Yugandhar Sarraju
  */
-public class OFPGroupMod extends OFPMessage implements OFPActionFactoryAware, Cloneable {
-    public static int MINIMUM_LENGTH = 16;
+public class OFPGroupDescription implements OFPStatistics, OFPActionFactoryAware, Serializable {
 
-    public static final short OFPGC_ADD = 0; /* New group. */
-    public static final short OFPGC_MODIFY = 1; /* Modify all matching groups. */
-    public static final short OFPGC_DELETE = 2; /* Delete all matching groups. */
-
-    public static final byte OFPGT_ALL = 0; /* All (multicast/broadcast) group. */
-    public static final byte OFPGT_SELECT = 1; /* Select group. */
-    public static final byte OFPGT_INDIRECT = 2; /* Indirect group. */
-    public static final byte OFPGT_FF = 3; /* Fast failover group. */
-
-    public static final int OFPG_MAX = (int) 0xffffff00;
-    public static final int OFPG_ALL = (int) 0xfffffffc;
-    public static final int OFPG_ANY = (int) 0xffffffff;
+    private static final int MINIMUM_LENGTH = 8;
 
     protected OFPActionFactory actionFactory;
-    protected short groupCommand;
-    protected byte groupType;
-    protected int group_id;
-    protected List<OFPBucket> buckets;
-
-    public OFPGroupMod() {
-        super();
-        this.type = OFPType.GROUP_MOD;
-        this.length = U16.t(MINIMUM_LENGTH);
-    }
-
-    public short getGroupCommand() {
-        return groupCommand;
-    }
-
-    public OFPGroupMod setGroupCommand(short groupCommand) {
-        this.groupCommand = groupCommand;
-        return this;
-    }
+    private short length = MINIMUM_LENGTH;
+    private byte groupType;
+    private int group_id;
+    private List<OFPBucket> buckets;
 
     public byte getGroupType() {
         return groupType;
     }
 
-    public OFPGroupMod setGroupType(byte groupType) {
+    public OFPGroupDescription setGroupType(byte groupType) {
         this.groupType = groupType;
         return this;
     }
@@ -66,7 +38,7 @@ public class OFPGroupMod extends OFPMessage implements OFPActionFactoryAware, Cl
         return group_id;
     }
 
-    public OFPGroupMod setGroup_id(int group_id) {
+    public OFPGroupDescription setGroup_id(int group_id) {
         this.group_id = group_id;
         return this;
     }
@@ -75,24 +47,40 @@ public class OFPGroupMod extends OFPMessage implements OFPActionFactoryAware, Cl
         return buckets;
     }
 
+    @Override
+    public int getLength() {
+        return length;
+    }
+
+    public OFPGroupDescription setLength(int length) {
+        this.length = (short) length;
+        return this;
+    }
+
     /**
      * @param buckets
      *            the buckets to set
      */
-    public OFPGroupMod setBuckets(List<OFPBucket> buckets) {
+    public OFPGroupDescription setBuckets(List<OFPBucket> buckets) {
         this.buckets = buckets;
-        if (buckets == null) {
-            this.setLengthU(MINIMUM_LENGTH);
-        } else {
-            this.setLengthU(MINIMUM_LENGTH + buckets.size() * OFPBucket.MINIMUM_LENGTH);
-        }
+        updateLength();
+
         return this;
+    }
+
+    private void updateLength() {
+        int totalLength = MINIMUM_LENGTH;
+        if (buckets != null) {
+            for (OFPBucket bucket : buckets) {
+                totalLength += bucket.getLengthU();
+            }
+        }
+        this.setLength(totalLength);
     }
 
     @Override
     public void readFrom(IDataBuffer data) {
-        super.readFrom(data);
-        this.groupCommand = data.getShort();
+        this.length = data.getShort();
         this.groupType = data.get();
         data.get();
         this.group_id = data.getInt();
@@ -101,6 +89,7 @@ public class OFPGroupMod extends OFPMessage implements OFPActionFactoryAware, Cl
         } else {
             this.buckets.clear();
         }
+
         OFPBucket bucket;
         while (data.remaining() > 0) {
             bucket = new OFPBucket();
@@ -108,12 +97,12 @@ public class OFPGroupMod extends OFPMessage implements OFPActionFactoryAware, Cl
             bucket.readFrom(data);
             this.buckets.add(bucket);
         }
+
     }
 
     @Override
     public void writeTo(IDataBuffer data) {
-        super.writeTo(data);
-        data.putShort(groupCommand);
+        data.putShort(length);
         data.put(groupType);
         data.put((byte) 0);
         data.putInt(group_id);
@@ -126,10 +115,10 @@ public class OFPGroupMod extends OFPMessage implements OFPActionFactoryAware, Cl
 
     @Override
     public int hashCode() {
-        final int prime = 227;
-        int result = super.hashCode();
+        final int prime = 461;
+        int result = 1;
+        result = prime * result + length;
         result = prime * result + ((buckets == null) ? 0 : buckets.hashCode());
-        result = prime * result + groupCommand;
         result = prime * result + groupType;
         result = prime * result + group_id;
         return result;
@@ -140,21 +129,21 @@ public class OFPGroupMod extends OFPMessage implements OFPActionFactoryAware, Cl
         if (this == obj) {
             return true;
         }
-        if (!super.equals(obj)) {
+        if (obj == null) {
             return false;
         }
-        if (!(obj instanceof OFPGroupMod)) {
+        if (!(obj instanceof OFPGroupDescription)) {
             return false;
         }
-        OFPGroupMod other = (OFPGroupMod) obj;
+        OFPGroupDescription other = (OFPGroupDescription) obj;
+        if (length != other.length) {
+            return false;
+        }
         if (buckets == null) {
             if (other.buckets != null) {
                 return false;
             }
         } else if (!buckets.equals(other.buckets)) {
-            return false;
-        }
-        if (groupCommand != other.groupCommand) {
             return false;
         }
         if (groupType != other.groupType) {
@@ -172,14 +161,14 @@ public class OFPGroupMod extends OFPMessage implements OFPActionFactoryAware, Cl
      * @see java.lang.Object#clone()
      */
     @Override
-    public OFPGroupMod clone() {
+    public OFPGroupDescription clone() {
         try {
-            OFPGroupMod groupMod = (OFPGroupMod) super.clone();
+            OFPGroupDescription groupDes = (OFPGroupDescription) super.clone();
             List<OFPBucket> neoBuckets = new LinkedList<OFPBucket>();
             for (OFPBucket bucket : this.buckets)
                 neoBuckets.add((OFPBucket) bucket.clone());
-            groupMod.setBuckets(neoBuckets);
-            return groupMod;
+            groupDes.setBuckets(neoBuckets);
+            return groupDes;
         } catch (CloneNotSupportedException e) {
             // Won't happen
             throw new RuntimeException(e);
@@ -193,8 +182,8 @@ public class OFPGroupMod extends OFPMessage implements OFPActionFactoryAware, Cl
      */
     @Override
     public String toString() {
-        return "OFPGroupMod [ buckets=" + buckets + ", groupCommand=" + groupCommand + ", groupType=" + groupType
-                + ", group_id=" + group_id + "]";
+        return "OFPGroupDes [ buckets=" + buckets + ", length=" + length + ", groupType=" + groupType + ", group_id="
+                + group_id + "]";
     }
 
     @Override
@@ -202,4 +191,5 @@ public class OFPGroupMod extends OFPMessage implements OFPActionFactoryAware, Cl
         this.actionFactory = actionFactory;
 
     }
+
 }

@@ -89,7 +89,20 @@ public class OFPBucket implements OFPActionFactoryAware, Cloneable, Serializable
 
     public OFPBucket setActions(List<OFPAction> actions) {
         this.actions = actions;
+        updateLength();
         return this;
+    }
+
+    private void updateLength() {
+        int totalLength = OFPBucket.MINIMUM_LENGTH;
+        if (null == actions) {
+            return;
+        }
+        for (OFPAction action : actions) {
+            totalLength += action.getLengthU();
+
+        }
+        length = (short) totalLength;
     }
 
     /**
@@ -127,7 +140,7 @@ public class OFPBucket implements OFPActionFactoryAware, Cloneable, Serializable
         data.getInt();
         if (this.actionFactory == null)
             throw new RuntimeException("OFPActionFactory not set");
-        this.actions = this.actionFactory.parseActions(data, getLengthU() - MINIMUM_LENGTH);
+        this.actions = this.actionFactory.parseActions(data, length - MINIMUM_LENGTH);
     }
 
     public void writeTo(IDataBuffer data) {

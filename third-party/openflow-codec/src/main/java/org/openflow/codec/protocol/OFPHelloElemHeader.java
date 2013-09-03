@@ -52,7 +52,7 @@ public class OFPHelloElemHeader implements Serializable {
      *
      * @return
      */
-    public OFPHelloElemType getOFHelloElemType() {
+    public OFPHelloElemType getType() {
         return type;
     }
 
@@ -61,7 +61,7 @@ public class OFPHelloElemHeader implements Serializable {
      *
      * @param type
      */
-    public void setOFHelloElemType(OFPHelloElemType type) {
+    public void setType(OFPHelloElemType type) {
         this.type = type;
     }
 

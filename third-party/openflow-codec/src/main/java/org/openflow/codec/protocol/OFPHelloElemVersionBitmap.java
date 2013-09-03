@@ -21,7 +21,7 @@ public class OFPHelloElemVersionBitmap extends OFPHelloElemHeader {
      * constructor
      */
     public OFPHelloElemVersionBitmap() {
-        super.setOFHelloElemType(OFPHelloElemType.VERSIONBITMAP);
+        super.setType(OFPHelloElemType.VERSIONBITMAP);
         super.setLength(MINIMUM_LENGTH);
     }
 
@@ -63,6 +63,10 @@ public class OFPHelloElemVersionBitmap extends OFPHelloElemHeader {
             this.bitmaps[i] = data.getInt();
         }
 
+        /* Read padding */
+        int paddingLength = ((this.length % 8) == 0) ? 0: (8 - (this.length % 8));
+        data.position(data.position()+paddingLength);
+
     }
 
     /**
@@ -78,6 +82,10 @@ public class OFPHelloElemVersionBitmap extends OFPHelloElemHeader {
         for (int bitmap : bitmaps) {
             data.putInt(bitmap);
         }
+        /* Write padding */
+        int paddingLength = ((this.length % 8) == 0) ? 0: (8 - (this.length % 8));
+        byte[] pad = new byte[paddingLength];
+        data.put(pad);
 
     }
 
@@ -111,7 +119,7 @@ public class OFPHelloElemVersionBitmap extends OFPHelloElemHeader {
      * Returns a string representation of the hello element
      */
     public String toString() {
-        return "OFPHelloElemVersionBitmap[" + "type=" + this.getOFHelloElemType() + ", length=" + this.getLength()
+        return "OFPHelloElemVersionBitmap[" + "type=" + this.getType() + ", length=" + this.getLength()
                 + ", bitmaps=" + Arrays.toString(bitmaps) + "]";
     }
 
