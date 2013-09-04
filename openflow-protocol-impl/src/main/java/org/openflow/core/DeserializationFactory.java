@@ -2,8 +2,6 @@
 package org.openflow.core;
 
 import io.netty.buffer.ByteBuf;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -14,13 +12,18 @@ public class DeserializationFactory {
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(DeserializationFactory.class);
 
-    public DeserializationFactory(ByteBuf bb) {
-        short type = bb.readUnsignedByte();
+    /**
+     * Transforms ByteBuf into correct POJO message
+     * @param inputBuffer 
+     */
+    public DeserializationFactory(ByteBuf inputBuffer) {
+        short type = inputBuffer.readUnsignedByte();
 
         switch (type) {
             // HELLO
             case 0: {
                 LOGGER.info("OFPT_HELLO received");
+                
                 byte[] hello = new byte[]{0x04, 0x0, 0x0, 0x08, 0x0, 0x0, 0x0, 0x01};
                 //out.writeBytes(hello);
                 break;
@@ -33,8 +36,6 @@ public class DeserializationFactory {
             case 2: {
                 LOGGER.info("OFPT_ECHO_REQUEST received");
                 byte[] echoReply = new byte[]{0x04, 0x03, 0x00, 0x08};
-//                out.writeBytes(echoReply);
-//                out.writeInt((int) xid);
                 // TODO - append original data field
                 break;
             }
