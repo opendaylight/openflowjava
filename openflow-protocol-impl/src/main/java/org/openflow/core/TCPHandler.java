@@ -5,12 +5,14 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoop;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import java.util.Iterator;
+import java.util.logging.Level;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +22,15 @@ import org.slf4j.LoggerFactory;
  *
  * @author michal.polkorab
  */
-public class TCPHandler {
+public class TCPHandler extends Thread {
 
     private int port;
+    private NioEventLoopGroup workerGroup;
+    private NioEventLoopGroup bossGroup;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TCPHandler.class);
 
+    public boolean ready = false;
+    
     /**
      * Enum used for storing names of used components (in pipeline).
      */
@@ -54,7 +61,7 @@ public class TCPHandler {
          */
         OF_FACADE
     }
-    private static final Logger logger = LoggerFactory.getLogger(TCPHandler.class);
+    
 
     /**
      * Constructor of TCPHandler that listens on selected port.
@@ -70,9 +77,10 @@ public class TCPHandler {
      *
      * @throws Exception on connection failure
      */
-    public void run() throws Exception {
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+    @Override
+    public void run() {
+        bossGroup = new NioEventLoopGroup();
+        workerGroup = new NioEventLoopGroup();
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
@@ -88,8 +96,11 @@ public class TCPHandler {
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
             ChannelFuture f = b.bind(port).sync();
-            logger.info("Switch listener started and ready to accept incoming connections on port: " + port);
+            ready = true;
+            LOGGER.info("Switch listener started and ready to accept incoming connections on port: " + port);
             f.channel().closeFuture().sync();
+        } catch (InterruptedException ex) {
+            java.util.logging.Logger.getLogger(TCPHandler.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
@@ -109,6 +120,25 @@ public class TCPHandler {
         } else {
             port = 6633;
         }
-        new TCPHandler(port).run();
+        new TCPHandler(port).start();
     }
+    
+    public int getNumberOfConnections() {
+        int numberOfConnections = 0;
+        Iterator wgi = workerGroup.iterator();
+        while (wgi.hasNext()){
+            numberOfConnections++;
+            NioEventLoop eventLoop = (NioEventLoop) wgi.next();
+            if (eventLoop != null){
+                System.out.println("eventLoop je rozne od null");
+            } else {
+                System.out.println("eventLoop je null");
+            }
+        }
+        
+        LOGGER.debug("number of connections is: " + numberOfConnections);
+        LOGGER.debug("Executor count: " + workerGroup.executorCount());
+        return numberOfConnections;
+    }
+    
 }

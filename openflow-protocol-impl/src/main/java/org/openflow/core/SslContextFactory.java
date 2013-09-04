@@ -6,6 +6,8 @@ import java.security.Security;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class for setting up TLS connection.
@@ -14,6 +16,8 @@ import javax.net.ssl.SSLContext;
  */
 public final class SslContextFactory {
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(SslContextFactory.class);
+    
     // "TLS" - supports some version of TLS
     // Use "TLSv1", "TLSv1.1", "TLSv1.2" for specific TLS version
     private static final String PROTOCOL = "TLS";
