@@ -21,11 +21,11 @@ module openflow-protocol {
 
         grouping port {
             // reference "ofp_port";
-            leaf port_no { 
+            leaf port-no { 
                 // reference "ofp_port.port_no"; 
                 type uint32;
             }
-            leaf hw_addr { 
+            leaf hw-addr { 
                 // reference "ofp_port.hw_addr"; 
                 type yang:mac-address;
             }
@@ -79,268 +79,710 @@ module openflow-protocol {
 
     // # MESSAGE Structures
         /* Immutable messages. */
+            grouping ofHeader {
+                //reference "ofpt_header struct in Openflow Switch 1.3 Spec"
+                leaf version {
+                    type uint8;
+                    //reference "OpenFlow Header - OFP_VERSION";
+                }
+                leaf xid {
+                    type uint32;
+                    //reference "OpenFlow Header - transaction id";
+                }
+            }
+            grouping ofHelloElementHeader {
+                //reference "ofpt_hello_elem_header struct in Openflow Switch 1.3 Spec"
+                leaf type {
+                    type oft:hello-element-type;
+                    //reference "OpenFlow Header element type - OFPHET_*";
+                }
+                leaf length {
+                    type uint16;
+                    //reference "OpenFlow Header element length";
+                }
+            }
             grouping hello {
                 // reference "OFPT_HELLO message in Openflow Switch 1.3 Spec"
-                
                 /* Symmetric message */
+                uses ofHeader;
+                
+                list elements {
+                    uses ofHelloElementHeader;
+                    
+                    leaf data {
+                        type binary;
+                    }
+                }
             }
             grouping error {
                 // reference "OFPT_ERROR message in Openflow Switch 1.3 Spec"
-                
                 /* Symmetric message */
+                uses ofHeader;
+                
+                leaf type {
+                    type oft:error-type;
+                }
+                leaf code {
+                    type uint16;
+                }
+                leaf data {
+                    type binary; 
+                }
             }
-            grouping echo_request {
+            grouping echo-request {
                 // reference "OFPT_ECHO_REQUEST message in Openflow Switch 1.3 Spec"
-                
                 /* Symmetric message */
+                uses ofHeader;
+                
+                leaf data {
+                    type binary;
+                }
             }
-            grouping echo_reply {
+            grouping echo-reply {
                 // reference "OFPT_ECHO_REPLY message in Openflow Switch 1.3 Spec"
-                
                 /* Symmetric message */
+                uses ofHeader;
+                
+                leaf data {
+                    type binary;
+                }
             }
             grouping experimenter {
                 // reference "OFPT_EXPERIMENTER message in Openflow Switch 1.3 Spec"
-                
                 /* Symmetric message */
+                uses ofHeader;
+                
+                leaf experimenter {
+                    type uint32;
+                }
+                leaf exp_type {
+                    type uint32;
+                }
             }
         /* Switch configuration messages. */
-            grouping features_request {
+            grouping features-request {
                 // reference "OFPT_FEATURES_REQUEST message in Openflow Switch 1.3 Spec"
-                
                 /* Controller/switch message */
+                uses ofHeader;
             }
-            grouping features_reply {
+            grouping features-reply {
                 // reference "OFPT_FEATURES_REPLY message in Openflow Switch 1.3 Spec"
-                
                 /* Controller/switch message */
+                uses ofHeader;
+                
+                leaf datapathId {
+                    type uint64;
+                }
+                leaf buffers {
+                    type uint32;
+                }
+                leaf tables {
+                    type uint8;
+                }
+                leaf auxiliaryId {
+                    type uint8;
+                }
+                leaf capabilities {
+                    type uint32;
+                }
+                leaf reserved {
+                    type uint32;
+                }
             }
-            grouping get_config_request {
+            grouping get-config-request {
                 // reference "OFPT_GET_CONFIG_REQUEST message in Openflow Switch 1.3 Spec"
-                
                 /* Controller/switch message */
+                uses ofHeader;
             }
-            grouping get_config_reply {
+            grouping get-config-reply {
                 // reference "OFPT_GET_CONFIG_REPLY message in Openflow Switch 1.3 Spec"
-                
                 /* Controller/switch message */
+                uses ofHeader;
+                
+                leaf flags {
+                    type oft:switch-config-flag;
+                }
+                leaf miss-send-len {
+                    type uint16;
+                }
             }
-            grouping set_config {
+            grouping set-config {
                 // reference "OFPT_SET_CONFIG message in Openflow Switch 1.3 Spec"
-                
                 /* Controller/switch message */
+                
+                uses ofHeader;
+                
+                leaf flags {
+                    type oft:switch-config-flag;
+                }
+                leaf miss-send-len {
+                    type uint16;
+                }
             }
         /* Asynchronous messages. */
-            grouping packet_in {
+            grouping packet-in {
                 // reference "OFPT_PACKET_IN message in Openflow Switch 1.3 Spec"
-                
-             /* Async message */
-            }
-            grouping flow_removed {
-                // reference "OFPT_FLOW_REMOVED message in Openflow Switch 1.3 Spec"
-                
                 /* Async message */
+                
+                uses ofHeader;
+                
+                leaf buffer-id {
+                    // ID assigned by datapath.
+                    type uint32;
+                }  
+                leaf total-len {
+                    // Full length of frame.
+                    type uint16;
+                }
+                leaf reason {
+                    // Reason packet is being sent (one of OFPR_*) 
+                    type uint8;
+                }
+                leaf table-id {
+                    // ID of the table that was looked up
+                    type oft:table-id;
+                }
+                leaf cookie {
+                    // Cookie of the flow entry that was looked up.
+                    type uint64;
+                }
+                
+                //TODO:: add match leaf
+                // leaf match {
+                //     type oft:match
+                // }
+
+// struct ofp_match match; /* Packet metadata. Variable size. */
+// /* The variable size and padded match is always followed by:
+//  *   - Exactly 2 all-zero padding bytes, then
+//  *   - An Ethernet frame whose length is inferred from header.length.
+//  * The padding bytes preceding the Ethernet frame ensure that the IP
+//  * header (if any) following the Ethernet header is 32-bit aligned.
+//  */
+                leaf data {
+                    type binary;
+                }
+                
+            }
+            grouping flow-removed {
+                // reference "OFPT_FLOW_REMOVED message in Openflow Switch 1.3 Spec"
+                /* Async message */
+                uses ofHeader;
+                
+                leaf cookie {
+                    type uint64;
+                }
+                leaf priority {
+                    type uint16;
+                }
+                leaf reason {
+                    type oft:flow-removed-reason;
+                }
+                leaf table-id {
+                    type oft:table-id;
+                }
+                leaf duration-sec {
+                    type uint32;
+                }
+                leaf duration-nsec {
+                    type uint32;
+                }
+                leaf idle-timeout {
+                    type uint16;
+                }
+                leaf hard-timeout {
+                    type uint16;
+                }
+                leaf packet-count {
+                    type uint64;
+                }
+                leaf byte-count {
+                    type uint64;
+                }
+                //TODO:: add match leaf
+                //leaf match {
+                //    type oft:match;
+                //}
             } 
-            grouping port_status {
+            grouping port-status {
                 // reference "OFPT_PORT_STATUS message in Openflow Switch 1.3 Spec"
                 
+                uses ofHeader;
+                
+                uses port;
+                
+                leaf reason {
+                    type oft:port-reason;
+                }
             } /* Async message */
         /* Controller command messages. */
-            grouping packet_out {
+            grouping packet-out {
                 // reference "OFPT_PACKET_OUT message in Openflow Switch 1.3 Spec"
-                
                 /* Controller/switch message */
+                
+                uses ofHeader;
+                
+                list actions {
+                    //TODO:: replace with>> uses ofaction:action-header;
+                    uses action-header;
+                    
+                    leaf data {
+                        type binary;
+                    }
+                }
+                
+                leaf buffer-id {
+                    type uint32;
+                }
+                leaf in-port {
+                    type oft:port-number;
+                }
             } 
-            grouping flow_mod {
+            grouping action-header {
+                //TODO:: remove this grouping
+                leaf type {
+                    type ofaction:action-type;
+                }
+            }
+            
+            grouping flow-mod {
                 // reference "OFPT_FLOW_MOD message in Openflow Switch 1.3 Spec"
-                
                 /* Controller/switch message */
+                
+                uses ofHeader;
+                
+                leaf cookie {
+                    type uint64;
+                }
+                leaf cookie-mask {
+                    type uint64;
+                }
+                leaf table-id {
+                    type oft:table-id;
+                }
+                leaf command {
+                    type oft:flow-mod-command;
+                }
+                leaf idle-timeout {
+                    type uint16;
+                }
+                leaf hard-timeout {
+                    type uint16;
+                }
+                leaf priority {
+                    type uint16;
+                }
+                leaf buffer-id {
+                    type uint32;
+                }
+                leaf out-port {
+                    type oft:port-number;
+                }
+                leaf out-group {
+                    type uint32;
+                }
+                leaf flags {
+                    type uint16;
+                }
+                //TODO:: add match leaf
             } 
-            grouping group_mod {
+            grouping group-mod {
                 // reference "OFPT_GROUP_MOD message in Openflow Switch 1.3 Spec"
-                
                 /* Controller/switch message */
-            } 
-            grouping port_mod {
+                
+                uses ofHeader;
+                
+                leaf command {
+                    type oft:group-mod-command;
+                }
+                leaf type {
+                    type oft:group-type;
+                }
+                leaf group-id {
+                    type uint32;
+                }
+                
+                list buckets {
+                    uses bucket;
+                }
+            }
+            grouping bucket {
+                leaf weight {
+                    type uint16;
+                }
+                leaf watch-port {
+                    type oft:port-number;
+                }
+                leaf watch-group {
+                    type uint32;
+                }
+                
+                list actions {
+                    //TODO:: replace with>> uses ofaction:action-header;
+                    uses action-header;
+                }
+            }
+            grouping port-mod {
                 // reference "OFPT_PORT_MOD message in Openflow Switch 1.3 Spec"
+                /* Controller/switch message */
+
+                uses ofHeader;
                 
-            } /* Controller/switch message */
-            grouping table_mod {
+                leaf port-no {
+                    type oft:port-number;
+                }
+                leaf hw-address {
+                    type yang:mac-address;
+                }       
+                leaf config {
+                    type oft:port-config;
+                }   
+                leaf mask {
+                    type oft:port-config;
+                }  
+                leaf advertise {
+                    type oft:port-config;
+                }
+            } 
+            grouping table-mod {
                 // reference "OFPT_TABLE_MOD message in Openflow Switch 1.3 Spec"
+                /* Controller/switch message */
+
+                uses ofHeader;
                 
-            } /* Controller/switch message */
+                leaf table-id {
+                    type oft:table-id;
+                }
+                leaf config {
+                    type oft:port-config;
+                }                
+            } 
+            
         /* Multipart messages. */
-            grouping multipart_request {
+            grouping multipart-request {
                 // reference "OFPT_MULTIPART_REQUEST message in Openflow Switch 1.3 Spec"
+                /* Controller/switch message */
+
+                uses ofHeader;
                 
-            } /* Controller/switch message */
-            grouping multipart_reply {
+                leaf type {
+                    type oft:multipart-type;
+                }          
+                leaf flags {
+                    type oft:multipart-request-flags;
+                }      
+                leaf body {
+                    type binary;
+                }
+            } 
+            grouping multipart-reply {
                 // reference "OFPT_MULTIPART_REPLY message in Openflow Switch 1.3 Spec"
+                /* Controller/switch message */
+
+                uses ofHeader;
                 
-            } /* Controller/switch message */
+                leaf type {
+                    type oft:multipart-type;
+                }
+                leaf flags {
+                    type oft:multipart-request-flags;
+                }
+                leaf body {
+                    type binary;
+                }
+            } 
             /* Barrier messages. */
-            grouping barrier_request {
+            grouping barrier-request {
                 // reference "OFPT_BARRIER_REQUEST message in Openflow Switch 1.3 Spec"
-                
-            } /* Controller/switch message */
-            grouping barrier_reply {
+                /* Controller/switch message */
+                uses ofHeader;
+            } 
+            grouping barrier-reply {
                 // reference "OFPT_BARRIER_REPLY message in Openflow Switch 1.3 Spec"
-                
-            } /* Controller/switch message */
+                /* Controller/switch message */
+                uses ofHeader;
+            } 
         /* Queue Configuration messages. */
-            grouping queue_get_config_request {
+            grouping queue-get-config-request {
                 // reference "OFPT_QUEUE_GET_CONFIG_REQUEST message in Openflow Switch 1.3 Spec"
+                /* Controller/switch message */
                 
-            } /* Controller/switch message */
-            grouping queue_get_config_reply {
+                uses ofHeader;
+                
+                leaf port {
+                    type oft:port-number;
+                }
+            } 
+            grouping queue-get-config-reply {
                 // reference "OFPT_QUEUE_GET_CONFIG_REPLY message in Openflow Switch 1.3 Spec"
+                /* Controller/switch message */
+
+                uses ofHeader;
                 
-            } /* Controller/switch message */
+                leaf port {
+                    type oft:port-number;
+                }
+                list queues {
+                    uses packet-queue;
+                }
+            } 
+            grouping packet-queue {
+                leaf queue-id {
+                    type oft:queue-id;
+                }
+                leaf port {
+                    type oft:port-number;
+                }
+                list properties {
+                    uses queue-property-header;
+                }
+            }
+            grouping queue-property-header {
+                leaf property {
+                    type oft:queue-property;
+                }
+            }
             /* Controller role change request messages. */
-            grouping role_request {
+            grouping role-request {
                 // reference "OFPT_ROLE_REQUEST message in Openflow Switch 1.3 Spec"
+                /* Controller/switch message */
                 
-            } /* Controller/switch message */
-            grouping role_reply {
+                uses ofHeader;
+                
+                leaf role {
+                    type oft:controller-role;
+                }
+                leaf generation-id {
+                    type uint64;
+                }
+            } 
+            grouping role-reply {
                 // reference "OFPT_ROLE_REPLY message in Openflow Switch 1.3 Spec"
+                /* Controller/switch message */
+
+                uses ofHeader;
                 
-            } /* Controller/switch message */
+                leaf role {
+                    type oft:controller-role;
+                }
+                leaf generation-id {
+                    type uint64;
+                }
+            } 
             /* Asynchronous message configuration. */
-            grouping get_async_request {
+            grouping get-async-request {
                 // reference "OFPT_GET_ASYNC_REQUEST message in Openflow Switch 1.3 Spec"
-                
-            } /* Controller/switch message */
-            grouping get_async_reply {
+                /* Controller/switch message */
+
+                uses ofHeader;                
+            } 
+            grouping get-async-reply {
                 // reference "OFPT_GET_ASYNC_REPLY message in Openflow Switch 1.3 Spec"
+                /* Controller/switch message */
+
+                uses ofHeader;
                 
-            } /* Controller/switch message */
-            grouping set_async {
+                list packet-in-mask {
+                    type oft:packet-in-reason;
+                }
+                list port-status-mask {
+                    type oft:port-reason;
+                }
+                list flow-removed-mask {
+                    type oft:flow-removed-reason;
+                }
+            } 
+            grouping set-async {
                 // reference "OFPT_SET_ASYNC message in Openflow Switch 1.3 Spec"
+                /* Controller/switch message */
                 
-            } /* Controller/switch message */
+                uses ofHeader;
+                
+                list packet-in-mask {
+                    type oft:packet-in-reason;
+                }
+                list port-status-mask {
+                    type oft:port-reason;
+                }
+                list flow-removed-mask {
+                    type oft:flow-removed-reason;
+                }
+            } 
             /* Meters and rate limiters configuration messages. */
-            grouping meter_mod {
+            grouping meter-mod {
                 // reference "OFPT_METER_MOD message in Openflow Switch 1.3 Spec"
+                /* Controller/switch message */
+
+                uses ofHeader;
                 
-            } /* Controller/switch message */
+                leaf command {
+                    type oft:meter-mod-command;
+                } 
+                leaf flags {
+                    type oft:meter-flags;
+                }            
+                leaf meter-id {
+                    type oft:meter-id;
+                }   
+                list bands {
+                    
+                }
+            } 
+            
+            grouping meter-band-header {
+                leaf type {
+                    type oft:meter-band-type;
+                }
+                leaf rate {
+                    type uint32;
+                }
+                leaf burst-size {
+                    type uint32;
+                }
+            }
 
 
 
                 /* Immutable messages. */
-            notification hello {
+            notification hello-message {
                 uses hello;
                 // reference "OFPT_HELLO message in Openflow Switch 1.3 Spec"
                 
                 /* Symmetric message */
             }
-            notification error {
+            notification error-message {
                 uses error;
                 // reference "OFPT_ERROR message in Openflow Switch 1.3 Spec"
                 
                 /* Symmetric message */
             }
-            notification echo_request {
-                uses echo_request;
+            notification echo-request-message {
+                uses echo-request;
                 // reference "OFPT_ECHO_REQUEST message in Openflow Switch 1.3 Spec"
                 
                 /* Symmetric message */
             }
-            notification echo_reply {
-                uses echo_reply;
-                // reference "OFPT_ECHO_REPLY message in Openflow Switch 1.3 Spec"
-                
-                /* Symmetric message */
-            }
-            notification experimenter {
+            notification experimenter-message {
                 uses experimenter;
                 // reference "OFPT_EXPERIMENTER message in Openflow Switch 1.3 Spec"
-                
+                // TODO:: does switch send this when understood experimenter msg from lib?
                 /* Symmetric message */
             }
     // # Notification and RPCs
-        
+        /* Symmetric RPC. */
+            rpc echo {
+                // reference "OFPT_ECHO_REQUEST message in Openflow Switch 1.3 Spec"
+                input {
+                    uses echo-request;
+                }
+                /* Controller/switch message */
+                output {
+                    uses echo-reply;
+                }
+            }
+            
+            rpc echo-reply {
+                // reference "OFPT_ECHO_REQUEST message in Openflow Switch 1.3 Spec"
+                input {
+                    uses echo-reply;
+                }
+            }
+            
+            rpc hello {
+                // reference "OFPT_HELLO message in Openflow Switch 1.3 Spec"
+                input {
+                    uses hello;
+                }
+            }
+            
+            rpc experimenter {
+                // reference "OFPT_EXPERIMENTER message in Openflow Switch 1.3 Spec"
+                input {
+                    uses experimenter;
+                }
+            }
 
         /* Switch configuration messages. */
-            rpc get_features {
+            rpc get-features {
                 // reference "OFPT_FEATURES_REQUEST message in Openflow Switch 1.3 Spec"
                 input {
-                    uses features_request;
+                    uses features-request;
                 }
                 /* Controller/switch message */
                 output {
-                    uses features_reply;
+                    uses features-reply;
                 }
             }
             
-            rpc get_config {
+            rpc get-config {
                 // reference "OFPT_GET_CONFIG_REQUEST message in Openflow Switch 1.3 Spec"
                 input {
-                    uses get_config_request;
+                    uses get-config-request;
                 }
                 output {
-                    uses get_config_reply;
+                    uses get-config-reply;
                 }
                 /* Controller/switch message */
             }
             
-            rpc set_config {
+            rpc set-config {
                 // reference "OFPT_SET_CONFIG message in Openflow Switch 1.3 Spec"
                 input {
-                    uses set_config;
+                    uses set-config;
                 }   
                 /* Controller/switch message */
             }
         /* Asynchronous messages. */
-            notification packet_in {
-                uses packet_in;
+            notification packet-in-message {
+                uses packet-in;
                 // reference "OFPT_PACKET_IN message in Openflow Switch 1.3 Spec"
                 
              /* Async message */
             }
-            notification flow_removed {
-                uses flow_removed;
+            notification flow-removed-message {
+                uses flow-removed;
                 // reference "OFPT_FLOW_REMOVED message in Openflow Switch 1.3 Spec"
                 
                 /* Async message */
             } 
-            notification port_status {
-                uses port_status;
+            notification port-status-message {
+                uses port-status;
                 // reference "OFPT_PORT_STATUS message in Openflow Switch 1.3 Spec"
                 
             } /* Async message */
 
         /* Controller command messages. */
-            rpc packet_out {
+            rpc packet-out {
                 input {
-                    uses packet_out;
+                    uses packet-out;
                     // reference "OFPT_PACKET_OUT message in Openflow Switch 1.3 Spec"
                 }
                 /* Controller/switch message */
             } 
-            rpc flow_mod {
+            rpc flow-mod {
                 input {
-                    uses flow_mod;
+                    uses flow-mod;
                     // reference "OFPT_FLOW_MOD message in Openflow Switch 1.3 Spec"
                 }
                 /* Controller/switch message */
             } 
-            rpc group_mod {
+            rpc group-mod {
                 input {
-                    uses group_mod;
+                    uses group-mod;
                     // reference "OFPT_GROUP_MOD message in Openflow Switch 1.3 Spec"
                 }
                 /* Controller/switch message */
             } 
-            rpc port_mod {
+            rpc port-mod {
                 input {
-                    uses port_mod;
+                    uses port-mod;
                     // reference "OFPT_PORT_MOD message in Openflow Switch 1.3 Spec"
                 }
             } /* Controller/switch message */
             
-            rpc table_mod {
+            rpc table-mod {
                 input {
-                    uses table_mod;
+                    uses table-mod;
                     // reference "OFPT_TABLE_MOD message in Openflow Switch 1.3 Spec"
                 }
             } /* Controller/switch message */
@@ -348,13 +790,13 @@ module openflow-protocol {
         /* Multipart messages. */
             //FIXME: Arent this wire protocol specific?
 
-            notification multipart_request {
-                uses multipart_request;
+            notification multipart-request-message {
+                uses multipart-request;
                 // reference "OFPT_MULTIPART_REQUEST message in Openflow Switch 1.3 Spec"
                 
             } /* Controller/switch message */
-            notification multipart_reply {
-                uses multipart_reply;
+            notification multipart-reply-message {
+                uses multipart-reply;
                 // reference "OFPT_MULTIPART_REPLY message in Openflow Switch 1.3 Spec"
                 
             } /* Controller/switch message */
@@ -363,58 +805,58 @@ module openflow-protocol {
             /* Barrier messages. */
             rpc barrier {
                 input {
-                    uses barrier_request;
+                    uses barrier-request;
                     // reference "OFPT_BARRIER_REQUEST message in Openflow Switch 1.3 Spec"
                 }
                 output {
-                    uses barrier_reply;
+                    uses barrier-reply;
                     // reference "OFPT_BARRIER_REPLY message in Openflow Switch 1.3 Spec"
                 }
             }
         /* Queue Configuration messages. */
-            rpc get_queue_config {
+            rpc get-queue-config {
                 input {
-                    uses queue_get_config_request;
+                    uses queue-get-config-request;
                     // reference "OFPT_QUEUE_GET_CONFIG_REQUEST message in Openflow Switch 1.3 Spec"
                 }
                 output {
-                    uses queue_get_config_reply;
+                    uses queue-get-config-reply;
                     // reference "OFPT_QUEUE_GET_CONFIG_REPLY message in Openflow Switch 1.3 Spec"
                 }
             } 
 
         /* Controller role change request messages. */
-            rpc role_request {
+            rpc role-request {
                 input {
-                    uses role_request;
+                    uses role-request;
                     // reference "OFPT_ROLE_REQUEST message in Openflow Switch 1.3 Spec"
                 }
                 output {
-                    uses role_reply;
+                    uses role-reply;
                     // reference "OFPT_ROLE_REPLY message in Openflow Switch 1.3 Spec"
                 }
             } /* Controller/switch message */
             
         /* Asynchronous message configuration. */
-            notification get_async_request {
-                uses get_async_request;
+            notification get-async-request-message {
+                uses get-async-request;
                 // reference "OFPT_GET_ASYNC_REQUEST message in Openflow Switch 1.3 Spec"
                 
             } /* Controller/switch message */
-            notification get_async_reply {
-                uses get_async_reply;
+            notification get-async-reply-message {
+                uses get-async-reply;
                 // reference "OFPT_GET_ASYNC_REPLY message in Openflow Switch 1.3 Spec"
                 
             } /* Controller/switch message */
-            notification set_async {
-                uses set_async;
+            notification set-async-message {
+                uses set-async;
                 // reference "OFPT_SET_ASYNC message in Openflow Switch 1.3 Spec"
                 
             } /* Controller/switch message */
         /* Meters and rate limiters configuration messages. */
-            rpc meter_mod {
+            rpc meter-mod {
                 input {
-                    uses meter_mod;
+                    uses meter-mod;
                     // reference "OFPT_METER_MOD message in Openflow Switch 1.3 Spec"
                 }
             } /* Controller/switch message */
