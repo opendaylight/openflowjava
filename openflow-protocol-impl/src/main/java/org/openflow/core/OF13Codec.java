@@ -19,7 +19,6 @@ public class OF13Codec extends ChannelInboundHandlerAdapter {
 
     // TODO - fix with enum in API
     private static final int MESSAGE_TYPES = 29;
-    private static final byte LATEST_WIRE_PROTOCOL = 0x04;
     private static final Logger LOGGER = LoggerFactory.getLogger(OF13Codec.class);
 
     /**
@@ -98,7 +97,7 @@ public class OF13Codec extends ChannelInboundHandlerAdapter {
 
     }
 
-    private boolean checkOFHeader(short type, int length) {
+    private static boolean checkOFHeader(short type, int length) {
         return !((type > MESSAGE_TYPES) || (length < OFFrameDecoder.LENGTH_OF_HEADER));
     }
 }

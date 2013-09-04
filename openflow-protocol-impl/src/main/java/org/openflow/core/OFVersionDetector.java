@@ -31,6 +31,11 @@ public class OFVersionDetector extends ByteToMessageDecoder {
     protected void decode(ChannelHandlerContext chc, ByteBuf bb, List<Object> list) throws Exception {
         LOGGER.info("Decoding frame");
 
+        if (bb.readableBytes() == 0) {
+            LOGGER.info("not enough data");
+            bb.release();
+            return;
+        }
         LOGGER.debug("RI: " + bb.readerIndex());
         byte version = bb.readByte();
 
@@ -48,7 +53,7 @@ public class OFVersionDetector extends ByteToMessageDecoder {
         bb.skipBytes(bb.readableBytes());
     }
 
-    private void enableOF13Codec(ChannelHandlerContext chc) {
+    private static void enableOF13Codec(ChannelHandlerContext chc) {
         if (chc.pipeline().get(COMPONENT_NAMES.OF_CODEC.name()) == null) {
             LOGGER.info("Engaging OF13Codec");
             chc.pipeline().addLast(COMPONENT_NAMES.OF_CODEC.name(), new OF13Codec());

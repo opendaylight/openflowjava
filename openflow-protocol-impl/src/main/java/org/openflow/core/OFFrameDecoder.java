@@ -1,4 +1,5 @@
 /* Copyright (C)2013 Pantheon Technologies, s.r.o. All rights reserved. */
+
 package org.openflow.core;
 
 import io.netty.buffer.ByteBuf;
@@ -16,6 +17,7 @@ import org.openflow.core.TCPHandler.COMPONENT_NAMES;
  */
 public class OFFrameDecoder extends ByteToMessageDecoder {
 
+    /** Length of OpenFlow 1.3 header */
     public static final byte LENGTH_OF_HEADER = 8;
     private static final byte LENGTH_INDEX_IN_HEADER = 2;
     private static final Logger LOGGER = LoggerFactory.getLogger(OFFrameDecoder.class);
@@ -36,11 +38,13 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext chc, ByteBuf bb, List<Object> list) throws Exception {
         if (bb.readableBytes() < LENGTH_OF_HEADER) {
+            LOGGER.debug("skipping bb - too few data for header");
             return;
         }
 
         int length = bb.getUnsignedShort(LENGTH_INDEX_IN_HEADER);
         if (bb.readableBytes() < length) {
+            LOGGER.debug("skipping bb - too few data for msg");
             return;
         }
 
@@ -57,7 +61,7 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
         bb.skipBytes(length);
     }
 
-    private void enableOFVersionDetector(ChannelHandlerContext ctx) {
+    private static void enableOFVersionDetector(ChannelHandlerContext ctx) {
         if (ctx.pipeline().get(COMPONENT_NAMES.OF_VERSION_DETECTOR.name()) == null) {
             LOGGER.info("Adding OFVD");
             ctx.pipeline().addLast(COMPONENT_NAMES.OF_VERSION_DETECTOR.name(), new OFVersionDetector());

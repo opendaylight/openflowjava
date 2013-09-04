@@ -8,13 +8,25 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.ssl.SslHandler;
 
 import javax.net.ssl.SSLEngine;
+
 import org.openflow.core.SslContextFactory;
 
-/** Initializes {@link SecureSimpleClient} pipeline
+import com.google.common.util.concurrent.SettableFuture;
+
+/** Initializes secured {@link SimpleClient} pipeline
  * 
  * @author michal.polkorab
  */
-public class SecureSimpleClientInitializer extends ChannelInitializer<SocketChannel> {
+public class SimpleClientInitializer extends ChannelInitializer<SocketChannel> {
+    
+    private SettableFuture<Boolean> sf;
+
+    /**
+     * @param sf future notifier of connected channel
+     */
+    public SimpleClientInitializer(SettableFuture<Boolean> sf) {
+        this.sf = sf;
+    }
 
     @Override
     public void initChannel(SocketChannel ch) throws Exception {
@@ -23,6 +35,7 @@ public class SecureSimpleClientInitializer extends ChannelInitializer<SocketChan
             SslContextFactory.getClientContext().createSSLEngine();
         engine.setUseClientMode(true);
         pipeline.addLast("ssl", new SslHandler(engine));
-        pipeline.addLast("handler", new SecureSimpleClientHandler());
+        pipeline.addLast("handler", new SimpleClientHandler(sf));
+        sf = null;
     }
 }
