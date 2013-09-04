@@ -13,12 +13,13 @@ module openflow-extensible-match {
         description "Initial model";
     }
 
-	identity oxm-match-type {
+	identity omx-match-type {
 		description 
 		   "The OpenFlow Extensible Match type must be supported by all OpenFlow
 			switches.";
-		base oft:match-type;
+		base oft:match-type-base;
 	}
+    
 
 	// oxm classes
 		identity class {
@@ -216,14 +217,14 @@ module openflow-extensible-match {
         */
 	// Abstract definitions of fields structure
 
-		grouping in_port {
+		grouping in-port {
 			description 
 				"Ingress port. Numerical representation of incoming port, starting at 1. This may be a physical or switch-defined logical port.";
 			leaf port-number {
 				type oft:port-number;
 			}
 		}
-		grouping in_phy_port {
+		grouping in-phy-port {
 			description "Physical port. In ofp_packet_in messages, underlying physical port when packet received on a logical port.";
 			leaf port-number {
 				type oft:port-number;
@@ -238,13 +239,13 @@ module openflow-extensible-match {
 				type oft:metadata;
 			}
 		}
-		grouping eth_dst {
+		grouping eth-dst {
 			description "Ethernet destination address.";
 			leaf address {
 				type yang:mac-address;
 			}
 		}
-		grouping eth_src {
+		grouping eth-src {
 			description "Ethernet source address.";
 			leaf address {
 				type yang:mac-address;
@@ -253,7 +254,7 @@ module openflow-extensible-match {
 				type binary;
 			}
 		}
-		grouping eth_type {
+		grouping eth-type {
 			description "Ethernet frame type.";
 			leaf type {
 				type oft:ether-type; // Needs to define that as general model
@@ -262,7 +263,7 @@ module openflow-extensible-match {
 				type binary;
 			}
 		}
-		grouping vlan_vid {
+		grouping vlan-vid {
 			description "VLAN id.";
 			leaf vlan-id {
 				type uint16; // TODO: Define proper vlan id type.
@@ -271,110 +272,110 @@ module openflow-extensible-match {
 				type binary;
 			}
 		}
-		grouping vlan_pcp {
+		grouping vlan-pcp {
 			description "VLAN priority.";
 			leaf vlan-pcp {
 				type uint8; // TODO: Define PCP type
 			}
 		}
-		grouping ip_dscp {
+		grouping ip-dscp {
 			description "IP DSCP (6 bits in ToS field).";
 
 			leaf dscp {
 				type inet:dscp; // TODO: Define DSCP type
 			}
 		}
-		grouping ip_ecn {
+		grouping ip-ecn {
 			description "IP ECN (2 bits in ToS field).";
 			leaf ecn {
 				type uint8; // TODO define ECN
 			}
 		}
-		grouping ip_proto {
+		grouping ip-proto {
 			description "IP protocol.";
 			leaf protocol-number {
 				type uint8; // TODO define IP protocol number
 			}
 		}
-		grouping ipv4_src {
+		grouping ipv4-src {
 			description "IPv4 source address.";
 			leaf prefix {
 				type inet:ipv4-prefix;
 			}
 		}
-		grouping ipv4_dst {
+		grouping ipv4-dst {
 			description "IPv4 destination address.";
 			leaf prefix {
 				type inet:ipv4-prefix;
 			}
 		}
-		grouping tcp_src {
+		grouping tcp-src {
 			description "TCP source port.";
 			leaf port {
 				type inet:port-number;
 			}
 		}
-		grouping tcp_dst {
+		grouping tcp-dst {
 			description "TCP destination port.";
 					leaf port {
 				type inet:port-number;
 			}
 		}
-		grouping udp_src {
+		grouping udp-src {
 			description "UDP source port.";
 			leaf port {
 				type inet:port-number;
 			}
 		}
-		grouping udp_dst {
+		grouping udp-dst {
 			description "UDP destination port.";
 			leaf port {
 				type inet:port-number;
 			}
 		}
-		grouping sctp_src {
+		grouping sctp-src {
 			description "SCTP source port.";
 			leaf port {
 				type inet:port-number;
 			}
 		}
-		grouping sctp_dst {
+		grouping sctp-dst {
 			description "SCTP destination port.";
 			leaf port {
 				type inet:port-number;
 			}
 		}
-		grouping icmpv4_type {
+		grouping icmpv4-type {
 			description "ICMP type.";
 			leaf type {
 				type uint8; // Define ICMP Type
 			}
 		}
-		grouping icmpv4_code {
+		grouping icmpv4-code {
 			description "ICMP code.";
 			leaf code {
 				type uint8; // Define ICMP Code
 			}
 		}
-		grouping arp_op {
+		grouping arp-op {
 			description "ARP opcode.";
 			leaf op-code {
 				type uint16;
 			}
 		}
-		grouping arp_spa {
+		grouping arp-spa {
 			description "ARP source IPv4 address.";
 			leaf prefix {
 				type inet:ipv4-prefix;
 			}
 		}
-		grouping arp_tpa {
+		grouping arp-tpa {
 			description "ARP target IPv4 address.";
 			leaf prefix {
 				type inet:ipv4-prefix;
 			}
 		}
-		grouping arp_sha {
+		grouping arp-sha {
 			description "ARP source hardware address.";
 			leaf address {
 				type yang:mac-address;
@@ -383,7 +384,7 @@ module openflow-extensible-match {
 				type binary;
 			}
 		}
-		grouping arp_tha {
+		grouping arp-tha {
 			description "ARP target hardware address.";
 			leaf address {
 				type yang:mac-address;
@@ -392,73 +393,73 @@ module openflow-extensible-match {
 				type binary;
 			}
 		}
-		grouping ipv6_src {
+		grouping ipv6-src {
 			description "IPv6 source address.";
 			leaf prefix {
 				type inet:ipv6-prefix;
 			}
 		}
-		grouping ipv6_dst {
+		grouping ipv6-dst {
 			description "IPv6 destination address.";
 			leaf prefix {
 				type inet:ipv6-prefix;
 			}
 		}
-		grouping ipv6_flabel {
+		grouping ipv6-flabel {
 			description "IPv6 Flow Label";
 			leaf label {
 				type inet:ipv6-flow-label;
 			}
 		}
-		grouping icmpv6_type {
+		grouping icmpv6-type {
 			description "ICMPv6 type.";
 			leaf type {
 				type uint8;
 			}
 		}
-		grouping icmpv6_code {
+		grouping icmpv6-code {
 			description "ICMPv6 code.";
 			leaf code {
 				type uint8;
 			}
 		}
-		grouping ipv6_nd_target {
+		grouping ipv6-nd-target {
 			description "Target address for ND.";
 			leaf address {
 				type inet:ipv6-address;
 			}
 		}
-		grouping ipv6_nd_sll {
+		grouping ipv6-nd-sll {
 			description "Source link-layer for ND.";
 			leaf address {
 				type yang:mac-address;
 			}
 		}
-		grouping ipv6_nd_tll {
+		grouping ipv6-nd-tll {
 			description "Target link-layer for ND.";
 			leaf address {
 				type yang:mac-address;
 			}
 		}
-		grouping mpls_label {
+		grouping mpls-label {
 			description "MPLS label.";
 			leaf label {
 				type uint32; // TODO define type
 			}
 		}
-		grouping mpls_tc {
+		grouping mpls-tc {
 			description "MPLS TC.";
 			leaf tc {
 				type uint8;
 			}
 		}
-		grouping mpls_bos {
+		grouping mpls-bos {
 			description "MPLS BoS bit.";
 			leaf bos {
 				type boolean;
 			}
 		}
-		grouping pbb_isid {
+		grouping pbb-isid {
 			description "PBB I-SID.";
 			leaf isid {
 				type uint32;
@@ -467,7 +468,7 @@ module openflow-extensible-match {
 				type binary;
 			}
 		}
-		grouping tunnel_id {
+		grouping tunnel-id {
 			description "Logical Port Metadata.";
 			leaf value {
 				type oft:metadata; 
@@ -476,7 +477,7 @@ module openflow-extensible-match {
 				type oft:metadata;
 			}
 		}
-		grouping ipv6_exthdr {
+		grouping ipv6-exthdr {
 			description "IPv6 Extension Header pseudo-field";
 			leaf pseudo-field {
 				type bits {
@@ -537,14 +538,14 @@ module openflow-extensible-match {
 	*/
 
 		grouping basic-match-fields {
-			container in_port {
+			container in-port {
 				presence "";
-				uses in_port; 
+				uses in-port; 
 		
 			}
-			container in_phy_port {
+			container in-phy-port {
 				presence "";
-				uses in_phy_port; 
+				uses in-phy-port; 
 				
 			}
 			container metadata {
@@ -552,189 +553,189 @@ module openflow-extensible-match {
 				uses metadata; 
 				
 			}
-			container eth_dst {
+			container eth-dst {
 				presence "";
-				uses eth_dst; 
+				uses eth-dst; 
 				
 			}
-			container eth_src {
+			container eth-src {
 				presence "";
-				uses eth_src; 
+				uses eth-src; 
 				
 			}
-			container eth_type {
+			container eth-type {
 				presence "";
-				uses eth_type; 
+				uses eth-type; 
 				
 			}
-			container vlan_vid {
+			container vlan-vid {
 				presence "";
-				uses vlan_vid; 
+				uses vlan-vid; 
 				
 			}
-			container vlan_pcp {
+			container vlan-pcp {
 				presence "";
-				uses vlan_pcp; 
+				uses vlan-pcp; 
 				
 			}
-			container ip_dscp {
+			container ip-dscp {
 				presence "";
-				uses ip_dscp; 
+				uses ip-dscp; 
 				
 			}
-			container ip_ecn {
+			container ip-ecn {
 				presence "";
-				uses ip_ecn; 
+				uses ip-ecn; 
 				
 			}
-			container ip_proto {
+			container ip-proto {
 				presence "";
-				uses ip_proto; 
+				uses ip-proto; 
 				
 			}
-			container ipv4_src {
+			container ipv4-src {
 				presence "";
-				uses ipv4_src; 
+				uses ipv4-src; 
 				
 			}
-			container ipv4_dst {
+			container ipv4-dst {
 				presence "";
-				uses ipv4_dst; 
+				uses ipv4-dst; 
 				
 			}
-			container tcp_src {
+			container tcp-src {
 				presence "";
-				uses tcp_src; 
+				uses tcp-src; 
 				
 			}
-			container tcp_dst {
+			container tcp-dst {
 				presence "";
-				uses tcp_dst; 
+				uses tcp-dst; 
 				
 			}
-			container udp_src {
+			container udp-src {
 				presence "";
-				uses udp_src; 
+				uses udp-src; 
 				
 			}
-			container udp_dst {
+			container udp-dst {
 				presence "";
-				uses udp_dst; 
+				uses udp-dst; 
 				
 			}
-			container sctp_src {
+			container sctp-src {
 				presence "";
-				uses sctp_src; 
+				uses sctp-src; 
 				
 			}
-			container sctp_dst {
+			container sctp-dst {
 				presence "";
-				uses sctp_dst; 
+				uses sctp-dst; 
 				
 			}
-			container icmpv4_type {
+			container icmpv4-type {
 				presence "";
-				uses icmpv4_type; 
+				uses icmpv4-type; 
 				
 			}
-			container icmpv4_code {
+			container icmpv4-code {
 				presence "";
-				uses icmpv4_code; 
+				uses icmpv4-code; 
 				
 			}
-			container arp_op {
+			container arp-op {
 				presence "";
-				uses arp_op; 
+				uses arp-op; 
 				
 			}
-			container arp_spa {
+			container arp-spa {
 				presence "";
-				uses arp_spa; 
+				uses arp-spa; 
 				
 			}
-			container arp_tpa {
+			container arp-tpa {
 				presence "";
-				uses arp_tpa; 
+				uses arp-tpa; 
 				
 			}
-			container arp_sha {
+			container arp-sha {
 				presence "";
-				uses arp_sha; 
+				uses arp-sha; 
 				
 			}
-			container arp_tha {
+			container arp-tha {
 				presence "";
-				uses arp_tha; 
+				uses arp-tha; 
 				
 			}
-			container ipv6_src {
+			container ipv6-src {
 				presence "";
-				uses ipv6_src; 
+				uses ipv6-src; 
 				
 			}
-			container ipv6_dst {
+			container ipv6-dst {
 				presence "";
-				uses ipv6_dst; 
+				uses ipv6-dst; 
 				
 			}
-			container ipv6_flabel {
+			container ipv6-flabel {
 				presence "";
-				uses ipv6_flabel; 
+				uses ipv6-flabel; 
 				
 			}
-			container icmpv6_type {
+			container icmpv6-type {
 				presence "";
-				uses icmpv6_type; 
+				uses icmpv6-type; 
 				
 			}
-			container icmpv6_code {
+			container icmpv6-code {
 				presence "";
-				uses icmpv6_code; 
+				uses icmpv6-code; 
 				
 			}
-			container ipv6_nd_target {
+			container ipv6-nd-target {
 				presence "";
-				uses ipv6_nd_target; 
+				uses ipv6-nd-target; 
 				
 			}
-			container ipv6_nd_sll {
+			container ipv6-nd-sll {
 				presence "";
-				uses ipv6_nd_sll; 
+				uses ipv6-nd-sll; 
 				
 			}
-			container ipv6_nd_tll {
+			container ipv6-nd-tll {
 				presence "";
-				uses ipv6_nd_tll; 
+				uses ipv6-nd-tll; 
 				
 			}
-			container mpls_label {
+			container mpls-label {
 				presence "";
-				uses mpls_label; 
+				uses mpls-label; 
 				
 			}
-			container mpls_tc {
+			container mpls-tc {
 				presence "";
-				uses mpls_tc; 
+				uses mpls-tc; 
 				
 			}
-			container mpls_bos {
+			container mpls-bos {
 				presence "";
-				uses mpls_bos; 
+				uses mpls-bos; 
 				
 			}
-			container pbb_isid {
+			container pbb-isid {
 				presence "";
-				uses pbb_isid; 
+				uses pbb-isid; 
 				
 			}
-			container tunnel_id {
+			container tunnel-id {
 				presence "";
-				uses tunnel_id; 
+				uses tunnel-id; 
 				
 			}
-			container ipv6_exthdr {
+			container ipv6-exthdr {
 				presence "";
-				uses ipv6_exthdr; 
+				uses ipv6-exthdr; 
 				
 			}
 		}

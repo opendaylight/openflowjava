@@ -114,45 +114,91 @@ module openflow-action {
 		}
 	}
 
-	grouping set_queue {
+	grouping set-queue {
 		leaf queue {
 			type oft:queue-id;
 		}
 	}
 
-	grouping set_mpls_ttl {
+	grouping set-mpls-ttl {
 		leaf mpls_ttl {
 			type uint8;
 		}
 	}
 
-	grouping set_nw_ttl {
+	grouping set-nw-ttl {
 		leaf nw_ttl {
 			type uint8;
 		}
 	}
 
-	grouping push_pbb {
+	grouping push-pbb {
 
 	}
 
-	grouping push_mpls {
+	grouping push-mpls {
 
 	}
 
-	grouping push_vlan {
+	grouping push-vlan {
 
 	}
 
-	grouping pop_mpls {
+	grouping pop-mpls {
 		leaf ethertype {
 			type uint16; // TODO: define ethertype type
 		}
 	}
 
-	grouping set_field {
+	grouping set-field {
 		container field {
 			// TODO: figure definition
 		}
 	}
+    
+    
+    grouping action-header {
+        leaf type {
+            type action-type;
+        }
+    }
+    
+    typedef action-type {
+        /* ofp_action_type */
+        type enumeration {
+            enum OUTPUT {
+                description "Output to switch port.";
+            }
+            enum SET_VLAN_VID {
+                description "Set the 802.1q VLAN id.";
+            }
+            enum SET_VLAN_PCP {
+                description "Set the 802.1q priority.";
+            }
+            enum STRIP_VLAN {
+                description "Strip the 802.1q header.";
+            }
+            enum SET_DL_SRC {
+                description "Ethernet source address.";
+            }
+            enum SET_DL_DST {
+                description "Ethernet destination address.";
+            }
+            enum SET_NW_SRC {
+                description "IP source address.";
+            }
+            enum SET_NW_DST {
+                description "IP destination address.";
+            }
+            enum SET_TP_SRC {
+                description "TCP/UDP source port.";
+            }
+            enum SET_TP_DST {
+                description "TCP/UDP destination port.";
+            }
+            enum OFPAT_VENDOR {
+                value 65535; // 0xffff
+            }
+        }
+    }
 }

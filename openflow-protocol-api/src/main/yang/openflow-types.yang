@@ -173,7 +173,7 @@ module openflow-types {
         }
     }
 
-    identity match-type {
+    identity match-type-base {
         description 
            "The match type indicates the match structure (set of fields that compose the
             match) in use. The match type is placed in the type field at the beginning
@@ -183,13 +183,16 @@ module openflow-types {
 
     identity standard-match-type {
         deprecated true;
-        base oft:match-type;
+        base oft:match-type-base;
     }
 
     typedef match-type {
-        type identityref {
-            base oft:match-type;
-        }
+        //type identityref {
+        //    base oft:match-type-base;
+        //}
+        
+        //TODO: use identityref, when generating available
+        type string;
     }
 
     identity instruction {
@@ -220,5 +223,443 @@ module openflow-types {
     
     typedef ether-type {
         type uint16;
+    }
+    
+    typedef error-type {
+        type enumeration {
+            enum HELLO_FAILED {
+                value 0; 
+                description "Hello Protocol failed.";
+            }
+            enum BAD_REQUEST {
+                value 1; 
+                description "Request was not understood.";
+            }
+            enum BAD_ACTION {
+                value 2; 
+                description "Error in action description.";
+            }
+            enum BAD_INSTRUCTION {
+                value 3; 
+                description "Error in instruction list.";
+            }
+            enum BAD_MATCH {
+                value 4; 
+                description "Error in match.";
+            }
+            enum FLOW_MOD_FAILED {
+                value 5; 
+                description "Problem modifying flow entry.";
+            }
+            enum GROUP_MOD_FAILED {
+                value 6; 
+                description "Problem modifying group entry.";
+            }
+            enum PORT_MOD_FAILED {
+                value 7; 
+                description "Port mod request failed.";
+            }
+            enum TABLE_MOD_FAILED {
+                value 8; 
+                description "Table mod request failed.";
+            }
+            enum QUEUE_OP_FAILED {
+                value 9; 
+                description "Queue operation failed.";
+            }
+            enum SWITCH_CONFIG_FAILED {
+                value 10; 
+                description "Switch config request failed.";
+            }
+            enum ROLE_REQUEST_FAILED {
+                value 11; 
+                description "Controller Role request failed.";
+            }
+            enum METER_MOD_FAILED {
+                value 12; 
+                description "Error in meter.";
+            }
+            enum TABLE_FEATURES_FAILED {
+                value 13; 
+                description "Setting table features failed.";
+            }
+            enum EXPERIMENTER {
+                value 65535; //0xffff 
+                description "Experimenter error messages.";
+            }
+        }
+    }
+    
+    typedef hello-element-type {
+        type enumeration {
+            enum VERSIONBITMAP {
+                value 1; 
+                description "Bitmap of version supported.";
+            }
+        }
+    }
+    
+    typedef switch-config-flag {
+        /* Handling of IP fragments. */
+        type enumeration {
+            enum FRAG_NORMAL {
+                value 0; 
+                description "No special handling for fragments.";
+            }
+            enum OFPC_FRAG_DROP {
+                value 1; 
+                description "Drop fragments.";
+            }
+            enum OFPC_FRAG_REASM {
+                value 2; 
+                description "Reassemble (only if OFPC_IP_REASM set)."
+            }
+            enum OFPC_FRAG_MASK {
+                value 3; 
+            }
+        }
+    }
+    
+    typedef flow-removed-reason {
+        /* flow removed */
+        type enumeration {
+            enum OFPRR_IDLE_TIMEOUT {
+                value 0;
+                description "Flow idle time exceeded idle_timeout.";
+            }
+            enum OFPRR_HARD_TIMEOUT {
+                value 1;
+                description "Time exceeded hard_timeout.";
+            }
+            enum OFPRR_DELETE {
+                value 2;
+                description "Evicted by a DELETE flow mod."
+            }
+            enum OFPRR_GROUP_DELETE {
+                value 3;
+                description "Group was removed.";
+            }
+        }
+    }
+    
+    typedef port-reason {
+        /* port status */
+        type enumeration {
+            enum OFPPR_ADD {
+                value 0;
+                description "The port was added.";
+            }
+            enum OFPPR_DELETE {
+                value 1;
+                description "he port was removed.";
+            }
+            enum OFPPR_MODIFY {
+                value 2;
+                description "Some attribute of the port has changed.";
+            }
+        }
+    }
+    
+    typedef flow-mod-command {
+        /* ofp_flow_mod_command */
+        type enumeration {
+            enum OFPFC_ADD {      
+                value 0;      
+                description "New flow.";    
+            }
+            enum OFPFC_MODIFY {
+                value 1;
+                description "Modify all matching flows.";
+            }
+            enum OFPFC_MODIFY_STRICT {
+                value 2;
+                description "Modify entry strictly matching wildcards and priority.";
+            }
+            enum OFPFC_DELETE {
+                value 3;
+                description "Delete all matching flows.";
+            }
+            enum OFPFC_DELETE_STRICT {
+                value 4;
+                description "Delete entry strictly matching wildcards and priority.";
+            }
+        }
+    }
+    
+    typedef group-mod-command {
+        /* ofp_group_mod_command */
+        type enumeration {
+            enum OFPGC_ADD {            
+              value 0;            
+              description "New group.";            
+            }
+            enum OFPGC_MODIFY {
+              value 1;
+              description "Modify all matching groups.";
+            }
+            enum OFPGC_DELETE {
+              value 2;
+              description "Delete all matching groups.";
+            }
+            
+        }
+    }
+    
+    
+    typedef group-type {
+        /* ofp_group_type */
+        type enumeration {
+            enum OFPGT_ALL {            
+              value 0;            
+              description "All (multicast/broadcast) group.";            
+            }
+            enum OFPGT_SELECT {
+              value 1;
+              description "Select group.";
+            }
+            enum OFPGT_INDIRECT {
+              value 2;
+              description "Indirect group.";
+            }
+            enum OFPGT_FF {
+              value 3;
+              description "Fast failover group.";
+            }
+        }
+    }
+    
+    typedef multipart-request-flags {
+        description
+            "enum ofp_multipart_request_flags ";
+        type bits {
+            bit OFPMPF_REQ_MORE {
+                //description "More requests to follow.";
+                position 0;
+            }
+        }
+    }
+    
+    typedef multipart-type {
+        /* ofp_multipart_type */
+        type enumeration {
+            enum OFPGT_ALL {
+              value 0;
+              description "All (multicast/broadcast) group.";
+            }
+            
+            enum OFPMP_DESC {
+              value 0;
+              description "Description of this OpenFlow switch.
+                 The request body is empty.
+                 The reply body is struct ofp_desc.";
+            }
+            enum OFPMP_FLOW {
+              value 1;
+              description "Individual flow statistics.
+                 The request body is struct ofp_flow_stats_request.
+                 The reply body is an array of struct ofp_flow_stats.";
+            }
+            enum OFPMP_AGGREGATE {
+              value 2;
+              description "Aggregate flow statistics.
+                 The request body is struct ofp_aggregate_stats_request.
+                 The reply body is struct ofp_aggregate_stats_reply.";
+            }
+            enum OFPMP_TABLE {
+              value 3;
+              description "Flow table statistics.
+                 The request body is empty.
+                 The reply body is an array of struct ofp_table_stats.";
+            }
+            enum OFPMP_PORT_STATS {
+              value 4;
+              description "Port statistics.
+                 The request body is struct ofp_port_stats_request.
+                 The reply body is an array of struct ofp_port_stats.";
+            }
+            enum OFPMP_QUEUE {
+              value 5;
+              description "Queue statistics for a port
+                 The request body is struct ofp_queue_stats_request.
+                 The reply body is an array of struct ofp_queue_stats";
+            }
+            enum OFPMP_GROUP {
+              value 6;
+              description "Group counter statistics.
+                 The request body is struct ofp_group_stats_request.
+                 The reply is an array of struct ofp_group_stats.";
+            }
+            enum OFPMP_GROUP_DESC {
+              value 7;
+              description "Group description.
+                 The request body is empty.
+                 The reply body is an array of struct ofp_group_desc.";
+            }
+            enum OFPMP_GROUP_FEATURES {
+              value 8;
+              description "Group features.
+                 The request body is empty.
+                 The reply body is struct ofp_group_features.";
+            }
+            enum OFPMP_METER {
+              value 9;
+              description "Meter statistics.
+                 The request body is struct ofp_meter_multipart_requests.
+                 The reply body is an array of struct ofp_meter_stats.";
+            }
+            enum OFPMP_METER_CONFIG {
+              value 10;
+              description "Meter configuration.
+                 The request body is struct ofp_meter_multipart_requests.
+                 The reply body is an array of struct ofp_meter_config.";
+            }
+            enum OFPMP_METER_FEATURES {
+              value 11;
+              description "Meter features.
+                 The request body is empty.
+                 The reply body is struct ofp_meter_features.";
+            }
+            enum OFPMP_TABLE_FEATURES {
+              value 12;
+              description "Table features.
+                 The request body is either empty or contains an array of
+                 struct ofp_table_features containing the controller’s
+                 desired view of the switch. If the switch is unable to
+                 set the specified view an error is returned.
+                 The reply body is an array of struct ofp_table_features.";
+            }
+            enum OFPMP_PORT_DESC {
+              value 13;
+              description "Port description.
+                 The request body is empty.
+                 The reply body is an array of struct ofp_port.";
+            }
+            enum OFPMP_EXPERIMENTER {
+              value 65535; //0xffff
+              description "Experimenter extension.
+                 The request and reply bodies begin with
+                 struct ofp_experimenter_multipart_header.
+                 The request and reply bodies are otherwise experimenter-defined.";
+            }
+        }
+    }
+    
+    typedef queue-property {
+        /* ofp_queue_properties */
+        type enumeration {
+            enum OFPGT_ALL {
+              value 0;
+              description "All (multicast/broadcast) group.";
+            }
+            enum OFPQT_MIN_RATE {
+                value 1;
+                description "Minimum datarate guaranteed.";
+            }
+            enum OFPQT_MAX_RATE {
+                value 2;
+                description "Maximum datarate.";
+            }
+            enum OFPQT_EXPERIMENTER {
+                value 65535; // 0xffff 
+                description "Experimenter defined property.";
+            }
+        }
+    }
+    
+    typedef controller-role {
+        /* ofp_controller_role */
+        type enumeration {
+            enum OFPCR_ROLE_NOCHANGE {
+              value 0;
+              description "Don’t change current role.";
+            }
+            enum OFPCR_ROLE_EQUAL {
+              value 1;
+              description "Default role, full access.";
+            }
+            enum OFPCR_ROLE_MASTER {
+              value 2;
+              description "Full access, at most one master.";
+            }
+            enum OFPCR_ROLE_SLAVE {
+              value 3;
+              description "Read-only access.";
+            }
+        }
+    }
+    
+    typedef packet-in-reason {
+        /* ofp_packet_in_reason */
+        type enumeration {
+            enum OFPR_NO_MATCH {
+              value 0;
+              description "No matching flow (table-miss flow entry). ";
+            }
+            enum OFPR_ACTION {
+              value 1;
+              description "Action explicitly output to controller. ";
+            }
+            enum OFPR_INVALID_TTL {
+              value 2;
+              description "Packet has invalid TTL ";
+            }
+        }
+    }
+    
+    typedef meter-mod-command {
+        /* ofp_meter_mod_command */
+        type enumeration {
+            enum OFPMC_ADD {
+              description "New meter. ";
+            }
+            enum OFPMC_MODIFY {
+              description "Modify specified meter. ";
+            }
+            enum OFPMC_DELETE {
+              description "Delete specified meter. ";
+            }
+
+        }
+    }
+ 
+    typedef meter-flags {
+        /* ofp_meter_flags */
+        type bits {
+            bit OFPMF_KBPS {
+                position 0;
+                /* Rate value in kb/s (kilo-bit per second). */
+            }
+            bit OFPMF_PKTPS {
+                position 1;
+                /* Rate value in packet/sec. */
+            }
+            bit OFPMF_BURST {
+                position 2;
+                /* Do burst size. */
+            }
+            bit OFPMF_STATS {
+                position 3;
+                /* Collect statistics. */
+            }
+        }
+    }
+    
+    typedef meter-band-type {
+        /* ofp_meter_band_type */
+        type enumeration {
+            enum OFPMBT_DROP {
+              value 1;
+              description "Drop packet. ";
+            }
+            enum OFPMBT_DSCP_REMARK {
+              value 2;
+              description "Remark DSCP in the IP header. ";
+            }
+            enum OFPMBT_EXPERIMENTER {
+              value 65535; //0xFFFF
+              description "Experimenter meter band. ";
+            }
+
+        }
     }
 }
