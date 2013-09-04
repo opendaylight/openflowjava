@@ -3,11 +3,8 @@ package org.openflow.core;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
@@ -15,14 +12,23 @@ import io.netty.handler.logging.LoggingHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.util.concurrent.SettableFuture;
+
 /**
  * Class implementing server over TCP for handling incoming connections.
  *
  * @author michal.polkorab
  */
-public class TCPHandler {
+public class TCPHandler extends Thread {
 
     private int port;
+    private NioEventLoopGroup workerGroup;
+    private NioEventLoopGroup bossGroup;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TCPHandler.class);
+    private SettableFuture<Boolean> isOnlineFuture;
+    
+    
+    private PublishingChannelInitializer channelInitializer;
 
     /**
      * Enum used for storing names of used components (in pipeline).
@@ -54,7 +60,7 @@ public class TCPHandler {
          */
         OF_FACADE
     }
-    private static final Logger logger = LoggerFactory.getLogger(TCPHandler.class);
+    
 
     /**
      * Constructor of TCPHandler that listens on selected port.
@@ -63,39 +69,61 @@ public class TCPHandler {
      */
     public TCPHandler(int port) {
         this.port = port;
+        channelInitializer = new PublishingChannelInitializer();
+        isOnlineFuture = SettableFuture.create();
     }
 
     /**
      * Starts server on selected port.
-     *
-     * @throws Exception on connection failure
      */
-    public void run() throws Exception {
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+    @Override
+    public void run() {
+        LOGGER.info("Switch ");
+        bossGroup = new NioEventLoopGroup();
+        workerGroup = new NioEventLoopGroup();
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.DEBUG))
-                    .childHandler(new ChannelInitializer<SocketChannel>() {
-                @Override
-                public void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast(COMPONENT_NAMES.TLS_DETECTOR.name(), new TLSDetector());
-                }
-            })
+                    .childHandler(channelInitializer)
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
             ChannelFuture f = b.bind(port).sync();
-            logger.info("Switch listener started and ready to accept incoming connections on port: " + port);
+            isOnlineFuture.set(true);
+            LOGGER.info("Switch listener started and ready to accept incoming connections on port: " + port);
             f.channel().closeFuture().sync();
+        } catch (InterruptedException ex) {
+            LOGGER.error(ex.getMessage(), ex);
         } finally {
-            workerGroup.shutdownGracefully();
-            bossGroup.shutdownGracefully();
+            shutdown();
         }
     }
 
+    /**
+     * Shuts down {@link TCPHandler}}
+     */
+    public void shutdown() {
+        workerGroup.shutdownGracefully();
+        bossGroup.shutdownGracefully();
+    }
+    
+    /**
+     * 
+     * @return number of connected clients / channels
+     */
+    public int getNumberOfConnections() {
+        return channelInitializer.size();
+    }
+    
+    /**
+     * @return channelInitializer providing channels
+     */
+    public PublishingChannelInitializer getChannelInitializer() {
+        return channelInitializer;
+    }
+    
     /**
      * Sets and starts TCPHandler.
      *
@@ -109,6 +137,14 @@ public class TCPHandler {
         } else {
             port = 6633;
         }
-        new TCPHandler(port).run();
+        new TCPHandler(port).start();
     }
+    
+    /**
+     * @return the isOnlineFuture
+     */
+    public SettableFuture<Boolean> getIsOnlineFuture() {
+        return isOnlineFuture;
+    }
+    
 }

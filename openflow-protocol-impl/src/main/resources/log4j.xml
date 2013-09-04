@@ -8,7 +8,11 @@
         </layout>
     </appender>
 
-    <logger name="org.openflow.example" additivity="false">
+    <logger name="org.openflow.core" additivity="false">
+        <level value="DEBUG" />
+        <appender-ref ref="console" />
+    </logger>
+    <logger name="org.openflow.clients" additivity="false">
         <level value="DEBUG" />
         <appender-ref ref="console" />
     </logger>

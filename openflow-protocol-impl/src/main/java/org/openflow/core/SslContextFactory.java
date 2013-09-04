@@ -14,6 +14,7 @@ import javax.net.ssl.SSLContext;
  */
 public final class SslContextFactory {
 
+    
     // "TLS" - supports some version of TLS
     // Use "TLSv1", "TLSv1.1", "TLSv1.2" for specific TLS version
     private static final String PROTOCOL = "TLS";
@@ -54,10 +55,16 @@ public final class SslContextFactory {
         CLIENT_CONTEXT = clientContext;
     }
 
+    /**
+     * @return servercontext
+     */
     public static SSLContext getServerContext() {
         return SERVER_CONTEXT;
     }
 
+    /**
+     * @return cliencontext
+     */
     public static SSLContext getClientContext() {
         return CLIENT_CONTEXT;
     }
