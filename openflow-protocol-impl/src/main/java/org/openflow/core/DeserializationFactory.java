@@ -2,8 +2,6 @@
 package org.openflow.core;
 
 import io.netty.buffer.ByteBuf;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -21,6 +19,7 @@ public class DeserializationFactory {
             // HELLO
             case 0: {
                 LOGGER.info("OFPT_HELLO received");
+                
                 byte[] hello = new byte[]{0x04, 0x0, 0x0, 0x08, 0x0, 0x0, 0x0, 0x01};
                 //out.writeBytes(hello);
                 break;

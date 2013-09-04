@@ -14,64 +14,65 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Simple client
-*
-* @author michal.polkorab
-*/
-public class SimpleClient {
+/**
+ * Simple client for testing purposes
+ *
+ * @author michal.polkorab
+ */
+public class SimpleClient extends Thread {
 
-    private static final Logger logger = LoggerFactory.getLogger(SimpleClient.class);
-    private static String filename = null;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleClient.class);
+    private final String host;
+    private final int port;
+    private String filename;
+    private boolean securedClient = true;
 
-    /** 
-     * Starts the client with passed parameters or tries default settings
-     * @param args 
-     * @throws Exception
+    /**
+     * Constructor of class
+     *
+     * @param host address of host
+     * @param port host listening port
+     * @param filename name of input file containing binary data to be send
      */
-    public static void main(String[] args) throws Exception {
-        String host;
-        int port;
-        if (args.length != 3) {
-            logger.error("Usage: " + SimpleClient.class.getSimpleName()
-                    + " <host> <port> <filename>");
-            logger.error("Trying to use default setting.");
-            InetAddress ia = InetAddress.getLocalHost();
-            InetAddress[] all = InetAddress.getAllByName(ia.getHostName());
-            host = all[0].getHostAddress();
-            port = 6633;
-            filename = null;
-        } else {
-            host = args[0];
-            port = Integer.parseInt(args[1]);
-            filename = args[2];
-        }
+    public SimpleClient(String host, int port, String filename) {
+        this.host = host;
+        this.port = port;
+        this.filename = filename;
+    }
 
+    /**
+     * Starting class of {@link SimpleClient}
+     *
+     * @throws Exception connection exception
+     */
+    @Override
+    public void run() {
         EventLoopGroup group = new NioEventLoopGroup();
-        ByteBuf buffy = null;
-        Channel ch = null;
-        Bootstrap b = null;
-        byte[] bytearray = new byte[64];
-
         try {
-            logger.info("SimpleClient - Creating TCP connection");
-            b = new Bootstrap();
-            b.group(group)
-                    .channel(NioSocketChannel.class)
-                    .handler(new SimpleClientHandler());
+            Bootstrap b = new Bootstrap();
+            if (securedClient) {
+                b.group(group)
+                        .channel(NioSocketChannel.class)
+                        .handler(new SimpleClientInitializer());
+            } else {
+                b.group(group)
+                        .channel(NioSocketChannel.class)
+                        .handler(new SimpleClientHandler());
+            }
 
-            ch = b.connect(host, port).sync().channel();
+            Channel ch = b.connect(host, port).sync().channel();
 
-            buffy = ch.alloc().buffer(128);
+            byte[] bytearray = new byte[64];
+            ByteBuf buffy = ch.alloc().buffer(128);
 
             if (filename != null) {
-                FileInputStream fis = null;
+                FileInputStream fis;
                 try {
                     fis = new FileInputStream(filename);
-                    logger.debug("Size to read (in bytes) : " + fis.available());
+                    LOGGER.debug("Size to read (in bytes) : " + fis.available());
                     int lenght;
                     while ((lenght = fis.read(bytearray)) != -1) {
                         buffy.writeBytes(bytearray, 0, lenght);
@@ -79,7 +80,7 @@ public class SimpleClient {
                     ch.writeAndFlush(buffy);
                     fis.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LOGGER.error(e.getMessage(), e);
                 }
             }
 
@@ -89,20 +90,47 @@ public class SimpleClient {
                 if (line == null) {
                     break;
                 }
-                if ("bye".equals(line.toLowerCase())) {
-                    logger.info("bye");
-                    in.close();
-                    break;
-                }
                 buffy = ch.alloc().buffer(128);
                 buffy.writeBytes(line.getBytes(Charset.defaultCharset()));
                 ch.writeAndFlush(buffy);
-            }
 
-            ch.closeFuture().sync();
+                if ("bye".equals(line.toLowerCase())) {
+                    LOGGER.info("Bye");
+                    in.close();
+                    break;
+                }
+            }
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage(), ex);
         } finally {
-            logger.info("Exiting");
             group.shutdownGracefully();
         }
+    }
+
+    /**
+     * Sets up {@link SimpleClient} and fires run()
+     *
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String[] args) throws Exception {
+        String host;
+        int port;
+        String filenamearg;
+        if (args.length != 3) {
+            LOGGER.error("Usage: " + SimpleClient.class.getSimpleName()
+                    + " <host> <port> <filename>");
+            LOGGER.error("Trying to use default setting.");
+            InetAddress ia = InetAddress.getLocalHost();
+            InetAddress[] all = InetAddress.getAllByName(ia.getHostName());
+            host = all[0].getHostAddress();
+            port = 6633;
+            filenamearg = null;
+        } else {
+            host = args[0];
+            port = Integer.parseInt(args[1]);
+            filenamearg = args[2];
+        }
+        new SimpleClient(host, port, filenamearg).start();
     }
 }

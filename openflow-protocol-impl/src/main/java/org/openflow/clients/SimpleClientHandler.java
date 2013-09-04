@@ -14,19 +14,19 @@ import org.slf4j.LoggerFactory;
  *
  * @author michal.polkorab
  */
-public class SimpleClientHandler extends ChannelInboundHandlerAdapter/*ChannelOutboundHandlerAdapter*/ {
+public class SimpleClientHandler extends ChannelInboundHandlerAdapter {
 
-    private static final Logger logger = LoggerFactory.getLogger(SimpleClientHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleClientHandler.class);
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        logger.info("SimpleClientHandler - start of read");
+        LOGGER.info("SimpleClientHandler - start of read");
         ByteBuf bb = (ByteBuf) msg;
-        if (logger.isDebugEnabled()) {
-            logger.debug(ByteBufUtils.byteBufToHexString(bb));
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(ByteBufUtils.byteBufToHexString(bb));
         }
-        logger.info(msg.toString());
-        logger.info("SimpleClientHandler - end of read");
+        LOGGER.info(msg.toString());
+        LOGGER.info("SimpleClientHandler - end of read");
     }
     
 }
