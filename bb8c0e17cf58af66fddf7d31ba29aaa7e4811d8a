@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a2f8d8d_45b62e8c",
+        "filename": "openflow-protocol-impl/src/main/java/org/openflow/core/TCPHandler.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2013-09-05T07:20:22Z",
+      "side": 1,
+      "message": "this logger implementation should be replaced with SLF4J",
+      "revId": "bb8c0e17cf58af66fddf7d31ba29aaa7e4811d8a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
