@@ -582,52 +582,52 @@ module openflow-protocol {
 
                 uses ofHeader;
                 
-                list packet-in-mask {
-                    type oft:packet-in-reason;
-                }
-                list port-status-mask {
-                    type oft:port-reason;
-                }
-                list flow-removed-mask {
-                    type oft:flow-removed-reason;
-                }
+//                list packet-in-mask {
+//                    type oft:packet-in-reason;
+//                }
+//                list port-status-mask {
+//                    type oft:port-reason;
+//                }
+//                list flow-removed-mask {
+//                    type oft:flow-removed-reason;
+//                }
             } 
-            grouping set-async {
-                // reference "OFPT_SET_ASYNC message in Openflow Switch 1.3 Spec"
-                /* Controller/switch message */
-                
-                uses ofHeader;
-                
-                list packet-in-mask {
-                    type oft:packet-in-reason;
-                }
-                list port-status-mask {
-                    type oft:port-reason;
-                }
-                list flow-removed-mask {
-                    type oft:flow-removed-reason;
-                }
-            } 
-            /* Meters and rate limiters configuration messages. */
-            grouping meter-mod {
-                // reference "OFPT_METER_MOD message in Openflow Switch 1.3 Spec"
-                /* Controller/switch message */
-
-                uses ofHeader;
-                
-                leaf command {
-                    type oft:meter-mod-command;
-                } 
-                leaf flags {
-                    type oft:meter-flags;
-                }            
-                leaf meter-id {
-                    type oft:meter-id;
-                }   
-                list bands {
-                    
-                }
-            } 
+//            grouping set-async {
+//                // reference "OFPT_SET_ASYNC message in Openflow Switch 1.3 Spec"
+//                /* Controller/switch message */
+//                
+//                uses ofHeader;
+//                
+//                list packet-in-mask {
+//                    type oft:packet-in-reason;
+//                }
+//                list port-status-mask {
+//                    type oft:port-reason;
+//                }
+//                list flow-removed-mask {
+//                    type oft:flow-removed-reason;
+//                }
+//            } 
+//            /* Meters and rate limiters configuration messages. */
+//            grouping meter-mod {
+//                // reference "OFPT_METER_MOD message in Openflow Switch 1.3 Spec"
+//                /* Controller/switch message */
+//
+//                uses ofHeader;
+//                
+//                leaf command {
+//                    type oft:meter-mod-command;
+//                } 
+//                leaf flags {
+//                    type oft:meter-flags;
+//                }            
+//                leaf meter-id {
+//                    type oft:meter-id;
+//                }   
+//                list bands {
+//                    
+//                }
+//            } 
             
             grouping meter-band-header {
                 leaf type {
@@ -843,21 +843,21 @@ module openflow-protocol {
                 // reference "OFPT_GET_ASYNC_REQUEST message in Openflow Switch 1.3 Spec"
                 
             } /* Controller/switch message */
-            notification get-async-reply-message {
-                uses get-async-reply;
-                // reference "OFPT_GET_ASYNC_REPLY message in Openflow Switch 1.3 Spec"
-                
-            } /* Controller/switch message */
-            notification set-async-message {
-                uses set-async;
-                // reference "OFPT_SET_ASYNC message in Openflow Switch 1.3 Spec"
-                
-            } /* Controller/switch message */
-        /* Meters and rate limiters configuration messages. */
-            rpc meter-mod {
-                input {
-                    uses meter-mod;
-                    // reference "OFPT_METER_MOD message in Openflow Switch 1.3 Spec"
-                }
-            } /* Controller/switch message */
+//            notification get-async-reply-message {
+//                uses get-async-reply;
+//                // reference "OFPT_GET_ASYNC_REPLY message in Openflow Switch 1.3 Spec"
+//                
+//            } /* Controller/switch message */
+//            notification set-async-message {
+//                uses set-async;
+//                // reference "OFPT_SET_ASYNC message in Openflow Switch 1.3 Spec"
+//                
+//            } /* Controller/switch message */
+//        /* Meters and rate limiters configuration messages. */
+//            rpc meter-mod {
+//                input {
+//                    uses meter-mod;
+//                    // reference "OFPT_METER_MOD message in Openflow Switch 1.3 Spec"
+//                }
+//            } /* Controller/switch message */
 }
