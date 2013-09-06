@@ -4,8 +4,9 @@ package org.openflow.core;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import org.openflow.util.ByteBufUtils;
 
+import org.openflow.core.deserialization.DeserializationFactory;
+import org.openflow.util.ByteBufUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +50,10 @@ public class OF13Codec extends ChannelInboundHandlerAdapter {
             return;
         }
 
+        // TODO - change hardcoded version to constant, enum, ...
+        DeserializationFactory.createMessage(bb, (short) 0x04);
+        
+        // TODO - delete this switch case after completing deserialization factory
         ByteBuf out = ctx.alloc().buffer();
         switch (type) {
             case 0: {

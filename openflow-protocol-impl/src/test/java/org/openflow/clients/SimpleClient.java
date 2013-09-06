@@ -73,6 +73,7 @@ public class SimpleClient extends Thread {
     private void init() {
         isOnlineFuture = SettableFuture.create();
     }
+    
     /**
      * Starting class of {@link SimpleClient}
      */

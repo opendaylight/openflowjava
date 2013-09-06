@@ -1,31 +1,38 @@
 /* Copyright (C)2013 Pantheon Technologies, s.r.o. All rights reserved. */
-package org.openflow.core;
+package org.openflow.core.deserialization;
 
 import io.netty.buffer.ByteBuf;
+
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author michal.polkorab
  */
-public class DeserializationFactory {
+public abstract class DeserializationFactory {
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(DeserializationFactory.class);
-
+    
     /**
      * Transforms ByteBuf into correct POJO message
-     * @param inputBuffer 
+     * @param rawMessage 
+     * @param version version decoded from OpenFlow protocol message
+     * @return correct POJO as DataObject
      */
-    public DeserializationFactory(ByteBuf inputBuffer) {
-        short type = inputBuffer.readUnsignedByte();
+    public static DataObject createMessage(ByteBuf rawMessage, short version) {
+        DataObject dataObject = null;
+        short type = rawMessage.readUnsignedByte();
 
+        MessageTypeKey msgTypeKey = new MessageTypeKey(version, type);
+        OfDeserializer<?> decoder = DecoderTable.getInstance().getDecoder(msgTypeKey);
+        dataObject = decoder.createMessage(rawMessage, version);
+        /*
         switch (type) {
             // HELLO
             case 0: {
                 LOGGER.info("OFPT_HELLO received");
-                
-                byte[] hello = new byte[]{0x04, 0x0, 0x0, 0x08, 0x0, 0x0, 0x0, 0x01};
-                //out.writeBytes(hello);
+                dataObject = HelloMessageFactory.createMessage(rawMessage, version);
                 break;
             }
             // ERROR
@@ -35,8 +42,6 @@ public class DeserializationFactory {
             // ECHO_REQUEST
             case 2: {
                 LOGGER.info("OFPT_ECHO_REQUEST received");
-                byte[] echoReply = new byte[]{0x04, 0x03, 0x00, 0x08};
-                // TODO - append original data field
                 break;
             }
             // ECHO_REPLY
@@ -152,5 +157,7 @@ public class DeserializationFactory {
                 LOGGER.info("Received message type: " + type);
                 break;
         }
+        */
+        return dataObject;
     }
 }

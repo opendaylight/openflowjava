@@ -17,7 +17,8 @@ import org.openflow.core.TCPHandler.COMPONENT_NAMES;
  */
 public class OFVersionDetector extends ByteToMessageDecoder {
 
-    private static final byte OF13_VERSION_ID = 0x04;
+    /** Version number of OpenFlow 1.3 protocol */
+    public static final byte OF13_VERSION_ID = 0x04;
     private static final Logger LOGGER = LoggerFactory.getLogger(OFVersionDetector.class);
 
     /**
