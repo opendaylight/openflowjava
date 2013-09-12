@@ -15,6 +15,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import java.util.Collection;
 import java.util.concurrent.Future;
 
+import org.opendaylight.controller.sal.common.util.RpcErrors;
 import org.opendaylight.controller.sal.common.util.Rpcs;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionAdapter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
@@ -24,6 +25,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoReplyInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetAsyncInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetAsyncOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetConfigInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetConfigOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesInput;
@@ -38,10 +41,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.RoleRequestInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.RoleRequestOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetAsyncInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetConfigInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInput;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorSeverity;
+import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
 import com.google.common.collect.Lists;
@@ -163,6 +168,24 @@ public class ConnectionAdapterImpl implements ConnectionAdapter {
         return null;
     }
 
+    /* (non-Javadoc)
+     * @see org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OpenflowProtocolService#getAsync(org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetAsyncInput)
+     */
+    @Override
+    public Future<RpcResult<GetAsyncOutput>> getAsync(GetAsyncInput input) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OpenflowProtocolService#setAsync(org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetAsyncInput)
+     */
+    @Override
+    public Future<RpcResult<Void>> setAsync(SetAsyncInput input) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     @Override
     public Future<Boolean> disconnect() {
         ChannelFuture disconnectResult = channel.disconnect();
@@ -260,12 +283,9 @@ public class ConnectionAdapterImpl implements ConnectionAdapter {
      */
     protected RpcError buildRpcError(String info, ErrorSeverity severity, String message, 
             Throwable cause) {
-        // TODO - uncomment, when sal-common-util merged
-//        RpcError error = RpcErrors.getRpcError(APPLICATION_TAG, TAG, info, severity, message, 
-//                ErrorType.RPC, cause);
-//        return error;
-        
-        return null;
+        RpcError error = RpcErrors.getRpcError(APPLICATION_TAG, TAG, info, severity, message, 
+                ErrorType.RPC, cause);
+        return error;
     }
     
     /**
@@ -274,12 +294,9 @@ public class ConnectionAdapterImpl implements ConnectionAdapter {
      */
     protected RpcError buildTransportError(String info, ErrorSeverity severity, String message, 
             Throwable cause) {
-        // TODO - uncomment, when sal-common-util merged
-//        RpcError error = RpcErrors.getRpcError(APPLICATION_TAG, TAG, info, severity, message, 
-//                ErrorType.TRANSPORT, cause);
-//        return error;
-        
-        return null;
+        RpcError error = RpcErrors.getRpcError(APPLICATION_TAG, TAG, info, severity, message, 
+                ErrorType.TRANSPORT, cause);
+        return error;
     }
 
 }
