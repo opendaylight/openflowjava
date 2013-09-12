@@ -8,12 +8,15 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.concurrent.GenericFutureListener;
 
 import java.net.InetSocketAddress;
 
+import org.opendaylight.openflowjava.protocol.impl.connection.ServerFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
 /**
@@ -21,7 +24,7 @@ import com.google.common.util.concurrent.SettableFuture;
  *
  * @author michal.polkorab
  */
-public class TcpHandler extends Thread {
+public class TcpHandler implements ServerFacade {
 
     private int port;
     private String address;
@@ -111,9 +114,22 @@ public class TcpHandler extends Thread {
     /**
      * Shuts down {@link TcpHandler}}
      */
-    public void shutdown() {
+    @Override
+    public ListenableFuture<Boolean> shutdown() {
+        final SettableFuture<Boolean> result = SettableFuture.create();
         workerGroup.shutdownGracefully();
-        bossGroup.shutdownGracefully();
+        // boss will shutdown as soon, as worker is down
+        bossGroup.shutdownGracefully().addListener(new GenericFutureListener<io.netty.util.concurrent.Future<Object>>() {
+
+            @Override
+            public void operationComplete(
+                    io.netty.util.concurrent.Future<Object> downResult) throws Exception {
+                result.set(downResult.isSuccess());
+                result.setException(downResult.cause());
+            }
+            
+        });
+        return result;
     }
     
     /**
@@ -144,13 +160,11 @@ public class TcpHandler extends Thread {
         } else {
             port = 6633;
         }
-        new TcpHandler(port).start();
+        new Thread(new TcpHandler(port)).start();
     }
     
-    /**
-     * @return the isOnlineFuture
-     */
-    public SettableFuture<Boolean> getIsOnlineFuture() {
+    @Override
+    public ListenableFuture<Boolean> getIsOnlineFuture() {
         return isOnlineFuture;
     }
     

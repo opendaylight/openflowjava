@@ -8,8 +8,11 @@
 
 package org.opendaylight.openflowjava.protocol.spi.connection;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Future;
 
+import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
 
 /**
@@ -19,24 +22,22 @@ import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHan
 public interface SwitchConnectionProvider {
 
     /**
-     * @param configuration contains protocols, ports, addresses and similar connection parameters
-     * TODO - create configuration interface proposal
+     * @param configurations list of [protocol, port, address and supported features]
      */
-    public void configure(Object configuration);
+    public void configure(Collection<ConnectionConfiguration> configurations);
     
     /**
      * start listening to switches, but please don't forget to do
      * {@link #setSwitchConnectionListener(SwitchConnectionHandler)} first
      * @return future, triggered to true, when all listening channels are up and running
      */
-    public Future<Boolean> startup();
+    public Future<List<Boolean>> startup();
     
     /**
      * stop listening to switches
      * @return future, triggered to true, when all listening channels are down
      */
     public Future<Boolean> shutdown();
-    
     
     /**
      * @param switchConListener instance being informed when new switch connects

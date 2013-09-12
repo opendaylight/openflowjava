@@ -45,7 +45,7 @@ public class TcpHandlerTest {
     @Before
     public void setUp() throws InterruptedException, ExecutionException {
         tcphandler = new TcpHandler(0);
-        tcphandler.start();
+        new Thread(tcphandler).start();
         tcphandler.getIsOnlineFuture().get();
         port = tcphandler.getPort();
         address = tcphandler.getAddress();
@@ -53,10 +53,12 @@ public class TcpHandlerTest {
     
     /**
      * stop {@link TcpHandler}
+     * @throws ExecutionException 
+     * @throws InterruptedException 
      */
     @After
-    public void tearDown() {
-        tcphandler.shutdown();
+    public void tearDown() throws InterruptedException, ExecutionException {
+        tcphandler.shutdown().get();
     }
 
     /**
