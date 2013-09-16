@@ -5,41 +5,41 @@ import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.impl.core.OFFrameDecoder;
 import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetConfigInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterInput;
 
 /**
  * @author michal.polkorab
  *
  */
-public class SetConfigMessageFactory implements OFSerializer<SetConfigInput> {
+public class ExperimenterInputMessageFactory implements OFSerializer<ExperimenterInput>{
 
-    /** Code type of SetConfig message */
-    public static final byte MESSAGE_TYPE = 9;
-    private static SetConfigMessageFactory instance;
+    /** Code type of Experimenter message */
+    public static final byte MESSAGE_TYPE = 4;
+    private static ExperimenterInputMessageFactory instance;
     
-    private SetConfigMessageFactory() {
+    private ExperimenterInputMessageFactory() {
         // do nothing, just singleton
     }
     
     /**
      * @return singleton factory
      */
-    public static SetConfigMessageFactory getInstance() {
+    public static ExperimenterInputMessageFactory getInstance() {
         if (instance == null) {
-            instance = new SetConfigMessageFactory();
+            instance = new ExperimenterInputMessageFactory();
         }
         return instance;
     }
     
     @Override
     public void messageToBuffer(short version, ByteBuf out,
-            SetConfigInput message) {
+            ExperimenterInput message) {
         out.writeByte(message.getVersion());
         out.writeByte(MESSAGE_TYPE);
         out.writeShort(OFFrameDecoder.LENGTH_OF_HEADER);
         out.writeInt(message.getXid().intValue());
-        // TODO - finish implementation after enums provide needed funcionality
-        out.writeInt(message.getMissSendLen());
+        out.writeInt(message.getExperimenter().intValue());
+        out.writeInt(message.getExpType().intValue());
     }
 
 }
