@@ -19,6 +19,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class HelloInputMessageFactoryTest {
 
     private static final byte HELLO_MESSAGE_CODE_TYPE = 0;
+    
     /**
      * Testing of {@link HelloInputMessageFactory} for correct translation from POJO
      */
