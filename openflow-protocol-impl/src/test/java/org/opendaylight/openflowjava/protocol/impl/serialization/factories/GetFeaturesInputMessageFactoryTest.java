@@ -4,10 +4,9 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 
-import org.junit.Assert;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.impl.core.OFFrameDecoder;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
+import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesInputBuilder;
 
@@ -21,22 +20,19 @@ public class GetFeaturesInputMessageFactoryTest {
     
     /**
      * Testing of {@link GetFeaturesInputMessageFactory} for correct translation from POJO
+     * @throws Exception 
      */
     @Test
-    public void test() {
+    public void test() throws Exception {
         GetFeaturesInputBuilder gfib = new GetFeaturesInputBuilder();
-        gfib.setVersion(HelloMessageFactoryTest.VERSION_YET_SUPPORTED);
-        gfib.setXid(16909060L);
+        BufferHelper.setupHeader(gfib);
         GetFeaturesInput gfi = gfib.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         GetFeaturesInputMessageFactory gfimf = GetFeaturesInputMessageFactory.getInstance();
         gfimf.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, gfi);
         
-        Assert.assertTrue(out.readByte() == HelloMessageFactoryTest.VERSION_YET_SUPPORTED);
-        Assert.assertTrue(out.readByte() == FEATURES_REQUEST_MESSAGE_CODE_TYPE);
-        Assert.assertTrue(out.readUnsignedShort() == OFFrameDecoder.LENGTH_OF_HEADER);
-        Assert.assertTrue(out.readUnsignedInt() == 16909060L);
+        BufferHelper.checkHeaderV13(out, FEATURES_REQUEST_MESSAGE_CODE_TYPE, 8);
     }
 
 }
