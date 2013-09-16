@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a2f8d8d_0a26ee16",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/util/BufferHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2013-09-16T13:12:24Z",
+      "side": 1,
+      "message": "please, rename \u0027test\u0027 to \u0027check\u0027 prefix",
+      "revId": "07fdf59fa2602bc78630b8b0946381c3f3e146fe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
