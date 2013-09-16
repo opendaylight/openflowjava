@@ -46,7 +46,6 @@ public class FeaturesReplyMessageFactory implements OFDeserializer<GetFeaturesOu
         byte[] datapathId = new byte[8];
         rawMessage.readBytes(datapathId);
         gfob.setDatapathId(new BigInteger(datapathId));
-        
         gfob.setBuffers(rawMessage.readUnsignedInt());
         gfob.setTables(rawMessage.readUnsignedByte());
         gfob.setAuxiliaryId(rawMessage.readUnsignedByte());

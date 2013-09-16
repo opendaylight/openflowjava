@@ -39,7 +39,9 @@ private static ErrorMessageFactory instance;
         // TODO - finish implementation after enums are generated with proper funcionality
         //emb.setType();
         emb.setCode(rawMessage.readInt());
-        //emb.setData(value);
+        byte[] data = new byte[rawMessage.readableBytes()];
+        rawMessage.readBytes(data);
+        emb.setData(data);
         return emb.build();
     }
 
