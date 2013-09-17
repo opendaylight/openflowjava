@@ -3,9 +3,7 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
 
-import org.junit.Assert;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.BarrierReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierOutput;
 
@@ -20,10 +18,10 @@ public class BarrierReplyMessageFactoryTest {
      */
     @Test
     public void test() {
-        ByteBuf bb = BufferHelper.buildBuffer(new byte[0]);
-        BarrierOutput builtByFactory = BarrierReplyMessageFactory.getInstance().bufferToMessage(bb, HelloMessageFactoryTest.VERSION_YET_SUPPORTED);
+        ByteBuf bb = BufferHelper.buildBuffer();
+        BarrierOutput builtByFactory = BufferHelper.decodeV13(
+                BarrierReplyMessageFactory.getInstance(), bb);
 
-        Assert.assertTrue(builtByFactory.getVersion() == HelloMessageFactoryTest.VERSION_YET_SUPPORTED);
-        Assert.assertEquals(builtByFactory.getXid().longValue(), 16909060L);
+        BufferHelper.checkHeaderV13(builtByFactory);
     }
 }

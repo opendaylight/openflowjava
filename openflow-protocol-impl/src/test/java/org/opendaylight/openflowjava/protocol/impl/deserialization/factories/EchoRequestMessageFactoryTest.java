@@ -20,11 +20,11 @@ public class EchoRequestMessageFactoryTest {
      */
     @Test
     public void testWithEmptyDataField() {
-        ByteBuf bb = BufferHelper.buildBuffer(new byte[0]);
-        EchoRequestMessage builtByFactory = EchoRequestMessageFactory.getInstance().bufferToMessage(bb, HelloMessageFactoryTest.VERSION_YET_SUPPORTED);
+        ByteBuf bb = BufferHelper.buildBuffer();
+        EchoRequestMessage builtByFactory = BufferHelper.decodeV13(
+                EchoRequestMessageFactory.getInstance(), bb);
 
-        Assert.assertTrue(builtByFactory.getVersion() == HelloMessageFactoryTest.VERSION_YET_SUPPORTED);
-        Assert.assertEquals(builtByFactory.getXid().longValue(), 16909060L);
+        BufferHelper.checkHeaderV13(builtByFactory);
     }
     
     /**
@@ -34,10 +34,11 @@ public class EchoRequestMessageFactoryTest {
     public void testWithDataFieldSet() {
         byte[] data = new byte[]{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
         ByteBuf bb = BufferHelper.buildBuffer(data);
-        EchoRequestMessage builtByFactory = EchoRequestMessageFactory.getInstance().bufferToMessage(bb, HelloMessageFactoryTest.VERSION_YET_SUPPORTED);
+        EchoRequestMessage builtByFactory = BufferHelper.decodeV13(
+                EchoRequestMessageFactory.getInstance(), bb);
 
-        Assert.assertTrue(builtByFactory.getVersion() == HelloMessageFactoryTest.VERSION_YET_SUPPORTED);
-        Assert.assertEquals(builtByFactory.getXid().longValue(), 16909060L);
+        BufferHelper.checkHeaderV13(builtByFactory);
+        Assert.assertArrayEquals(builtByFactory.getData(), data);
     }
 
 }

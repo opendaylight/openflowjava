@@ -5,7 +5,6 @@ import io.netty.buffer.ByteBuf;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.FeaturesReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesOutput;
 
@@ -20,20 +19,19 @@ public class FeaturesReplyMessageFactoryTest {
      */
     @Test
     public void test() {
-        byte[] data = new byte[]{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 
-                                  0x00, 0x01, 0x02, 0x03, 0x01, 0x01, 0x00, 0x00,
-                                  0x00, 0x01, 0x02, 0x03, 0x00, 0x01, 0x02, 0x03 };
-        ByteBuf bb = BufferHelper.buildBuffer(data);
-        GetFeaturesOutput builtByFactory = FeaturesReplyMessageFactory.getInstance().bufferToMessage(bb, HelloMessageFactoryTest.VERSION_YET_SUPPORTED);
+        ByteBuf bb = BufferHelper.buildBuffer("00 01 02 03 04 05 06 07 00 01 02 03 01 01 00 00 00"
+                + " 01 02 03 00 01 02 03");
+        GetFeaturesOutput builtByFactory = BufferHelper.decodeV13(
+                FeaturesReplyMessageFactory.getInstance(), bb);
 
-        Assert.assertTrue(builtByFactory.getVersion() == HelloMessageFactoryTest.VERSION_YET_SUPPORTED);
-        Assert.assertEquals(builtByFactory.getXid().longValue(), 16909060L);
-        Assert.assertTrue(builtByFactory.getTables() == 1);
-        Assert.assertTrue(builtByFactory.getAuxiliaryId() == 1);
-        Assert.assertEquals(66051L, builtByFactory.getBuffers().longValue());
-        Assert.assertEquals(66051L, builtByFactory.getCapabilities().longValue());
-        Assert.assertEquals(66051L, builtByFactory.getReserved().longValue());
-        Assert.assertTrue(builtByFactory.getDatapathId().longValue() == 283686952306183L);
+        BufferHelper.checkHeaderV13(builtByFactory);
+        Assert.assertEquals("Wrong datapathId", 0x0001020304050607L, builtByFactory.getDatapathId().longValue());
+        Assert.assertEquals("Wrong buffers", 0x00010203L, builtByFactory.getBuffers().longValue());
+        Assert.assertEquals("Wrong number of tables", 0x01, builtByFactory.getTables().shortValue());
+        Assert.assertEquals("Wrong auxiliaryId", 0x01, builtByFactory.getAuxiliaryId().shortValue());
+        Assert.assertEquals("Wrong capabilities", 0x00010203L, builtByFactory.getCapabilities().longValue());
+        Assert.assertEquals("Wrong reserved", 0x00010203L, builtByFactory.getReserved().longValue());
+        
     }
 
 }
