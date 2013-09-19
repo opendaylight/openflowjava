@@ -8,6 +8,7 @@ import io.netty.channel.socket.SocketChannel;
 import java.util.Iterator;
 
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
+import org.opendaylight.openflowjava.protocol.impl.connection.CommunicationFacade;
 import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionAdapterFactory;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler.COMPONENT_NAMES;
 
@@ -29,14 +30,15 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
     
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
+        // TODO - call switchConnectionHandler accept first
         allChannels.add(ch);
-        //TODO - create inBoundHandler
+        CommunicationFacade connectionAdapter = null;
         if (switchConnectionHandler != null) {
-            switchConnectionHandler.onSwitchConnected(ConnectionAdapterFactory.createConnectionAdapter(ch));
-            //TODO - check OpenflowProtocolListener, set it to inBoundHandler
+            connectionAdapter = ConnectionAdapterFactory.createConnectionAdapter(ch);
+            switchConnectionHandler.onSwitchConnected(connectionAdapter);
         }
         ch.pipeline().addLast(COMPONENT_NAMES.TLS_DETECTOR.name(), new TlsDetector());
-        //TODO - chain inBoundHandler to pipe
+        ch.pipeline().addLast(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name(), new DelegatingInboundHandler(connectionAdapter));
     }
     
     /**

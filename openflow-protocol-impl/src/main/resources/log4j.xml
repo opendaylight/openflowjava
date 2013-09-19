@@ -8,11 +8,11 @@
         </layout>
     </appender>
 
-    <logger name="org.openflow.core" additivity="false">
+    <logger name="org.opendaylight.openflowjava.protocol.impl" additivity="false">
         <level value="DEBUG" />
         <appender-ref ref="console" />
     </logger>
-    <logger name="org.openflow.clients" additivity="false">
+    <logger name="org.opendaylight.openflowjava.protocol.impl.clients" additivity="false">
         <level value="DEBUG" />
         <appender-ref ref="console" />
     </logger>

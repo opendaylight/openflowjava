@@ -16,7 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class GetFeaturesInputMessageFactoryTest {
 
-    private static final byte FEATURES_REQUEST_MESSAGE_CODE_TYPE = 5;
+    private static final byte FEATURES_REQUEST_MESSAGE_CODE_TYPE = GetFeaturesInputMessageFactory.MESSAGE_TYPE;
     
     /**
      * Testing of {@link GetFeaturesInputMessageFactory} for correct translation from POJO

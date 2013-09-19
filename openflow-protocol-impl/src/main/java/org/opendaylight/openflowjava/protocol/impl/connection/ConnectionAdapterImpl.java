@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.opendaylight.controller.sal.common.util.RpcErrors;
 import org.opendaylight.controller.sal.common.util.Rpcs;
-import org.opendaylight.openflowjava.protocol.api.connection.ConnectionAdapter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoInput;
@@ -73,9 +72,9 @@ import com.google.common.util.concurrent.SettableFuture;
 
 /**
  * @author mirehak
- *
+ * @author michal.polkorab
  */
-public class ConnectionAdapterImpl implements ConnectionAdapter, MessageConsumer {
+public class ConnectionAdapterImpl implements CommunicationFacade {
     
     /** after this time, rpc future response objects will be thrown away (in minutes) */
     public static final int RPC_RESPONSE_EXPIRATION = 1;
@@ -87,6 +86,7 @@ public class ConnectionAdapterImpl implements ConnectionAdapter, MessageConsumer
     private static final String TAG = "OPENFLOW";
     private Channel channel;
     private OpenflowProtocolListener messageListener;
+    private int version;
     /** expiring cache for future rpcResponses */
     protected Cache<RpcResponseKey, SettableFuture<?>> responseCache;
     
@@ -107,11 +107,13 @@ public class ConnectionAdapterImpl implements ConnectionAdapter, MessageConsumer
                         notification.getValue().cancel(true);
                     }
                 }).build();
+        LOG.info("ConnectionAdapter created");
     }
     
     /**
-     * @param channel the channel to set
+     * @param channel the channel to be set - used for communication
      */
+    @Override
     public void setChannel(Channel channel) {
         this.channel = channel;
     }
@@ -238,6 +240,11 @@ public class ConnectionAdapterImpl implements ConnectionAdapter, MessageConsumer
     
     @Override
     public void consume(DataObject message) {
+        if (message == null) {
+            LOG.error("message is null");
+        } else {
+            LOG.debug("message is ok");
+        }
         if (message instanceof Notification) {
             if (message instanceof EchoRequestMessage) {
                 messageListener.onEchoRequestMessage((EchoRequestMessage) message);
@@ -248,6 +255,7 @@ public class ConnectionAdapterImpl implements ConnectionAdapter, MessageConsumer
             } else if (message instanceof FlowRemovedMessage) {
                 messageListener.onFlowRemovedMessage((FlowRemovedMessage) message);
             } else if (message instanceof HelloMessage) {
+                LOG.info("Hello received / branch");
                 messageListener.onHelloMessage((HelloMessage) message);
             } else if (message instanceof MultipartReplyMessage) {
                 messageListener.onMultipartReplyMessage((MultipartReplyMessage) message);
@@ -462,6 +470,14 @@ public class ConnectionAdapterImpl implements ConnectionAdapter, MessageConsumer
     @SuppressWarnings("unchecked")
     private SettableFuture<RpcResult<?>> findRpcResponse(RpcResponseKey key) {
         return (SettableFuture<RpcResult<?>>) responseCache.getIfPresent(key);
+    }
+
+    /* (non-Javadoc)
+     * @see org.opendaylight.openflowjava.protocol.api.connection.ConnectionAdapter#setVersion(int)
+     */
+    @Override
+    public void setVersion(int version) {
+        this.version = version;
     }
 
 }

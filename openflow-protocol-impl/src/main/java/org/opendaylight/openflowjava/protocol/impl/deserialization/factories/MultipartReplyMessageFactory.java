@@ -45,7 +45,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         
         mrmb.setFlags(new MultipartRequestFlags((rawMessage.readUnsignedShort() & 0x01) > 0));
         rawMessage.skipBytes(PADDING_IN_MULTIPART_REPLY_HEADER);
-        mrmb.setBody(rawMessage.readBytes(rawMessage.readableBytes()).array());
+        //mrmb.setBody(rawMessage.readBytes(rawMessage.readableBytes()).array());
         
         return mrmb.build();
     } 

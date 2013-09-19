@@ -15,6 +15,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 
 /**
  * @author mirehak
+ * @author michal.polkorab
  */
 public interface ConnectionAdapter extends OpenflowProtocolService {
 
@@ -33,4 +34,11 @@ public interface ConnectionAdapter extends OpenflowProtocolService {
      * @param messageListener here will be pushed all messages from switch
      */
     public void setMessageListener(OpenflowProtocolListener messageListener);
+    
+    /**
+     * @param version version of OpenFlow protocol to be used for communication with switch 
+     * (set after version negotiation) - in wire protocol format e.g. 4 (or 0x04) for OF 1.3   
+     * 
+     */
+    public void setVersion(int version);
 }

@@ -16,7 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class GetConfigInputMessageFactoryTest {
 
-    private static final byte GET_CONFIG_REQUEST_MESSAGE_CODE_TYPE = 7;
+    private static final byte GET_CONFIG_REQUEST_MESSAGE_CODE_TYPE = GetConfigInputMessageFactory.MESSAGE_TYPE;
     
     /**
      * Testing of {@link GetConfigInputMessageFactory} for correct translation from POJO

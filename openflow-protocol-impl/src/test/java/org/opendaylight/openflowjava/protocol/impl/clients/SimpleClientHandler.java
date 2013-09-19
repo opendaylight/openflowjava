@@ -19,22 +19,18 @@ import com.google.common.util.concurrent.SettableFuture;
 public class SimpleClientHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleClientHandler.class);
-    private SettableFuture<Boolean> sf;
+    private SettableFuture<Boolean> isOnlineFuture;
 
     /**
-     * @param sf future notifier of connected channel
+     * @param isOnlineFuture future notifier of connected channel
      */
-    public SimpleClientHandler(SettableFuture<Boolean> sf) {
-        this.sf = sf;
+    public SimpleClientHandler(SettableFuture<Boolean> isOnlineFuture) {
+        this.isOnlineFuture = isOnlineFuture;
     }
     
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         LOGGER.info("SimpleClientHandler - start of read");
-        if (sf != null) {
-            sf.set(true);
-            sf = null;
-        }
         ByteBuf bb = (ByteBuf) msg;
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(ByteBufUtils.byteBufToHexString(bb));
@@ -49,7 +45,10 @@ public class SimpleClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("CLIENT IS ACTIVE");
-        //super.channelActive(ctx);
+        if (isOnlineFuture != null) {
+            isOnlineFuture.set(true);
+            isOnlineFuture = null;
+        }
     }
     
     

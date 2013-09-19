@@ -66,7 +66,7 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
     private static void enableOFVersionDetector(ChannelHandlerContext ctx) {
         if (ctx.pipeline().get(COMPONENT_NAMES.OF_VERSION_DETECTOR.name()) == null) {
             LOGGER.info("Adding OFVD");
-            ctx.pipeline().addLast(COMPONENT_NAMES.OF_VERSION_DETECTOR.name(), new OFVersionDetector());
+            ctx.pipeline().addAfter(COMPONENT_NAMES.OF_FRAME_DECODER.name(), COMPONENT_NAMES.OF_VERSION_DETECTOR.name(), new OFVersionDetector());
         } else {
             LOGGER.debug("OFVD already in pipeline");
         }
