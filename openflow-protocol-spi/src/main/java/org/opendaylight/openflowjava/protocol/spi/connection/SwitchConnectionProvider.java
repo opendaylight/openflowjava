@@ -28,7 +28,7 @@ public interface SwitchConnectionProvider {
     
     /**
      * start listening to switches, but please don't forget to do
-     * {@link #setSwitchConnectionListener(SwitchConnectionHandler)} first
+     * {@link #setSwitchConnectionHandler(SwitchConnectionHandler)} first
      * @return future, triggered to true, when all listening channels are up and running
      */
     public Future<List<Boolean>> startup();
@@ -40,8 +40,8 @@ public interface SwitchConnectionProvider {
     public Future<Boolean> shutdown();
     
     /**
-     * @param switchConListener instance being informed when new switch connects
+     * @param switchConHandler instance being informed when new switch connects
      */
-    public void setSwitchConnectionListener(SwitchConnectionHandler switchConListener);
+    public void setSwitchConnectionHandler(SwitchConnectionHandler switchConHandler);
     
 }

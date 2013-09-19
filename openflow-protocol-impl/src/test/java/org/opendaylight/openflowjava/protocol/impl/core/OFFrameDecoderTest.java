@@ -2,90 +2,143 @@
 package org.opendaylight.openflowjava.protocol.impl.core;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.embedded.EmbeddedChannel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.impl.core.OFFrameDecoder;
+import org.junit.runner.RunWith;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler.COMPONENT_NAMES;
+import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+
+import com.google.common.collect.Lists;
 
 /**
  * Testing class of {@link OFFrameDecoder}
+ * 
  * @author michal.polkorab
  */
+@RunWith(MockitoJUnitRunner.class)
 public class OFFrameDecoderTest {
 
-    private EmbeddedChannel embch;
+    @Mock
+    ChannelHandlerContext channelHandlerContext;
+
+    @Mock
+    ChannelPipeline channelPipeline;
+
+    private OFFrameDecoder decoder;
+    private List<Object> list = new ArrayList<>();
 
     /**
-     * Sets up test environment
+     * Sets up tests
      */
     @Before
     public void setUp() {
-        embch = new EmbeddedChannel(new OFFrameDecoder());
+        Mockito.when(channelHandlerContext.pipeline()).thenReturn(
+                channelPipeline);
+        Mockito.when(channelPipeline.get(Matchers.anyString()))
+                .thenReturn(null);
+        Mockito.when(channelPipeline.names()).thenReturn(
+                Lists.newArrayList("xx"));
+        list.clear();
+        decoder = new OFFrameDecoder();
     }
 
     /**
-     * Test of decoding {@link OFFrameDecoder#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)}
-     * @throws Exception 
+     * Test of decoding
+     * {@link OFFrameDecoder#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)}
+     * 
+     * @throws Exception
      */
     @Test
     public void testDecode8BMessage() throws Exception {
-        byte[] msgs = new byte[]{0x04, 0x0, 0x0, 0x08, 0x0, 0x0, 0x0, 0x01};
-        ByteBuf writeObj = embch.alloc().buffer(64);
-        writeObj.writeBytes(msgs);
-        embch.writeInbound(writeObj);
+        decoder.decode(channelHandlerContext,
+                ByteBufUtils.hexStringToByteBuf("04 00 00 08 00 00 00 01"),
+                list);
 
-        ByteBuf inObj = (ByteBuf) embch.readInbound();
-        Assert.assertEquals(8, inObj.readableBytes());
+        Assert.assertEquals(8, ((ByteBuf) list.get(0)).readableBytes());
+        Mockito.verify(channelPipeline, Mockito.times(1)).get(
+                COMPONENT_NAMES.OF_VERSION_DETECTOR.name());
+        Mockito.verify(channelPipeline, Mockito.times(1)).addAfter(
+                Matchers.eq(COMPONENT_NAMES.OF_FRAME_DECODER.name()),
+                Matchers.eq(COMPONENT_NAMES.OF_VERSION_DETECTOR.name()),
+                Matchers.isA(OFVersionDetector.class));
+        Mockito.verify(channelPipeline, Mockito.times(1)).names();
     }
 
     /**
-     * Test of decoding {@link OFFrameDecoder#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)}
-     * @throws Exception 
+     * Test of decoding
+     * {@link OFFrameDecoder#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)}
+     * 
+     * @throws Exception
      */
     @Test
     public void testDecode16BMessage() throws Exception {
-        byte[] msgs = new byte[]{0x04, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x01, 0x04, 0x00,
-            0x00, 0x08, 0x00, 0x00, 0x00, 0x01};
-        ByteBuf writeObj = embch.alloc().buffer(64);
-        writeObj.writeBytes(msgs);
-        embch.writeInbound(writeObj);
+        decoder.decode(channelHandlerContext,
+                ByteBufUtils.hexStringToByteBuf("04 00 00 10 00 00 00 00 00 00 00 00 00 00 00 42"),
+                list);
 
-        ByteBuf inObj = (ByteBuf) embch.readInbound();
-        Assert.assertEquals(16, inObj.readableBytes());
+        Assert.assertEquals(16, ((ByteBuf) list.get(0)).readableBytes());
+        Mockito.verify(channelPipeline, Mockito.times(1)).get(
+                COMPONENT_NAMES.OF_VERSION_DETECTOR.name());
+        Mockito.verify(channelPipeline, Mockito.times(1)).addAfter(
+                Matchers.eq(COMPONENT_NAMES.OF_FRAME_DECODER.name()),
+                Matchers.eq(COMPONENT_NAMES.OF_VERSION_DETECTOR.name()),
+                Matchers.isA(OFVersionDetector.class));
+        Mockito.verify(channelPipeline, Mockito.times(1)).names();
     }
 
     /**
-     * Test of decoding {@link OFFrameDecoder#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)}
-     * @throws Exception 
+     * Test of decoding
+     * {@link OFFrameDecoder#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)}
+     * 
+     * @throws Exception
      */
     @Test
     public void testDecodeIncompleteMessage() throws Exception {
-        byte[] msgs = new byte[]{0x04, 0x0, 0x0, 0x08, 0x0};
-        ByteBuf writeObj = embch.alloc().buffer(64);
-        writeObj.writeBytes(msgs);
-        embch.writeInbound(writeObj);
+        decoder.decode(channelHandlerContext,
+                ByteBufUtils.hexStringToByteBuf("04 00 00 08 00"),
+                list);
 
-        ByteBuf inObj = (ByteBuf) embch.readInbound();
-        Assert.assertNull(inObj);
+        Assert.assertEquals("List is not empty", 0, list.size());
+        Mockito.verify(channelPipeline, Mockito.times(0)).get(
+                COMPONENT_NAMES.OF_VERSION_DETECTOR.name());
+        Mockito.verify(channelPipeline, Mockito.times(0)).addAfter(
+                Matchers.eq(COMPONENT_NAMES.OF_FRAME_DECODER.name()),
+                Matchers.eq(COMPONENT_NAMES.OF_VERSION_DETECTOR.name()),
+                Matchers.isA(OFVersionDetector.class));
+        Mockito.verify(channelPipeline, Mockito.times(0)).names();
     }
 
     /**
-     * Test of decoding {@link OFFrameDecoder#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)}
-     * @throws Exception 
+     * Test of decoding
+     * {@link OFFrameDecoder#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)}
+     * 
+     * @throws Exception
      */
     @Test
     public void testDecodeCompleteAndPartialMessage() throws Exception {
-        byte[] msgs = new byte[]{0x04, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01,
-            0x04, 0x00, 0x00, 0x08, 0x00};
-        ByteBuf writeObj = embch.alloc().buffer(64);
-        writeObj.writeBytes(msgs);
-        embch.writeInbound(writeObj);
+        decoder.decode(channelHandlerContext,
+                ByteBufUtils.hexStringToByteBuf("04 00 00 08 00 00 00 01 04 00 00 08 00"),
+                list);
 
-        ByteBuf inObj = (ByteBuf) embch.readInbound();
-        Assert.assertEquals(8, inObj.readableBytes());
-        inObj = (ByteBuf) embch.readInbound();
-        Assert.assertNull(inObj);
+        Assert.assertEquals(8, ((ByteBuf) list.get(0)).readableBytes());
+        Assert.assertEquals(1, list.size());
+        Mockito.verify(channelPipeline, Mockito.times(1)).get(
+                COMPONENT_NAMES.OF_VERSION_DETECTOR.name());
+        Mockito.verify(channelPipeline, Mockito.times(1)).addAfter(
+                Matchers.eq(COMPONENT_NAMES.OF_FRAME_DECODER.name()),
+                Matchers.eq(COMPONENT_NAMES.OF_VERSION_DETECTOR.name()),
+                Matchers.isA(OFVersionDetector.class));
+        Mockito.verify(channelPipeline, Mockito.times(1)).names();
     }
 }

@@ -16,7 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class EchoInputMessageFactoryTest {
 
-    private static final byte ECHO_REQUEST_MESSAGE_CODE_TYPE = 2;
+    private static final byte ECHO_REQUEST_MESSAGE_CODE_TYPE = EchoInputMessageFactory.MESSAGE_TYPE;
     
     /**
      * Testing of {@link EchoInputMessageFactory} for correct translation from POJO

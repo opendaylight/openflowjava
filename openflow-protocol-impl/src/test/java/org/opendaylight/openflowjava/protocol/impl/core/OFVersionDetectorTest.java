@@ -2,28 +2,51 @@
 package org.opendaylight.openflowjava.protocol.impl.core;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.embedded.EmbeddedChannel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.impl.core.OFVersionDetector;
+import org.junit.runner.RunWith;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler.COMPONENT_NAMES;
+import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+
 
 /**
  *
  * @author michal.polkorab
  */
+@RunWith(MockitoJUnitRunner.class)
 public class OFVersionDetectorTest {
 
-    private EmbeddedChannel embch;
+    @Mock
+    ChannelHandlerContext channelHandlerContext;
+
+    @Mock
+    ChannelPipeline channelPipeline;
+
+    private OFVersionDetector detector;
+    private List<Object> list = new ArrayList<>();
 
     /**
      * Sets up test environment
      */
     @Before
     public void setUp() {
-        embch = new EmbeddedChannel(new OFVersionDetector());
+        Mockito.when(channelHandlerContext.pipeline()).thenReturn(
+                channelPipeline);
+        Mockito.when(channelPipeline.get(Matchers.anyString()))
+                .thenReturn(null);
+        list.clear();
+        detector = new OFVersionDetector();
     }
 
     /**
@@ -33,14 +56,17 @@ public class OFVersionDetectorTest {
      */
     @Test
     public void testDecode13ProtocolMessage() throws Exception {
-        byte[] msgs = new byte[]{0x04, 0x0, 0x0, 0x08, 0x0, 0x0, 0x0, 0x01};
-        ByteBuf writeObj = embch.alloc().buffer(64);
-        writeObj.writeBytes(msgs);
-        embch.writeInbound(writeObj);
+        detector.decode(channelHandlerContext,
+                ByteBufUtils.hexStringToByteBuf("04 00 00 08 00 00 00 01"),
+                list);
 
-        ByteBuf inObj = (ByteBuf) embch.readInbound();
-        Assert.assertEquals(7, inObj.readableBytes());
-        Assert.assertNotNull(embch.pipeline().get(COMPONENT_NAMES.OF_CODEC.name()));
+        Assert.assertEquals(7, ((ByteBuf) list.get(0)).readableBytes());
+        Mockito.verify(channelPipeline, Mockito.times(1)).get(
+                COMPONENT_NAMES.OF_CODEC.name());
+        Mockito.verify(channelPipeline, Mockito.times(1)).addBefore(
+                Matchers.eq(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name()),
+                Matchers.eq(COMPONENT_NAMES.OF_CODEC.name()),
+                Matchers.isA(OF13Codec.class));
     }
     
     /**
@@ -50,13 +76,16 @@ public class OFVersionDetectorTest {
      */
     @Test
     public void testDecodeNotSupportedVersionProtocolMessage() throws Exception {
-        byte[] msgs = new byte[]{0x01, 0x0, 0x0, 0x08, 0x0, 0x0, 0x0, 0x01};
-        ByteBuf writeObj = embch.alloc().buffer(64);
-        writeObj.writeBytes(msgs);
-        embch.writeInbound(writeObj);
+        detector.decode(channelHandlerContext,
+                ByteBufUtils.hexStringToByteBuf("01 00 00 08 00 00 00 01"),
+                list);
 
-        ByteBuf inObj = (ByteBuf) embch.readInbound();
-        Assert.assertNull(inObj);
-        Assert.assertNull(embch.pipeline().get(COMPONENT_NAMES.OF_CODEC.name()));
+        Assert.assertEquals("List is not empty", 0, list.size());
+        Mockito.verify(channelPipeline, Mockito.times(0)).get(
+                COMPONENT_NAMES.OF_CODEC.name());
+        Mockito.verify(channelPipeline, Mockito.times(0)).addBefore(
+                Matchers.eq(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name()),
+                Matchers.eq(COMPONENT_NAMES.OF_CODEC.name()),
+                Matchers.isA(OF13Codec.class));
     }
 }

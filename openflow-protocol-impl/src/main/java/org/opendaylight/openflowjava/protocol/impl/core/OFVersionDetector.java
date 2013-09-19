@@ -59,7 +59,8 @@ public class OFVersionDetector extends ByteToMessageDecoder {
     private static void enableOF13Codec(ChannelHandlerContext chc) {
         if (chc.pipeline().get(COMPONENT_NAMES.OF_CODEC.name()) == null) {
             LOGGER.info("Engaging OF13Codec");
-            chc.pipeline().addLast(COMPONENT_NAMES.OF_CODEC.name(), new OF13Codec());
+            chc.pipeline().addBefore(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name(),
+                    COMPONENT_NAMES.OF_CODEC.name(), new OF13Codec());
         } else {
             LOGGER.debug("OF13Codec already in pipeline");
         }

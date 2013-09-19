@@ -10,6 +10,7 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.GenericFutureListener;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 import org.opendaylight.openflowjava.protocol.impl.connection.ServerFacade;
@@ -28,6 +29,7 @@ public class TcpHandler implements ServerFacade {
 
     private int port;
     private String address;
+    private InetAddress startupAddress;
     private NioEventLoopGroup workerGroup;
     private NioEventLoopGroup bossGroup;
     private static final Logger LOGGER = LoggerFactory.getLogger(TcpHandler.class);
@@ -62,9 +64,9 @@ public class TcpHandler implements ServerFacade {
          */
         OF_CODEC,
         /**
-         * Communicates with upper layers (outside OF Library)
+         * Delegates translated POJOs into MessageConsumer
          */
-        OF_FACADE
+        DELEGATING_INBOUND_HANDLER,
     }
     
 
@@ -75,6 +77,18 @@ public class TcpHandler implements ServerFacade {
      */
     public TcpHandler(int port) {
         this.port = port;
+        channelInitializer = new PublishingChannelInitializer();
+        isOnlineFuture = SettableFuture.create();
+    }
+    
+    /**
+     * Constructor of TCPHandler that listens on selected address and port.
+     * @param address listening address of TCPHandler server
+     * @param port listening port of TCPHandler server
+     */
+    public TcpHandler(InetAddress address, int port) {
+        this.port = port;
+        this.startupAddress = address;
         channelInitializer = new PublishingChannelInitializer();
         isOnlineFuture = SettableFuture.create();
     }
@@ -96,10 +110,16 @@ public class TcpHandler implements ServerFacade {
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
-            ChannelFuture f = b.bind(port).sync();
+            ChannelFuture f;
+            if (startupAddress != null) {
+                f = b.bind(startupAddress.getHostAddress(), port).sync();
+            } else {
+                f = b.bind(port).sync();
+            }
             
             InetSocketAddress isa = (InetSocketAddress) f.channel().localAddress();
-            address = isa.getHostName().toString();
+            address = isa.getHostString();
+            LOGGER.debug("address from tcphandler: " + address);
             port = isa.getPort();
             isOnlineFuture.set(true);
             LOGGER.info("Switch listener started and ready to accept incoming connections on port: " + port);
