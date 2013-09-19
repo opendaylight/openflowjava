@@ -11,6 +11,7 @@ package org.opendaylight.openflowjava.protocol.impl.connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -43,11 +44,15 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
 
         //TODO - add and configure servers according to configuration
         serverLot = new HashSet<>();
-        serverLot.add(new TcpHandler(6633));
+        for (Iterator<ConnectionConfiguration> iterator = connConfigs.iterator(); iterator.hasNext();) {
+            ConnectionConfiguration connConfig = iterator.next();
+            serverLot.add(new TcpHandler(connConfig.getAddress(), connConfig.getPort()));
+        }
     }
 
     @Override
-    public void setSwitchConnectionListener(SwitchConnectionHandler switchConnectionHandler) {
+    public void setSwitchConnectionHandler(SwitchConnectionHandler switchConnectionHandler) {
+        LOG.debug("setSwitchConnectionHanler");
         this.switchConnectionHandler = switchConnectionHandler;
     }
 

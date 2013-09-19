@@ -10,11 +10,9 @@ package org.opendaylight.openflowjava.protocol.impl.connection;
 
 import io.netty.channel.socket.SocketChannel;
 
-import org.opendaylight.openflowjava.protocol.api.connection.ConnectionAdapter;
-
 /**
  * @author mirehak
- *
+ * @author michal.polkorab
  */
 public abstract class ConnectionAdapterFactory {
 
@@ -22,7 +20,7 @@ public abstract class ConnectionAdapterFactory {
      * @param ch
      * @return connection adapter tcp-implementation
      */
-    public static ConnectionAdapter createConnectionAdapter(SocketChannel ch) {
+    public static CommunicationFacade createConnectionAdapter(SocketChannel ch) {
         ConnectionAdapterImpl connectionAdapter = new ConnectionAdapterImpl();
         connectionAdapter.setChannel(ch);
         return connectionAdapter;

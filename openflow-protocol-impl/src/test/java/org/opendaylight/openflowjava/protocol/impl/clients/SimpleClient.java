@@ -1,4 +1,4 @@
-/* Copyright (C)2013 Pantheon Technologies, s.r.o. All rights reserved. */
+ /* Copyright (C)2013 Pantheon Technologies, s.r.o. All rights reserved. */
 package org.opendaylight.openflowjava.protocol.impl.clients;
 
 import io.netty.bootstrap.Bootstrap;
@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
 
+import org.opendaylight.openflowjava.protocol.impl.integration.IntegrationTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,7 +98,7 @@ public class SimpleClient extends Thread {
             byte[] bytearray = new byte[64];
             ByteBuf buffy = ch.alloc().buffer(128);
 
-            LOGGER.debug("Before fis != null " + fis);
+            LOGGER.debug("Before fis != null - fis == " + fis);
             if (fis != null) {
                 try {
                     LOGGER.debug("Size to read (in bytes) : " + fis.available());
@@ -168,7 +169,8 @@ public class SimpleClient extends Thread {
             InetAddress[] all = InetAddress.getAllByName(ia.getHostName());
             host = all[0].getHostAddress();
             port = 6633;
-            InputStream filenamearg = SimpleClient.class.getResourceAsStream("/org/openflow/core/OFBinaryMessageInput.txt");
+            InputStream filenamearg = IntegrationTest.class.getResourceAsStream(
+                    IntegrationTest.OF_BINARY_MESSAGE_INPUT_TXT);
             sc = new SimpleClient(host, port, filenamearg);
             sc.setSecuredClient(true);
         } else {

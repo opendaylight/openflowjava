@@ -23,7 +23,7 @@ import com.google.common.collect.Lists;
  */
 public class HelloInputMessageFactoryTest {
 
-    private static final byte HELLO_MESSAGE_CODE_TYPE = 0;
+    private static final byte HELLO_MESSAGE_CODE_TYPE = HelloInputMessageFactory.MESSAGE_TYPE;
     
     /**
      * Testing of {@link HelloInputMessageFactory} for correct translation from POJO

@@ -16,7 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class BarrierInputMessageFactoryTest {
 
-    private static final byte BARRIER_REQUEST_MESSAGE_CODE_TYPE = 20;
+    private static final byte BARRIER_REQUEST_MESSAGE_CODE_TYPE = BarrierInputMessageFactory.MESSAGE_TYPE;
     
     /**
      * Testing of {@link BarrierInputMessageFactory} for correct translation from POJO

@@ -96,10 +96,6 @@ module openflow-protocol {
                     type oft:hello-element-type;
                     //reference "OpenFlow Header element type - OFPHET_*";
                 }
-                leaf length {
-                    type uint16;
-                    //reference "OpenFlow Header element length";
-                }
             }
             grouping hello {
                 // reference "OFPT_HELLO message in Openflow Switch 1.3 Spec"
@@ -462,8 +458,45 @@ module openflow-protocol {
                 leaf flags {
                     type oft:multipart-request-flags;
                 }      
-                leaf body {
-                    type binary;
+                choice body {
+                    case multipart-flow {
+                        leaf length {
+                            type uint16;
+                        }
+                        leaf table-id {
+                            type uint8;
+                        }
+                        leaf duration-sec {
+                            type uint32;
+                        }
+                        leaf duration-nsec {
+                            type uint32;
+                        }
+                        leaf priority {
+                            type uint16;
+                        }
+                        leaf idle-timeout {
+                            type uint16;
+                        }
+                        leaf hard-timeout {
+                            type uint16;
+                        }
+                        leaf flags {
+                            type uint16;
+                        }
+                        leaf cookie {
+                            type uint64;
+                        }
+                        leaf packet-count {
+                            type uint64;
+                        }
+                        leaf byte-count {
+                            type uint64;
+                        }
+                        leaf match {
+                            type uint64;
+                        }
+                    }
                 }
             } 
             grouping multipart-reply {
@@ -478,8 +511,62 @@ module openflow-protocol {
                 leaf flags {
                     type oft:multipart-request-flags;
                 }
-                leaf body {
-                    type binary;
+                choice body {
+                    case multipart-desc {
+                        leaf mfr_desc {
+                            type string;
+                        }
+                        leaf hw_desc {
+                            type string;
+                        }
+                        leaf sw_desc {
+                            type string;
+                        }
+                        leaf serial_num {
+                            type string;
+                        }
+                        leaf dp_desc {
+                            type string;
+                        }
+                    }
+                    case multipart-flow {
+                        leaf length {
+                            type uint16;
+                        }
+                        leaf table-id {
+                            type uint8;
+                        }
+                        leaf duration-sec {
+                            type uint32;
+                        }
+                        leaf duration-nsec {
+                            type uint32;
+                        }
+                        leaf priority {
+                            type uint16;
+                        }
+                        leaf idle-timeout {
+                            type uint16;
+                        }
+                        leaf hard-timeout {
+                            type uint16;
+                        }
+                        leaf flags {
+                            type uint16;
+                        }
+                        leaf cookie {
+                            type uint64;
+                        }
+                        leaf packet-count {
+                            type uint64;
+                        }
+                        leaf byte-count {
+                            type uint64;
+                        }
+                        leaf match {
+                            type uint64;
+                        }
+                    }
                 }
             } 
             /* Barrier messages. */
