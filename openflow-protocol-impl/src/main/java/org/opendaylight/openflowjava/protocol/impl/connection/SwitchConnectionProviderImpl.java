@@ -29,7 +29,7 @@ import com.google.common.util.concurrent.SettableFuture;
 
 /**
  * @author mirehak
- *
+ * @author michal.polkorab
  */
 public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     
@@ -40,7 +40,7 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
 
     @Override
     public void configure(Collection<ConnectionConfiguration> connConfigs) {
-        LOG.debug("configurating ..");
+        LOG.debug("Configurating ..");
 
         //TODO - add and configure servers according to configuration
         serverLot = new HashSet<>();
@@ -58,7 +58,7 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
 
     @Override
     public Future<List<Boolean>> shutdown() {
-        LOG.debug("shutdown summoned");
+        LOG.debug("Shutdown summoned");
         ListenableFuture<List<Boolean>> result = SettableFuture.create();
         try {
             List<ListenableFuture<Boolean>> shutdownChain = new ArrayList<>();
@@ -66,11 +66,10 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
                 ListenableFuture<Boolean> shutdownFuture = server.shutdown();
                 shutdownChain.add(shutdownFuture);
             }
-            
             if (!shutdownChain.isEmpty()) {
                 result = Futures.allAsList(shutdownChain);
             } else {
-                throw new IllegalStateException("no servers configured");
+                throw new IllegalStateException("No servers configured");
             }
         } catch (Exception e) {
             SettableFuture<List<Boolean>> exFuture = SettableFuture.create();
@@ -85,23 +84,27 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
         LOG.debug("startup summoned");
         ListenableFuture<List<Boolean>> result = SettableFuture.create();
         try {
-            //TODO - check config, status of servers
+            if (serverLot.isEmpty()) {
+                throw new IllegalStateException("No servers configured");
+            }
+            for (ServerFacade server : serverLot) {
+                if (server.getIsOnlineFuture().isDone()) {
+                    throw new IllegalStateException("Servers already running");
+                }
+            }
             if (switchConnectionHandler == null) {
                 throw new IllegalStateException("switchConnectionHandler is not set");
             }
-            
-            // starting
             List<ListenableFuture<Boolean>> starterChain = new ArrayList<>();
             for (ServerFacade server : serverLot) {
                 new Thread(server).start();
                 ListenableFuture<Boolean> isOnlineFuture = server.getIsOnlineFuture();
                 starterChain.add(isOnlineFuture);
             }
-            
             if (!starterChain.isEmpty()) {
                 result = Futures.allAsList(starterChain);
             } else {
-                throw new IllegalStateException("no servers configured");
+                throw new IllegalStateException("No servers configured");
             }
         } catch (Exception e) {
             SettableFuture<List<Boolean>> exFuture = SettableFuture.create();

@@ -4,6 +4,7 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortStatusMessage;
@@ -24,6 +25,6 @@ public class PortStatusMessageFactoryTest {
         PortStatusMessage builtByFactory = BufferHelper.decodeV13(PortStatusMessageFactory.getInstance(), bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
-        //Assert.assertEquals("Wrong reason", 0x01, builtByFactory.getReason());
+        Assert.assertEquals("Wrong reason", 0x01, builtByFactory.getReason().getIntValue());
     }
 }

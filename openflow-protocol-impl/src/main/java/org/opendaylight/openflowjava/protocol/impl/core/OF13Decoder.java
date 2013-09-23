@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Transforms OpenFlow Protocol messages to POJOs and reverse
+ * Transforms OpenFlow Protocol messages to POJOs
  *
  * @author michal.polkorab
  */
@@ -24,7 +24,7 @@ public class OF13Decoder extends MessageToMessageDecoder<VersionMessageWrapper> 
      * Constructor of class
      */
     public OF13Decoder() {
-        LOGGER.info("Creating OF 1.3 Codec");
+        LOGGER.info("Creating OF 1.3 Decoder");
     }
 
     @Override

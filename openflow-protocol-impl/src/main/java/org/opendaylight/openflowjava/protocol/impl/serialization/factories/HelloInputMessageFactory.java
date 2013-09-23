@@ -40,8 +40,4 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
         // TODO - fill list of elements into ByteBuf, check length too
     }
     
-    
-
-    
-    
 }

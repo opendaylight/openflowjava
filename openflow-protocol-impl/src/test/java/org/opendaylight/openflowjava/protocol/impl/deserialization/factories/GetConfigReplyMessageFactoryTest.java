@@ -14,7 +14,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class GetConfigReplyMessageFactoryTest {
 
-
     /**
      * Testing {@link GetConfigReplyMessageFactory} for correct translation into POJO
      */
@@ -25,10 +24,8 @@ public class GetConfigReplyMessageFactoryTest {
                 GetConfigReplyMessageFactory.getInstance(), bb);
 
         BufferHelper.checkHeaderV13(builtByFactory);
-        // TODO - enum problem !
-//        Assert.assertEquals(builtByFactory.getFlags().toString(),"OFPCFRAGDROP"); 
-        Assert.assertEquals("Wrong missSendLen", 0x01, builtByFactory.getMissSendLen().intValue());
-        
+        Assert.assertEquals("Wrong switchConfigFlag", 0x01, builtByFactory.getFlags().getIntValue()); 
+        Assert.assertEquals("Wrong missSendLen", 0x03, builtByFactory.getMissSendLen().intValue());
     }
     
 }
