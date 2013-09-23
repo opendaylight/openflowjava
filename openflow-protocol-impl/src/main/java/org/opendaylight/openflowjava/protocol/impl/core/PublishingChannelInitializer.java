@@ -8,7 +8,7 @@ import io.netty.channel.socket.SocketChannel;
 import java.util.Iterator;
 
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
-import org.opendaylight.openflowjava.protocol.impl.connection.CommunicationFacade;
+import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionFacade;
 import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionAdapterFactory;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler.COMPONENT_NAMES;
 
@@ -32,7 +32,7 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
     protected void initChannel(SocketChannel ch) throws Exception {
         // TODO - call switchConnectionHandler accept first
         allChannels.add(ch);
-        CommunicationFacade connectionAdapter = null;
+        ConnectionFacade connectionAdapter = null;
         if (switchConnectionHandler != null) {
             connectionAdapter = ConnectionAdapterFactory.createConnectionAdapter(ch);
             switchConnectionHandler.onSwitchConnected(connectionAdapter);
