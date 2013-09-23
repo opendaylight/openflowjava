@@ -7,7 +7,7 @@ import org.opendaylight.openflowjava.protocol.api.connection.ConnectionAdapter;
  * @author michal.polkorab
  *
  */
-public interface CommunicationFacade extends MessageConsumer, ConnectionAdapter {
+public interface ConnectionFacade extends MessageConsumer, ConnectionAdapter {
 
  // empty unifying superinterface
 }

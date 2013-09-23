@@ -37,7 +37,7 @@ public interface SwitchConnectionProvider {
      * stop listening to switches
      * @return future, triggered to true, when all listening channels are down
      */
-    public Future<Boolean> shutdown();
+    public Future<List<Boolean>> shutdown();
     
     /**
      * @param switchConHandler instance being informed when new switch connects

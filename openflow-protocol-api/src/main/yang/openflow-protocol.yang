@@ -660,14 +660,20 @@ module openflow-protocol {
 
                 uses ofHeader;
                 
-                leaf-list packet-in-mask {
-                    type oft:packet-in-reason;
+                list packet-in-mask {
+                    leaf-list mask {
+                        type oft:packet-in-reason;
+                    }
                 }
-                leaf-list port-status-mask {
-                    type oft:port-reason;
+                list port-status-mask {
+                    leaf-list mask {
+                        type oft:port-reason;
+                    }
                 }
-                leaf-list flow-removed-mask {
-                    type oft:flow-removed-reason;
+                list flow-removed-mask {
+                    leaf-list mask {
+                        type oft:flow-removed-reason;
+                    }
                 }
             } 
             grouping set-async {

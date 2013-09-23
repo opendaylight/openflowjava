@@ -74,7 +74,7 @@ import com.google.common.util.concurrent.SettableFuture;
  * @author mirehak
  * @author michal.polkorab
  */
-public class ConnectionAdapterImpl implements CommunicationFacade {
+public class ConnectionAdapterImpl implements ConnectionFacade {
     
     /** after this time, rpc future response objects will be thrown away (in minutes) */
     public static final int RPC_RESPONSE_EXPIRATION = 1;
@@ -86,7 +86,6 @@ public class ConnectionAdapterImpl implements CommunicationFacade {
     private static final String TAG = "OPENFLOW";
     private Channel channel;
     private OpenflowProtocolListener messageListener;
-    private int version;
     /** expiring cache for future rpcResponses */
     protected Cache<RpcResponseKey, SettableFuture<?>> responseCache;
     
@@ -240,11 +239,6 @@ public class ConnectionAdapterImpl implements CommunicationFacade {
     
     @Override
     public void consume(DataObject message) {
-        if (message == null) {
-            LOG.error("message is null");
-        } else {
-            LOG.debug("message is ok");
-        }
         if (message instanceof Notification) {
             if (message instanceof EchoRequestMessage) {
                 messageListener.onEchoRequestMessage((EchoRequestMessage) message);
@@ -470,14 +464,6 @@ public class ConnectionAdapterImpl implements CommunicationFacade {
     @SuppressWarnings("unchecked")
     private SettableFuture<RpcResult<?>> findRpcResponse(RpcResponseKey key) {
         return (SettableFuture<RpcResult<?>>) responseCache.getIfPresent(key);
-    }
-
-    /* (non-Javadoc)
-     * @see org.opendaylight.openflowjava.protocol.api.connection.ConnectionAdapter#setVersion(int)
-     */
-    @Override
-    public void setVersion(int version) {
-        this.version = version;
     }
 
 }

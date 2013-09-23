@@ -57,12 +57,27 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     }
 
     @Override
-    public Future<Boolean> shutdown() {
+    public Future<List<Boolean>> shutdown() {
         LOG.debug("shutdown summoned");
-        for (ServerFacade server : serverLot) {
-            server.shutdown();
+        ListenableFuture<List<Boolean>> result = SettableFuture.create();
+        try {
+            List<ListenableFuture<Boolean>> shutdownChain = new ArrayList<>();
+            for (ServerFacade server : serverLot) {
+                ListenableFuture<Boolean> shutdownFuture = server.shutdown();
+                shutdownChain.add(shutdownFuture);
+            }
+            
+            if (!shutdownChain.isEmpty()) {
+                result = Futures.allAsList(shutdownChain);
+            } else {
+                throw new IllegalStateException("no servers configured");
+            }
+        } catch (Exception e) {
+            SettableFuture<List<Boolean>> exFuture = SettableFuture.create();
+            exFuture.setException(e);
+            result = exFuture;
         }
-        return null;
+        return result;
     }
 
     @Override

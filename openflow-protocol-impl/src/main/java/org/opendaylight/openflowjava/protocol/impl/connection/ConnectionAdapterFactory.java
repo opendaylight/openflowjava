@@ -20,7 +20,7 @@ public abstract class ConnectionAdapterFactory {
      * @param ch
      * @return connection adapter tcp-implementation
      */
-    public static CommunicationFacade createConnectionAdapter(SocketChannel ch) {
+    public static ConnectionFacade createConnectionAdapter(SocketChannel ch) {
         ConnectionAdapterImpl connectionAdapter = new ConnectionAdapterImpl();
         connectionAdapter.setChannel(ch);
         return connectionAdapter;
