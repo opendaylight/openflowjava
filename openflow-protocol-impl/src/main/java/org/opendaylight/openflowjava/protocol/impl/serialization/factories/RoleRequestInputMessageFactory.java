@@ -40,8 +40,7 @@ public class RoleRequestInputMessageFactory implements OFSerializer<RoleRequestI
         out.writeByte(MESSAGE_TYPE);
         out.writeShort(OFFrameDecoder.LENGTH_OF_HEADER);
         out.writeInt(message.getXid().intValue());
-        // TODO - finish implementation after enum support needed funcionality
-        //out.writeInt(message.getRole());
+        out.writeInt(message.getRole().getIntValue());
         ByteBufUtils.padBuffer(PADDING_IN_ROLE_REQUEST_MESSAGE, out);
         out.writeLong(message.getGenerationId().longValue());
     }

@@ -24,8 +24,8 @@ public class ExperimenterMessageFactoryTest {
                 ExperimenterMessageFactory.getInstance(), bb);
 
         BufferHelper.checkHeaderV13(builtByFactory);
-        Assert.assertEquals(builtByFactory.getExperimenter().longValue(), 0x01020304L);
-        Assert.assertEquals(builtByFactory.getExpType().longValue(), 0x01020304L);
+        Assert.assertEquals("Wrong experimenter", 0x01020304L, builtByFactory.getExperimenter().longValue());
+        Assert.assertEquals("Wrong expType", 0x01020304L, builtByFactory.getExpType().longValue());
     }
 
 }

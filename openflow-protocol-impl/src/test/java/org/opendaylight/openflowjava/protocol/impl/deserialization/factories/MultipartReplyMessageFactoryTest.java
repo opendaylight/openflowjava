@@ -19,11 +19,12 @@ public class MultipartReplyMessageFactoryTest {
      */
     @Test
     public void test(){
-        ByteBuf bb = BufferHelper.buildBuffer("00 01 00 01 00 00 00 00 01 02 03 04");
+        ByteBuf bb = BufferHelper.buildBuffer("00 07 00 01 00 00 00 00 01 02 03 04");
         MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         
+        Assert.assertEquals("Wrong type", 0x07, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         //Assert.assertArrayEquals("Wrong body", new byte[]{0x01, 0x02, 0x03, 0x04}, builtByFactory.getBody());
     }

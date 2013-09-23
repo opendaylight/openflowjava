@@ -112,7 +112,6 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     /**
      * @param channel the channel to be set - used for communication
      */
-    @Override
     public void setChannel(Channel channel) {
         this.channel = channel;
     }

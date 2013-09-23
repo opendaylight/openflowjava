@@ -8,8 +8,6 @@
 
 package org.opendaylight.openflowjava.protocol.impl.connection;
 
-import io.netty.channel.Channel;
-
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
@@ -22,9 +20,5 @@ public interface MessageConsumer {
      * @param message to process
      */
     public void consume(DataObject message);
-    
-    /**
-     * @param channel sets processing channel
-     */
-    public void setChannel(Channel channel);
+
 }

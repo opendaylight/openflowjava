@@ -39,7 +39,8 @@ public class SetConfigMessageFactory implements OFSerializer<SetConfigInput> {
         out.writeShort(OFFrameDecoder.LENGTH_OF_HEADER);
         out.writeInt(message.getXid().intValue());
         // TODO - finish implementation after enums provide needed funcionality
-        out.writeInt(message.getMissSendLen());
+        out.writeShort(message.getFlags().getIntValue());
+        out.writeShort(message.getMissSendLen());
     }
 
 }

@@ -20,8 +20,6 @@ public abstract class DeserializationFactory {
     public static DataObject bufferToMessage(ByteBuf rawMessage, short version) {
         DataObject dataObject = null;
         short type = rawMessage.readUnsignedByte();
-        
-        // TODO - check if no change happened, so that skipping length would cause problems
         rawMessage.skipBytes(Short.SIZE / Byte.SIZE);
 
         MessageTypeCodeKey msgTypeCodeKey = new MessageTypeCodeKey(version, type);
