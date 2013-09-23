@@ -3,6 +3,7 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortStatusMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortStatusMessageBuilder;
 
@@ -24,10 +25,8 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
      */
     public static PortStatusMessageFactory getInstance(){
         if(instance == null){
-            
             instance = new PortStatusMessageFactory();
         }
-        
         return instance;
     }
     
@@ -36,12 +35,9 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
         PortStatusMessageBuilder psmb = new PortStatusMessageBuilder(); 
         psmb.setVersion(version);
         psmb.setXid(rawMessage.readUnsignedInt());
-   
-//        TODO enum portReason
-//        psmb.setReason(PortReason.values()[rawMessage.readInt()]);
-        rawMessage.skipBytes(1); //instead of portReason enum
-        
+        psmb.setReason(PortReason.values()[rawMessage.readUnsignedByte()]);
         rawMessage.skipBytes(PADDING_IN_FEATURES_REPLY_HEADER);
+        // TODO - implement ofp_port desc
         return psmb.build();
     }
 

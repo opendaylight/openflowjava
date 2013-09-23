@@ -29,7 +29,6 @@ public class PacketInMessageFactory implements OFDeserializer<PacketInMessage> {
         if(instance == null){
             instance = new PacketInMessageFactory();
         }
-        
         return instance;
     }
 
@@ -42,15 +41,12 @@ public class PacketInMessageFactory implements OFDeserializer<PacketInMessage> {
         pimb.setTotalLen(rawMessage.readUnsignedShort());
         pimb.setReason(rawMessage.readUnsignedByte());
         pimb.setTableId(new TableId((long)rawMessage.readUnsignedByte()));
-        
-        byte[] cookie = new byte[8];
+        byte[] cookie = new byte[Long.SIZE/Byte.SIZE];
         rawMessage.readBytes(cookie);
         pimb.setCookie(new BigInteger(cookie));
         // TODO - implement match factories to finish this factory 
         rawMessage.skipBytes(PADDING_IN_PACKET_IN_HEADER);
-        
         pimb.setData(rawMessage.readBytes(rawMessage.readableBytes()).array());
-        
         return pimb.build();
     }
 }

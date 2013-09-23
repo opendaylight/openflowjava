@@ -35,10 +35,8 @@ private static ErrorMessageFactory instance;
         ErrorMessageBuilder emb = new ErrorMessageBuilder();
         emb.setVersion(version);
         emb.setXid(rawMessage.readUnsignedInt());
-        ErrorType[] errorTypes = ErrorType.values();
-        // TODO - finish implementation after enums are generated with proper funcionality
-        //emb.setType();
-        emb.setCode(rawMessage.readInt());
+        emb.setType(ErrorType.values()[rawMessage.readUnsignedShort()]);
+        emb.setCode(rawMessage.readUnsignedShort());
         byte[] data = new byte[rawMessage.readableBytes()];
         rawMessage.readBytes(data);
         emb.setData(data);

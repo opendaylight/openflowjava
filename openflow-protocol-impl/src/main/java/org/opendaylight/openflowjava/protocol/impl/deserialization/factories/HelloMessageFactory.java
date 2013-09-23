@@ -34,6 +34,7 @@ public class HelloMessageFactory implements OFDeserializer<HelloMessage> {
         HelloMessageBuilder hmb = new HelloMessageBuilder();
         hmb.setVersion(version);
         hmb.setXid(rawMessage.readUnsignedInt());
+        // TODO - implement setElements()
         return hmb.build();
     }
 }

@@ -3,6 +3,7 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.SwitchConfigFlag;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetConfigOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetConfigOutputBuilder;
 
@@ -25,7 +26,6 @@ public class GetConfigReplyMessageFactory implements OFDeserializer<GetConfigOut
         if(instance == null){
             instance = new GetConfigReplyMessageFactory();
         }
-        
         return instance;
     }
 
@@ -34,11 +34,8 @@ public class GetConfigReplyMessageFactory implements OFDeserializer<GetConfigOut
         GetConfigOutputBuilder gcob = new GetConfigOutputBuilder();
         gcob.setVersion(version);
         gcob.setXid(rawMessage.readUnsignedInt());
-        // TODO - waiting for enum funcionality
-//        gcob.setFlags(SwitchConfigFlag.values()[rawMessage.readInt()]);
+        gcob.setFlags(SwitchConfigFlag.values()[rawMessage.readUnsignedShort()]);
         gcob.setMissSendLen(rawMessage.readUnsignedShort());
         return gcob.build();
     }
-    
-    
 }

@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessageBuilder;
 
@@ -26,10 +27,8 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
      */
     public static MultipartReplyMessageFactory getInstance(){
         if (instance == null){
-
             instance = new MultipartReplyMessageFactory();
         }
-        
         return instance;
     }
 
@@ -38,15 +37,11 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         MultipartReplyMessageBuilder mrmb = new MultipartReplyMessageBuilder();
         mrmb.setVersion(version);
         mrmb.setXid(rawMessage.readUnsignedInt());
-        
-//        TODO enum MultipartType
-//        mrmb.setType(MultipartType.values()[rawMessage.readInt()]);
-        rawMessage.skipBytes(2); //instead of enum
-        
+        mrmb.setType(MultipartType.values()[rawMessage.readUnsignedShort()]);
         mrmb.setFlags(new MultipartRequestFlags((rawMessage.readUnsignedShort() & 0x01) > 0));
         rawMessage.skipBytes(PADDING_IN_MULTIPART_REPLY_HEADER);
+        // TODO - implement body
         //mrmb.setBody(rawMessage.readBytes(rawMessage.readableBytes()).array());
-        
         return mrmb.build();
     } 
 }

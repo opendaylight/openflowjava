@@ -29,15 +29,11 @@ public class EchoReplyMessageFactory implements OFDeserializer<EchoOutput> {
         return instance;
     }
     
-    /* (non-Javadoc)
-     * @see org.openflow.core.deserialization.OfDeserializer#createMessage(io.netty.buffer.ByteBuf, short)
-     */
     @Override
     public EchoOutput bufferToMessage(ByteBuf rawMessage, short version) {
         EchoOutputBuilder eob = new EchoOutputBuilder();
         eob.setVersion(version);
         eob.setXid(rawMessage.readUnsignedInt());
-        // read the rest of EchoReply message
         eob.setData(rawMessage.readBytes(rawMessage.readableBytes()).array());
         return eob.build();
     }

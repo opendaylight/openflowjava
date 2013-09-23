@@ -11,7 +11,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 
 /**
  * @author michal.polkorab
- *
+ * @author timotej.kubas
  */
 public class EchoRequestMessageFactoryTest {
 
@@ -38,7 +38,7 @@ public class EchoRequestMessageFactoryTest {
                 EchoRequestMessageFactory.getInstance(), bb);
 
         BufferHelper.checkHeaderV13(builtByFactory);
-        Assert.assertArrayEquals(builtByFactory.getData(), data);
+        Assert.assertArrayEquals("Wrong data", data, builtByFactory.getData());
     }
 
 }

@@ -28,7 +28,6 @@ public class ExperimenterMessageFactory implements OFDeserializer<ExperimenterMe
         if (instance == null){
            instance = new ExperimenterMessageFactory(); 
         }
-        
         return instance;
     }
 
@@ -41,6 +40,4 @@ public class ExperimenterMessageFactory implements OFDeserializer<ExperimenterMe
         emb.setExpType(rawMessage.readUnsignedInt());
         return emb.build();
     }
-    
-    
 }
