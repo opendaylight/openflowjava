@@ -28,19 +28,16 @@ public class ExperimenterMessageFactory implements OFDeserializer<ExperimenterMe
         if (instance == null){
            instance = new ExperimenterMessageFactory(); 
         }
-        
         return instance;
     }
 
     @Override
     public ExperimenterMessage bufferToMessage(ByteBuf rawMessage, short version) {
-        ExperimenterMessageBuilder emb = new ExperimenterMessageBuilder();
-        emb.setVersion(version);
-        emb.setXid(rawMessage.readUnsignedInt());
-        emb.setExperimenter(rawMessage.readUnsignedInt());
-        emb.setExpType(rawMessage.readUnsignedInt());
-        return emb.build();
+        ExperimenterMessageBuilder builder = new ExperimenterMessageBuilder();
+        builder.setVersion(version);
+        builder.setXid(rawMessage.readUnsignedInt());
+        builder.setExperimenter(rawMessage.readUnsignedInt());
+        builder.setExpType(rawMessage.readUnsignedInt());
+        return builder.build();
     }
-    
-    
 }

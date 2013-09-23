@@ -32,10 +32,10 @@ public class BarrierReplyMessageFactory implements
 
     @Override
     public BarrierOutput bufferToMessage(ByteBuf rawMessage, short version) {
-        BarrierOutputBuilder bob = new BarrierOutputBuilder();
-        bob.setVersion(version);
-        bob.setXid(rawMessage.readUnsignedInt());
-        return bob.build();
+        BarrierOutputBuilder builder = new BarrierOutputBuilder();
+        builder.setVersion(version);
+        builder.setXid(rawMessage.readUnsignedInt());
+        return builder.build();
     }
 
 }

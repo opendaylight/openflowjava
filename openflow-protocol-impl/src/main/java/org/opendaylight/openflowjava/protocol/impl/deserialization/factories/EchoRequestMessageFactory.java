@@ -32,11 +32,10 @@ public class EchoRequestMessageFactory implements OFDeserializer<EchoRequestMess
 
     @Override
     public EchoRequestMessage bufferToMessage(ByteBuf rawMessage, short version) {
-        EchoRequestMessageBuilder emb = new EchoRequestMessageBuilder();
-        emb.setVersion(version);
-        emb.setXid(rawMessage.readUnsignedInt());
-        // read the rest of EchoRequest message
-        emb.setData(rawMessage.readBytes(rawMessage.readableBytes()).array());
-        return emb.build();
+        EchoRequestMessageBuilder builder = new EchoRequestMessageBuilder();
+        builder.setVersion(version);
+        builder.setXid(rawMessage.readUnsignedInt());
+        builder.setData(rawMessage.readBytes(rawMessage.readableBytes()).array());
+        return builder.build();
     }
 }

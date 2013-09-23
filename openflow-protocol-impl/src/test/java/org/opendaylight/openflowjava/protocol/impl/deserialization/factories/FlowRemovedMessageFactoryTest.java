@@ -20,7 +20,7 @@ public class FlowRemovedMessageFactoryTest {
      */
     @Test
     public void test(){
-        ByteBuf bb = BufferHelper.buildBuffer("00 01 02 03 04 05 06 07 00 03 00 04 00 00 00 02"
+        ByteBuf bb = BufferHelper.buildBuffer("00 01 02 03 04 05 06 07 00 03 02 04 00 00 00 02"
                 + " 00 00 00 05 00 01 00 03 00 01 02 03 04 05 06 07 00 01 02 03 04 05 06 07");
         FlowRemovedMessage builtByFactory = BufferHelper.decodeV13(FlowRemovedMessageFactory.getInstance(), bb);
 
@@ -28,9 +28,7 @@ public class FlowRemovedMessageFactoryTest {
         
         Assert.assertTrue(builtByFactory.getCookie().longValue() == 0x0001020304050607L);
         Assert.assertTrue(builtByFactory.getPriority() == 0x03);
-
-        //        TODO enum type!
-        //        builtByFactory.getReason()
+        Assert.assertEquals("Wrong reason", 0x02, builtByFactory.getReason().getIntValue());
         Assert.assertEquals("Wrong tableId", new TableId((long) 4), builtByFactory.getTableId());
         Assert.assertEquals("Wrong durationSec", 0x02L, builtByFactory.getDurationSec().longValue());
         Assert.assertEquals("Wrong durationNsec", 0x05L, builtByFactory.getDurationNsec().longValue());

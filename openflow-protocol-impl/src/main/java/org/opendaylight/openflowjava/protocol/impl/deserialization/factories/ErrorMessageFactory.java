@@ -32,17 +32,15 @@ private static ErrorMessageFactory instance;
     
     @Override
     public ErrorMessage bufferToMessage(ByteBuf rawMessage, short version) {
-        ErrorMessageBuilder emb = new ErrorMessageBuilder();
-        emb.setVersion(version);
-        emb.setXid(rawMessage.readUnsignedInt());
-        ErrorType[] errorTypes = ErrorType.values();
-        // TODO - finish implementation after enums are generated with proper funcionality
-        //emb.setType();
-        emb.setCode(rawMessage.readInt());
+        ErrorMessageBuilder builder = new ErrorMessageBuilder();
+        builder.setVersion(version);
+        builder.setXid(rawMessage.readUnsignedInt());
+        builder.setType(ErrorType.values()[rawMessage.readUnsignedShort()]);
+        builder.setCode(rawMessage.readUnsignedShort());
         byte[] data = new byte[rawMessage.readableBytes()];
         rawMessage.readBytes(data);
-        emb.setData(data);
-        return emb.build();
+        builder.setData(data);
+        return builder.build();
     }
 
 }

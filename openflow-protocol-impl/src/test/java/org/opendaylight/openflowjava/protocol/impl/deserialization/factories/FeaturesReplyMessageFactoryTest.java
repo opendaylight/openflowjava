@@ -10,7 +10,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 
 /**
  * @author michal.polkorab
- *
+ * @author timotej.kubas
  */
 public class FeaturesReplyMessageFactoryTest {
 
@@ -31,7 +31,5 @@ public class FeaturesReplyMessageFactoryTest {
         Assert.assertEquals("Wrong auxiliaryId", 0x01, builtByFactory.getAuxiliaryId().shortValue());
         Assert.assertEquals("Wrong capabilities", 0x00010203L, builtByFactory.getCapabilities().longValue());
         Assert.assertEquals("Wrong reserved", 0x00010203L, builtByFactory.getReserved().longValue());
-        
     }
-
 }
