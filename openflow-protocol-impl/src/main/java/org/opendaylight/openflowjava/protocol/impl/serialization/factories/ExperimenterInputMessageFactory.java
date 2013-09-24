@@ -3,8 +3,8 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
 
-import org.opendaylight.openflowjava.protocol.impl.core.OFFrameDecoder;
 import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
+import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterInput;
 
 /**
@@ -15,6 +15,7 @@ public class ExperimenterInputMessageFactory implements OFSerializer<Experimente
 
     /** Code type of Experimenter message */
     public static final byte MESSAGE_TYPE = 4;
+    private static final int MESSAGE_LENGTH = 16;
     private static ExperimenterInputMessageFactory instance;
     
     private ExperimenterInputMessageFactory() {
@@ -34,12 +35,20 @@ public class ExperimenterInputMessageFactory implements OFSerializer<Experimente
     @Override
     public void messageToBuffer(short version, ByteBuf out,
             ExperimenterInput message) {
-        out.writeByte(message.getVersion());
-        out.writeByte(MESSAGE_TYPE);
-        out.writeShort(OFFrameDecoder.LENGTH_OF_HEADER + (Integer.SIZE/Byte.SIZE)*2);
-        out.writeInt(message.getXid().intValue());
+        
+        ByteBufUtils.writeOFHeader(instance, message, out);
         out.writeInt(message.getExperimenter().intValue());
         out.writeInt(message.getExpType().intValue());
+    }
+
+    @Override
+    public int computeLength() {
+        return MESSAGE_LENGTH;
+    }
+
+    @Override
+    public byte getMessageType() {
+        return MESSAGE_TYPE;
     }
 
 }

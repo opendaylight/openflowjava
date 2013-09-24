@@ -19,4 +19,16 @@ public interface OFSerializer <E extends DataObject> {
      * @param message message that will be transformed into ByteBuf
      */
     public abstract void messageToBuffer(short version, ByteBuf out, E message);
+    
+    /**
+     * Compute length of received message
+     * @return computed length
+     */
+    public abstract int computeLength();
+    
+    /**
+     * 
+     * @return message code type
+     */
+    public byte getMessageType();
 }
