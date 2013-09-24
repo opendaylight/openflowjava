@@ -5,6 +5,12 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
+
 /** Class for common operations on ByteBuf
  *
  * @author michal.polkorab
@@ -68,5 +74,35 @@ public abstract class ByteBufUtils {
         for (int i = 0; i < length; i++) {
             out.writeByte(0);
         }
+    }
+    
+    /**
+     * Create standard OF header
+     * @param factory serialization factory 
+     * @param message POJO
+     * @param out writing buffer
+     */
+    public static void writeOFHeader(OFSerializer<?> factory, OfHeader message, ByteBuf out) { 
+        out.writeByte(message.getVersion());
+        out.writeByte(factory.getMessageType());
+        out.writeShort(factory.computeLength());
+        out.writeInt(message.getXid().intValue());
+
+    }
+
+    /**
+     * Fills the bitmask from boolean map where key is bit position
+     * @param booleanMap bit to boolean mapping
+     * @return bit mask
+     */
+    public static int fillBitMaskFromMap(Map<Integer, Boolean> booleanMap) {
+        int configBitmask = 0;
+        
+        for (Entry<Integer, Boolean> iterator : booleanMap.entrySet()) {
+            if (iterator.getValue() != null && iterator.getValue().booleanValue()) {
+                configBitmask |= 1 << iterator.getKey();
+            }
+        }
+        return configBitmask;
     }
 }

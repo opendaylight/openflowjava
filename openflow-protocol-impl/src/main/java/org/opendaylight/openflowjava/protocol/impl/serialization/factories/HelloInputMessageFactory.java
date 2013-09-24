@@ -3,8 +3,8 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
 
-import org.opendaylight.openflowjava.protocol.impl.core.OFFrameDecoder;
 import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
+import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloInput;
 
 /**
@@ -15,6 +15,7 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
 
     /** Code type of Hello message */
     public static final byte MESSAGE_TYPE = 0;
+    private static final int MESSAGE_LENGTH = 8;
     private static HelloInputMessageFactory instance;
     
     private HelloInputMessageFactory() {
@@ -33,11 +34,23 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
 
     @Override
     public void messageToBuffer(short version, ByteBuf out, HelloInput message) {
-        out.writeByte(message.getVersion());
+        /*out.writeByte(message.getVersion());
         out.writeByte(MESSAGE_TYPE);
         out.writeShort(OFFrameDecoder.LENGTH_OF_HEADER);
-        out.writeInt(message.getXid().intValue());
+        out.writeInt(message.getXid().intValue());*/
+        ByteBufUtils.writeOFHeader(instance, message, out);
+        
         // TODO - fill list of elements into ByteBuf, check length too
+    }
+
+    @Override
+    public int computeLength() {
+        return MESSAGE_LENGTH;
+    }
+
+    @Override
+    public byte getMessageType() {
+        return MESSAGE_TYPE;
     }
     
 }
