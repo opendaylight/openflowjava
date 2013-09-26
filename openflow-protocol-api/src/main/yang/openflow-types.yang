@@ -662,4 +662,59 @@ module openflow-types {
 
         }
     }
+    
+    typedef table-config {
+        /* ofp_table_config */
+        type bits {
+            bit OFPTC_DEPRECATED_MASK {
+                /* Deprecated bits */
+                position 3;
+            }
+        }
+    }
+    
+    typedef group-types {
+        /* ofp_group_type */
+        type bits {
+            bit OFPGT_ALL {
+                /* All (multicast/broadcast) group. */
+                position 0;
+            }
+            bit OFPGT_SELECT {
+                /* Select group. */
+                position 1;
+            }
+            bit OFPGT_INDIRECT {
+                /* Indirect group. */
+                position 2;
+            }
+            bit OFPGT_FF {
+                /* Fast failover group. */
+                position 3;
+            }
+        }
+    }
+    
+    typedef group-capabilities {
+        /* ofp_group_capabilities */
+        type bits {
+            bit OFPGFC_SELECT_WEIGHT {
+                /* Support weight for select groups */
+                position 0;
+            }
+            bit OFPGFC_SELECT_LIVENESS {
+                /* Support liveness for select groups */
+                position 1;
+            }
+            bit OFPGFC_CHAINING {
+                /* Support chaining groups */
+                position 2;
+            }
+            bit OFPGFC_CHAINING_CHECKS {
+                /* Check chaining for loops and delete */
+                position 3;
+            }
+        }
+    }
+    
 }

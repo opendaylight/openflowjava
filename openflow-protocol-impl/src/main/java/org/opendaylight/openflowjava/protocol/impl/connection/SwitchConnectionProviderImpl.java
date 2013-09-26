@@ -1,10 +1,4 @@
-/**
- * Copyright (c) 2013 Cisco Systems, Inc. and others.  All rights reserved.
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
- */
+/* Copyright (C)2013 Pantheon Technologies, s.r.o. All rights reserved. */
 
 package org.opendaylight.openflowjava.protocol.impl.connection;
 
@@ -42,7 +36,7 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     public void configure(Collection<ConnectionConfiguration> connConfigs) {
         LOG.debug("Configurating ..");
 
-        //TODO - add and configure servers according to configuration
+        //TODO - configure servers according to configuration
         serverLot = new HashSet<>();
         for (Iterator<ConnectionConfiguration> iterator = connConfigs.iterator(); iterator.hasNext();) {
             ConnectionConfiguration connConfig = iterator.next();
