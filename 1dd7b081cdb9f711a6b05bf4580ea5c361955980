@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a2f8d8d_23053e7a",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/serialization/factories/HelloInputMessageFactory.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2013-09-26T13:11:18Z",
+      "side": 1,
+      "message": "remove lines 37-40",
+      "revId": "1dd7b081cdb9f711a6b05bf4580ea5c361955980",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a2f8d8d_c3031a72",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/serialization/factories/SetConfigMessageFactory.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2013-09-26T13:11:18Z",
+      "side": 1,
+      "message": "remove lines 38-41",
+      "revId": "1dd7b081cdb9f711a6b05bf4580ea5c361955980",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a2f8d8d_a3f80e7d",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/serialization/factories/TableModInputMessageFactory.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2013-09-26T13:11:18Z",
+      "side": 1,
+      "message": "change to private please",
+      "revId": "1dd7b081cdb9f711a6b05bf4580ea5c361955980",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a2f8d8d_83f51285",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/deserialization/factories/QueueGetConfigReplyMessageFactoryTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2013-09-26T13:11:18Z",
+      "side": 1,
+      "message": "please format code",
+      "revId": "1dd7b081cdb9f711a6b05bf4580ea5c361955980",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a2f8d8d_232c1e02",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/serialization/factories/GetQueueConfigInputMessageFactoryTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2013-09-26T13:11:18Z",
+      "side": 1,
+      "message": "delete empty line pls",
+      "revId": "1dd7b081cdb9f711a6b05bf4580ea5c361955980",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a2f8d8d_0331225a",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/serialization/factories/TableModInputMessageFactoryTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2013-09-26T13:11:18Z",
+      "side": 1,
+      "message": "delete empty line pls",
+      "revId": "1dd7b081cdb9f711a6b05bf4580ea5c361955980",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
