@@ -7,6 +7,7 @@
 		<version>0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>openflow-protocol-api</artifactId>
+    <packaging>bundle</packaging>
 	<name>Openflow Protocol Library - API</name>
     
     <properties>

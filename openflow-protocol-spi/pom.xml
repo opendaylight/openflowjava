@@ -7,8 +7,10 @@
         <version>0.1-SNAPSHOT</version>
     </parent>
     <artifactId>openflow-protocol-spi</artifactId>
-	<name>Openflow Protocol Library SPI</name>
-	
+    <packaging>bundle</packaging>
+    
+    <name>Openflow Protocol Library - SPI</name>
+    
     <dependencies>
     	<dependency>
     	    <groupId>${project.groupId}</groupId>
