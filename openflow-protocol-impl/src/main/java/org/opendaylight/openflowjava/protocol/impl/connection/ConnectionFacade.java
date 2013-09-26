@@ -1,4 +1,5 @@
 /* Copyright (C)2013 Pantheon Technologies, s.r.o. All rights reserved. */
+
 package org.opendaylight.openflowjava.protocol.impl.connection;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionAdapter;

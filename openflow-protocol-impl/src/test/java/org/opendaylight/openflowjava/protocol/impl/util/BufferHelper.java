@@ -62,7 +62,7 @@ public abstract class BufferHelper {
      * Use version 1.3 for encoded message
      * @param input ByteBuf to be checked for correct OpenFlow Protocol header
      * @param msgType type of received message
-     * @param length TODO
+     * @param length expected length of message in header
      */
     public static void checkHeaderV13(ByteBuf input, byte msgType, int length) {
         checkHeader(input, msgType, length, HelloMessageFactoryTest.VERSION_YET_SUPPORTED);

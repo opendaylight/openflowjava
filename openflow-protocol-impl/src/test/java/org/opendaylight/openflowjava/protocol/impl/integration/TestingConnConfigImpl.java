@@ -9,7 +9,7 @@ import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfigura
  * @author michal.polkorab
  *
  */
-public class TestingConnConfigImpl implements ConnectionConfiguration{
+public class TestingConnConfigImpl implements ConnectionConfiguration {
 
     private InetAddress address;
     private int port;
