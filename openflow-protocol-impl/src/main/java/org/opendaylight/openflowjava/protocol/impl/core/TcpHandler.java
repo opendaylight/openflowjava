@@ -13,6 +13,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
+import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
 import org.opendaylight.openflowjava.protocol.impl.connection.ServerFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,6 +105,7 @@ public class TcpHandler implements ServerFacade {
         bossGroup = new NioEventLoopGroup();
         workerGroup = new NioEventLoopGroup();
         try {
+            LOGGER.debug("starting groups, channelInitializer: "+channelInitializer);
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
@@ -202,6 +204,14 @@ public class TcpHandler implements ServerFacade {
      */
     public String getAddress() {
         return address;
+    }
+
+    /**
+     * @param switchConnectionHandler
+     */
+    public void setSwitchConnectionHandler(
+            SwitchConnectionHandler switchConnectionHandler) {
+        channelInitializer.setSwitchConnectionHandler(switchConnectionHandler);
     }
     
 }

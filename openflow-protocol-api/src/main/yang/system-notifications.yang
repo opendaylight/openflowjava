@@ -1,0 +1,15 @@
+module system-notifications {
+    namespace "urn:opendaylight:openflow:system";
+    prefix "ofs";
+
+    revision "2013-09-27" {
+        //description "Initial model";
+    }
+    
+    notification disconnect-event {
+        leaf info {
+            type string;
+        }            
+    }
+    
+}

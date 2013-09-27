@@ -4,12 +4,17 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author michal.polkorab
  */
 public abstract class DeserializationFactory {
+    
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(DeserializationFactory.class);
 
     /**
      * Transforms ByteBuf into correct POJO message
@@ -24,7 +29,11 @@ public abstract class DeserializationFactory {
 
         MessageTypeCodeKey msgTypeCodeKey = new MessageTypeCodeKey(version, type);
         OFDeserializer<?> decoder = DecoderTable.getInstance().getDecoder(msgTypeCodeKey);
-        dataObject = decoder.bufferToMessage(rawMessage, version);
+        if (decoder != null) {
+            dataObject = decoder.bufferToMessage(rawMessage, version);
+        } else {
+            LOGGER.warn("No correct decoder found in DecoderTable - it is null");
+        }
         return dataObject;
     }
 }

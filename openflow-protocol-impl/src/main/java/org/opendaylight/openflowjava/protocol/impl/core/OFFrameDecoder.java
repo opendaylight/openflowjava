@@ -40,13 +40,14 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext chc, ByteBuf bb, List<Object> list) throws Exception {
         if (bb.readableBytes() < LENGTH_OF_HEADER) {
-            LOGGER.debug("skipping bb - too few data for header");
+            LOGGER.debug("skipping bb - too few data for header: " + bb.readableBytes());
             return;
         }
 
         int length = bb.getUnsignedShort(LENGTH_INDEX_IN_HEADER);
         if (bb.readableBytes() < length) {
-            LOGGER.debug("skipping bb - too few data for msg");
+            LOGGER.debug("skipping bb - too few data for msg: " +
+                    bb.readableBytes() + " < " + length);
             return;
         }
 

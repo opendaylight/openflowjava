@@ -18,6 +18,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OpenflowProtocolListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketInMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortStatusMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.DisconnectEvent;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SystemNotificationsListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * @author michal.polkorab
  *
  */
-public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHandler {
+public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHandler, SystemNotificationsListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MockPlugin.class);
     private ConnectionAdapter adapter;
@@ -33,8 +35,10 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
     
     @Override
     public void onSwitchConnected(ConnectionAdapter connection) {
-        LOGGER.debug("onSwitchCnnected");
+        LOGGER.debug("onSwitchConnected");
         this.adapter = connection;
+        connection.setMessageListener(this);
+        connection.setSystemListener(this);
     }
 
     @Override
@@ -102,6 +106,14 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
     public void onPortStatusMessage(PortStatusMessage notification) {
         // TODO Auto-generated method stub
         
+    }
+
+    /* (non-Javadoc)
+     * @see org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SystemNotificationsListener#onDisconnectEvent(org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.DisconnectEvent)
+     */
+    @Override
+    public void onDisconnectEvent(DisconnectEvent notification) {
+        LOGGER.debug("disconnection ocured: "+notification.getInfo());
     }
 
 }

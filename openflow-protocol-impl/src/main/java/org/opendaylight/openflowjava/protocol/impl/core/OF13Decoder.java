@@ -33,6 +33,10 @@ public class OF13Decoder extends MessageToMessageDecoder<VersionMessageWrapper> 
         LOGGER.debug("VersionMessageWrapper received");
         DataObject dataObject = DeserializationFactory.bufferToMessage(msg.getMessageBuffer(),
                 msg.getVersion());
+        if (dataObject == null) {
+            LOGGER.warn("Translated POJO is null");
+            return;
+        }
         out.add(dataObject);
     }
 }

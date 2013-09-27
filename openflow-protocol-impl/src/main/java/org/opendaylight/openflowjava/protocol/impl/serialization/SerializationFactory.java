@@ -4,6 +4,8 @@ package org.opendaylight.openflowjava.protocol.impl.serialization;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author michal.polkorab
@@ -11,6 +13,8 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  */
 public class SerializationFactory {
 
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(SerializationFactory.class);
     /**
      * Transforms POJO message into ByteBuf
      * @param version version used for encoding received message
@@ -21,6 +25,10 @@ public class SerializationFactory {
         @SuppressWarnings("unchecked")
         MessageTypeKey<E> msgTypeKey = new MessageTypeKey<E>(version, (Class<E>) message.getClass());
         OFSerializer<E> encoder = EncoderTable.getInstance().getEncoder(msgTypeKey);
-        encoder.messageToBuffer(version, out, message);
+        if (encoder != null) {
+            encoder.messageToBuffer(version, out, message);
+        } else {
+            LOGGER.warn("No correct encoder found in DecoderTable - it is null");
+        }
     }
 }

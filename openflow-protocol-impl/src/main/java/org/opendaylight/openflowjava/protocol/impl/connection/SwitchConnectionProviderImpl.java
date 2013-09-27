@@ -40,7 +40,9 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
         serverLot = new HashSet<>();
         for (Iterator<ConnectionConfiguration> iterator = connConfigs.iterator(); iterator.hasNext();) {
             ConnectionConfiguration connConfig = iterator.next();
-            serverLot.add(new TcpHandler(connConfig.getAddress(), connConfig.getPort()));
+            TcpHandler server = new TcpHandler(connConfig.getAddress(), connConfig.getPort());
+            server.setSwitchConnectionHandler(switchConnectionHandler);
+            serverLot.add(server);
         }
     }
 
