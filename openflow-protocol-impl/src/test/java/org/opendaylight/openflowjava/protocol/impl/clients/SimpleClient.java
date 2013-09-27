@@ -38,6 +38,9 @@ public class SimpleClient extends Thread {
     private InputStream fis;
     private EventLoopGroup group;
     private SettableFuture<Boolean> isOnlineFuture;
+    private SettableFuture<Boolean> automatedPartDone;
+    private SettableFuture<Void> dataReceived;
+    private int dataLimit;
     
     /**
      * Constructor of class
@@ -73,6 +76,8 @@ public class SimpleClient extends Thread {
 
     private void init() {
         isOnlineFuture = SettableFuture.create();
+        automatedPartDone = SettableFuture.create();
+        dataReceived = SettableFuture.create();
     }
     
     /**
@@ -88,9 +93,11 @@ public class SimpleClient extends Thread {
                         .channel(NioSocketChannel.class)
                         .handler(new SimpleClientInitializer(isOnlineFuture));
             } else {
+                SimpleClientHandler plainHandler = new SimpleClientHandler(isOnlineFuture);
+                plainHandler.setDataReceivedFuture(dataReceived , dataLimit);
                 b.group(group)
                         .channel(NioSocketChannel.class)
-                        .handler(new SimpleClientHandler(isOnlineFuture));
+                        .handler(plainHandler);
             }
 
             Channel ch = b.connect(host, port).sync().channel();
@@ -110,9 +117,11 @@ public class SimpleClient extends Thread {
                     fis.close();
                 } catch (IOException e) {
                     LOGGER.error(e.getMessage(), e);
+                    automatedPartDone.setException(e);
                 }
             }
-
+            automatedPartDone.set(true);
+            
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in, Charset.defaultCharset()));
             for (;;) {
                 String line = in.readLine();
@@ -129,6 +138,7 @@ public class SimpleClient extends Thread {
                     break;
                 }
             }
+            LOGGER.debug("after stdin reading done");
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);
         } finally {
@@ -140,6 +150,7 @@ public class SimpleClient extends Thread {
      * @return close future
      */
     public Future<?> disconnect() {
+        LOGGER.debug("disconnecting client");
         return group.shutdownGracefully();
     }
 
@@ -157,11 +168,10 @@ public class SimpleClient extends Thread {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        // TODO - add using secure switch via parameter
         String host;
         int port;
         SimpleClient sc;
-        if (args.length != 3) {
+        if (args.length != 4) {
             LOGGER.error("Usage: " + SimpleClient.class.getSimpleName()
                     + " <host> <port> <secured> <filename>");
             LOGGER.error("Trying to use default setting.");
@@ -189,5 +199,26 @@ public class SimpleClient extends Thread {
      */
     public SettableFuture<Boolean> getIsOnlineFuture() {
         return isOnlineFuture;
+    }
+    
+    /**
+     * @return the dataReceived
+     */
+    public SettableFuture<Void> getDataReceived() {
+        return dataReceived;
+    }
+    
+    /**
+     * @return the automatedPartDone
+     */
+    public SettableFuture<Boolean> getAutomatedPartDone() {
+        return automatedPartDone;
+    }
+    
+    /**
+     * @param dataLimit the dataLimit to set
+     */
+    public void setDataLimit(int dataLimit) {
+        this.dataLimit = dataLimit;
     }
 }

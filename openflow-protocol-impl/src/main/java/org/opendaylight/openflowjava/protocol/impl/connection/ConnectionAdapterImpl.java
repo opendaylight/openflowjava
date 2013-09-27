@@ -48,6 +48,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetAsyncInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetConfigInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.DisconnectEvent;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SystemNotificationsListener;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.common.RpcError;
@@ -82,7 +84,8 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     private OpenflowProtocolListener messageListener;
     /** expiring cache for future rpcResponses */
     protected Cache<RpcResponseKey, SettableFuture<?>> responseCache;
-    
+    private SystemNotificationsListener systemListener;
+    private boolean disconnectOccured = false;
     
     /**
      * default ctor 
@@ -213,7 +216,9 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     @Override
     public Future<Boolean> disconnect() {
         ChannelFuture disconnectResult = channel.disconnect();
-        
+        responseCache.invalidateAll();
+        disconnectOccured = true;
+
         String failureInfo = "switch disconnecting failed";
         ErrorSeverity errorSeverity = ErrorSeverity.ERROR;
         String message = "Check the switch connection";
@@ -232,8 +237,18 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     
     @Override
     public void consume(DataObject message) {
+        if (disconnectOccured ) {
+            return;
+        }
         if (message instanceof Notification) {
-            if (message instanceof EchoRequestMessage) {
+            // System events
+            if (message instanceof DisconnectEvent) {
+                systemListener.onDisconnectEvent((DisconnectEvent) message);
+                responseCache.invalidateAll();
+                disconnectOccured = true;
+            } 
+            // OpenFlow messages
+              else if (message instanceof EchoRequestMessage) {
                 messageListener.onEchoRequestMessage((EchoRequestMessage) message);
             } else if (message instanceof ErrorMessage) {
                 messageListener.onErrorMessage((ErrorMessage) message);
@@ -265,7 +280,6 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 } else {
                     LOG.warn("received unexpected rpc response: "+key);
                 }
-                
             } else {
                 LOG.warn("message listening not supported for type: "+message.getClass());
             }
@@ -457,6 +471,26 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     @SuppressWarnings("unchecked")
     private SettableFuture<RpcResult<?>> findRpcResponse(RpcResponseKey key) {
         return (SettableFuture<RpcResult<?>>) responseCache.getIfPresent(key);
+    }
+
+    @Override
+    public void setSystemListener(SystemNotificationsListener systemListener) {
+        this.systemListener = systemListener;
+    }
+    
+    @Override
+    public void checkListeners() {
+        StringBuffer buffer =  new StringBuffer();
+        if (systemListener == null) {
+            buffer.append("SystemListener ");
+        }
+        if (messageListener == null) {
+            buffer.append("MessageListener ");
+        }
+        
+        if (buffer.length() > 0) {
+            throw new IllegalStateException("Missing listeners: " + buffer.toString());
+        }
     }
 
 }

@@ -8,9 +8,11 @@ import io.netty.channel.socket.SocketChannel;
 import java.util.Iterator;
 
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
-import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionFacade;
 import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionAdapterFactory;
+import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionFacade;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler.COMPONENT_NAMES;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author michal.polkorab
@@ -18,6 +20,8 @@ import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler.COMPONENT_NAM
  */
 public class PublishingChannelInitializer extends ChannelInitializer<SocketChannel> {
 
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(PublishingChannelInitializer.class);
     private DefaultChannelGroup allChannels;
     private SwitchConnectionHandler switchConnectionHandler;
     
@@ -29,16 +33,22 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
     }
     
     @Override
-    protected void initChannel(SocketChannel ch) throws Exception {
+    protected void initChannel(SocketChannel ch) {
+        LOGGER.debug("building pipeline");
         // TODO - call switchConnectionHandler accept first
         allChannels.add(ch);
         ConnectionFacade connectionAdapter = null;
-        if (switchConnectionHandler != null) {
-            connectionAdapter = ConnectionAdapterFactory.createConnectionAdapter(ch);
+        connectionAdapter = ConnectionAdapterFactory.createConnectionAdapter(ch);
+        try {
+            LOGGER.debug("calling plugin: "+switchConnectionHandler);
             switchConnectionHandler.onSwitchConnected(connectionAdapter);
+            connectionAdapter.checkListeners();
+            ch.pipeline().addLast(COMPONENT_NAMES.TLS_DETECTOR.name(), new TlsDetector());
+            ch.pipeline().addLast(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name(), new DelegatingInboundHandler(connectionAdapter));
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            ch.close();
         }
-        ch.pipeline().addLast(COMPONENT_NAMES.TLS_DETECTOR.name(), new TlsDetector());
-        ch.pipeline().addLast(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name(), new DelegatingInboundHandler(connectionAdapter));
     }
     
     /**
@@ -56,9 +66,9 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
     }
     
     /**
-     * @param switchListener the switchListener to set
+     * @param switchConnectionHandler the switchConnectionHandler to set
      */
-    public void setSwitchConnectionHandler(SwitchConnectionHandler switchListener) {
-        this.switchConnectionHandler = switchListener;
+    public void setSwitchConnectionHandler(SwitchConnectionHandler switchConnectionHandler) {
+        this.switchConnectionHandler = switchConnectionHandler;
     }
 }

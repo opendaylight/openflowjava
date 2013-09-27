@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import org.opendaylight.openflowjava.protocol.impl.connection.MessageConsumer;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.DisconnectEventBuilder;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ public class DelegatingInboundHandler extends ChannelInboundHandlerAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(DelegatingInboundHandler.class);
     
     private MessageConsumer consumer;
+    private boolean inactiveMessageSent = false;
     
     /** 
      * Constructs class + creates and sets MessageConsumer
@@ -32,4 +34,27 @@ public class DelegatingInboundHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         consumer.consume((DataObject) msg);
     }
+    
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        LOGGER.info("Channel inactive");
+        if (!inactiveMessageSent) {
+            DisconnectEventBuilder builder = new DisconnectEventBuilder();
+            builder.setInfo("Channel inactive");
+            consumer.consume(builder.build());
+            inactiveMessageSent = true;
+        }
+    }
+
+    @Override
+    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        LOGGER.info("Channel unregistered");
+        if (!inactiveMessageSent) {
+            DisconnectEventBuilder builder = new DisconnectEventBuilder();
+            builder.setInfo("Channel unregistered");
+            consumer.consume(builder.build());
+            inactiveMessageSent = true;
+        }
+    }
+    
 }
