@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a2f8d8d_9840d857",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/DelegatingInboundHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2013-09-27T13:45:28Z",
+      "side": 1,
+      "message": "add check of inactiveMessageSent field, to prevent multiple message sending",
+      "revId": "b71d9a3a238b145fb93e32eacfb6e0254b7f6ea6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
