@@ -18,12 +18,15 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  */
 public class GetQueueConfigInputMessageFactoryTest {
-
     private static final byte GET_QUEUE_CONFIG_INPUT_MESSAGE_CODE_TYPE = 22;
     private static final byte PADDING_IN_QUEUE_CONFIG_INPUT_MESSAGE = 4;
     
+    /**
+     * Testing of {@link GetQueueConfigInputMessageFactory} for correct translation from POJO
+     * @throws Exception 
+     */
     @Test
-    public void testWithElements() throws Exception {
+    public void testGetQueueConfigInputMessage() throws Exception {
         GetQueueConfigInputBuilder builder = new GetQueueConfigInputBuilder();
         BufferHelper.setupHeader(builder);
         builder.setPort(new PortNumber(0x00010203L));
@@ -37,5 +40,4 @@ public class GetQueueConfigInputMessageFactoryTest {
         Assert.assertEquals("Wrong port", 0x00010203, out.readUnsignedInt());
         out.skipBytes(PADDING_IN_QUEUE_CONFIG_INPUT_MESSAGE);
     }
-        
 }

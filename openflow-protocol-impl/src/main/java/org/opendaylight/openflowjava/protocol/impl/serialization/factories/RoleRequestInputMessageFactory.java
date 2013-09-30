@@ -15,7 +15,7 @@ public class RoleRequestInputMessageFactory implements OFSerializer<RoleRequestI
 
     /** Code type of RoleRequest message */
     public static final byte MESSAGE_TYPE = 24;
-    private static final int MESSAGE_LENGTH = 8;
+    private static final int MESSAGE_LENGTH = 24;
     private static final byte PADDING_IN_ROLE_REQUEST_MESSAGE = 4;
     private static RoleRequestInputMessageFactory instance;
     

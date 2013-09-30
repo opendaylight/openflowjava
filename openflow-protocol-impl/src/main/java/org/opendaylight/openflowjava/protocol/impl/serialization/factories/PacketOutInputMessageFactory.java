@@ -15,7 +15,7 @@ public class PacketOutInputMessageFactory implements OFSerializer<PacketOutInput
 
     /** Code type of PacketOut message */
     public static final byte MESSAGE_TYPE = 13;
-    private static final int MESSAGE_LENGTH = 8;
+    private static final int MESSAGE_LENGTH = 30;
     private static final byte PADDING_IN_PACKET_OUT_MESSAGE = 6;
     private static PacketOutInputMessageFactory instance;
     
@@ -39,9 +39,11 @@ public class PacketOutInputMessageFactory implements OFSerializer<PacketOutInput
         ByteBufUtils.writeOFHeader(instance, message, out);
         out.writeInt(message.getBufferId().intValue());
         out.writeInt(message.getInPort().getValue().intValue());
+        ByteBufUtils.padBuffer(PADDING_IN_PACKET_OUT_MESSAGE, out);
         // TODO - finish implementation after Action serialization is done
         //out.writeShort(message.getActions().size());
-        ByteBufUtils.padBuffer(PADDING_IN_PACKET_OUT_MESSAGE, out);
+        // TODO - data field is not clearly defined
+        
        
     }
 

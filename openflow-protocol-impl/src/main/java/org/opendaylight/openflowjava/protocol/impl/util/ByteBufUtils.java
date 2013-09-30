@@ -37,7 +37,22 @@ public abstract class ByteBufUtils {
      * @return byte[] filled with input data
      */
     public static byte[] hexStringToBytes(String hexSrc) {
-        String[] byteChips = hexSrc.split("\\s+");
+        return hexStringToBytes(hexSrc, true);
+    }
+    
+    /**
+     * Converts String into byte[]
+     * @param hexSrc input String
+     * @param withSpaces if there are spaces in string 
+     * @return byte[] filled with input data
+     */
+    public static byte[] hexStringToBytes(String hexSrc, boolean withSpaces ) {
+        String splitPattern = "\\s+";
+        if (!withSpaces) {
+            splitPattern = "(?<=\\G.{2})";
+        }
+        
+        String[] byteChips = hexSrc.split(splitPattern);
         byte[] result = new byte[byteChips.length];
         for (int i = 0; i < byteChips.length; i++) {
             result[i] = (byte) Short.parseShort(byteChips[i], 16);

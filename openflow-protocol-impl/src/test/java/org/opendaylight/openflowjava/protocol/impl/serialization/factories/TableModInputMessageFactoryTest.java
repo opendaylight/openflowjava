@@ -4,6 +4,7 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 import junit.framework.Assert;
+
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
@@ -17,10 +18,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  */
 public class TableModInputMessageFactoryTest {
-    
     private static final byte MESSAGE_TYPE = 17;
     private static final byte PADDING_IN_TABLE_MOD_MESSAGE = 3;
     
+    /**
+     * Testing of {@link TableModInputMessageFactory} for correct translation from POJO
+     * @throws Exception 
+     */
     @Test
     public void testTableModInput() throws Exception {
         TableModInputBuilder builder = new TableModInputBuilder();
