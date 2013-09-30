@@ -16,7 +16,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  */
 public class TableModInputMessageFactory implements OFSerializer<TableModInput> {
-
     private static final byte MESSAGE_TYPE = 17;
     private static final byte PADDING_IN_TABLE_MOD_MESSAGE = 3;
     private static final int MESSAGE_LENGTH = 16;
@@ -38,7 +37,6 @@ public class TableModInputMessageFactory implements OFSerializer<TableModInput> 
     
     @Override
     public void messageToBuffer(short version, ByteBuf out, TableModInput message) {
-        
         ByteBufUtils.writeOFHeader(instance, message, out);
         out.writeByte(message.getTableId().getValue().byteValue());
         ByteBufUtils.padBuffer(PADDING_IN_TABLE_MOD_MESSAGE, out);
