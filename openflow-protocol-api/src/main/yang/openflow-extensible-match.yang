@@ -20,7 +20,6 @@ module openflow-extensible-match {
         base oft:match-type-base;
     }
     
-
     // oxm classes
         identity class {
             description "Base identity for OXM classes";
@@ -49,7 +48,7 @@ module openflow-extensible-match {
 
 
     // field types
-        /*
+        
         identity match-field {
             description "Base identity for OXM Fields";
         }
@@ -214,7 +213,7 @@ module openflow-extensible-match {
             base match-field;
             description "Match for IPv6 Extension Header pseudo-field";
         }
-        */
+        
     // Abstract definitions of fields structure
 
         grouping in-port {
@@ -739,4 +738,25 @@ module openflow-extensible-match {
                 
             }
         }
+        
+        grouping oxm-fields {
+        list entries {
+            leaf oxm-class {
+                type identityref {
+                    base class;
+                }
+            }
+            leaf oxm-match-field {
+                type identityref {
+                    base match-field;
+                }
+            }
+            leaf has-mask {
+                type boolean;
+            }
+            leaf value {
+                type binary;
+            }
+        }
+    }
 }

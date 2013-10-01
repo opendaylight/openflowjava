@@ -386,6 +386,32 @@ module openflow-types {
         }
     }
     
+    typedef flow-mod-flags {
+        /* ofp_flow_mod_flags */
+        type bits {
+            bit OFPFF_SEND_FLOW_REM {
+                position 0;
+                /* Send flow removed message when flow expires or is deleted. */
+            }
+            bit OFPFF_CHECK_OVERLAP {
+                position 1;
+                /* Check for overlapping entries first. */
+            }
+            bit OFPFF_RESET_COUNTS {
+                position 2;
+                /* Reset flow packet and byte counts. */
+            }
+            bit OFPFF_NO_PKT_COUNTS {
+                position 3;
+                /* Don't keep track of packet count. */
+            }
+            bit OFPFF_NO_BYT_COUNTS {
+                position 4;
+                /* Don't keep track of byte count. */
+            }
+        }
+    }
+    
     typedef group-mod-command {
         /* ofp_group_mod_command */
         type enumeration {
