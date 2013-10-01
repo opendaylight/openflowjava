@@ -8,9 +8,17 @@ import org.opendaylight.openflowjava.protocol.impl.core.OFVersionDetector;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.BarrierReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.EchoReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.EchoRequestMessageFactory;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.ErrorMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.ExperimenterMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.FeaturesReplyMessageFactory;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.FlowRemovedMessageFactory;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.GetConfigReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactory;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.MultipartReplyMessageFactory;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.PacketInMessageFactory;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.PortStatusMessageFactory;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.QueueGetConfigReplyMessageFactory;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.RoleReplyMessageFactory;
 
 /**
  * @author michal.polkorab
@@ -79,11 +87,19 @@ public class DecoderTable {
     public void init() {
         table = new HashMap<>();
         table.put(new MessageTypeCodeKey(OF13, (short) 0), HelloMessageFactory.getInstance());
+        table.put(new MessageTypeCodeKey(OF13, (short) 1), ErrorMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF13, (short) 2), EchoRequestMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF13, (short) 3), EchoReplyMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF13, (short) 4), ExperimenterMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF13, (short) 6), FeaturesReplyMessageFactory.getInstance());
+        table.put(new MessageTypeCodeKey(OF13, (short) 8), GetConfigReplyMessageFactory.getInstance());
+        table.put(new MessageTypeCodeKey(OF13, (short) 10), PacketInMessageFactory.getInstance());
+        table.put(new MessageTypeCodeKey(OF13, (short) 11), FlowRemovedMessageFactory.getInstance());
+        table.put(new MessageTypeCodeKey(OF13, (short) 12), PortStatusMessageFactory.getInstance());
+        table.put(new MessageTypeCodeKey(OF13, (short) 19), MultipartReplyMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF13, (short) 21), BarrierReplyMessageFactory.getInstance());
+        table.put(new MessageTypeCodeKey(OF13, (short) 23), QueueGetConfigReplyMessageFactory.getInstance());
+        table.put(new MessageTypeCodeKey(OF13, (short) 25), RoleReplyMessageFactory.getInstance());
     }
     
     /**

@@ -19,11 +19,11 @@ public class GetaAsyncRequestMessageFactoryTest {
     private static final int MESSAGE_LENGTH = 8;
     
     /**
-     * Testing of {@link GetaAsyncRequestMessageFactory} for correct translation from POJO
+     * Testing of {@link GetAsyncRequestMessageFactory} for correct translation from POJO
      * @throws Exception 
      */
     @Test
-    public void testGetaAsyncReques() throws Exception {
+    public void testGetAsyncReques() throws Exception {
         GetAsyncInputBuilder builder = new GetAsyncInputBuilder();
         BufferHelper.setupHeader(builder);
         GetAsyncInput message = builder.build();
