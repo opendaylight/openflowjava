@@ -11,7 +11,8 @@
 	<name>Openflow Protocol Library - API</name>
     
     <properties>
-        <yangtools.version>0.5.8-SNAPSHOT</yangtools.version>
+        <yangtools.version>0.5.9-SNAPSHOT</yangtools.version>
+        <yangtools.generator.version>0.6.0-SNAPSHOT</yangtools.generator.version>
     </properties>
 
 	<build>
@@ -46,7 +47,7 @@
                     <dependency>
                         <groupId>org.opendaylight.yangtools</groupId>
                         <artifactId>maven-sal-api-gen-plugin</artifactId>
-                        <version>${yangtools.version}</version>
+                        <version>${yangtools.generator.version}</version>
                         <type>jar</type>
                     </dependency>
                 </dependencies>

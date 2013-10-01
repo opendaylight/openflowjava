@@ -27,7 +27,7 @@ public class PacketInMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         
         Assert.assertEquals("Wrong bufferID", 0x00010203L, builtByFactory.getBufferId().longValue());
-        Assert.assertEquals("Wrong totalLen", 0x0102, builtByFactory.getTotalLen().intValue());
+        Assert.assertEquals("Wrong totalLength", 0x0102, builtByFactory.getTotalLen().intValue());
         Assert.assertEquals("Wrong reason", 0x01, builtByFactory.getReason().shortValue());
         Assert.assertEquals("Wrong tableID", new TableId((long) 4), builtByFactory.getTableId());
         Assert.assertEquals("Wrong cookie", 0x0001020304050607L, builtByFactory.getCookie().longValue());
