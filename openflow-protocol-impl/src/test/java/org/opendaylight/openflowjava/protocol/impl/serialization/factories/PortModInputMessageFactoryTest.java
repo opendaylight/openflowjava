@@ -60,32 +60,32 @@ public class PortModInputMessageFactoryTest {
     }
 
     private static PortConfig createPortConfig(long input){
-        final Boolean _portDown   = ((input) & 0x01) > 0;
-        final Boolean _noRecv    = ((input) & 0x04) > 0;
-        final Boolean _noFwd       = ((input) & 0x20) > 0;
-        final Boolean _noPacketIn = ((input) & 0x40) > 0;
-        return new PortConfig(_portDown, _noRecv, _noFwd, _noPacketIn);
+        final Boolean _portDown   = ((input) & (1<<0)) > 0;
+        final Boolean _noRecv    = ((input) & (1<<2)) > 0;
+        final Boolean _noFwd       = ((input) & (1<<5)) > 0;
+        final Boolean _noPacketIn = ((input) & (1<<6)) > 0;
+        return new PortConfig(_noFwd, _noPacketIn, _noRecv, _portDown);
     }
     
     private static PortFeatures createPortFeatures(long input){
-        final Boolean _10mbHd = ((input) & 0x01) > 0;
-        final Boolean _10mbFd = ((input) & 0x02) > 0;
-        final Boolean _100mbHd = ((input) & 0x04) > 0;
-        final Boolean _100mbFd = ((input) & 0x08) > 0;
-        final Boolean _1gbHd = ((input) & 0x10) > 0;
-        final Boolean _1gbFd = ((input) & 0x20) > 0;
-        final Boolean _10gbFd = ((input) & 0x40) > 0;
-        final Boolean _40gbFd = ((input) & 0x80) > 0;
-        final Boolean _100gbFd = ((input) & 0x100) > 0;
-        final Boolean _1tbFd = ((input) & 0x200) > 0;
-        final Boolean _other = ((input) & 0x400) > 0;
-        final Boolean _copper = ((input) & 0x800) > 0;
-        final Boolean _fiber = ((input) & 0x1000) > 0;
-        final Boolean _autoneg = ((input) & 0x2000) > 0;
-        final Boolean _pause = ((input) & 0x4000) > 0;
-        final Boolean _pauseAsym = ((input) & 0x8000) > 0;
-        return new PortFeatures(_10mbHd, _10mbFd, _100mbHd, _100mbFd, _1gbHd, _1gbFd, _10gbFd,
-                _40gbFd, _100gbFd, _1tbFd, _other, _copper, _fiber, _autoneg, _pause, _pauseAsym);
+        final Boolean _10mbHd = ((input) & (1<<0)) > 0;
+        final Boolean _10mbFd = ((input) & (1<<1)) > 0;
+        final Boolean _100mbHd = ((input) & (1<<2)) > 0;
+        final Boolean _100mbFd = ((input) & (1<<3)) > 0;
+        final Boolean _1gbHd = ((input) & (1<<4)) > 0;
+        final Boolean _1gbFd = ((input) & (1<<5)) > 0;
+        final Boolean _10gbFd = ((input) & (1<<6)) > 0;
+        final Boolean _40gbFd = ((input) & (1<<7)) > 0;
+        final Boolean _100gbFd = ((input) & (1<<8)) > 0;
+        final Boolean _1tbFd = ((input) & (1<<9)) > 0;
+        final Boolean _other = ((input) & (1<<10)) > 0;
+        final Boolean _copper = ((input) & (1<<11)) > 0;
+        final Boolean _fiber = ((input) & (1<<12)) > 0;
+        final Boolean _autoneg = ((input) & (1<<13)) > 0;
+        final Boolean _pause = ((input) & (1<<14)) > 0;
+        final Boolean _pauseAsym = ((input) & (1<<15)) > 0;
+        return new PortFeatures(_100gbFd, _100mbFd,  _100mbHd, _10gbFd, _10mbFd, _10mbHd, 
+                _1gbFd, _1gbHd, _1tbFd, _40gbFd, _autoneg, _copper, _fiber, _other, _pause, _pauseAsym);
     }
     
     private static String makeMacAddress(ByteBuf input) {
