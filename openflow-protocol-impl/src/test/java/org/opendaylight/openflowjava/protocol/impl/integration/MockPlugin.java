@@ -49,25 +49,25 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
 
     @Override
     public void onEchoRequestMessage(EchoRequestMessage notification) {
-        // TODO Auto-generated method stub
+        LOGGER.debug("EchoRequest message received");
         
     }
 
     @Override
     public void onErrorMessage(ErrorMessage notification) {
-        // TODO Auto-generated method stub
+        LOGGER.debug("Error message received");
         
     }
 
     @Override
     public void onExperimenterMessage(ExperimenterMessage notification) {
-        // TODO Auto-generated method stub
+        LOGGER.debug("Experimenter message received");
         
     }
 
     @Override
     public void onFlowRemovedMessage(FlowRemovedMessage notification) {
-        // TODO Auto-generated method stub
+        LOGGER.debug("FlowRemoved message received");
         
     }
 
@@ -86,31 +86,28 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
 
     @Override
     public void onMultipartReplyMessage(MultipartReplyMessage notification) {
-        // TODO Auto-generated method stub
+        LOGGER.debug("MultipartReply message received");
         
     }
 
     @Override
     public void onMultipartRequestMessage(MultipartRequestMessage notification) {
-        // TODO Auto-generated method stub
+        LOGGER.debug("MultipartRequest message received");
         
     }
 
     @Override
     public void onPacketInMessage(PacketInMessage notification) {
-        // TODO Auto-generated method stub
+        LOGGER.debug("PacketIn message received");
         
     }
 
     @Override
     public void onPortStatusMessage(PortStatusMessage notification) {
-        // TODO Auto-generated method stub
+        LOGGER.debug("PortStatus message received");
         
     }
 
-    /* (non-Javadoc)
-     * @see org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SystemNotificationsListener#onDisconnectEvent(org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.DisconnectEvent)
-     */
     @Override
     public void onDisconnectEvent(DisconnectEvent notification) {
         LOGGER.debug("disconnection ocured: "+notification.getInfo());

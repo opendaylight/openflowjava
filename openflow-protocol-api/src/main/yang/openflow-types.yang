@@ -312,7 +312,7 @@ module openflow-types {
             }
             enum OFPC_FRAG_REASM {
                 value 2; 
-                description "Reassemble (only if OFPC_IP_REASM set)."
+                description "Reassemble (only if OFPC_IP_REASM set).";
             }
             enum OFPC_FRAG_MASK {
                 value 3; 
@@ -333,7 +333,7 @@ module openflow-types {
             }
             enum OFPRR_DELETE {
                 value 2;
-                description "Evicted by a DELETE flow mod."
+                description "Evicted by a DELETE flow mod.";
             }
             enum OFPRR_GROUP_DELETE {
                 value 3;
@@ -382,6 +382,32 @@ module openflow-types {
             enum OFPFC_DELETE_STRICT {
                 value 4;
                 description "Delete entry strictly matching wildcards and priority.";
+            }
+        }
+    }
+    
+    typedef flow-mod-flags {
+        /* ofp_flow_mod_flags */
+        type bits {
+            bit OFPFF_SEND_FLOW_REM {
+                position 0;
+                /* Send flow removed message when flow expires or is deleted. */
+            }
+            bit OFPFF_CHECK_OVERLAP {
+                position 1;
+                /* Check for overlapping entries first. */
+            }
+            bit OFPFF_RESET_COUNTS {
+                position 2;
+                /* Reset flow packet and byte counts. */
+            }
+            bit OFPFF_NO_PKT_COUNTS {
+                position 3;
+                /* Don't keep track of packet count. */
+            }
+            bit OFPFF_NO_BYT_COUNTS {
+                position 4;
+                /* Don't keep track of byte count. */
             }
         }
     }
