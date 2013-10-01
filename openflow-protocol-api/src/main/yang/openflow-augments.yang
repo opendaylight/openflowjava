@@ -1,0 +1,17 @@
+module openflow-augments {
+    namespace "urn:opendaylight:openflow:augments";
+    prefix "aug";
+    
+    import openflow-protocol {prefix ofproto;}
+
+
+    revision "2013-10-02" {
+        description "Initial model";
+    }
+
+     //augment "/ofproto:hello-message/ofproto:hello" {
+     //       leaf uid {
+     //           type uint16;
+     //       }
+     //}    
+}

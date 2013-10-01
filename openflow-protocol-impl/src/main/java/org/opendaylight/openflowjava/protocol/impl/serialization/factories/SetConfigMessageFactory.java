@@ -37,7 +37,7 @@ public class SetConfigMessageFactory implements OFSerializer<SetConfigInput> {
             SetConfigInput message) {
         ByteBufUtils.writeOFHeader(instance, message, out);
         // TODO - finish implementation after enums provide needed funcionality
-        out.writeShort(message.getFlags().getIntValue());
+        //out.writeShort(message.getFlags().getIntValue());
         out.writeShort(message.getMissSendLen());
     }
 

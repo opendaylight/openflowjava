@@ -38,7 +38,6 @@ public class PacketInMessageFactory implements OFDeserializer<PacketInMessage> {
         builder.setVersion(version);
         builder.setXid(rawMessage.readUnsignedInt());
         builder.setBufferId(rawMessage.readUnsignedInt());
-        builder.setTotalLen(rawMessage.readUnsignedShort());
         builder.setReason(rawMessage.readUnsignedByte());
         builder.setTableId(new TableId((long)rawMessage.readUnsignedByte()));
         byte[] cookie = new byte[Long.SIZE/Byte.SIZE];

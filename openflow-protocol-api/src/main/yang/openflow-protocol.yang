@@ -74,6 +74,17 @@ module openflow-protocol {
                 units "kbps"; 
             }
         }
+        
+        grouping match {
+            leaf type {
+                type identityref {
+                    base oft:match-type-base;
+                }
+            }
+            uses oxm:oxm-fields;
+        }
+        
+        
 
     // TODO: ofp_packat_queue
 
@@ -104,6 +115,10 @@ module openflow-protocol {
                 
                 list elements {
                     uses ofHelloElementHeader;
+                    
+                    leaf-list boolean-bitmap {
+                        type boolean;
+                    }
                     
                     leaf data {
                         type binary;
@@ -153,6 +168,9 @@ module openflow-protocol {
                 }
                 leaf exp_type {
                     type uint32;
+                }
+                leaf data {
+                    type binary;
                 }
             }
         /* Switch configuration messages. */
@@ -208,7 +226,7 @@ module openflow-protocol {
                 
                 uses ofHeader;
                 
-                leaf flags {
+                leaf-list flags {
                     type oft:switch-config-flag;
                 }
                 leaf miss-send-len {
@@ -226,10 +244,6 @@ module openflow-protocol {
                     // ID assigned by datapath.
                     type uint32;
                 }  
-                leaf total-len {
-                    // Full length of frame.
-                    type uint16;
-                }
                 leaf reason {
                     // Reason packet is being sent (one of OFPR_*) 
                     type uint8;
@@ -242,11 +256,9 @@ module openflow-protocol {
                     // Cookie of the flow entry that was looked up.
                     type uint64;
                 }
-                
-                //TODO:: add match leaf
-                // leaf match {
-                //     type oft:match
-                // }
+                container match {
+                    uses match;
+                }
 
 // struct ofp_match match; /* Packet metadata. Variable size. */
 // /* The variable size and padded match is always followed by:
@@ -295,10 +307,9 @@ module openflow-protocol {
                 leaf byte-count {
                     type uint64;
                 }
-                //TODO:: add match leaf
-                //leaf match {
-                //    type oft:match;
-                //}
+                container match {
+                    uses match;
+                }
             } 
             grouping port-status {
                 // reference "OFPT_PORT_STATUS message in Openflow Switch 1.3 Spec"
@@ -370,9 +381,11 @@ module openflow-protocol {
                     type uint32;
                 }
                 leaf flags {
-                    type uint16;
+                    type oft:flow-mod-flags;
                 }
-                //TODO:: add match leaf
+                container match {
+                    uses match;
+                }
             } 
             grouping group-mod {
                 // reference "OFPT_GROUP_MOD message in Openflow Switch 1.3 Spec"
@@ -475,10 +488,8 @@ module openflow-protocol {
                         leaf cookie-mask {
                             type uint64;
                         }
-                        leaf match {
-                            type identityref {
-                                base oft:match-type-base;
-                            }
+                        container match {
+                            uses match;
                         }
                     }
                     case multipart-request-aggregate {
@@ -497,10 +508,8 @@ module openflow-protocol {
                         leaf cookie-mask {
                             type uint64;
                         }
-                        leaf match {
-                            type identityref {
-                                base oft:match-type-base;
-                            }
+                        container match {
+                            uses match;
                         }
                     }
                     case multipart-request-port-stats {
@@ -625,8 +634,8 @@ module openflow-protocol {
                             leaf byte-count {
                                 type uint64;
                             }
-                            leaf match {
-                                type uint64;
+                            container match {
+                                uses match;
                             }
                         }
                     }
@@ -784,8 +793,11 @@ module openflow-protocol {
                         leaf-list max_groups {
                             type uint32;
                         }
-                        leaf-list actions {
-                            type ofaction:action-type;
+                        //leaf-list actions {
+                        //    type ofaction:action-type;
+                        //}
+                        list actions {
+                            uses ofaction:action-header;
                         }
                     }
                     case multipart-reply-meter {
@@ -1042,8 +1054,7 @@ module openflow-protocol {
             }
 
 
-
-                /* Immutable messages. */
+            /* Immutable messages. */
             notification hello-message {
                 uses hello;
                 // reference "OFPT_HELLO message in Openflow Switch 1.3 Spec"

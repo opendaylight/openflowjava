@@ -21,13 +21,12 @@ public class PacketInMessageFactoryTest {
      */
     @Test
     public void test(){
-        ByteBuf bb = BufferHelper.buildBuffer("00 01 02 03 01 02 01 04 00 01 02 03 04 05 06 07 00 00 01 02 03 04");
+        ByteBuf bb = BufferHelper.buildBuffer("00 01 02 03 01 04 00 01 02 03 04 05 06 07 00 00 01 02 03 04");
         PacketInMessage builtByFactory = BufferHelper.decodeV13(PacketInMessageFactory.getInstance(), bb); 
         
         BufferHelper.checkHeaderV13(builtByFactory);
         
         Assert.assertEquals("Wrong bufferID", 0x00010203L, builtByFactory.getBufferId().longValue());
-        Assert.assertEquals("Wrong totalLen", 0x0102, builtByFactory.getTotalLen().intValue());
         Assert.assertEquals("Wrong reason", 0x01, builtByFactory.getReason().shortValue());
         Assert.assertEquals("Wrong tableID", new TableId((long) 4), builtByFactory.getTableId());
         Assert.assertEquals("Wrong cookie", 0x0001020304050607L, builtByFactory.getCookie().longValue());
