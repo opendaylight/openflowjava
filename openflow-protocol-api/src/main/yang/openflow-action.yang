@@ -8,17 +8,16 @@ module openflow-action {
         description "Initial model";
     }
 
-    /*
     identity output {
         description " Output to switch port. ";
         base oft:action;
     }
     identity copy_ttl_out {
-        description " Copy TTL "outwards" -- from next-to-outermost to outermost ";
+        description " Copy TTL \"outwards\" -- from next-to-outermost to outermost ";
         base oft:action;
     }
     identity copy_ttl_in {
-        description " Copy TTL "inwards" -- from outermost to next-to-outermost ";
+        description " Copy TTL \"inwards\" -- from outermost to next-to-outermost ";
         base oft:action;
     }
     identity set_mpls_ttl {
@@ -77,7 +76,7 @@ module openflow-action {
         description "";
         base oft:action;
     }
-    */
+    
     grouping output {
         description 
             "Action structure for OFPAT_OUTPUT, which sends packets out 'port'.
@@ -133,20 +132,26 @@ module openflow-action {
     }
 
     grouping push-pbb {
-
+        leaf ethertype {
+            type oft:ether-type;
+        }
     }
 
     grouping push-mpls {
-
+        leaf ethertype {
+            type oft:ether-type;
+        }
     }
 
     grouping push-vlan {
-
+        leaf ethertype {
+            type oft:ether-type;
+        }
     }
 
     grouping pop-mpls {
         leaf ethertype {
-            type uint16; // TODO: define ethertype type
+            type oft:ether-type;
         }
     }
 
@@ -159,46 +164,15 @@ module openflow-action {
     
     grouping action-header {
         leaf type {
-            type action-type;
+            type identityref {
+                base oft:action;
+            }
+        }
+        choice action-type {
+            case output {
+                uses output;
+            }
         }
     }
     
-    typedef action-type {
-        /* ofp_action_type */
-        type enumeration {
-            enum OUTPUT {
-                description "Output to switch port.";
-            }
-            enum SET_VLAN_VID {
-                description "Set the 802.1q VLAN id.";
-            }
-            enum SET_VLAN_PCP {
-                description "Set the 802.1q priority.";
-            }
-            enum STRIP_VLAN {
-                description "Strip the 802.1q header.";
-            }
-            enum SET_DL_SRC {
-                description "Ethernet source address.";
-            }
-            enum SET_DL_DST {
-                description "Ethernet destination address.";
-            }
-            enum SET_NW_SRC {
-                description "IP source address.";
-            }
-            enum SET_NW_DST {
-                description "IP destination address.";
-            }
-            enum SET_TP_SRC {
-                description "TCP/UDP source port.";
-            }
-            enum SET_TP_DST {
-                description "TCP/UDP destination port.";
-            }
-            enum OFPAT_VENDOR {
-                value 65535; // 0xffff
-            }
-        }
-    }
 }
