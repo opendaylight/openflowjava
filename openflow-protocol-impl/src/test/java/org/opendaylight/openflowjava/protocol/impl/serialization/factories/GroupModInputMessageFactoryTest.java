@@ -50,7 +50,7 @@ public class GroupModInputMessageFactoryTest {
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readByte());
         out.skipBytes(PADDING_IN_GROUP_MOD_MESSAGE);
         Assert.assertEquals("Wrong groupId", message.getGroupId().intValue(), out.readUnsignedInt());
-        Assert.assertEquals("Wrong bucketList", true, compareBucketsLists(createBucketsList(), createBucketsListFromBufer(out)));
+        Assert.assertEquals("Wrong bucketList", createBucketsList(), createBucketsListFromBufer(out));
     }
     
     private static List<Buckets> createBucketsList(){
@@ -76,35 +76,5 @@ public class GroupModInputMessageFactoryTest {
         bucket = bucketsBuilder.build();
         bucketsList.add(bucket);
         return bucketsList;
-    }
-    
-    private static boolean compareBucketsLists(List<Buckets> bucketsFromMessage, List<Buckets> bucketsFromBuffer) {
-        boolean result = false;
-        int bucketsFromMessageLength = bucketsFromMessage.size();
-        for (int i = 0; i < bucketsFromMessageLength; i++) {
-            if (bucketsFromMessage.get(i).getWeight().equals(bucketsFromBuffer.get(i).getWeight())) {
-                result = true;
-            } else {
-                result = false;
-                break;
-            }
-            if (bucketsFromMessage.get(i).getWatchPort()
-                    .equals(bucketsFromBuffer.get(i).getWatchPort())) {
-                result = true;
-            } else {
-                result = false;
-                break;
-            }
-            if (bucketsFromMessage.get(i).getWatchGroup()
-                    .equals(bucketsFromBuffer.get(i).getWatchGroup())) {
-                result = true;
-            } else {
-                result = false;
-                break;
-            }
-        }
-     // TODO get method for field length missing
-     // TODO actions structure missing
-        return result;
     }
 }

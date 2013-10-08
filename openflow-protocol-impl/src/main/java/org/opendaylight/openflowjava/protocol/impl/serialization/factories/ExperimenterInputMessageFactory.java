@@ -15,7 +15,7 @@ public class ExperimenterInputMessageFactory implements OFSerializer<Experimente
 
     /** Code type of Experimenter message */
     public static final byte MESSAGE_TYPE = 4;
-    private static final int MESSAGE_LENGTH = 16;
+    private static int dataLength;
     private static ExperimenterInputMessageFactory instance;
     
     private ExperimenterInputMessageFactory() {
@@ -35,20 +35,24 @@ public class ExperimenterInputMessageFactory implements OFSerializer<Experimente
     @Override
     public void messageToBuffer(short version, ByteBuf out,
             ExperimenterInput message) {
-        
+        dataLength = message.getData().length;
         ByteBufUtils.writeOFHeader(instance, message, out);
         out.writeInt(message.getExperimenter().intValue());
         out.writeInt(message.getExpType().intValue());
+        out.writeBytes(message.getData());
     }
 
     @Override
     public int computeLength() {
-        return MESSAGE_LENGTH;
+        int ofHeaderLength = 8; //OFHeaderLength
+        int messageLength = 8; //experimenterHeaderLength
+        messageLength = messageLength + ofHeaderLength + dataLength;
+        return messageLength;
     }
 
     @Override
     public byte getMessageType() {
         return MESSAGE_TYPE;
     }
-
+    
 }

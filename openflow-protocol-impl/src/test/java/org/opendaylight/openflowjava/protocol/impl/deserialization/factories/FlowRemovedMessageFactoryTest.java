@@ -29,7 +29,7 @@ public class FlowRemovedMessageFactoryTest {
         Assert.assertTrue(builtByFactory.getCookie().longValue() == 0x0001020304050607L);
         Assert.assertTrue(builtByFactory.getPriority() == 0x03);
         Assert.assertEquals("Wrong reason", 0x02, builtByFactory.getReason().getIntValue());
-        Assert.assertEquals("Wrong tableId", new TableId((long) 4), builtByFactory.getTableId());
+        Assert.assertEquals("Wrong tableId", new TableId(4L), builtByFactory.getTableId());
         Assert.assertEquals("Wrong durationSec", 0x02L, builtByFactory.getDurationSec().longValue());
         Assert.assertEquals("Wrong durationNsec", 0x05L, builtByFactory.getDurationNsec().longValue());
         Assert.assertEquals("Wrong idleTimeout", 0x01, builtByFactory.getIdleTimeout().intValue());

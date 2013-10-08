@@ -15,7 +15,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  */
 public class RoleReplyMessageFactory implements OFDeserializer<RoleRequestOutput>{
-
     private static RoleReplyMessageFactory instance;
     private static final byte PADDING_IN_ROLE_REPLY_HEADER = 4;
     
@@ -39,9 +38,7 @@ public class RoleReplyMessageFactory implements OFDeserializer<RoleRequestOutput
         RoleRequestOutputBuilder builder = new RoleRequestOutputBuilder();
         builder.setVersion(version);
         builder.setXid(rawMessage.readUnsignedInt());
-        byte[] role = new byte[Integer.SIZE/Byte.SIZE];
-        rawMessage.readBytes(role);
-        builder.setRole(ControllerRole.forValue(new BigInteger(role).intValue()));
+        builder.setRole(ControllerRole.forValue((int) rawMessage.readUnsignedInt()));
         rawMessage.skipBytes(PADDING_IN_ROLE_REPLY_HEADER);
         byte[] generationID = new byte[8];
         rawMessage.readBytes(generationID);

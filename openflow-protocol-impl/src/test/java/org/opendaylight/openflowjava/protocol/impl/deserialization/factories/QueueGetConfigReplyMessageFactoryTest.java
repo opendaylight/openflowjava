@@ -32,16 +32,15 @@ public class QueueGetConfigReplyMessageFactoryTest {
         ByteBuf bb = BufferHelper.buildBuffer("00 01 02 03 00 00 00 00 00 00 00 01 00 00 00 01 00 00 00 00 00 00 00 00 00 02 00 00 00 00 00 00");
         GetQueueConfigOutput builtByFactory = BufferHelper.decodeV13(QueueGetConfigReplyMessageFactory.getInstance(), bb);
         BufferHelper.checkHeaderV13(builtByFactory);
-        Assert.assertTrue("Wrong port",66051L == builtByFactory.getPort().getValue());
-        Assert.assertTrue("Wrong queues", true == compareLists(builtByFactory.getQueues(), createQueuesList()));
+        Assert.assertEquals("Wrong port", 66051L, builtByFactory.getPort().getValue().longValue());
+        Assert.assertEquals("Wrong queues", builtByFactory.getQueues(), createQueuesList());
     }
     
     public List<Queues> createQueuesList(){
-        final byte PADDING_IN_PACKET_QUEUE_HEADER = 6;
         List<Queues> queuesList = new ArrayList<Queues>();
         QueuesBuilder qb = new QueuesBuilder();
-        qb.setQueueId(new QueueId((long) 1));
-        qb.setPort(new PortNumber((long) 1));
+        qb.setQueueId(new QueueId(1L));
+        qb.setPort(new PortNumber(1L));
         qb.setProperties(createPropertiesList());
         queuesList.add(qb.build());
         
@@ -49,41 +48,11 @@ public class QueueGetConfigReplyMessageFactoryTest {
     }
     
     public List<Properties> createPropertiesList(){
-        final byte PADDING_IN_QUEUE_PROPERTY_HEADER = 4;
         List<Properties> propertiesList = new ArrayList<Properties>();
         PropertiesBuilder pb = new PropertiesBuilder();
         pb.setProperty(QueueProperty.values()[2]);
         propertiesList.add(pb.build());
         
         return propertiesList;
-    }
-    
-    public boolean compareLists(List<Queues> originalList, List<Queues> testList){
-        boolean decision = false;
-        int originalListLength = originalList.size();
-        int testListLength = testList.size();
-        
-        for(int i=0; i<originalListLength; i++){
-            if(originalList.get(i).getPort().equals(testList.get(i).getPort())) {
-                decision = true;
-            } else {
-                decision = false;
-                break;
-            }
-            if(originalList.get(i).getQueueId().equals(testList.get(i).getQueueId())) {
-                decision = true;
-            } else {
-                decision = false;
-                break;
-            }
-            if(originalList.get(i).getProperties().get(0).getProperty().equals(
-                    testList.get(i).getProperties().get(0).getProperty())) {
-                decision = true;
-            } else {
-                decision = false;
-                break;
-            }
-        }
-        return decision;
     }
 }

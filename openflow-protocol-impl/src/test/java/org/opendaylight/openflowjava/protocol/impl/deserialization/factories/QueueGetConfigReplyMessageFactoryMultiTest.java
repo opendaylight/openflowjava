@@ -53,9 +53,9 @@ public class QueueGetConfigReplyMessageFactoryMultiTest {
                 QueueGetConfigReplyMessageFactory.getInstance(), bb);
 
         BufferHelper.checkHeaderV13(builtByFactory);
-        Assert.assertTrue("Wrong port", 66051L == builtByFactory.getPort().getValue());
-        Assert.assertTrue("Wrong queues", true == compareLists(builtByFactory.getQueues(),
-                        createQueuesList()));
+        Assert.assertEquals("Wrong port", 66051L, builtByFactory.getPort().getValue().longValue());
+        Assert.assertEquals("Wrong queues", builtByFactory.getQueues(),
+                createQueuesList());
     }
 
     private static List<Queues> createQueuesList() {
@@ -76,35 +76,6 @@ public class QueueGetConfigReplyMessageFactoryMultiTest {
         pb.setProperty(QueueProperty.values()[1]);
         propertiesList.add(pb.build());
         return propertiesList;
-    }
-
-    private static boolean compareLists(List<Queues> originalList,
-            List<Queues> testList) {
-        boolean result = false;
-        int originalListLength = originalList.size();
-        for (int i = 0; i < originalListLength; i++) {
-            if (originalList.get(i).getPort().equals(testList.get(i).getPort())) {
-                result = true;
-            } else {
-                result = false;
-                break;
-            }
-            if (originalList.get(i).getQueueId()
-                    .equals(testList.get(i).getQueueId())) {
-                result = true;
-            } else {
-                result = false;
-                break;
-            }
-            if (originalList.get(i).getProperties().get(0).getProperty()
-                    .equals(testList.get(i).getProperties().get(0).getProperty())) {
-                result = true;
-            } else {
-                result = false;
-                break;
-            }
-        }
-        return result;
     }
 
 }

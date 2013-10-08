@@ -41,9 +41,9 @@ public class SetAsyncInputMessageFactoryTest {
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
         BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength());
-        Assert.assertTrue("Wrong packetInMask", comparePIRLists(message.getPacketInMask(), readPacketInMask(out)));
-        Assert.assertTrue("Wrong packetInMask", comparePortReasonLists(message.getPortStatusMask(), readPortStatusMask(out)));
-        Assert.assertTrue("Wrong packetInMask", compareFlowRemovedReasonLists(message.getFlowRemovedMask(), readFlowRemovedReasonMask(out)));
+        Assert.assertEquals("Wrong packetInMask", message.getPacketInMask(), readPacketInMask(out));
+        Assert.assertEquals("Wrong packetInMask", message.getPortStatusMask(), readPortStatusMask(out));
+        Assert.assertEquals("Wrong packetInMask", message.getFlowRemovedMask(), readFlowRemovedReasonMask(out));
         
     }
     
@@ -91,9 +91,9 @@ public class SetAsyncInputMessageFactoryTest {
     
     private static PacketInReason readPacketInReason(int input) {
         PacketInReason reason = null;
-        Boolean OFPRNOMATCH = (input & (1 << 0)) > 0;
-        Boolean OFPRACTION = (input & (1 << 1)) > 0;
-        Boolean OFPRINVALIDTTL = (input & (1 << 2)) > 0;
+        boolean OFPRNOMATCH = (input & (1 << 0)) > 0;
+        boolean OFPRACTION = (input & (1 << 1)) > 0;
+        boolean OFPRINVALIDTTL = (input & (1 << 2)) > 0;
         
         if (OFPRNOMATCH) {
             return PacketInReason.forValue(0);
@@ -110,9 +110,9 @@ public class SetAsyncInputMessageFactoryTest {
     
     private static PortReason readPortReason(int input) {
         PortReason reason = null;
-        Boolean OFPPRADD = (input & (1 << 0)) > 0;
-        Boolean OFPPRDELETE = (input & (1 << 1)) > 0;
-        Boolean OFPPRMODIFY = (input & (1 << 2)) > 0;
+        boolean OFPPRADD = (input & (1 << 0)) > 0;
+        boolean OFPPRDELETE = (input & (1 << 1)) > 0;
+        boolean OFPPRMODIFY = (input & (1 << 2)) > 0;
         
         if (OFPPRADD) {
             return PortReason.forValue(0);
@@ -129,10 +129,10 @@ public class SetAsyncInputMessageFactoryTest {
     
     private static FlowRemovedReason readFlowRemovedReason(int input) {
         FlowRemovedReason reason = null;
-        Boolean OFPRRIDLETIMEOUT = (input & (1 << 0)) > 0;
-        Boolean OFPRRHARDTIMEOUT = (input & (1 << 1)) > 0;
-        Boolean OFPRRDELETE = (input & (1 << 2)) > 0;
-        Boolean OFPRRGROUPDELETE = (input & (1 << 3)) > 0;
+        boolean OFPRRIDLETIMEOUT = (input & (1 << 0)) > 0;
+        boolean OFPRRHARDTIMEOUT = (input & (1 << 1)) > 0;
+        boolean OFPRRDELETE = (input & (1 << 2)) > 0;
+        boolean OFPRRGROUPDELETE = (input & (1 << 3)) > 0;
         
         if (OFPRRIDLETIMEOUT) {
             return FlowRemovedReason.forValue(0);
@@ -148,49 +148,5 @@ public class SetAsyncInputMessageFactoryTest {
             }
         
         return reason;
-    }
-    
-    private static boolean comparePIRLists(List<PacketInReason> fromMessage, List<PacketInReason> fromBuffer) {
-        boolean result = false;
-        int romMessageLength = fromMessage.size();
-        for (int i = 0; i < romMessageLength; i++) {
-            if ((fromMessage.get(i).getIntValue()) == (fromBuffer.get(i).getIntValue())) {
-                result = true;
-            } else {
-                result = false;
-                break;
-            }
-        }
-        return result;
-    }
-    
-    private static boolean comparePortReasonLists(List<PortReason> fromMessage, 
-            List<PortReason> fromBuffer) {
-        boolean result = false;
-        int fromMessageLength = fromMessage.size();
-        for (int i = 0; i < fromMessageLength; i++) {
-            if ((fromMessage.get(i).getIntValue()) == (fromBuffer.get(i).getIntValue())) {
-                result = true;
-            } else {
-                result = false;
-                break;
-            }
-        }
-        return result;
-    }
-    
-    private static boolean compareFlowRemovedReasonLists(List<FlowRemovedReason> fromMessage, 
-            List<FlowRemovedReason> fromBuffer) {
-        boolean result = false;
-        int fromMessageLength = fromMessage.size();
-        for (int i = 0; i < fromMessageLength; i++) {
-            if ((fromMessage.get(i).getIntValue()) == (fromBuffer.get(i).getIntValue())) {
-                result = true;
-            } else {
-                result = false;
-                break;
-            }
-        }
-        return result;
     }
 }

@@ -49,7 +49,7 @@ public class MeterModInputMessageFactoryTest {
         Assert.assertEquals("Wrong meterModCommand", message.getCommand().getIntValue(), out.readShort());
         Assert.assertEquals("Wrong meterFlags", message.getFlags(), decodeMeterModFlags(out.readShort()));
         Assert.assertEquals("Wrong meterId", message.getMeterId().getValue().intValue(), out.readUnsignedInt());
-        Assert.assertEquals("Wrong bands", true, compareBandsLists(createBandsList(), decodeBandsList(out)));
+        Assert.assertEquals("Wrong bands", createBandsList(), decodeBandsList(out));
     }
     
     private static MeterFlags decodeMeterModFlags(short input){
@@ -82,35 +82,5 @@ public class MeterModInputMessageFactoryTest {
         band = bandsBuilder.build();
         bandsList.add(band);
         return bandsList;
-    }
-    
-    private static boolean compareBandsLists(List<Bands> bandsFromMessage, List<Bands> bandsFromBuffer) {
-        boolean result = false;
-        int bandsFromMessageLength = bandsFromMessage.size();
-        for (int i = 0; i < bandsFromMessageLength; i++) {
-            if (bandsFromMessage.get(i).getType().equals(bandsFromBuffer.get(i).getType())) {
-                result = true;
-            } else {
-                result = false;
-                break;
-            }
-            if (bandsFromMessage.get(i).getRate()
-                    .equals(bandsFromBuffer.get(i).getRate())) {
-                result = true;
-            } else {
-                result = false;
-                break;
-            }
-            if (bandsFromMessage.get(i).getBurstSize()
-                    .equals(bandsFromBuffer.get(i).getBurstSize())) {
-                result = true;
-            } else {
-                result = false;
-                break;
-            }
-        }
-     // TODO get method for field length missing
-     // TODO actions structure missing
-        return result;
     }
 }
