@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa5d592f_5846ff24",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/deserialization/factories/GetAsyncReplyMessageFactory.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2013-10-08T09:11:19Z",
+      "side": 1,
+      "message": "use primitive boolean, please",
+      "revId": "4fd6ae71f0381906352405ee98b57bc5aa0f33ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
