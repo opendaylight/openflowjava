@@ -25,20 +25,28 @@ public class ExperimenterInputMessageFactoryTest {
      */
     @Test
     public void test() throws Exception {
-        ExperimenterInputBuilder eib = new ExperimenterInputBuilder();
-        BufferHelper.setupHeader(eib);
-        eib.setExperimenter(0x0001020304L);
-        eib.setExpType(0x0001020304L);
-        ExperimenterInput ei = eib.build();
+        ExperimenterInputBuilder builder = new ExperimenterInputBuilder();
+        BufferHelper.setupHeader(builder);
+        builder.setExperimenter(0x0001020304L);
+        builder.setExpType(0x0001020304L);
+        builder.setData(new byte[] {0x01, 0x02, 0x03});
+        ExperimenterInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        ExperimenterInputMessageFactory eimf = ExperimenterInputMessageFactory.getInstance();
-        eimf.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, ei);
+        ExperimenterInputMessageFactory factory = ExperimenterInputMessageFactory.getInstance();
+        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
-        BufferHelper.checkHeaderV13(out, EXPERIMENTER_REQUEST_MESSAGE_CODE_TYPE, 16);
+        BufferHelper.checkHeaderV13(out, EXPERIMENTER_REQUEST_MESSAGE_CODE_TYPE, factory.computeLength());
         Assert.assertEquals("Wrong experimenter", 0x0001020304L, out.readUnsignedInt());
         Assert.assertEquals("Wrong expType", 0x0001020304L, out.readUnsignedInt());
+        Assert.assertArrayEquals("Wrong data", message.getData(), readData(out));
     }
-
-
+    
+    private static byte[] readData(ByteBuf input) {
+        byte[] data = new byte[input.readableBytes()]; 
+        for(int i = 0;i <= data.length-1; i++) {
+            data[i] = input.readByte();
+        }
+        return data;
+    }
 }

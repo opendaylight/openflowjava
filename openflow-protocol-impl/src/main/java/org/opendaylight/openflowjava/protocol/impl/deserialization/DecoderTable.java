@@ -12,6 +12,7 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.Err
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.ExperimenterMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.FeaturesReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.FlowRemovedMessageFactory;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.GetAsyncReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.GetConfigReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.MultipartReplyMessageFactory;
@@ -100,6 +101,7 @@ public class DecoderTable {
         table.put(new MessageTypeCodeKey(OF13, (short) 21), BarrierReplyMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF13, (short) 23), QueueGetConfigReplyMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF13, (short) 25), RoleReplyMessageFactory.getInstance());
+        table.put(new MessageTypeCodeKey(OF13, (short) 27), GetAsyncReplyMessageFactory.getInstance());
     }
     
     /**

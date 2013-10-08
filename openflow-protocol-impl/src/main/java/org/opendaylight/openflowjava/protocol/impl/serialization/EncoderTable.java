@@ -17,6 +17,7 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.factories.GetQu
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.GroupModInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.HelloInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.MeterModInputMessageFactory;
+import org.opendaylight.openflowjava.protocol.impl.serialization.factories.MultipartRequestMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.PacketOutInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.PortModInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.RoleRequestInputMessageFactory;
@@ -35,6 +36,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GroupModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterModInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketOutInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.RoleRequestInput;
@@ -88,6 +90,7 @@ public class EncoderTable {
         table.put(new MessageTypeKey<>(OF13, GroupModInput.class), GroupModInputMessageFactory.getInstance());
         table.put(new MessageTypeKey<>(OF13, HelloInput.class), HelloInputMessageFactory.getInstance());
         table.put(new MessageTypeKey<>(OF13, MeterModInput.class), MeterModInputMessageFactory.getInstance());
+        table.put(new MessageTypeKey<>(OF13, MultipartRequestMessage.class), MultipartRequestMessageFactory.getInstance());
         table.put(new MessageTypeKey<>(OF13, PacketOutInput.class), PacketOutInputMessageFactory.getInstance());
         table.put(new MessageTypeKey<>(OF13, PortModInput.class), PortModInputMessageFactory.getInstance());
         table.put(new MessageTypeKey<>(OF13, RoleRequestInput.class), RoleRequestInputMessageFactory.getInstance());
