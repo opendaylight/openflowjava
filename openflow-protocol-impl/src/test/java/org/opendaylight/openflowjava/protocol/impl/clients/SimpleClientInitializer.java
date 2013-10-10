@@ -20,21 +20,25 @@ import com.google.common.util.concurrent.SettableFuture;
 public class SimpleClientInitializer extends ChannelInitializer<SocketChannel> {
     
     private SettableFuture<Boolean> sf;
+    private boolean secured;
 
     /**
      * @param sf future notifier of connected channel
      */
-    public SimpleClientInitializer(SettableFuture<Boolean> sf) {
+    public SimpleClientInitializer(SettableFuture<Boolean> sf, boolean secured) {
         this.sf = sf;
+        this.secured = secured;
     }
 
     @Override
     public void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-        SSLEngine engine =
-            SslContextFactory.getClientContext().createSSLEngine();
-        engine.setUseClientMode(true);
-        pipeline.addLast("ssl", new SslHandler(engine));
+        if (secured) {
+        	SSLEngine engine =
+        			SslContextFactory.getClientContext().createSSLEngine();
+        	engine.setUseClientMode(true);
+        	pipeline.addLast("ssl", new SslHandler(engine));
+        }
         pipeline.addLast("handler", new SimpleClientHandler(sf));
         sf = null;
     }

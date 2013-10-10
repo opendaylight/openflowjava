@@ -36,6 +36,11 @@ public class MessageTypeKey<E extends DataObject> {
     public Class<E> getMsgType() {
         return msgType;
     }
+    
+    @Override
+    public String toString() {
+    	return "msgVersion: " + msgVersion + " msgType: " + msgType.getName();
+    }
 
     @Override
     public int hashCode() {

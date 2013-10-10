@@ -5,6 +5,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.socket.SocketChannel;
 
+import java.net.InetAddress;
 import java.util.Iterator;
 
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
@@ -34,8 +35,14 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
     
     @Override
     protected void initChannel(SocketChannel ch) {
-        LOGGER.debug("building pipeline");
-        // TODO - call switchConnectionHandler accept first
+        InetAddress switchAddress = ch.remoteAddress().getAddress();
+		LOGGER.info("Incoming connection from (remote address): " + switchAddress.toString());
+        if (!switchConnectionHandler.accept(switchAddress)) {
+        	ch.disconnect();
+        	LOGGER.info("Incoming connection rejected");
+        	return;
+        }
+        LOGGER.info("Incoming connection accepted - building pipeline");
         allChannels.add(ch);
         ConnectionFacade connectionAdapter = null;
         connectionAdapter = ConnectionAdapterFactory.createConnectionAdapter(ch);

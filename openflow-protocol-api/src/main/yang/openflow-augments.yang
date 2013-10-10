@@ -9,9 +9,9 @@ module openflow-augments {
         description "Initial model";
     }
 
-     //augment "/ofproto:hello-message/ofproto:hello" {
-     //       leaf uid {
-     //           type uint16;
-     //       }
-     //}    
+     augment "/ofproto:hello-message/ofproto:elements" {
+            leaf uid {
+                type uint16;
+            }
+     }     
 }

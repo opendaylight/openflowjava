@@ -39,8 +39,6 @@ public class SimpleClient extends Thread {
     private EventLoopGroup group;
     private SettableFuture<Boolean> isOnlineFuture;
     private SettableFuture<Boolean> automatedPartDone;
-    private SettableFuture<Void> dataReceived;
-    private int dataLimit;
     
     /**
      * Constructor of class
@@ -77,7 +75,6 @@ public class SimpleClient extends Thread {
     private void init() {
         isOnlineFuture = SettableFuture.create();
         automatedPartDone = SettableFuture.create();
-        dataReceived = SettableFuture.create();
     }
     
     /**
@@ -88,17 +85,9 @@ public class SimpleClient extends Thread {
         group = new NioEventLoopGroup();
         try {
             Bootstrap b = new Bootstrap();
-            if (securedClient) {
-                b.group(group)
-                        .channel(NioSocketChannel.class)
-                        .handler(new SimpleClientInitializer(isOnlineFuture));
-            } else {
-                SimpleClientHandler plainHandler = new SimpleClientHandler(isOnlineFuture);
-                plainHandler.setDataReceivedFuture(dataReceived , dataLimit);
-                b.group(group)
-                        .channel(NioSocketChannel.class)
-                        .handler(plainHandler);
-            }
+            b.group(group)
+                .channel(NioSocketChannel.class)
+                .handler(new SimpleClientInitializer(isOnlineFuture, securedClient));
 
             Channel ch = b.connect(host, port).sync().channel();
             
@@ -202,23 +191,9 @@ public class SimpleClient extends Thread {
     }
     
     /**
-     * @return the dataReceived
-     */
-    public SettableFuture<Void> getDataReceived() {
-        return dataReceived;
-    }
-    
-    /**
      * @return the automatedPartDone
      */
     public SettableFuture<Boolean> getAutomatedPartDone() {
         return automatedPartDone;
-    }
-    
-    /**
-     * @param dataLimit the dataLimit to set
-     */
-    public void setDataLimit(int dataLimit) {
-        this.dataLimit = dataLimit;
     }
 }

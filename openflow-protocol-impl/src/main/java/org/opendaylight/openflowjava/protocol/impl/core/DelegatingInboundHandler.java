@@ -1,6 +1,8 @@
 /* Copyright (C)2013 Pantheon Technologies, s.r.o. All rights reserved. */
 package org.opendaylight.openflowjava.protocol.impl.core;
 
+import java.util.concurrent.Executors;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -18,7 +20,7 @@ public class DelegatingInboundHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DelegatingInboundHandler.class);
     
-    private MessageConsumer consumer;
+    protected MessageConsumer consumer;
     private boolean inactiveMessageSent = false;
     
     /** 
@@ -31,8 +33,14 @@ public class DelegatingInboundHandler extends ChannelInboundHandlerAdapter {
     }
     
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        consumer.consume((DataObject) msg);
+    public void channelRead(ChannelHandlerContext ctx, final Object msg) throws Exception {
+    	LOGGER.debug("Reading");
+    	new Thread(new Runnable() {
+			@Override
+			public void run() {
+				consumer.consume((DataObject) msg);
+			}
+		}).start();
     }
     
     @Override

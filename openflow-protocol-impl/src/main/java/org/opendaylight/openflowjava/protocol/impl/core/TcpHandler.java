@@ -170,22 +170,6 @@ public class TcpHandler implements ServerFacade {
         return channelInitializer;
     }
     
-    /**
-     * Sets and starts TCPHandler.
-     *
-     * @param args
-     * @throws Exception
-     */
-    public static void main(String[] args) throws Exception {
-        int port;
-        if (args.length > 0) {
-            port = Integer.parseInt(args[0]);
-        } else {
-            port = 6633;
-        }
-        new Thread(new TcpHandler(port)).start();
-    }
-    
     @Override
     public ListenableFuture<Boolean> getIsOnlineFuture() {
         return isOnlineFuture;

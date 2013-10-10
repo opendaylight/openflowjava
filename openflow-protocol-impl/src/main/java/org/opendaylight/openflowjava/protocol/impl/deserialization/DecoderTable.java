@@ -77,6 +77,7 @@ public class DecoderTable {
             synchronized (DecoderTable.class) {
                 instance = new DecoderTable();
                 instance.init();
+                
             }
         }
         return instance;
