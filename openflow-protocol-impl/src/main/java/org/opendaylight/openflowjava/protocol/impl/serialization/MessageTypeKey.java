@@ -38,6 +38,11 @@ public class MessageTypeKey<E extends DataObject> {
     }
 
     @Override
+    public String toString() {
+        return "msgVersion: " + msgVersion + " msgType: " + msgType.getName();
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;

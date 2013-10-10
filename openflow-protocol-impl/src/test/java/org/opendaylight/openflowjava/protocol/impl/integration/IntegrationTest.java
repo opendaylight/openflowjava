@@ -57,13 +57,28 @@ public class IntegrationTest {
         configs.add(new TestingConnConfigImpl(startupAddress, DEFAULT_PORT, DEFAULT_TLS_SUPPORT));
         scpimpl.configure(configs);
         scpimpl.startup().get(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
-        
+
         int amountOfCLients = 1;
-        List<SimpleClient> clients = createAndStartClient(amountOfCLients, 24);
+        List<SimpleClient> clients = createAndStartClient(amountOfCLients);
         SimpleClient firstClient = clients.get(0);
         firstClient.getAutomatedPartDone().get();
-        firstClient.getDataReceived().get();
-        disconnectClients(clients);
+        mockPlugin.getFinishedFuture().get();
+    }
+
+    /**
+     * Library integration and communication test (with virtual machine)
+     * @throws Exception
+     */
+    //@Test
+    public void testCommunicationWithVM() throws Exception {
+        mockPlugin = new MockPlugin();
+        SwitchConnectionProviderImpl scpimpl = new SwitchConnectionProviderImpl();
+        scpimpl.setSwitchConnectionHandler(mockPlugin);
+        List<ConnectionConfiguration> configs = new ArrayList<>();
+        configs.add(new TestingConnConfigImpl(startupAddress, DEFAULT_PORT, DEFAULT_TLS_SUPPORT));
+        scpimpl.configure(configs);
+        scpimpl.startup().get(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
+        mockPlugin.getFinishedFuture().get();
     }
     
     /**
@@ -73,7 +88,7 @@ public class IntegrationTest {
      * @throws InterruptedException
      * @throws ExecutionException
      */
-    private List<SimpleClient> createAndStartClient(int amountOfCLients, int dataLimit)
+    private List<SimpleClient> createAndStartClient(int amountOfCLients)
             throws InterruptedException, ExecutionException {
         List<SimpleClient> clientsHorde = new ArrayList<>();
         for (int i = 0; i < amountOfCLients; i++) {
@@ -82,7 +97,6 @@ public class IntegrationTest {
                     getClass().getResourceAsStream(OF_BINARY_MESSAGE_INPUT_TXT));
             sc.setSecuredClient(false);
             clientsHorde.add(sc);
-            sc.setDataLimit(dataLimit);
             sc.start();
         }
         for (SimpleClient sc : clientsHorde) {

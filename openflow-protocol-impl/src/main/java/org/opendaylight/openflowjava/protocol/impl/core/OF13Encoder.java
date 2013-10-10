@@ -26,8 +26,10 @@ public class OF13Encoder extends MessageToByteEncoder<OfHeader> {
     @Override
     protected void encode(ChannelHandlerContext ctx, OfHeader msg, ByteBuf out)
             throws Exception {
+        LOGGER.debug("Encoding");
         SerializationFactory.messageToBuffer(msg.getVersion(), out, msg);
         if (out.readableBytes() > 0) {
+            out.retain();
             ctx.writeAndFlush(out);
         } else {
             LOGGER.warn("Translated buffer is empty");

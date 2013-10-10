@@ -2,6 +2,8 @@
 
 package org.opendaylight.openflowjava.protocol.impl.connection;
 
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
+
 
 /**
  * @author mirehak
@@ -10,12 +12,12 @@ package org.opendaylight.openflowjava.protocol.impl.connection;
 public class RpcResponseKey {
     
     private final long xid;
-    private final String outputClazz;
+    private final Class<? extends OfHeader> outputClazz;
     /**
      * @param xid
      * @param outputClazz
      */
-    public RpcResponseKey(long xid, String outputClazz) {
+    public RpcResponseKey(long xid, Class<? extends OfHeader> outputClazz) {
         super();
         this.xid = xid;
         this.outputClazz = outputClazz;
@@ -31,16 +33,14 @@ public class RpcResponseKey {
     /**
      * @return the outputClazz
      */
-    public String getOutputClazz() {
+    public Class<? extends OfHeader> getOutputClazz() {
         return outputClazz;
     }
-
+    
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result
-                + ((outputClazz == null) ? 0 : outputClazz.hashCode());
         result = prime * result + (int) (xid ^ (xid >>> 32));
         return result;
     }
@@ -57,8 +57,8 @@ public class RpcResponseKey {
         if (outputClazz == null) {
             if (other.outputClazz != null)
                 return false;
-        } else if (!outputClazz.equals(other.outputClazz))
-            return false;
+            } else if (!other.outputClazz.isAssignableFrom(outputClazz))
+                return false;
         if (xid != other.xid)
             return false;
         return true;
