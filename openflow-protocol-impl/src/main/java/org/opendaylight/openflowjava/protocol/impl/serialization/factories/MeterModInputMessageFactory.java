@@ -4,14 +4,18 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 import io.netty.buffer.ByteBuf;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterFlags;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterBandCommons;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterModInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.MeterBand;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDrop;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDscpRemark;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.mod.Bands;
 
 /**
@@ -20,7 +24,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class MeterModInputMessageFactory implements OFSerializer<MeterModInput> {
     private static final byte MESSAGE_TYPE = 29;
-    private static final int MESSAGE_LENGTH = 16; 
+    private static final int MESSAGE_LENGTH = 16;
+    private static final short LENGTH_OF_METER_BANDS = 16;
+    private static final short PADDING_IN_METER_BAND_DROP = 4;
+    private static final short PADDING_IN_METER_BAND_DSCP_REMARK = 3;
     private static MeterModInputMessageFactory instance;
     
     private MeterModInputMessageFactory() {
@@ -49,6 +56,7 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput> 
 
     @Override
     public int computeLength() {
+        
         return MESSAGE_LENGTH;
     }
 
@@ -70,14 +78,27 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput> 
     }
     
     private static void encodeBands(List<Bands> bands, ByteBuf outBuffer) {
-        for (Iterator<Bands> iterator = bands.iterator(); iterator.hasNext();) {
-            Bands currentBands = iterator.next();
-            outBuffer.writeShort(currentBands.getType().getIntValue());
-            // TODO outBuffer.writeShort(currentBands.get); length is missing
-            outBuffer.writeInt(currentBands.getRate().intValue());
-            outBuffer.writeInt(currentBands.getBurstSize().intValue());
-            // TODO what to do with ofp_meter_band_drop?
+        for (Bands currentBand : bands) {
+            MeterBand meterBand = currentBand.getMeterBand();
+            writeBandCommonFields((MeterBandCommons) meterBand, outBuffer);
+            if (meterBand instanceof MeterBandDrop) {
+                ByteBufUtils.padBuffer(PADDING_IN_METER_BAND_DROP, outBuffer);
+            } else if (meterBand instanceof MeterBandDscpRemark) {
+                MeterBandDscpRemark dscpRemarkBand = (MeterBandDscpRemark) meterBand;
+                outBuffer.writeByte(dscpRemarkBand.getPrecLevel());
+                ByteBufUtils.padBuffer(PADDING_IN_METER_BAND_DSCP_REMARK, outBuffer);
+            } else if (meterBand instanceof MeterBandExperimenter) {
+                MeterBandExperimenter experimenterBand = (MeterBandExperimenter) meterBand;
+                outBuffer.writeInt(experimenterBand.getExperimenter().intValue());
+            }
         }
+    }
+    
+    private static void writeBandCommonFields(MeterBandCommons meterBand, ByteBuf outBuffer) {
+        outBuffer.writeShort(meterBand.getType().getIntValue());
+        outBuffer.writeShort(LENGTH_OF_METER_BANDS);
+        outBuffer.writeInt(meterBand.getRate().intValue());
+        outBuffer.writeInt(meterBand.getBurstSize().intValue());
     }
     
 }
