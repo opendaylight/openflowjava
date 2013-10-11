@@ -18,6 +18,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterModCommand;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterModInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDropBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDscpRemarkBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.mod.Bands;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.mod.BandsBuilder;
 
@@ -46,10 +49,10 @@ public class MeterModInputMessageFactoryTest {
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
         BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength());
-        Assert.assertEquals("Wrong meterModCommand", message.getCommand().getIntValue(), out.readShort());
+        Assert.assertEquals("Wrong meterModCommand", message.getCommand().getIntValue(), out.readUnsignedShort());
         Assert.assertEquals("Wrong meterFlags", message.getFlags(), decodeMeterModFlags(out.readShort()));
         Assert.assertEquals("Wrong meterId", message.getMeterId().getValue().intValue(), out.readUnsignedInt());
-        Assert.assertEquals("Wrong bands", createBandsList(), decodeBandsList(out));
+        Assert.assertEquals("Wrong bands", message.getBands(), decodeBandsList(out));
     }
     
     private static MeterFlags decodeMeterModFlags(short input){
@@ -61,26 +64,54 @@ public class MeterModInputMessageFactoryTest {
     }
     
     private static List<Bands> createBandsList(){
-        List<Bands> bandsList = new ArrayList<Bands>();
+        List<Bands> bandsList = new ArrayList<>();
         BandsBuilder bandsBuilder = new BandsBuilder();
-        Bands band;
-        bandsBuilder.setType(MeterBandType.forValue(1));
-        bandsBuilder.setRate(2254L);
-        bandsBuilder.setBurstSize(12L);
-        band = bandsBuilder.build();
-        bandsList.add(band);
+        MeterBandDropBuilder dropBand = new MeterBandDropBuilder();
+        dropBand.setType(MeterBandType.OFPMBTDROP);
+        dropBand.setRate(1L);
+        dropBand.setBurstSize(2L);
+        bandsList.add(bandsBuilder.setMeterBand(dropBand.build()).build());
+        MeterBandDscpRemarkBuilder dscpRemarkBand = new MeterBandDscpRemarkBuilder();
+        dscpRemarkBand.setType(MeterBandType.OFPMBTDSCPREMARK);
+        dscpRemarkBand.setRate(1L);
+        dscpRemarkBand.setBurstSize(2L);
+        dscpRemarkBand.setPrecLevel((short) 3);
+        bandsList.add(bandsBuilder.setMeterBand(dscpRemarkBand.build()).build());
+        MeterBandExperimenterBuilder experimenterBand = new MeterBandExperimenterBuilder();
+        experimenterBand.setType(MeterBandType.OFPMBTEXPERIMENTER);
+        experimenterBand.setRate(1L);
+        experimenterBand.setBurstSize(2L);
+        experimenterBand.setExperimenter(4L);
+        bandsList.add(bandsBuilder.setMeterBand(experimenterBand.build()).build());
         return bandsList;
     }
     
     private static List<Bands> decodeBandsList(ByteBuf input){
-        List<Bands> bandsList = new ArrayList<Bands>();
+        List<Bands> bandsList = new ArrayList<>();
         BandsBuilder bandsBuilder = new BandsBuilder();
-        Bands band;
-        bandsBuilder.setType(MeterBandType.forValue(input.readShort()));
-        bandsBuilder.setRate(input.readUnsignedInt());
-        bandsBuilder.setBurstSize(input.readUnsignedInt());
-        band = bandsBuilder.build();
-        bandsList.add(band);
+        MeterBandDropBuilder dropBand = new MeterBandDropBuilder();
+        dropBand.setType(MeterBandType.forValue(input.readUnsignedShort()));
+        input.skipBytes(Short.SIZE/Byte.SIZE);
+        dropBand.setRate(input.readUnsignedInt());
+        dropBand.setBurstSize(input.readUnsignedInt());
+        input.skipBytes(4);
+        bandsList.add(bandsBuilder.setMeterBand(dropBand.build()).build());
+        MeterBandDscpRemarkBuilder dscpRemarkBand = new MeterBandDscpRemarkBuilder();
+        dscpRemarkBand.setType(MeterBandType.forValue(input.readUnsignedShort()));
+        input.skipBytes(Short.SIZE/Byte.SIZE);
+        dscpRemarkBand.setRate(input.readUnsignedInt());
+        dscpRemarkBand.setBurstSize(input.readUnsignedInt());
+        dscpRemarkBand.setPrecLevel(input.readUnsignedByte());
+        input.skipBytes(3);
+        bandsList.add(bandsBuilder.setMeterBand(dscpRemarkBand.build()).build());
+        MeterBandExperimenterBuilder experimenterBand = new MeterBandExperimenterBuilder();
+        experimenterBand.setType(MeterBandType.forValue(input.readUnsignedShort()));
+        input.skipBytes(Short.SIZE/Byte.SIZE);
+        experimenterBand.setRate(input.readUnsignedInt());
+        experimenterBand.setBurstSize(input.readUnsignedInt());
+        experimenterBand.setExperimenter(input.readUnsignedInt());
+        bandsList.add(bandsBuilder.setMeterBand(experimenterBand.build()).build());
         return bandsList;
     }
+    
 }

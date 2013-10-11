@@ -1046,6 +1046,26 @@ module openflow-protocol {
             } 
             
             grouping meter-band-header {
+                choice meter-band {
+                    case meter-band-drop {
+                        uses meter-band-commons;
+                    }
+                    case meter-band-dscp-remark {
+                        uses meter-band-commons;
+                        leaf prec-level {
+                            type uint8;
+                        }
+                    }
+                    case meter-band-experimenter {
+                        uses meter-band-commons;
+                        leaf experimenter {
+                            type uint32;
+                        }
+                    }
+                }
+            }
+            
+            grouping meter-band-commons {
                 leaf type {
                     type oft:meter-band-type;
                 }

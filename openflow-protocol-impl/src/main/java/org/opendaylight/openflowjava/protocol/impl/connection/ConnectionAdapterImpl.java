@@ -101,9 +101,9 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                     @Override
                     public void onRemoval(
                             RemovalNotification<RpcResponseKey, SettableFuture<?>> notification) {
-                        LOG.warn("rpc response discarded: "+notification.getKey());
                         SettableFuture<?> future = notification.getValue();
                         if (!future.isDone()) {
+                            LOG.warn("rpc response discarded: " + notification.getKey());
                         	future.cancel(true);
                         }
                     }
