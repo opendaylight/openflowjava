@@ -21,28 +21,28 @@ module openflow-extensible-match {
     }
     
     // oxm classes
-        identity class {
+        identity clazz {
             description "Base identity for OXM classes";
         }
 
 
         identity nxm-0-class {
             description "Backward compatibility with NXM";
-            base class;
+            base clazz;
         }
         identity nxm-1-class {
             description "Backward compatibility with NXM";
-            base class;
+            base clazz;
         }
         identity openflow-basic-class {
             description "Basic class for OpenFlow";
-            base class;
+            base clazz;
         }
         identity experimenter-class {
             description 
                 "Marks Experimenter match type class.
                 All experimenter match classes MUST use this class as a base.";
-            base class;
+            base clazz;
         }
 
 
@@ -243,6 +243,9 @@ module openflow-extensible-match {
             leaf address {
                 type yang:mac-address;
             }
+            leaf mask {
+                type binary;
+            }
         }
         grouping eth-src {
             description "Ethernet source address.";
@@ -257,9 +260,6 @@ module openflow-extensible-match {
             description "Ethernet frame type.";
             leaf type {
                 type oft:ether-type; // Needs to define that as general model
-            }
-            leaf mask {
-                type binary;
             }
         }
         grouping vlan-vid {
@@ -739,20 +739,21 @@ module openflow-extensible-match {
             }
         }
         
+        container oxm-container {
+            uses oxm-fields;
+        }
+        
         grouping oxm-fields {
             list match-entries {
                 leaf oxm-class {
                     type identityref {
-                        base class;
+                        base clazz;
                     }
                 }
                 leaf oxm-match-field {
                     type identityref {
                         base match-field;
                     }
-                }
-                leaf has-mask {
-                    type boolean;
                 }
             }
         }

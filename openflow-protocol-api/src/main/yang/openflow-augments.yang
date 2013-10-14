@@ -1,17 +1,29 @@
 module openflow-augments {
     namespace "urn:opendaylight:openflow:augments";
     prefix "aug";
-    
+
     import openflow-protocol {prefix ofproto;}
+    import openflow-extensible-match {prefix oxm;}
 
 
     revision "2013-10-02" {
         description "Initial model";
     }
 
-     augment "/ofproto:hello-message/ofproto:elements" {
-            leaf uid {
-                type uint16;
-            }
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         uses oxm:in-port;
+         /* common augment for fields:
+            OXM_OF_IN_PORT
+            OXM_OF_IN_PHY_PORT
+         */
      }
+
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         uses oxm:metadata;
+         /* common augment for fields:
+            OXM_OF_METADATA
+            OXM_OF_TUNNEL_ID
+         */
+     }
+
 }

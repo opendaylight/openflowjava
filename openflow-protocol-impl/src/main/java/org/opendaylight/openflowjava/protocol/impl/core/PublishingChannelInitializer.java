@@ -25,6 +25,7 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
             .getLogger(PublishingChannelInitializer.class);
     private DefaultChannelGroup allChannels;
     private SwitchConnectionHandler switchConnectionHandler;
+    private int switchIdleTimeout;
     
     /**
      * default ctor
@@ -50,6 +51,7 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
             LOGGER.debug("calling plugin: "+switchConnectionHandler);
             switchConnectionHandler.onSwitchConnected(connectionAdapter);
             connectionAdapter.checkListeners();
+            ch.pipeline().addLast(COMPONENT_NAMES.IDLE_HANDLER.name(), new IdleHandler(switchIdleTimeout, 0, 0));
             ch.pipeline().addLast(COMPONENT_NAMES.TLS_DETECTOR.name(), new TlsDetector());
             ch.pipeline().addLast(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name(), new DelegatingInboundHandler(connectionAdapter));
         } catch (Exception e) {
@@ -78,4 +80,12 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
     public void setSwitchConnectionHandler(SwitchConnectionHandler switchConnectionHandler) {
         this.switchConnectionHandler = switchConnectionHandler;
     }
+
+    /**
+     * @param switchIdleTimeout the switchIdleTimeout to set
+     */
+    public void setSwitchIdleTimeout(int switchIdleTimeout) {
+        this.switchIdleTimeout = switchIdleTimeout;
+    }
+    
 }

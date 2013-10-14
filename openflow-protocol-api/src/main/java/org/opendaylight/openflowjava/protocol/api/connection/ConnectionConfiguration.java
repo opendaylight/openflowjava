@@ -4,6 +4,10 @@ package org.opendaylight.openflowjava.protocol.api.connection;
 
 import java.net.InetAddress;
 
+import javax.net.ssl.SSLEngine;
+
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SwitchIdleEvent;
+
 /**
  * @author mirehak
  *
@@ -41,5 +45,15 @@ public interface ConnectionConfiguration {
      * @return encryption feature support
      */
     public FEATURE_SUPPORT getTlsSupport();
+    
+    /**
+     * @return silence time (in seconds) - after this time {@link SwitchIdleEvent} message is sent upstream 
+     */
+    public int getSwitchIdleTimeout();
+    
+    /**
+     * @return seed for {@link SSLEngine}
+     */
+    public Object getSslContext();
 
 }
