@@ -39,6 +39,9 @@ public final class SslContextFactory {
 
             serverContext = SSLContext.getInstance(PROTOCOL);
             serverContext.init(kmf.getKeyManagers(), null, null);
+        } catch (RuntimeException e) {
+            throw new Error(
+                    "Failed to initialize the server-side SSLContext", e);
         } catch (Exception e) {
             throw new Error(
                     "Failed to initialize the server-side SSLContext", e);

@@ -234,6 +234,11 @@
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>2.7</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -242,13 +247,22 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
-                <version>2.4.0</version>
+                <version>2.5.2</version>
                 <configuration>
                     <effort>Max</effort>
                     <threshold>Low</threshold>
                     <goal>site</goal>
                 </configuration>
             </plugin>
+            <plugin>
+              <artifactId>maven-jxr-plugin</artifactId>
+              <version>2.3</version>
+              <configuration>
+                <aggregate>true</aggregate>
+                <linkJavadoc>true</linkJavadoc>
+              </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jdepend-maven-plugin</artifactId>

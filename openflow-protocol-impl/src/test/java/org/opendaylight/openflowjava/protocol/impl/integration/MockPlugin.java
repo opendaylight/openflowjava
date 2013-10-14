@@ -29,6 +29,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketInMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortStatusMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.DisconnectEvent;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SwitchIdleEvent;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SystemNotificationsListener;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -46,6 +47,7 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
     private static final Logger LOGGER = LoggerFactory.getLogger(MockPlugin.class);
     private ConnectionAdapter adapter;
     private SettableFuture<Void> finishedFuture;
+    private int idleCounter = 0;
     
     public MockPlugin() {
         finishedFuture = SettableFuture.create();
@@ -170,6 +172,16 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
 
     public SettableFuture<Void> getFinishedFuture() {
         return finishedFuture;
+    }
+
+    @Override
+    public void onSwitchIdleEvent(SwitchIdleEvent notification) {
+        LOGGER.debug("switch status: "+notification.getInfo());
+        idleCounter ++;
+    }
+    
+    public int getIdleCounter() {
+        return idleCounter;
     }
 
 
