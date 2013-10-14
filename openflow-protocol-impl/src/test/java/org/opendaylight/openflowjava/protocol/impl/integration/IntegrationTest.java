@@ -2,7 +2,6 @@
 package org.opendaylight.openflowjava.protocol.impl.integration;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -27,6 +26,7 @@ public class IntegrationTest {
     public static final String OF_BINARY_MESSAGE_INPUT_TXT = "OFBinaryMessageInput.txt";
     private static final int DEFAULT_PORT = 6633;
     private static final FEATURE_SUPPORT DEFAULT_TLS_SUPPORT = FEATURE_SUPPORT.NOT_SUPPORTED;
+    private static final int SWITCH_IDLE_TIMEOUT = 2;
     
     protected static final Logger LOGGER = LoggerFactory
             .getLogger(IntegrationTest.class);
@@ -37,11 +37,18 @@ public class IntegrationTest {
     private MockPlugin mockPlugin;
 
     /**
-     * @throws UnknownHostException
+     * @throws Exception
      */
     @Before
-    public void setUp() throws UnknownHostException {
+    public void setUp() throws Exception {
         startupAddress = InetAddress.getLocalHost();
+        mockPlugin = new MockPlugin();
+        SwitchConnectionProviderImpl scpimpl = new SwitchConnectionProviderImpl();
+        scpimpl.setSwitchConnectionHandler(mockPlugin);
+        List<ConnectionConfiguration> configs = new ArrayList<>();
+        configs.add(new TestingConnConfigImpl(startupAddress, DEFAULT_PORT, DEFAULT_TLS_SUPPORT, SWITCH_IDLE_TIMEOUT));
+        scpimpl.configure(configs);
+        scpimpl.startup().get(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
     }
     
     /**
@@ -50,14 +57,6 @@ public class IntegrationTest {
      */
     @Test
     public void testCommunication() throws Exception {
-        mockPlugin = new MockPlugin();
-        SwitchConnectionProviderImpl scpimpl = new SwitchConnectionProviderImpl();
-        scpimpl.setSwitchConnectionHandler(mockPlugin);
-        List<ConnectionConfiguration> configs = new ArrayList<>();
-        configs.add(new TestingConnConfigImpl(startupAddress, DEFAULT_PORT, DEFAULT_TLS_SUPPORT));
-        scpimpl.configure(configs);
-        scpimpl.startup().get(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
-
         int amountOfCLients = 1;
         List<SimpleClient> clients = createAndStartClient(amountOfCLients);
         SimpleClient firstClient = clients.get(0);
@@ -71,13 +70,6 @@ public class IntegrationTest {
      */
     //@Test
     public void testCommunicationWithVM() throws Exception {
-        mockPlugin = new MockPlugin();
-        SwitchConnectionProviderImpl scpimpl = new SwitchConnectionProviderImpl();
-        scpimpl.setSwitchConnectionHandler(mockPlugin);
-        List<ConnectionConfiguration> configs = new ArrayList<>();
-        configs.add(new TestingConnConfigImpl(startupAddress, DEFAULT_PORT, DEFAULT_TLS_SUPPORT));
-        scpimpl.configure(configs);
-        scpimpl.startup().get(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
         mockPlugin.getFinishedFuture().get();
     }
     

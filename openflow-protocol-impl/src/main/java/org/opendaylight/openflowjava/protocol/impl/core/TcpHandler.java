@@ -45,7 +45,11 @@ public class TcpHandler implements ServerFacade {
     public static enum COMPONENT_NAMES {
 
         /**
-         * First component in pipeline - detecting TLS connections
+         * Detects switch idle state
+         */
+        IDLE_HANDLER,
+        /**
+         * Detects TLS connections
          */
         TLS_DETECTOR,
         /**
@@ -195,6 +199,10 @@ public class TcpHandler implements ServerFacade {
     public void setSwitchConnectionHandler(
             SwitchConnectionHandler switchConnectionHandler) {
         channelInitializer.setSwitchConnectionHandler(switchConnectionHandler);
+    }
+    
+    public void setSwitchIdleTimeout(int switchIdleTimeout) {
+        channelInitializer.setSwitchIdleTimeout(switchIdleTimeout);
     }
     
 }

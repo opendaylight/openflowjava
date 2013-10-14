@@ -51,6 +51,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetConfigInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.DisconnectEvent;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SwitchIdleEvent;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SystemNotificationsListener;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Notification;
@@ -252,7 +253,9 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 systemListener.onDisconnectEvent((DisconnectEvent) message);
                 responseCache.invalidateAll();
                 disconnectOccured = true;
-            } 
+            } else if (message instanceof SwitchIdleEvent) {
+                systemListener.onSwitchIdleEvent((SwitchIdleEvent) message);
+            }
             // OpenFlow messages
               else if (message instanceof EchoRequestMessage) {
                 messageListener.onEchoRequestMessage((EchoRequestMessage) message);
