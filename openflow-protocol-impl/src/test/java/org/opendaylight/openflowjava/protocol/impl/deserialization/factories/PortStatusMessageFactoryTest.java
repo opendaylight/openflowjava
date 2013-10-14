@@ -30,7 +30,7 @@ public class PortStatusMessageFactoryTest {
                                               "00 00 00 00 " + //padding in ofp_port1
                                               "08 00 27 00 B0 EB " + //mac address
                                               "00 00 " + //padding in ofp_port2
-                                              "00 00 00 0a " + //port config
+                                              "00 00 00 41 " + //port config
                                               "00 00 00 05 " + //port state
                                               "00 00 00 81 " + //current features
                                               "00 00 00 81 " + //advertised features

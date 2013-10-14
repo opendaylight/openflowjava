@@ -18,8 +18,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
 
     /** Code type of Hello message */
-    public static final byte MESSAGE_TYPE = 0;
-    private static final int MESSAGE_LENGTH = 8;
+    private static final byte MESSAGE_TYPE = 0;
+    private static int MESSAGE_LENGTH = 0;
     private static HelloInputMessageFactory instance;
     
     private HelloInputMessageFactory() {
@@ -38,8 +38,9 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
 
     @Override
     public void messageToBuffer(short version, ByteBuf out, HelloInput message) {
+        computeElementsLength(message.getElements());
         ByteBufUtils.writeOFHeader(instance, message, out);
-        // TODO - fill list of elements into ByteBuf, check length too
+        encodeElementsList(message.getElements(), out);
     }
 
     @Override
@@ -51,5 +52,33 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
     public byte getMessageType() {
         return MESSAGE_TYPE;
     }
+    
+    private static int computeElementsLength(List<Elements> elements) {
+        int versionBitmapSize = 0;
+        final int OFHeaderSize = 8;
+        int typeSize = 0;
+        
+        if (elements != null) {
+            typeSize = 2;
+            versionBitmapSize = elements.get(0).getVersionBitmap().size()/Byte.SIZE;
+            } 
+        MESSAGE_LENGTH = OFHeaderSize + versionBitmapSize + typeSize;
+        return MESSAGE_LENGTH;
+    }
  
+    private static void encodeElementsList(List<Elements> elements, ByteBuf output) {
+        int[] versionBitmap;
+        int arraySize = 0;
+        if (elements != null) {
+            for (Iterator<Elements> iterator = elements.iterator(); iterator.hasNext();) {
+                Elements currElement = iterator.next();
+                output.writeShort(currElement.getType().getIntValue());
+                versionBitmap = ByteBufUtils.fillBitMaskFromList(currElement.getVersionBitmap());
+                arraySize = (versionBitmap.length/Integer.SIZE);
+                for (int i = 0; i < arraySize; i++) {
+                    output.writeInt(versionBitmap[i]);
+                }
+            } 
+        }
+    }
 }
