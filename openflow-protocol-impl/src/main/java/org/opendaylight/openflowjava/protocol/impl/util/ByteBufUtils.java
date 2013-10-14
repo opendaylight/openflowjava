@@ -5,6 +5,7 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -117,6 +118,27 @@ public abstract class ByteBufUtils {
             if (iterator.getValue() != null && iterator.getValue().booleanValue()) {
                 bitmask |= 1 << iterator.getKey();
             }
+        }
+        return bitmask;
+    }
+    
+    /**
+     * Fills the bitmask from boolean list where key is bit position
+     * @param booleanList bit to boolean mapping
+     * @return bit mask
+     */
+    public static int[] fillBitMaskFromList(List<Boolean> booleanList) {
+        final int intLength = 32;
+        int[] bitmask = new int[booleanList.size()];
+        int index = 0;
+        int arrayIndex = 0;
+        
+        for (Boolean currElement : booleanList) {
+            if (currElement != null && currElement.booleanValue()) {
+                bitmask[arrayIndex] |= 1 << index;
+            }
+            index++;
+            arrayIndex = index/intLength;
         }
         return bitmask;
     }

@@ -4,7 +4,9 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -77,8 +79,8 @@ public class ByteBufUtilsTest {
         Assert.assertEquals("Not null string", expectedBinaryString, bitmaskInBinaryString);
     }
 
-    private String toBinaryString(Map<Integer, Boolean> emptyMap, int length) {
-        String binaryString = Integer.toBinaryString(ByteBufUtils.fillBitMaskFromMap(emptyMap));; 
+    private static String toBinaryString(Map<Integer, Boolean> emptyMap, int length) {
+        String binaryString = Integer.toBinaryString(ByteBufUtils.fillBitMaskFromMap(emptyMap)); 
         return String.format("%"+length+"s", binaryString).replaceAll(" ", "0");
     }
     
@@ -129,6 +131,76 @@ public class ByteBufUtilsTest {
             randomMap.put(i, mapValue);
         }
         bitmaskValueInBinarySytring = toBinaryString(randomMap, 32);
+        Assert.assertEquals("Strings does not match", expectedBinaryString, bitmaskValueInBinarySytring);
+    }
+    
+    /**
+     * Test of {@link ByteBufUtils#fillBitMaskFromList(java.util.Map)}
+     */
+    @Test
+    public void testFillBitmaskByEmptyList() {
+        List<Boolean> emptyList = new ArrayList<>();
+        emptyList.add(null);
+        String expectedBinaryString = "00000000000000000000000000000000";
+        String bitmaskInBinaryString = listToBinaryString(emptyList, 32);
+        
+        Assert.assertEquals("Not null string", expectedBinaryString, bitmaskInBinaryString);
+    }
+
+    private static String listToBinaryString(List<Boolean> emptyList, int length) {
+        int[] bitMaskArray;
+        bitMaskArray = ByteBufUtils.fillBitMaskFromList(emptyList);
+        String binaryString = Integer.toBinaryString(bitMaskArray[0]); 
+        return String.format("%"+length+"s", binaryString).replaceAll(" ", "0");
+    }
+    
+    /**
+     * Test of {@link ByteBufUtils#fillBitMaskFromList(java.util.Map)}
+     */
+    @Test
+    public void testFillBitmaskByFullList() {
+        List<Boolean> fullList = new ArrayList<>();
+        String expectedBinaryString = "11111111111111111111111111111111";
+        String bitmaskValueInBinarySytring;
+        for(Integer i=0;i<=31;i++) {
+            fullList.add(true);
+        }
+        bitmaskValueInBinarySytring = listToBinaryString(fullList, 32);
+        Assert.assertEquals("Strings does not match", expectedBinaryString, bitmaskValueInBinarySytring);
+    }
+    
+    /**
+     * Test of {@link ByteBufUtils#fillBitMaskFromList(java.util.Map)}
+     */
+    @Test
+    public void testFillBitmaskByZeroList() {
+        List<Boolean> zeroList = new ArrayList<>();
+        String expectedBinaryString = "00000000000000000000000000000000";
+        String bitmaskValueInBinarySytring;
+        for(Integer i=0;i<=31;i++) {
+            zeroList.add(false);
+        }
+        bitmaskValueInBinarySytring = listToBinaryString(zeroList, 32);
+        Assert.assertEquals("Strings does not match", expectedBinaryString, bitmaskValueInBinarySytring);
+    }
+    
+    /**
+     * Test of {@link ByteBufUtils#fillBitMaskFromList(java.util.Map)}
+     */
+    @Test
+    public void testFillBitmaskFromRandomList() {
+        List<Boolean> randomList = new ArrayList<>();
+        String expectedBinaryString = "00000000000000000111100000000000";
+        String bitmaskValueInBinarySytring;
+        Boolean listValue;
+        for(Integer i=0;i<=31;i++) {
+            listValue = false;
+            if(i>=11 && i<=14) {
+                listValue = true;
+            }
+            randomList.add(listValue);
+        }
+        bitmaskValueInBinarySytring = listToBinaryString(randomList, 32);
         Assert.assertEquals("Strings does not match", expectedBinaryString, bitmaskValueInBinarySytring);
     }
 

@@ -39,7 +39,8 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
     @Override
     public void messageToBuffer(short version, ByteBuf out, HelloInput message) {
         ByteBufUtils.writeOFHeader(instance, message, out);
-        // TODO - fill list of elements into ByteBuf, check length too
+        // TODO check length
+        encodeElementsList(message.getElements(), out);
     }
 
     @Override
@@ -52,4 +53,19 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
         return MESSAGE_TYPE;
     }
  
+    private static void encodeElementsList(List<Elements> elements, ByteBuf output) {
+        int[] versionBitmap;
+        int arraySize = 0;
+        if (elements != null) {
+            for (Iterator<Elements> iterator = elements.iterator(); iterator.hasNext();) {
+                Elements currElement = iterator.next();
+                output.writeShort(currElement.getType().getIntValue());
+                versionBitmap = ByteBufUtils.fillBitMaskFromList(currElement.getVersionBitmap());
+                arraySize = (versionBitmap.length/Integer.SIZE);
+                for (int i = 0; i < arraySize; i++) {
+                    output.writeInt(versionBitmap[i]);
+                }
+            } 
+        }
+    }
 }

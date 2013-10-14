@@ -86,9 +86,9 @@ public class GetAsyncReplyMessageFactory implements OFDeserializer<GetAsyncOutpu
     
     private static PacketInReason decodedPacketInReason(int input) {
         PacketInReason reason = null;
-        Boolean OFPRNOMATCH = (input & (1 << 0)) > 0;
-        Boolean OFPRACTION = (input & (1 << 1)) > 0;
-        Boolean OFPRINVALIDTTL = (input & (1 << 2)) > 0;
+        Boolean OFPRNOMATCH = (input & (1 << 0)) != 0;
+        Boolean OFPRACTION = (input & (1 << 1)) != 0;
+        Boolean OFPRINVALIDTTL = (input & (1 << 2)) != 0;
         
         if (OFPRNOMATCH) {
             return PacketInReason.forValue(0);
@@ -105,9 +105,9 @@ public class GetAsyncReplyMessageFactory implements OFDeserializer<GetAsyncOutpu
     
     private static PortReason decodePortReason(int input) {
         PortReason reason = null;
-        Boolean OFPPRADD = (input & (1 << 0)) > 0;
-        Boolean OFPPRDELETE = (input & (1 << 1)) > 0;
-        Boolean OFPPRMODIFY = (input & (1 << 2)) > 0;
+        Boolean OFPPRADD = (input & (1 << 0)) != 0;
+        Boolean OFPPRDELETE = (input & (1 << 1)) != 0;
+        Boolean OFPPRMODIFY = (input & (1 << 2)) != 0;
         
         if (OFPPRADD) {
             return PortReason.forValue(0);
@@ -124,10 +124,10 @@ public class GetAsyncReplyMessageFactory implements OFDeserializer<GetAsyncOutpu
     
     private static FlowRemovedReason decodeFlowRemovedReason(int input) {
         FlowRemovedReason reason = null;
-        Boolean OFPRRIDLETIMEOUT = (input & (1 << 0)) > 0;
-        Boolean OFPRRHARDTIMEOUT = (input & (1 << 1)) > 0;
-        Boolean OFPRRDELETE = (input & (1 << 2)) > 0;
-        Boolean OFPRRGROUPDELETE = (input & (1 << 3)) > 0;
+        Boolean OFPRRIDLETIMEOUT = (input & (1 << 0)) != 0;
+        Boolean OFPRRHARDTIMEOUT = (input & (1 << 1)) != 0;
+        Boolean OFPRRDELETE = (input & (1 << 2)) != 0;
+        Boolean OFPRRGROUPDELETE = (input & (1 << 3)) != 0;
         
         if (OFPRRIDLETIMEOUT) {
             return FlowRemovedReason.forValue(0);
