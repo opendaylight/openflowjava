@@ -5,7 +5,6 @@ package org.opendaylight.openflowjava.protocol.impl.connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -27,34 +26,34 @@ import com.google.common.util.concurrent.SettableFuture;
  */
 public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     
-    private static final Logger LOG = LoggerFactory
+    private static final Logger LOGGER = LoggerFactory
             .getLogger(SwitchConnectionProviderImpl.class);
     private SwitchConnectionHandler switchConnectionHandler;
     private Set<ServerFacade> serverLot;
 
     @Override
     public void configure(Collection<ConnectionConfiguration> connConfigs) {
-        LOG.debug("Configurating ..");
+        LOGGER.debug("Configuring ..");
 
         //TODO - configure servers according to configuration
         serverLot = new HashSet<>();
-        for (Iterator<ConnectionConfiguration> iterator = connConfigs.iterator(); iterator.hasNext();) {
-            ConnectionConfiguration connConfig = iterator.next();
+        for (ConnectionConfiguration connConfig : connConfigs) {
             TcpHandler server = new TcpHandler(connConfig.getAddress(), connConfig.getPort());
             server.setSwitchConnectionHandler(switchConnectionHandler);
+            server.setSwitchIdleTimeout(connConfig.getSwitchIdleTimeout());
             serverLot.add(server);
         }
     }
 
     @Override
     public void setSwitchConnectionHandler(SwitchConnectionHandler switchConnectionHandler) {
-        LOG.debug("setSwitchConnectionHanler");
+        LOGGER.debug("setSwitchConnectionHandler");
         this.switchConnectionHandler = switchConnectionHandler;
     }
 
     @Override
     public Future<List<Boolean>> shutdown() {
-        LOG.debug("Shutdown summoned");
+        LOGGER.debug("Shutdown summoned");
         ListenableFuture<List<Boolean>> result = SettableFuture.create();
         try {
             List<ListenableFuture<Boolean>> shutdownChain = new ArrayList<>();
@@ -77,7 +76,7 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
 
     @Override
     public Future<List<Boolean>> startup() {
-        LOG.debug("startup summoned");
+        LOGGER.debug("startup summoned");
         ListenableFuture<List<Boolean>> result = SettableFuture.create();
         try {
             if (serverLot.isEmpty()) {

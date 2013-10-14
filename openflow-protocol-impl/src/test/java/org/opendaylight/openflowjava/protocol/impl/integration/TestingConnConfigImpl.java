@@ -15,12 +15,14 @@ public class TestingConnConfigImpl implements ConnectionConfiguration {
     private int port;
     private Object transferProtocol;
     private FEATURE_SUPPORT tlsSupport;
+    private long switchIdleTimeout;
     
     // TODO - implement transferProtocol
-    public TestingConnConfigImpl(InetAddress address, int port, FEATURE_SUPPORT tlsSupport) {
+    public TestingConnConfigImpl(InetAddress address, int port, FEATURE_SUPPORT tlsSupport, int switchIdleTimeout) {
         this.address = address;
         this.port = port;
         this.tlsSupport = tlsSupport;
+        this.switchIdleTimeout = switchIdleTimeout;
     }
     
     @Override
@@ -41,6 +43,17 @@ public class TestingConnConfigImpl implements ConnectionConfiguration {
     @Override
     public FEATURE_SUPPORT getTlsSupport() {
         return tlsSupport;
+    }
+
+    @Override
+    public long getSwitchIdleTimeout() {
+        return switchIdleTimeout;
+    }
+
+    @Override
+    public Object getSslContext() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

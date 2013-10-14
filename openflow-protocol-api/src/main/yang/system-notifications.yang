@@ -5,11 +5,17 @@ module system-notifications {
     revision "2013-09-27" {
         //description "Initial model";
     }
-    
+
     notification disconnect-event {
         leaf info {
             type string;
-        }            
+        }
     }
-    
+
+    notification switch-idle-event {
+        leaf info {
+            type string;
+        }
+    }
+
 }
