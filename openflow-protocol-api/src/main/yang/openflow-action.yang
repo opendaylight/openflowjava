@@ -95,6 +95,12 @@ module openflow-action {
                     range "0..65294"; // 0..0xff0e
                 }
                 type enumeration {
+                    enum max {
+                        desription
+                            "maximum max_len value which can be used
+                            to request a specific byte length";
+                        value 65509; //0xffe5
+                    }
                     enum no-buffer {
                         description 
                             "indicates that no buffering should be
@@ -161,16 +167,14 @@ module openflow-action {
         }
     }
     
+    container actions {
+        uses action-header;
+    }
     
     grouping action-header {
         leaf type {
             type identityref {
                 base oft:action;
-            }
-        }
-        choice action-type {
-            case output {
-                uses output;
             }
         }
     }

@@ -699,6 +699,75 @@ module openflow-types {
         }
     }
     
+    typedef table-features-prop-type {
+        type enumeration {
+            enum OFPTFPT_INSTRUCTIONS {
+                value 0; 
+                description "Instructions property.";
+            }
+            enum OFPTFPT_INSTRUCTIONS_MISS {
+                value 1; 
+                description "Instructions for table-miss.";
+            }
+            enum OFPTFPT_NEXT_TABLES {
+                value 2; 
+                description "Next Table property.";
+            }
+            enum OFPTFPT_NEXT_TABLES_MISS {
+                value 3; 
+                description "Next Table for table-miss.";
+            }
+            enum OFPTFPT_WRITE_ACTIONS {
+                value 4; 
+                description "Write Actions property.";
+            }
+            enum OFPTFPT_WRITE_ACTIONS_MISS {
+                value 5; 
+                description "Write Actions for table-miss.";
+            }
+            enum OFPTFPT_APPLY_ACTIONS {
+                value 6; 
+                description "Apply Actions property.";
+            }
+            enum OFPTFPT_APPLY_ACTIONS_MISS {
+                value 7; 
+                description "Apply Actions for table-miss.";
+            }
+            enum OFPTFPT_MATCH {
+                value 8; 
+                description "Match property.";
+            }
+            enum OFPTFPT_WILDCARDS {
+                value 10; 
+                description "Wildcards property.";
+            }
+            enum OFPTFPT_WRITE_SETFIELD {
+                value 12; 
+                description "Write Set-Field property.";
+            }
+            enum OFPTFPT_WRITE_SETFIELD_MISS {
+                value 13; 
+                description "Write Set-Field for table-miss.";
+            }
+            enum OFPTFPT_APPLY_SETFIELD {
+                value 14; 
+                description "Apply Set-Field property.";
+            }
+            enum OFPTFPT_APPLY_SETFIELD_MISS {
+                value 15; 
+                description "Apply Set-Field for table-miss.";
+            }
+            enum OFPTFPT_EXPERIMENTER {
+                value 65534; 
+                description "Experimenter property.";
+            }
+            enum OFPTFPT_EXPERIMENTER_MISS {
+                value 65535; //0xffff 
+                description "Experimenter for table-miss.";
+            }
+        }
+    }
+    
     typedef group-types {
         /* ofp_group_type */
         type bits {

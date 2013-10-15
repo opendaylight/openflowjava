@@ -2,28 +2,350 @@ module openflow-augments {
     namespace "urn:opendaylight:openflow:augments";
     prefix "aug";
 
+    import ietf-inet-types {prefix inet;}
+    import ietf-yang-types {prefix yang;}
+    
+    import openflow-types {prefix oft;}
     import openflow-protocol {prefix ofproto;}
+    import openflow-action {prefix ofaction;}
+    import openflow-instruction {prefix ofinstruction;}
     import openflow-extensible-match {prefix oxm;}
 
 
     revision "2013-10-02" {
         description "Initial model";
     }
-
+// OFP_MATCH AUGMENTS
      augment "/oxm:oxm-container/oxm:match-entries" {
-         uses oxm:in-port;
-         /* common augment for fields:
-            OXM_OF_IN_PORT
-            OXM_OF_IN_PHY_PORT
-         */
+         leaf port-number {
+             type uint32;
+         }
      }
 
      augment "/oxm:oxm-container/oxm:match-entries" {
-         uses oxm:metadata;
-         /* common augment for fields:
-            OXM_OF_METADATA
-            OXM_OF_TUNNEL_ID
-         */
+         leaf metadata {
+             type binary;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf mask {
+             type binary;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf mac-address {
+             type yang:mac-address;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf eth-type {
+             type oft:ether-type;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf vlan-vid {
+             type uint16;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf vlan-pcp {
+             type uint8;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf dscp {
+             type inet:dscp;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf ecn {
+             type uint8;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf protocol-number {
+             type uint8;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf ipv4-prefix {
+             type inet:ipv4-prefix;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf port {
+             type inet:port-number;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf icmpv4-type {
+             type uint8;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf icmpv4-code {
+             type uint8;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf op-code {
+             type uint16;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf ipv6-prefix {
+             type inet:ipv6-prefix;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf ipv6-flabel {
+             type inet:ipv6-flow-label;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf icmpv6-type {
+             type uint8;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf icmpv6-code {
+             type uint8;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf ipv6-address {
+             type inet:ipv6-address;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf mpls-label {
+             type uint32;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf tc {
+             type uint8;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf bos {
+             type boolean;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf isid {
+             type uint32;
+         }
+     }
+     
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         leaf pseudo-field {
+             type bits {
+                 bit nonext {
+                     description "<No next header> encountered.";
+                     position 0;
+                 }
+                 bit esp {
+                     description "Encrypted Sec Payload header present.";
+                     position 1;
+                 }
+                 bit auth {
+                     description "Authentication header present.";
+                     position 2;
+                 }
+                 bit dest {
+                     description "1 or 2 dest headers present.";
+                     position 3;
+                 }
+                 bit frag {
+                     description "Fragment header present.";
+                     position 4;
+                 }
+                 bit router {
+                     description "Router header present.";
+                     position 5;
+                 }
+                 bit hop {
+                     description "Hop-by-hop header present.";
+                     position 6;
+                 }
+                 bit unrep {
+                     description "Unexpected repeats encountered.";
+                     position 7;
+                 }
+                 bit unseq {
+                     description "Unexpected sequencing encountered.";
+                     position 8;
+                     }                    
+             }
+         }
      }
 
+// OFP_ACTION AUGMENTS
+     augment "/ofaction:actions" {
+         leaf port {
+             type oft:any-port-number;
+         }
+     }
+     
+     augment "/ofaction:actions" {
+         leaf max-length {
+             description "Maximum packet length to be send to controller.";
+             type union {
+                 type uint16 {
+                     range "0..65294"; // 0..0xff0e
+                 }
+                 type enumeration {
+                     enum max {
+                         desription
+                             "maximum max_len value which can be used
+                             to request a specific byte length";
+                         value 65509; //0xffe5
+                     }
+                     enum no-buffer {
+                         description 
+                             "indicates that no buffering should be
+                              applied and the whole packet is to be
+                              sent to the controller";
+                         value 65535; //0xffff
+                     }
+                 }
+             }
+         }
+     }
+     
+     augment "/ofaction:actions" {
+         leaf mpls-ttl {
+             type uint8;
+         }
+     }
+     
+     augment "/ofaction:actions" {
+         leaf ethertype {
+             type oft:ether-type;
+         }
+     }
+     
+     augment "/ofaction:actions" {
+         leaf queue-id {
+             type uint32;
+         }
+     }
+     
+     augment "/ofaction:actions" {
+         leaf group-id {
+             type uint32;
+         }
+     }
+     
+     augment "/ofaction:actions" {
+         leaf nw-ttl {
+             type uint8;
+         }
+     }
+     
+     augment "/ofaction:actions" {
+         uses oxm:oxm-fields;
+     }
+     
+     augment "/ofaction:actions" {
+         leaf experimenter {
+             type uint32;
+         }
+     }
+
+// OFP_TABLE_FEATURES_PROPERTIES AUGMENTS
+     augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
+         list instruction-ids {
+             uses ofinstruction:instructions;
+         }
+     }
+
+     augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
+         list next-table-ids {
+             leaf table-id {
+                 type uint8;
+             }
+         }
+     }
+
+     augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
+         list action-ids {
+             uses ofaction:action-header;
+         }
+     }
+
+     augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
+         list oxm-ids {
+             uses oxm:oxm-fields;
+         }
+     }
+
+     augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
+         leaf experimenter {
+             type uint32;
+         }
+         leaf exp-type {
+             type uint32;
+         }
+         leaf data {
+             type binary;
+         }
+     }
+     
+// OFP_INSTRUCTION AUGMENTS
+     augment "/ofinstruction:instruction" {
+         leaf table-id {
+             type uint8;
+         }
+     }
+     
+     augment "/ofinstruction:instruction" {
+         leaf metadata {
+             type binary;
+         }
+         leaf metadata-mask {
+             type binary;
+         }
+     }
+     
+     augment "/ofinstruction:instruction" {
+         list actions {
+             uses ofaction:action-header;
+         }
+     }
+     
+     augment "/ofinstruction:instruction" {
+         leaf meter-id {
+             type uint32;
+         }
+     }
+     
+     augment "/ofinstruction:instruction" {
+         leaf experimenter {
+             type uint32;
+         }
+     }
 }

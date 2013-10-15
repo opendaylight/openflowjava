@@ -540,7 +540,7 @@ module openflow-extensible-match {
             container in-port {
                 presence "";
                 uses in-port; 
-        
+
             }
             container in-phy-port {
                 presence "";

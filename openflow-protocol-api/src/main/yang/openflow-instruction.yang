@@ -7,7 +7,7 @@ module openflow-instruction {
     revision "2013-07-31" {
        // description "Initial model";
     }
-    /*
+
     identity goto_table {
         //description " Setup the next table in the lookup pipeline";
         base oft:instruction;
@@ -36,7 +36,7 @@ module openflow-instruction {
         description "Experimenter instruction";
         base oft:instruction;
     }
-    */
+
     // Structures
 
     grouping goto-table {
@@ -77,6 +77,18 @@ module openflow-instruction {
         description " Apply meter (rate limiter)";
         leaf meter-id {
             type oft:meter-id;
+        }
+    }
+
+    container instruction {
+        uses instructions;
+    }
+
+    grouping instructions {
+        leaf type {
+            type identityref {
+                base oft:instruction;
+            }
         }
     }
 

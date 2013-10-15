@@ -84,9 +84,19 @@ module openflow-protocol {
             uses oxm:oxm-fields;
         }
         
+        container table-features-properties-container {
+            uses table-features-properties;
+        }
         
+        grouping table-features-properties {
+            list table-feature-properties {
+                leaf type {
+                    type oft:table-features-prop-type;
+                }
+            }
+        }
 
-    // TODO: ofp_packat_queue
+    // TODO: ofp_packet_queue
 
     // # MESSAGE Structures
         /* Immutable messages. */
@@ -545,7 +555,7 @@ module openflow-protocol {
                         }
                     }
                     case multipart-request-table-features {
-                        list table_features {
+                        list table-features {
                             leaf table-id {
                                 type uint8;
                             }
@@ -564,6 +574,7 @@ module openflow-protocol {
                             leaf max-entries {
                                 type uint32;
                             }
+                            uses table-features-properties;
                         }
                     }
                     case multipart-request-experimenter {
