@@ -28,7 +28,7 @@ public class FlowModInputMessageFactory implements OFSerializer<FlowModInput> {
     /**
      * @return singleton factory
      */
-    public static FlowModInputMessageFactory getInstance() {
+    public static synchronized FlowModInputMessageFactory getInstance() {
         if(instance == null) {
             instance = new FlowModInputMessageFactory();
         }

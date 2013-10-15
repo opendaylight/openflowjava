@@ -25,7 +25,7 @@ public class ExperimenterInputMessageFactory implements OFSerializer<Experimente
     /**
      * @return singleton factory
      */
-    public static ExperimenterInputMessageFactory getInstance() {
+    public static synchronized ExperimenterInputMessageFactory getInstance() {
         if (instance == null) {
             instance = new ExperimenterInputMessageFactory();
         }

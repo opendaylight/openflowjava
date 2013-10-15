@@ -25,7 +25,7 @@ public class FlowRemovedMessageFactory implements OFDeserializer<FlowRemovedMess
     /**
      * @return singleton factory
      */
-    public static FlowRemovedMessageFactory getInstance(){
+    public static synchronized FlowRemovedMessageFactory getInstance(){
         if(instance == null){
             instance = new FlowRemovedMessageFactory();
         }

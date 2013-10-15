@@ -26,7 +26,7 @@ public class RoleReplyMessageFactory implements OFDeserializer<RoleRequestOutput
      * 
      * @return singleton factory
      */
-    public static RoleReplyMessageFactory getInstance(){
+    public static synchronized RoleReplyMessageFactory getInstance(){
         if(instance == null){
             instance = new RoleReplyMessageFactory();
         }

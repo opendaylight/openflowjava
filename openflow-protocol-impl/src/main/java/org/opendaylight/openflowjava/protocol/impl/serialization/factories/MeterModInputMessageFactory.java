@@ -37,7 +37,7 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput> 
     /**
      * @return singleton factory
      */
-    public static MeterModInputMessageFactory getInstance() {
+    public static synchronized MeterModInputMessageFactory getInstance() {
         if (instance == null) {
             instance = new MeterModInputMessageFactory();
         }

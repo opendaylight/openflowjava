@@ -26,7 +26,7 @@ public class RoleRequestInputMessageFactory implements OFSerializer<RoleRequestI
     /**
      * @return singleton factory
      */
-    public static RoleRequestInputMessageFactory getInstance() {
+    public static synchronized RoleRequestInputMessageFactory getInstance() {
         if (instance == null) {
             instance = new RoleRequestInputMessageFactory();
         }

@@ -63,12 +63,10 @@ public class EncoderTable {
     /**
      * @return singleton instance
      */
-    public static EncoderTable getInstance() {
+    public static synchronized EncoderTable getInstance() {
         if (instance == null) {
-            synchronized (EncoderTable.class) {
-                instance = new EncoderTable();
-                instance.init();
-            }
+            instance = new EncoderTable();
+            instance.init();
         }
         return instance;
     }

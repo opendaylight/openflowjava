@@ -31,7 +31,7 @@ public class PortModInputMessageFactory implements OFSerializer<PortModInput> {
     /**
      * @return singleton factory
      */
-    public static PortModInputMessageFactory getInstance() {
+    public static synchronized PortModInputMessageFactory getInstance() {
         if (instance == null) {
             instance = new PortModInputMessageFactory();
         }

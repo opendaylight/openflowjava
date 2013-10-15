@@ -31,7 +31,7 @@ public class SetAsyncInputMessageFactory implements OFSerializer<SetAsyncInput> 
     /**
      * @return singleton factory
      */
-    public static SetAsyncInputMessageFactory getInstance() {
+    public static synchronized SetAsyncInputMessageFactory getInstance() {
         if (instance == null) {
             instance = new SetAsyncInputMessageFactory();
         }

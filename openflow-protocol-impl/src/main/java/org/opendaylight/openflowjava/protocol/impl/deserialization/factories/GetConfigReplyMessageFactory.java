@@ -22,7 +22,7 @@ public class GetConfigReplyMessageFactory implements OFDeserializer<GetConfigOut
     /**
      * @return singleton factory
      */
-    public static GetConfigReplyMessageFactory getInstance(){
+    public static synchronized GetConfigReplyMessageFactory getInstance(){
         if(instance == null){
             instance = new GetConfigReplyMessageFactory();
         }

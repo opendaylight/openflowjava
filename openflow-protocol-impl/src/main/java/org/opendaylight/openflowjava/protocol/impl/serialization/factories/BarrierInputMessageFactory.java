@@ -25,7 +25,7 @@ public class BarrierInputMessageFactory implements OFSerializer<BarrierInput> {
     /**
      * @return singleton factory
      */
-    public static BarrierInputMessageFactory getInstance() {
+    public static synchronized BarrierInputMessageFactory getInstance() {
         if (instance == null) {
             instance = new BarrierInputMessageFactory();
         }

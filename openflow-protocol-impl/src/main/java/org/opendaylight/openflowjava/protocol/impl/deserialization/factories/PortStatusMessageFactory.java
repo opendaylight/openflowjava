@@ -30,7 +30,7 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
     /**
      * @return singleton factory
      */
-    public static PortStatusMessageFactory getInstance(){
+    public static synchronized PortStatusMessageFactory getInstance(){
         if(instance == null){
             instance = new PortStatusMessageFactory();
         }

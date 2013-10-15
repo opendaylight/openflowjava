@@ -22,7 +22,7 @@ public class EchoReplyMessageFactory implements OFDeserializer<EchoOutput> {
     /**
      * @return singleton factory
      */
-    public static EchoReplyMessageFactory getInstance() {
+    public static synchronized EchoReplyMessageFactory getInstance() {
         if (instance == null) {
             instance = new EchoReplyMessageFactory();
         }

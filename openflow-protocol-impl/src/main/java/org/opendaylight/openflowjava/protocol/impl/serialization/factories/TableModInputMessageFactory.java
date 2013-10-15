@@ -28,7 +28,7 @@ public class TableModInputMessageFactory implements OFSerializer<TableModInput> 
     /**
      * @return singleton factory
      */
-    public static TableModInputMessageFactory getInstance() {
+    public static synchronized TableModInputMessageFactory getInstance() {
         if(instance == null){
             instance = new TableModInputMessageFactory();
         }

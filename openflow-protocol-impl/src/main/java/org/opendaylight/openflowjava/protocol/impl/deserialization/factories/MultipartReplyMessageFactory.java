@@ -25,7 +25,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     /**
      * @return singleton factory
      */
-    public static MultipartReplyMessageFactory getInstance(){
+    public static synchronized MultipartReplyMessageFactory getInstance(){
         if (instance == null){
             instance = new MultipartReplyMessageFactory();
         }

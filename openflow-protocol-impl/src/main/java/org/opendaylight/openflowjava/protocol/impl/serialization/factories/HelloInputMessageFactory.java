@@ -29,7 +29,7 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
     /**
      * @return singleton factory
      */
-    public static HelloInputMessageFactory getInstance() {
+    public static synchronized HelloInputMessageFactory getInstance() {
         if (instance == null) {
             instance = new HelloInputMessageFactory();
         }

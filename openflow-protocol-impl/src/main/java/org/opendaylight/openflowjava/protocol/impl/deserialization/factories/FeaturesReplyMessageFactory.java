@@ -26,7 +26,7 @@ public class FeaturesReplyMessageFactory implements OFDeserializer<GetFeaturesOu
     /**
      * @return singleton factory
      */
-    public static FeaturesReplyMessageFactory getInstance() {
+    public static synchronized FeaturesReplyMessageFactory getInstance() {
         if (instance == null) {
             instance = new FeaturesReplyMessageFactory();
         }

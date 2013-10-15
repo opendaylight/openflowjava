@@ -28,7 +28,7 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupModInput> 
     /**
      * @return singleton factory
      */
-    public static GroupModInputMessageFactory getInstance() {
+    public static synchronized GroupModInputMessageFactory getInstance() {
         if (instance == null) {
             instance = new GroupModInputMessageFactory();
         }

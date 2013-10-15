@@ -25,7 +25,7 @@ public class GetFeaturesInputMessageFactory implements OFSerializer<GetFeaturesI
     /**
      * @return singleton factory
      */
-    public static GetFeaturesInputMessageFactory getInstance() {
+    public static synchronized GetFeaturesInputMessageFactory getInstance() {
         if (instance == null) {
             instance = new GetFeaturesInputMessageFactory();
         }

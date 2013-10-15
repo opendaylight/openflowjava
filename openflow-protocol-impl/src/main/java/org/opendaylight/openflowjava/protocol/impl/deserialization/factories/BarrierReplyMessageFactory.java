@@ -23,7 +23,7 @@ public class BarrierReplyMessageFactory implements
     /**
      * @return singleton factory
      */
-    public static BarrierReplyMessageFactory getInstance() {
+    public static synchronized BarrierReplyMessageFactory getInstance() {
         if (instance == null) {
             instance = new BarrierReplyMessageFactory();
         }

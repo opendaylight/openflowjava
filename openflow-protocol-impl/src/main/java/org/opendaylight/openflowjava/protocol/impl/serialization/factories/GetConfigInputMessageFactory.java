@@ -25,7 +25,7 @@ public class GetConfigInputMessageFactory implements OFSerializer<GetConfigInput
     /**
      * @return singleton factory
      */
-    public static GetConfigInputMessageFactory getInstance() {
+    public static synchronized GetConfigInputMessageFactory getInstance() {
         if (instance == null) {
             instance = new GetConfigInputMessageFactory();
         }

@@ -36,7 +36,7 @@ public class QueueGetConfigReplyMessageFactory implements OFDeserializer<GetQueu
      * 
      * @return singleton factory
      */
-    public static QueueGetConfigReplyMessageFactory getInstance(){
+    public static synchronized QueueGetConfigReplyMessageFactory getInstance(){
         
         if(instance == null){
             instance = new QueueGetConfigReplyMessageFactory();

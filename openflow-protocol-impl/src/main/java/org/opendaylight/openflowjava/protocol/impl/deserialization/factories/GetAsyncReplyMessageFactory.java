@@ -33,7 +33,7 @@ public class GetAsyncReplyMessageFactory implements OFDeserializer<GetAsyncOutpu
     /**
      * @return singleton factory
      */
-    public static GetAsyncReplyMessageFactory getInstance() {
+    public static synchronized GetAsyncReplyMessageFactory getInstance() {
         if (instance == null) {
             instance = new GetAsyncReplyMessageFactory();
         }

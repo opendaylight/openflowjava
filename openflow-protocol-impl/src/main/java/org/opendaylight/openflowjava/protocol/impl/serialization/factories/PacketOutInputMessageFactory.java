@@ -26,7 +26,7 @@ public class PacketOutInputMessageFactory implements OFSerializer<PacketOutInput
     /**
      * @return singleton factory
      */
-    public static PacketOutInputMessageFactory getInstance() {
+    public static synchronized PacketOutInputMessageFactory getInstance() {
         if (instance == null) {
             instance = new PacketOutInputMessageFactory();
         }

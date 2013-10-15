@@ -23,7 +23,7 @@ private static ErrorMessageFactory instance;
     /**
      * @return singleton factory
      */
-    public static ErrorMessageFactory getInstance() {
+    public static synchronized ErrorMessageFactory getInstance() {
         if (instance == null) {
             instance = new ErrorMessageFactory();
         }

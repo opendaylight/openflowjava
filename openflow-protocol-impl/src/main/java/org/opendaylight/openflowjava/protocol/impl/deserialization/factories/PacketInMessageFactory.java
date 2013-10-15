@@ -25,7 +25,7 @@ public class PacketInMessageFactory implements OFDeserializer<PacketInMessage> {
     /**
      * @return singleton factory
      */
-    public static PacketInMessageFactory getInstance(){
+    public static synchronized PacketInMessageFactory getInstance(){
         if(instance == null){
             instance = new PacketInMessageFactory();
         }

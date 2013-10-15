@@ -23,7 +23,7 @@ public class EchoRequestMessageFactory implements OFDeserializer<EchoRequestMess
     /**
      * @return singleton factory
      */
-    public static EchoRequestMessageFactory getInstance() {
+    public static synchronized EchoRequestMessageFactory getInstance() {
         if (instance == null) {
             instance = new EchoRequestMessageFactory();
         }

@@ -28,12 +28,10 @@ public class GetQueueConfigInputMessageFactory implements OFSerializer<GetQueueC
     /**
      * @return singleton factory
      */
-    public static GetQueueConfigInputMessageFactory getInstance(){
-        
+    public static synchronized GetQueueConfigInputMessageFactory getInstance(){
         if(instance == null){
             instance = new GetQueueConfigInputMessageFactory();
         }
-        
         return instance;
     }
     

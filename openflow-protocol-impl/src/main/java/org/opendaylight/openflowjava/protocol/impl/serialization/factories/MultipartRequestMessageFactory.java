@@ -39,7 +39,7 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
     /**
      * @return singleton factory
      */
-    public static MultipartRequestMessageFactory getInstance() {
+    public static synchronized MultipartRequestMessageFactory getInstance() {
         if (instance == null) {
             instance = new MultipartRequestMessageFactory();
         }

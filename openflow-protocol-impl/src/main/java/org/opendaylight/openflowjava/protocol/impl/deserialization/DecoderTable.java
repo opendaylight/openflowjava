@@ -72,12 +72,10 @@ public class DecoderTable {
     /**
      * @return singleton instance
      */
-    public static DecoderTable getInstance() {
+    public static synchronized DecoderTable getInstance() {
         if (instance == null) {
-            synchronized (DecoderTable.class) {
-                instance = new DecoderTable();
-                instance.init();
-            }
+            instance = new DecoderTable();
+            instance.init();
         }
         return instance;
     }

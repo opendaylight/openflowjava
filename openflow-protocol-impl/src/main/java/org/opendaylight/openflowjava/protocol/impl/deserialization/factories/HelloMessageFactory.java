@@ -28,7 +28,7 @@ public class HelloMessageFactory implements OFDeserializer<HelloMessage> {
     /**
      * @return singleton factory
      */
-    public static HelloMessageFactory getInstance() {
+    public static synchronized HelloMessageFactory getInstance() {
         if (instance == null) {
             instance = new HelloMessageFactory();
         }

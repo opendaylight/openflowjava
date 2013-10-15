@@ -24,7 +24,7 @@ public class ExperimenterMessageFactory implements OFDeserializer<ExperimenterMe
     /**
      * @return singleton factory
      */
-    public static ExperimenterMessageFactory getInstance(){
+    public static synchronized ExperimenterMessageFactory getInstance(){
         if (instance == null){
            instance = new ExperimenterMessageFactory(); 
         }

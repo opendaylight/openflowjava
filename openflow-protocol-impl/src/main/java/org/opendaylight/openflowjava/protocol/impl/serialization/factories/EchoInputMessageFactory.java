@@ -25,7 +25,7 @@ public class EchoInputMessageFactory implements OFSerializer<EchoInput> {
     /**
      * @return singleton factory
      */
-    public static EchoInputMessageFactory getInstance() {
+    public static synchronized EchoInputMessageFactory getInstance() {
         if (instance == null) {
             instance = new EchoInputMessageFactory();
         }

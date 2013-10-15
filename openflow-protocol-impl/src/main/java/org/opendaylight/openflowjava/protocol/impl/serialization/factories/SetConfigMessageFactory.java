@@ -25,7 +25,7 @@ public class SetConfigMessageFactory implements OFSerializer<SetConfigInput> {
     /**
      * @return singleton factory
      */
-    public static SetConfigMessageFactory getInstance() {
+    public static synchronized SetConfigMessageFactory getInstance() {
         if (instance == null) {
             instance = new SetConfigMessageFactory();
         }

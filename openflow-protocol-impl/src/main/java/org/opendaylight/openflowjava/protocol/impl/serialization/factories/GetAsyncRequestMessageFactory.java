@@ -23,7 +23,7 @@ public class GetAsyncRequestMessageFactory implements OFSerializer<GetAsyncInput
     /**
      * @return singleton factory
      */
-    public static GetAsyncRequestMessageFactory getInstance() {
+    public static synchronized GetAsyncRequestMessageFactory getInstance() {
         if (instance == null) {
             instance = new GetAsyncRequestMessageFactory();
         }
