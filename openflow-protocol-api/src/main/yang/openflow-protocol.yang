@@ -638,7 +638,7 @@ module openflow-protocol {
                                 type uint16;
                             }
                             leaf flags {
-                                type uint16;
+                                type oft:flow-mod-flags;
                             }
                             leaf cookie {
                                 type uint64;
@@ -788,7 +788,8 @@ module openflow-protocol {
                     case multipart-reply-group-desc {
                         list group-desc {
                             leaf type {
-                                type uint8;
+                                //type uint8;
+                                type oft:group-type;
                             }
                             leaf group-id {
                                 type uint32;

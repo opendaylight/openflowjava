@@ -15,7 +15,7 @@ public class ExperimenterInputMessageFactory implements OFSerializer<Experimente
 
     /** Code type of Experimenter message */
     public static final byte MESSAGE_TYPE = 4;
-    private static int dataLength;
+    private int dataLength;
     private static ExperimenterInputMessageFactory instance;
     
     private ExperimenterInputMessageFactory() {

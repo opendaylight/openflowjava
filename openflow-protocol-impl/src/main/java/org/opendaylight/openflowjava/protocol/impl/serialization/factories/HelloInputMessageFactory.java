@@ -55,14 +55,14 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
     
     private static int computeElementsLength(List<Elements> elements) {
         int versionBitmapSize = 0;
-        final int OFHeaderSize = 8;
+        final int ofHeaderSize = 8;
         int typeSize = 0;
         
         if (elements != null) {
             typeSize = 2;
             versionBitmapSize = elements.get(0).getVersionBitmap().size()/Byte.SIZE;
             } 
-        MESSAGE_LENGTH = OFHeaderSize + versionBitmapSize + typeSize;
+        MESSAGE_LENGTH = ofHeaderSize + versionBitmapSize + typeSize;
         return MESSAGE_LENGTH;
     }
  

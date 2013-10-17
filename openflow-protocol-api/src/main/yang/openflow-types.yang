@@ -468,11 +468,6 @@ module openflow-types {
     typedef multipart-type {
         /* ofp_multipart_type */
         type enumeration {
-            enum OFPGT_ALL {
-              value 0;
-              description "All (multicast/broadcast) group.";
-            }
-            
             enum OFPMP_DESC {
               value 0;
               description "Description of this OpenFlow switch.
