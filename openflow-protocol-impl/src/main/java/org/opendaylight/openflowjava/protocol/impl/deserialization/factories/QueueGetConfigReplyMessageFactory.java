@@ -56,7 +56,7 @@ public class QueueGetConfigReplyMessageFactory implements OFDeserializer<GetQueu
     }
     
     private static List<Queues> createQueuesList(ByteBuf input){
-        List<Queues> queuesList = new ArrayList<Queues>();
+        List<Queues> queuesList = new ArrayList<>();
         QueuesBuilder queueBuilder = new QueuesBuilder();
         while (input.readableBytes() > 0) {
             queueBuilder.setQueueId(new QueueId(input.readUnsignedInt()));
@@ -70,7 +70,7 @@ public class QueueGetConfigReplyMessageFactory implements OFDeserializer<GetQueu
     }
     
     private static List<Properties> createPropertiesList(ByteBuf propertiesInput){
-        List<Properties> propertiesList = new ArrayList<Properties>();
+        List<Properties> propertiesList = new ArrayList<>();
         PropertiesBuilder propertiesBuilder = new PropertiesBuilder();
         propertiesBuilder.setProperty(QueueProperty.forValue(propertiesInput.readUnsignedShort()));
         propertiesInput.skipBytes(2);

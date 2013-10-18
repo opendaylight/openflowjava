@@ -115,6 +115,7 @@ public class TcpHandler implements ServerFacade {
                     .handler(new LoggingHandler(LogLevel.DEBUG))
                     .childHandler(channelInitializer)
                     .option(ChannelOption.SO_BACKLOG, 128)
+                    .option(ChannelOption.SO_REUSEADDR, true)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
             ChannelFuture f;

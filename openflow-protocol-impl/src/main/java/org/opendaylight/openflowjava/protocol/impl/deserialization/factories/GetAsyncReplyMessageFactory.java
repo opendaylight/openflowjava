@@ -52,8 +52,8 @@ public class GetAsyncReplyMessageFactory implements OFDeserializer<GetAsyncOutpu
     }
     
     private static List<PacketInMask> decodePacketInMask(ByteBuf outputBuf) {
-        List<PacketInReason> readPIRList = new ArrayList<PacketInReason>();
-        List<PacketInMask> inMasks = new ArrayList<PacketInMask>();
+        List<PacketInReason> readPIRList = new ArrayList<>();
+        List<PacketInMask> inMasks = new ArrayList<>();
         PacketInMaskBuilder maskBuilder = new PacketInMaskBuilder();
         
         readPIRList.add(decodedPacketInReason((int) outputBuf.readUnsignedInt()));
@@ -63,8 +63,8 @@ public class GetAsyncReplyMessageFactory implements OFDeserializer<GetAsyncOutpu
     }
     
     private static List<PortStatusMask> decodePortStatusMask(ByteBuf outputBuf) {
-        List<PortReason> readPortReasonList = new ArrayList<PortReason>();
-        List<PortStatusMask> inMasks = new ArrayList<PortStatusMask>();
+        List<PortReason> readPortReasonList = new ArrayList<>();
+        List<PortStatusMask> inMasks = new ArrayList<>();
         PortStatusMaskBuilder maskBuilder = new PortStatusMaskBuilder();
         
         readPortReasonList.add(decodePortReason((int) outputBuf.readUnsignedInt()));
@@ -74,8 +74,8 @@ public class GetAsyncReplyMessageFactory implements OFDeserializer<GetAsyncOutpu
     }
     
     private static List<FlowRemovedMask> decodeFlowRemovedMask(ByteBuf outputBuf) {
-        List<FlowRemovedReason> readFlowRemovedReasonList = new ArrayList<FlowRemovedReason>();
-        List<FlowRemovedMask> inMasks = new ArrayList<FlowRemovedMask>();
+        List<FlowRemovedReason> readFlowRemovedReasonList = new ArrayList<>();
+        List<FlowRemovedMask> inMasks = new ArrayList<>();
         FlowRemovedMaskBuilder maskBuilder = new FlowRemovedMaskBuilder();
         
         readFlowRemovedReasonList.add(decodeFlowRemovedReason((int) outputBuf.readUnsignedInt()));

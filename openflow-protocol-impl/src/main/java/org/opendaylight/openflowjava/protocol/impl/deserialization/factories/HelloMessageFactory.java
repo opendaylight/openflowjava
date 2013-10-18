@@ -48,7 +48,7 @@ public class HelloMessageFactory implements OFDeserializer<HelloMessage> {
     
     private static List<Elements> readElement(ByteBuf input) {
         ElementsBuilder elementsBuilder = new ElementsBuilder();
-        List<Elements> elementsList = new ArrayList<Elements>();
+        List<Elements> elementsList = new ArrayList<>();
         elementsBuilder.setType(HelloElementType.forValue(input.readUnsignedShort()));
         int arrayLength = input.readableBytes()/4;
         int[] versionBitmap = new int[arrayLength];

@@ -1,10 +1,9 @@
 /* Copyright (C)2013 Pantheon Technologies, s.r.o. All rights reserved. */
 package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
-import static org.junit.Assert.*;
-import junit.framework.Assert;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
+import junit.framework.Assert;
 
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;

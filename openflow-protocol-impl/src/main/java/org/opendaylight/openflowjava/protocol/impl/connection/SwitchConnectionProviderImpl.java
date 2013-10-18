@@ -109,4 +109,8 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
         return result;
     }
 
+    public Set<ServerFacade> getServerLot() {
+        return serverLot;
+    }
+
 }

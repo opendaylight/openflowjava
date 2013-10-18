@@ -54,7 +54,7 @@ public class GroupModInputMessageFactoryTest {
     }
     
     private static List<Buckets> createBucketsList(){
-        List<Buckets> bucketsList = new ArrayList<Buckets>();
+        List<Buckets> bucketsList = new ArrayList<>();
         BucketsBuilder bucketsBuilder = new BucketsBuilder();
         Buckets bucket;
         bucketsBuilder.setWeight(10);
@@ -66,7 +66,7 @@ public class GroupModInputMessageFactoryTest {
     }
     
     private static List<Buckets> createBucketsListFromBufer(ByteBuf out){
-        List<Buckets> bucketsList = new ArrayList<Buckets>();
+        List<Buckets> bucketsList = new ArrayList<>();
         BucketsBuilder bucketsBuilder = new BucketsBuilder();
         Buckets bucket;
         bucketsBuilder.setWeight((int) out.readShort());
