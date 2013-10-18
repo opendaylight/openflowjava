@@ -1,10 +1,10 @@
 /* Copyright (C)2013 Pantheon Technologies, s.r.o. All rights reserved. */
 package org.opendaylight.openflowjava.protocol.impl.integration;
 
-import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -50,12 +50,14 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
     private int idleCounter = 0;
     
     public MockPlugin() {
+        LOGGER.info("Creating MockPlugin");
         finishedFuture = SettableFuture.create();
+        LOGGER.info("mockPlugin: "+System.identityHashCode(this));
     }
     
     @Override
     public void onSwitchConnected(ConnectionAdapter connection) {
-        LOGGER.debug("onSwitchConnected");
+        LOGGER.info("onSwitchConnected: " + connection);
         this.adapter = connection;
         connection.setMessageListener(this);
         connection.setSystemListener(this);
@@ -72,19 +74,14 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
         LOGGER.debug("EchoRequest message received");
         LOGGER.debug("Building EchoReplyInput");
         EchoReplyInputBuilder replyBuilder = new EchoReplyInputBuilder();
-        try {
-            BufferHelper.setupHeader(replyBuilder);
-        } catch (NoSuchMethodException | SecurityException
-                | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException e) {
-            LOGGER.error(e.getMessage(), e);
-        }
+        replyBuilder.setVersion((short) 4);
         replyBuilder.setXid(notification.getXid());
         EchoReplyInput echoReplyInput = replyBuilder.build();
         LOGGER.debug("EchoReplyInput built");
         LOGGER.debug("Going to send EchoReplyInput");
         adapter.echoReply(echoReplyInput);
         LOGGER.debug("EchoReplyInput sent");
+        LOGGER.debug("adapter: "+adapter);
     }
 
     @Override
@@ -107,6 +104,7 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
 
     @Override
     public void onHelloMessage(HelloMessage notification) {
+        LOGGER.debug("adapter: "+adapter);
         LOGGER.debug("Hello message received");
         HelloInputBuilder hib = new HelloInputBuilder();
         GetFeaturesInputBuilder featuresBuilder = new GetFeaturesInputBuilder();
@@ -127,7 +125,7 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
             if (rpcResult.isSuccessful()) {
                 byte[] byteArray = rpcResult.getResult().getDatapathId()
                         .toByteArray();
-                LOGGER.debug("DatapathId: " + Arrays.toString(byteArray));
+                LOGGER.info("DatapathId: " + Arrays.toString(byteArray));
             } else {
                 RpcError rpcError = rpcResult.getErrors().iterator().next();
                 LOGGER.warn("rpcResult failed: "
@@ -136,8 +134,23 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             LOGGER.error(e.getMessage(), e);
         }
-        LOGGER.info("After FeaturesReply message - disconnecting");
-        adapter.disconnect();
+        LOGGER.info("After FeaturesReply message");
+        LOGGER.debug("adapter: "+adapter);
+    }
+
+    protected void shutdown() {
+        LOGGER.debug("adapter: "+adapter);
+        try {
+            LOGGER.info("mockPlugin: "+System.identityHashCode(this));
+            Thread.sleep(500);
+//            if (adapter != null) {
+                Future<Boolean> disconnect = adapter.disconnect();
+                disconnect.get();
+                LOGGER.info("Disconnected");
+//            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
         finishedFuture.set(null);
     }
 
@@ -168,6 +181,7 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
     @Override
     public void onDisconnectEvent(DisconnectEvent notification) {
         LOGGER.debug("disconnection ocured: "+notification.getInfo());
+        LOGGER.debug("adapter: "+adapter);
     }
 
     public SettableFuture<Void> getFinishedFuture() {

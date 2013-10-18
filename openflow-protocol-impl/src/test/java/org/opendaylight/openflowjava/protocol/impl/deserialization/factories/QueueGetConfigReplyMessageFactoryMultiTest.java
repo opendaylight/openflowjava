@@ -59,7 +59,7 @@ public class QueueGetConfigReplyMessageFactoryMultiTest {
     }
 
     private static List<Queues> createQueuesList() {
-        List<Queues> queuesList = new ArrayList<Queues>();
+        List<Queues> queuesList = new ArrayList<>();
         QueuesBuilder qb = new QueuesBuilder();
         for (int i = 1; i <= 3; i++) {
             qb.setQueueId(new QueueId((long) i));
@@ -71,7 +71,7 @@ public class QueueGetConfigReplyMessageFactoryMultiTest {
     }
 
     private static List<Properties> createPropertiesList() {
-        List<Properties> propertiesList = new ArrayList<Properties>();
+        List<Properties> propertiesList = new ArrayList<>();
         PropertiesBuilder pb = new PropertiesBuilder();
         pb.setProperty(QueueProperty.values()[1]);
         propertiesList.add(pb.build());

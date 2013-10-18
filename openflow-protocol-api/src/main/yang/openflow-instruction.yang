@@ -54,24 +54,6 @@ module openflow-instruction {
             type oft:metadata;
         }
     }
-    grouping actions {
-        leaf type {
-            type enumeration {
-                enum write {
-                    description " Write the action(s) onto the datapath action set";            
-                }
-                enum apply {
-                    description " Applies the action(s) immediately";
-                }
-                enum clear {
-                    description " Clears all actions from the datapath action set";
-                }
-            }
-        }
-        list action {
-            // TBD
-        }
-    }
     
     grouping meter {
         description " Apply meter (rate limiter)";

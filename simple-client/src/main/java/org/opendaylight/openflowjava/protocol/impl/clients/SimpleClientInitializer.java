@@ -19,14 +19,15 @@ import com.google.common.util.concurrent.SettableFuture;
  */
 public class SimpleClientInitializer extends ChannelInitializer<SocketChannel> {
     
-    private SettableFuture<Boolean> sf;
+    private SettableFuture<Boolean> isOnlineFuture;
     private boolean secured;
+    private ScenarioHandler scenarioHandler;
 
     /**
-     * @param sf future notifier of connected channel
+     * @param isOnlineFuture future notifier of connected channel
      */
-    public SimpleClientInitializer(SettableFuture<Boolean> sf, boolean secured) {
-        this.sf = sf;
+    public SimpleClientInitializer(SettableFuture<Boolean> isOnlineFuture, boolean secured) {
+        this.isOnlineFuture = isOnlineFuture;
         this.secured = secured;
     }
 
@@ -39,7 +40,14 @@ public class SimpleClientInitializer extends ChannelInitializer<SocketChannel> {
             engine.setUseClientMode(true);
             pipeline.addLast("ssl", new SslHandler(engine));
         }
-        pipeline.addLast("handler", new SimpleClientHandler(sf));
-        sf = null;
+        SimpleClientHandler simpleClientHandler = new SimpleClientHandler(isOnlineFuture, scenarioHandler);
+        simpleClientHandler.setScenario(scenarioHandler);
+        pipeline.addLast("handler", simpleClientHandler);
+        isOnlineFuture = null;
+
+    }
+    
+    public void setScenario(ScenarioHandler scenarioHandler) {
+        this.scenarioHandler = scenarioHandler;
     }
 }

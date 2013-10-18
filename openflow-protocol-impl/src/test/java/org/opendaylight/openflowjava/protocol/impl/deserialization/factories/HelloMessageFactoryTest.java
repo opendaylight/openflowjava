@@ -41,8 +41,8 @@ public class HelloMessageFactoryTest {
     
     private static List<Elements> createElement() {
         ElementsBuilder elementsBuilder = new ElementsBuilder();
-        List<Elements> elementsList = new ArrayList<Elements>();
-        List<Boolean> booleanList = new ArrayList<Boolean>();
+        List<Elements> elementsList = new ArrayList<>();
+        List<Boolean> booleanList = new ArrayList<>();
         booleanList.add(true);
         booleanList.add(false);
         booleanList.add(false);

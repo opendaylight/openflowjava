@@ -23,7 +23,7 @@ public class SerializationFactory {
      */
     public static <E extends DataObject> void messageToBuffer(short version, ByteBuf out, E message) {
         @SuppressWarnings("unchecked")
-        MessageTypeKey<E> msgTypeKey = new MessageTypeKey<E>(version, (Class<E>) message.getClass());
+        MessageTypeKey<E> msgTypeKey = new MessageTypeKey<>(version, (Class<E>) message.getClass());
         OFSerializer<E> encoder = EncoderTable.getInstance().getEncoder(msgTypeKey);
         if (encoder != null) {
             encoder.messageToBuffer(version, out, message);

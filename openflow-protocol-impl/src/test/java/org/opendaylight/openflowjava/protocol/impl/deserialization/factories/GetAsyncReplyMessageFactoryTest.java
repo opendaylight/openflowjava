@@ -49,8 +49,8 @@ public class GetAsyncReplyMessageFactoryTest {
     }
     
     private static List<PacketInMask> createPacketInMask() {
-        List<PacketInReason> readPIRList = new ArrayList<PacketInReason>();
-        List<PacketInMask> inMasks = new ArrayList<PacketInMask>();
+        List<PacketInReason> readPIRList = new ArrayList<>();
+        List<PacketInMask> inMasks = new ArrayList<>();
         PacketInMaskBuilder maskBuilder = new PacketInMaskBuilder();
         
         readPIRList.add(PacketInReason.forValue(1));
@@ -60,8 +60,8 @@ public class GetAsyncReplyMessageFactoryTest {
     }
     
     private static List<PortStatusMask> createPortStatusMask() {
-        List<PortReason> readPortReasonList = new ArrayList<PortReason>();
-        List<PortStatusMask> inMasks = new ArrayList<PortStatusMask>();
+        List<PortReason> readPortReasonList = new ArrayList<>();
+        List<PortStatusMask> inMasks = new ArrayList<>();
         PortStatusMaskBuilder maskBuilder = new PortStatusMaskBuilder();
         
         readPortReasonList.add(PortReason.forValue(1));
@@ -71,8 +71,8 @@ public class GetAsyncReplyMessageFactoryTest {
     }
     
     private static List<FlowRemovedMask> createFlowRemovedMask() {
-        List<FlowRemovedReason> readFlowRemovedReasonList = new ArrayList<FlowRemovedReason>();
-        List<FlowRemovedMask> inMasks = new ArrayList<FlowRemovedMask>();
+        List<FlowRemovedReason> readFlowRemovedReasonList = new ArrayList<>();
+        List<FlowRemovedMask> inMasks = new ArrayList<>();
         FlowRemovedMaskBuilder maskBuilder = new FlowRemovedMaskBuilder();
         
         readFlowRemovedReasonList.add(FlowRemovedReason.forValue(2));

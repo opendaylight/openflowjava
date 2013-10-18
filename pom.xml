@@ -1,17 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.opendaylight.openflowjava</groupId>
-	<artifactId>openflow-protocol-parent</artifactId>
-	<version>0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<modules>
-		<module>openflow-protocol-api</module>
-		<module>openflow-protocol-spi</module>
-		<module>openflow-protocol-impl</module>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.opendaylight.openflowjava</groupId>
+    <artifactId>openflow-protocol-parent</artifactId>
+    <version>0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>openflow-protocol-api</module>
+        <module>openflow-protocol-spi</module>
+        <module>openflow-protocol-impl</module>
+        <module>openflow-protocol-it</module>
+        <module>simple-client</module>
         <module>third-party/openflow-codec</module>
         <module>third-party/openflowj_netty</module>
-	</modules>
+    </modules>
 
     <properties>
         <sonar.host.url>https://sonar.opendaylight.org/</sonar.host.url>
@@ -29,8 +31,9 @@
         <sonar.skippedModules>org.openflow.openflowj,net.sf.jung2</sonar.skippedModules>
         <logback.version>1.0.9</logback.version>
         <slf4j.version>1.7.5</slf4j.version>
-	<yang.prototype.version>1.0-SNAPSHOT</yang.prototype.version>
-	<maven.bundle.version>2.4.0</maven.bundle.version>
+        <yang.prototype.version>1.0-SNAPSHOT</yang.prototype.version>
+        <maven.bundle.version>2.4.0</maven.bundle.version>
+        <guava.version>14.0.1</guava.version> 
     </properties>
 
     <pluginRepositories>
@@ -147,6 +150,16 @@
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-handler</artifactId>
+                <version>4.0.8.Final</version>
+            </dependency>
+            <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
         </dependencies>
     </dependencyManagement>
     <build>

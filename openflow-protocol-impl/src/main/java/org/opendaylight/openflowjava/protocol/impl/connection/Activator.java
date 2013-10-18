@@ -25,7 +25,7 @@ public class Activator implements BundleActivator {
     @Override
     public void start(BundleContext context) throws Exception {
         LOG.debug("starting OF Library");
-        Hashtable<String, String> props = new Hashtable<String, String>();
+        Hashtable<String, String> props = new Hashtable<>();
         props.put("type", "default");
         context.registerService(
                 SwitchConnectionProvider.class.getName(), 

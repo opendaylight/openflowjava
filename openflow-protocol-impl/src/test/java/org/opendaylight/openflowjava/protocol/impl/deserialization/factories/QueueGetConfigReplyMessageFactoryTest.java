@@ -1,11 +1,10 @@
 /* Copyright (C)2013 Pantheon Technologies, s.r.o. All rights reserved. */
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,8 +17,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.packet.queue.PropertiesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.queue.get.config.reply.Queues;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.queue.get.config.reply.QueuesBuilder;
-
-import com.google.common.collect.ComparisonChain;
 
 /**
  * @author timotej.kubas
@@ -37,7 +34,7 @@ public class QueueGetConfigReplyMessageFactoryTest {
     }
     
     public List<Queues> createQueuesList(){
-        List<Queues> queuesList = new ArrayList<Queues>();
+        List<Queues> queuesList = new ArrayList<>();
         QueuesBuilder qb = new QueuesBuilder();
         qb.setQueueId(new QueueId(1L));
         qb.setPort(new PortNumber(1L));
@@ -48,7 +45,7 @@ public class QueueGetConfigReplyMessageFactoryTest {
     }
     
     public List<Properties> createPropertiesList(){
-        List<Properties> propertiesList = new ArrayList<Properties>();
+        List<Properties> propertiesList = new ArrayList<>();
         PropertiesBuilder pb = new PropertiesBuilder();
         pb.setProperty(QueueProperty.values()[2]);
         propertiesList.add(pb.build());
