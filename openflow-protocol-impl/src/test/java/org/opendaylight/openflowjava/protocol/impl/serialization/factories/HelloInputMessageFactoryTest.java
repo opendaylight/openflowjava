@@ -63,8 +63,8 @@ public class HelloInputMessageFactoryTest {
     
     private static List<Elements> createElement() {
         ElementsBuilder elementsBuilder = new ElementsBuilder();
-        List<Elements> elementsList = new ArrayList<Elements>();
-        List<Boolean> booleanList = new ArrayList<Boolean>();
+        List<Elements> elementsList = new ArrayList<>();
+        List<Boolean> booleanList = new ArrayList<>();
 
         for (int i = 0; i < 64; i++) {
             booleanList.add(true);
@@ -79,7 +79,7 @@ public class HelloInputMessageFactoryTest {
     
     private static List<Elements> readElement(ByteBuf input) {
         ElementsBuilder elementsBuilder = new ElementsBuilder();
-        List<Elements> elementsList = new ArrayList<Elements>();
+        List<Elements> elementsList = new ArrayList<>();
         elementsBuilder.setType(HelloElementType.forValue(input.readUnsignedShort()));
         int arrayLength = input.readableBytes()/4;
         int[] versionBitmap = new int[arrayLength];

@@ -343,7 +343,7 @@ module openflow-protocol {
                 
                 uses ofHeader;
                 
-                list actions {
+                list actions-list {
                     uses ofaction:action-header;
                     
                     leaf data {
@@ -432,7 +432,7 @@ module openflow-protocol {
                     type uint32;
                 }
                 
-                list actions {
+                list actions-list {
                     uses ofaction:action-header;
                 }
             }
@@ -812,7 +812,7 @@ module openflow-protocol {
                         //leaf-list actions {
                         //    type ofaction:action-type;
                         //}
-                        list actions {
+                        list actions-list {
                             uses ofaction:action-header;
                         }
                     }

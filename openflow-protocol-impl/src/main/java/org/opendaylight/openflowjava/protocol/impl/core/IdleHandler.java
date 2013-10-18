@@ -1,3 +1,4 @@
+/* Copyright (C)2013 Pantheon Technologies, s.r.o. All rights reserved. */
 package org.opendaylight.openflowjava.protocol.impl.core;
 
 import java.util.concurrent.TimeUnit;

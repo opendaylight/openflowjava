@@ -48,42 +48,42 @@ public class SetAsyncInputMessageFactoryTest {
     }
     
     private static List<PacketInReason> createPacketInMask() {
-        List<PacketInReason> packetInReasonList = new ArrayList<PacketInReason>();
+        List<PacketInReason> packetInReasonList = new ArrayList<>();
         packetInReasonList.add(PacketInReason.forValue(1));
         packetInReasonList.add(PacketInReason.forValue(2));
         return packetInReasonList;
     }
     
     private static List<PortReason> createPortStatusMask() {
-        List<PortReason> portReasonList = new ArrayList<PortReason>();
+        List<PortReason> portReasonList = new ArrayList<>();
         portReasonList.add(PortReason.forValue(1));
         portReasonList.add(PortReason.forValue(2));
         return portReasonList;
     }
     
     private static List<FlowRemovedReason> createFlowRemowedMask() {
-        List<FlowRemovedReason> flowRemovedReasonList = new ArrayList<FlowRemovedReason>();
+        List<FlowRemovedReason> flowRemovedReasonList = new ArrayList<>();
         flowRemovedReasonList.add(FlowRemovedReason.forValue(2));
         flowRemovedReasonList.add(FlowRemovedReason.forValue(3));
         return flowRemovedReasonList;
     }
     
     private static List<PacketInReason> readPacketInMask(ByteBuf outputBuf) {
-        List<PacketInReason> readPIRList = new ArrayList<PacketInReason>();
+        List<PacketInReason> readPIRList = new ArrayList<>();
         readPIRList.add(readPacketInReason((int) outputBuf.readUnsignedInt()));
         readPIRList.add(readPacketInReason((int) outputBuf.readUnsignedInt()));
         return readPIRList;
     }
     
     private static List<PortReason> readPortStatusMask(ByteBuf outputBuf) {
-        List<PortReason> readPortReasonList = new ArrayList<PortReason>();
+        List<PortReason> readPortReasonList = new ArrayList<>();
         readPortReasonList.add(readPortReason((int) outputBuf.readUnsignedInt()));
         readPortReasonList.add(readPortReason((int) outputBuf.readUnsignedInt()));
         return readPortReasonList;
     }
     
     private static List<FlowRemovedReason> readFlowRemovedReasonMask(ByteBuf outputBuf) {
-        List<FlowRemovedReason> readFlowRemovedReasonList = new ArrayList<FlowRemovedReason>();
+        List<FlowRemovedReason> readFlowRemovedReasonList = new ArrayList<>();
         readFlowRemovedReasonList.add(readFlowRemovedReason((int) outputBuf.readUnsignedInt()));
         readFlowRemovedReasonList.add(readFlowRemovedReason((int) outputBuf.readUnsignedInt()));
         return readFlowRemovedReasonList;

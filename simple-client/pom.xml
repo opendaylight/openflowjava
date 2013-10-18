@@ -6,9 +6,9 @@
         <artifactId>openflow-protocol-parent</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>openflow-protocol-impl</artifactId>
+    <artifactId>simple-client</artifactId>
     <packaging>bundle</packaging>
-    <name>Openflow Protocol Library - IMPL</name>
+    <name>Openflow Protocol Simple Client</name>
     
     <build>
         <plugins>
@@ -17,9 +17,6 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Bundle-Activator>
-                          org.opendaylight.openflowjava.protocol.impl.connection.Activator
-                        </Bundle-Activator>
                         <Export-Package>org.opendaylight.openflowjava.protocol.impl.*</Export-Package>
                     </instructions>
                 </configuration>
@@ -30,47 +27,21 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>openflow-protocol-api</artifactId>
+            <artifactId>openflow-protocol-impl</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>openflow-protocol-spi</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>sal-common-util</artifactId>
-            <version>${yang.prototype.version}</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-handler</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>5.0.0</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
