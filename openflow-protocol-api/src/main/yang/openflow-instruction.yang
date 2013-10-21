@@ -62,14 +62,16 @@ module openflow-instruction {
         }
     }
 
-    container instruction {
+    container instruction-container {
         uses instructions;
     }
 
     grouping instructions {
-        leaf type {
-            type identityref {
-                base oft:instruction;
+        container instruction {
+            leaf type {
+                type identityref {
+                    base oft:instruction;
+                }
             }
         }
     }
