@@ -431,7 +431,6 @@ module openflow-protocol {
                 leaf watch-group {
                     type uint32;
                 }
-                
                 list actions-list {
                     uses ofaction:action-header;
                 }
