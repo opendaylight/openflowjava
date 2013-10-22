@@ -29,7 +29,7 @@ public class WaitForMessageEvent implements ClientEvent {
             LOGGER.debug("received msg: " + ByteBufUtils.bytesToHexString(headerReceived));
             return false;
         }
-        LOGGER.info("Waitformessageevent - headers are same");
+        LOGGER.info("Headers OK");
         return true;
     }
 

@@ -103,7 +103,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         rawMessage.skipBytes(PADDING_IN_MULTIPART_REPLY_HEADER);
         // TODO - implement body
         //mrmb.setBody(rawMessage.readBytes(rawMessage.readableBytes()).array());
-        
+
         switch (builder.getType().getIntValue()) {
         case 0:  builder.setMultipartReplyBody(setDesc(rawMessage));
                  break;

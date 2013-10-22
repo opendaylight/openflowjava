@@ -141,11 +141,11 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
         try {
             LOGGER.info("mockPlugin: "+System.identityHashCode(this));
             Thread.sleep(500);
-//            if (adapter != null) {
+            if (adapter != null) {
                 Future<Boolean> disconnect = adapter.disconnect();
                 disconnect.get();
                 LOGGER.info("Disconnected");
-//            }
+            }
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }

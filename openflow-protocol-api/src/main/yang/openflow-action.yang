@@ -76,11 +76,11 @@ module openflow-action {
         description "";
         base oft:action;
     }
-    
+
     container actions-container {
         uses action-header;
     }
-    
+
     grouping action-header {
         container action {
             leaf type {
@@ -90,5 +90,5 @@ module openflow-action {
             }
         }
     }
-    
+
 }
