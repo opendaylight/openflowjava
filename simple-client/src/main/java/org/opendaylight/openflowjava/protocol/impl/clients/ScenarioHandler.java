@@ -65,7 +65,7 @@ public class ScenarioHandler extends Thread {
         }
         LOGGER.info("Scenario finished");
         synchronized (this) {
-            notify();
+            this.notify();
         }
     }
 

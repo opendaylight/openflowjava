@@ -34,12 +34,7 @@ public class DelegatingInboundHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, final Object msg)
             throws Exception {
         LOGGER.debug("Reading");
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                consumer.consume((DataObject) msg);
-            }
-        }).start();
+        consumer.consume((DataObject) msg);
     }
     
     @Override
