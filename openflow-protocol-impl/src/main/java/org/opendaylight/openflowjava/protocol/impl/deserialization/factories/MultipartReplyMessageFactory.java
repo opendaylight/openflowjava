@@ -8,19 +8,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowModFlags;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterBandType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterFlags;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterModCommand;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeatures;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessageBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDropBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDscpRemarkBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyAggregate;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyAggregateBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyDesc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyDescBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyExperimenter;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyExperimenterBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyFlow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyFlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyGroupBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeter;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeterBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeterConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeterConfigBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeterFeatures;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeterFeaturesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyPortDesc;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyPortDescBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyPortStats;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyPortStatsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyQueue;
@@ -33,6 +53,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group.GroupStatsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group.group.stats.BucketStats;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group.group.stats.BucketStatsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.meter.MeterStats;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.meter.MeterStatsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.meter.config.MeterConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.meter.config.MeterConfigBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.meter.config.meter.config.Bands;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.meter.config.meter.config.BandsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.meter.meter.stats.MeterBandStats;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.meter.meter.stats.MeterBandStatsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.port.desc.Ports;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.port.desc.PortsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.port.stats.PortStats;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.port.stats.PortStatsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.queue.QueueStats;
@@ -89,6 +119,16 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                  break;         
         case 6:  builder.setMultipartReplyBody(setGroup(rawMessage));
                  break;
+        case 9:  builder.setMultipartReplyBody(setMeter(rawMessage));
+                 break;
+        case 10:  builder.setMultipartReplyBody(setMeterConfig(rawMessage));
+                 break;
+        case 11: builder.setMultipartReplyBody(setMeterFeatures(rawMessage));
+                 break;
+        case 13: builder.setMultipartReplyBody(setPortDesc(rawMessage));
+                 break;
+        case 0xFFFF: builder.setMultipartReplyBody(setExperimenter(rawMessage));
+                 break;
         default: 
                  break;
         }
@@ -129,7 +169,9 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         MultipartReplyFlowBuilder flowBuilder = new MultipartReplyFlowBuilder();
         List<FlowStats> flowStatsList = new ArrayList<>();
         FlowStatsBuilder flowStatsBuilder = new FlowStatsBuilder();
+        int flowLen = 0;
         while (input.readableBytes() > 0) {
+            flowLen = input.readUnsignedShort();
             flowStatsBuilder.setTableId(input.readUnsignedByte());
             input.skipBytes(PADDING_IN_FLOW_STATS_HEADER_01);
             flowStatsBuilder.setDurationSec(input.readUnsignedInt());
@@ -152,7 +194,8 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             // TODO instructions
             flowStatsList.add(flowStatsBuilder.build());
         }
-        flowBuilder.setFlowStats(flowStatsList);
+        flowBuilder.setFlowStats(new ArrayList<>(flowStatsList));
+        flowStatsList.clear();
         return flowBuilder.build();
     }
     
@@ -196,7 +239,8 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             tableStatsBuilder.setMatchedCount(new BigInteger(matchedCount));
             tableStatsList.add(tableStatsBuilder.build());
         }
-        builder.setTableStats(tableStatsList);
+        builder.setTableStats(new ArrayList<>(tableStatsList));
+        tableStatsList.clear();
         return builder.build();
     }
     
@@ -261,7 +305,8 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             portStatsBuilder.setDurationNsec(input.readUnsignedInt());
             portStatsList.add(portStatsBuilder.build());
         }
-        builder.setPortStats(portStatsList);
+        builder.setPortStats(new ArrayList<>(portStatsList));
+        portStatsList.clear();
         return builder.build();
     }
     
@@ -290,7 +335,8 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             queueStatsBuilder.setDurationNsec(input.readUnsignedInt());
             queueStatsList.add(queueStatsBuilder.build());
         }
-        builder.setQueueStats(queueStatsList);
+        builder.setQueueStats(new ArrayList<>(queueStatsList));
+        queueStatsList.clear();
         return builder.build();
     }
     
@@ -334,12 +380,231 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                 bucketStatsBuilder.setByteCount(new BigInteger(byteCountBucket));
                 bucketStatsList.add(bucketStatsBuilder.build());
 
-                groupStatsBuilder.setBucketStats(bucketStatsList);
-                groupStatsList.add(groupStatsBuilder.build());
                 actualLength = actualLength + BUCKET_COUNTER_LENGTH;
             } 
+            groupStatsBuilder.setBucketStats(new ArrayList<>(bucketStatsList));
+            bucketStatsList.clear();
+            groupStatsList.add(groupStatsBuilder.build());
         }
-        builder.setGroupStats(groupStatsList);
+        builder.setGroupStats(new ArrayList<>(groupStatsList));
+        groupStatsList.clear();
         return builder.build();
+    }
+    
+    private static MultipartReplyMeterFeatures setMeterFeatures(ByteBuf input) {
+        final byte PADDING_IN_METER_FEATURES_HEADER = 2;
+        MultipartReplyMeterFeaturesBuilder builder = new MultipartReplyMeterFeaturesBuilder();
+        builder.setMaxMeter(input.readUnsignedInt());
+        builder.setBandTypes(MeterBandType.forValue(input.readInt()));
+        builder.setCapabilities(decodeMeterModFlags((int) input.readUnsignedInt()));
+        builder.setMaxBands(input.readUnsignedByte());
+        builder.setMaxColor(input.readUnsignedByte());
+        input.skipBytes(PADDING_IN_METER_FEATURES_HEADER);
+        return builder.build();
+    }
+    
+    private static MeterFlags decodeMeterModFlags(int input){
+        final Boolean _oFPMFKBPS = (input & (1 << 0)) > 0;
+        final Boolean _oFPMFPKTPS = (input & (1 << 1)) > 0;
+        final Boolean _oFPMFBURST = (input & (1 << 2)) > 0; 
+        final Boolean _oFPMFSTATS = (input & (1 << 3)) > 0;
+        return new MeterFlags(_oFPMFBURST, _oFPMFKBPS, _oFPMFPKTPS, _oFPMFSTATS);
+    }
+    
+    private static MultipartReplyMeter setMeter(ByteBuf input) {
+        final byte PADDING_IN_METER_STATS_HEADER = 6;
+        final byte METER_BAND_STATS_LENGTH = 16;
+        final byte METER_BODY_LENGTH = 40;
+        int actualLength;
+        MultipartReplyMeterBuilder builder = new MultipartReplyMeterBuilder();
+        List<MeterStats> meterStatsList = new ArrayList<>();
+        MeterStatsBuilder meterStatsBuilder = new MeterStatsBuilder();
+        List<MeterBandStats> meterBandStatsList = new ArrayList<>();
+        MeterBandStatsBuilder meterBandStatsBuilder = new MeterBandStatsBuilder();
+        while (input.readableBytes() > 0) {
+            meterStatsBuilder.setMeterId(input.readUnsignedInt());
+            actualLength = 0;
+            int meterStatsBodyLength = input.readUnsignedShort();
+            input.skipBytes(PADDING_IN_METER_STATS_HEADER);
+            meterStatsBuilder.setFlowCount(input.readUnsignedInt());
+            byte[] packetInCount = new byte[Long.SIZE/Byte.SIZE];
+            input.readBytes(packetInCount);
+            meterStatsBuilder.setPacketInCount(new BigInteger(packetInCount));
+            byte[] byteInCount = new byte[Long.SIZE/Byte.SIZE];
+            input.readBytes(byteInCount);
+            meterStatsBuilder.setByteInCount(new BigInteger(byteInCount));
+            meterStatsBuilder.setDurationSec(input.readUnsignedInt());
+            meterStatsBuilder.setDurationNsec(input.readUnsignedInt());
+            actualLength = METER_BODY_LENGTH;
+            
+            while (actualLength < meterStatsBodyLength) {
+                byte[] packetBandCount = new byte[Long.SIZE/Byte.SIZE];
+                input.readBytes(packetBandCount);
+                meterBandStatsBuilder.setPacketBandCount(new BigInteger(packetBandCount));
+                byte[] byteBandCount = new byte[Long.SIZE/Byte.SIZE];
+                input.readBytes(byteBandCount);
+                meterBandStatsBuilder.setByteBandCount(new BigInteger(byteBandCount));
+                
+                meterBandStatsList.add(meterBandStatsBuilder.build());
+                actualLength = actualLength + METER_BAND_STATS_LENGTH;
+            }
+        
+            meterStatsBuilder.setMeterBandStats(new ArrayList<>(meterBandStatsList));
+            meterBandStatsList.clear();
+            meterStatsList.add(meterStatsBuilder.build());
+        }
+        builder.setMeterStats(new ArrayList<>(meterStatsList));
+        meterStatsList.clear();
+        return builder.build();
+    }
+    
+    private static MultipartReplyMeterConfig setMeterConfig(ByteBuf input) {
+        final byte METER_BAND_LENGTH = 16;
+        final byte METER_CONFIG_LENGTH = 8;
+        int actualLength;
+        MultipartReplyMeterConfigBuilder builder = new MultipartReplyMeterConfigBuilder();
+        List<MeterConfig> meterConfigList = new ArrayList<>();
+        MeterConfigBuilder meterConfigBuilder = new MeterConfigBuilder();
+        List<Bands> bandsList = new ArrayList<Bands>();
+        BandsBuilder bandsBuilder = new BandsBuilder();
+        
+        while (input.readableBytes() > 0) {
+            int meterConfigBodyLength = input.readUnsignedShort();
+            actualLength = 0;
+            meterConfigBuilder.setFlags(MeterModCommand.forValue(input.readUnsignedShort()));
+            meterConfigBuilder.setMeterId(input.readUnsignedInt());
+            actualLength = METER_CONFIG_LENGTH;
+            
+            while (actualLength < meterConfigBodyLength) {
+                MeterBandDropBuilder bandDropBuilder = new MeterBandDropBuilder();
+                final byte PADDING_IN_METER_BAND_DROP_HEADER = 4;
+                MeterBandDscpRemarkBuilder bandDscpRemarkBuilder = new MeterBandDscpRemarkBuilder();
+                final byte PADDING_IN_METER_BAND_DSCP_HEADER = 3;
+                MeterBandExperimenterBuilder bandExperimenterBuilder = new MeterBandExperimenterBuilder(); 
+                int bandLen = 0;
+                int bandType = input.readUnsignedShort();
+                switch (bandType) {
+                    case 1: bandDropBuilder.setType(MeterBandType.forValue(bandType));
+                            bandLen = input.readUnsignedShort();
+                            bandDropBuilder.setRate(input.readUnsignedInt());
+                            bandDropBuilder.setBurstSize(input.readUnsignedInt());
+                            input.skipBytes(PADDING_IN_METER_BAND_DROP_HEADER);
+                            bandsBuilder.setMeterBand(bandDropBuilder.build());
+                            break;
+                    case 2: bandDscpRemarkBuilder.setType(MeterBandType.forValue(bandType));
+                            bandLen = input.readUnsignedShort();
+                            bandDscpRemarkBuilder.setRate(input.readUnsignedInt());
+                            bandDscpRemarkBuilder.setBurstSize(input.readUnsignedInt());
+                            bandDscpRemarkBuilder.setPrecLevel(input.readUnsignedByte());
+                            input.skipBytes(PADDING_IN_METER_BAND_DSCP_HEADER);
+                            bandsBuilder.setMeterBand(bandDscpRemarkBuilder.build());
+                            break;
+                    case 0xFFFF: bandExperimenterBuilder.setType(MeterBandType.forValue(bandType));
+                                 bandLen = input.readUnsignedShort();          
+                                 bandExperimenterBuilder.setRate(input.readUnsignedInt());
+                                 bandExperimenterBuilder.setBurstSize(input.readUnsignedInt());
+                                 bandExperimenterBuilder.setExperimenter(input.readUnsignedInt());
+                                 bandsBuilder.setMeterBand(bandExperimenterBuilder.build());
+                                 break;
+                    default: break;
+                }
+                bandsList.add(bandsBuilder.build());
+                actualLength = actualLength + METER_BAND_LENGTH;
+            }
+            meterConfigBuilder.setBands(new ArrayList<>(bandsList));
+            bandsList.clear();
+            meterConfigList.add(meterConfigBuilder.build());
+        }
+        builder.setMeterConfig(new ArrayList<>(meterConfigList));
+        meterConfigList.clear();
+        return builder.build();
+    }
+    
+    private static MultipartReplyExperimenter setExperimenter(ByteBuf input) {
+        MultipartReplyExperimenterBuilder builder = new MultipartReplyExperimenterBuilder();
+        builder.setExperimenter(input.readUnsignedInt());
+        builder.setExpType(input.readUnsignedInt());
+        byte[] data = new byte[Long.SIZE/Byte.SIZE];
+        input.readBytes(data);
+        builder.setData(data);
+        return builder.build();
+    }
+    
+    private static MultipartReplyPortDesc setPortDesc(ByteBuf input) {
+        final byte PADDING_IN_PORT_DESC_HEADER_01 = 4;
+        final byte PADDING_IN_PORT_DESC_HEADER_02 = 2;
+        final int macAddressLength = 6;
+        final byte MAX_PORT_NAME_LEN = 16;
+        MultipartReplyPortDescBuilder builder = new MultipartReplyPortDescBuilder();
+        List<Ports> portsList = new ArrayList<>();
+        PortsBuilder portsBuilder = new PortsBuilder();
+        
+        while (input.readableBytes() > 0) {
+            portsBuilder.setPortNo(input.readUnsignedInt());
+            input.skipBytes(PADDING_IN_PORT_DESC_HEADER_01);
+            StringBuffer macToString = new StringBuffer();
+            for(int i=0; i<macAddressLength; i++){
+                short mac = 0;
+                mac = input.readUnsignedByte();
+                macToString.append(String.format("%02X", mac));
+            }
+            portsBuilder.setHwAddr(new MacAddress(macToString.toString()));
+            input.skipBytes(PADDING_IN_PORT_DESC_HEADER_02);
+            
+            byte[] portNameBytes = new byte[MAX_PORT_NAME_LEN];
+            input.readBytes(portNameBytes);
+            String portName = new String(portNameBytes);
+            portsBuilder.setName(portName.trim());
+            
+            portsBuilder.setConfig(createPortConfig(input.readUnsignedInt()));
+            portsBuilder.setState(createPortState(input.readUnsignedInt()));
+            portsBuilder.setCurrentFeatures(createPortFeatures(input.readUnsignedInt()));
+            portsBuilder.setAdvertisedFeatures(createPortFeatures(input.readUnsignedInt()));
+            portsBuilder.setSupportedFeatures(createPortFeatures(input.readUnsignedInt()));
+            portsBuilder.setPeerFeatures(createPortFeatures(input.readUnsignedInt()));
+            portsBuilder.setCurrSpeed(input.readUnsignedInt());
+            portsBuilder.setMaxSpeed(input.readUnsignedInt());
+            portsList.add(portsBuilder.build());
+        }
+        
+        builder.setPorts(new ArrayList<>(portsList));
+        portsList.clear();
+        return builder.build();
+    }
+    
+    private static PortConfig createPortConfig(long input){
+        final Boolean _portDown   = ((input) & (1<<0)) != 0;
+        final Boolean _noRecv    = ((input) & (1<<2)) != 0;
+        final Boolean _noFwd       = ((input) & (1<<5)) != 0;
+        final Boolean _noPacketIn = ((input) & (1<<6)) != 0;
+        return new PortConfig(_noFwd, _noPacketIn, _noRecv, _portDown);
+    }
+    
+    private static PortState createPortState(long input){
+        final Boolean _linkDown = ((input) & (1<<0)) != 0;
+        final Boolean _blocked  = ((input) & (1<<1)) != 0;
+        final Boolean _live     = ((input) & (1<<2)) != 0;
+        return new PortState(_linkDown, _blocked,_live);
+    }
+    
+    private static PortFeatures createPortFeatures(long input){
+        final Boolean _10mbHd = ((input) & (1<<0)) != 0;
+        final Boolean _10mbFd = ((input) & (1<<1)) != 0;
+        final Boolean _100mbHd = ((input) & (1<<2)) != 0;
+        final Boolean _100mbFd = ((input) & (1<<3)) != 0;
+        final Boolean _1gbHd = ((input) & (1<<4)) != 0;
+        final Boolean _1gbFd = ((input) & (1<<5)) != 0;
+        final Boolean _10gbFd = ((input) & (1<<6)) != 0;
+        final Boolean _40gbFd = ((input) & (1<<7)) != 0;
+        final Boolean _100gbFd = ((input) & (1<<8)) != 0;
+        final Boolean _1tbFd = ((input) & (1<<9)) != 0;
+        final Boolean _other = ((input) & (1<<10)) != 0;
+        final Boolean _copper = ((input) & (1<<11)) != 0;
+        final Boolean _fiber = ((input) & (1<<12)) != 0;
+        final Boolean _autoneg = ((input) & (1<<13)) != 0;
+        final Boolean _pause = ((input) & (1<<14)) != 0;
+        final Boolean _pauseAsym = ((input) & (1<<15)) != 0;
+        return new PortFeatures(_10mbHd, _10mbFd, _100mbHd, _100mbFd, _1gbHd, _1gbFd, _10gbFd,
+                _40gbFd, _100gbFd, _1tbFd, _other, _copper, _fiber, _autoneg, _pause, _pauseAsym);
     }
 }

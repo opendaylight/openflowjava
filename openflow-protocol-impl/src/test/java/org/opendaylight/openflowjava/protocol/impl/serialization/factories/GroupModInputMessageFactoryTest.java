@@ -17,8 +17,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GroupModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GroupModInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.group.mod.Buckets;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.group.mod.BucketsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.group.mod.BucketsList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.group.mod.BucketsListBuilder;
 
 /**
  * @author timotej.kubas
@@ -38,7 +38,7 @@ public class GroupModInputMessageFactoryTest {
         builder.setCommand(GroupModCommand.forValue(2));
         builder.setType(GroupType.forValue(3));
         builder.setGroupId(256L);
-        builder.setBuckets(createBucketsList());
+        builder.setBucketsList(createBucketsList());
         GroupModInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
@@ -53,10 +53,10 @@ public class GroupModInputMessageFactoryTest {
         Assert.assertEquals("Wrong bucketList", createBucketsList(), createBucketsListFromBufer(out));
     }
     
-    private static List<Buckets> createBucketsList(){
-        List<Buckets> bucketsList = new ArrayList<>();
-        BucketsBuilder bucketsBuilder = new BucketsBuilder();
-        Buckets bucket;
+    private static List<BucketsList> createBucketsList(){
+        List<BucketsList> bucketsList = new ArrayList<>();
+        BucketsListBuilder bucketsBuilder = new BucketsListBuilder();
+        BucketsList bucket;
         bucketsBuilder.setWeight(10);
         bucketsBuilder.setWatchPort(new PortNumber(65L));
         bucketsBuilder.setWatchGroup(22L);
@@ -65,10 +65,10 @@ public class GroupModInputMessageFactoryTest {
         return bucketsList;
     }
     
-    private static List<Buckets> createBucketsListFromBufer(ByteBuf out){
-        List<Buckets> bucketsList = new ArrayList<>();
-        BucketsBuilder bucketsBuilder = new BucketsBuilder();
-        Buckets bucket;
+    private static List<BucketsList> createBucketsListFromBufer(ByteBuf out){
+        List<BucketsList> bucketsList = new ArrayList<>();
+        BucketsListBuilder bucketsBuilder = new BucketsListBuilder();
+        BucketsList bucket;
         bucketsBuilder.setWeight((int) out.readShort());
         bucketsBuilder.setWatchPort(new PortNumber(out.readUnsignedInt()));
         bucketsBuilder.setWatchGroup(out.readUnsignedInt());

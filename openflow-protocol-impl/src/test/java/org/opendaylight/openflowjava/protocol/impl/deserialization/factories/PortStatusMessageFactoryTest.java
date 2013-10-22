@@ -48,16 +48,16 @@ public class PortStatusMessageFactoryTest {
         Assert.assertEquals("Wrong macAddress", new MacAddress("08002700B0EB"), builtByFactory.getHwAddr());
         Assert.assertEquals("Wrong portConfig", new PortConfig(false, true, false, true), builtByFactory.getConfig());
         Assert.assertEquals("Wrong portState", new PortState(true, false, true), builtByFactory.getState());
-        Assert.assertEquals("Wrong portFeatures", new PortFeatures(true, false, false, false,
+        Assert.assertEquals("Wrong currentFeatures", new PortFeatures(true, false, false, false,
                                              false, false, false, true, false, false, false, false, 
                                              false, false, false, false), builtByFactory.getCurrentFeatures());
-        Assert.assertEquals("Wrong portFeatures", new PortFeatures(true, false, false, false,
+        Assert.assertEquals("Wrong advertisedFeatures", new PortFeatures(true, false, false, false,
                                              false, false, false, true, false, false, false, false, 
                                              false, false, false, false), builtByFactory.getAdvertisedFeatures());
-        Assert.assertEquals("Wrong portFeatures", new PortFeatures(true, false, false, false,
+        Assert.assertEquals("Wrong supportedFeatures", new PortFeatures(true, false, false, false,
                                              false, false, false, true, false, false, false, false, 
                                              false, false, false, false), builtByFactory.getSupportedFeatures());
-        Assert.assertEquals("Wrong portFeatures", new PortFeatures(true, false, false, false,
+        Assert.assertEquals("Wrong peerFeatures", new PortFeatures(true, false, false, false,
                                              false, false, false, true, false, false, false, false, 
                                              false, false, false, false), builtByFactory.getSupportedFeatures());
         Assert.assertEquals("Wrong currSpeed", 129L, builtByFactory.getCurrSpeed().longValue());

@@ -417,7 +417,7 @@ module openflow-protocol {
                     type uint32;
                 }
                 
-                list buckets {
+                list buckets-list {
                     uses bucket;
                 }
             }
@@ -793,7 +793,7 @@ module openflow-protocol {
                             leaf group-id {
                                 type uint32;
                             }
-                            list buckets {
+                            list buckets-list {
                                 uses bucket;
                             }
                         }
@@ -908,6 +908,9 @@ module openflow-protocol {
                         }
                         leaf exp-type {
                             type uint32;
+                        }
+                        leaf data {
+                            type binary;
                         }
                     }
                 }

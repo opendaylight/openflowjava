@@ -9,7 +9,7 @@ import java.util.List;
 import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GroupModInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.group.mod.Buckets;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.group.mod.BucketsList;
 
 /**
  * @author timotej.kubas
@@ -43,7 +43,7 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupModInput> 
         out.writeByte(message.getType().getIntValue());
         ByteBufUtils.padBuffer(PADDING_IN_GROUP_MOD_MESSAGE, out);
         out.writeInt(message.getGroupId().intValue());
-        encodeBuckets(message.getBuckets(), out);
+        encodeBuckets(message.getBucketsList(), out);
     }
 
     @Override
@@ -56,11 +56,11 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupModInput> 
         return MESSAGE_TYPE;
     }
     
-    private static void encodeBuckets(List<Buckets> buckets, ByteBuf outBuffer) {
+    private static void encodeBuckets(List<BucketsList> buckets, ByteBuf outBuffer) {
         final byte PADDING_IN_BUCKET = 4;
         
-        for (Iterator<Buckets> iterator = buckets.iterator(); iterator.hasNext();) {
-            Buckets currentBucket = iterator.next();
+        for (Iterator<BucketsList> iterator = buckets.iterator(); iterator.hasNext();) {
+            BucketsList currentBucket = iterator.next();
             // TODO get method for field length missing
             outBuffer.writeShort(currentBucket.getWeight().intValue());
             outBuffer.writeInt(currentBucket.getWatchPort().getValue().intValue());
