@@ -16,15 +16,21 @@ public class TestingConnConfigImpl implements ConnectionConfiguration {
     private Object transferProtocol;
     private FEATURE_SUPPORT tlsSupport;
     private long switchIdleTimeout;
-    
-    // TODO - implement transferProtocol
+
+    /**
+     * Creates {@link TestingConnConfigImpl}
+     * @param address 
+     * @param port
+     * @param tlsSupport
+     * @param switchIdleTimeout
+     */
     public TestingConnConfigImpl(InetAddress address, int port, FEATURE_SUPPORT tlsSupport, long switchIdleTimeout) {
         this.address = address;
         this.port = port;
         this.tlsSupport = tlsSupport;
         this.switchIdleTimeout = switchIdleTimeout;
     }
-    
+
     @Override
     public InetAddress getAddress() {
         return address;

@@ -12,6 +12,10 @@
         <level value="DEBUG" />
         <appender-ref ref="console" />
     </logger>
+    <logger name="org.opendaylight.openflowjava.protocol.impl.clients" additivity="false">
+        <level value="DEBUG" />
+        <appender-ref ref="console" />
+    </logger>
 
     <root>
         <priority value="INFO" />

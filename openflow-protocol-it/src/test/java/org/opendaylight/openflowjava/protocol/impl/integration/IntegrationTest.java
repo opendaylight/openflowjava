@@ -28,18 +28,15 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author michal.polkorab
- *
+ * @author timotej.kubas
  */
 public class IntegrationTest {
 
-    /** Name of file in which OpenFLow protocol messages are stored in binary format */
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(IntegrationTest.class);
     private static int port;
     private static final FEATURE_SUPPORT DEFAULT_TLS_SUPPORT = FEATURE_SUPPORT.NOT_SUPPORTED;
     private static final int SWITCH_IDLE_TIMEOUT = 2000;
-
-    protected static final Logger LOGGER = LoggerFactory
-            .getLogger(IntegrationTest.class);
-
     private static final long CONNECTION_TIMEOUT = 2000;
     private InetAddress startupAddress;
     private MockPlugin mockPlugin;
@@ -64,13 +61,16 @@ public class IntegrationTest {
         port = server.getPort();
     }
 
+    /**
+     * @throws Exception
+     */
     @After
     public void tearDown() throws Exception {
         Thread.sleep(500);
     }
 
     /**
-     * Library integration and communication test
+     * Library integration and communication test with handshake
      * @throws Exception 
      */
     @Test
@@ -86,7 +86,7 @@ public class IntegrationTest {
     }
 
     /**
-     * Library integration and communication test
+     * Library integration and communication test with handshake + echo exchange
      * @throws Exception 
      */
     @Test
@@ -117,11 +117,10 @@ public class IntegrationTest {
     /**
      * @param amountOfCLients 
      * @return new clients up and running
-     * @throws InterruptedException
-     * @throws ExecutionException
+     * @throws ExecutionException if some client could not start
      */
     private List<SimpleClient> createAndStartClient(int amountOfCLients, ScenarioHandler scenarioHandler)
-            throws InterruptedException, ExecutionException {
+            throws ExecutionException {
         List<SimpleClient> clientsHorde = new ArrayList<>();
         for (int i = 0; i < amountOfCLients; i++) {
             LOGGER.debug("startup address in createclient: " + startupAddress.getHostAddress());

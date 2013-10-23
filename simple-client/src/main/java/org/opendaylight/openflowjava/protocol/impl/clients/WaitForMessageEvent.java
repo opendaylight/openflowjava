@@ -7,16 +7,21 @@ import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
+/**
+ * Class representing waiting on message
+ * @author michal.polkorab
+ */
 public class WaitForMessageEvent implements ClientEvent {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(WaitForMessageEvent.class);
     private byte[] headerExpected;
     private byte[] headerReceived;
 
-    public WaitForMessageEvent(byte[] headerAwaited) {
-        this.headerExpected = headerAwaited;
+    /**
+     * @param headerExpected header (first 8 bytes) of expected message
+     */
+    public WaitForMessageEvent(byte[] headerExpected) {
+        this.headerExpected = headerExpected;
     }
 
     @Override
@@ -33,6 +38,9 @@ public class WaitForMessageEvent implements ClientEvent {
         return true;
     }
 
+    /**
+     * @param headerReceived header (first 8 bytes) of expected message
+     */
     public void setHeaderReceived(byte[] headerReceived) {
         this.headerReceived = headerReceived;
     }

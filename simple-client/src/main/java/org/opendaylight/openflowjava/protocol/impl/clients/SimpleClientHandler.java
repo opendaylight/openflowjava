@@ -24,6 +24,7 @@ public class SimpleClientHandler extends ChannelInboundHandlerAdapter {
 
     /**
      * @param isOnlineFuture future notifier of connected channel
+     * @param scenarioHandler handler of scenario events
      */
     public SimpleClientHandler(SettableFuture<Boolean> isOnlineFuture, ScenarioHandler scenarioHandler) {
         this.isOnlineFuture = isOnlineFuture;
@@ -62,6 +63,9 @@ public class SimpleClientHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
+    /**
+     * @param scenarioHandler handler of scenario events
+     */
     public void setScenario(ScenarioHandler scenarioHandler) {
         this.scenarioHandler = scenarioHandler;
     }

@@ -8,13 +8,20 @@ import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * Class representing sending message event
+ * 
+ * @author michal.polkorab
+ */
 public class SendEvent implements ClientEvent {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(SendEvent.class);
     protected byte[] msgToSend;
     protected ChannelHandlerContext ctx;
 
+    /**
+     * @param msgToSend message to be sent
+     */
     public SendEvent(byte[] msgToSend) {
         this.msgToSend = msgToSend;
     }
@@ -42,6 +49,9 @@ public class SendEvent implements ClientEvent {
         return true;
     }
 
+    /**
+     * @param ctx context which will be used for sending messages (SendEvents)
+     */
     public void setCtx(ChannelHandlerContext ctx) {
         this.ctx = ctx;
     }

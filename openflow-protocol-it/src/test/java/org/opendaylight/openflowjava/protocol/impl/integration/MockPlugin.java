@@ -47,7 +47,8 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
     private ConnectionAdapter adapter;
     private SettableFuture<Void> finishedFuture;
     private int idleCounter = 0;
-    
+
+    /** Creates MockPlugin */
     public MockPlugin() {
         LOGGER.info("Creating MockPlugin");
         finishedFuture = SettableFuture.create();
@@ -182,6 +183,9 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
         LOGGER.debug("adapter: "+adapter);
     }
 
+    /**
+     * @return finishedFuture object
+     */
     public SettableFuture<Void> getFinishedFuture() {
         return finishedFuture;
     }
@@ -191,7 +195,10 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
         LOGGER.debug("switch status: "+notification.getInfo());
         idleCounter ++;
     }
-    
+
+    /**
+     * @return number of occured idleEvents
+     */
     public int getIdleCounter() {
         return idleCounter;
     }

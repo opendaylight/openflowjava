@@ -6,8 +6,9 @@ import java.util.Stack;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 
 /**
+ * Class for providing prepared handshake scenario
+ * 
  * @author michal.polkorab
- *
  */
 public class ScenarioFactory {
 

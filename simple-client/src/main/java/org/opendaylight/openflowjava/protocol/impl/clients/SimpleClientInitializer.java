@@ -25,6 +25,7 @@ public class SimpleClientInitializer extends ChannelInitializer<SocketChannel> {
 
     /**
      * @param isOnlineFuture future notifier of connected channel
+     * @param secured true if {@link SimpleClient} should use encrypted communication
      */
     public SimpleClientInitializer(SettableFuture<Boolean> isOnlineFuture, boolean secured) {
         this.isOnlineFuture = isOnlineFuture;
@@ -46,7 +47,10 @@ public class SimpleClientInitializer extends ChannelInitializer<SocketChannel> {
         isOnlineFuture = null;
 
     }
-    
+
+    /**
+     * @param scenarioHandler handler of scenario events
+     */
     public void setScenario(ScenarioHandler scenarioHandler) {
         this.scenarioHandler = scenarioHandler;
     }
