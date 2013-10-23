@@ -28,7 +28,7 @@ public class ScenarioFactory {
         stack.add(0, new WaitForMessageEvent(ByteBufUtils.hexStringToBytes("04 00 00 08 00 00 00 02")));
         stack.add(0, new WaitForMessageEvent(ByteBufUtils.hexStringToBytes("04 05 00 08 00 00 00 03")));
         stack.add(0, new SendEvent(ByteBufUtils.hexStringToBytes("04 06 00 20 00 00 00 03 "
-                + "00 01 02 03 04 05 06 07 00 01 02 03 01 01 00 00 00 01 02 03 00 01 02 03")));
+                + "00 01 02 03 04 05 06 07 00 01 02 03 01 00 00 00 00 01 02 03 00 01 02 03")));
         return stack;
     }
 
