@@ -3,7 +3,7 @@ module system-notifications {
     prefix "ofs";
 
     revision "2013-09-27" {
-        //description "Initial model";
+        //description "Model of system messages used in OpenFlow Protocol Library";
     }
 
     notification disconnect-event {

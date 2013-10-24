@@ -3,7 +3,7 @@ module openflow-types {
     prefix "oft";
 
     revision "2013-07-31" {
-        //description "Initial model";
+        //description "OpenFlow 1.3 - common types model";
     }
 
     typedef port-number {
@@ -55,7 +55,6 @@ module openflow-types {
             type special-port-number;
         }
     }
-
 
     typedef port-features {
         ////description "Features of ports available in datapath.";
@@ -196,18 +195,16 @@ module openflow-types {
     }
 
     identity instruction {
-
     }
 
     identity action {
-
     }
 
 
     typedef metadata {
         type binary;
     }
-    
+
     typedef table-id {
         type uint32;
     }
@@ -220,11 +217,11 @@ module openflow-types {
     typedef group-id {
         type uint32;
     }
-    
+
     typedef ether-type {
         type uint16;
     }
-    
+
     typedef error-type {
         type enumeration {
             enum HELLO_FAILED {
@@ -289,7 +286,7 @@ module openflow-types {
             }
         }
     }
-    
+
     typedef hello-element-type {
         type enumeration {
             enum VERSIONBITMAP {
@@ -298,7 +295,7 @@ module openflow-types {
             }
         }
     }
-    
+
     typedef switch-config-flag {
         /* Handling of IP fragments. */
         type enumeration {
@@ -319,7 +316,7 @@ module openflow-types {
             }
         }
     }
-    
+
     typedef flow-removed-reason {
         /* flow removed */
         type enumeration {
@@ -341,7 +338,7 @@ module openflow-types {
             }
         }
     }
-    
+
     typedef port-reason {
         /* port status */
         type enumeration {
@@ -359,7 +356,7 @@ module openflow-types {
             }
         }
     }
-    
+
     typedef flow-mod-command {
         /* ofp_flow_mod_command */
         type enumeration {
@@ -385,7 +382,7 @@ module openflow-types {
             }
         }
     }
-    
+
     typedef flow-mod-flags {
         /* ofp_flow_mod_flags */
         type bits {
@@ -411,7 +408,7 @@ module openflow-types {
             }
         }
     }
-    
+
     typedef group-mod-command {
         /* ofp_group_mod_command */
         type enumeration {
@@ -430,8 +427,7 @@ module openflow-types {
             
         }
     }
-    
-    
+
     typedef group-type {
         /* ofp_group_type */
         type enumeration {
@@ -453,7 +449,7 @@ module openflow-types {
             }
         }
     }
-    
+
     typedef multipart-request-flags {
         description
             "enum ofp_multipart_request_flags ";
@@ -464,7 +460,7 @@ module openflow-types {
             }
         }
     }
-    
+
     typedef multipart-type {
         /* ofp_multipart_type */
         type enumeration {
@@ -564,7 +560,7 @@ module openflow-types {
             }
         }
     }
-    
+
     typedef queue-property {
         /* ofp_queue_properties */
         type enumeration {
@@ -586,7 +582,7 @@ module openflow-types {
             }
         }
     }
-    
+
     typedef controller-role {
         /* ofp_controller_role */
         type enumeration {
@@ -608,7 +604,7 @@ module openflow-types {
             }
         }
     }
-    
+
     typedef packet-in-reason {
         /* ofp_packet_in_reason */
         type enumeration {
@@ -626,7 +622,7 @@ module openflow-types {
             }
         }
     }
-    
+
     typedef meter-mod-command {
         /* ofp_meter_mod_command */
         type enumeration {
@@ -639,10 +635,9 @@ module openflow-types {
             enum OFPMC_DELETE {
               description "Delete specified meter. ";
             }
-
         }
     }
- 
+
     typedef meter-flags {
         /* ofp_meter_flags */
         type bits {
@@ -664,7 +659,7 @@ module openflow-types {
             }
         }
     }
-    
+
     typedef meter-band-type {
         /* ofp_meter_band_type */
         type enumeration {
@@ -680,10 +675,9 @@ module openflow-types {
               value 65535; //0xFFFF
               description "Experimenter meter band. ";
             }
-
         }
     }
-    
+
     typedef table-config {
         /* ofp_table_config */
         type bits {
@@ -693,7 +687,7 @@ module openflow-types {
             }
         }
     }
-    
+
     typedef table-features-prop-type {
         type enumeration {
             enum OFPTFPT_INSTRUCTIONS {
@@ -762,7 +756,7 @@ module openflow-types {
             }
         }
     }
-    
+
     typedef group-types {
         /* ofp_group_type */
         type bits {
@@ -784,7 +778,7 @@ module openflow-types {
             }
         }
     }
-    
+
     typedef group-capabilities {
         /* ofp_group_capabilities */
         type bits {
@@ -806,5 +800,5 @@ module openflow-types {
             }
         }
     }
-    
+
 }

@@ -4,162 +4,138 @@ module openflow-augments {
 
     import ietf-inet-types {prefix inet;}
     import ietf-yang-types {prefix yang;}
-    
+
     import openflow-types {prefix oft;}
     import openflow-protocol {prefix ofproto;}
     import openflow-action {prefix ofaction;}
     import openflow-instruction {prefix ofinstruction;}
     import openflow-extensible-match {prefix oxm;}
 
-
     revision "2013-10-02" {
-        description "Initial model";
+        description "OpenFlow 1.3 - augments model";
     }
+
 // OFP_MATCH AUGMENTS
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf port-number {
              type oft:port-number;
          }
      }
-
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf metadata {
              type binary;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf mask {
              type binary;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf mac-address {
              type yang:mac-address;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf eth-type {
              type oft:ether-type;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf vlan-vid {
              type uint16;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf vlan-pcp {
              type uint8;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf dscp {
              type inet:dscp;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf ecn {
              type uint8;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf protocol-number {
              type uint8;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf ipv4-prefix {
              type inet:ipv4-prefix;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf port {
              type inet:port-number;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf icmpv4-type {
              type uint8;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf icmpv4-code {
              type uint8;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf op-code {
              type uint16;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf ipv6-prefix {
              type inet:ipv6-prefix;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf ipv6-flabel {
              type inet:ipv6-flow-label;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf icmpv6-type {
              type uint8;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf icmpv6-code {
              type uint8;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf ipv6-address {
              type inet:ipv6-address;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf mpls-label {
              type uint32;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf tc {
              type uint8;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf bos {
              type boolean;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf isid {
              type uint32;
          }
      }
-     
      augment "/oxm:oxm-container/oxm:match-entries" {
          leaf pseudo-field {
              type bits {
@@ -198,7 +174,7 @@ module openflow-augments {
                  bit unseq {
                      description "Unexpected sequencing encountered.";
                      position 8;
-                     }                    
+                 }
              }
          }
      }
@@ -209,47 +185,39 @@ module openflow-augments {
              type oft:any-port-number;
          }
      }
-     
      augment "/ofaction:actions-container/ofaction:action" {
          leaf max-length {
              type uint16;
          }
      }
-     
      augment "/ofaction:actions-container/ofaction:action" {
          leaf mpls-ttl {
              type uint8;
          }
      }
-     
      augment "/ofaction:actions-container/ofaction:action" {
          leaf ethertype {
              type oft:ether-type;
          }
      }
-     
      augment "/ofaction:actions-container/ofaction:action" {
          leaf queue-id {
              type uint32;
          }
      }
-     
      augment "/ofaction:actions-container/ofaction:action" {
          leaf group-id {
              type uint32;
          }
      }
-     
      augment "/ofaction:actions-container/ofaction:action" {
          leaf nw-ttl {
              type uint8;
          }
      }
-     
      augment "/ofaction:actions-container/ofaction:action" {
          uses oxm:oxm-fields;
      }
-     
      augment "/ofaction:actions-container/ofaction:action" {
          leaf experimenter {
              type uint32;
@@ -262,7 +230,6 @@ module openflow-augments {
              uses ofinstruction:instructions;
          }
      }
-
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          list next-table-ids {
              leaf table-id {
@@ -270,19 +237,16 @@ module openflow-augments {
              }
          }
      }
-
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          list action-ids {
              uses ofaction:action-header;
          }
      }
-
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          list oxm-ids {
              uses oxm:oxm-fields;
          }
      }
-
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          leaf experimenter {
              type uint32;
@@ -294,14 +258,13 @@ module openflow-augments {
              type binary;
          }
      }
-     
+
 // OFP_INSTRUCTION AUGMENTS
      augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
          leaf table-id {
              type uint8;
          }
      }
-     
      augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
          leaf metadata {
              type binary;
@@ -310,19 +273,16 @@ module openflow-augments {
              type binary;
          }
      }
-     
      augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
          list actions {
              uses ofaction:action-header;
          }
      }
-     
      augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
          leaf meter-id {
              type uint32;
          }
      }
-     
      augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
          leaf experimenter {
              type uint32;
