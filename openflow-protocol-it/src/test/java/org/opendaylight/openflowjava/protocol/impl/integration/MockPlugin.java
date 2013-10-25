@@ -107,14 +107,24 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
         LOGGER.debug("adapter: "+adapter);
         LOGGER.debug("Hello message received");
         HelloInputBuilder hib = new HelloInputBuilder();
-        GetFeaturesInputBuilder featuresBuilder = new GetFeaturesInputBuilder();
         hib.setVersion((short) 4);
         hib.setXid(2L);
-        featuresBuilder.setVersion((short) 4);
-        featuresBuilder.setXid(3L);
         HelloInput hi = hib.build();
         adapter.hello(hi);
         LOGGER.debug("hello msg sent");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                sendHelloMessage();
+            }
+        }).start();
+        LOGGER.debug("adapter: "+adapter);
+    }
+    
+    protected void sendHelloMessage() {
+        GetFeaturesInputBuilder featuresBuilder = new GetFeaturesInputBuilder();
+        featuresBuilder.setVersion((short) 4);
+        featuresBuilder.setXid(3L);
         GetFeaturesInput featuresInput = featuresBuilder.build();
         try {
             LOGGER.debug("Going to send featuresRequest");
@@ -131,10 +141,8 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
             }
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             LOGGER.error(e.getMessage(), e);
-            // TODO - Collect exceptions and check for existence in tests
         }
         LOGGER.info("After FeaturesReply message");
-        LOGGER.debug("adapter: "+adapter);
     }
 
     protected void shutdown() {

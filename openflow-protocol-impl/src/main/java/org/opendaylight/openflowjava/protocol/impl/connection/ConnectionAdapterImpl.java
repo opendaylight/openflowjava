@@ -9,9 +9,9 @@ import io.netty.util.concurrent.GenericFutureListener;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.opendaylight.controller.sal.common.util.RpcErrors;
@@ -55,6 +55,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.DisconnectEvent;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SwitchIdleEvent;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SystemNotificationsListener;
+import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.common.RpcError;
@@ -91,8 +92,8 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     protected Cache<RpcResponseKey, SettableFuture<?>> responseCache;
     private SystemNotificationsListener systemListener;
     private boolean disconnectOccured = false;
-    private ExecutorService threadPool;
-    
+    protected BlockingQueue<DataObject> msgQueue;
+
     /**
      * default ctor 
      */
@@ -101,7 +102,19 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 .concurrencyLevel(1)
                 .expireAfterWrite(RPC_RESPONSE_EXPIRATION, TimeUnit.MINUTES)
                 .removalListener(new ResponseRemovalListener()).build();
-        threadPool = Executors.newCachedThreadPool();
+        msgQueue = new LinkedBlockingQueue<>();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (true) {
+                        consumeIntern(msgQueue.take());
+                    }
+                } catch (InterruptedException e) {
+                    LOG.error(e.getMessage(), e);
+                }
+            }
+        }).start();
         LOG.info("ConnectionAdapter created");
     }
     
@@ -216,6 +229,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     public Future<Boolean> disconnect() {
         ChannelFuture disconnectResult = channel.disconnect();
         responseCache.invalidateAll();
+        msgQueue.add(new ExitingDataObject());
         disconnectOccured = true;
 
         String failureInfo = "switch disconnecting failed";
@@ -235,17 +249,12 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     }
     
     @Override
-    public void consume(final DataObject message) {
-        threadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                consumeIntern(message);
-            }
-        });
+    public void consume(DataObject message) {
+        msgQueue.add(message);
     }
 
     protected void consumeIntern(final DataObject message) {
-        LOG.debug("Consume msg");
+        LOG.debug("ConsumeIntern msg");
         if (disconnectOccured ) {
             return;
         }
@@ -524,9 +533,8 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
             throw new IllegalStateException("Missing listeners: " + buffer.toString());
         }
     }
-    
-    static class ResponseRemovalListener implements RemovalListener<RpcResponseKey, SettableFuture<?>> {
 
+    static class ResponseRemovalListener implements RemovalListener<RpcResponseKey, SettableFuture<?>> {
         @Override
         public void onRemoval(
                 RemovalNotification<RpcResponseKey, SettableFuture<?>> notification) {
@@ -535,6 +543,17 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 LOG.warn("rpc response discarded: " + notification.getKey());
                 future.cancel(true);
             }
+        }
+    }
+
+    /**
+     * Class is used ONLY for exiting msgQueue processing thread
+     * @author michal.polkorab
+     */
+    static class ExitingDataObject implements DataObject {
+        @Override
+        public Class<? extends DataContainer> getImplementedInterface() {
+            return null;
         }
     }
 
