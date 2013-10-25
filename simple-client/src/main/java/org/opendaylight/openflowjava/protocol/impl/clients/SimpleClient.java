@@ -65,8 +65,8 @@ public class SimpleClient extends Thread {
 
             b.connect(host, port).sync();
 
-            scenarioHandler.join();
             synchronized (scenarioHandler) {
+                LOGGER.debug("WAITING FOR SCENARIO");
                 scenarioHandler.wait();
             }
         } catch (Exception ex) {
