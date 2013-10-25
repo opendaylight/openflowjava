@@ -32,4 +32,25 @@ public class ScenarioFactory {
         return stack;
     }
 
+    /**
+     * Creates stack with handshake needed messages.
+     * <ol> XID of messages:
+     *   <li> hello sent - 00000001
+     *   <li> hello waiting - 00000002
+     *   <li> featuresrequest waiting - 00000003
+     *   <li> featuresreply sent - 00000003
+     * </ol>
+     * @param auxiliaryId auxiliaryId wanted in featuresReply message
+     * @return stack filled with Handshake messages (featuresReply with auxiliaryId set)
+     */
+    public static Stack<ClientEvent> createHandshakeScenarioWithAuxiliaryId(byte auxiliaryId) {
+        Stack<ClientEvent> stack = new Stack<>();
+        stack.add(0, new SendEvent(ByteBufUtils.hexStringToBytes("04 00 00 08 00 00 00 01")));
+        stack.add(0, new WaitForMessageEvent(ByteBufUtils.hexStringToBytes("04 00 00 08 00 00 00 02")));
+        stack.add(0, new WaitForMessageEvent(ByteBufUtils.hexStringToBytes("04 05 00 08 00 00 00 03")));
+        stack.add(0, new SendEvent(ByteBufUtils.hexStringToBytes("04 06 00 20 00 00 00 03 "
+                + "00 01 02 03 04 05 06 07 00 01 02 03 01 " + String.format("%02x ", auxiliaryId) + " 00 00 00 01 02 03 00 01 02 03")));
+        return stack;
+    }
+
 }
