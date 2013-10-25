@@ -47,19 +47,23 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
         }
         LOGGER.info("Incoming connection accepted - building pipeline");
         allChannels.add(ch);
-        ConnectionFacade connectionAdapter = null;
-        connectionAdapter = ConnectionAdapterFactory.createConnectionAdapter(ch);
+        ConnectionFacade connectionFacade = null;
+        connectionFacade = ConnectionAdapterFactory.createConnectionFacade(ch);
         try {
             LOGGER.debug("calling plugin: "+switchConnectionHandler);
-            switchConnectionHandler.onSwitchConnected(connectionAdapter);
-            connectionAdapter.checkListeners();
+            switchConnectionHandler.onSwitchConnected(connectionFacade);
+            connectionFacade.checkListeners();
+
+            TlsDetector tlsDetector = new TlsDetector();
+            tlsDetector.setConnectionFacade(connectionFacade);
+            
             ch.pipeline().addLast(COMPONENT_NAMES.IDLE_HANDLER.name(), new IdleHandler(switchIdleTimeout, 0, 0, TimeUnit.MILLISECONDS));
-            ch.pipeline().addLast(COMPONENT_NAMES.TLS_DETECTOR.name(), new TlsDetector());
+            ch.pipeline().addLast(COMPONENT_NAMES.TLS_DETECTOR.name(), tlsDetector);
             ch.pipeline().addLast(COMPONENT_NAMES.OF_FRAME_DECODER.name(), new OFFrameDecoder());
             ch.pipeline().addLast(COMPONENT_NAMES.OF_VERSION_DETECTOR.name(), new OFVersionDetector());
             ch.pipeline().addLast(COMPONENT_NAMES.OF_DECODER.name(), new OF13Decoder());
             ch.pipeline().addLast(COMPONENT_NAMES.OF_ENCODER.name(), new OF13Encoder());
-            ch.pipeline().addLast(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name(), new DelegatingInboundHandler(connectionAdapter));
+            ch.pipeline().addLast(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name(), new DelegatingInboundHandler(connectionFacade));
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             ch.close();

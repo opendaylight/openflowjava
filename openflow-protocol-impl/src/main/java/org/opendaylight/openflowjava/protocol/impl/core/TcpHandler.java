@@ -153,7 +153,9 @@ public class TcpHandler implements ServerFacade {
             public void operationComplete(
                     io.netty.util.concurrent.Future<Object> downResult) throws Exception {
                 result.set(downResult.isSuccess());
-                result.setException(downResult.cause());
+                if (downResult.cause() != null) {
+                    result.setException(downResult.cause());
+                }
             }
             
         });

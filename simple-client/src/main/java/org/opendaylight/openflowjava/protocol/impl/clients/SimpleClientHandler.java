@@ -19,6 +19,7 @@ import com.google.common.util.concurrent.SettableFuture;
 public class SimpleClientHandler extends ChannelInboundHandlerAdapter {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(SimpleClientHandler.class);
+    private static final int OFP_HEADER_LENGTH = 8;
     private SettableFuture<Boolean> isOnlineFuture;
     protected ScenarioHandler scenarioHandler;
 
@@ -38,10 +39,15 @@ public class SimpleClientHandler extends ChannelInboundHandlerAdapter {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("<< " + ByteBufUtils.byteBufToHexString(bb));
         }
-        byte[] message = new byte[8];
+        
+        if (bb.readableBytes() < OFP_HEADER_LENGTH) {
+            LOGGER.debug("too few bytes received: "+bb.readableBytes()+" - wait for next data portion");
+            return;
+        }
+        int msgSize = bb.getUnsignedShort(2);
+        byte[] message = new byte[msgSize];
         bb.readBytes(message);
         scenarioHandler.addOfMsg(message);
-        skipMsg(bb);
         LOGGER.info("end of read");
     }
 
@@ -55,12 +61,6 @@ public class SimpleClientHandler extends ChannelInboundHandlerAdapter {
         scenarioHandler.setCtx(ctx);
         scenarioHandler.start();
         
-    }
-
-    private static void skipMsg(ByteBuf bb) {
-        if (bb.readableBytes() > 0) {
-            bb.skipBytes(bb.getShort(2));
-        }
     }
 
     /**

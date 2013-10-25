@@ -12,10 +12,22 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.S
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author michal.polkorab
+ *
+ */
 public class IdleHandler extends IdleStateHandler{
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(IdleHandler.class);
 
+    /**
+     * 
+     * @param readerIdleTime
+     * @param writerIdleTime
+     * @param allIdleTime
+     * @param unit
+     */
     public IdleHandler(long readerIdleTime, long writerIdleTime,
             long allIdleTime, TimeUnit unit) {
         super(readerIdleTime, writerIdleTime, allIdleTime, unit);

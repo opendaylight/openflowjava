@@ -13,6 +13,7 @@ import javax.net.ssl.SSLEngine;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionFacade;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler.COMPONENT_NAMES;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 
@@ -28,6 +29,8 @@ public class TlsDetector extends ByteToMessageDecoder {
     private boolean detectSsl;
     private static final Logger LOGGER = LoggerFactory
             .getLogger(TlsDetector.class);
+    
+    private ConnectionFacade connectionFacade;
 
     /**
      * Constructor of class
@@ -79,6 +82,19 @@ public class TlsDetector extends ByteToMessageDecoder {
         } else {
             LOGGER.info("Connection is not encrypted");
         }
+        
+        if (connectionFacade != null) {
+            LOGGER.debug("Firing onConnectionReady notification");
+            connectionFacade.fireConnectionReadyNotification();
+        }
+        
         ctx.pipeline().remove(COMPONENT_NAMES.TLS_DETECTOR.name());
+    }
+    
+    /**
+     * @param connectionFacade the connectionFacade to set
+     */
+    public void setConnectionFacade(ConnectionFacade connectionFacade) {
+        this.connectionFacade = connectionFacade;
     }
 }

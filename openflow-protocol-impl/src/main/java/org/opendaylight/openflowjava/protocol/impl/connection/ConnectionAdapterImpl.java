@@ -9,13 +9,12 @@ import io.netty.util.concurrent.GenericFutureListener;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.opendaylight.controller.sal.common.util.RpcErrors;
 import org.opendaylight.controller.sal.common.util.Rpcs;
+import org.opendaylight.openflowjava.protocol.api.connection.ConnectionReadyListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoInput;
@@ -55,6 +54,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.DisconnectEvent;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SwitchIdleEvent;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SystemNotificationsListener;
+import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.common.RpcError;
@@ -91,8 +91,9 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     protected Cache<RpcResponseKey, SettableFuture<?>> responseCache;
     private SystemNotificationsListener systemListener;
     private boolean disconnectOccured = false;
-    private ExecutorService threadPool;
-    
+
+    protected ConnectionReadyListener connectionReadyListener;
+
     /**
      * default ctor 
      */
@@ -101,7 +102,6 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 .concurrencyLevel(1)
                 .expireAfterWrite(RPC_RESPONSE_EXPIRATION, TimeUnit.MINUTES)
                 .removalListener(new ResponseRemovalListener()).build();
-        threadPool = Executors.newCachedThreadPool();
         LOG.info("ConnectionAdapter created");
     }
     
@@ -235,17 +235,8 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     }
     
     @Override
-    public void consume(final DataObject message) {
-        threadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                consumeIntern(message);
-            }
-        });
-    }
-
-    protected void consumeIntern(final DataObject message) {
-        LOG.debug("Consume msg");
+    public void consume(DataObject message) {
+        LOG.debug("ConsumeIntern msg");
         if (disconnectOccured ) {
             return;
         }
@@ -398,8 +389,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
      * @param errorMessage
      * @param input
      * @param responseClazz
-     * @param key TODO
-     * @param future TODO
+     * @param key of rpcResponse
      * @return
      */
     private <IN extends OfHeader, OUT extends OfHeader> SettableFuture<RpcResult<OUT>> handleRpcChannelFutureWithResponse(
@@ -519,14 +509,16 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
         if (messageListener == null) {
             buffer.append("MessageListener ");
         }
+        if (connectionReadyListener == null) {
+            buffer.append("ConnectionReadyListener ");
+        }
         
         if (buffer.length() > 0) {
             throw new IllegalStateException("Missing listeners: " + buffer.toString());
         }
     }
-    
-    static class ResponseRemovalListener implements RemovalListener<RpcResponseKey, SettableFuture<?>> {
 
+    static class ResponseRemovalListener implements RemovalListener<RpcResponseKey, SettableFuture<?>> {
         @Override
         public void onRemoval(
                 RemovalNotification<RpcResponseKey, SettableFuture<?>> notification) {
@@ -538,4 +530,32 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
         }
     }
 
+    /**
+     * Class is used ONLY for exiting msgQueue processing thread
+     * @author michal.polkorab
+     */
+    static class ExitingDataObject implements DataObject {
+        @Override
+        public Class<? extends DataContainer> getImplementedInterface() {
+            return null;
+        }
+    }
+    
+    @Override
+    public void fireConnectionReadyNotification() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                connectionReadyListener.onConnectionReady();
+            }
+        }).start();
+    }
+    
+    
+    @Override
+    public void setConnectionReadyListener(
+            ConnectionReadyListener connectionReadyListener) {
+        this.connectionReadyListener = connectionReadyListener;
+    }
+    
 }

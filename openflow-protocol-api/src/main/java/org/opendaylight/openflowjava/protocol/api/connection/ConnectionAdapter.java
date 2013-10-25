@@ -40,4 +40,15 @@ public interface ConnectionAdapter extends OpenflowProtocolService {
      */
     public void checkListeners();
 
+    /**
+     * notify listener about connection ready-to-use event
+     */
+    public void fireConnectionReadyNotification();
+
+    /**
+     * set listener for connection became ready-to-use event  
+     * @param connectionReadyListener
+     */
+    public void setConnectionReadyListener(ConnectionReadyListener connectionReadyListener);
+
 }

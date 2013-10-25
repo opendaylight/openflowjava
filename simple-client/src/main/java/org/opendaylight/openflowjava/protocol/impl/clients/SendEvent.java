@@ -29,22 +29,11 @@ public class SendEvent implements ClientEvent {
     @Override
     public boolean eventExecuted() {
         LOGGER.debug("sending message");
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                LOGGER.debug("start of run");
-                ByteBuf buffer = ctx.alloc().buffer();
-                buffer.writeBytes(msgToSend);
-                ctx.writeAndFlush(buffer);
-                LOGGER.debug(">> " + ByteBufUtils.bytesToHexString(msgToSend));
-            }
-        });
-        thread.start();
-        try {
-            thread.join();
-        } catch (InterruptedException e) {
-            LOGGER.error(e.getMessage(), e);
-        }
+        LOGGER.debug("start of run");
+        ByteBuf buffer = ctx.alloc().buffer();
+        buffer.writeBytes(msgToSend);
+        ctx.writeAndFlush(buffer);
+        LOGGER.debug(">> " + ByteBufUtils.bytesToHexString(msgToSend));
         LOGGER.debug("message sent");
         return true;
     }

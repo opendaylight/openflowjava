@@ -93,9 +93,9 @@ public class IntegrationTest {
     public void testHandshakeAndEcho() throws Exception {
         int amountOfCLients = 1;
         Stack<ClientEvent> scenario = ScenarioFactory.createHandshakeScenario();
-        scenario.add(0, new SleepEvent(1500));
+        scenario.add(0, new SleepEvent(100));
         scenario.add(0, new SendEvent(ByteBufUtils.hexStringToBytes("04 02 00 08 00 00 00 04")));
-        scenario.add(0, new SleepEvent(1500));
+        scenario.add(0, new SleepEvent(100));
         scenario.add(0, new WaitForMessageEvent(ByteBufUtils.hexStringToBytes("04 03 00 08 00 00 00 04")));
         ScenarioHandler handler = new ScenarioHandler(scenario);
         List<SimpleClient> clients = createAndStartClient(amountOfCLients, handler);
