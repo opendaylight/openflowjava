@@ -10,11 +10,41 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthertypeAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.GroupIdAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MplsTtlAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.NwTtlAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OxmFieldsAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortNumberMatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.QueueIdAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.CopyTtlIn;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.CopyTtlOut;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.DecMplsTtl;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.DecNwTtl;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Group;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Output;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.PopMpls;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.PopPbb;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.PopVlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.PushMpls;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.PushPbb;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.PushVlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetField;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetMplsTtl;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetNwTtl;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetQueue;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowModFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeatures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortState;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.InPhyPort;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.InPort;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDrop;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDscpRemark;
@@ -24,6 +54,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyExperimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyFlow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyGroup;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyGroupDesc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeterConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeterFeatures;
@@ -40,7 +71,7 @@ public class MultipartReplyMessageFactoryTest {
 
     /**
      * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
-     */
+     *//*
     @Test
     public void test(){
         ByteBuf bb = BufferHelper.buildBuffer("00 07 00 01 00 00 00 00 01 02 03 04");
@@ -51,7 +82,7 @@ public class MultipartReplyMessageFactoryTest {
         Assert.assertEquals("Wrong type", 0x07, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         //Assert.assertArrayEquals("Wrong body", new byte[]{0x01, 0x02, 0x03, 0x04}, builtByFactory.getBody());
-    }
+    }*/
     
     /**
      * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
@@ -846,5 +877,378 @@ public class MultipartReplyMessageFactoryTest {
                                               message.getPorts().get(0).getPeerFeatures());
         Assert.assertEquals("Wrong currSpeed", 129L, message.getPorts().get(0).getCurrSpeed().longValue());
         Assert.assertEquals("Wrong maxSpeed", 128L, message.getPorts().get(0).getMaxSpeed().longValue());
+    }
+    
+    /**
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Test covers bodies of actions Output, Copy TTL Out, Copy TTL In
+     */
+    @Test
+    public void testMultipartReplyGroupDescBody01(){
+        ByteBuf bb = BufferHelper.buildBuffer("00 07 00 01 00 00 00 00 "+
+                                              "00 38 "+//len
+                                              "01 "+//type
+                                              "00 "+//pad
+                                              "00 00 00 08 "+//groupId
+                                              "00 30 "+//bucketLen
+                                              "00 06 "+//bucketWeight
+                                              "00 00 00 05 "+//bucketWatchPort
+                                              "00 00 00 04 "+//bucketWatchGroup
+                                              "00 00 00 00 "+//bucketPad
+                                              "00 00 "+//outputType
+                                              "00 10 "+//outputLen
+                                              "00 00 10 FF "+//outputPort
+                                              "FF FF "+//outputMaxLen
+                                              "00 00 00 00 00 00 "+//outputPad
+                                              "00 0B "+//copyTTLOutType
+                                              "00 08 "+//copyTTLOutLen
+                                              "00 00 00 00 "+//copyTTLOutPad
+                                              "00 0C "+//copyTTLIntType
+                                              "00 08 "+//copyTTLIntLen
+                                              "00 00 00 00"//copyTTLInPad
+                                              );
+        
+        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        
+        BufferHelper.checkHeaderV13(builtByFactory);
+        Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());
+        Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
+        
+        MultipartReplyGroupDesc message = (MultipartReplyGroupDesc) builtByFactory.getMultipartReplyBody();
+        
+        Assert.assertEquals("Wrong type", 1, 
+                             message.getGroupDesc().get(0).getType().getIntValue());
+        Assert.assertEquals("Wrong groupId", 8, 
+                             message.getGroupDesc().get(0).getGroupId().intValue());
+        Assert.assertEquals("Wrong bucketWeight", 6, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getWeight().intValue());
+        Assert.assertEquals("Wrong bucketWatchPort", 5, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getWatchPort().
+                                                                        getValue().intValue());
+        Assert.assertEquals("Wrong bucketWatchGroup", 4, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getWatchGroup().intValue());
+        
+        Assert.assertEquals("Wrong outputType", Output.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
+                getAction().getType());
+        
+        Assert.assertEquals("Wrong outputPort", 4351, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
+                getAction().getAugmentation(PortAction.class).
+                getPort().getPortNumber().getValue().intValue());
+        
+        Assert.assertEquals("Wrong outputMaxLen", 65535, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
+                getAction().getAugmentation(MaxLengthAction.class).
+                getMaxLength().intValue());
+        
+        Assert.assertEquals("Wrong copyTtlOutType", CopyTtlOut.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
+                getAction().getType());
+        
+        Assert.assertEquals("Wrong copyTtlInType", CopyTtlIn.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
+                getAction().getType());
+    }
+    
+    /**
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Test covers bodies of actions Set MPLS TTL , Dec MPLS TTL, Push VLAN. Push MPLS, Push PBB
+     */
+    @Test
+    public void testMultipartReplyGroupDescBody02(){
+        ByteBuf bb = BufferHelper.buildBuffer("00 07 00 01 00 00 00 00 "+
+                                              "00 40 "+//len
+                                              "01 "+//type
+                                              "00 "+//pad
+                                              "00 00 00 08 "+//groupId
+                                              "00 38 "+//bucketLen
+                                              "00 06 "+//bucketWeight
+                                              "00 00 00 05 "+//bucketWatchPort
+                                              "00 00 00 04 "+//bucketWatchGroup
+                                              "00 00 00 00 "+//bucketPad
+                                              "00 0F "+//setMplsTtlType
+                                              "00 08 "+//setMplsTtlLen
+                                              "09 "+//setMplsTtlMPLS_TTL
+                                              "00 00 00 "+//setMplsTtlPad
+                                              "00 10 "+//decMplsTtlType
+                                              "00 08 "+//decMplsTtlLen
+                                              "00 00 00 00 "+//decMplsTtlPad
+                                              "00 11 "+//pushVlanType
+                                              "00 08 "+//pushVlanLen
+                                              "00 20 "+//pushVlanEthertype
+                                              "00 00 "+//pushVlanPad
+                                              "00 13 "+//pushMplsType
+                                              "00 08 "+//pushMplsLen
+                                              "00 FF "+//pushMplsEthertype
+                                              "00 00 "+//pushMplsPad
+                                              "00 1A "+//pushPbbType
+                                              "00 08 "+//pushPbbLen
+                                              "0F FF "+//pushPbbEthertype
+                                              "00 00"//pushPbbPad
+                                              );
+        
+        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        
+        BufferHelper.checkHeaderV13(builtByFactory);
+        Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());
+        Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
+        
+        MultipartReplyGroupDesc message = (MultipartReplyGroupDesc) builtByFactory.getMultipartReplyBody();
+        
+        Assert.assertEquals("Wrong type", 1, 
+                             message.getGroupDesc().get(0).getType().getIntValue());
+        Assert.assertEquals("Wrong groupId", 8, 
+                             message.getGroupDesc().get(0).getGroupId().intValue());
+        Assert.assertEquals("Wrong bucketWeight", 6, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getWeight().intValue());
+        Assert.assertEquals("Wrong bucketWatchPort", 5, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getWatchPort().
+                                                                        getValue().intValue());
+        Assert.assertEquals("Wrong bucketWatchGroup", 4, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getWatchGroup().intValue());
+        
+        
+        Assert.assertEquals("Wrong setMplsTtlType", SetMplsTtl.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
+                getAction().getType());
+        
+        Assert.assertEquals("Wrong setMplsTtlMPLS_TTL", 9, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
+                getAction().getAugmentation(MplsTtlAction.class).
+                getMplsTtl().intValue());
+        
+        Assert.assertEquals("Wrong decMplsTtlType", DecMplsTtl.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
+                getAction().getType());
+        
+        Assert.assertEquals("Wrong pushVlanType", PushVlan.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
+                getAction().getType());
+        
+        Assert.assertEquals("Wrong pushVlanEthertype", 32, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
+                getAction().getAugmentation(EthertypeAction.class).
+                getEthertype().getValue().intValue());
+        
+        Assert.assertEquals("Wrong pushMplsType", PushMpls.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(3).
+                getAction().getType());
+        
+        Assert.assertEquals("Wrong pushMplsEthertype", 255, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(3).
+                getAction().getAugmentation(EthertypeAction.class).
+                getEthertype().getValue().intValue());
+        
+        Assert.assertEquals("Wrong pushPbbType", PushPbb.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(4).
+                getAction().getType());
+        
+        Assert.assertEquals("Wrong pushPbbEthertype", 4095, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(4).
+                getAction().getAugmentation(EthertypeAction.class).
+                getEthertype().getValue().intValue());
+        
+    }
+    
+    /**
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Test covers bodies of actions Pop VLAN, Pop PBB, Pop MPLS, Group, Dec NW TTL
+     */
+    @Test
+    public void testMultipartReplyGroupDescBody03(){
+        ByteBuf bb = BufferHelper.buildBuffer("00 07 00 01 00 00 00 00 "+
+                                              "00 48 "+//len
+                                              "01 "+//type
+                                              "00 "+//pad
+                                              "00 00 00 08 "+//groupId
+                                              "00 40 "+//bucketLen
+                                              "00 06 "+//bucketWeight
+                                              "00 00 00 05 "+//bucketWatchPort
+                                              "00 00 00 04 "+//bucketWatchGroup
+                                              "00 00 00 00 "+//bucketPad
+                                              "00 12 "+//popVlanType
+                                              "00 08 "+//popVlanLen
+                                              "00 00 00 00 "+//popVlanPad
+                                              "00 1B "+//popPbbType
+                                              "00 08 "+//popPbbLen
+                                              "00 00 00 00 "+//popPbbPad
+                                              "00 14 "+//popMplsType
+                                              "00 08 "+//popMplsLen
+                                              "00 CF "+//popMplsEthertype
+                                              "00 00 "+//popMplsPad
+                                              "00 15 "+//setQueueType
+                                              "00 08 "+//setQueueLen
+                                              "00 CF 00 00 "+//setQueueQueueId
+                                              "00 16 "+//groupType
+                                              "00 08 "+//groupLen
+                                              "00 CF 00 00 "+//groupGroupId
+                                              "00 18 "+//decNwTtlType
+                                              "00 08 "+//decNwTtlLen
+                                              "00 00 00 00"//decNwTtlPad
+                                              );
+        
+        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        
+        BufferHelper.checkHeaderV13(builtByFactory);
+        Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());
+        Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
+        
+        MultipartReplyGroupDesc message = (MultipartReplyGroupDesc) builtByFactory.getMultipartReplyBody();
+        
+        Assert.assertEquals("Wrong type", 1, 
+                             message.getGroupDesc().get(0).getType().getIntValue());
+        Assert.assertEquals("Wrong groupId", 8, 
+                             message.getGroupDesc().get(0).getGroupId().intValue());
+        Assert.assertEquals("Wrong bucketWeight", 6, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getWeight().intValue());
+        Assert.assertEquals("Wrong bucketWatchPort", 5, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getWatchPort().
+                                                                        getValue().intValue());
+        Assert.assertEquals("Wrong bucketWatchGroup", 4, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getWatchGroup().intValue());
+        
+        Assert.assertEquals("Wrong popVlanType", PopVlan.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
+                getAction().getType());
+        
+        Assert.assertEquals("Wrong popPbbType", PopPbb.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
+                getAction().getType());
+        
+        Assert.assertEquals("Wrong popMplsType", PopMpls.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
+                getAction().getType());
+        
+        Assert.assertEquals("Wrong popMplsEthertype", 207, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
+                getAction().getAugmentation(EthertypeAction.class).
+                getEthertype().getValue().intValue());
+        
+        Assert.assertEquals("Wrong setQueueType", SetQueue.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(3).
+                getAction().getType());
+        
+        Assert.assertEquals("Wrong setQueueQueueId", 13565952, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(3).
+                getAction().getAugmentation(QueueIdAction.class).
+                getQueueId().intValue());
+        
+        Assert.assertEquals("Wrong groupType", Group.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(4).
+                getAction().getType());
+        
+        Assert.assertEquals("Wrong groupGroupId", 13565952, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(4).
+                getAction().getAugmentation(GroupIdAction.class).
+                getGroupId().intValue());
+        
+        Assert.assertEquals("Wrong decNwTtlType", DecNwTtl.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(5).
+                getAction().getType());
+    }
+    
+    /**
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Test covers bodies of actions NW TTL, Experimenter
+     */
+    @Test
+    public void testMultipartReplyGroupDescBody04(){
+        ByteBuf bb = BufferHelper.buildBuffer("00 07 00 01 00 00 00 00 "+
+                                              "00 3C "+//len
+                                              "01 "+//type
+                                              "00 "+//pad
+                                              "00 00 00 08 "+//groupId
+                                              "00 34 "+//bucketLen
+                                              "00 06 "+//bucketWeight
+                                              "00 00 00 05 "+//bucketWatchPort
+                                              "00 00 00 04 "+//bucketWatchGroup
+                                              "00 00 00 00 "+//bucketPad
+                                              "00 17 "+//nwTTlType
+                                              "00 08 "+//nwTTlLen
+                                              "0E "+//nwTTlnwTTL
+                                              "00 00 00 "+//nwTTlPad
+                                              "FF FF "+//experimenterType
+                                              "00 08 "+//experimenterLen
+                                              "00 01 02 03 "+//experimenterExperimenter
+                                              "00 19 "+//setFieldType
+                                              "00 14 "+//setFieldLen
+                                              "80 00 "+//setFieldOXMClass
+                                              "00 "+//setFieldOXMField
+                                              "04 "+//setFieldOXMLength
+                                              "00 00 00 FF "+//setFieldPort
+                                              
+                                              "80 00 "+//setFieldOXMClass
+                                              "03 "+//setFieldOXMField
+                                              "04 "+//setFieldOXMLength
+                                              "00 00 0F FF"//setFieldPort
+                                              );
+        
+        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        
+        BufferHelper.checkHeaderV13(builtByFactory);
+        Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());
+        Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
+        
+        MultipartReplyGroupDesc message = (MultipartReplyGroupDesc) builtByFactory.getMultipartReplyBody();
+        
+        Assert.assertEquals("Wrong type", 1, 
+                             message.getGroupDesc().get(0).getType().getIntValue());
+        Assert.assertEquals("Wrong groupId", 8, 
+                             message.getGroupDesc().get(0).getGroupId().intValue());
+        Assert.assertEquals("Wrong bucketWeight", 6, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getWeight().intValue());
+        Assert.assertEquals("Wrong bucketWatchPort", 5, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getWatchPort().
+                                                                        getValue().intValue());
+        Assert.assertEquals("Wrong bucketWatchGroup", 4, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getWatchGroup().intValue());
+        
+        Assert.assertEquals("Wrong nwTTlType", SetNwTtl.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
+                getAction().getType());
+        
+        Assert.assertEquals("Wrong nwTTlnwTTL", 14, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
+                getAction().getAugmentation(NwTtlAction.class).getNwTtl().intValue());
+        
+        Assert.assertEquals("Wrong experimenterType", Experimenter.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
+                getAction().getType());
+        
+        Assert.assertEquals("Wrong experimenterExperimenter", 66051, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
+                getAction().getAugmentation(ExperimenterAction.class).getExperimenter().intValue());
+        
+        Assert.assertEquals("Wrong setFieldType", SetField.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
+                getAction().getType());
+        
+        Assert.assertEquals("Wrong setFieldOXMClass", OpenflowBasicClass.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
+                getAction().getAugmentation(OxmFieldsAction.class).getMatchEntries().get(0).getOxmClass());
+        
+        Assert.assertEquals("Wrong setFieldOXMField", InPort.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
+                getAction().getAugmentation(OxmFieldsAction.class).getMatchEntries().get(0).getOxmMatchField());
+        
+        Assert.assertEquals("Wrong setFieldOXMField", 255, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
+                getAction().getAugmentation(OxmFieldsAction.class).getMatchEntries().get(0).
+                getAugmentation(PortNumberMatchEntry.class).getPortNumber().getValue().intValue());
+        
+        
+        Assert.assertEquals("Wrong setFieldOXMClass", OpenflowBasicClass.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
+                getAction().getAugmentation(OxmFieldsAction.class).getMatchEntries().get(1).getOxmClass());
+        
+        Assert.assertEquals("Wrong setFieldOXMField", InPhyPort.class, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
+                getAction().getAugmentation(OxmFieldsAction.class).getMatchEntries().get(1).getOxmMatchField());
+        
+        Assert.assertEquals("Wrong setFieldOXMField", 4095, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
+                getAction().getAugmentation(OxmFieldsAction.class).getMatchEntries().get(1).
+                getAugmentation(PortNumberMatchEntry.class).getPortNumber().getValue().intValue());
     }
 }
