@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.util.ActionCreator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowModFlags;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterBandType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterModCommand;
@@ -17,9 +19,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeatures;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessageBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.bucket.ActionsList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDropBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDscpRemarkBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterBuilder;
@@ -33,6 +37,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyFlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyGroupBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyGroupDesc;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyGroupDescBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeterBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeterConfig;
@@ -51,6 +57,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow.FlowStatsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group.GroupStats;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group.GroupStatsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group.desc.GroupDesc;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group.desc.GroupDescBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group.desc.group.desc.BucketsList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group.desc.group.desc.BucketsListBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group.group.stats.BucketStats;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group.group.stats.BucketStatsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.meter.MeterStats;
@@ -119,6 +129,8 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                  break;         
         case 6:  builder.setMultipartReplyBody(setGroup(rawMessage));
                  break;
+        case 7:  builder.setMultipartReplyBody(setGroupDesc(rawMessage));
+                 break;
         case 9:  builder.setMultipartReplyBody(setMeter(rawMessage));
                  break;
         case 10:  builder.setMultipartReplyBody(setMeterConfig(rawMessage));
@@ -166,12 +178,12 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     private static MultipartReplyFlow setFlow(ByteBuf input) {
         final byte PADDING_IN_FLOW_STATS_HEADER_01 = 1;
         final byte PADDING_IN_FLOW_STATS_HEADER_02 = 4;
+        final byte flowLength = 2;
         MultipartReplyFlowBuilder flowBuilder = new MultipartReplyFlowBuilder();
         List<FlowStats> flowStatsList = new ArrayList<>();
         FlowStatsBuilder flowStatsBuilder = new FlowStatsBuilder();
-        int flowLen = 0;
         while (input.readableBytes() > 0) {
-            flowLen = input.readUnsignedShort();
+            input.skipBytes(flowLength);
             flowStatsBuilder.setTableId(input.readUnsignedByte());
             input.skipBytes(PADDING_IN_FLOW_STATS_HEADER_01);
             flowStatsBuilder.setDurationSec(input.readUnsignedInt());
@@ -461,6 +473,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     private static MultipartReplyMeterConfig setMeterConfig(ByteBuf input) {
         final byte METER_BAND_LENGTH = 16;
         final byte METER_CONFIG_LENGTH = 8;
+        final byte bandLength = 2;
         int actualLength;
         MultipartReplyMeterConfigBuilder builder = new MultipartReplyMeterConfigBuilder();
         List<MeterConfig> meterConfigList = new ArrayList<>();
@@ -481,18 +494,17 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                 MeterBandDscpRemarkBuilder bandDscpRemarkBuilder = new MeterBandDscpRemarkBuilder();
                 final byte PADDING_IN_METER_BAND_DSCP_HEADER = 3;
                 MeterBandExperimenterBuilder bandExperimenterBuilder = new MeterBandExperimenterBuilder(); 
-                int bandLen = 0;
                 int bandType = input.readUnsignedShort();
                 switch (bandType) {
                     case 1: bandDropBuilder.setType(MeterBandType.forValue(bandType));
-                            bandLen = input.readUnsignedShort();
+                            input.skipBytes(bandLength);
                             bandDropBuilder.setRate(input.readUnsignedInt());
                             bandDropBuilder.setBurstSize(input.readUnsignedInt());
                             input.skipBytes(PADDING_IN_METER_BAND_DROP_HEADER);
                             bandsBuilder.setMeterBand(bandDropBuilder.build());
                             break;
                     case 2: bandDscpRemarkBuilder.setType(MeterBandType.forValue(bandType));
-                            bandLen = input.readUnsignedShort();
+                            input.skipBytes(bandLength);
                             bandDscpRemarkBuilder.setRate(input.readUnsignedInt());
                             bandDscpRemarkBuilder.setBurstSize(input.readUnsignedInt());
                             bandDscpRemarkBuilder.setPrecLevel(input.readUnsignedByte());
@@ -500,7 +512,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                             bandsBuilder.setMeterBand(bandDscpRemarkBuilder.build());
                             break;
                     case 0xFFFF: bandExperimenterBuilder.setType(MeterBandType.forValue(bandType));
-                                 bandLen = input.readUnsignedShort();          
+                                 input.skipBytes(bandLength);
                                  bandExperimenterBuilder.setRate(input.readUnsignedInt());
                                  bandExperimenterBuilder.setBurstSize(input.readUnsignedInt());
                                  bandExperimenterBuilder.setExperimenter(input.readUnsignedInt());
@@ -607,4 +619,52 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return new PortFeatures(_10mbHd, _10mbFd, _100mbHd, _100mbFd, _1gbHd, _1gbFd, _10gbFd,
                 _40gbFd, _100gbFd, _1tbFd, _other, _copper, _fiber, _autoneg, _pause, _pauseAsym);
     }
+    
+    private static MultipartReplyGroupDesc setGroupDesc(ByteBuf input) {
+        final byte PADDING_IN_GROUP_DESC_HEADER = 1;
+        final byte PADDING_IN_BUCKETS_HEADER = 4;
+        final byte GROUP_DESC_HEADER_LENGTH = 8;
+        int actualLength;
+        int bucketsLength = 0;
+        int bucketsCurrentLength = 0;
+        int bodyLength = 0;
+        MultipartReplyGroupDescBuilder builder = new MultipartReplyGroupDescBuilder();
+        GroupDescBuilder groupDescBuilder = new GroupDescBuilder();
+        List<GroupDesc> groupDescsList = new ArrayList<>();
+        BucketsListBuilder bucketsBuilder = new BucketsListBuilder();
+        List<BucketsList> bucketsList = new ArrayList<>();
+        List<ActionsList> actionsList = new ArrayList<>();
+        
+        while (input.readableBytes() > 0) {
+            bodyLength = input.readUnsignedShort();
+            actualLength = 0;
+            
+            groupDescBuilder.setType(GroupType.forValue(input.readUnsignedByte())); // TODO enum or class?
+            input.skipBytes(PADDING_IN_GROUP_DESC_HEADER);
+            groupDescBuilder.setGroupId(input.readUnsignedInt());
+            actualLength = GROUP_DESC_HEADER_LENGTH;
+            
+            while (actualLength < bodyLength) {
+                
+                bucketsLength = input.readUnsignedShort();
+                bucketsBuilder.setWeight(input.readUnsignedShort());
+                bucketsBuilder.setWatchPort(new PortNumber(input.readUnsignedInt()));
+                bucketsBuilder.setWatchGroup(input.readUnsignedInt());
+                input.skipBytes(PADDING_IN_BUCKETS_HEADER);
+                bucketsCurrentLength = bucketsLength;
+                actionsList = ActionCreator.createActionsList(input, bucketsLength);
+                bucketsBuilder.setActionsList(new ArrayList<>(actionsList));
+                actionsList.clear();
+                bucketsList.add(bucketsBuilder.build());
+                actualLength = actualLength + bucketsCurrentLength;
+            }
+            groupDescBuilder.setBucketsList(new ArrayList<>(bucketsList));
+            bucketsList.clear();
+            groupDescsList.add(groupDescBuilder.build());
+        }
+        builder.setGroupDesc(new ArrayList<>(groupDescsList));
+        groupDescsList.clear();
+        return builder.build();
+    }
+    
 }
