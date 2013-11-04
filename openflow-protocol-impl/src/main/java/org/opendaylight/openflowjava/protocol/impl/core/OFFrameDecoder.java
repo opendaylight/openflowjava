@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler.COMPONENT_NAMES;
 
 /**
  * Class for decoding incoming messages into message frames.
@@ -53,8 +52,6 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
 
         LOGGER.info("OF Protocol message received");
 
-        enableOFVersionDetector(chc);
-
         List<String> componentList = chc.pipeline().names();
         LOGGER.debug(componentList.toString());
 
@@ -64,13 +61,4 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
         bb.skipBytes(length);
     }
 
-    private static void enableOFVersionDetector(ChannelHandlerContext ctx) {
-        if (ctx.pipeline().get(COMPONENT_NAMES.OF_VERSION_DETECTOR.name()) == null) {
-            LOGGER.info("Adding OFVD");
-            ctx.pipeline().addAfter(COMPONENT_NAMES.OF_FRAME_DECODER.name(), 
-                    COMPONENT_NAMES.OF_VERSION_DETECTOR.name(), new OFVersionDetector());
-        } else {
-            LOGGER.debug("OFVD already in pipeline");
-        }
-    }
 }

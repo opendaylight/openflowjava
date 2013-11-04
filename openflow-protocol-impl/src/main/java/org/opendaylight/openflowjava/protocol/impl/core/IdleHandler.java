@@ -14,15 +14,13 @@ import org.slf4j.LoggerFactory;
 
 public class IdleHandler extends IdleStateHandler{
     
+    private static final Logger LOGGER = LoggerFactory.getLogger(IdleHandler.class);
+
     public IdleHandler(long readerIdleTime, long writerIdleTime,
             long allIdleTime, TimeUnit unit) {
         super(readerIdleTime, writerIdleTime, allIdleTime, unit);
     }
 
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(IdleHandler.class);
-
-    
     @Override
     protected void channelIdle(ChannelHandlerContext ctx, IdleStateEvent evt)
             throws Exception {

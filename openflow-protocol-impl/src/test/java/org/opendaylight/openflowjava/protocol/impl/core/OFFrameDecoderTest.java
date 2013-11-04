@@ -16,7 +16,6 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler.COMPONENT_NAMES;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 
 import com.google.common.collect.Lists;
@@ -66,7 +65,6 @@ public class OFFrameDecoderTest {
                 list);
 
         Assert.assertEquals(8, ((ByteBuf) list.get(0)).readableBytes());
-        verifyMockCalls(1);
     }
 
     /**
@@ -82,7 +80,6 @@ public class OFFrameDecoderTest {
                 list);
 
         Assert.assertEquals(16, ((ByteBuf) list.get(0)).readableBytes());
-        verifyMockCalls(1);
     }
 
     /**
@@ -98,7 +95,6 @@ public class OFFrameDecoderTest {
                 list);
 
         Assert.assertEquals("List is not empty", 0, list.size());
-        verifyMockCalls(0);
     }
 
     /**
@@ -115,26 +111,6 @@ public class OFFrameDecoderTest {
 
         Assert.assertEquals(8, ((ByteBuf) list.get(0)).readableBytes());
         Assert.assertEquals(1, list.size());
-        verifyMockCalls(1);
     }
     
-    private void verifyMockCalls(int numberOfCalls) {
-        if (numberOfCalls > 0) {
-            Mockito.verify(channelPipeline, Mockito.times(numberOfCalls)).get(
-                    COMPONENT_NAMES.OF_VERSION_DETECTOR.name());
-            Mockito.verify(channelPipeline, Mockito.times(numberOfCalls)).addAfter(
-                    Matchers.eq(COMPONENT_NAMES.OF_FRAME_DECODER.name()),
-                    Matchers.eq(COMPONENT_NAMES.OF_VERSION_DETECTOR.name()),
-                    Matchers.isA(OFVersionDetector.class));
-            Mockito.verify(channelPipeline, Mockito.times(numberOfCalls)).names();
-        } else {
-            Mockito.verify(channelPipeline, Mockito.never()).get(
-                    COMPONENT_NAMES.OF_VERSION_DETECTOR.name());
-            Mockito.verify(channelPipeline, Mockito.never()).addAfter(
-                    Matchers.eq(COMPONENT_NAMES.OF_FRAME_DECODER.name()),
-                    Matchers.eq(COMPONENT_NAMES.OF_VERSION_DETECTOR.name()),
-                    Matchers.isA(OFVersionDetector.class));
-            Mockito.verify(channelPipeline, Mockito.never()).names();
-        }
-    }
 }
