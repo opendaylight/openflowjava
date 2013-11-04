@@ -39,7 +39,7 @@ public class EchoReplyInputMessageFactory implements OFSerializer<EchoReplyInput
     }
 
     @Override
-    public int computeLength() {
+    public int computeLength(EchoReplyInput message) {
         return MESSAGE_LENGTH;
     }
 

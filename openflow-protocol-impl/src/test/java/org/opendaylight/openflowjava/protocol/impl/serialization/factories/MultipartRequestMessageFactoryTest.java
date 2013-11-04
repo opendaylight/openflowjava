@@ -63,7 +63,7 @@ public class MultipartRequestMessageFactoryTest {
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength());
+        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -120,7 +120,7 @@ public class MultipartRequestMessageFactoryTest {
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength());
+        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -183,7 +183,7 @@ public class MultipartRequestMessageFactoryTest {
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength());
+        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -206,7 +206,7 @@ public class MultipartRequestMessageFactoryTest {
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength());
+        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -246,7 +246,7 @@ public class MultipartRequestMessageFactoryTest {
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength());
+        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -286,7 +286,7 @@ public class MultipartRequestMessageFactoryTest {
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength());
+        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -326,7 +326,7 @@ public class MultipartRequestMessageFactoryTest {
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength());
+        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -366,7 +366,7 @@ public class MultipartRequestMessageFactoryTest {
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength());
+        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -406,7 +406,7 @@ public class MultipartRequestMessageFactoryTest {
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength());
+        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -446,7 +446,7 @@ public class MultipartRequestMessageFactoryTest {
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength());
+        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);

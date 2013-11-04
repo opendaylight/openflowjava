@@ -98,10 +98,10 @@ public abstract class ByteBufUtils {
      * @param message POJO
      * @param out writing buffer
      */
-    public static void writeOFHeader(OFSerializer<?> factory, OfHeader message, ByteBuf out) { 
+    public static <E extends OfHeader> void writeOFHeader(OFSerializer<E> factory, E message, ByteBuf out) { 
         out.writeByte(message.getVersion());
         out.writeByte(factory.getMessageType());
-        out.writeShort(factory.computeLength());
+        out.writeShort(factory.computeLength(message));
         out.writeInt(message.getXid().intValue());
 
     }

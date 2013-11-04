@@ -43,7 +43,7 @@ public class ExperimenterInputMessageFactory implements OFSerializer<Experimente
     }
 
     @Override
-    public int computeLength() {
+    public int computeLength(ExperimenterInput message) {
         int ofHeaderLength = 8; //OFHeaderLength
         int messageLength = 8; //experimenterHeaderLength
         return messageLength + ofHeaderLength + dataLength;

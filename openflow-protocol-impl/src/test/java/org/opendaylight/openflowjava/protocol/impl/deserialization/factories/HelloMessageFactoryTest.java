@@ -28,15 +28,19 @@ public class HelloMessageFactoryTest {
      */
     @Test
     public void test() {
-        ByteBuf bb = BufferHelper.buildBuffer("00 01 "+ //type
-                                              "00 00 00 11 "+//booelan element 1
-                                              "00 00 00 11"//booelan element 2
+        ByteBuf bb = BufferHelper.buildBuffer("00 01 " // type
+                                            + "00 0c " // length
+                                            + "00 00 00 11 " // bitmap 1
+                                            + "00 00 00 00 " // bitmap 2
+                                            + "00 00 00 00"  // padding
                 );
         HelloMessage builtByFactory = BufferHelper.decodeV13(
                 HelloMessageFactory.getInstance(), bb);
 
         BufferHelper.checkHeaderV13(builtByFactory);
-        Assert.assertEquals("Wrong type", createElement().get(0).getType().getIntValue(), builtByFactory.getElements().get(0).getType().getIntValue());
+        List<Elements> element = createElement();
+        Assert.assertEquals("Wrong type", element.get(0).getType(), builtByFactory.getElements().get(0).getType());
+        Assert.assertEquals("Wrong versionBitmap", element.get(0).getVersionBitmap(), builtByFactory.getElements().get(0).getVersionBitmap());
     }
     
     private static List<Elements> createElement() {

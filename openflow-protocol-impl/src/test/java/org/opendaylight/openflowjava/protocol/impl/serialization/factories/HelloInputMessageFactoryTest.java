@@ -11,11 +11,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.HelloElementType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.hello.Elements;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.hello.ElementsBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author michal.polkorab
@@ -23,6 +26,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class HelloInputMessageFactoryTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(HelloInputMessageFactoryTest.class);
+    
     /**
      * Testing of {@link HelloInputMessageFactory} for correct translation from POJO
      * @throws Exception 
@@ -37,7 +42,7 @@ public class HelloInputMessageFactoryTest {
         HelloInputMessageFactory himf = HelloInputMessageFactory.getInstance();
         himf.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, hi);
         
-        BufferHelper.checkHeaderV13(out, himf.getMessageType(), himf.computeLength());
+        BufferHelper.checkHeaderV13(out, himf.getMessageType(), himf.computeLength(hi));
     }
     
     /**
@@ -48,17 +53,21 @@ public class HelloInputMessageFactoryTest {
     public void testWithElementsSet() throws Exception {
         HelloInputBuilder builder = new HelloInputBuilder();
         BufferHelper.setupHeader(builder);
-        builder.setElements(createElement());
+        List<Elements> expectedElement = createElement();
+        builder.setElements(expectedElement);
         HelloInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         HelloInputMessageFactory factory = HelloInputMessageFactory.getInstance();
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
+        LOGGER.info("bytebuf: " + ByteBufUtils.byteBufToHexString(out));
         
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength());
+        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
         Elements element = readElement(out).get(0);
-        Assert.assertEquals("Wrong element type", createElement().get(0).getType(), element.getType());
-        Assert.assertArrayEquals("Wrong element bitmap", createElement().get(0).getVersionBitmap().toArray(), element.getVersionBitmap().toArray());
+        Assert.assertEquals("Wrong element type", expectedElement.get(0).getType(), element.getType());
+        LOGGER.info(expectedElement.get(0).getVersionBitmap().toString());
+        LOGGER.info(element.getVersionBitmap().toString());
+        Assert.assertArrayEquals("Wrong element bitmap", expectedElement.get(0).getVersionBitmap().toArray(), element.getVersionBitmap().toArray());
     }
     
     private static List<Elements> createElement() {
@@ -78,20 +87,30 @@ public class HelloInputMessageFactoryTest {
     }
     
     private static List<Elements> readElement(ByteBuf input) {
-        ElementsBuilder elementsBuilder = new ElementsBuilder();
         List<Elements> elementsList = new ArrayList<>();
-        elementsBuilder.setType(HelloElementType.forValue(input.readUnsignedShort()));
-        int arrayLength = input.readableBytes()/4;
-        int[] versionBitmap = new int[arrayLength];
-        for (int i = 0; i < arrayLength; i++) {
-            versionBitmap[i] = (int) input.readUnsignedInt();
+        while (input.readableBytes() > 0) {
+            ElementsBuilder elementsBuilder = new ElementsBuilder();
+            int type = input.readUnsignedShort();
+            int elementLength = input.readUnsignedShort();
+            if (type == HelloElementType.VERSIONBITMAP.getIntValue()) {
+                elementsBuilder.setType(HelloElementType.forValue(type));
+                int[] versionBitmap = new int[(elementLength - HelloInputMessageFactory.HELLO_ELEMENT_HEADER_SIZE) / 4];
+                for (int i = 0; i < versionBitmap.length; i++) {
+                    versionBitmap[i] = (int) input.readUnsignedInt();
+                }
+                elementsBuilder.setVersionBitmap(readVersionBitmap(versionBitmap));
+                int paddingRemainder = elementLength % EncodeConstants.PADDING;
+                if (paddingRemainder != 0) {
+                    input.readBytes(EncodeConstants.PADDING - paddingRemainder);
+                }
+            }
+            elementsList.add(elementsBuilder.build());
         }
-        elementsBuilder.setVersionBitmap(readVersionBitmap(versionBitmap));
-        elementsList.add(elementsBuilder.build());
         return elementsList;
     }
     
     private static List<Boolean> readVersionBitmap(int[] input){
+        LOGGER.info("input.length: " + input.length);
         List<Boolean> versionBitmapList = new ArrayList<>();
         for (int i = 0; i < input.length; i++) {
             int mask = input[i];
@@ -99,6 +118,7 @@ public class HelloInputMessageFactoryTest {
                     versionBitmapList.add((mask & (1<<j)) != 0);
             }
         }
+        LOGGER.info("versionbitmaplist.size: " + versionBitmapList.size());
         return versionBitmapList;
     }
 

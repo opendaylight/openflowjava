@@ -48,7 +48,7 @@ public class MeterModInputMessageFactoryTest {
         MeterModInputMessageFactory factory = MeterModInputMessageFactory.getInstance();
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength());
+        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
         Assert.assertEquals("Wrong meterModCommand", message.getCommand().getIntValue(), out.readUnsignedShort());
         Assert.assertEquals("Wrong meterFlags", message.getFlags(), decodeMeterModFlags(out.readShort()));
         Assert.assertEquals("Wrong meterId", message.getMeterId().getValue().intValue(), out.readUnsignedInt());

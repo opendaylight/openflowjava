@@ -49,7 +49,7 @@ public class FlowModInputMessageFactoryTest {
         FlowModInputMessageFactory factory = FlowModInputMessageFactory.getInstance();
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength());
+        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
         Assert.assertEquals("Wrong cookie", message.getCookie().longValue(), out.readLong());
         Assert.assertEquals("Wrong cookieMask", message.getCookieMask().longValue(), out.readLong());
         Assert.assertEquals("Wrong tableId", message.getTableId().getValue().intValue(), out.readByte());

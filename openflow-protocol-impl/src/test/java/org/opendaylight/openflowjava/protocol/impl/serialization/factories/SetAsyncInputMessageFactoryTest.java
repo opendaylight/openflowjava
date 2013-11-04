@@ -40,7 +40,7 @@ public class SetAsyncInputMessageFactoryTest {
         SetAsyncInputMessageFactory factory = SetAsyncInputMessageFactory.getInstance();
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength());
+        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
         Assert.assertEquals("Wrong packetInMask", message.getPacketInMask(), readPacketInMask(out));
         Assert.assertEquals("Wrong packetInMask", message.getPortStatusMask(), readPortStatusMask(out));
         Assert.assertEquals("Wrong packetInMask", message.getFlowRemovedMask(), readFlowRemovedReasonMask(out));

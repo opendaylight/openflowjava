@@ -7,6 +7,8 @@ import java.util.List;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.serialization.factories.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.serialization.factories.HelloInputMessageFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.HelloElementType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloMessageBuilder;
@@ -47,16 +49,25 @@ public class HelloMessageFactory implements OFDeserializer<HelloMessage> {
     }
     
     private static List<Elements> readElement(ByteBuf input) {
-        ElementsBuilder elementsBuilder = new ElementsBuilder();
         List<Elements> elementsList = new ArrayList<>();
-        elementsBuilder.setType(HelloElementType.forValue(input.readUnsignedShort()));
-        int arrayLength = input.readableBytes()/4;
-        int[] versionBitmap = new int[arrayLength];
-        for (int i = 0; i < arrayLength; i++) {
-            versionBitmap[i] = (int) input.readUnsignedInt();
+        while (input.readableBytes() > 0) {
+            ElementsBuilder elementsBuilder = new ElementsBuilder();
+            int type = input.readUnsignedShort();
+            int elementLength = input.readUnsignedShort();
+            if (type == HelloElementType.VERSIONBITMAP.getIntValue()) {
+                elementsBuilder.setType(HelloElementType.forValue(type));
+                int[] versionBitmap = new int[(elementLength - HelloInputMessageFactory.HELLO_ELEMENT_HEADER_SIZE) / 4];
+                for (int i = 0; i < versionBitmap.length; i++) {
+                    versionBitmap[i] = (int) input.readUnsignedInt();
+                }
+                elementsBuilder.setVersionBitmap(readVersionBitmap(versionBitmap));
+                int paddingRemainder = elementLength % EncodeConstants.PADDING;
+                if (paddingRemainder != 0) {
+                    input.readBytes(EncodeConstants.PADDING - paddingRemainder);
+                }
+            }
+            elementsList.add(elementsBuilder.build());
         }
-        elementsBuilder.setVersionBitmap(readVersionBitmap(versionBitmap));
-        elementsList.add(elementsBuilder.build());
         return elementsList;
     }
     

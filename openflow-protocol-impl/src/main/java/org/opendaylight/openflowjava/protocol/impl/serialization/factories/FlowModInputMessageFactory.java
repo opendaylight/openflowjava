@@ -54,7 +54,7 @@ public class FlowModInputMessageFactory implements OFSerializer<FlowModInput> {
     }
 
     @Override
-    public int computeLength() {
+    public int computeLength(FlowModInput message) {
         return MESSAGE_LENGTH;
     }
 

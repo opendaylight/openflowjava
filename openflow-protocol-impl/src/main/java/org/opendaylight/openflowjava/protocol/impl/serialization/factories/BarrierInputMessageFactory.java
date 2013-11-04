@@ -38,7 +38,7 @@ public class BarrierInputMessageFactory implements OFSerializer<BarrierInput> {
     }
 
     @Override
-    public int computeLength() {
+    public int computeLength(BarrierInput message) {
         return MESSAGE_LENGTH;
     }
 

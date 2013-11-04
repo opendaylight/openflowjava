@@ -39,7 +39,7 @@ public class GetConfigInputMessageFactory implements OFSerializer<GetConfigInput
     }
 
     @Override
-    public int computeLength() {
+    public int computeLength(GetConfigInput message) {
         return MESSAGE_LENGTH;
     }
 

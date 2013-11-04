@@ -39,7 +39,7 @@ public class GetFeaturesInputMessageFactory implements OFSerializer<GetFeaturesI
     }
 
     @Override
-    public int computeLength() {
+    public int computeLength(GetFeaturesInput message) {
         return MESSAGE_LENGTH;
     }
 

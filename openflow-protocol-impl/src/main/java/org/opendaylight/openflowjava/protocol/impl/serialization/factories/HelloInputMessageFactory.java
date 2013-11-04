@@ -1,15 +1,17 @@
 /* Copyright (C)2013 Pantheon Technologies, s.r.o. All rights reserved. */
 package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
-import java.util.Iterator;
-import java.util.List;
-
 import io.netty.buffer.ByteBuf;
+
+import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.HelloElementType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.hello.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author michal.polkorab
@@ -19,8 +21,13 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
 
     /** Code type of Hello message */
     private static final byte MESSAGE_TYPE = 0;
-    private static int MESSAGE_LENGTH = 0;
+    private static int MESSAGE_LENGTH = 8;
+    public static final byte HELLO_ELEMENT_HEADER_SIZE = 4;
     private static HelloInputMessageFactory instance;
+    
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(HelloInputMessageFactory.class);
+    
     
     private HelloInputMessageFactory() {
         // do nothing, just singleton
@@ -38,14 +45,31 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
 
     @Override
     public void messageToBuffer(short version, ByteBuf out, HelloInput message) {
-        computeElementsLength(message.getElements());
+        int startWriterIndex = out.writerIndex();
         ByteBufUtils.writeOFHeader(instance, message, out);
-        encodeElementsList(message.getElements(), out);
+        encodeElementsList(message, out);
+        int endWriterIndex = out.writerIndex();
+        int writtenBytesDiff = computeLength(message) - (endWriterIndex - startWriterIndex);
+        LOGGER.info("writtenbytes: " + writtenBytesDiff);
+        ByteBufUtils.padBuffer(writtenBytesDiff, out);
     }
 
     @Override
-    public int computeLength() {
-        return MESSAGE_LENGTH;
+    public int computeLength(HelloInput message) {
+        int length = MESSAGE_LENGTH;
+        List<Elements> elements = message.getElements();
+        if (elements != null) {
+            for (Elements element : elements) {
+                if (HelloElementType.VERSIONBITMAP.equals(element.getType())) {
+                    length += computeVersionBitmapLength(element);
+                }
+            }
+            int paddingRemainder = length % EncodeConstants.PADDING;
+            if (paddingRemainder != 0) {
+                length += EncodeConstants.PADDING - paddingRemainder;
+            }
+        }
+        return length;
     }
 
     @Override
@@ -53,32 +77,33 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
         return MESSAGE_TYPE;
     }
     
-    private static int computeElementsLength(List<Elements> elements) {
-        int versionBitmapSize = 0;
-        final int ofHeaderSize = 8;
-        int typeSize = 0;
-        
-        if (elements != null) {
-            typeSize = 2;
-            versionBitmapSize = elements.get(0).getVersionBitmap().size()/Byte.SIZE;
-            } 
-        MESSAGE_LENGTH = ofHeaderSize + versionBitmapSize + typeSize;
-        return MESSAGE_LENGTH;
-    }
- 
-    private static void encodeElementsList(List<Elements> elements, ByteBuf output) {
+    private static void encodeElementsList(HelloInput message, ByteBuf output) {
         int[] versionBitmap;
         int arraySize = 0;
-        if (elements != null) {
-            for (Iterator<Elements> iterator = elements.iterator(); iterator.hasNext();) {
-                Elements currElement = iterator.next();
+        if (message.getElements() != null) {
+            for (Elements currElement : message.getElements()) {
                 output.writeShort(currElement.getType().getIntValue());
-                versionBitmap = ByteBufUtils.fillBitMaskFromList(currElement.getVersionBitmap());
-                arraySize = (versionBitmap.length/Integer.SIZE);
-                for (int i = 0; i < arraySize; i++) {
-                    output.writeInt(versionBitmap[i]);
+                
+                if (currElement.getType().equals(HelloElementType.VERSIONBITMAP)) {
+                    short bitmapLength = computeVersionBitmapLength(currElement);
+                    output.writeShort(bitmapLength);
+                    versionBitmap = ByteBufUtils.fillBitMaskFromList(currElement.getVersionBitmap());
+                    arraySize = (versionBitmap.length/Integer.SIZE);
+                    for (int i = 0; i < arraySize; i++) {
+                        output.writeInt(versionBitmap[i]);
+                    }
+                    int padding = bitmapLength - arraySize * 4 - HELLO_ELEMENT_HEADER_SIZE;
+                    ByteBufUtils.padBuffer(padding , output);
                 }
             } 
         }
+    }
+    
+    private static short computeVersionBitmapLength(Elements element) {
+        short elementlength = HELLO_ELEMENT_HEADER_SIZE;
+        if (!element.getVersionBitmap().isEmpty()) {
+            elementlength += ((element.getVersionBitmap().size() - 1) / Integer.SIZE + 1) * 4;
+        }
+        return elementlength;
     }
 }

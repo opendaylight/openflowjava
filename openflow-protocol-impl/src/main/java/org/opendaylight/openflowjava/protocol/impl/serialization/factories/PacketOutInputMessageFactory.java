@@ -48,7 +48,7 @@ public class PacketOutInputMessageFactory implements OFSerializer<PacketOutInput
     }
 
     @Override
-    public int computeLength() {
+    public int computeLength(PacketOutInput message) {
         return MESSAGE_LENGTH;
     }
 

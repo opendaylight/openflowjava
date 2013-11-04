@@ -76,7 +76,7 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
     }
     
     @Override
-    public int computeLength() {
+    public int computeLength(MultipartRequestMessage message) {
         // TODO
         return MESSAGE_LENGTH;
     }
