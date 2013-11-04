@@ -59,18 +59,8 @@ public class TlsDetector extends ByteToMessageDecoder {
             SSLEngine engine = SslContextFactory.getServerContext()
                     .createSSLEngine();
             engine.setUseClientMode(false);
-            p.addBefore(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name(), COMPONENT_NAMES.SSL_HANDLER.name(),
+            p.addAfter(COMPONENT_NAMES.TLS_DETECTOR.name(), COMPONENT_NAMES.SSL_HANDLER.name(),
                     new SslHandler(engine));
-        }
-    }
-
-    private static void enableOFFrameDecoder(ChannelHandlerContext ctx) {
-        ChannelPipeline p = ctx.channel().pipeline();
-        if (p.get(COMPONENT_NAMES.OF_FRAME_DECODER.name()) == null) {
-            LOGGER.debug("Engaging OFFrameDecoder");
-            p.addBefore(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name(), COMPONENT_NAMES.OF_FRAME_DECODER.name(), new OFFrameDecoder());
-        } else {
-            LOGGER.debug("OFFD already in pipeline");
         }
     }
 
@@ -89,7 +79,6 @@ public class TlsDetector extends ByteToMessageDecoder {
         } else {
             LOGGER.info("Connection is not encrypted");
         }
-        enableOFFrameDecoder(ctx);
         ctx.pipeline().remove(COMPONENT_NAMES.TLS_DETECTOR.name());
     }
 }

@@ -2,7 +2,6 @@
 package org.opendaylight.openflowjava.protocol.impl.core;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPipeline;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +10,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler.COMPONENT_NAMES;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 
 /**
@@ -28,9 +24,6 @@ public class OFVersionDetectorTest {
     @Mock
     ChannelHandlerContext channelHandlerContext;
 
-    @Mock
-    ChannelPipeline channelPipeline;
-
     private OFVersionDetector detector;
     private List<Object> list = new ArrayList<>();
 
@@ -39,10 +32,6 @@ public class OFVersionDetectorTest {
      */
     @Before
     public void setUp() {
-        Mockito.when(channelHandlerContext.pipeline()).thenReturn(
-                channelPipeline);
-        Mockito.when(channelPipeline.get(Matchers.anyString()))
-                .thenReturn(null);
         list.clear();
         detector = new OFVersionDetector();
     }
@@ -62,7 +51,6 @@ public class OFVersionDetectorTest {
 
         Assert.assertEquals(7, ((VersionMessageWrapper) list.get(0))
                 .getMessageBuffer().readableBytes());
-        verifyMockCalls(1);
     }
 
     /**
@@ -79,27 +67,6 @@ public class OFVersionDetectorTest {
                 list);
 
         Assert.assertEquals("List is not empty", 0, list.size());
-        verifyMockCalls(0);
     }
 
-    private void verifyMockCalls(int numberOfCalls) {
-        if (numberOfCalls > 0) {
-            Mockito.verify(channelPipeline, Mockito.times(numberOfCalls)).get(
-                    COMPONENT_NAMES.OF_DECODER.name());
-            Mockito.verify(channelPipeline, Mockito.times(numberOfCalls))
-                    .addBefore(
-                            Matchers.eq(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER
-                                    .name()),
-                            Matchers.eq(COMPONENT_NAMES.OF_DECODER.name()),
-                            Matchers.isA(OF13Decoder.class));
-        } else {
-            Mockito.verify(channelPipeline, Mockito.never()).get(
-                    COMPONENT_NAMES.OF_DECODER.name());
-            Mockito.verify(channelPipeline, Mockito.never()).addBefore(
-                    Matchers.eq(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER
-                            .name()),
-                    Matchers.eq(COMPONENT_NAMES.OF_DECODER.name()),
-                    Matchers.isA(OF13Decoder.class));
-        }
-    }
 }
