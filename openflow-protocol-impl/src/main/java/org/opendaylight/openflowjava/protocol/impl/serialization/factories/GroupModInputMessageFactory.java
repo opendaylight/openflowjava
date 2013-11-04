@@ -3,13 +3,13 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
+import org.opendaylight.openflowjava.protocol.impl.util.ActionsSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GroupModInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.group.mod.BucketsList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.buckets.BucketsList;
 
 /**
  * @author timotej.kubas
@@ -18,9 +18,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class GroupModInputMessageFactory implements OFSerializer<GroupModInput> {
     private static final byte MESSAGE_TYPE = 15;
     private static final byte PADDING_IN_GROUP_MOD_MESSAGE = 1;
-    private static final int MESSAGE_LENGTH = 16; 
+    private static final int MESSAGE_LENGTH = 16;
+    private static final byte LENGTH_OF_BUCKET_STRUCTURE = 16;
     private static GroupModInputMessageFactory instance;
-    
+
     private GroupModInputMessageFactory() {
         // singleton
     }
@@ -48,7 +49,7 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupModInput> 
 
     @Override
     public int computeLength(GroupModInput message) {
-        return MESSAGE_LENGTH;
+        return MESSAGE_LENGTH + computeLengthOfBuckets(message.getBucketsList());
     }
 
     @Override
@@ -58,16 +59,35 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupModInput> 
     
     private static void encodeBuckets(List<BucketsList> buckets, ByteBuf outBuffer) {
         final byte PADDING_IN_BUCKET = 4;
-        
-        for (Iterator<BucketsList> iterator = buckets.iterator(); iterator.hasNext();) {
-            BucketsList currentBucket = iterator.next();
-            // TODO get method for field length missing
-            outBuffer.writeShort(currentBucket.getWeight().intValue());
-            outBuffer.writeInt(currentBucket.getWatchPort().getValue().intValue());
-            outBuffer.writeInt(currentBucket.getWatchGroup().intValue());
-            ByteBufUtils.padBuffer(PADDING_IN_BUCKET, outBuffer);
-            // TODO actions structure missing
+        if (buckets != null) {
+            for (BucketsList currentBucket : buckets) {
+                outBuffer.writeShort(computeLengthOfBucket(currentBucket));
+                outBuffer.writeShort(currentBucket.getWeight().shortValue());
+                outBuffer.writeInt(currentBucket.getWatchPort().getValue().intValue());
+                outBuffer.writeInt(currentBucket.getWatchGroup().intValue());
+                ByteBufUtils.padBuffer(PADDING_IN_BUCKET, outBuffer);
+                ActionsSerializer.encodeActions(currentBucket.getActionsList(), outBuffer);
+            }
         }
     }
+    
+    private static int computeLengthOfBucket(BucketsList bucket) {
+        int lengthOfBuckets = 0;
+        if (bucket != null) {
+            lengthOfBuckets = LENGTH_OF_BUCKET_STRUCTURE + ActionsSerializer.computeLengthOfActions(bucket.getActionsList());
+        }
+        return lengthOfBuckets;
+    }
+    
+    private static int computeLengthOfBuckets(List<BucketsList> buckets) {
+        int lengthOfBuckets = 0;
+        if (buckets != null) {
+            for (BucketsList currentBucket : buckets) {
+                lengthOfBuckets += LENGTH_OF_BUCKET_STRUCTURE + ActionsSerializer.computeLengthOfActions(currentBucket.getActionsList());
+            }
+        }
+        return lengthOfBuckets;
+    }
 
+    
 }

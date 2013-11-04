@@ -10,6 +10,7 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInput;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
  * @author timotej.kubas

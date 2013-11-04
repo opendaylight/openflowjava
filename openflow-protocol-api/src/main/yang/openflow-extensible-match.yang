@@ -223,6 +223,9 @@ module openflow-extensible-match {
                         base match-field;
                     }
                 }
+                leaf has-mask {
+                    type boolean;
+                } 
             }
         }
         

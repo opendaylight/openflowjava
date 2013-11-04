@@ -76,9 +76,15 @@ module openflow-action {
         description "";
         base oft:action;
     }
-
+    
     container actions-container {
         uses action-header;
+    }
+    
+    grouping actions {
+        list actions-list {
+            uses action-header;
+        }
     }
 
     grouping action-header {
