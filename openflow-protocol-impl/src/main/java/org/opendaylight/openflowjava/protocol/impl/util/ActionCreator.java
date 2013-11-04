@@ -249,7 +249,7 @@ public abstract class ActionCreator {
         
         actionBuilder.setType(Output.class);
         PortActionBuilder port = new PortActionBuilder();
-        port.setPort(new AnyPortNumber(new PortNumber(in.readUnsignedInt())));
+        port.setPort(new PortNumber(in.readUnsignedInt()));
         actionBuilder.addAugmentation(PortAction.class, port.build());
         MaxLengthActionBuilder maxLen = new MaxLengthActionBuilder();
         maxLen.setMaxLength(in.readUnsignedShort());

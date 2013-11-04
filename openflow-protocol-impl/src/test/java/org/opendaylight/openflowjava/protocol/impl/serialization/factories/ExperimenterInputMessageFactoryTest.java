@@ -36,7 +36,7 @@ public class ExperimenterInputMessageFactoryTest {
         ExperimenterInputMessageFactory factory = ExperimenterInputMessageFactory.getInstance();
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
-        BufferHelper.checkHeaderV13(out, EXPERIMENTER_REQUEST_MESSAGE_CODE_TYPE, factory.computeLength());
+        BufferHelper.checkHeaderV13(out, EXPERIMENTER_REQUEST_MESSAGE_CODE_TYPE, factory.computeLength(message));
         Assert.assertEquals("Wrong experimenter", 0x0001020304L, out.readUnsignedInt());
         Assert.assertEquals("Wrong expType", 0x0001020304L, out.readUnsignedInt());
         Assert.assertArrayEquals("Wrong data", message.getData(), readData(out));

@@ -52,7 +52,7 @@ public class PortModInputMessageFactory implements OFSerializer<PortModInput> {
     }
 
     @Override
-    public int computeLength() {
+    public int computeLength(PortModInput message) {
         return MESSAGE_LENGTH;
     }
 

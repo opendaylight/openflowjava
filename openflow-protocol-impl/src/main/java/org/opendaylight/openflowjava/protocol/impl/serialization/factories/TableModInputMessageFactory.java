@@ -44,7 +44,7 @@ public class TableModInputMessageFactory implements OFSerializer<TableModInput> 
     }
 
     @Override
-    public int computeLength() {
+    public int computeLength(TableModInput message) {
         return MESSAGE_LENGTH;
     }
 

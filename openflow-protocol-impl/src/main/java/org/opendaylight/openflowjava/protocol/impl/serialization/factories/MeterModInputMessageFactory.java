@@ -55,7 +55,7 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput> 
     }
 
     @Override
-    public int computeLength() {
+    public int computeLength(MeterModInput message) {
         
         return MESSAGE_LENGTH;
     }

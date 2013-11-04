@@ -37,7 +37,7 @@ public class GetAsyncRequestMessageFactory implements OFSerializer<GetAsyncInput
     }
     
     @Override
-    public int computeLength() {
+    public int computeLength(GetAsyncInput message) {
         return MESSAGE_LENGTH;
     }
     

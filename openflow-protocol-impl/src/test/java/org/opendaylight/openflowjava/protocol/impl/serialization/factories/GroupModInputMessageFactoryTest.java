@@ -45,7 +45,7 @@ public class GroupModInputMessageFactoryTest {
         GroupModInputMessageFactory factory = GroupModInputMessageFactory.getInstance();
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength());
+        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
         Assert.assertEquals("Wrong command", message.getCommand().getIntValue(), out.readShort());
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readByte());
         out.skipBytes(PADDING_IN_GROUP_MOD_MESSAGE);

@@ -935,7 +935,7 @@ public class MultipartReplyMessageFactoryTest {
         Assert.assertEquals("Wrong outputPort", 4351, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
                 getAction().getAugmentation(PortAction.class).
-                getPort().getPortNumber().getValue().intValue());
+                getPort().getValue().intValue());
         
         Assert.assertEquals("Wrong outputMaxLen", 65535, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).

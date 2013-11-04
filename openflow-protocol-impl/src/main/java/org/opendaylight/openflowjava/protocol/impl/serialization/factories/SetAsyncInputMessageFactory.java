@@ -48,7 +48,7 @@ public class SetAsyncInputMessageFactory implements OFSerializer<SetAsyncInput> 
     }
 
     @Override
-    public int computeLength() {
+    public int computeLength(SetAsyncInput message) {
         return MESSAGE_LENGTH;
     }
 

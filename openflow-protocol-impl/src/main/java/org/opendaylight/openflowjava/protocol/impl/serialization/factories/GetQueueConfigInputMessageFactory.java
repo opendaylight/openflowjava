@@ -43,7 +43,7 @@ public class GetQueueConfigInputMessageFactory implements OFSerializer<GetQueueC
     }
 
     @Override
-    public int computeLength(){
+    public int computeLength(GetQueueConfigInput message){
         return MESSAGE_LENGTH;
     }
 

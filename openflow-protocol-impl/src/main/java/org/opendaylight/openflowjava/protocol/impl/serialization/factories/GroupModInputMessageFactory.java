@@ -47,7 +47,7 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupModInput> 
     }
 
     @Override
-    public int computeLength() {
+    public int computeLength(GroupModInput message) {
         return MESSAGE_LENGTH;
     }
 

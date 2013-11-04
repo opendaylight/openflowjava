@@ -43,7 +43,7 @@ public class RoleRequestInputMessageFactory implements OFSerializer<RoleRequestI
     }
 
     @Override
-    public int computeLength() {
+    public int computeLength(RoleRequestInput message) {
         return MESSAGE_LENGTH;
     }
 
