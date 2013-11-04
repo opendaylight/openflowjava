@@ -34,6 +34,7 @@
         <yang.prototype.version>1.0-SNAPSHOT</yang.prototype.version>
         <maven.bundle.version>2.4.0</maven.bundle.version>
         <guava.version>14.0.1</guava.version> 
+        <netty.version>4.0.10.Final</netty.version>
     </properties>
 
     <pluginRepositories>
@@ -153,7 +154,7 @@
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-handler</artifactId>
-                <version>4.0.8.Final</version>
+                <version>${netty.version}</version>
             </dependency>
             <dependency>
             <groupId>com.google.guava</groupId>

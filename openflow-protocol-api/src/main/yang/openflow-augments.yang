@@ -78,12 +78,6 @@ module openflow-augments {
          }
      }
      augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "ipv4-prefix-match-entry";
-         leaf ipv4-prefix {
-             type inet:ipv4-prefix;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
          ext:augment-identifier "port-match-entry";
          leaf port {
              type inet:port-number;
@@ -108,12 +102,6 @@ module openflow-augments {
          }
      }
      augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "ipv6-prefix-match-entry";
-         leaf ipv6-prefix {
-             type inet:ipv6-prefix;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
          ext:augment-identifier "ipv6-flabel-match-entry";
          leaf ipv6-flabel {
              type inet:ipv6-flow-label;
@@ -135,6 +123,12 @@ module openflow-augments {
          ext:augment-identifier "ipv6-address-match-entry";
          leaf ipv6-address {
              type inet:ipv6-address;
+         }
+     }
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         ext:augment-identifier "ipv4-address-match-entry";
+         leaf ipv4-address {
+             type inet:ipv4-address;
          }
      }
      augment "/oxm:oxm-container/oxm:match-entries" {
@@ -209,7 +203,7 @@ module openflow-augments {
      augment "/ofaction:actions-container/ofaction:action" {
          ext:augment-identifier "port-action";
          leaf port {
-             type oft:any-port-number;
+             type oft:port-number;
          }
      }
      augment "/ofaction:actions-container/ofaction:action" {

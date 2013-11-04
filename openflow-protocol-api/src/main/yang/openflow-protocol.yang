@@ -80,6 +80,26 @@ module openflow-protocol {
             uses oxm:oxm-fields;
         }
 
+        grouping buckets {
+                list buckets-list {
+                    uses bucket;
+                }
+            }
+            
+            grouping bucket {
+                leaf weight {
+                    type uint16;
+                }
+                leaf watch-port {
+                    type oft:port-number;
+                }
+                leaf watch-group {
+                    type uint32;
+                }
+                
+                uses ofaction:actions;
+            }
+            
         container table-features-properties-container {
             uses table-features-properties;
         }
@@ -339,14 +359,11 @@ module openflow-protocol {
                 
                 uses ofHeader;
                 
-                list actions-list {
-                    uses ofaction:action-header;
-                    
-                    leaf data {
-                        type binary;
-                    }
-                }
+                uses ofaction:actions;
                 
+                leaf data {
+                    type binary;
+                }
                 leaf buffer-id {
                     type uint32;
                 }
@@ -396,6 +413,8 @@ module openflow-protocol {
                 container match {
                     uses match;
                 }
+                
+                uses ofinstruction:instructions;
             } 
             grouping group-mod {
                 // reference "OFPT_GROUP_MOD message in Openflow Switch 1.3 Spec"
@@ -413,24 +432,9 @@ module openflow-protocol {
                     type uint32;
                 }
                 
-                list buckets-list {
-                    uses bucket;
-                }
+                uses buckets;
             }
-            grouping bucket {
-                leaf weight {
-                    type uint16;
-                }
-                leaf watch-port {
-                    type oft:port-number;
-                }
-                leaf watch-group {
-                    type uint32;
-                }
-                list actions-list {
-                    uses ofaction:action-header;
-                }
-            }
+            
             grouping port-mod {
                 // reference "OFPT_PORT_MOD message in Openflow Switch 1.3 Spec"
                 /* Controller/switch message */
@@ -647,6 +651,8 @@ module openflow-protocol {
                             container match {
                                 uses match;
                             }
+                            
+                            uses ofinstruction:instructions;
                         }
                     }
                     case multipart-reply-aggregate {
@@ -789,9 +795,7 @@ module openflow-protocol {
                             leaf group-id {
                                 type uint32;
                             }
-                            list buckets-list {
-                                uses bucket;
-                            }
+                            uses buckets;
                         }
                     }
                     case multipart-reply-group-features {
@@ -804,12 +808,8 @@ module openflow-protocol {
                         leaf-list max_groups {
                             type uint32;
                         }
-                        //leaf-list actions {
-                        //    type ofaction:action-type;
-                        //}
-                        list actions-list {
-                            uses ofaction:action-header;
-                        }
+                        
+                        uses ofaction:actions;
                     }
                     case multipart-reply-meter {
                         list meter-stats {
@@ -891,6 +891,7 @@ module openflow-protocol {
                             leaf max-entries {
                                 type uint32;
                             }
+                            uses table-features-properties;
                         }
                     }
                     case multipart-reply-port-desc {

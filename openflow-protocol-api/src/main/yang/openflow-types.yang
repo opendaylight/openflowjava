@@ -185,13 +185,13 @@ module openflow-types {
         base oft:match-type-base;
     }
 
-    typedef match-type {
-        //type identityref {
-        //    base oft:match-type-base;
-        //}
+    typedef oxm-match-type {
+        type identityref {
+            base oft:match-type-base;
+        }
         
         //TODO: use identityref, when generating available
-        type string;
+        //type string;
     }
 
     identity instruction {

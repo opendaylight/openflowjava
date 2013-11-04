@@ -535,6 +535,9 @@ public class MultipartReplyMessageFactoryTest {
                 message.getMeterStats().get(0).getMeterBandStats().get(2).getByteBandCount());
     }
     
+    /**
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     */
     @Test
     public void testMultipartReplyMeterBodyMulti(){
         ByteBuf bb = BufferHelper.buildBuffer("00 09 00 01 00 00 00 00 "+
@@ -935,7 +938,7 @@ public class MultipartReplyMessageFactoryTest {
         Assert.assertEquals("Wrong outputPort", 4351, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
                 getAction().getAugmentation(PortAction.class).
-                getPort().getPortNumber().getValue().intValue());
+                getPort().getValue().intValue());
         
         Assert.assertEquals("Wrong outputMaxLen", 65535, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).

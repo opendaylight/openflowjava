@@ -22,6 +22,7 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
     /** Code type of Hello message */
     private static final byte MESSAGE_TYPE = 0;
     private static int MESSAGE_LENGTH = 8;
+    /** Size of hello element header (in bytes) */
     public static final byte HELLO_ELEMENT_HEADER_SIZE = 4;
     private static HelloInputMessageFactory instance;
     

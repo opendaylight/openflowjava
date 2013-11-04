@@ -7,8 +7,7 @@ import io.netty.buffer.UnpooledByteBufAllocator;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
@@ -17,8 +16,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GroupModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GroupModInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.group.mod.BucketsList;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.group.mod.BucketsListBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.buckets.BucketsList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.buckets.BucketsListBuilder;
 
 /**
  * @author timotej.kubas
@@ -38,7 +37,8 @@ public class GroupModInputMessageFactoryTest {
         builder.setCommand(GroupModCommand.forValue(2));
         builder.setType(GroupType.forValue(3));
         builder.setGroupId(256L);
-        builder.setBucketsList(createBucketsList());
+        List<BucketsList> exp = createBucketsList();
+        builder.setBucketsList(exp);
         GroupModInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
@@ -46,11 +46,12 @@ public class GroupModInputMessageFactoryTest {
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
         BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
-        Assert.assertEquals("Wrong command", message.getCommand().getIntValue(), out.readShort());
-        Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readByte());
+        Assert.assertEquals("Wrong command", message.getCommand().getIntValue(), out.readUnsignedShort());
+        Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readUnsignedByte());
         out.skipBytes(PADDING_IN_GROUP_MOD_MESSAGE);
         Assert.assertEquals("Wrong groupId", message.getGroupId().intValue(), out.readUnsignedInt());
-        Assert.assertEquals("Wrong bucketList", createBucketsList(), createBucketsListFromBufer(out));
+        List<BucketsList> rec = createBucketsListFromBufer(out);
+        Assert.assertArrayEquals("Wrong bucketList", exp.toArray(), rec.toArray());
     }
     
     private static List<BucketsList> createBucketsList(){
@@ -69,7 +70,8 @@ public class GroupModInputMessageFactoryTest {
         List<BucketsList> bucketsList = new ArrayList<>();
         BucketsListBuilder bucketsBuilder = new BucketsListBuilder();
         BucketsList bucket;
-        bucketsBuilder.setWeight((int) out.readShort());
+        out.skipBytes(Short.SIZE / Byte.SIZE);
+        bucketsBuilder.setWeight(out.readUnsignedShort());
         bucketsBuilder.setWatchPort(new PortNumber(out.readUnsignedInt()));
         bucketsBuilder.setWatchGroup(out.readUnsignedInt());
         out.skipBytes(4);

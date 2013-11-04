@@ -24,6 +24,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class QueueGetConfigReplyMessageFactoryTest {
 
+    /**
+     * Testing {@link QueueGetConfigReplyMessageFactory} for correct translation into POJO
+     */
     @Test
     public void test(){
         ByteBuf bb = BufferHelper.buildBuffer("00 01 02 03 00 00 00 00 00 00 00 01 00 00 00 01 00 00 00 00 00 00 00 00 00 02 00 00 00 00 00 00");
@@ -33,7 +36,7 @@ public class QueueGetConfigReplyMessageFactoryTest {
         Assert.assertEquals("Wrong queues", builtByFactory.getQueues(), createQueuesList());
     }
     
-    public List<Queues> createQueuesList(){
+    private static List<Queues> createQueuesList(){
         List<Queues> queuesList = new ArrayList<>();
         QueuesBuilder qb = new QueuesBuilder();
         qb.setQueueId(new QueueId(1L));
@@ -44,7 +47,7 @@ public class QueueGetConfigReplyMessageFactoryTest {
         return queuesList;
     }
     
-    public List<Properties> createPropertiesList(){
+    private static List<Properties> createPropertiesList(){
         List<Properties> propertiesList = new ArrayList<>();
         PropertiesBuilder pb = new PropertiesBuilder();
         pb.setProperty(QueueProperty.values()[2]);
