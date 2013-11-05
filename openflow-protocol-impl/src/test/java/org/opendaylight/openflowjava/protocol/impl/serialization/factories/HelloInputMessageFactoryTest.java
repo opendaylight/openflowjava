@@ -60,13 +60,13 @@ public class HelloInputMessageFactoryTest {
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         HelloInputMessageFactory factory = HelloInputMessageFactory.getInstance();
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
-        LOGGER.info("bytebuf: " + ByteBufUtils.byteBufToHexString(out));
+        LOGGER.debug("bytebuf: " + ByteBufUtils.byteBufToHexString(out));
         
         BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
         Elements element = readElement(out).get(0);
         Assert.assertEquals("Wrong element type", expectedElement.get(0).getType(), element.getType());
-        LOGGER.info(expectedElement.get(0).getVersionBitmap().toString());
-        LOGGER.info(element.getVersionBitmap().toString());
+        LOGGER.debug(expectedElement.get(0).getVersionBitmap().toString());
+        LOGGER.debug(element.getVersionBitmap().toString());
         Assert.assertArrayEquals("Wrong element bitmap", expectedElement.get(0).getVersionBitmap().toArray(), element.getVersionBitmap().toArray());
     }
     
@@ -110,7 +110,6 @@ public class HelloInputMessageFactoryTest {
     }
     
     private static List<Boolean> readVersionBitmap(int[] input){
-        LOGGER.info("input.length: " + input.length);
         List<Boolean> versionBitmapList = new ArrayList<>();
         for (int i = 0; i < input.length; i++) {
             int mask = input[i];
@@ -118,7 +117,6 @@ public class HelloInputMessageFactoryTest {
                     versionBitmapList.add((mask & (1<<j)) != 0);
             }
         }
-        LOGGER.info("versionbitmaplist.size: " + versionBitmapList.size());
         return versionBitmapList;
     }
 

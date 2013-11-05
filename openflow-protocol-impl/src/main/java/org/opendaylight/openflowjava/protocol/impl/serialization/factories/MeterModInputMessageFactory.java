@@ -56,8 +56,11 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput> 
 
     @Override
     public int computeLength(MeterModInput message) {
-        
-        return MESSAGE_LENGTH;
+        int length = MESSAGE_LENGTH;
+        if (message.getBands() != null) {
+            length += message.getBands().size() * LENGTH_OF_METER_BANDS;
+        }
+        return length;
     }
 
     @Override
@@ -78,18 +81,20 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput> 
     }
     
     private static void encodeBands(List<Bands> bands, ByteBuf outBuffer) {
-        for (Bands currentBand : bands) {
-            MeterBand meterBand = currentBand.getMeterBand();
-            writeBandCommonFields((MeterBandCommons) meterBand, outBuffer);
-            if (meterBand instanceof MeterBandDrop) {
-                ByteBufUtils.padBuffer(PADDING_IN_METER_BAND_DROP, outBuffer);
-            } else if (meterBand instanceof MeterBandDscpRemark) {
-                MeterBandDscpRemark dscpRemarkBand = (MeterBandDscpRemark) meterBand;
-                outBuffer.writeByte(dscpRemarkBand.getPrecLevel());
-                ByteBufUtils.padBuffer(PADDING_IN_METER_BAND_DSCP_REMARK, outBuffer);
-            } else if (meterBand instanceof MeterBandExperimenter) {
-                MeterBandExperimenter experimenterBand = (MeterBandExperimenter) meterBand;
-                outBuffer.writeInt(experimenterBand.getExperimenter().intValue());
+        if (bands != null) {
+            for (Bands currentBand : bands) {
+                MeterBand meterBand = currentBand.getMeterBand();
+                writeBandCommonFields((MeterBandCommons) meterBand, outBuffer);
+                if (meterBand instanceof MeterBandDrop) {
+                    ByteBufUtils.padBuffer(PADDING_IN_METER_BAND_DROP, outBuffer);
+                } else if (meterBand instanceof MeterBandDscpRemark) {
+                    MeterBandDscpRemark dscpRemarkBand = (MeterBandDscpRemark) meterBand;
+                    outBuffer.writeByte(dscpRemarkBand.getPrecLevel());
+                    ByteBufUtils.padBuffer(PADDING_IN_METER_BAND_DSCP_REMARK, outBuffer);
+                } else if (meterBand instanceof MeterBandExperimenter) {
+                    MeterBandExperimenter experimenterBand = (MeterBandExperimenter) meterBand;
+                    outBuffer.writeInt(experimenterBand.getExperimenter().intValue());
+                }
             }
         }
     }
