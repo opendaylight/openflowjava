@@ -52,6 +52,9 @@ module openflow-augments {
          leaf vlan-vid {
              type uint16;
          }
+         leaf cfi-bit {
+             type boolean;
+         }
      }
      augment "/oxm:oxm-container/oxm:match-entries" {
          ext:augment-identifier "vlan-pcp-match-entry";
@@ -255,13 +258,13 @@ module openflow-augments {
 
 // OFP_TABLE_FEATURES_PROPERTIES AUGMENTS
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
-         ext:augment-identifier "instruction-ids-table-feature-properties";
+         ext:augment-identifier "instruction-related-table-feature-property";
          list instruction-ids {
              uses ofinstruction:instructions;
          }
      }
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
-         ext:augment-identifier "next-table-ids-table-feature-properties";
+         ext:augment-identifier "next-table-related-table-feature-property";
          list next-table-ids {
              leaf table-id {
                  type uint8;
@@ -269,19 +272,19 @@ module openflow-augments {
          }
      }
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
-         ext:augment-identifier "action-ids-table-feature-properties";
+         ext:augment-identifier "action-related-table-feature-property";
          list action-ids {
-             uses ofaction:action-header;
+             uses ofaction:actions;
          }
      }
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
-         ext:augment-identifier "oxm-ids-table-feature-properties";
+         ext:augment-identifier "oxm-related-table-feature-property";
          list oxm-ids {
              uses oxm:oxm-fields;
          }
      }
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
-         ext:augment-identifier "experimenter-table-feature-properties";
+         ext:augment-identifier "experimenter-related-table-feature-property";
          leaf experimenter {
              type uint32;
          }
@@ -294,13 +297,13 @@ module openflow-augments {
      }
 
 // OFP_INSTRUCTION AUGMENTS
-     augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
+     augment "/ofinstruction:instruction-container/ofinstruction:instructions" {
          ext:augment-identifier "table-id-instruction";
          leaf table-id {
              type uint8;
          }
      }
-     augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
+     augment "/ofinstruction:instruction-container/ofinstruction:instructions" {
          ext:augment-identifier "metadata-instruction";
          leaf metadata {
              type binary;
@@ -309,22 +312,23 @@ module openflow-augments {
              type binary;
          }
      }
-     augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
-         ext:augment-identifier "action-header-instruction";
-         list actions {
-             uses ofaction:action-header;
-         }
+     augment "/ofinstruction:instruction-container/ofinstruction:instructions" {
+         ext:augment-identifier "actions-instruction";
+         uses ofaction:actions;
      }
-     augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
+     augment "/ofinstruction:instruction-container/ofinstruction:instructions" {
          ext:augment-identifier "meter-id-instruction";
          leaf meter-id {
              type uint32;
          }
      }
-     augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
+     augment "/ofinstruction:instruction-container/ofinstruction:instructions" {
          ext:augment-identifier "experimenter-instruction";
          leaf experimenter {
              type uint32;
+         }
+         leaf data {
+             type binary;
          }
      }
 }

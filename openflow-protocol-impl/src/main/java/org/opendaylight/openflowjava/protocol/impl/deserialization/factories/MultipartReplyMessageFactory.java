@@ -9,7 +9,15 @@ import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ActionsDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.util.InstructionsDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.util.MatchEntriesDeserializer;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterRelatedTableFeatureProperty;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterRelatedTableFeaturePropertyBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.NextTableRelatedTableFeatureProperty;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.NextTableRelatedTableFeaturePropertyBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.table.features.properties.container.table.feature.properties.NextTableIds;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.table.features.properties.container.table.feature.properties.NextTableIdsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.ActionsList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowModFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupCapabilities;
@@ -24,6 +32,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeatures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortState;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableFeaturesPropType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessageBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.buckets.BucketsList;
@@ -59,6 +68,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyQueueBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyTable;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyTableBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyTableFeatures;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyTableFeaturesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow.FlowStats;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow.FlowStatsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group.GroupStats;
@@ -83,6 +94,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.queue.QueueStatsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.table.TableStats;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.table.TableStatsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.table.features.TableFeatures;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.table.features.TableFeaturesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.TableFeatureProperties;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.TableFeaturePropertiesBuilder;
 
 /**
  * @author timotej.kubas
@@ -112,11 +127,12 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         MultipartReplyMessageBuilder builder = new MultipartReplyMessageBuilder();
         builder.setVersion(version);
         builder.setXid(rawMessage.readUnsignedInt());
-        builder.setType(MultipartType.forValue(rawMessage.readUnsignedShort()));
+        int type = rawMessage.readUnsignedShort();
+        builder.setType(MultipartType.forValue(type));
         builder.setFlags(new MultipartRequestFlags((rawMessage.readUnsignedShort() & 0x01) != 0));
         rawMessage.skipBytes(PADDING_IN_MULTIPART_REPLY_HEADER);
 
-        switch (builder.getType().getIntValue()) {
+        switch (type) {
         case 0:  builder.setMultipartReplyBody(setDesc(rawMessage));
                  break;
         case 1:  builder.setMultipartReplyBody(setFlow(rawMessage));
@@ -140,6 +156,8 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         case 10: builder.setMultipartReplyBody(setMeterConfig(rawMessage));
                  break;
         case 11: builder.setMultipartReplyBody(setMeterFeatures(rawMessage));
+                 break;
+        case 12: builder.setMultipartReplyBody(setTableFeatures(rawMessage));
                  break;
         case 13: builder.setMultipartReplyBody(setPortDesc(rawMessage));
                  break;
@@ -195,7 +213,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             flowStatsBuilder.setPriority(input.readUnsignedShort());
             flowStatsBuilder.setIdleTimeout(input.readUnsignedShort());
             flowStatsBuilder.setHardTimeout(input.readUnsignedShort());
-            flowStatsBuilder.setFlags(createFlowModFalgsFromBitmap(input.readShort()));
+            flowStatsBuilder.setFlags(createFlowModFlagsFromBitmap(input.readShort()));
             input.skipBytes(PADDING_IN_FLOW_STATS_HEADER_02);
             byte[] cookie = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(cookie);
@@ -215,7 +233,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return flowBuilder.build();
     }
     
-    private static FlowModFlags createFlowModFalgsFromBitmap(short input){
+    private static FlowModFlags createFlowModFlagsFromBitmap(short input){
         final Boolean _oFPFFSENDFLOWREM = (input & (1 << 0)) != 0;
         final Boolean _oFPFFCHECKOVERLAP = (input & (1 << 1)) != 0;
         final Boolean _oFPFFRESETCOUNTS = (input & (1 << 2)) != 0; 
@@ -258,6 +276,88 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         builder.setTableStats(new ArrayList<>(tableStatsList));
         tableStatsList.clear();
         return builder.build();
+    }
+    
+    private static MultipartReplyTableFeatures setTableFeatures(ByteBuf input) {
+        final byte PADDING_IN_MULTIPART_REPLY_TABLE_FEATURES = 5;
+        final byte MAX_TABLE_NAME_LENGTH = 32;
+        final byte MULTIPART_REPLY_TABLE_FEATURES_STRUCTURE_LENGTH = 64;
+        MultipartReplyTableFeaturesBuilder builder = new MultipartReplyTableFeaturesBuilder();
+        List<TableFeatures> features = new ArrayList<>();
+        while (input.readableBytes() > 0) {
+            TableFeaturesBuilder featuresBuilder = new TableFeaturesBuilder();
+            int length = input.readUnsignedShort();
+            featuresBuilder.setTableId(input.readUnsignedByte());
+            input.skipBytes(PADDING_IN_MULTIPART_REPLY_TABLE_FEATURES);
+            featuresBuilder.setName(input.readBytes(MAX_TABLE_NAME_LENGTH).toString());
+            byte[] metadataMatch = new byte[Long.SIZE / Byte.SIZE];
+            input.readBytes(metadataMatch);
+            featuresBuilder.setMetadataMatch(metadataMatch);
+            byte[] metadataWrite = new byte[Long.SIZE / Byte.SIZE];
+            input.readBytes(metadataWrite);
+            featuresBuilder.setMetadataWrite(metadataWrite);
+            featuresBuilder.setConfig(createPortConfig(input.readUnsignedInt()));
+            featuresBuilder.setMaxEntries(input.readUnsignedInt());
+            featuresBuilder.setTableFeatureProperties(createTableFeaturesProperties(input, 
+                    length - MULTIPART_REPLY_TABLE_FEATURES_STRUCTURE_LENGTH));
+            features.add(featuresBuilder.build());
+        }
+        builder.setTableFeatures(features);
+        return builder.build();
+    }
+    
+    private static List<TableFeatureProperties> createTableFeaturesProperties(ByteBuf input, int length) {
+        final byte COMMON_PROPERTY_LENGTH = 4;
+        List<TableFeatureProperties> properties = new ArrayList<>();
+        int tableFeaturesLength = length;
+        while (tableFeaturesLength > 0) {
+            TableFeaturePropertiesBuilder builder = new TableFeaturePropertiesBuilder();
+            TableFeaturesPropType type = TableFeaturesPropType.forValue(input.readUnsignedShort());
+            builder.setType(type);
+            int propertyLength = input.readUnsignedShort();
+            tableFeaturesLength -= propertyLength;
+            if (type.equals(TableFeaturesPropType.OFPTFPTINSTRUCTIONS)
+                    || type.equals(TableFeaturesPropType.OFPTFPTINSTRUCTIONSMISS)) {
+                InstructionsDeserializer.createInstructions(input, propertyLength - COMMON_PROPERTY_LENGTH);
+            } else if (type.equals(TableFeaturesPropType.OFPTFPTNEXTTABLES)
+                    || type.equals(TableFeaturesPropType.OFPTFPTNEXTTABLESMISS)) {
+                propertyLength -= COMMON_PROPERTY_LENGTH;
+                NextTableRelatedTableFeaturePropertyBuilder tableBuilder = new NextTableRelatedTableFeaturePropertyBuilder();
+                List<NextTableIds> ids = new ArrayList<>();
+                while (propertyLength > 0) {
+                    NextTableIdsBuilder nextTableIdsBuilder = new NextTableIdsBuilder();
+                    nextTableIdsBuilder.setTableId(input.readUnsignedByte());
+                    ids.add(nextTableIdsBuilder.build());
+                }
+                tableBuilder.setNextTableIds(ids);
+                builder.addAugmentation(NextTableRelatedTableFeatureProperty.class, tableBuilder.build());
+                properties.add(builder.build());
+            } else if (type.equals(TableFeaturesPropType.OFPTFPTWRITEACTIONS)
+                    || type.equals(TableFeaturesPropType.OFPTFPTWRITEACTIONSMISS)
+                    || type.equals(TableFeaturesPropType.OFPTFPTAPPLYACTIONS)
+                    || type.equals(TableFeaturesPropType.OFPTFPTAPPLYACTIONSMISS)) {
+                ActionsDeserializer.createActionsList(input, propertyLength - COMMON_PROPERTY_LENGTH);
+            } else if (type.equals(TableFeaturesPropType.OFPTFPTMATCH)
+                    || type.equals(TableFeaturesPropType.OFPTFPTWILDCARDS)
+                    || type.equals(TableFeaturesPropType.OFPTFPTWRITESETFIELD)
+                    || type.equals(TableFeaturesPropType.OFPTFPTWRITESETFIELDMISS)
+                    || type.equals(TableFeaturesPropType.OFPTFPTAPPLYSETFIELD)
+                    || type.equals(TableFeaturesPropType.OFPTFPTAPPLYSETFIELDMISS)) {
+                MatchEntriesDeserializer.createMatchEntries(input, propertyLength - COMMON_PROPERTY_LENGTH);
+            } else if (type.equals(TableFeaturesPropType.OFPTFPTEXPERIMENTER)
+                    || type.equals(TableFeaturesPropType.OFPTFPTEXPERIMENTERMISS)) {
+                final byte EXPERIMENTER_PROPERTY_LENGTH = 12;
+                ExperimenterRelatedTableFeaturePropertyBuilder expBuilder = new ExperimenterRelatedTableFeaturePropertyBuilder();
+                expBuilder.setExperimenter(input.readUnsignedInt());
+                expBuilder.setExpType(input.readUnsignedInt());
+                byte[] data = new byte[propertyLength - EXPERIMENTER_PROPERTY_LENGTH];
+                input.readBytes(data);
+                expBuilder.setData(data);
+                builder.addAugmentation(ExperimenterRelatedTableFeatureProperty.class, expBuilder.build());
+                properties.add(builder.build());
+            }
+        }
+        return properties;
     }
     
     private static MultipartReplyPortStats setPortStats(ByteBuf input) {

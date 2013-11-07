@@ -5,12 +5,14 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.List;
 
+import org.opendaylight.openflowjava.protocol.impl.serialization.factories.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthertypeAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.GroupIdAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MplsTtlAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.NwTtlAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OxmFieldsAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.QueueIdAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.CopyTtlIn;
@@ -196,14 +198,18 @@ public abstract class ActionsSerializer {
     }
     
     private static void encodeSetFieldAction(Action action, ByteBuf outBuffer) {
-        final int SET_FIELD_CODE = 25; // 0xFFFF
-        final byte SET_FIELD_LENGTH = 8;
+        final int SET_FIELD_CODE = 25;
+        final byte SET_FIELD_FIELDS_LENGTH = 4; // only type and length
         // TODO - figure out definition from testing + check length
+        OxmFieldsAction oxmField = action.getAugmentation(OxmFieldsAction.class);
+        int length = MatchSerializer.computeMatchEntriesLength(oxmField.getMatchEntries()) + SET_FIELD_FIELDS_LENGTH;
         LOGGER.warn("Received set-field action - possible wrong or no implementation");
         outBuffer.writeShort(SET_FIELD_CODE);
-        outBuffer.writeShort(SET_FIELD_LENGTH);
-        ExperimenterAction experimenter = action.getAugmentation(ExperimenterAction.class);
-        outBuffer.writeInt(experimenter.getExperimenter().intValue());
+        int paddingRemainder = length % EncodeConstants.PADDING;
+        if (paddingRemainder != 0) {
+            length += EncodeConstants.PADDING - paddingRemainder;
+        }
+        outBuffer.writeShort(length);
     }
     
     private static void encodePushPbbAction(Action action, ByteBuf outBuffer) {

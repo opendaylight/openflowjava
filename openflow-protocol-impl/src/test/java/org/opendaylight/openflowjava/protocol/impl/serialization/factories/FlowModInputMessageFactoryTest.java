@@ -40,6 +40,7 @@ public class FlowModInputMessageFactoryTest {
         builder.setIdleTimeout(12);
         builder.setHardTimeout(0);
         builder.setPriority(126);
+        builder.setBufferId(2L);
         builder.setOutPort(new PortNumber(4422L));
         builder.setOutGroup(98L);
         builder.setFlags(new FlowModFlags(true, false, true, false, true));
@@ -56,7 +57,8 @@ public class FlowModInputMessageFactoryTest {
         Assert.assertEquals("Wrong command", message.getCommand().getIntValue(), out.readByte());
         Assert.assertEquals("Wrong idleTimeOut", message.getIdleTimeout().intValue(), out.readShort());
         Assert.assertEquals("Wrong hardTimeOut", message.getHardTimeout().intValue(), out.readShort());
-        Assert.assertEquals("Wrong priority", message.getPriority().intValue(), out.readShort());
+        Assert.assertEquals("Wrong priority", message.getPriority().intValue(), out.readUnsignedShort());
+        Assert.assertEquals("Wrong bufferId", message.getBufferId().intValue(), out.readUnsignedInt());
         Assert.assertEquals("Wrong outPort", message.getOutPort().getValue().intValue(), out.readUnsignedInt());
         Assert.assertEquals("Wrong outGroup", message.getOutGroup().intValue(), out.readUnsignedInt());
         Assert.assertEquals("Wrong flags", message.getFlags(), createFlowModFalgsFromBitmap(out.readShort()));

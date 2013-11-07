@@ -133,7 +133,7 @@ public abstract class MatchEntriesDeserializer {
      * @param matchArrayLength to infer size of array
      * @return MatchEntriesList
      */
-    public static List<MatchEntries> createMatchEntry(ByteBuf in, int matchArrayLength) {
+    public static List<MatchEntries> createMatchEntries(ByteBuf in, int matchArrayLength) {
         int currMatchLength = 0;
         while(currMatchLength < matchArrayLength) {
             switch (in.readUnsignedShort()) { 
@@ -204,7 +204,9 @@ public abstract class MatchEntriesDeserializer {
             case 6:
                 matchEntriesBuilder.setOxmMatchField(VlanVid.class);
                 VlanVidMatchEntryBuilder vlanVidBuilder = new VlanVidMatchEntryBuilder();
-                vlanVidBuilder.setVlanVid(in.readUnsignedShort());
+                int vidEntryValue = in.readUnsignedShort(); 
+                vlanVidBuilder.setCfiBit((vidEntryValue & 1) != 0);
+                vlanVidBuilder.setVlanVid(vidEntryValue >> 1);
                 matchEntriesBuilder.addAugmentation(VlanVidMatchEntry.class, vlanVidBuilder.build());
                 matchEntryLength -= SIZE_OF_SHORT_IN_BYTES;
                 if (matchEntryLength > 0) {
@@ -490,11 +492,12 @@ public abstract class MatchEntriesDeserializer {
     private static void addIpv4AddressAugmentation(MatchEntriesBuilder builder, ByteBuf in) {
         final byte GROUPS_IN_IPV4_ADDRESS = 4;
         Ipv4AddressMatchEntryBuilder ipv4AddressBuilder = new Ipv4AddressMatchEntryBuilder();
-        StringBuffer sb = new StringBuffer();
+        List<String> groups = new ArrayList<>();
         for (int i = 0; i < GROUPS_IN_IPV4_ADDRESS; i++) {
-            sb.append(in.readUnsignedByte());
+            groups.add(String.format("X", in.readUnsignedByte()));
         }
-        ipv4AddressBuilder.setIpv4Address(new Ipv4Address(sb.toString()));
+        Joiner joiner = Joiner.on(".");
+        ipv4AddressBuilder.setIpv4Address(new Ipv4Address(joiner.join(groups)));
         builder.addAugmentation(Ipv4AddressMatchEntry.class, ipv4AddressBuilder.build());
     }
 

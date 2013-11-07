@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.InstructionsSerializer;
+import org.opendaylight.openflowjava.protocol.impl.util.MatchSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowModFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInput;
 
@@ -18,7 +20,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class FlowModInputMessageFactory implements OFSerializer<FlowModInput> {
     private static final byte MESSAGE_TYPE = 14;
     private static final byte PADDING_IN_FLOW_MOD_MESSAGE = 2;
-    private static final int MESSAGE_LENGTH = 48; //flags
+    private static final int MESSAGE_LENGTH = 48;
     private static FlowModInputMessageFactory instance;
    
     private FlowModInputMessageFactory() {
@@ -45,24 +47,27 @@ public class FlowModInputMessageFactory implements OFSerializer<FlowModInput> {
         out.writeShort(message.getIdleTimeout().intValue());
         out.writeShort(message.getHardTimeout().intValue());
         out.writeShort(message.getPriority());
+        out.writeInt(message.getBufferId().intValue());
         out.writeInt(message.getOutPort().getValue().intValue());
         out.writeInt(message.getOutGroup().intValue());
         out.writeShort(createFlowModFlagsBitmask(message.getFlags()));
         ByteBufUtils.padBuffer(PADDING_IN_FLOW_MOD_MESSAGE, out);
-        // TODO implementation of match structure
-        // TODO implementation of instructions
+        MatchSerializer.encodeMatch(message.getMatch(), out);
+        InstructionsSerializer.encodeInstructions(message.getInstructions(), out);
+        
     }
 
     @Override
     public int computeLength(FlowModInput message) {
-        return MESSAGE_LENGTH;
+        return MESSAGE_LENGTH + MatchSerializer.computeMatchLength(message.getMatch())
+                + InstructionsSerializer.computeInstructionsLength(message.getInstructions());
     }
 
     @Override
     public byte getMessageType() {
         return MESSAGE_TYPE;
     }
-    
+
     private static int createFlowModFlagsBitmask(FlowModFlags flags) {
         int flowModFlagBitmask = 0;
         Map<Integer, Boolean> flowModFlagsMap = new HashMap<>();
@@ -75,4 +80,6 @@ public class FlowModInputMessageFactory implements OFSerializer<FlowModInput> {
         flowModFlagBitmask = ByteBufUtils.fillBitMaskFromMap(flowModFlagsMap);
         return flowModFlagBitmask;
     }
+    
+    
 }

@@ -42,7 +42,7 @@ module openflow-instruction {
     }
 
     grouping instructions {
-        container instruction {
+        list instructions {
             leaf type {
                 type identityref {
                     base oft:instruction;

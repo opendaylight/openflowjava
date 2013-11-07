@@ -378,7 +378,7 @@ public abstract class ActionsDeserializer {
     public static ActionsList createSetFieldAction(ByteBuf in, int actionLength) {
         actionBuilder.setType(SetField.class);
         OxmFieldsActionBuilder matchEntries = new OxmFieldsActionBuilder();
-        matchEntries.setMatchEntries(MatchEntriesDeserializer.createMatchEntry(in, actionLength - 4));
+        matchEntries.setMatchEntries(MatchEntriesDeserializer.createMatchEntries(in, actionLength - 4));
         actionBuilder.addAugmentation(OxmFieldsAction.class, matchEntries.build());
         actionsListBuilder.setAction(actionBuilder.build());
         
