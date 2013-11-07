@@ -50,10 +50,11 @@ public class HelloInputMessageFactoryTest {
      * @throws Exception 
      */
     @Test
-    public void testWithElementsSet() throws Exception {
+    public void testWith4BitVersionBitmap() throws Exception {
+        int lengthOfBitmap = 4;
         HelloInputBuilder builder = new HelloInputBuilder();
         BufferHelper.setupHeader(builder);
-        List<Elements> expectedElement = createElement();
+        List<Elements> expectedElement = createElement(lengthOfBitmap);
         builder.setElements(expectedElement);
         HelloInput message = builder.build();
         
@@ -65,24 +66,64 @@ public class HelloInputMessageFactoryTest {
         BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
         Elements element = readElement(out).get(0);
         Assert.assertEquals("Wrong element type", expectedElement.get(0).getType(), element.getType());
-        LOGGER.debug(expectedElement.get(0).getVersionBitmap().toString());
-        LOGGER.debug(element.getVersionBitmap().toString());
-        Assert.assertArrayEquals("Wrong element bitmap", expectedElement.get(0).getVersionBitmap().toArray(), element.getVersionBitmap().toArray());
+        Elements comparation = createComparationElement(lengthOfBitmap).get(0);
+        Assert.assertArrayEquals("Wrong element bitmap", comparation.getVersionBitmap().toArray(), element.getVersionBitmap().toArray());
     }
     
-    private static List<Elements> createElement() {
+    /**
+     * Testing of {@link HelloInputMessageFactory} for correct translation from POJO
+     * @throws Exception 
+     */
+    @Test
+    public void testWith64BitVersionBitmap() throws Exception {
+        int lengthOfBitmap = 64;
+        HelloInputBuilder builder = new HelloInputBuilder();
+        BufferHelper.setupHeader(builder);
+        List<Elements> expectedElement = createElement(lengthOfBitmap);
+        builder.setElements(expectedElement);
+        HelloInput message = builder.build();
+        
+        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+        HelloInputMessageFactory factory = HelloInputMessageFactory.getInstance();
+        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
+        LOGGER.debug("bytebuf: " + ByteBufUtils.byteBufToHexString(out));
+        
+        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
+        Elements element = readElement(out).get(0);
+        Assert.assertEquals("Wrong element type", expectedElement.get(0).getType(), element.getType());
+        Elements comparation = createComparationElement(lengthOfBitmap).get(0);
+        Assert.assertArrayEquals("Wrong element bitmap", comparation.getVersionBitmap().toArray(), element.getVersionBitmap().toArray());
+    }
+    
+    private static List<Elements> createElement(int lengthOfBitmap) {
         ElementsBuilder elementsBuilder = new ElementsBuilder();
         List<Elements> elementsList = new ArrayList<>();
         List<Boolean> booleanList = new ArrayList<>();
-
-        for (int i = 0; i < 64; i++) {
+        for (int i = 0; i < lengthOfBitmap; i++) {
             booleanList.add(true);
         }
-
         elementsBuilder.setType(HelloElementType.forValue(1));
         elementsBuilder.setVersionBitmap(booleanList);
         elementsList.add(elementsBuilder.build());
-        
+        return elementsList;
+    }
+    
+    private static List<Elements> createComparationElement(int lengthOfBitmap) {
+        ElementsBuilder elementsBuilder = new ElementsBuilder();
+        List<Elements> elementsList = new ArrayList<>();
+        List<Boolean> booleanList = new ArrayList<>();
+        for (int i = 0; i < lengthOfBitmap; i++) {
+            booleanList.add(true);
+        }
+        if ((lengthOfBitmap % Integer.SIZE) != 0) {
+            for (int i = 0; i < (Integer.SIZE - (lengthOfBitmap % Integer.SIZE)); i++) {
+                booleanList.add(false);
+            }
+        }
+        LOGGER.debug("boolsize " + booleanList.size());
+        elementsBuilder.setType(HelloElementType.forValue(1));
+        elementsBuilder.setVersionBitmap(booleanList);
+        elementsList.add(elementsBuilder.build());
         return elementsList;
     }
     

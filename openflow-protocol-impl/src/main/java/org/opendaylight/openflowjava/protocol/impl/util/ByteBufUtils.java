@@ -18,6 +18,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public abstract class ByteBufUtils {
 
+
     /**
      * Converts ByteBuf into String
      * @param bb input ByteBuf
@@ -128,17 +129,20 @@ public abstract class ByteBufUtils {
      * @return bit mask
      */
     public static int[] fillBitMaskFromList(List<Boolean> booleanList) {
-        final int intLength = 32;
-        int[] bitmask = new int[booleanList.size()];
+        int[] bitmask;
         int index = 0;
         int arrayIndex = 0;
-        
+        if ((booleanList.size() % Integer.SIZE) != 0) {
+            bitmask = new int[booleanList.size() / Integer.SIZE + 1];
+        } else {
+            bitmask = new int[booleanList.size() / Integer.SIZE];
+        }
         for (Boolean currElement : booleanList) {
             if (currElement != null && currElement.booleanValue()) {
                 bitmask[arrayIndex] |= 1 << index;
             }
             index++;
-            arrayIndex = index/intLength;
+            arrayIndex = index / Integer.SIZE;
         }
         return bitmask;
     }

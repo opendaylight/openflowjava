@@ -51,7 +51,7 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
         encodeElementsList(message, out);
         int endWriterIndex = out.writerIndex();
         int writtenBytesDiff = computeLength(message) - (endWriterIndex - startWriterIndex);
-        LOGGER.info("writtenbytes: " + writtenBytesDiff);
+        LOGGER.debug("writtenbytes: " + writtenBytesDiff);
         ByteBufUtils.padBuffer(writtenBytesDiff, out);
     }
 
@@ -62,12 +62,13 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
         if (elements != null) {
             for (Elements element : elements) {
                 if (HelloElementType.VERSIONBITMAP.equals(element.getType())) {
-                    length += computeVersionBitmapLength(element);
+                    int bitmapLength = computeVersionBitmapLength(element);
+                    int paddingRemainder = bitmapLength % EncodeConstants.PADDING;
+                    if (paddingRemainder != 0) {
+                        bitmapLength += EncodeConstants.PADDING - paddingRemainder;
+                    }
+                    length += bitmapLength;
                 }
-            }
-            int paddingRemainder = length % EncodeConstants.PADDING;
-            if (paddingRemainder != 0) {
-                length += EncodeConstants.PADDING - paddingRemainder;
             }
         }
         return length;
@@ -80,20 +81,19 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
     
     private static void encodeElementsList(HelloInput message, ByteBuf output) {
         int[] versionBitmap;
-        int arraySize = 0;
         if (message.getElements() != null) {
             for (Elements currElement : message.getElements()) {
                 output.writeShort(currElement.getType().getIntValue());
-                
                 if (currElement.getType().equals(HelloElementType.VERSIONBITMAP)) {
                     short bitmapLength = computeVersionBitmapLength(currElement);
                     output.writeShort(bitmapLength);
                     versionBitmap = ByteBufUtils.fillBitMaskFromList(currElement.getVersionBitmap());
-                    arraySize = (versionBitmap.length/Integer.SIZE);
-                    for (int i = 0; i < arraySize; i++) {
+                    LOGGER.info("vbs: " + versionBitmap.length);
+                    for (int i = 0; i < versionBitmap.length; i++) {
+                        LOGGER.info(Integer.toBinaryString(versionBitmap[i]));
                         output.writeInt(versionBitmap[i]);
                     }
-                    int padding = bitmapLength - arraySize * 4 - HELLO_ELEMENT_HEADER_SIZE;
+                    int padding = bitmapLength - versionBitmap.length * 4 - HELLO_ELEMENT_HEADER_SIZE;
                     ByteBufUtils.padBuffer(padding , output);
                 }
             } 
@@ -103,7 +103,7 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
     private static short computeVersionBitmapLength(Elements element) {
         short elementlength = HELLO_ELEMENT_HEADER_SIZE;
         if (!element.getVersionBitmap().isEmpty()) {
-            elementlength += ((element.getVersionBitmap().size() - 1) / Integer.SIZE + 1) * 4;
+            elementlength += ((element.getVersionBitmap().size() - 1) / Integer.SIZE + 1) * (Integer.SIZE / Byte.SIZE);
         }
         return elementlength;
     }
