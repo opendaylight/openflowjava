@@ -22,7 +22,7 @@ public interface OFSerializer <E extends DataObject> {
     
     /**
      * Compute length of received message
-     * @param message TODO
+     * @param message 
      * @return computed length
      */
     public abstract int computeLength(E message);

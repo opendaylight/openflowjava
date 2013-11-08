@@ -68,7 +68,6 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
 
     @Override
     public boolean accept(InetAddress switchAddress) {
-        // TODO Auto-generated method stub
         return true;
     }
 

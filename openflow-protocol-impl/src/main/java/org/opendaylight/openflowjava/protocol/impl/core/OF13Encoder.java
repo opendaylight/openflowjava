@@ -21,7 +21,7 @@ public class OF13Encoder extends MessageToByteEncoder<OfHeader> {
     
     /** Constructor of class */
     public OF13Encoder() {
-        LOGGER.info("Creating OF13Encoder");
+        LOGGER.debug("Creating OF13Encoder");
     }
     @Override
     protected void encode(ChannelHandlerContext ctx, OfHeader msg, ByteBuf out)

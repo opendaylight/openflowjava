@@ -26,15 +26,15 @@ public class OFVersionDetector extends ByteToMessageDecoder {
      * Constructor of class.
      */
     public OFVersionDetector() {
-        LOGGER.info("Creating OFVersionDetector");
+        LOGGER.debug("Creating OFVersionDetector");
     }
 
     @Override
     protected void decode(ChannelHandlerContext chc, ByteBuf bb, List<Object> list) throws Exception {
-        LOGGER.info("Decoding frame");
+        LOGGER.debug("Decoding frame");
 
         if (bb.readableBytes() == 0) {
-            LOGGER.info("not enough data");
+            LOGGER.debug("not enough data");
             bb.release();
             return;
         }

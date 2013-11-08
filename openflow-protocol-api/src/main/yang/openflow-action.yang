@@ -78,20 +78,16 @@ module openflow-action {
     }
     
     container actions-container {
-        uses action-header;
+        uses actions;
     }
     
     grouping actions {
         list actions-list {
-            uses action-header;
-        }
-    }
-
-    grouping action-header {
-        container action {
-            leaf type {
-                type identityref {
-                    base oft:action;
+            container action {
+                leaf type {
+                    type identityref {
+                        base oft:action;
+                    }
                 }
             }
         }

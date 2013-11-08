@@ -36,7 +36,7 @@ public class TlsDetector extends ByteToMessageDecoder {
      * Constructor of class
      */
     public TlsDetector() {
-        LOGGER.info("Creating TLS Detector");
+        LOGGER.debug("Creating TLS Detector");
         detectSsl = true;
     }
 

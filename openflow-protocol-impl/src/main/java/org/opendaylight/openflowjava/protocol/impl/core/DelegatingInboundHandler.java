@@ -26,7 +26,7 @@ public class DelegatingInboundHandler extends ChannelInboundHandlerAdapter {
      * @param connectionAdapter reference for adapter communicating with upper layers outside library
      */
     public DelegatingInboundHandler(MessageConsumer connectionAdapter) {
-        LOGGER.info("Creating DelegatingInboundHandler");
+        LOGGER.debug("Creating DelegatingInboundHandler");
         consumer = connectionAdapter;
     }
     

@@ -62,6 +62,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidMatchEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.EtherType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.StandardMatchType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpOp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpSha;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpSpa;
@@ -96,6 +97,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Mpls
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Nxm0Class;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Nxm1Class;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmMatchType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.PbbIsid;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.SctpDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.SctpSrc;
@@ -108,6 +110,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Vlan
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.VlanVid;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.MatchEntries;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.match.grouping.Match;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.match.grouping.MatchBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,8 +122,8 @@ import com.google.common.base.Joiner;
  * @author timotej.kubas
  * @author michal.polkorab
  */
-public abstract class MatchEntriesDeserializer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MatchEntriesDeserializer.class);
+public abstract class MatchDeserializer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MatchDeserializer.class);
     private static final byte SIZE_OF_LONG_IN_BYTES = Long.SIZE / Byte.SIZE;
     private static final byte SIZE_OF_INT_IN_BYTES = Integer.SIZE / Byte.SIZE;
     private static final byte SIZE_OF_SHORT_IN_BYTES = Short.SIZE / Byte.SIZE;
@@ -127,6 +131,35 @@ public abstract class MatchEntriesDeserializer {
     private static final byte SIZE_OF_IPV6_ADDRESS_IN_BYTES = (8 * Short.SIZE) / Byte.SIZE;
     private static List<MatchEntries> matchEntriesList = new ArrayList<>();
     private static MatchEntriesBuilder matchEntriesBuilder = new MatchEntriesBuilder(); 
+    
+    /**
+     * Creates match
+     * @param in inputu ByteBuf
+     * @return ofp_match
+     */
+    public static Match createMatch(ByteBuf in) {
+        if (in.readableBytes() > 0) {
+            final byte PADDING_IN_MATCH = 4;
+            MatchBuilder builder = new MatchBuilder();
+            int type = in.readUnsignedShort();
+            int length = in.readUnsignedShort();
+            switch (type) {
+            case 0:
+                builder.setType(StandardMatchType.class);
+                builder.setMatchEntries(createMatchEntries(in, length - 2 * Short.SIZE));
+                break;
+            case 1:
+                builder.setType(OxmMatchType.class);
+                builder.setMatchEntries(createMatchEntries(in, length - 2 * Short.SIZE));
+                break;
+            default:
+                break;
+            }
+            in.skipBytes(PADDING_IN_MATCH);
+            return builder.build();
+        }
+        return null;
+    }
     
     /**
      * @param in input ByteBuf
@@ -494,7 +527,7 @@ public abstract class MatchEntriesDeserializer {
         Ipv4AddressMatchEntryBuilder ipv4AddressBuilder = new Ipv4AddressMatchEntryBuilder();
         List<String> groups = new ArrayList<>();
         for (int i = 0; i < GROUPS_IN_IPV4_ADDRESS; i++) {
-            groups.add(String.format("X", in.readUnsignedByte()));
+            groups.add(Short.toString(in.readUnsignedByte()));
         }
         Joiner joiner = Joiner.on(".");
         ipv4AddressBuilder.setIpv4Address(new Ipv4Address(joiner.join(groups)));

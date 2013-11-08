@@ -41,9 +41,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetMplsTtl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetNwTtl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetQueue;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.action.header.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.ActionsList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.ActionsListBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.actions.list.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.EtherType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
 
@@ -136,7 +136,6 @@ public abstract class ActionsDeserializer {
                         
                 case 25:
                         actionsLength = input.readUnsignedShort();//8
-                        //TODO field
                         actionsList.add(ActionsDeserializer.createSetFieldAction(input, actionsLength));
                         break; 
                 case 26: 
@@ -378,7 +377,7 @@ public abstract class ActionsDeserializer {
     public static ActionsList createSetFieldAction(ByteBuf in, int actionLength) {
         actionBuilder.setType(SetField.class);
         OxmFieldsActionBuilder matchEntries = new OxmFieldsActionBuilder();
-        matchEntries.setMatchEntries(MatchEntriesDeserializer.createMatchEntries(in, actionLength - 4));
+        matchEntries.setMatchEntries(MatchDeserializer.createMatchEntries(in, actionLength - 4));
         actionBuilder.addAugmentation(OxmFieldsAction.class, matchEntries.build());
         actionsListBuilder.setAction(actionBuilder.build());
         

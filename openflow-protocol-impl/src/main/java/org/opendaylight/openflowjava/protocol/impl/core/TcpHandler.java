@@ -105,7 +105,6 @@ public class TcpHandler implements ServerFacade {
      */
     @Override
     public void run() {
-        LOGGER.info("Switch ");
         bossGroup = new NioEventLoopGroup();
         workerGroup = new NioEventLoopGroup();
         try {
@@ -204,6 +203,9 @@ public class TcpHandler implements ServerFacade {
         channelInitializer.setSwitchConnectionHandler(switchConnectionHandler);
     }
     
+    /**
+     * @param switchIdleTimeout in milliseconds
+     */
     public void setSwitchIdleTimeout(long switchIdleTimeout) {
         channelInitializer.setSwitchIdleTimeout(switchIdleTimeout);
     }

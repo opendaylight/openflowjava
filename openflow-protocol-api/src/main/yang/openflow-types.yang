@@ -8,51 +8,7 @@ module openflow-types {
 
     typedef port-number {
         type uint32 {
-                range "0..4294967040"; // 0xffffff00 See for actual value
-        }
-    }
-
-    typedef special-port-number {
-        type enumeration {
-            enum in-port { 
-                //value "4294967288";
-                //description "Send the packet out the input port. This virtual port must be explicitly used in order to send back out of the input port."
-            }
-            enum table { 
-                //value "4294967289"; // 0xfffffff9;
-                //description "Perform actions in flow table. NB: This can only be the destination port for packet-out messages."
-            }
-            enum normal { 
-                //value "4294967290"; // 0xfffffffa;
-                //description "Process with normal L2/L3 switching."
-            }
-            enum flood { 
-                //value "4294967291"; // 0xfffffffb;
-                //description "All physical ports except input port and those disabled by STP."
-            }
-            enum all { 
-                //value "4294967292"; // 0xfffffffc;
-                //description "All physical ports except input port."
-            }
-            enum controller { 
-                //value "4294967293";  // 0xfffffffd;
-                //description "Send to controller."
-            }
-            enum local { 
-                //value "4294967294"; // 0xfffffffe;
-                //description "Local openflow port."
-            }
-            enum none { 
-                //value "4294967295"; // 0xffffffff;
-                //description "not associated with a physical port."
-            }
-        }
-    }
-
-    typedef any-port-number {
-        type union {
-            type port-number;
-            type special-port-number;
+            range "0..4294967040"; // 0xffffff00 See for actual value
         }
     }
 
@@ -189,9 +145,6 @@ module openflow-types {
         type identityref {
             base oft:match-type-base;
         }
-        
-        //TODO: use identityref, when generating available
-        //type string;
     }
 
     identity instruction {
@@ -199,7 +152,6 @@ module openflow-types {
 
     identity action {
     }
-
 
     typedef metadata {
         type binary;
@@ -561,7 +513,7 @@ module openflow-types {
         }
     }
 
-    typedef queue-property {
+    typedef queue-properties {
         /* ofp_queue_properties */
         type enumeration {
             enum OFPGT_ALL {
@@ -619,6 +571,79 @@ module openflow-types {
             enum OFPR_INVALID_TTL {
               value 2;
               description "Packet has invalid TTL ";
+            }
+        }
+    }
+    
+    typedef action-type {
+        /* ofp_action_type */
+        type bits {
+            bit OFPAT_OUTPUT {
+                position 0;
+                /* Output to switch port. */
+            }
+            bit OFPAT_COPY_TTL_OUT {
+                position 1;
+                /* Copy TTL "outwards" -- from next-to-outermost to outermost */
+            }
+            bit OFPAT_COPY_TTL_IN {
+                position 2;
+                /* Copy TTL "inwards" -- from outermost to next-to-outermost */
+            }
+            bit OFPAT_SET_MPLS_TTL {
+                position 3;
+                /* MPLS TTL */
+            }
+            bit OFPAT_DEC_MPLS_TTL {
+                position 4;
+                /* Decrement MPLS TTL */
+            }
+            bit OFPAT_PUSH_VLAN {
+                position 5;
+                /* Push a new VLAN tag */
+            }
+            bit OFPAT_POP_VLAN {
+                position 6;
+                /* Pop the outer VLAN tag */
+            }
+            bit OFPAT_PUSH_MPLS {
+                position 7;
+                /* Push a new MPLS tag */
+            }
+            bit OFPAT_POP_MPLS {
+                position 8;
+                /* Pop the outer MPLS tag */
+            }
+            bit OFPAT_SET_QUEUE {
+                position 9;
+                /* Set queue id when outputting to a port */
+            }
+            bit OFPAT_GROUP {
+                position 10;
+                /* Apply group. */
+            }
+            bit OFPAT_SET_NW_TTL {
+                position 11;
+                /* IP TTL. */
+            }
+            bit OFPAT_DEC_NW_TTL {
+                position 12;
+                /* Decrement IP TTL. */
+            }
+            bit OFPAT_SET_FIELD {
+                position 13;
+                /* Set a header field using OXM TLV format. */
+            }
+            bit OFPAT_PUSH_PBB {
+                position 14;
+                /* Push a new PBB service tag (I-TAG) */
+            }
+            bit OFPAT_POP_PBB {
+                position 15;
+                /* Pop the outer PBB service tag (I-TAG) */
+            }
+            bit OFPAT_EXPERIMENTER {
+                position 16;
             }
         }
     }

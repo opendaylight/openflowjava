@@ -24,7 +24,7 @@ public class OF13Decoder extends MessageToMessageDecoder<VersionMessageWrapper> 
      * Constructor of class
      */
     public OF13Decoder() {
-        LOGGER.info("Creating OF 1.3 Decoder");
+        LOGGER.debug("Creating OF 1.3 Decoder");
     }
 
     @Override

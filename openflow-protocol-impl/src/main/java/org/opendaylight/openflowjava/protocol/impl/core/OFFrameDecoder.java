@@ -27,7 +27,7 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
      * Constructor of class.
      */
     public OFFrameDecoder() {
-        LOGGER.info("Creating OFFrameDecoder");
+        LOGGER.debug("Creating OFFrameDecoder");
     }
 
     @Override

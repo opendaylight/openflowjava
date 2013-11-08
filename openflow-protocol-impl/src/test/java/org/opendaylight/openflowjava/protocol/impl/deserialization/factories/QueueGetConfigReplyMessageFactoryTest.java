@@ -11,12 +11,12 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.QueueId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.QueueProperty;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.QueueProperties;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetQueueConfigOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.packet.queue.Properties;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.packet.queue.PropertiesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.queue.get.config.reply.Queues;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.queue.get.config.reply.QueuesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.queue.property.header.QueueProperty;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.queue.property.header.QueuePropertyBuilder;
 
 /**
  * @author timotej.kubas
@@ -41,16 +41,16 @@ public class QueueGetConfigReplyMessageFactoryTest {
         QueuesBuilder qb = new QueuesBuilder();
         qb.setQueueId(new QueueId(1L));
         qb.setPort(new PortNumber(1L));
-        qb.setProperties(createPropertiesList());
+        qb.setQueueProperty(createPropertiesList());
         queuesList.add(qb.build());
         
         return queuesList;
     }
     
-    private static List<Properties> createPropertiesList(){
-        List<Properties> propertiesList = new ArrayList<>();
-        PropertiesBuilder pb = new PropertiesBuilder();
-        pb.setProperty(QueueProperty.values()[2]);
+    private static List<QueueProperty> createPropertiesList(){
+        List<QueueProperty> propertiesList = new ArrayList<>();
+        QueuePropertyBuilder pb = new QueuePropertyBuilder();
+        pb.setProperty(QueueProperties.forValue(2));
         propertiesList.add(pb.build());
         
         return propertiesList;

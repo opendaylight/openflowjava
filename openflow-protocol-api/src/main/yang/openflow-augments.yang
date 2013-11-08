@@ -203,53 +203,53 @@ module openflow-augments {
      }
 
 // OFP_ACTION AUGMENTS
-     augment "/ofaction:actions-container/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
          ext:augment-identifier "port-action";
          leaf port {
              type oft:port-number;
          }
      }
-     augment "/ofaction:actions-container/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
          ext:augment-identifier "max-length-action";
          leaf max-length {
              type uint16;
          }
      }
-     augment "/ofaction:actions-container/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
          ext:augment-identifier "mpls-ttl-action";
          leaf mpls-ttl {
              type uint8;
          }
      }
-     augment "/ofaction:actions-container/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
          ext:augment-identifier "ethertype-action";
          leaf ethertype {
              type oft:ether-type;
          }
      }
-     augment "/ofaction:actions-container/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
          ext:augment-identifier "queue-id-action";
          leaf queue-id {
              type uint32;
          }
      }
-     augment "/ofaction:actions-container/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
          ext:augment-identifier "group-id-action";
          leaf group-id {
              type uint32;
          }
      }
-     augment "/ofaction:actions-container/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
          ext:augment-identifier "nw-ttl-action";
          leaf nw-ttl {
              type uint8;
          }
      }
-     augment "/ofaction:actions-container/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
          ext:augment-identifier "oxm-fields-action";
          uses oxm:oxm-fields;
      }
-     augment "/ofaction:actions-container/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
          ext:augment-identifier "experimenter-action";
          leaf experimenter {
              type uint32;
@@ -259,9 +259,7 @@ module openflow-augments {
 // OFP_TABLE_FEATURES_PROPERTIES AUGMENTS
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          ext:augment-identifier "instruction-related-table-feature-property";
-         list instruction-ids {
-             uses ofinstruction:instructions;
-         }
+         uses ofinstruction:instructions;
      }
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          ext:augment-identifier "next-table-related-table-feature-property";
@@ -273,15 +271,11 @@ module openflow-augments {
      }
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          ext:augment-identifier "action-related-table-feature-property";
-         list action-ids {
-             uses ofaction:actions;
-         }
+         uses ofaction:actions;
      }
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          ext:augment-identifier "oxm-related-table-feature-property";
-         list oxm-ids {
-             uses oxm:oxm-fields;
-         }
+         uses oxm:oxm-fields;
      }
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          ext:augment-identifier "experimenter-related-table-feature-property";
@@ -324,6 +318,23 @@ module openflow-augments {
      }
      augment "/ofinstruction:instruction-container/ofinstruction:instructions" {
          ext:augment-identifier "experimenter-instruction";
+         leaf experimenter {
+             type uint32;
+         }
+         leaf data {
+             type binary;
+         }
+     }
+     
+// OFP_QUEUE_PROP AUGMENTS
+     augment "/ofproto:queue-prop-container/ofproto:queue-property" {
+         ext:augment-identifier "rate-queue-property";
+         leaf rate {
+             type uint16;
+         }
+     }
+     augment "/ofproto:queue-prop-container/ofproto:queue-property" {
+         ext:augment-identifier "experimenter-queue-property";
          leaf experimenter {
              type uint32;
          }
