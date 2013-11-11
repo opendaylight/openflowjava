@@ -22,23 +22,23 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  *
  */
-public class OF10StatsReuestMessageFactory implements OFSerializer<MultipartRequestMessage> {
+public class OF10StatsRequestMessageFactory implements OFSerializer<MultipartRequestMessage> {
 
     private static final byte MESSAGE_TYPE = 18;
     private static final int MESSAGE_LENGTH = 16;
 
-    private static OF10StatsReuestMessageFactory instance; 
+    private static OF10StatsRequestMessageFactory instance; 
     
-    private OF10StatsReuestMessageFactory() {
+    private OF10StatsRequestMessageFactory() {
         // singleton
     }
     
     /**
      * @return singleton factory
      */
-    public static synchronized OF10StatsReuestMessageFactory getInstance() {
+    public static synchronized OF10StatsRequestMessageFactory getInstance() {
         if (instance == null) {
-            instance = new OF10StatsReuestMessageFactory();
+            instance = new OF10StatsRequestMessageFactory();
         }
         return instance;
     }
@@ -57,7 +57,7 @@ public class OF10StatsReuestMessageFactory implements OFSerializer<MultipartRequ
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestPortStats) {
             encodePortBody(message.getMultipartRequestBody(), out);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestQueue) {
-            //encodeQueueBody(message.getMultipartRequestBody(), out);
+            encodeQueueBody(message.getMultipartRequestBody(), out);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestExperimenter) {
             encodeExperimenterBody(message.getMultipartRequestBody(), out);
         }
@@ -106,9 +106,18 @@ public class OF10StatsReuestMessageFactory implements OFSerializer<MultipartRequ
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_PORT_BODY, output);
     }
     
+    private static void encodeQueueBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
+        final byte PADING_IN_QUEUE_BODY = 2;
+        MultipartRequestQueue queue = (MultipartRequestQueue) multipartRequestBody;
+        output.writeShort(queue.getPortNo().intValue());
+        ByteBufUtils.padBuffer(PADING_IN_QUEUE_BODY, output);
+        output.writeInt(queue.getQueueId().intValue());
+    }
+    
     private static void encodeExperimenterBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         MultipartRequestExperimenter experimenter = (MultipartRequestExperimenter) multipartRequestBody;
         output.writeInt(experimenter.getExperimenter().intValue());
+        output.writeBytes(experimenter.getData());
     }
     
 }

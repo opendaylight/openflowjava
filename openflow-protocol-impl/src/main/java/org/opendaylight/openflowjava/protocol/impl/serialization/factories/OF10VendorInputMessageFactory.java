@@ -11,23 +11,23 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  *
  */
-public class OF10ExperimenterInputMessageFactory implements OFSerializer<ExperimenterInput> {
+public class OF10VendorInputMessageFactory implements OFSerializer<ExperimenterInput> {
 
     private static final byte MESSAGE_TYPE = 4;
     private static final byte MESSAGE_LENGTH = 8;
     
-    private static OF10ExperimenterInputMessageFactory instance;
+    private static OF10VendorInputMessageFactory instance;
     
-    private OF10ExperimenterInputMessageFactory() {
+    private OF10VendorInputMessageFactory() {
         // do nothing, just singleton
     }
     
     /**
      * @return singleton factory
      */
-    public static synchronized OF10ExperimenterInputMessageFactory getInstance() {
+    public static synchronized OF10VendorInputMessageFactory getInstance() {
         if (instance == null) {
-            instance = new OF10ExperimenterInputMessageFactory();
+            instance = new OF10VendorInputMessageFactory();
         }
         return instance;
     }

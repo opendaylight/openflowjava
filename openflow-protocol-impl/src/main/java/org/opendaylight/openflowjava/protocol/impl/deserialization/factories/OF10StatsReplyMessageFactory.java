@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.util.OF10ActionsDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.OF10MatchDeserializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
@@ -66,25 +67,23 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         int type = rawMessage.readUnsignedShort();
         builder.setType(MultipartType.forValue(type));
         builder.setFlags(new MultipartRequestFlags((rawMessage.readUnsignedShort() & 0x01) != 0));
-        while (rawMessage.readableBytes() > 0) {
-            switch (type) {
-            case 0:  builder.setMultipartReplyBody(setDesc(rawMessage));
+        switch (type) {
+        case 0:  builder.setMultipartReplyBody(setDesc(rawMessage));
             break;
-            case 1:  builder.setMultipartReplyBody(setFlow(rawMessage));
+        case 1:  builder.setMultipartReplyBody(setFlow(rawMessage));
             break;
-            case 2:  builder.setMultipartReplyBody(setAggregate(rawMessage));
+        case 2:  builder.setMultipartReplyBody(setAggregate(rawMessage));
             break;
-            case 3:  builder.setMultipartReplyBody(setTable(rawMessage));
+        case 3:  builder.setMultipartReplyBody(setTable(rawMessage));
             break;         
-            case 4:  builder.setMultipartReplyBody(setPortStats(rawMessage));
+        case 4:  builder.setMultipartReplyBody(setPortStats(rawMessage));
             break;
-            case 5:  builder.setMultipartReplyBody(setQueue(rawMessage));
+        case 5:  builder.setMultipartReplyBody(setQueue(rawMessage));
             break;         
-            case 0xFFFF: builder.setMultipartReplyBody(setExperimenter(rawMessage));
+        case 0xFFFF: builder.setMultipartReplyBody(setExperimenter(rawMessage));
             break;
-            default: 
-                break;
-            }
+        default: 
+            break;
         }
         return builder.build();
     }
@@ -117,14 +116,14 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyFlow setFlow(ByteBuf input) {
-        final byte PADDING_IN_FLOW_STATS_HEADER_01 = 1;
+        final byte PADDING_IN_FLOW_STATS_HEADER = 1;
         final byte PADDING_IN_FLOW_STATS_HEADER_02 = 6;
         MultipartReplyFlowBuilder flowBuilder = new MultipartReplyFlowBuilder();
         List<FlowStats> flowStatsList = new ArrayList<>();
         FlowStatsBuilder flowStatsBuilder = new FlowStatsBuilder();
-        int length = input.readUnsignedShort();
+        input.skipBytes(Short.SIZE / Byte.SIZE);
         flowStatsBuilder.setTableId(input.readUnsignedByte());
-        input.skipBytes(PADDING_IN_FLOW_STATS_HEADER_01);
+        input.skipBytes(PADDING_IN_FLOW_STATS_HEADER);
         flowStatsBuilder.setMatchV10(OF10MatchDeserializer.createMatchV10(input));
         flowStatsBuilder.setDurationSec(input.readUnsignedInt());
         flowStatsBuilder.setDurationNsec(input.readUnsignedInt());
@@ -141,8 +140,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         byte[] byteCount = new byte[Long.SIZE/Byte.SIZE];
         input.readBytes(byteCount);
         flowStatsBuilder.setByteCount(new BigInteger(byteCount));
-        //TODO - actions
-        //flowStatsBuilder.setActionsList(OF10ActionsDeserializer.)
+        flowStatsBuilder.setActionsList(OF10ActionsDeserializer.createActionsList(input));
         flowStatsList.add(flowStatsBuilder.build());
         flowBuilder.setFlowStats(new ArrayList<>(flowStatsList));
         flowStatsList.clear();
@@ -179,7 +177,6 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         byte[] matchedCount = new byte[Long.SIZE/Byte.SIZE];
         input.readBytes(matchedCount);
         tableStatsBuilder.setMatchedCount(new BigInteger(matchedCount));
-        
         tableStatsList.add(tableStatsBuilder.build());
         builder.setTableStats(new ArrayList<>(tableStatsList));
         tableStatsList.clear();
@@ -187,12 +184,12 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyPortStats setPortStats(ByteBuf input) {
-        final byte PADDING_IN_PORT_STATS_HEADER = 4;
+        final byte PADDING_IN_PORT_STATS_HEADER = 6;
         MultipartReplyPortStatsBuilder builder = new MultipartReplyPortStatsBuilder();
         PortStatsBuilder portStatsBuilder = new PortStatsBuilder();
         List<PortStats> portStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
-            portStatsBuilder.setPortNo(input.readUnsignedInt());
+            portStatsBuilder.setPortNo(new Long(input.readUnsignedShort()));
             input.skipBytes(PADDING_IN_PORT_STATS_HEADER);
             
             byte[] rxPackets = new byte[Long.SIZE/Byte.SIZE];
@@ -243,9 +240,6 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
             input.readBytes(collisions);
             portStatsBuilder.setCollisions(new BigInteger(collisions));
             
-            portStatsBuilder.setDurationSec(input.readUnsignedInt());
-            portStatsBuilder.setDurationNsec(input.readUnsignedInt());
-            portStatsList.add(portStatsBuilder.build());
         }
         builder.setPortStats(new ArrayList<>(portStatsList));
         portStatsList.clear();
@@ -253,12 +247,14 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyQueue setQueue(ByteBuf input) {
+        final byte PADDING_IN_QUEUE_HEADER = 2;
         MultipartReplyQueueBuilder builder = new MultipartReplyQueueBuilder();
         QueueStatsBuilder queueStatsBuilder = new QueueStatsBuilder();
         List<QueueStats> queueStatsList = new ArrayList<>();
         
         while (input.readableBytes() > 0) {
-            queueStatsBuilder.setPortNo(input.readUnsignedInt());
+            queueStatsBuilder.setPortNo(new Long(input.readUnsignedShort()));
+            input.skipBytes(PADDING_IN_QUEUE_HEADER);
             queueStatsBuilder.setQueueId(input.readUnsignedInt());
 
             byte[] txBytes = new byte[Long.SIZE/Byte.SIZE];
@@ -273,8 +269,6 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
             input.readBytes(txErrors);
             queueStatsBuilder.setTxErrors(new BigInteger(txErrors));
 
-            queueStatsBuilder.setDurationSec(input.readUnsignedInt());
-            queueStatsBuilder.setDurationNsec(input.readUnsignedInt());
             queueStatsList.add(queueStatsBuilder.build());
         }
         builder.setQueueStats(new ArrayList<>(queueStatsList));
@@ -285,7 +279,6 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
     private static MultipartReplyExperimenter setExperimenter(ByteBuf input) {
         MultipartReplyExperimenterBuilder builder = new MultipartReplyExperimenterBuilder();
         builder.setExperimenter(input.readUnsignedInt());
-        builder.setExpType(input.readUnsignedInt());
         byte[] data = new byte[Long.SIZE/Byte.SIZE];
         input.readBytes(data);
         builder.setData(data);
