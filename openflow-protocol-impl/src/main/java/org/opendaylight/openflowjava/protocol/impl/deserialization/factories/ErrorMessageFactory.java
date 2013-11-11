@@ -14,7 +14,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
 
-private static ErrorMessageFactory instance;
+    private static ErrorMessageFactory instance;
     
     private ErrorMessageFactory() {
         // do nothing, just singleton
@@ -37,9 +37,9 @@ private static ErrorMessageFactory instance;
         builder.setXid(rawMessage.readUnsignedInt());
         builder.setType(ErrorType.forValue(rawMessage.readUnsignedShort()));
         builder.setCode(rawMessage.readUnsignedShort());
-        byte[] data = new byte[rawMessage.readableBytes()];
-        rawMessage.readBytes(data);
-        builder.setData(data);
+        if (rawMessage.readableBytes() > 0) {
+            builder.setData(rawMessage.readBytes(rawMessage.readableBytes()).array());
+        }
         return builder.build();
     }
 

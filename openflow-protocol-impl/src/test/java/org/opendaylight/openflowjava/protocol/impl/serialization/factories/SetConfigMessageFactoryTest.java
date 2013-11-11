@@ -1,8 +1,6 @@
 /* Copyright (C)2013 Pantheon Technologies, s.r.o. All rights reserved. */
 package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
-import java.util.ArrayList;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 
@@ -13,8 +11,6 @@ import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.SwitchConfigFlag;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetConfigInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetConfigInputBuilder;
-
-import com.google.common.collect.Lists;
 
 /**
  * @author timotej.kubas
@@ -32,8 +28,8 @@ public class SetConfigMessageFactoryTest {
     public void testSetConfigMessage() throws Exception {
         SetConfigInputBuilder builder = new SetConfigInputBuilder();
         BufferHelper.setupHeader(builder);
-        ArrayList<SwitchConfigFlag> switchList = Lists.newArrayList(SwitchConfigFlag.forValue(0));
-        builder.setFlags(switchList);
+        SwitchConfigFlag flag = SwitchConfigFlag.FRAGNORMAL;
+        builder.setFlags(flag);
         builder.setMissSendLen(10);
         SetConfigInput message = builder.build();
         
@@ -42,7 +38,7 @@ public class SetConfigMessageFactoryTest {
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
         BufferHelper.checkHeaderV13(out, MESSAGE_TYPE, MESSAGE_LENGTH);
-        Assert.assertArrayEquals("Wrong flags", message.getFlags().toArray(), switchList.toArray());
-        Assert.assertTrue("Wrong missSendLen", message.getMissSendLen() == out.readShort());
+        Assert.assertEquals("Wrong flags", message.getFlags().getIntValue(), out.readUnsignedShort());
+        Assert.assertEquals("Wrong missSendLen", message.getMissSendLen().intValue(), out.readUnsignedShort());
     }
 }

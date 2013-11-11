@@ -711,7 +711,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         final Boolean _linkDown = ((input) & (1<<0)) != 0;
         final Boolean _blocked  = ((input) & (1<<1)) != 0;
         final Boolean _live     = ((input) & (1<<2)) != 0;
-        return new PortState(_linkDown, _blocked,_live);
+        return new PortState(_blocked, _linkDown, _live);
     }
     
     private static PortFeatures createPortFeatures(long input){

@@ -88,9 +88,10 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
                     short bitmapLength = computeVersionBitmapLength(currElement);
                     output.writeShort(bitmapLength);
                     versionBitmap = ByteBufUtils.fillBitMaskFromList(currElement.getVersionBitmap());
-                    LOGGER.info("vbs: " + versionBitmap.length);
+                    LOGGER.debug("vbs: " + versionBitmap.length);
+                    LOGGER.debug("Version bitmap (below):");
                     for (int i = 0; i < versionBitmap.length; i++) {
-                        LOGGER.info(Integer.toBinaryString(versionBitmap[i]));
+                        LOGGER.debug(Integer.toBinaryString(versionBitmap[i]));
                         output.writeInt(versionBitmap[i]);
                     }
                     int padding = bitmapLength - versionBitmap.length * 4 - HELLO_ELEMENT_HEADER_SIZE;

@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
  */
 public class OFVersionDetector extends ByteToMessageDecoder {
 
+    /** Version number of OpenFlow 1.0 protocol */
+    private static final byte OF10_VERSION_ID = 0x01;
     /** Version number of OpenFlow 1.3 protocol */
     public static final byte OF13_VERSION_ID = 0x04;
     private static final Logger LOGGER = LoggerFactory.getLogger(OFVersionDetector.class);
@@ -31,8 +33,6 @@ public class OFVersionDetector extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext chc, ByteBuf bb, List<Object> list) throws Exception {
-        LOGGER.debug("Decoding frame");
-
         if (bb.readableBytes() == 0) {
             LOGGER.debug("not enough data");
             bb.release();
@@ -41,10 +41,11 @@ public class OFVersionDetector extends ByteToMessageDecoder {
         LOGGER.debug("RI: " + bb.readerIndex());
         byte version = bb.readByte();
 
-        if (version == OF13_VERSION_ID) {
+        if ((version == OF13_VERSION_ID) || (version == OF10_VERSION_ID)) {
             LOGGER.debug("detected version: " + version);
         } else {
             LOGGER.warn("detected version: " + version + " - currently not supported");
+            bb.skipBytes(bb.readableBytes());
             return;
         }
 

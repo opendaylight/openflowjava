@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBuf;
 import java.math.BigInteger;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.Capabilities;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesOutputBuilder;
 
@@ -45,9 +46,21 @@ public class FeaturesReplyMessageFactory implements OFDeserializer<GetFeaturesOu
         builder.setTables(rawMessage.readUnsignedByte());
         builder.setAuxiliaryId(rawMessage.readUnsignedByte());
         rawMessage.skipBytes(PADDING_IN_FEATURES_REPLY_HEADER);
-        builder.setCapabilities(rawMessage.readUnsignedInt());
+        builder.setCapabilities(createCapabilities(rawMessage.readUnsignedInt()));
         builder.setReserved(rawMessage.readUnsignedInt());
         return builder.build();
+    }
+
+    private static Capabilities createCapabilities(long input) {
+        final Boolean FLOW_STATS = (input & (1 << 0)) != 0;
+        final Boolean TABLE_STATS = (input & (1 << 1)) != 0;
+        final Boolean PORT_STATS = (input & (1 << 2)) != 0;
+        final Boolean GROUP_STATS = (input & (1 << 3)) != 0;
+        final Boolean IP_REASM = (input & (1 << 5)) != 0;
+        final Boolean QUEUE_STATS = (input & (1 << 6)) != 0;
+        final Boolean PORT_BLOCKED = (input & (1 << 8)) != 0;
+        return new Capabilities(FLOW_STATS, GROUP_STATS, IP_REASM,
+                PORT_BLOCKED, PORT_STATS, QUEUE_STATS, TABLE_STATS);
     }
 
 }

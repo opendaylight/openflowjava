@@ -36,11 +36,20 @@ public class EchoReplyInputMessageFactory implements OFSerializer<EchoReplyInput
     public void messageToBuffer(short version, ByteBuf out,
             EchoReplyInput message) {
         ByteBufUtils.writeOFHeader(instance, message, out);
+        byte[] data = message.getData();
+        if (data != null) {
+            out.writeBytes(data);
+        }
     }
 
     @Override
     public int computeLength(EchoReplyInput message) {
-        return MESSAGE_LENGTH;
+        int length = MESSAGE_LENGTH;
+        byte[] data = message.getData();
+        if (data != null) {
+            length += data.length;
+        }
+        return length;
     }
 
     @Override

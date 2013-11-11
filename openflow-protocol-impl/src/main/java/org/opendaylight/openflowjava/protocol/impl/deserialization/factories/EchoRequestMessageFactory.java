@@ -13,7 +13,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class EchoRequestMessageFactory implements OFDeserializer<EchoRequestMessage>{
 
-    
     private static EchoRequestMessageFactory instance;
 
     private EchoRequestMessageFactory() {

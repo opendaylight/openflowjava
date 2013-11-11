@@ -92,5 +92,51 @@ module openflow-action {
             }
         }
     }
+    
+    // OF1.0 structures
+    identity set_vlan_vid {
+        description "";
+        base oft:action;
+    }
+    identity set_vlan_pcp {
+        description "";
+        base oft:action;
+    }
+    identity strip_vlan {
+        description "";
+        base oft:action;
+    }
+    identity set_dl_src {
+        description "";
+        base oft:action;
+    }
+    identity set_dl_dst {
+        description "";
+        base oft:action;
+    }
+    identity set_nw_src {
+        description "";
+        base oft:action;
+    }
+    identity set_nw_dst {
+        description "";
+        base oft:action;
+    }
+    identity set_nw_tos {
+        description "";
+        base oft:action;
+    }
+    identity set_tp_src {
+        description "";
+        base oft:action;
+    }
+    identity set_tp_dst {
+        description "";
+        base oft:action;
+    }
+    identity enqueue {
+        description "";
+        base oft:action;
+    }
 
 }

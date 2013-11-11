@@ -247,6 +247,39 @@ module openflow-types {
             }
         }
     }
+    
+    typedef capabilities {
+        type bits {
+            bit OFPC_FLOW_STATS {
+                position 0;
+                /* Flow statistics. */
+            } 
+            bit OFPC_TABLE_STATS {
+                position 1;
+                /* Table statistics. */
+            }
+            bit OFPC_PORT_STATS {
+                position 2;
+                /* Port statistics. */
+            }
+            bit OFPC_GROUP_STATS {
+                position 3;
+                /* Group statistics. */
+            }
+            bit OFPC_IP_REASM {
+                position 5;
+                /* Can reassemble IP fragments. */
+            }
+            bit OFPC_QUEUE_STATS {
+                position 6;
+                /* Queue statistics. */
+            }
+            bit OFPC_PORT_BLOCKED {
+                position 8;
+                /* Switch will block looping ports. */
+            }
+        }
+    }
 
     typedef switch-config-flag {
         /* Handling of IP fragments. */
@@ -516,9 +549,9 @@ module openflow-types {
     typedef queue-properties {
         /* ofp_queue_properties */
         type enumeration {
-            enum OFPGT_ALL {
+            enum OFPQT_NONE {
               value 0;
-              description "All (multicast/broadcast) group.";
+              description "No property defined for queue (default).";
             }
             enum OFPQT_MIN_RATE {
                 value 1;
@@ -825,5 +858,282 @@ module openflow-types {
             }
         }
     }
-
+    
+// OPENFLOW v1.0 STRUCTURES
+    // Structures under this line are needed to support OpenFlow version 1.0 
+    // wire protocol 0x01; 
+    
+    typedef port-config-v10 {
+        description 
+           "Flags to indicate behavior of the physical port. These flags are
+            describe the current configuration and used port_mod message 
+            to configure the port's behavior.";
+        type bits {
+            bit port-down { 
+                //description " Port is administratively down.";
+                position 0;
+            }
+            bit no-stp {
+                //description" Disable 802.1D spanning tree on port.";
+                position 1;
+            }
+            bit no-recv { 
+                //description " Drop all packets received by port.";
+                position 2;
+            }
+            bit no-recv-stp { 
+                //description " Drop received 802.1D STP packets.";
+                position 3;
+            }
+            bit no-flood { 
+                //description " Do not include this port when flooding.";
+                position 4;
+            }
+            bit no-fwd { 
+                //description " Drop packets forwarded to port.";
+                position 5;
+            }
+            bit no-packet-in { 
+                //description "Do not send packet-in msgs for port.";
+                position 6;
+            }
+        }
+    }
+    
+    typedef port-state-v10 {
+        description 
+            "Current state of the physical port. These are not configurable from
+            the controller.";
+        type bits {
+            bit link_down {
+                //description "No physical link present.";
+                position 0;
+            }
+            bit blocked {
+                //description "Port is blocked";
+                position 1;
+            }
+            bit live {
+                //description "Live for Fast Failover Group.";
+                position 2;
+            }
+            bit stp_listen {
+                //description "Live for Fast Failover Group.";
+                position 8;
+            }
+            bit stp_learn {
+                //description "Live for Fast Failover Group.";
+                position 8;
+            }
+            bit stp_forward {
+                //description "Live for Fast Failover Group.";
+                position 8;
+            }
+            bit stp_block {
+                //description "Live for Fast Failover Group.";
+                position 8;
+            }
+            bit stp_mask {
+                //description "Live for Fast Failover Group.";
+                position 8;
+            }
+        }
+    }
+    
+    typedef port-features-v10 {
+        ////description "Features of ports available in datapath.";
+        //reference "ofp_port_features";
+        type bits {
+            bit 10mb-hd { 
+                position 0;
+                //description "10 Mb half-duplex rate support.";
+            }
+            bit 10mb-fd { 
+                position 1;
+                //description "10 Mb full-duplex rate support.";
+            }
+            bit 100mb-hd { 
+                position 2;
+                //description "100 Mb half-duplex rate support.";
+            }
+            bit 100mb-fd { 
+                position 3;
+                //description "100 Mb full-duplex rate support.";
+            }
+            bit 1gb-hd { 
+                position 4;
+                //description "1 Gb half-duplex rate support.";
+            }
+            bit 1gb-fd { 
+                position 5;
+                //description "1 Gb full-duplex rate support.";
+            }
+            bit 10gb-fd { 
+                position 6;
+                //description "10 Gb full-duplex rate support.";
+            }
+            bit copper { 
+                position 7;
+                //description "Copper medium.";
+            }
+            bit fiber { 
+                position 8;
+                //description "Fiber medium.";
+            }
+            bit autoneg { 
+                position 9;
+                //description "Auto-negotiation.";
+            }
+            bit pause { 
+                position 10;
+                //description "Pause.";
+            }
+            bit pause-asym { 
+                position 11;
+                //description "Asymmetric pause.";
+            }
+        }
+    }
+    
+    typedef capabilities-v10 {
+        type bits {
+            bit OFPC_FLOW_STATS {
+                position 0;
+                /* Flow statistics. */
+            } 
+            bit OFPC_TABLE_STATS {
+                position 1;
+                /* Table statistics. */
+            }
+            bit OFPC_PORT_STATS {
+                position 2;
+                /* Port statistics. */
+            }
+            bit OFPC_STP {
+                position 3;
+                /* 802.1d spanning tree. */
+            }
+            bit OFPC_RESERVED {
+                position 4;
+                /* Reserved, must be zero. */
+            }
+            bit OFPC_IP_REASM {
+                position 5;
+                /* Can reassemble IP fragments. */
+            }
+            bit OFPC_QUEUE_STATS {
+                position 6;
+                /* Queue statistics. */
+            }
+            bit OFPC_ARP_MATCH_IP {
+                position 8;
+                /* Match IP addresses in ARP pkts. */
+            }
+        }
+    }
+    
+    typedef flow-mod-flags-v10 {
+        /* ofp_flow_mod_flags */
+        type bits {
+            bit OFPFF_SEND_FLOW_REM {
+                position 0;
+                /* Send flow removed message when flow expires or is deleted. */
+            }
+            bit OFPFF_CHECK_OVERLAP {
+                position 1;
+                /* Check for overlapping entries first. */
+            }
+            bit OFPFF_EMERG {
+                position 2;
+                /* Reset flow packet and byte counts. */
+            }
+        }
+    }
+    
+    typedef action-type-v10 {
+        /* ofp_action_type */
+        type bits {
+            bit OFPAT_OUTPUT {
+                position 0;
+                /* Output to switch port. */
+            }
+            bit OFPAT_SET_VLAN_VID {
+                position 1;
+                /* Set the 802.1q VLAN id. */
+            }
+            bit OFPAT_SET_VLAN_PCP {
+                position 2;
+                /* Set the 802.1q priority. */
+            }
+            bit OFPAT_STRIP_VLAN {
+                position 3;
+                /* Strip the 802.1q header. */
+            }
+            bit OFPAT_SET_DL_SRC {
+                position 4;
+                /* Ethernet source address. */
+            }
+            bit OFPAT_SET_DL_DST {
+                position 5;
+                /* Ethernet destination address. */
+            }
+            bit OFPAT_SET_NW_SRC {
+                position 6;
+                /* IP source address. */
+            }
+            bit OFPAT_SET_NW_DST {
+                position 7;
+                /* IP destination address. */
+            }
+            bit OFPAT_SET_NW_TOS {
+                position 8;
+                /* IP ToS (DSCP field, 6 bits). */
+            }
+            bit OFPAT_SET_TP_SRC {
+                position 9;
+                /* TCP/UDP source port. */
+            }
+            bit OFPAT_SET_TP_DST {
+                position 10;
+                /* TCP/UDP destination port. */
+            }
+            bit OFPAT_ENQUEUE {
+                position 11;
+                /* Output to queue. */
+            }
+            bit OFPAT_VENDOR {
+                position 12;
+                /* Experimenter in later versions */
+            }
+        }
+    }
+    
+    typedef error-type-v10 {
+        type enumeration {
+            enum HELLO_FAILED {
+                value 0; 
+                description "Hello Protocol failed.";
+            }
+            enum BAD_REQUEST {
+                value 1; 
+                description "Request was not understood.";
+            }
+            enum BAD_ACTION {
+                value 2; 
+                description "Error in action description.";
+            }
+            enum FLOW_MOD_FAILED {
+                value 3; 
+                description "Problem modifying flow entry.";
+            }
+            enum PORT_MOD_FAILED {
+                value 4; 
+                description "Port mod request failed.";
+            }
+            enum QUEUE_OP_FAILED {
+                value 5; 
+                description "Queue operation failed.";
+            }
+        }
+    }
 }

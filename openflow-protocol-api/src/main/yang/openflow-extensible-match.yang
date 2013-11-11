@@ -229,4 +229,49 @@ module openflow-extensible-match {
             }
         }
         
+        // OF1.0 structures
+        grouping match-v10-grouping {
+            container match-v10 {
+                leaf wildcards {
+                    type uint32;
+                }
+                leaf in-port {
+                    type uint16;
+                }
+                leaf dl-src {
+                    type yang:mac-address;
+                }
+                leaf dl-dst {
+                    type yang:mac-address;
+                }
+                leaf dl-vlan {
+                    type uint16;
+                }
+                leaf dl-vlan-pcp {
+                    type uint8;
+                }
+                leaf dl-type {
+                    type uint16;
+                }
+                leaf nw-tos {
+                    type uint8;
+                }
+                leaf nw-proto {
+                    type uint8;
+                }
+                leaf nw-src {
+                    type inet:ipv4-address;
+                }
+                leaf nw-dst {
+                    type inet:ipv4-address;
+                }
+                leaf tp-src {
+                    type uint16;
+                }
+                leaf tp-dst {
+                    type uint16;
+                }
+            }
+        }
+        
 }

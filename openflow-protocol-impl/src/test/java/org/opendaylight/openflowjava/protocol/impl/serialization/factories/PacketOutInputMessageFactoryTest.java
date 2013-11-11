@@ -18,7 +18,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class PacketOutInputMessageFactoryTest {
     private static final byte MESSAGE_TYPE = 13;
-    private static final int MESSAGE_LENGTH = 30;
+    private static final int MESSAGE_LENGTH = 24;
     private static final byte PADDING_IN_PACKET_OUT_MESSAGE = 6;
        
     /**

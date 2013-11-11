@@ -63,7 +63,7 @@ public class OFVersionDetectorTest {
     @Test
     public void testDecodeNotSupportedVersionProtocolMessage() throws Exception {
         detector.decode(channelHandlerContext,
-                ByteBufUtils.hexStringToByteBuf("01 00 00 08 00 00 00 01"),
+                ByteBufUtils.hexStringToByteBuf("02 00 00 08 00 00 00 01"),
                 list);
 
         Assert.assertEquals("List is not empty", 0, list.size());

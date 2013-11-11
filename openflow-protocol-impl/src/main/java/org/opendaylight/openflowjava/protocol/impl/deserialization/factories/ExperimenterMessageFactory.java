@@ -39,6 +39,10 @@ public class ExperimenterMessageFactory implements OFDeserializer<ExperimenterMe
         builder.setXid(rawMessage.readUnsignedInt());
         builder.setExperimenter(rawMessage.readUnsignedInt());
         builder.setExpType(rawMessage.readUnsignedInt());
+        int remainingBytes = rawMessage.readableBytes();
+        if (remainingBytes > 0) {
+            builder.setData(rawMessage.readBytes(remainingBytes).array());
+        }
         return builder.build();
     }
 }

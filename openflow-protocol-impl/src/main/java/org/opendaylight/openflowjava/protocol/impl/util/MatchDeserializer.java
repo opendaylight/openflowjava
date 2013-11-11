@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opendaylight.openflowjava.protocol.impl.serialization.factories.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Dscp;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6Address;
@@ -139,23 +140,25 @@ public abstract class MatchDeserializer {
      */
     public static Match createMatch(ByteBuf in) {
         if (in.readableBytes() > 0) {
-            final byte PADDING_IN_MATCH = 4;
             MatchBuilder builder = new MatchBuilder();
             int type = in.readUnsignedShort();
             int length = in.readUnsignedShort();
+            LOGGER.debug("length: " + length);
             switch (type) {
             case 0:
                 builder.setType(StandardMatchType.class);
-                builder.setMatchEntries(createMatchEntries(in, length - 2 * Short.SIZE));
                 break;
             case 1:
                 builder.setType(OxmMatchType.class);
-                builder.setMatchEntries(createMatchEntries(in, length - 2 * Short.SIZE));
                 break;
             default:
                 break;
             }
-            in.skipBytes(PADDING_IN_MATCH);
+            builder.setMatchEntries(createMatchEntries(in, length - 2 * (Short.SIZE / Byte.SIZE)));
+            int paddingRemainder = length % EncodeConstants.PADDING;
+            if (paddingRemainder != 0) {
+                in.skipBytes(paddingRemainder);
+            }
             return builder.build();
         }
         return null;
@@ -168,7 +171,10 @@ public abstract class MatchDeserializer {
      */
     public static List<MatchEntries> createMatchEntries(ByteBuf in, int matchArrayLength) {
         int currMatchLength = 0;
+        LOGGER.debug("createMatchEntries");
+        LOGGER.debug("matcharraylength: " + matchArrayLength);
         while(currMatchLength < matchArrayLength) {
+            LOGGER.debug("creating new match entry");
             switch (in.readUnsignedShort()) { 
             case 0x0000:
                         matchEntriesBuilder.setOxmClass(Nxm0Class.class);
@@ -178,6 +184,7 @@ public abstract class MatchDeserializer {
                         break;
             case 0x8000:
                         matchEntriesBuilder.setOxmClass(OpenflowBasicClass.class);
+                        LOGGER.debug("ofbasicclass");
                         break;
             case 0xFFFF:
                         matchEntriesBuilder.setOxmClass(ExperimenterClass.class);
@@ -205,7 +212,6 @@ public abstract class MatchDeserializer {
                 break;
             case 2:
                 matchEntriesBuilder.setOxmMatchField(Metadata.class);
-                currMatchLength = matchEntryLength;
                 addMetadataAugmentation(matchEntriesBuilder, in);
                 matchEntryLength -= SIZE_OF_LONG_IN_BYTES;
                 if (matchEntryLength > 0) {
@@ -489,7 +495,6 @@ public abstract class MatchDeserializer {
             }
           matchEntriesList.add(matchEntriesBuilder.build());
         }
-        
         return matchEntriesList;
     }
 

@@ -34,7 +34,10 @@ public class EchoReplyMessageFactory implements OFDeserializer<EchoOutput> {
         EchoOutputBuilder builder = new EchoOutputBuilder();
         builder.setVersion(version);
         builder.setXid(rawMessage.readUnsignedInt());
-        builder.setData(rawMessage.readBytes(rawMessage.readableBytes()).array());
+        int remainingBytes = rawMessage.readableBytes();
+        if (remainingBytes > 0) {
+            builder.setData(rawMessage.readBytes(remainingBytes).array());
+        }
         return builder.build();
     }
 

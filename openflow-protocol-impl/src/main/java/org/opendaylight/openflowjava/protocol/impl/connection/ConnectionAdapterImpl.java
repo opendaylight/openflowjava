@@ -102,7 +102,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 .concurrencyLevel(1)
                 .expireAfterWrite(RPC_RESPONSE_EXPIRATION, TimeUnit.MINUTES)
                 .removalListener(new ResponseRemovalListener()).build();
-        LOG.info("ConnectionAdapter created");
+        LOG.debug("ConnectionAdapter created");
     }
     
     /**

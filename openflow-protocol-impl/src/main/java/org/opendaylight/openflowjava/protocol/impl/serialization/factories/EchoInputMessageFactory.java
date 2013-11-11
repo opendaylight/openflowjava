@@ -35,11 +35,20 @@ public class EchoInputMessageFactory implements OFSerializer<EchoInput> {
     @Override
     public void messageToBuffer(short version, ByteBuf out, EchoInput message) {
         ByteBufUtils.writeOFHeader(instance, message, out);
+        byte[] data = message.getData();
+        if (data != null) {
+            out.writeBytes(data);
+        }
     }
 
     @Override
     public int computeLength(EchoInput message) {
-        return MESSAGE_LENGTH;
+        int length = MESSAGE_LENGTH;
+        byte[] data = message.getData();
+        if (data != null) {
+            length += data.length;
+        }
+        return length;
     }
 
     @Override

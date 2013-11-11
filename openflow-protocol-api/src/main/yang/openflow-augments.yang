@@ -255,6 +255,37 @@ module openflow-augments {
              type uint32;
          }
      }
+     // OF1.0 structures
+     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
+         ext:augment-identifier "vlan-vid-action";
+         leaf vlan-vid {
+             type uint16;
+         }
+     }
+     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
+         ext:augment-identifier "vlan-pcp-action";
+         leaf vlan-pcp {
+             type uint8;
+         }
+     }
+     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
+         ext:augment-identifier "dl-address-action";
+         leaf dl-address {
+             type yang:mac-address;
+         }
+     }
+     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
+         ext:augment-identifier "nw-tos-action";
+         leaf nw-tos {
+             type uint8;
+         }
+     }
+     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
+         ext:augment-identifier "ip-address-action";
+         leaf ip-address {
+             type inet:ipv4-address;
+         }
+     }
 
 // OFP_TABLE_FEATURES_PROPERTIES AUGMENTS
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {

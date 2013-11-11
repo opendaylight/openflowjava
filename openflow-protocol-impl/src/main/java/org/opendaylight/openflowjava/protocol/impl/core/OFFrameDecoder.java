@@ -49,7 +49,7 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
                     bb.readableBytes() + " < " + length);
             return;
         }
-        LOGGER.info("OF Protocol message received");
+        LOGGER.info("OF Protocol message received, type:{}", bb.getByte(1));
 
         ByteBuf messageBuffer = bb.slice(bb.readerIndex(), length);
         list.add(messageBuffer);
