@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 public class OFVersionDetector extends ByteToMessageDecoder {
 
     /** Version number of OpenFlow 1.0 protocol */
-    private static final byte OF10_VERSION_ID = 0x01;
+    public static final byte OF10_VERSION_ID = 0x01;
     /** Version number of OpenFlow 1.3 protocol */
     public static final byte OF13_VERSION_ID = 0x04;
     private static final Logger LOGGER = LoggerFactory.getLogger(OFVersionDetector.class);

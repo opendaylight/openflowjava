@@ -78,7 +78,7 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestPortStats) {
             encodePortStatsBody(message.getMultipartRequestBody(), out);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestQueue) {
-            encodeQueBody(message.getMultipartRequestBody(), out);
+            encodeQueueBody(message.getMultipartRequestBody(), out);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestGroup) {
             encodeGroupStatsBody(message.getMultipartRequestBody(), out);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestMeter) {
@@ -146,7 +146,7 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_PORTSTATS_BODY, output);
     }
     
-    private static void encodeQueBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
+    private static void encodeQueueBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         MultipartRequestQueue queue = (MultipartRequestQueue) multipartRequestBody;
         output.writeInt(queue.getPortNo().intValue());
         output.writeInt(queue.getQueueId().intValue());
@@ -177,6 +177,7 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
         MultipartRequestExperimenter experimenter = (MultipartRequestExperimenter) multipartRequestBody;
         output.writeInt(experimenter.getExperimenter().intValue());
         output.writeInt(experimenter.getExpType().intValue());
+        output.writeBytes(experimenter.getData());
     }
     
     private static void encodeTableFeaturesBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
