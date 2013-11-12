@@ -90,7 +90,7 @@ public class OF10PortStatusMessageFactory implements OFDeserializer<PortStatusMe
     }
     
     private static void deserializePort(ByteBuf rawMessage, PortStatusMessageBuilder builder) {
-        builder.setPortNo(new Long(rawMessage.readUnsignedShort()));
+        builder.setPortNo((long) rawMessage.readUnsignedShort());
         StringBuffer macToString = new StringBuffer();
         for(int i = 0; i < MAC_ADDRESS_LENGTH; i++){
             short mac = rawMessage.readUnsignedByte();

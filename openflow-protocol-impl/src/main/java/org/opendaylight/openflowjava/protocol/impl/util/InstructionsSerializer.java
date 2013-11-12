@@ -39,14 +39,16 @@ public abstract class InstructionsSerializer {
                 if (type.equals(GotoTable.class)) {
                     final byte GOTO_TABLE_TYPE = 1;
                     final byte GOTO_TABLE_LENGTH = 8;
+                    final byte PADDING_IN_GOTO_TABLE = 3;
                     writeTypeAndLength(out, GOTO_TABLE_TYPE, GOTO_TABLE_LENGTH);
                     out.writeByte(instruction.getAugmentation(TableIdInstruction.class).getTableId());
-                    ByteBufUtils.padBuffer(3, out);
+                    ByteBufUtils.padBuffer(PADDING_IN_GOTO_TABLE, out);
                 } else if (type.equals(WriteMetadata.class)) {
                     final byte WRITE_METADATA_TYPE = 2;
                     final byte WRITE_METADATA_LENGTH = 24;
+                    final byte PADDING_IN_WRITE_METADATA = 4;
                     writeTypeAndLength(out, WRITE_METADATA_TYPE, WRITE_METADATA_LENGTH);
-                    ByteBufUtils.padBuffer(4, out);
+                    ByteBufUtils.padBuffer(PADDING_IN_WRITE_METADATA, out);
                     MetadataInstruction metadata = instruction.getAugmentation(MetadataInstruction.class);
                     out.writeBytes(metadata.getMetadata());
                     out.writeBytes(metadata.getMetadataMask());
@@ -59,8 +61,9 @@ public abstract class InstructionsSerializer {
                 } else if (type.equals(ClearActions.class)) {
                     final byte CLEAR_ACTIONS_TYPE = 5;
                     final byte CLEAR_ACTIONS_LENGTH = 8;
+                    final byte PADDING_IN_CLEAR_ACTIONS = 4;
                     writeTypeAndLength(out, CLEAR_ACTIONS_TYPE, CLEAR_ACTIONS_LENGTH);
-                    ByteBufUtils.padBuffer(4, out);
+                    ByteBufUtils.padBuffer(PADDING_IN_CLEAR_ACTIONS, out);
                 } else if (type.equals(Meter.class)) {
                     final byte METER_TYPE = 6;
                     final byte METER_LENGTH = 8;
@@ -87,10 +90,12 @@ public abstract class InstructionsSerializer {
 
     private static void writeActionsInstruction(ByteBuf out,
             Instructions instruction, int type) {
+        final byte ACTIONS_INSTRUCTION_LENGTH = 8;
+        final byte PADDING_IN_ACTIONS_INSTRUCTION = 4;
         out.writeShort(type);
         List<ActionsList> actions = instruction.getAugmentation(ActionsInstruction.class).getActionsList();
-        out.writeShort(ActionsSerializer.computeLengthOfActions(actions));
-        ByteBufUtils.padBuffer(4, out);
+        out.writeShort(ACTIONS_INSTRUCTION_LENGTH + ActionsSerializer.computeLengthOfActions(actions));
+        ByteBufUtils.padBuffer(PADDING_IN_ACTIONS_INSTRUCTION, out);
         ActionsSerializer.encodeActions(actions, out);
     }
     
@@ -111,10 +116,12 @@ public abstract class InstructionsSerializer {
                     final byte WRITE_METADATA_LENGTH = 24;
                     length += WRITE_METADATA_LENGTH;
                 } else if (type.equals(WriteActions.class)) {
-                    length += ActionsSerializer.computeLengthOfActions(
+                    final byte WRITE_ACTIONS_LENGTH = 8;
+                    length += WRITE_ACTIONS_LENGTH + ActionsSerializer.computeLengthOfActions(
                             instruction.getAugmentation(ActionsInstruction.class).getActionsList());
                 } else if (type.equals(ApplyActions.class)) {
-                    length += ActionsSerializer.computeLengthOfActions(
+                    final byte APPLY_ACTIONS_LENGTH = 8;
+                    length += APPLY_ACTIONS_LENGTH + ActionsSerializer.computeLengthOfActions(
                             instruction.getAugmentation(ActionsInstruction.class).getActionsList());
                 } else if (type.equals(ClearActions.class)) {
                     final byte CLEAR_ACTIONS_LENGTH = 8;
@@ -124,7 +131,9 @@ public abstract class InstructionsSerializer {
                     length += METER_LENGTH;
                 } else if (type.equals(Experimenter.class)) {
                     final byte EXPERIMENTER_LENGTH = 8;
-                    length += EXPERIMENTER_LENGTH;
+                    ExperimenterInstruction experimenter = instruction.getAugmentation(ExperimenterInstruction.class);
+                    byte[] data = experimenter.getData();
+                    length += EXPERIMENTER_LENGTH + data.length;
                 }
             }
         }

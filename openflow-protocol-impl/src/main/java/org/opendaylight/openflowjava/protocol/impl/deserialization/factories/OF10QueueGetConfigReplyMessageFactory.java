@@ -54,7 +54,7 @@ public class OF10QueueGetConfigReplyMessageFactory implements OFDeserializer<Get
         GetQueueConfigOutputBuilder builder = new GetQueueConfigOutputBuilder();
         builder.setVersion(version);
         builder.setXid((rawMessage.readUnsignedInt()));
-        builder.setPort(new PortNumber(new Long(rawMessage.readUnsignedShort())));
+        builder.setPort(new PortNumber((long) rawMessage.readUnsignedShort()));
         rawMessage.skipBytes(PADDING_IN_QUEUE_GET_CONFIG_REPLY_HEADER);
         builder.setQueues(createQueuesList(rawMessage));
         return builder.build();

@@ -135,7 +135,7 @@ public abstract class MatchDeserializer {
     
     /**
      * Creates match
-     * @param in inputu ByteBuf
+     * @param in input ByteBuf
      * @return ofp_match
      */
     public static Match createMatch(ByteBuf in) {
@@ -157,7 +157,7 @@ public abstract class MatchDeserializer {
             builder.setMatchEntries(createMatchEntries(in, length - 2 * (Short.SIZE / Byte.SIZE)));
             int paddingRemainder = length % EncodeConstants.PADDING;
             if (paddingRemainder != 0) {
-                in.skipBytes(paddingRemainder);
+                in.skipBytes(EncodeConstants.PADDING - paddingRemainder);
             }
             return builder.build();
         }
@@ -166,15 +166,12 @@ public abstract class MatchDeserializer {
     
     /**
      * @param in input ByteBuf
-     * @param matchArrayLength to infer size of array
+     * @param matchLength to infer size of array
      * @return MatchEntriesList
      */
-    public static List<MatchEntries> createMatchEntries(ByteBuf in, int matchArrayLength) {
-        int currMatchLength = 0;
-        LOGGER.debug("createMatchEntries");
-        LOGGER.debug("matcharraylength: " + matchArrayLength);
-        while(currMatchLength < matchArrayLength) {
-            LOGGER.debug("creating new match entry");
+    public static List<MatchEntries> createMatchEntries(ByteBuf in, int matchLength) {
+        int currLength = 0;
+        while(currLength < matchLength) {
             switch (in.readUnsignedShort()) { 
             case 0x0000:
                         matchEntriesBuilder.setOxmClass(Nxm0Class.class);
@@ -184,7 +181,6 @@ public abstract class MatchDeserializer {
                         break;
             case 0x8000:
                         matchEntriesBuilder.setOxmClass(OpenflowBasicClass.class);
-                        LOGGER.debug("ofbasicclass");
                         break;
             case 0xFFFF:
                         matchEntriesBuilder.setOxmClass(ExperimenterClass.class);
@@ -193,9 +189,11 @@ public abstract class MatchDeserializer {
                         break;
             }
 
-            int matchField = in.readUnsignedByte() >>> 1;
-            short matchEntryLength = in.readUnsignedByte();
-            currMatchLength = currMatchLength + SIZE_OF_SHORT_IN_BYTES + (2 * SIZE_OF_BYTE_IN_BYTES) + matchEntryLength;
+            int fieldAndMask = in.readUnsignedByte();
+            boolean hasMask = (fieldAndMask & 1) != 0;
+            int matchField =  fieldAndMask >> 1;
+            int matchEntryLength = in.readUnsignedByte();
+            currLength += SIZE_OF_SHORT_IN_BYTES + (2 * SIZE_OF_BYTE_IN_BYTES) + matchEntryLength;
             
             switch(matchField) {
             case 0: 
@@ -213,25 +211,22 @@ public abstract class MatchDeserializer {
             case 2:
                 matchEntriesBuilder.setOxmMatchField(Metadata.class);
                 addMetadataAugmentation(matchEntriesBuilder, in);
-                matchEntryLength -= SIZE_OF_LONG_IN_BYTES;
-                if (matchEntryLength > 0) {
-                    addMaskAugmentation(matchEntriesBuilder, in, matchEntryLength);
+                if (hasMask) {
+                    addMaskAugmentation(matchEntriesBuilder, in, SIZE_OF_LONG_IN_BYTES);
                 }
                 break;
             case 3:
                 matchEntriesBuilder.setOxmMatchField(EthDst.class);
                 addMacAddressAugmentation(matchEntriesBuilder, in);
-                matchEntryLength -= SIZE_OF_LONG_IN_BYTES;
-                if (matchEntryLength > 0) {
-                    addMaskAugmentation(matchEntriesBuilder, in, matchEntryLength);
+                if (hasMask) {
+                    addMaskAugmentation(matchEntriesBuilder, in, SIZE_OF_LONG_IN_BYTES);
                 }
                 break;
             case 4:
                 matchEntriesBuilder.setOxmMatchField(EthSrc.class);
                 addMacAddressAugmentation(matchEntriesBuilder, in);
-                matchEntryLength -= SIZE_OF_LONG_IN_BYTES;
-                if (matchEntryLength > 0) {
-                    addMaskAugmentation(matchEntriesBuilder, in, matchEntryLength);
+                if (hasMask) {
+                    addMaskAugmentation(matchEntriesBuilder, in, SIZE_OF_LONG_IN_BYTES);
                 }
                 break;
             case 5:
@@ -247,9 +242,8 @@ public abstract class MatchDeserializer {
                 vlanVidBuilder.setCfiBit((vidEntryValue & 1) != 0);
                 vlanVidBuilder.setVlanVid(vidEntryValue >> 1);
                 matchEntriesBuilder.addAugmentation(VlanVidMatchEntry.class, vlanVidBuilder.build());
-                matchEntryLength -= SIZE_OF_SHORT_IN_BYTES;
-                if (matchEntryLength > 0) {
-                    addMaskAugmentation(matchEntriesBuilder, in, matchEntryLength);
+                if (hasMask) {
+                    addMaskAugmentation(matchEntriesBuilder, in, SIZE_OF_SHORT_IN_BYTES);
                 }
                 break;
             case 7:
@@ -281,9 +275,8 @@ public abstract class MatchDeserializer {
                 // TODO - ipv4address - check format with tests
                 LOGGER.warn("IPV4address(ipv4src): received but possible wrong deserialization");
                 addIpv4AddressAugmentation(matchEntriesBuilder, in);
-                matchEntryLength -= SIZE_OF_INT_IN_BYTES;
-                if (matchEntryLength > 0) {
-                    addMaskAugmentation(matchEntriesBuilder, in, matchEntryLength);
+                if (hasMask) {
+                    addMaskAugmentation(matchEntriesBuilder, in, SIZE_OF_INT_IN_BYTES);
                 }
                 break;
             case 12:
@@ -291,9 +284,8 @@ public abstract class MatchDeserializer {
                 // TODO - ipv4address - check format with tests
                 LOGGER.warn("IPV4address(ipv4dst): received but possible wrong deserialization");
                 addIpv4AddressAugmentation(matchEntriesBuilder, in);
-                matchEntryLength -= SIZE_OF_INT_IN_BYTES;
-                if (matchEntryLength > 0) {
-                    addMaskAugmentation(matchEntriesBuilder, in, matchEntryLength);
+                if (hasMask) {
+                    addMaskAugmentation(matchEntriesBuilder, in, SIZE_OF_INT_IN_BYTES);
                 }
                 break;
             case 13:
@@ -343,9 +335,8 @@ public abstract class MatchDeserializer {
                 // TODO - ipv4address - check format with tests
                 LOGGER.warn("IPV4address(arpspa): received but possible wrong deserialization");
                 addIpv4AddressAugmentation(matchEntriesBuilder, in);
-                matchEntryLength -= SIZE_OF_INT_IN_BYTES;
-                if (matchEntryLength > 0) {
-                    addMaskAugmentation(matchEntriesBuilder, in, matchEntryLength);
+                if (hasMask) {
+                    addMaskAugmentation(matchEntriesBuilder, in, SIZE_OF_INT_IN_BYTES);
                 }
                 break;
             case 23:
@@ -353,25 +344,22 @@ public abstract class MatchDeserializer {
                 // TODO - ipv4address - check format with tests
                 LOGGER.warn("IPV4address(arptpa): received but possible wrong deserialization");
                 addIpv4AddressAugmentation(matchEntriesBuilder, in);
-                matchEntryLength -= SIZE_OF_INT_IN_BYTES;
-                if (matchEntryLength > 0) {
-                    addMaskAugmentation(matchEntriesBuilder, in, matchEntryLength);
+                if (hasMask) {
+                    addMaskAugmentation(matchEntriesBuilder, in, SIZE_OF_INT_IN_BYTES);
                 }
                 break;
             case 24:
                 matchEntriesBuilder.setOxmMatchField(ArpSha.class);
                 addMacAddressAugmentation(matchEntriesBuilder, in);
-                matchEntryLength -= SIZE_OF_LONG_IN_BYTES;
-                if (matchEntryLength > 0) {
-                    addMaskAugmentation(matchEntriesBuilder, in, matchEntryLength);
+                if (hasMask) {
+                    addMaskAugmentation(matchEntriesBuilder, in, SIZE_OF_LONG_IN_BYTES);
                 }
                 break;
             case 25:
                 matchEntriesBuilder.setOxmMatchField(ArpTha.class);
                 addMacAddressAugmentation(matchEntriesBuilder, in);
-                matchEntryLength -= SIZE_OF_LONG_IN_BYTES;
-                if (matchEntryLength > 0) {
-                    addMaskAugmentation(matchEntriesBuilder, in, matchEntryLength);
+                if (hasMask) {
+                    addMaskAugmentation(matchEntriesBuilder, in, SIZE_OF_LONG_IN_BYTES);
                 }
                 break;
             case 26:
@@ -379,9 +367,8 @@ public abstract class MatchDeserializer {
                 // TODO - ipv6address - check format with tests
                 LOGGER.warn("IPV6address(Ipv6Src): received but possible wrong deserialization");
                 addIpv6AddressAugmentation(matchEntriesBuilder, in);
-                matchEntryLength -= SIZE_OF_IPV6_ADDRESS_IN_BYTES;
-                if (matchEntryLength > 0) {
-                    addMaskAugmentation(matchEntriesBuilder, in, matchEntryLength);
+                if (hasMask) {
+                    addMaskAugmentation(matchEntriesBuilder, in, SIZE_OF_IPV6_ADDRESS_IN_BYTES);
                 }
                 break;
             case 27:
@@ -389,9 +376,8 @@ public abstract class MatchDeserializer {
                 // TODO - ipv6address - check format with tests
                 LOGGER.warn("IPV6address(Ipv6Dst): received but possible wrong deserialization");
                 addIpv6AddressAugmentation(matchEntriesBuilder, in);
-                matchEntryLength -= SIZE_OF_IPV6_ADDRESS_IN_BYTES;
-                if (matchEntryLength > 0) {
-                    addMaskAugmentation(matchEntriesBuilder, in, matchEntryLength);
+                if (hasMask) {
+                    addMaskAugmentation(matchEntriesBuilder, in, SIZE_OF_IPV6_ADDRESS_IN_BYTES);
                 }
                 break;
             case 28:
@@ -399,9 +385,8 @@ public abstract class MatchDeserializer {
                 Ipv6FlabelMatchEntryBuilder ipv6FlabelBuilder = new Ipv6FlabelMatchEntryBuilder();
                 ipv6FlabelBuilder.setIpv6Flabel(new Ipv6FlowLabel(in.readUnsignedInt()));
                 matchEntriesBuilder.addAugmentation(Ipv6FlabelMatchEntry.class, ipv6FlabelBuilder.build());
-                matchEntryLength -= SIZE_OF_INT_IN_BYTES;
-                if (matchEntryLength > 0) {
-                    addMaskAugmentation(matchEntriesBuilder, in, matchEntryLength);
+                if (hasMask) {
+                    addMaskAugmentation(matchEntriesBuilder, in, SIZE_OF_INT_IN_BYTES);
                 }
                 break;
             case 29:
@@ -457,17 +442,15 @@ public abstract class MatchDeserializer {
                 IsidMatchEntryBuilder isidBuilder = new IsidMatchEntryBuilder();
                 isidBuilder.setIsid(in.readUnsignedInt());
                 matchEntriesBuilder.addAugmentation(IsidMatchEntry.class, isidBuilder.build());
-                matchEntryLength -= SIZE_OF_INT_IN_BYTES;
-                if (matchEntryLength > 0) {
-                    addMaskAugmentation(matchEntriesBuilder, in, matchEntryLength);
+                if (hasMask) {
+                    addMaskAugmentation(matchEntriesBuilder, in, SIZE_OF_INT_IN_BYTES);
                 }
                 break;
             case 38:
                 matchEntriesBuilder.setOxmMatchField(TunnelId.class);
                 addMetadataAugmentation(matchEntriesBuilder, in);
-                matchEntryLength -= SIZE_OF_LONG_IN_BYTES;
-                if (matchEntryLength > 0) {
-                    addMaskAugmentation(matchEntriesBuilder, in, matchEntryLength);
+                if (hasMask) {
+                    addMaskAugmentation(matchEntriesBuilder, in, SIZE_OF_LONG_IN_BYTES);
                 }
                 break;
             case 39:
@@ -485,9 +468,8 @@ public abstract class MatchDeserializer {
                 final Boolean UNSEQ = ((bitmap) & (1<<8)) != 0;
                 pseudoBuilder.setPseudoField(new PseudoField(AUTH, DEST, ESP, FRAG, HOP, NONEXT, ROUTER, UNREP, UNSEQ));
                 matchEntriesBuilder.addAugmentation(PseudoFieldMatchEntry.class, pseudoBuilder.build());
-                matchEntryLength -= SIZE_OF_SHORT_IN_BYTES;
-                if (matchEntryLength > 0) {
-                    addMaskAugmentation(matchEntriesBuilder, in, matchEntryLength);
+                if (hasMask) {
+                    addMaskAugmentation(matchEntriesBuilder, in, SIZE_OF_SHORT_IN_BYTES);
                 }
                 break;
             default: 
