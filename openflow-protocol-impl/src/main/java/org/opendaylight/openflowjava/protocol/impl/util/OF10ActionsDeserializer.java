@@ -249,7 +249,7 @@ public class OF10ActionsDeserializer {
     
     private static void createPortAugmentation(ByteBuf input, ActionBuilder actionBuilder) {
         PortActionBuilder portBuilder = new PortActionBuilder();
-        portBuilder.setPort(new PortNumber(new Long(input.readUnsignedShort())));
+        portBuilder.setPort(new PortNumber((long) input.readUnsignedShort()));
         actionBuilder.addAugmentation(PortAction.class, portBuilder.build());
     }
 

@@ -189,7 +189,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         PortStatsBuilder portStatsBuilder = new PortStatsBuilder();
         List<PortStats> portStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
-            portStatsBuilder.setPortNo(new Long(input.readUnsignedShort()));
+            portStatsBuilder.setPortNo((long) input.readUnsignedShort());
             input.skipBytes(PADDING_IN_PORT_STATS_HEADER);
             
             byte[] rxPackets = new byte[Long.SIZE/Byte.SIZE];
@@ -253,7 +253,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         List<QueueStats> queueStatsList = new ArrayList<>();
         
         while (input.readableBytes() > 0) {
-            queueStatsBuilder.setPortNo(new Long(input.readUnsignedShort()));
+            queueStatsBuilder.setPortNo((long) input.readUnsignedShort());
             input.skipBytes(PADDING_IN_QUEUE_HEADER);
             queueStatsBuilder.setQueueId(input.readUnsignedInt());
 

@@ -527,20 +527,15 @@ public class MatchSerializer {
                 } else if (field.equals(InPhyPort.class)) {
                     length += Integer.SIZE / Byte.SIZE;
                 } else if (field.equals(Metadata.class)) {
-                    computeMetadataRelatedEntryLength(entry);
+                    length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
                 } else if (field.equals(EthDst.class)) {
-                    computeMacAddressRelatedEntryLength(entry);
+                    length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
                 } else if (field.equals(EthSrc.class)) {
-                    computeMacAddressRelatedEntryLength(entry);
+                    length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
                 } else if (field.equals(EthType.class)) {
                     length += Short.SIZE / Byte.SIZE;
                 } else if (field.equals(VlanVid.class)) {
-                    if (entry.isHasMask()) {
-                        byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
-                        length += Short.SIZE / Byte.SIZE + mask.length;
-                    } else {
-                        length += Short.SIZE / Byte.SIZE;
-                    }
+                    length += computePossibleMaskEntryLength(entry, Short.SIZE / Byte.SIZE);
                 } else if (field.equals(VlanPcp.class)) {
                     length += Byte.SIZE / Byte.SIZE;
                 } else if (field.equals(IpDscp.class)) {
@@ -550,9 +545,9 @@ public class MatchSerializer {
                 } else if (field.equals(IpProto.class)) {
                     length += Byte.SIZE / Byte.SIZE;
                 } else if (field.equals(Ipv4Src.class)) {
-                    computeIpv4AddressRelatedEntryLength(entry);
+                    length += computePossibleMaskEntryLength(entry, Integer.SIZE / Byte.SIZE);
                 } else if (field.equals(Ipv4Dst.class)) {
-                    computeIpv4AddressRelatedEntryLength(entry);
+                    length += computePossibleMaskEntryLength(entry, Integer.SIZE / Byte.SIZE);
                 } else if (field.equals(TcpSrc.class)) {
                     length += Short.SIZE / Byte.SIZE;
                 } else if (field.equals(TcpDst.class)) {
@@ -572,34 +567,29 @@ public class MatchSerializer {
                 } else if (field.equals(ArpOp.class)) {
                     length += Short.SIZE / Byte.SIZE;
                 } else if (field.equals(ArpSpa.class)) {
-                    computeIpv4AddressRelatedEntryLength(entry);
+                    length += computePossibleMaskEntryLength(entry, Integer.SIZE / Byte.SIZE);
                 } else if (field.equals(ArpTpa.class)) {
-                    computeIpv4AddressRelatedEntryLength(entry);
+                    length += computePossibleMaskEntryLength(entry, Integer.SIZE / Byte.SIZE);
                 } else if (field.equals(ArpSha.class)) {
-                    computeMacAddressRelatedEntryLength(entry);
+                    length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
                 } else if (field.equals(ArpTha.class)) {
-                    computeMacAddressRelatedEntryLength(entry);
+                    length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
                 } else if (field.equals(Ipv6Src.class)) {
-                    computeIpv6AddressRelatedEntryLength(entry);
+                    length += computePossibleMaskEntryLength(entry, 8 * (Short.SIZE / Byte.SIZE));
                 } else if (field.equals(Ipv6Dst.class)) {
-                    computeIpv6AddressRelatedEntryLength(entry);
+                    length += computePossibleMaskEntryLength(entry, 8 * (Short.SIZE / Byte.SIZE));
                 } else if (field.equals(Ipv6Flabel.class)) {
-                    if (entry.isHasMask()) {
-                        byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
-                        length += Integer.SIZE / Byte.SIZE + mask.length; // 20 b + mask [OF 1.3.2 spec]
-                    } else {
-                        length += Integer.SIZE / Byte.SIZE;
-                    }
+                    length += computePossibleMaskEntryLength(entry, Integer.SIZE / Byte.SIZE);
                 } else if (field.equals(Icmpv6Type.class)) {
                     length += Byte.SIZE / Byte.SIZE;
                 } else if (field.equals(Icmpv6Code.class)) {
                     length += Byte.SIZE / Byte.SIZE;
                 } else if (field.equals(Ipv6NdTarget.class)) {
-                    computeIpv6AddressRelatedEntryLength(entry);
+                    length += computePossibleMaskEntryLength(entry, 8 * (Short.SIZE / Byte.SIZE));
                 } else if (field.equals(Ipv6NdSll.class)) {
-                    computeMacAddressRelatedEntryLength(entry);
+                    length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
                 } else if (field.equals(Ipv6NdTll.class)) {
-                    computeMacAddressRelatedEntryLength(entry);
+                    length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
                 } else if (field.equals(MplsLabel.class)) {
                     length += Integer.SIZE / Byte.SIZE;
                 } else if (field.equals(MplsTc.class)) {
@@ -607,57 +597,23 @@ public class MatchSerializer {
                 } else if (field.equals(MplsBos.class)) {
                     length += Byte.SIZE / Byte.SIZE;
                 } else if (field.equals(PbbIsid.class)) {
-                    if (entry.isHasMask()) {
-                        byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
-                        length += Long.SIZE / Byte.SIZE + mask.length;
-                    } else {
-                        length += Long.SIZE / Byte.SIZE;
-                    }
+                    length += computePossibleMaskEntryLength(entry, Integer.SIZE / Byte.SIZE);
                 } else if (field.equals(TunnelId.class)) {
-                    computeMetadataRelatedEntryLength(entry);
+                    length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
                 } else if (field.equals(Ipv6Exthdr.class)) {
-                    if (entry.isHasMask()) {
-                        byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
-                        length += Short.SIZE / Byte.SIZE + mask.length;
-                    } else {
-                        length += Short.SIZE / Byte.SIZE;
-                    }
+                    length += computePossibleMaskEntryLength(entry, Short.SIZE / Byte.SIZE);
                 }
             }
         }
         return length;
     }
-    
-    private static int computeMetadataRelatedEntryLength(MatchEntries entry) {
+
+    private static int computePossibleMaskEntryLength(MatchEntries entry, int length) {
+        int entryLength = length;
         if (entry.isHasMask()) {
-            byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
-            return Long.SIZE / Byte.SIZE + mask.length;
+            entryLength *= 2;
         }
-        return Long.SIZE / Byte.SIZE;
-    }
-    
-    private static int computeMacAddressRelatedEntryLength(MatchEntries entry) {
-        if (entry.isHasMask()) {
-            byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
-            return (Integer.SIZE + Short.SIZE) / Byte.SIZE + mask.length; // 48 b + mask [OF 1.3.2 spec]
-        }
-        return (Integer.SIZE + Short.SIZE) / Byte.SIZE; // 48 b [OF 1.3.2 spec]
-    }
-    
-    private static int computeIpv4AddressRelatedEntryLength(MatchEntries entry) {
-        if (entry.isHasMask()) {
-            byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
-            return Integer.SIZE / Byte.SIZE + mask.length;
-        }
-        return Integer.SIZE / Byte.SIZE;
-    }
-    
-    private static int computeIpv6AddressRelatedEntryLength(MatchEntries entry) {
-        if (entry.isHasMask()) {
-            byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
-            return (8 * Short.SIZE) / Byte.SIZE + mask.length;
-        }
-        return (8 * Short.SIZE) / Byte.SIZE;
+        return entryLength;
     }
 
 }

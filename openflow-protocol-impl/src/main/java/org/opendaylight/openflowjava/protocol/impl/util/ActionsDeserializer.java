@@ -54,7 +54,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
  * @author michal.polkorab
  */
 public abstract class ActionsDeserializer {
-    final static byte PAD_ACTION_LENGTH = 2;
     private static ActionBuilder actionBuilder = new ActionBuilder();
     private static ActionsListBuilder actionsListBuilder = new ActionsListBuilder();
     private static List<ActionsList> actionsList = new ArrayList<>();
@@ -66,6 +65,7 @@ public abstract class ActionsDeserializer {
      */
     public static List<ActionsList> createActionsList(ByteBuf input, int bucketsLength) {
         final byte BUCKET_HEADER_LENGTH = 16;
+        final byte ACTION_HEADER_LENGTH = 4;
         int bucketsCurrentLength = BUCKET_HEADER_LENGTH;
         int actionsLength = 0;
             
@@ -136,7 +136,8 @@ public abstract class ActionsDeserializer {
                         
                 case 25:
                         actionsLength = input.readUnsignedShort();//8
-                        actionsList.add(ActionsDeserializer.createSetFieldAction(input, actionsLength));
+                        actionsList.add(ActionsDeserializer.createSetFieldAction(input,
+                                actionsLength - ACTION_HEADER_LENGTH));
                         break; 
                 case 26: 
                          actionsLength = input.readUnsignedShort();//8
@@ -166,7 +167,8 @@ public abstract class ActionsDeserializer {
      * @param in input ByteBuf 
      * @return Action
      */
-    private static ActionsList createEmptyHeader(Class<? extends org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.Action> action, ByteBuf in) {
+    private static ActionsList createEmptyHeader(Class<? extends org.opendaylight.yang.gen.v1.
+            urn.opendaylight.openflow.common.types.rev130731.Action> action, ByteBuf in) {
         final byte PADDING_IN_ACTIONS_HEADER = 4;
         
         actionBuilder.setType(action);
@@ -377,7 +379,7 @@ public abstract class ActionsDeserializer {
     public static ActionsList createSetFieldAction(ByteBuf in, int actionLength) {
         actionBuilder.setType(SetField.class);
         OxmFieldsActionBuilder matchEntries = new OxmFieldsActionBuilder();
-        matchEntries.setMatchEntries(MatchDeserializer.createMatchEntries(in, actionLength - 4));
+        matchEntries.setMatchEntries(MatchDeserializer.createMatchEntries(in, actionLength));
         actionBuilder.addAugmentation(OxmFieldsAction.class, matchEntries.build());
         actionsListBuilder.setAction(actionBuilder.build());
         

@@ -4,6 +4,8 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionsInstruction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionsInstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterInstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MetadataInstruction;
@@ -46,6 +48,7 @@ public class InstructionsDeserializer {
                 InstructionsBuilder builder = new InstructionsBuilder();
                 int type = input.readUnsignedShort();
                 int instructionLength = input.readUnsignedShort();
+                lengthOfInstructions -= instructionLength;
                 switch (type) {
                 case 1:
                     createGotoTableInstruction(builder, input);
@@ -55,15 +58,15 @@ public class InstructionsDeserializer {
                     break;
                 case 3:
                     builder.setType(WriteActions.class);
-                    createActionRelatedInstruction(input, instructionLength - WRITE_APPLY_CLEAR_ACTION_LENGTH);
+                    createActionRelatedInstruction(input, builder, instructionLength - WRITE_APPLY_CLEAR_ACTION_LENGTH);
                     break;
                 case 4:
                     builder.setType(ApplyActions.class);
-                    createActionRelatedInstruction(input, instructionLength - WRITE_APPLY_CLEAR_ACTION_LENGTH);
+                    createActionRelatedInstruction(input, builder, instructionLength - WRITE_APPLY_CLEAR_ACTION_LENGTH);
                     break;
                 case 5:
                     builder.setType(ClearActions.class);
-                    createActionRelatedInstruction(input, instructionLength - WRITE_APPLY_CLEAR_ACTION_LENGTH);
+                    createActionRelatedInstruction(input, builder, instructionLength - WRITE_APPLY_CLEAR_ACTION_LENGTH);
                     break;
                 case 6:
                     builder.setType(Meter.class);
@@ -76,9 +79,12 @@ public class InstructionsDeserializer {
                     builder.setType(Experimenter.class);
                     ExperimenterInstructionBuilder expBuilder = new ExperimenterInstructionBuilder();
                     expBuilder.setExperimenter(input.readUnsignedInt());
-                    byte[] data = new byte[instructionLength - EXPERIMENTER_HEADER_LENGTH];
-                    input.readBytes(data);
-                    expBuilder.setData(data);
+                    int dataLength = instructionLength - EXPERIMENTER_HEADER_LENGTH;
+                    if (dataLength > 0) {
+                        byte[] data = new byte[dataLength];
+                        input.readBytes(data);
+                        expBuilder.setData(data);
+                    }
                     builder.addAugmentation(ExperimenterInstruction.class, expBuilder.build());
                     break;
                 default:
@@ -88,13 +94,6 @@ public class InstructionsDeserializer {
             }
         }
         return instructions;
-    }
-
-    private static void createActionRelatedInstruction(ByteBuf input,
-            int instructionLength) {
-        final byte ACTIONS_RELATED_INSTRUCTION_PADDING = 4;
-        input.skipBytes(ACTIONS_RELATED_INSTRUCTION_PADDING);
-        ActionsDeserializer.createActionsList(input, instructionLength);
     }
 
     private static void createGotoTableInstruction(InstructionsBuilder builder,
@@ -120,6 +119,15 @@ public class InstructionsDeserializer {
         input.readBytes(metadata_mask);
         metadataBuilder.setMetadata(metadata_mask);
         builder.addAugmentation(MetadataInstruction.class, metadataBuilder.build());
+    }
+    
+    private static void createActionRelatedInstruction(ByteBuf input,
+            InstructionsBuilder builder, int instructionLength) {
+        final byte ACTIONS_RELATED_INSTRUCTION_PADDING = 4;
+        input.skipBytes(ACTIONS_RELATED_INSTRUCTION_PADDING);
+        ActionsInstructionBuilder actionsBuilder = new ActionsInstructionBuilder();
+        actionsBuilder.setActionsList(ActionsDeserializer.createActionsList(input, instructionLength));
+        builder.addAugmentation(ActionsInstruction.class, actionsBuilder.build());
     }
 
 }
