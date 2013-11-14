@@ -40,6 +40,7 @@ public class SimpleClientInitializer extends ChannelInitializer<SocketChannel> {
                     .createSSLEngine();
             engine.setUseClientMode(true);
             pipeline.addLast("ssl", new SslHandler(engine));
+            pipeline.addLast("framer", new SimpleClientFramer());
         }
         SimpleClientHandler simpleClientHandler = new SimpleClientHandler(isOnlineFuture, scenarioHandler);
         simpleClientHandler.setScenario(scenarioHandler);

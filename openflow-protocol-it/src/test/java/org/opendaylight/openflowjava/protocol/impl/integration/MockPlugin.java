@@ -184,7 +184,14 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
     @Override
     public void onPacketInMessage(PacketInMessage notification) {
         LOGGER.debug("PacketIn message received");
-        
+        LOGGER.debug("BufferId: " + notification.getBufferId());
+        LOGGER.debug("TotalLength: " + notification.getTotalLen());
+        LOGGER.debug("Reason: " + notification.getReason());
+        LOGGER.debug("TableId: " + notification.getTableId());
+        LOGGER.debug("Cookie: " + notification.getCookie());
+        LOGGER.debug("Class: " + notification.getMatch().getMatchEntries().get(0).getOxmClass());
+        LOGGER.debug("Field: " + notification.getMatch().getMatchEntries().get(0).getOxmMatchField());
+        LOGGER.debug("Datasize: " + notification.getData().length);
     }
 
     @Override

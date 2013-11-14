@@ -19,7 +19,7 @@ import com.google.common.util.concurrent.SettableFuture;
 public class SimpleClientHandler extends ChannelInboundHandlerAdapter {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(SimpleClientHandler.class);
-    private static final int OFP_HEADER_LENGTH = 8;
+    private static final int LENGTH_INDEX_IN_HEADER = 2;
     private SettableFuture<Boolean> isOnlineFuture;
     protected ScenarioHandler scenarioHandler;
 
@@ -34,18 +34,13 @@ public class SimpleClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        LOGGER.info("SimpleClientHandler - start of read");
         ByteBuf bb = (ByteBuf) msg;
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("<< " + ByteBufUtils.byteBufToHexString(bb));
         }
-        
-        if (bb.readableBytes() < OFP_HEADER_LENGTH) {
-            LOGGER.debug("too few bytes received: "+bb.readableBytes()+" - wait for next data portion");
-            return;
-        }
-        int msgSize = bb.getUnsignedShort(2);
-        byte[] message = new byte[msgSize];
+        int length = bb.getUnsignedShort(LENGTH_INDEX_IN_HEADER);
+        LOGGER.info("SimpleClientHandler - start of read");
+        byte[] message = new byte[length];
         bb.readBytes(message);
         scenarioHandler.addOfMsg(message);
         LOGGER.info("end of read");
