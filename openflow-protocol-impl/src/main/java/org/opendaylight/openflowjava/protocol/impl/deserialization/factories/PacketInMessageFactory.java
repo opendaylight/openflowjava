@@ -10,8 +10,6 @@ import org.opendaylight.openflowjava.protocol.impl.util.MatchDeserializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketInMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketInMessageBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author michal.polkorab
@@ -21,9 +19,6 @@ public class PacketInMessageFactory implements OFDeserializer<PacketInMessage> {
 
     private static PacketInMessageFactory instance;
     private static final byte PADDING_IN_PACKET_IN_HEADER = 2;
-    
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(PacketInMessageFactory.class);
     
     private PacketInMessageFactory() {
         // Singleton
@@ -53,7 +48,6 @@ public class PacketInMessageFactory implements OFDeserializer<PacketInMessage> {
         builder.setCookie(new BigInteger(cookie));
         builder.setMatch(MatchDeserializer.createMatch(rawMessage)); 
         rawMessage.skipBytes(PADDING_IN_PACKET_IN_HEADER);
-        LOGGER.info("readablebytes: " + rawMessage.readableBytes());
         builder.setData(rawMessage.readBytes(rawMessage.readableBytes()).array());
         return builder.build();
     }

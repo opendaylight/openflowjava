@@ -120,30 +120,31 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         final byte PADDING_IN_FLOW_STATS_HEADER_02 = 6;
         MultipartReplyFlowBuilder flowBuilder = new MultipartReplyFlowBuilder();
         List<FlowStats> flowStatsList = new ArrayList<>();
-        FlowStatsBuilder flowStatsBuilder = new FlowStatsBuilder();
-        input.skipBytes(Short.SIZE / Byte.SIZE);
-        flowStatsBuilder.setTableId(input.readUnsignedByte());
-        input.skipBytes(PADDING_IN_FLOW_STATS_HEADER);
-        flowStatsBuilder.setMatchV10(OF10MatchDeserializer.createMatchV10(input));
-        flowStatsBuilder.setDurationSec(input.readUnsignedInt());
-        flowStatsBuilder.setDurationNsec(input.readUnsignedInt());
-        flowStatsBuilder.setPriority(input.readUnsignedShort());
-        flowStatsBuilder.setIdleTimeout(input.readUnsignedShort());
-        flowStatsBuilder.setHardTimeout(input.readUnsignedShort());
-        input.skipBytes(PADDING_IN_FLOW_STATS_HEADER_02);
-        byte[] cookie = new byte[Long.SIZE/Byte.SIZE];
-        input.readBytes(cookie);
-        flowStatsBuilder.setCookie(new BigInteger(cookie));
-        byte[] packetCount = new byte[Long.SIZE/Byte.SIZE];
-        input.readBytes(packetCount);
-        flowStatsBuilder.setPacketCount(new BigInteger(packetCount));
-        byte[] byteCount = new byte[Long.SIZE/Byte.SIZE];
-        input.readBytes(byteCount);
-        flowStatsBuilder.setByteCount(new BigInteger(byteCount));
-        flowStatsBuilder.setActionsList(OF10ActionsDeserializer.createActionsList(input));
-        flowStatsList.add(flowStatsBuilder.build());
-        flowBuilder.setFlowStats(new ArrayList<>(flowStatsList));
-        flowStatsList.clear();
+        while (input.readableBytes() > 0) {
+            FlowStatsBuilder flowStatsBuilder = new FlowStatsBuilder();
+            input.skipBytes(Short.SIZE / Byte.SIZE);
+            flowStatsBuilder.setTableId(input.readUnsignedByte());
+            input.skipBytes(PADDING_IN_FLOW_STATS_HEADER);
+            flowStatsBuilder.setMatchV10(OF10MatchDeserializer.createMatchV10(input));
+            flowStatsBuilder.setDurationSec(input.readUnsignedInt());
+            flowStatsBuilder.setDurationNsec(input.readUnsignedInt());
+            flowStatsBuilder.setPriority(input.readUnsignedShort());
+            flowStatsBuilder.setIdleTimeout(input.readUnsignedShort());
+            flowStatsBuilder.setHardTimeout(input.readUnsignedShort());
+            input.skipBytes(PADDING_IN_FLOW_STATS_HEADER_02);
+            byte[] cookie = new byte[Long.SIZE/Byte.SIZE];
+            input.readBytes(cookie);
+            flowStatsBuilder.setCookie(new BigInteger(cookie));
+            byte[] packetCount = new byte[Long.SIZE/Byte.SIZE];
+            input.readBytes(packetCount);
+            flowStatsBuilder.setPacketCount(new BigInteger(packetCount));
+            byte[] byteCount = new byte[Long.SIZE/Byte.SIZE];
+            input.readBytes(byteCount);
+            flowStatsBuilder.setByteCount(new BigInteger(byteCount));
+            flowStatsBuilder.setActionsList(OF10ActionsDeserializer.createActionsList(input));
+            flowStatsList.add(flowStatsBuilder.build());
+        }
+        flowBuilder.setFlowStats(flowStatsList);
         return flowBuilder.build();
     }
     
@@ -165,114 +166,95 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         final byte PADDING_IN_TABLE_HEADER = 3;
         final byte MAX_TABLE_NAME_LENGTH = 32;
         MultipartReplyTableBuilder builder = new MultipartReplyTableBuilder();
-        TableStatsBuilder tableStatsBuilder = new TableStatsBuilder();
         List<TableStats> tableStatsList = new ArrayList<>();
-        tableStatsBuilder.setTableId(input.readUnsignedByte());
-        input.skipBytes(PADDING_IN_TABLE_HEADER);
-        tableStatsBuilder.setName(input.readBytes(MAX_TABLE_NAME_LENGTH).toString());
-        tableStatsBuilder.setActiveCount(input.readUnsignedInt());
-        byte[] lookupCount = new byte[Long.SIZE/Byte.SIZE];
-        input.readBytes(lookupCount);
-        tableStatsBuilder.setLookupCount(new BigInteger(lookupCount));
-        byte[] matchedCount = new byte[Long.SIZE/Byte.SIZE];
-        input.readBytes(matchedCount);
-        tableStatsBuilder.setMatchedCount(new BigInteger(matchedCount));
-        tableStatsList.add(tableStatsBuilder.build());
-        builder.setTableStats(new ArrayList<>(tableStatsList));
-        tableStatsList.clear();
+        while (input.readableBytes() > 0) {
+            TableStatsBuilder tableStatsBuilder = new TableStatsBuilder();
+            tableStatsBuilder.setTableId(input.readUnsignedByte());
+            input.skipBytes(PADDING_IN_TABLE_HEADER);
+            tableStatsBuilder.setName(input.readBytes(MAX_TABLE_NAME_LENGTH).toString());
+            tableStatsBuilder.setActiveCount(input.readUnsignedInt());
+            byte[] lookupCount = new byte[Long.SIZE/Byte.SIZE];
+            input.readBytes(lookupCount);
+            tableStatsBuilder.setLookupCount(new BigInteger(lookupCount));
+            byte[] matchedCount = new byte[Long.SIZE/Byte.SIZE];
+            input.readBytes(matchedCount);
+            tableStatsBuilder.setMatchedCount(new BigInteger(matchedCount));
+            tableStatsList.add(tableStatsBuilder.build());
+        }
+        builder.setTableStats(tableStatsList);
         return builder.build();
     }
     
     private static MultipartReplyPortStats setPortStats(ByteBuf input) {
         final byte PADDING_IN_PORT_STATS_HEADER = 6;
         MultipartReplyPortStatsBuilder builder = new MultipartReplyPortStatsBuilder();
-        PortStatsBuilder portStatsBuilder = new PortStatsBuilder();
         List<PortStats> portStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
+            PortStatsBuilder portStatsBuilder = new PortStatsBuilder();
             portStatsBuilder.setPortNo((long) input.readUnsignedShort());
             input.skipBytes(PADDING_IN_PORT_STATS_HEADER);
-            
             byte[] rxPackets = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(rxPackets);
             portStatsBuilder.setRxPackets(new BigInteger(rxPackets));
-            
             byte[] txPackets = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(txPackets);
             portStatsBuilder.setTxPackets(new BigInteger(txPackets));
-            
             byte[] rxBytes = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(rxBytes);
             portStatsBuilder.setRxBytes(new BigInteger(rxBytes));
-            
             byte[] txBytes = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(txBytes);
             portStatsBuilder.setTxBytes(new BigInteger(txBytes));
-            
             byte[] rxDropped = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(rxDropped);
             portStatsBuilder.setRxDropped(new BigInteger(rxDropped));
-            
             byte[] txDropped = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(txDropped);
             portStatsBuilder.setTxDropped(new BigInteger(txDropped));
-            
             byte[] rxErrors = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(rxErrors);
             portStatsBuilder.setRxErrors(new BigInteger(rxErrors));
-            
             byte[] txErrors = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(txErrors);
             portStatsBuilder.setTxErrors(new BigInteger(txErrors));
-            
             byte[] rxFrameErr = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(rxFrameErr);
             portStatsBuilder.setRxFrameErr(new BigInteger(rxFrameErr));
-            
             byte[] rxOverErr = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(rxOverErr);
             portStatsBuilder.setRxOverErr(new BigInteger(rxOverErr));
-            
             byte[] rxCrcErr = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(rxCrcErr);
             portStatsBuilder.setRxCrcErr(new BigInteger(rxCrcErr));
-            
             byte[] collisions = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(collisions);
             portStatsBuilder.setCollisions(new BigInteger(collisions));
-            
         }
-        builder.setPortStats(new ArrayList<>(portStatsList));
-        portStatsList.clear();
+        builder.setPortStats(portStatsList);
         return builder.build();
     }
     
     private static MultipartReplyQueue setQueue(ByteBuf input) {
         final byte PADDING_IN_QUEUE_HEADER = 2;
         MultipartReplyQueueBuilder builder = new MultipartReplyQueueBuilder();
-        QueueStatsBuilder queueStatsBuilder = new QueueStatsBuilder();
         List<QueueStats> queueStatsList = new ArrayList<>();
-        
         while (input.readableBytes() > 0) {
+            QueueStatsBuilder queueStatsBuilder = new QueueStatsBuilder();
             queueStatsBuilder.setPortNo((long) input.readUnsignedShort());
             input.skipBytes(PADDING_IN_QUEUE_HEADER);
             queueStatsBuilder.setQueueId(input.readUnsignedInt());
-
             byte[] txBytes = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(txBytes);
             queueStatsBuilder.setTxBytes(new BigInteger(txBytes));
-
             byte[] txPackets = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(txPackets);
             queueStatsBuilder.setTxPackets(new BigInteger(txPackets));
-
             byte[] txErrors = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(txErrors);
             queueStatsBuilder.setTxErrors(new BigInteger(txErrors));
-
             queueStatsList.add(queueStatsBuilder.build());
         }
-        builder.setQueueStats(new ArrayList<>(queueStatsList));
-        queueStatsList.clear();
+        builder.setQueueStats(queueStatsList);
         return builder.build();
     }
     

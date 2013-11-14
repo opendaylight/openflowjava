@@ -36,7 +36,6 @@ public class PortModInputMessageFactoryTest {
         BufferHelper.setupHeader(builder);
         builder.setPortNo(new PortNumber(9L));
         builder.setHwAddress(new MacAddress("08002700B0EB"));
-        //TODO - fix test
         builder.setConfig(new PortConfig(true, false, true, false));
         builder.setMask(new PortConfig(false, true, false, true));
         builder.setAdvertise(new PortFeatures(true, false, false, false,

@@ -393,8 +393,7 @@ public class MultipartRequestMessageFactoryTest {
      * @throws Exception
      * Testing of {@link MultipartRequestMessageFactory} for correct translation from POJO
      */
-    //@Test
-    //TODO - fix test
+    @Test
     public void testMultipartRequestExperimenterMessageFactory() throws Exception {
         MultipartRequestMessageBuilder builder = new MultipartRequestMessageBuilder();
         BufferHelper.setupHeader(builder);
@@ -438,7 +437,7 @@ public class MultipartRequestMessageFactoryTest {
     public void testMultipartRequestTableFeaturesMessageFactory() throws Exception {
         MultipartRequestMessageBuilder builder = new MultipartRequestMessageBuilder();
         BufferHelper.setupHeader(builder);
-        builder.setType(MultipartType.forValue(0xffff));
+        builder.setType(MultipartType.forValue(12));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestTableFeatures());
         MultipartRequestMessage message = builder.build();

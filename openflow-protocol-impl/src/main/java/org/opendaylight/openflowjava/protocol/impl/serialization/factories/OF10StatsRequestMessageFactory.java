@@ -10,6 +10,7 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.OF10MatchSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.MultipartRequestBody;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestAggregate;
@@ -49,7 +50,6 @@ public class OF10StatsRequestMessageFactory implements OFSerializer<MultipartReq
         ByteBufUtils.writeOFHeader(instance, message, out);
         out.writeShort(message.getType().getIntValue());
         out.writeShort(createMultipartRequestFlagsBitmask(message.getFlags()));
-        
         if (message.getMultipartRequestBody() instanceof MultipartRequestFlow) {
             encodeFlowBody(message.getMultipartRequestBody(), out);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestAggregate) {
@@ -65,12 +65,42 @@ public class OF10StatsRequestMessageFactory implements OFSerializer<MultipartReq
     
     @Override
     public int computeLength(MultipartRequestMessage message) {
-        // TODO
-        return MESSAGE_LENGTH;
+        return MESSAGE_LENGTH + computeBodyLength(message);
     }
     @Override
     public byte getMessageType() {
         return MESSAGE_TYPE;
+    }
+    
+    /**
+     * 
+     * @param message
+     * @return length of MultipartRequestMessage
+     */
+    public int computeBodyLength(MultipartRequestMessage message) {
+        int length = 0;
+        MultipartType type = message.getType();
+        if (type.equals(MultipartType.OFPMPFLOW)) {
+            final byte FLOW_BODY_LENGTH = 44;
+            length += FLOW_BODY_LENGTH;
+        } else if (type.equals(MultipartType.OFPMPAGGREGATE)) {
+            final byte AGGREGATE_BODY_LENGTH = 44;
+            length += AGGREGATE_BODY_LENGTH;
+        } else if (type.equals(MultipartType.OFPMPPORTSTATS)) {
+            final byte PORT_STATS_BODY_LENGTH = 8;
+            length += PORT_STATS_BODY_LENGTH;
+        } else if (type.equals(MultipartType.OFPMPQUEUE)) {
+            final byte QUEUE_BODY_LENGTH = 8;
+            length += QUEUE_BODY_LENGTH;
+        } else if (type.equals(MultipartType.OFPMPEXPERIMENTER)) {
+            final byte EXPERIMENTER_BODY_LENGTH = 4;
+            MultipartRequestExperimenter body = (MultipartRequestExperimenter) message.getMultipartRequestBody();
+            length += EXPERIMENTER_BODY_LENGTH;
+            if (body.getData() != null) {
+                length += body.getData().length;
+            }
+        }
+        return length;
     }
     
     private static int createMultipartRequestFlagsBitmask(MultipartRequestFlags flags) {

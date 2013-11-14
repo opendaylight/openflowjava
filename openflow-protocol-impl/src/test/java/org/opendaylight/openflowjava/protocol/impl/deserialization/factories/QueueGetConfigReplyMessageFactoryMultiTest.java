@@ -9,6 +9,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.RateQueueProperty;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.RateQueuePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.QueueId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.QueueProperties;
@@ -28,26 +30,28 @@ public class QueueGetConfigReplyMessageFactoryMultiTest {
      * Testing of {@link QueueGetConfigReplyMessageFactory} for correct
      * translation into POJO
      */
-    //@Test
- // TODO - fix test
+    @Test
     public void test() {
         ByteBuf bb = BufferHelper.buildBuffer("00 01 02 03 " + // port
                 "00 00 00 00 " + // padding
                 "00 00 00 01 " + // queueId
                 "00 00 00 01 " + // port
-                "00 00 00 00 00 00 00 00 " + // pad
-                "00 01 " + // property
+                "00 20 " + // length
+                "00 00 00 00 00 00 " + // pad
+                "00 02 " + // property
+                "00 10 " + // length
+                "00 00 00 00 " + // pad
+                "00 05 " + // rate
                 "00 00 00 00 00 00 " + // pad
                 "00 00 00 02 " + // queueId
                 "00 00 00 02 " + // port
-                "00 00 00 00 00 00 00 00 " + // pad
-                "00 01 " + // property
+                "00 20 " + // length
                 "00 00 00 00 00 00 " + // pad
-                "00 00 00 03 " + // queueId
-                "00 00 00 03 " + // port
-                "00 00 00 00 00 00 00 00 " + // pad
-                "00 01 " + // property
-                "00 00 00 00 00 00" // pad
+                "00 02 " + // property
+                "00 10 " + // length
+                "00 00 00 00 " + // pad
+                "00 05 " + // rate
+                "00 00 00 00 00 00 " // pad
         );
 
         GetQueueConfigOutput builtByFactory = BufferHelper.decodeV13(
@@ -55,14 +59,13 @@ public class QueueGetConfigReplyMessageFactoryMultiTest {
 
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong port", 66051L, builtByFactory.getPort().getValue().longValue());
-        Assert.assertEquals("Wrong queues", builtByFactory.getQueues(),
-                createQueuesList());
+        Assert.assertEquals("Wrong queues", createQueuesList(), builtByFactory.getQueues());
     }
 
     private static List<Queues> createQueuesList() {
         List<Queues> queuesList = new ArrayList<>();
-        QueuesBuilder qb = new QueuesBuilder();
-        for (int i = 1; i <= 3; i++) {
+        for (int i = 1; i < 3; i++) {
+            QueuesBuilder qb = new QueuesBuilder();
             qb.setQueueId(new QueueId((long) i));
             qb.setPort(new PortNumber((long) i));
             qb.setQueueProperty(createPropertiesList());
@@ -74,7 +77,10 @@ public class QueueGetConfigReplyMessageFactoryMultiTest {
     private static List<QueueProperty> createPropertiesList() {
         List<QueueProperty> propertiesList = new ArrayList<>();
         QueuePropertyBuilder pb = new QueuePropertyBuilder();
-        pb.setProperty(QueueProperties.forValue(1));
+        pb.setProperty(QueueProperties.forValue(2));
+        RateQueuePropertyBuilder rateBuilder = new RateQueuePropertyBuilder();
+        rateBuilder.setRate(5);
+        pb.addAugmentation(RateQueueProperty.class, rateBuilder.build());
         propertiesList.add(pb.build());
         return propertiesList;
     }

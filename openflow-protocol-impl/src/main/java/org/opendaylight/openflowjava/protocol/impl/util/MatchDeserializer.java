@@ -130,8 +130,7 @@ public abstract class MatchDeserializer {
     private static final byte SIZE_OF_SHORT_IN_BYTES = Short.SIZE / Byte.SIZE;
     private static final byte SIZE_OF_BYTE_IN_BYTES = Byte.SIZE / Byte.SIZE;
     private static final byte SIZE_OF_IPV6_ADDRESS_IN_BYTES = (8 * Short.SIZE) / Byte.SIZE;
-    private static List<MatchEntries> matchEntriesList = new ArrayList<>();
-    private static MatchEntriesBuilder matchEntriesBuilder = new MatchEntriesBuilder(); 
+    
     
     /**
      * Creates match
@@ -143,7 +142,6 @@ public abstract class MatchDeserializer {
             MatchBuilder builder = new MatchBuilder();
             int type = in.readUnsignedShort();
             int length = in.readUnsignedShort();
-            LOGGER.debug("length: " + length);
             switch (type) {
             case 0:
                 builder.setType(StandardMatchType.class);
@@ -169,9 +167,24 @@ public abstract class MatchDeserializer {
      * @param matchLength to infer size of array
      * @return MatchEntriesList
      */
+    public static List<MatchEntries> createMatchEntry(ByteBuf in, int matchLength) {
+        return createMatchEntriesInternal(in, matchLength, true);
+    }
+    
+    /**
+     * @param in input ByteBuf
+     * @param matchLength to infer size of array
+     * @return MatchEntriesList
+     */
     public static List<MatchEntries> createMatchEntries(ByteBuf in, int matchLength) {
+        return createMatchEntriesInternal(in, matchLength, false);
+    }
+    
+    private static List<MatchEntries> createMatchEntriesInternal(ByteBuf in, int matchLength, boolean oneEntry) {
+        List<MatchEntries> matchEntriesList = new ArrayList<>();
         int currLength = 0;
         while(currLength < matchLength) {
+            MatchEntriesBuilder matchEntriesBuilder = new MatchEntriesBuilder(); 
             switch (in.readUnsignedShort()) { 
             case 0x0000:
                         matchEntriesBuilder.setOxmClass(Nxm0Class.class);
@@ -476,6 +489,12 @@ public abstract class MatchDeserializer {
                 break;
             }
           matchEntriesList.add(matchEntriesBuilder.build());
+          if (oneEntry) {
+              break;
+          }
+        }
+        if ((matchLength - currLength) > 0) {
+            in.skipBytes(matchLength - currLength);
         }
         return matchEntriesList;
     }

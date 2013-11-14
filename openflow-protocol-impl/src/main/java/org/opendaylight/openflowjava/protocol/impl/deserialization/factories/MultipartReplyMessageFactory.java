@@ -105,6 +105,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.table.features.TableFeaturesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.TableFeatureProperties;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.TableFeaturePropertiesBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author timotej.kubas
@@ -112,9 +114,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class MultipartReplyMessageFactory implements OFDeserializer<MultipartReplyMessage> {
 
-    private static MultipartReplyMessageFactory instance;
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(MultipartReplyMessageFactory.class);
     private static final byte PADDING_IN_MULTIPART_REPLY_HEADER = 4;
     
+    private static MultipartReplyMessageFactory instance;
+
     private MultipartReplyMessageFactory() {
         // singleton
     }
@@ -209,8 +214,8 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         final byte PADDING_IN_FLOW_STATS_HEADER_02 = 4;
         MultipartReplyFlowBuilder flowBuilder = new MultipartReplyFlowBuilder();
         List<FlowStats> flowStatsList = new ArrayList<>();
-        FlowStatsBuilder flowStatsBuilder = new FlowStatsBuilder();
         while (input.readableBytes() > 0) {
+            FlowStatsBuilder flowStatsBuilder = new FlowStatsBuilder();
             input.skipBytes(Short.SIZE / Byte.SIZE);
             flowStatsBuilder.setTableId(input.readUnsignedByte());
             input.skipBytes(PADDING_IN_FLOW_STATS_HEADER_01);
@@ -234,8 +239,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             flowStatsBuilder.setInstructions(InstructionsDeserializer.createInstructions(input, input.readableBytes()));
             flowStatsList.add(flowStatsBuilder.build());
         }
-        flowBuilder.setFlowStats(new ArrayList<>(flowStatsList));
-        flowStatsList.clear();
+        flowBuilder.setFlowStats(flowStatsList);
         return flowBuilder.build();
     }
     
@@ -265,9 +269,9 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     private static MultipartReplyTable setTable(ByteBuf input) {
         final byte PADDING_IN_TABLE_HEADER = 3;
         MultipartReplyTableBuilder builder = new MultipartReplyTableBuilder();
-        TableStatsBuilder tableStatsBuilder = new TableStatsBuilder();
         List<TableStats> tableStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
+            TableStatsBuilder tableStatsBuilder = new TableStatsBuilder();
             tableStatsBuilder.setTableId(input.readUnsignedByte());
             input.skipBytes(PADDING_IN_TABLE_HEADER);
             tableStatsBuilder.setActiveCount(input.readUnsignedInt());
@@ -279,8 +283,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             tableStatsBuilder.setMatchedCount(new BigInteger(matchedCount));
             tableStatsList.add(tableStatsBuilder.build());
         }
-        builder.setTableStats(new ArrayList<>(tableStatsList));
-        tableStatsList.clear();
+        builder.setTableStats(tableStatsList);
         return builder.build();
     }
     
@@ -374,96 +377,76 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     private static MultipartReplyPortStats setPortStats(ByteBuf input) {
         final byte PADDING_IN_PORT_STATS_HEADER = 4;
         MultipartReplyPortStatsBuilder builder = new MultipartReplyPortStatsBuilder();
-        PortStatsBuilder portStatsBuilder = new PortStatsBuilder();
         List<PortStats> portStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
+            PortStatsBuilder portStatsBuilder = new PortStatsBuilder();
             portStatsBuilder.setPortNo(input.readUnsignedInt());
             input.skipBytes(PADDING_IN_PORT_STATS_HEADER);
-            
             byte[] rxPackets = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(rxPackets);
             portStatsBuilder.setRxPackets(new BigInteger(rxPackets));
-            
             byte[] txPackets = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(txPackets);
             portStatsBuilder.setTxPackets(new BigInteger(txPackets));
-            
             byte[] rxBytes = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(rxBytes);
             portStatsBuilder.setRxBytes(new BigInteger(rxBytes));
-            
             byte[] txBytes = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(txBytes);
             portStatsBuilder.setTxBytes(new BigInteger(txBytes));
-            
             byte[] rxDropped = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(rxDropped);
             portStatsBuilder.setRxDropped(new BigInteger(rxDropped));
-            
             byte[] txDropped = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(txDropped);
             portStatsBuilder.setTxDropped(new BigInteger(txDropped));
-            
             byte[] rxErrors = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(rxErrors);
             portStatsBuilder.setRxErrors(new BigInteger(rxErrors));
-            
             byte[] txErrors = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(txErrors);
             portStatsBuilder.setTxErrors(new BigInteger(txErrors));
-            
             byte[] rxFrameErr = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(rxFrameErr);
             portStatsBuilder.setRxFrameErr(new BigInteger(rxFrameErr));
-            
             byte[] rxOverErr = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(rxOverErr);
             portStatsBuilder.setRxOverErr(new BigInteger(rxOverErr));
-            
             byte[] rxCrcErr = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(rxCrcErr);
             portStatsBuilder.setRxCrcErr(new BigInteger(rxCrcErr));
-            
             byte[] collisions = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(collisions);
             portStatsBuilder.setCollisions(new BigInteger(collisions));
-            
             portStatsBuilder.setDurationSec(input.readUnsignedInt());
             portStatsBuilder.setDurationNsec(input.readUnsignedInt());
             portStatsList.add(portStatsBuilder.build());
         }
-        builder.setPortStats(new ArrayList<>(portStatsList));
-        portStatsList.clear();
+        builder.setPortStats(portStatsList);
         return builder.build();
     }
     
     private static MultipartReplyQueue setQueue(ByteBuf input) {
         MultipartReplyQueueBuilder builder = new MultipartReplyQueueBuilder();
-        QueueStatsBuilder queueStatsBuilder = new QueueStatsBuilder();
         List<QueueStats> queueStatsList = new ArrayList<>();
-        
         while (input.readableBytes() > 0) {
+            QueueStatsBuilder queueStatsBuilder = new QueueStatsBuilder();
             queueStatsBuilder.setPortNo(input.readUnsignedInt());
             queueStatsBuilder.setQueueId(input.readUnsignedInt());
-
             byte[] txBytes = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(txBytes);
             queueStatsBuilder.setTxBytes(new BigInteger(txBytes));
-
             byte[] txPackets = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(txPackets);
             queueStatsBuilder.setTxPackets(new BigInteger(txPackets));
-
             byte[] txErrors = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(txErrors);
             queueStatsBuilder.setTxErrors(new BigInteger(txErrors));
-
             queueStatsBuilder.setDurationSec(input.readUnsignedInt());
             queueStatsBuilder.setDurationNsec(input.readUnsignedInt());
             queueStatsList.add(queueStatsBuilder.build());
         }
-        builder.setQueueStats(new ArrayList<>(queueStatsList));
-        queueStatsList.clear();
+        builder.setQueueStats(queueStatsList);
         return builder.build();
     }
     
@@ -472,18 +455,11 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         final byte PADDING_IN_GROUP_HEADER_02 = 4;
         final byte BUCKET_COUNTER_LENGTH = 16;
         final byte GROUP_BODY_LENGTH = 40;
-        int actualLength;
         MultipartReplyGroupBuilder builder = new MultipartReplyGroupBuilder();
-        GroupStatsBuilder groupStatsBuilder = new GroupStatsBuilder();
         List<GroupStats> groupStatsList = new ArrayList<>();
-        
-        BucketStatsBuilder bucketStatsBuilder = new BucketStatsBuilder();
-        List<BucketStats> bucketStatsList = new ArrayList<>();
-        
         while (input.readableBytes() > 0) {
+            GroupStatsBuilder groupStatsBuilder = new GroupStatsBuilder();
             int bodyLength = input.readUnsignedShort();
-            actualLength = 0;
-            
             input.skipBytes(PADDING_IN_GROUP_HEADER_01);
             groupStatsBuilder.setGroupId(input.readUnsignedInt());
             groupStatsBuilder.setRefCount(input.readUnsignedInt());
@@ -496,9 +472,10 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             groupStatsBuilder.setByteCount(new BigInteger(byteCount));
             groupStatsBuilder.setDurationSec(input.readUnsignedInt());
             groupStatsBuilder.setDurationNsec(input.readUnsignedInt());
-            actualLength = GROUP_BODY_LENGTH;
-            
+            int actualLength = GROUP_BODY_LENGTH;
+            List<BucketStats> bucketStatsList = new ArrayList<>();
             while (actualLength < bodyLength) {
+                BucketStatsBuilder bucketStatsBuilder = new BucketStatsBuilder();
                 byte[] packetCountBucket = new byte[Long.SIZE/Byte.SIZE];
                 input.readBytes(packetCountBucket);
                 bucketStatsBuilder.setPacketCount(new BigInteger(packetCountBucket));
@@ -506,15 +483,12 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                 input.readBytes(byteCountBucket);
                 bucketStatsBuilder.setByteCount(new BigInteger(byteCountBucket));
                 bucketStatsList.add(bucketStatsBuilder.build());
-
-                actualLength = actualLength + BUCKET_COUNTER_LENGTH;
+                actualLength += BUCKET_COUNTER_LENGTH;
             } 
-            groupStatsBuilder.setBucketStats(new ArrayList<>(bucketStatsList));
-            bucketStatsList.clear();
+            groupStatsBuilder.setBucketStats(bucketStatsList);
             groupStatsList.add(groupStatsBuilder.build());
         }
-        builder.setGroupStats(new ArrayList<>(groupStatsList));
-        groupStatsList.clear();
+        builder.setGroupStats(groupStatsList);
         return builder.build();
     }
     
@@ -523,14 +497,14 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         MultipartReplyMeterFeaturesBuilder builder = new MultipartReplyMeterFeaturesBuilder();
         builder.setMaxMeter(input.readUnsignedInt());
         builder.setBandTypes(MeterBandType.forValue(input.readInt()));
-        builder.setCapabilities(decodeMeterModFlags((int) input.readUnsignedInt()));
+        builder.setCapabilities(decodeMeterModFlags(input.readUnsignedInt()));
         builder.setMaxBands(input.readUnsignedByte());
         builder.setMaxColor(input.readUnsignedByte());
         input.skipBytes(PADDING_IN_METER_FEATURES_HEADER);
         return builder.build();
     }
     
-    private static MeterFlags decodeMeterModFlags(int input){
+    private static MeterFlags decodeMeterModFlags(long input){
         final Boolean _oFPMFKBPS = (input & (1 << 0)) != 0;
         final Boolean _oFPMFPKTPS = (input & (1 << 1)) != 0;
         final Boolean _oFPMFBURST = (input & (1 << 2)) != 0; 
@@ -542,15 +516,11 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         final byte PADDING_IN_METER_STATS_HEADER = 6;
         final byte METER_BAND_STATS_LENGTH = 16;
         final byte METER_BODY_LENGTH = 40;
-        int actualLength;
         MultipartReplyMeterBuilder builder = new MultipartReplyMeterBuilder();
         List<MeterStats> meterStatsList = new ArrayList<>();
-        MeterStatsBuilder meterStatsBuilder = new MeterStatsBuilder();
-        List<MeterBandStats> meterBandStatsList = new ArrayList<>();
-        MeterBandStatsBuilder meterBandStatsBuilder = new MeterBandStatsBuilder();
         while (input.readableBytes() > 0) {
+            MeterStatsBuilder meterStatsBuilder = new MeterStatsBuilder();
             meterStatsBuilder.setMeterId(input.readUnsignedInt());
-            actualLength = 0;
             int meterStatsBodyLength = input.readUnsignedShort();
             input.skipBytes(PADDING_IN_METER_STATS_HEADER);
             meterStatsBuilder.setFlowCount(input.readUnsignedInt());
@@ -562,88 +532,80 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             meterStatsBuilder.setByteInCount(new BigInteger(byteInCount));
             meterStatsBuilder.setDurationSec(input.readUnsignedInt());
             meterStatsBuilder.setDurationNsec(input.readUnsignedInt());
-            actualLength = METER_BODY_LENGTH;
-            
+            int actualLength = METER_BODY_LENGTH;
+            List<MeterBandStats> meterBandStatsList = new ArrayList<>();
             while (actualLength < meterStatsBodyLength) {
+                MeterBandStatsBuilder meterBandStatsBuilder = new MeterBandStatsBuilder();
                 byte[] packetBandCount = new byte[Long.SIZE/Byte.SIZE];
                 input.readBytes(packetBandCount);
                 meterBandStatsBuilder.setPacketBandCount(new BigInteger(packetBandCount));
                 byte[] byteBandCount = new byte[Long.SIZE/Byte.SIZE];
                 input.readBytes(byteBandCount);
                 meterBandStatsBuilder.setByteBandCount(new BigInteger(byteBandCount));
-                
                 meterBandStatsList.add(meterBandStatsBuilder.build());
-                actualLength = actualLength + METER_BAND_STATS_LENGTH;
+                actualLength += METER_BAND_STATS_LENGTH;
             }
-        
-            meterStatsBuilder.setMeterBandStats(new ArrayList<>(meterBandStatsList));
-            meterBandStatsList.clear();
+            meterStatsBuilder.setMeterBandStats(meterBandStatsList);
             meterStatsList.add(meterStatsBuilder.build());
         }
-        builder.setMeterStats(new ArrayList<>(meterStatsList));
-        meterStatsList.clear();
+        builder.setMeterStats(meterStatsList);
         return builder.build();
     }
     
     private static MultipartReplyMeterConfig setMeterConfig(ByteBuf input) {
-        final byte METER_BAND_LENGTH = 16;
         final byte METER_CONFIG_LENGTH = 8;
-        final byte bandLength = 2;
-        int actualLength;
+        final byte PADDING_IN_METER_BAND_DROP_HEADER = 4;
+        final byte PADDING_IN_METER_BAND_DSCP_HEADER = 3;
         MultipartReplyMeterConfigBuilder builder = new MultipartReplyMeterConfigBuilder();
         List<MeterConfig> meterConfigList = new ArrayList<>();
-        MeterConfigBuilder meterConfigBuilder = new MeterConfigBuilder();
-        List<Bands> bandsList = new ArrayList<>();
-        BandsBuilder bandsBuilder = new BandsBuilder();
-        
         while (input.readableBytes() > 0) {
+            MeterConfigBuilder meterConfigBuilder = new MeterConfigBuilder();
             int meterConfigBodyLength = input.readUnsignedShort();
-            actualLength = 0;
             meterConfigBuilder.setFlags(MeterModCommand.forValue(input.readUnsignedShort()));
             meterConfigBuilder.setMeterId(input.readUnsignedInt());
-            actualLength = METER_CONFIG_LENGTH;
-            
+            int actualLength = METER_CONFIG_LENGTH;
+            List<Bands> bandsList = new ArrayList<>();
             while (actualLength < meterConfigBodyLength) {
-                MeterBandDropBuilder bandDropBuilder = new MeterBandDropBuilder();
-                final byte PADDING_IN_METER_BAND_DROP_HEADER = 4;
-                MeterBandDscpRemarkBuilder bandDscpRemarkBuilder = new MeterBandDscpRemarkBuilder();
-                final byte PADDING_IN_METER_BAND_DSCP_HEADER = 3;
-                MeterBandExperimenterBuilder bandExperimenterBuilder = new MeterBandExperimenterBuilder(); 
+                BandsBuilder bandsBuilder = new BandsBuilder();
                 int bandType = input.readUnsignedShort();
                 switch (bandType) {
-                    case 1: bandDropBuilder.setType(MeterBandType.forValue(bandType));
-                            input.skipBytes(bandLength);
-                            bandDropBuilder.setRate(input.readUnsignedInt());
-                            bandDropBuilder.setBurstSize(input.readUnsignedInt());
-                            input.skipBytes(PADDING_IN_METER_BAND_DROP_HEADER);
-                            bandsBuilder.setMeterBand(bandDropBuilder.build());
-                            break;
-                    case 2: bandDscpRemarkBuilder.setType(MeterBandType.forValue(bandType));
-                            input.skipBytes(bandLength);
-                            bandDscpRemarkBuilder.setRate(input.readUnsignedInt());
-                            bandDscpRemarkBuilder.setBurstSize(input.readUnsignedInt());
-                            bandDscpRemarkBuilder.setPrecLevel(input.readUnsignedByte());
-                            input.skipBytes(PADDING_IN_METER_BAND_DSCP_HEADER);
-                            bandsBuilder.setMeterBand(bandDscpRemarkBuilder.build());
-                            break;
-                    case 0xFFFF: bandExperimenterBuilder.setType(MeterBandType.forValue(bandType));
-                                 input.skipBytes(bandLength);
-                                 bandExperimenterBuilder.setRate(input.readUnsignedInt());
-                                 bandExperimenterBuilder.setBurstSize(input.readUnsignedInt());
-                                 bandExperimenterBuilder.setExperimenter(input.readUnsignedInt());
-                                 bandsBuilder.setMeterBand(bandExperimenterBuilder.build());
-                                 break;
-                    default: break;
+                    case 1:
+                        MeterBandDropBuilder bandDropBuilder = new MeterBandDropBuilder();
+                        bandDropBuilder.setType(MeterBandType.forValue(bandType));
+                        actualLength += input.readUnsignedShort();
+                        bandDropBuilder.setRate(input.readUnsignedInt());
+                        bandDropBuilder.setBurstSize(input.readUnsignedInt());
+                        input.skipBytes(PADDING_IN_METER_BAND_DROP_HEADER);
+                        bandsBuilder.setMeterBand(bandDropBuilder.build());
+                        break;
+                    case 2:
+                        MeterBandDscpRemarkBuilder bandDscpRemarkBuilder = new MeterBandDscpRemarkBuilder();
+                        bandDscpRemarkBuilder.setType(MeterBandType.forValue(bandType));
+                        actualLength += input.readUnsignedShort();
+                        bandDscpRemarkBuilder.setRate(input.readUnsignedInt());
+                        bandDscpRemarkBuilder.setBurstSize(input.readUnsignedInt());
+                        bandDscpRemarkBuilder.setPrecLevel(input.readUnsignedByte());
+                        input.skipBytes(PADDING_IN_METER_BAND_DSCP_HEADER);
+                        bandsBuilder.setMeterBand(bandDscpRemarkBuilder.build());
+                        break;
+                    case 0xFFFF:
+                        MeterBandExperimenterBuilder bandExperimenterBuilder = new MeterBandExperimenterBuilder();
+                        bandExperimenterBuilder.setType(MeterBandType.forValue(bandType));
+                        actualLength += input.readUnsignedShort();
+                        bandExperimenterBuilder.setRate(input.readUnsignedInt());
+                        bandExperimenterBuilder.setBurstSize(input.readUnsignedInt());
+                        bandExperimenterBuilder.setExperimenter(input.readUnsignedInt());
+                        bandsBuilder.setMeterBand(bandExperimenterBuilder.build());
+                        break;
+                    default:
+                        break;
                 }
                 bandsList.add(bandsBuilder.build());
-                actualLength = actualLength + METER_BAND_LENGTH;
             }
-            meterConfigBuilder.setBands(new ArrayList<>(bandsList));
-            bandsList.clear();
+            meterConfigBuilder.setBands(bandsList);
             meterConfigList.add(meterConfigBuilder.build());
         }
-        builder.setMeterConfig(new ArrayList<>(meterConfigList));
-        meterConfigList.clear();
+        builder.setMeterConfig(meterConfigList);
         return builder.build();
     }
     
@@ -651,7 +613,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         MultipartReplyExperimenterBuilder builder = new MultipartReplyExperimenterBuilder();
         builder.setExperimenter(input.readUnsignedInt());
         builder.setExpType(input.readUnsignedInt());
-        byte[] data = new byte[Long.SIZE/Byte.SIZE];
+        byte[] data = new byte[input.readableBytes()];
         input.readBytes(data);
         builder.setData(data);
         return builder.build();
@@ -664,9 +626,8 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         final byte MAX_PORT_NAME_LEN = 16;
         MultipartReplyPortDescBuilder builder = new MultipartReplyPortDescBuilder();
         List<Ports> portsList = new ArrayList<>();
-        PortsBuilder portsBuilder = new PortsBuilder();
-        
         while (input.readableBytes() > 0) {
+            PortsBuilder portsBuilder = new PortsBuilder();
             portsBuilder.setPortNo(input.readUnsignedInt());
             input.skipBytes(PADDING_IN_PORT_DESC_HEADER_01);
             StringBuffer macToString = new StringBuffer();
@@ -677,12 +638,10 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             }
             portsBuilder.setHwAddr(new MacAddress(macToString.toString()));
             input.skipBytes(PADDING_IN_PORT_DESC_HEADER_02);
-            
             byte[] portNameBytes = new byte[MAX_PORT_NAME_LEN];
             input.readBytes(portNameBytes);
             String portName = new String(portNameBytes);
             portsBuilder.setName(portName.trim());
-            
             portsBuilder.setConfig(createPortConfig(input.readUnsignedInt()));
             portsBuilder.setState(createPortState(input.readUnsignedInt()));
             portsBuilder.setCurrentFeatures(createPortFeatures(input.readUnsignedInt()));
@@ -693,9 +652,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             portsBuilder.setMaxSpeed(input.readUnsignedInt());
             portsList.add(portsBuilder.build());
         }
-        
-        builder.setPorts(new ArrayList<>(portsList));
-        portsList.clear();
+        builder.setPorts(portsList);
         return builder.build();
     }
     
@@ -797,41 +754,43 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         final byte PADDING_IN_GROUP_DESC_HEADER = 1;
         final byte PADDING_IN_BUCKETS_HEADER = 4;
         final byte GROUP_DESC_HEADER_LENGTH = 8;
-        int actualLength;
-        int bucketsLength = 0;
-        int bucketsCurrentLength = 0;
-        int bodyLength = 0;
+        final byte BUCKETS_HEADER_LENGTH = 16;
         MultipartReplyGroupDescBuilder builder = new MultipartReplyGroupDescBuilder();
-        GroupDescBuilder groupDescBuilder = new GroupDescBuilder();
         List<GroupDesc> groupDescsList = new ArrayList<>();
-        BucketsListBuilder bucketsBuilder = new BucketsListBuilder();
-        List<BucketsList> bucketsList = new ArrayList<>();
-        List<ActionsList> actionsList = new ArrayList<>();
+        LOGGER.info("readablebytes pred: " + input.readableBytes());
         while (input.readableBytes() > 0) {
-            bodyLength = input.readUnsignedShort();
+            LOGGER.info("readablebytes po: " + input.readableBytes());
+            GroupDescBuilder groupDescBuilder = new GroupDescBuilder();
+            int bodyLength = input.readUnsignedShort();
+            LOGGER.info("bodylength: " + bodyLength);
             groupDescBuilder.setType(GroupType.forValue(input.readUnsignedByte()));
             input.skipBytes(PADDING_IN_GROUP_DESC_HEADER);
             groupDescBuilder.setGroupId(input.readUnsignedInt());
-            actualLength = GROUP_DESC_HEADER_LENGTH;
+            int actualLength = GROUP_DESC_HEADER_LENGTH;
+            List<BucketsList> bucketsList = new ArrayList<>();
             while (actualLength < bodyLength) {
-                bucketsLength = input.readUnsignedShort();
+                System.out.println("cyklim v buckets");
+                BucketsListBuilder bucketsBuilder = new BucketsListBuilder();
+                int bucketsLength = input.readUnsignedShort();
                 bucketsBuilder.setWeight(input.readUnsignedShort());
                 bucketsBuilder.setWatchPort(new PortNumber(input.readUnsignedInt()));
                 bucketsBuilder.setWatchGroup(input.readUnsignedInt());
                 input.skipBytes(PADDING_IN_BUCKETS_HEADER);
-                bucketsCurrentLength = bucketsLength;
-                actionsList = ActionsDeserializer.createActionsList(input, bucketsLength);
-                bucketsBuilder.setActionsList(new ArrayList<>(actionsList));
-                actionsList.clear();
+                System.out.println("bucketslength: " + bucketsLength);
+                System.out.println("actuallength: " + actualLength);
+                System.out.println("bodylength: " + bodyLength);
+                LOGGER.info("length - length: " + (bucketsLength - BUCKETS_HEADER_LENGTH));
+                List<ActionsList> actionsList = ActionsDeserializer
+                        .createActionsList(input, bucketsLength - BUCKETS_HEADER_LENGTH);
+                LOGGER.info("actions size: " + actionsList.size());
+                bucketsBuilder.setActionsList(actionsList);
                 bucketsList.add(bucketsBuilder.build());
-                actualLength = actualLength + bucketsCurrentLength;
+                actualLength += bucketsLength;
             }
-            groupDescBuilder.setBucketsList(new ArrayList<>(bucketsList));
-            bucketsList.clear();
+            groupDescBuilder.setBucketsList(bucketsList);
             groupDescsList.add(groupDescBuilder.build());
         }
-        builder.setGroupDesc(new ArrayList<>(groupDescsList));
-        groupDescsList.clear();
+        builder.setGroupDesc(groupDescsList);
         return builder.build();
     }
     

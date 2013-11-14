@@ -11,7 +11,6 @@ import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthertypeAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.GroupIdAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MplsTtlAction;
@@ -24,7 +23,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.CopyTtlOut;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.DecMplsTtl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.DecNwTtl;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Group;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Output;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.PopMpls;
@@ -42,7 +40,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeatures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortState;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.InPhyPort;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.InPort;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
@@ -62,6 +59,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyPortStats;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyQueue;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyTable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author timotej.kubas
@@ -69,6 +68,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class MultipartReplyMessageFactoryTest {
 
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(MultipartReplyMessageFactoryTest.class);
+    
     /**
      * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
      *//*
@@ -851,11 +853,10 @@ public class MultipartReplyMessageFactoryTest {
                                                 message.getPorts().get(0).getHwAddr());
         Assert.assertEquals("Wrong portName", "SampleText", 
                                                 message.getPorts().get(0).getName());
-        //TODO - fix test
-        //Assert.assertEquals("Wrong portConfig", new PortConfig(false, true, false, true), 
-        //                                        message.getPorts().get(0).getConfig());
-        //Assert.assertEquals("Wrong portState", new PortState(true, false, true), 
-        //                                       message.getPorts().get(0).getState());
+        Assert.assertEquals("Wrong portConfig", new PortConfig(false, true, false, true), 
+                message.getPorts().get(0).getConfig());
+        Assert.assertEquals("Wrong portState", new PortState(false, true, true),
+                                               message.getPorts().get(0).getState());
         Assert.assertEquals("Wrong currentFeatures", new PortFeatures(true, false, false, false,
                                                                       false, false, false, true, 
                                                                       false, false, false, false, 
@@ -911,7 +912,6 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 08 "+//copyTTLIntLen
                                               "00 00 00 00"//copyTTLInPad
                                               );
-        
         MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
@@ -1156,15 +1156,14 @@ public class MultipartReplyMessageFactoryTest {
      * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
      * Test covers bodies of actions NW TTL, Experimenter
      */
-    //@Test
-    // TODO - fix test
+    @Test
     public void testMultipartReplyGroupDescBody04(){
         ByteBuf bb = BufferHelper.buildBuffer("00 07 00 01 00 00 00 00 "+
-                                              "00 3C "+//len
+                                              "00 30 "+//len
                                               "01 "+//type
                                               "00 "+//pad
                                               "00 00 00 08 "+//groupId
-                                              "00 34 "+//bucketLen
+                                              "00 28 "+//bucketLen
                                               "00 06 "+//bucketWeight
                                               "00 00 00 05 "+//bucketWatchPort
                                               "00 00 00 04 "+//bucketWatchGroup
@@ -1173,21 +1172,14 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 08 "+//nwTTlLen
                                               "0E "+//nwTTlnwTTL
                                               "00 00 00 "+//nwTTlPad
-                                              "FF FF "+//experimenterType
-                                              "00 08 "+//experimenterLen
-                                              "00 01 02 03 "+//experimenterExperimenter
                                               "00 19 "+//setFieldType
-                                              "00 14 "+//setFieldLen
+                                              "00 10 "+//setFieldLen
                                               "80 00 "+//setFieldOXMClass
                                               "00 "+//setFieldOXMField
                                               "04 "+//setFieldOXMLength
-                                              "00 00 00 FF "+//setFieldPort
-                                              
-                                              "80 00 "+//setFieldOXMClass
-                                              "03 "+//setFieldOXMField
-                                              "04 "+//setFieldOXMLength
-                                              "00 00 0F FF"//setFieldPort
-                                              );
+                                              "00 00 00 FF "+ //setFieldPort
+                                              "00 00 00 00"
+                );
         
         MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
         
@@ -1217,43 +1209,21 @@ public class MultipartReplyMessageFactoryTest {
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
                 getAction().getAugmentation(NwTtlAction.class).getNwTtl().intValue());
         
-        Assert.assertEquals("Wrong experimenterType", Experimenter.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
-                getAction().getType());
-        
-        Assert.assertEquals("Wrong experimenterExperimenter", 66051, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
-                getAction().getAugmentation(ExperimenterAction.class).getExperimenter().intValue());
-        
         Assert.assertEquals("Wrong setFieldType", SetField.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
                 getAction().getType());
         
         Assert.assertEquals("Wrong setFieldOXMClass", OpenflowBasicClass.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
                 getAction().getAugmentation(OxmFieldsAction.class).getMatchEntries().get(0).getOxmClass());
         
         Assert.assertEquals("Wrong setFieldOXMField", InPort.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
                 getAction().getAugmentation(OxmFieldsAction.class).getMatchEntries().get(0).getOxmMatchField());
         
-        Assert.assertEquals("Wrong setFieldOXMField", 255, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
+        Assert.assertEquals("Wrong setFieldOXMValue", 255, 
+                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
                 getAction().getAugmentation(OxmFieldsAction.class).getMatchEntries().get(0).
-                getAugmentation(PortNumberMatchEntry.class).getPortNumber().getValue().intValue());
-        
-        
-        Assert.assertEquals("Wrong setFieldOXMClass", OpenflowBasicClass.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
-                getAction().getAugmentation(OxmFieldsAction.class).getMatchEntries().get(1).getOxmClass());
-        
-        Assert.assertEquals("Wrong setFieldOXMField", InPhyPort.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
-                getAction().getAugmentation(OxmFieldsAction.class).getMatchEntries().get(1).getOxmMatchField());
-        
-        Assert.assertEquals("Wrong setFieldOXMField", 4095, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
-                getAction().getAugmentation(OxmFieldsAction.class).getMatchEntries().get(1).
                 getAugmentation(PortNumberMatchEntry.class).getPortNumber().getValue().intValue());
     }
 }

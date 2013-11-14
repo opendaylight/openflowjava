@@ -34,8 +34,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetQueue;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.ActionsList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.actions.list.Action;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.MatchEntries;
 
 /**
  * Class for easy serialization of actions
@@ -44,8 +43,6 @@ import org.slf4j.LoggerFactory;
  * @author timotej.kubas
  */
 public abstract class ActionsSerializer {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ActionsSerializer.class);
 
     /**
      * Encodes actions to ByteBuf
@@ -199,11 +196,9 @@ public abstract class ActionsSerializer {
     
     private static void encodeSetFieldAction(Action action, ByteBuf outBuffer) {
         final int SET_FIELD_CODE = 25;
-        final byte SET_FIELD_FIELDS_LENGTH = 4; // only type and length
-        // TODO - figure out definition from testing + check length
+        final byte SET_FIELD_HEADER_LENGTH = 4; // only type and length
         OxmFieldsAction oxmField = action.getAugmentation(OxmFieldsAction.class);
-        int length = MatchSerializer.computeMatchEntriesLength(oxmField.getMatchEntries()) + SET_FIELD_FIELDS_LENGTH;
-        LOGGER.warn("Received set-field action - possible wrong or no implementation");
+        int length = MatchSerializer.computeMatchEntriesLength(oxmField.getMatchEntries()) + SET_FIELD_HEADER_LENGTH;
         outBuffer.writeShort(SET_FIELD_CODE);
         int paddingRemainder = length % EncodeConstants.PADDING;
         if (paddingRemainder != 0) {
@@ -257,12 +252,21 @@ public abstract class ActionsSerializer {
     public static int computeLengthOfActions(List<ActionsList> actionsList) {
         final byte OUTPUT_LENGTH = 16;
         final byte LENGTH_OF_OTHER_ACTIONS = 8;
+        final byte ACTION_HEADER_LENGTH = 4;
         int lengthOfActions = 0;
         if (actionsList != null) {
             for (ActionsList list : actionsList) {
                 Action action = list.getAction();
                 if (action.getType().equals(Output.class)) {
                     lengthOfActions += OUTPUT_LENGTH;
+                } else if (action.getType().equals(SetField.class)){
+                    List<MatchEntries> entries = action.getAugmentation(OxmFieldsAction.class).getMatchEntries();
+                    int actionLength = ACTION_HEADER_LENGTH + MatchSerializer.computeMatchEntriesLength(entries);
+                    lengthOfActions += actionLength;
+                    int paddingRemainder = actionLength % EncodeConstants.PADDING;
+                    if ((paddingRemainder) != 0) {
+                        lengthOfActions += EncodeConstants.PADDING - paddingRemainder;
+                    }
                 } else {
                     lengthOfActions += LENGTH_OF_OTHER_ACTIONS;
                 }

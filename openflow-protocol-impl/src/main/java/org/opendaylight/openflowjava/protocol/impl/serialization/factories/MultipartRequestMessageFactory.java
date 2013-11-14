@@ -21,6 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.ActionsList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.Instructions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableFeaturesPropType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.MatchEntries;
@@ -94,13 +95,100 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
     
     @Override
     public int computeLength(MultipartRequestMessage message) {
-        // TODO
-        return MESSAGE_LENGTH;
+        return MESSAGE_LENGTH + computeBodyLength(message);
     }
     @Override
     public byte getMessageType() {
         return MESSAGE_TYPE;
-    } 
+    }
+    
+    /**
+     * 
+     * @param message
+     * @return length of MultipartRequestMessage
+     */
+    public int computeBodyLength(MultipartRequestMessage message) {
+        int length = 0;
+        MultipartType type = message.getType();
+        if (type.equals(MultipartType.OFPMPFLOW)) {
+            final byte FLOW_BODY_LENGTH = 32;
+            MultipartRequestFlow body = (MultipartRequestFlow) message.getMultipartRequestBody();
+            length += FLOW_BODY_LENGTH + MatchSerializer.computeMatchLength(body.getMatch());
+        } else if (type.equals(MultipartType.OFPMPAGGREGATE)) {
+            final byte AGGREGATE_BODY_LENGTH = 32;
+            MultipartRequestAggregate body = (MultipartRequestAggregate) message.getMultipartRequestBody();
+            length += AGGREGATE_BODY_LENGTH + MatchSerializer.computeMatchLength(body.getMatch());
+        } else if (type.equals(MultipartType.OFPMPPORTSTATS)) {
+            final byte PORT_STATS_BODY_LENGTH = 8;
+            length += PORT_STATS_BODY_LENGTH;
+        } else if (type.equals(MultipartType.OFPMPQUEUE)) {
+            final byte QUEUE_BODY_LENGTH = 8;
+            length += QUEUE_BODY_LENGTH;
+        } else if (type.equals(MultipartType.OFPMPGROUP)) {
+            final byte GROUP_BODY_LENGTH = 8;
+            length += GROUP_BODY_LENGTH;
+        } else if (type.equals(MultipartType.OFPMPMETER)) {
+            final byte METER_BODY_LENGTH = 8;
+            length += METER_BODY_LENGTH;
+        } else if (type.equals(MultipartType.OFPMPMETERCONFIG)) {
+            final byte METER_CONFIG_BODY_LENGTH = 8;
+            length += METER_CONFIG_BODY_LENGTH;
+        } else if (type.equals(MultipartType.OFPMPTABLEFEATURES)) {
+            MultipartRequestTableFeatures body = (MultipartRequestTableFeatures) message.getMultipartRequestBody();
+            length += computeTableFeaturesLength(body);
+        } else if (type.equals(MultipartType.OFPMPEXPERIMENTER)) {
+            final byte EXPERIMENTER_BODY_LENGTH = 8;
+            MultipartRequestExperimenter body = (MultipartRequestExperimenter) message.getMultipartRequestBody();
+            length += EXPERIMENTER_BODY_LENGTH;
+            if (body.getData() != null) {
+                length += body.getData().length;
+            }
+        }
+        return length;
+    }
+
+    private static int computeTableFeaturesLength(MultipartRequestTableFeatures body) {
+        final byte TABLE_FEATURES_LENGTH = 64;
+        final byte STRUCTURE_HEADER_LENGTH = 4;
+        int length = 0;
+        if (body != null) {
+            List<TableFeatures> tableFeatures = body.getTableFeatures();
+            for (TableFeatures feature : tableFeatures) {
+                length += TABLE_FEATURES_LENGTH;
+                List<TableFeatureProperties> featureProperties = feature.getTableFeatureProperties();
+                if (featureProperties != null) {
+                    for (TableFeatureProperties featProp : featureProperties) {
+                        length += TABLE_FEAT_HEADER_LENGTH;
+                        if (featProp.getAugmentation(InstructionRelatedTableFeatureProperty.class) != null) {
+                            InstructionRelatedTableFeatureProperty property =
+                                    featProp.getAugmentation(InstructionRelatedTableFeatureProperty.class);
+                            length += property.getInstructions().size() * STRUCTURE_HEADER_LENGTH;
+                        } else if (featProp.getAugmentation(NextTableRelatedTableFeatureProperty.class) != null) {
+                            NextTableRelatedTableFeatureProperty property =
+                                    featProp.getAugmentation(NextTableRelatedTableFeatureProperty.class);
+                            length += property.getNextTableIds().size();
+                        } else if (featProp.getAugmentation(ActionRelatedTableFeatureProperty.class) != null) {
+                            ActionRelatedTableFeatureProperty property =
+                                    featProp.getAugmentation(ActionRelatedTableFeatureProperty.class);
+                            length += property.getActionsList().size() * STRUCTURE_HEADER_LENGTH;
+                        } else if (featProp.getAugmentation(OxmRelatedTableFeatureProperty.class) != null) {
+                            OxmRelatedTableFeatureProperty property =
+                                    featProp.getAugmentation(OxmRelatedTableFeatureProperty.class);
+                            length += property.getMatchEntries().size() * STRUCTURE_HEADER_LENGTH;
+                        } else if (featProp.getAugmentation(ExperimenterRelatedTableFeatureProperty.class) != null) {
+                            ExperimenterRelatedTableFeatureProperty property =
+                                    featProp.getAugmentation(ExperimenterRelatedTableFeatureProperty.class);
+                            length += 2 * (Integer.SIZE / Byte.SIZE);
+                            if (property.getData() != null) {
+                                length += property.getData().length;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return length;
+    }
     
     private static int createMultipartRequestFlagsBitmask(MultipartRequestFlags flags) {
         int multipartRequestFlagsBitmask = 0;
@@ -177,7 +265,10 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
         MultipartRequestExperimenter experimenter = (MultipartRequestExperimenter) multipartRequestBody;
         output.writeInt(experimenter.getExperimenter().intValue());
         output.writeInt(experimenter.getExpType().intValue());
-        output.writeBytes(experimenter.getData());
+        byte[] data = experimenter.getData();
+        if (data != null) {
+            output.writeBytes(data);
+        }
     }
     
     private static void encodeTableFeaturesBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {

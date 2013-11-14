@@ -133,7 +133,7 @@ public class MatchSerializer {
      */
     public static void encodeMatchEntries(List<MatchEntries> matchEntries, ByteBuf out) {
         if (matchEntries == null) {
-            LOGGER.warn("Match entry is null");
+            LOGGER.warn("Match entries are null");
             return;
         }
         for (MatchEntries entry : matchEntries) {
@@ -518,9 +518,11 @@ public class MatchSerializer {
      * @return length of MatchEntries
      */
     public static int computeMatchEntriesLength(List<MatchEntries> matchEntries) {
+        final byte MATCH_ENTRY_HEADER_LENGTH = 4;
         int length = 0;
         if (matchEntries != null) {
             for (MatchEntries entry : matchEntries) {
+                length += MATCH_ENTRY_HEADER_LENGTH;
                 Class<? extends MatchField> field = entry.getOxmMatchField();
                 if (field.equals(InPort.class)) {
                     length += Integer.SIZE / Byte.SIZE;

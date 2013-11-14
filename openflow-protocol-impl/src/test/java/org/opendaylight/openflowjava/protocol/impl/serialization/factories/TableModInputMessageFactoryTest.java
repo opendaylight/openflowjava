@@ -30,7 +30,6 @@ public class TableModInputMessageFactoryTest {
         TableModInputBuilder builder = new TableModInputBuilder();
         BufferHelper.setupHeader(builder);
         builder.setTableId(new TableId(9L));
-        //TODO - fix test
         builder.setConfig(new PortConfig(true, false, true, false));
         TableModInput message = builder.build();
         
