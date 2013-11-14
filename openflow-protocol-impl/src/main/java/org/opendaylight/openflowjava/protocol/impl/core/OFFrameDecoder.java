@@ -12,8 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class for decoding incoming messages into message frames.
- *
+ * Decodes incoming messages into message frames.
  * @author michal.polkorab
  */
 public class OFFrameDecoder extends ByteToMessageDecoder {

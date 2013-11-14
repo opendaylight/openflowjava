@@ -12,6 +12,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInput;
 
 /**
+ * Translates TableMod messages
  * @author timotej.kubas
  * @author michal.polkorab
  */

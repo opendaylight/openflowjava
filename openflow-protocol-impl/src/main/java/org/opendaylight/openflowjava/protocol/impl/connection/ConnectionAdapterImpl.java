@@ -72,6 +72,7 @@ import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.SettableFuture;
 
 /**
+ * Handles messages (notifications + rpcs) and connections
  * @author mirehak
  * @author michal.polkorab
  */

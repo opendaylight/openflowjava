@@ -119,7 +119,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Joiner;
 
 /**
- * Class for easy creation of matches
+ * Deserializes ofp_match (OpenFlow v1.3) and its oxm_fields structures
  * @author timotej.kubas
  * @author michal.polkorab
  */
@@ -135,7 +135,7 @@ public abstract class MatchDeserializer {
     /**
      * Creates match
      * @param in input ByteBuf
-     * @return ofp_match
+     * @return ofp_match (OpenFlow v1.3)
      */
     public static Match createMatch(ByteBuf in) {
         if (in.readableBytes() > 0) {
@@ -163,9 +163,10 @@ public abstract class MatchDeserializer {
     }
     
     /**
+     * Deserializes single match entry (oxm_field)
      * @param in input ByteBuf
-     * @param matchLength to infer size of array
-     * @return MatchEntriesList
+     * @param matchLength length of match entry
+     * @return MatchEntriesList list containing one match entry
      */
     public static List<MatchEntries> createMatchEntry(ByteBuf in, int matchLength) {
         return createMatchEntriesInternal(in, matchLength, true);
@@ -173,8 +174,8 @@ public abstract class MatchDeserializer {
     
     /**
      * @param in input ByteBuf
-     * @param matchLength to infer size of array
-     * @return MatchEntriesList
+     * @param matchLength length of match entries
+     * @return MatchEntriesList list of match entries
      */
     public static List<MatchEntries> createMatchEntries(ByteBuf in, int matchLength) {
         return createMatchEntriesInternal(in, matchLength, false);

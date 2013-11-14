@@ -6,7 +6,6 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
  * @author mirehak
- *
  */
 public interface MessageConsumer {
 

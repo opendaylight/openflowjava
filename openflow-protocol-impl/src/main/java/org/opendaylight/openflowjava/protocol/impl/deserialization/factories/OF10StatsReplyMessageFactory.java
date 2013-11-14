@@ -38,8 +38,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.table.TableStatsBuilder;
 
 /**
+ * Translates StatsReply messages (OpenFlow v1.0)
  * @author michal.polkorab
- *
  */
 public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartReplyMessage> {
 

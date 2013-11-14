@@ -1,9 +1,11 @@
 /* Copyright (C)2013 Pantheon Technologies, s.r.o. All rights reserved. */
 package org.opendaylight.openflowjava.protocol.impl.deserialization;
 
+
 /**
+ * Class used as a key in {@link DecoderTable}
  * @author michal.polkorab
- *
+ * @author timotej.kubas
  */
 public class MessageTypeCodeKey {
 

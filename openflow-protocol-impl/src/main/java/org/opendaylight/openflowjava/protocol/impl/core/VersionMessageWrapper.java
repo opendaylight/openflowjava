@@ -4,8 +4,8 @@ package org.opendaylight.openflowjava.protocol.impl.core;
 import io.netty.buffer.ByteBuf;
 
 /**
+ * Wraps received messages (includes version)
  * @author michal.polkorab
- *
  */
 public class VersionMessageWrapper {
 

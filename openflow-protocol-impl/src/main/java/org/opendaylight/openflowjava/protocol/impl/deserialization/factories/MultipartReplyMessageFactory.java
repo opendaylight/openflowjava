@@ -109,6 +109,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Translates MultipartReply messages
  * @author timotej.kubas
  * @author michal.polkorab
  */

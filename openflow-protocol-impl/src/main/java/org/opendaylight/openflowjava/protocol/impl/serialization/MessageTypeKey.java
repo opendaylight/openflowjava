@@ -4,9 +4,10 @@ package org.opendaylight.openflowjava.protocol.impl.serialization;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
+ * Class used as a key in {@link EncoderTable}
  * @author michal.polkorab
+ * @author timotej.kubas
  * @param <E> message type (class)
- *
  */
 public class MessageTypeKey<E extends DataObject> {
 

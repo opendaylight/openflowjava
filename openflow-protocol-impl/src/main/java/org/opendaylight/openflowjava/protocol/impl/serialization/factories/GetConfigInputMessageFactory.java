@@ -8,8 +8,9 @@ import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetConfigInput;
 
 /**
+ * Translates GetConfigRequest messages
  * @author michal.polkorab
- *
+ * @author timotej.kubas
  */
 public class GetConfigInputMessageFactory implements OFSerializer<GetConfigInput> {
 

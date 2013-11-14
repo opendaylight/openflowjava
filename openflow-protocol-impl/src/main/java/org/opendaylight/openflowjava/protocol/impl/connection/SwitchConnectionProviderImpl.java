@@ -21,6 +21,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
 /**
+ * Exposed class for server handling
  * @author mirehak
  * @author michal.polkorab
  */
@@ -109,6 +110,9 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
         return result;
     }
 
+    /**
+     * @return servers
+     */
     public Set<ServerFacade> getServerLot() {
         return serverLot;
     }

@@ -37,8 +37,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.MatchEntries;
 
 /**
- * Class for easy serialization of actions
- * 
+ * Serializes ofp_actions (OpenFlow v1.3)
  * @author michal.polkorab
  * @author timotej.kubas
  */

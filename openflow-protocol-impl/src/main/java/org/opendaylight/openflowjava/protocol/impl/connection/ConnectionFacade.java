@@ -6,7 +6,6 @@ import org.opendaylight.openflowjava.protocol.api.connection.ConnectionAdapter;
 
 /**
  * @author michal.polkorab
- *
  */
 public interface ConnectionFacade extends MessageConsumer, ConnectionAdapter {
 

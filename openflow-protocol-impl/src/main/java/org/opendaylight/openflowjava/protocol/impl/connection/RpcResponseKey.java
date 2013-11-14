@@ -7,7 +7,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 
 /**
  * @author mirehak
- *
  */
 public class RpcResponseKey {
     

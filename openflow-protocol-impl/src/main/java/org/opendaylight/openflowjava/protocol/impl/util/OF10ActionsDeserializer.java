@@ -45,14 +45,15 @@ import org.opendaylight.yangtools.yang.binding.Augmentation;
 import com.google.common.base.Joiner;
 
 /**
+ * Deserializes ofp_action (OpenFlow v1.0) structures
  * @author michal.polkorab
- *
  */
 public class OF10ActionsDeserializer {
 
     /**
+     * Creates list of actions (OpenFlow v1.0) from ofp_action structures
      * @param input input ByteBuf
-     * @return ActionsList
+     * @return ActionsList list of actions
      */
     public static List<ActionsList> createActionsList(ByteBuf input) {
         List<ActionsList> actions = new ArrayList<>();

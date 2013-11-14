@@ -2,8 +2,8 @@
 package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 /**
+ * Stores common constants
  * @author michal.polkorab
- *
  */
 public abstract class EncodeConstants {
 

@@ -13,8 +13,8 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 
 /** Class for common operations on ByteBuf
- *
  * @author michal.polkorab
+ * @author timotej.kubas
  */
 public abstract class ByteBufUtils {
 

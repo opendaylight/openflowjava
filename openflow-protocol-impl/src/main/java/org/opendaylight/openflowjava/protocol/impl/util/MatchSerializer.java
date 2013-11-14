@@ -88,15 +88,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Serializes ofp_match (OpenFlow v1.3) and its oxm_fields structures
  * @author michal.polkorab
- *
+ * @author timotej.kubas
  */
 public class MatchSerializer {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(MatchSerializer.class);
 
     /**
-     * Encodes OF match
+     * Encodes match (OpenFlow v1.3)
      * @param match ofp_match object
      * @param out output ByteBuf
      */
@@ -128,8 +129,8 @@ public class MatchSerializer {
 
     /**
      * Encodes MatchEntries
-     * @param matchEntries
-     * @param out
+     * @param matchEntries list of match entries (oxm_fields)
+     * @param out output ByteBuf
      */
     public static void encodeMatchEntries(List<MatchEntries> matchEntries, ByteBuf out) {
         if (matchEntries == null) {
@@ -499,7 +500,7 @@ public class MatchSerializer {
     }
 
     /**
-     * Computes length of ofp_match structure (in bytes)
+     * Computes length of match (in bytes)
      * @param match
      * @return length of ofp_match (excluding padding)
      */
@@ -514,7 +515,7 @@ public class MatchSerializer {
 
     /**
      * Computes length of MatchEntries (in bytes)
-     * @param matchEntries
+     * @param matchEntries list of match entries (oxm_fields)
      * @return length of MatchEntries
      */
     public static int computeMatchEntriesLength(List<MatchEntries> matchEntries) {

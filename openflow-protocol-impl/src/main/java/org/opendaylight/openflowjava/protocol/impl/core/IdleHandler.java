@@ -13,16 +13,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ * Detects idle state of switch and informs upper layers
  * @author michal.polkorab
- *
  */
 public class IdleHandler extends IdleStateHandler{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IdleHandler.class);
 
     /**
-     * 
      * @param readerIdleTime
      * @param writerIdleTime
      * @param allIdleTime

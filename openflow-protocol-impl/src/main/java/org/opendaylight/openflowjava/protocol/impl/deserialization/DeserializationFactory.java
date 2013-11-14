@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author michal.polkorab
+ * @author timotej.kubas
  */
 public abstract class DeserializationFactory {
     

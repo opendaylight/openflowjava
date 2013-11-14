@@ -21,6 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.queue.property.header.QueuePropertyBuilder;
 
 /**
+ * Translates QueueGetConfigReply messages
  * @author timotej.kubas
  * @author michal.polkorab
  */

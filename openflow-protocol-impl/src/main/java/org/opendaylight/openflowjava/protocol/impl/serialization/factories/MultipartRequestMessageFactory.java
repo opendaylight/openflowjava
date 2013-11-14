@@ -40,6 +40,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.TableFeatureProperties;
 
 /**
+ * Translates MultipartRequest messages
  * @author timotej.kubas
  * @author michal.polkorab
  */

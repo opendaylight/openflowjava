@@ -7,7 +7,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 /**
  * @author mirehak
- *
  */
 public interface ShutdownProvider {
 

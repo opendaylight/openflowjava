@@ -4,7 +4,6 @@ package org.opendaylight.openflowjava.protocol.impl.connection;
 
 /**
  * @author mirehak
- *
  */
 public interface ServerFacade extends ShutdownProvider, OnlineProvider, Runnable {
 

@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author michal.polkorab
- *
+ * @author timotej.kubas
  */
 public class SerializationFactory {
 

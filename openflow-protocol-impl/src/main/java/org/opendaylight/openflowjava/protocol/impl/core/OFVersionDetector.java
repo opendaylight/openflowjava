@@ -11,9 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class that detects version of used OpenFlow Protocol and engages right OFCodec into
- * pipeline.
- *
+ * Detects version of used OpenFlow Protocol and discards unsupported version messages
  * @author michal.polkorab
  */
 public class OFVersionDetector extends ByteToMessageDecoder {
