@@ -501,7 +501,6 @@ public abstract class MatchDeserializer {
     }
 
     private static void addMaskAugmentation(MatchEntriesBuilder builder, ByteBuf in, int matchEntryLength) {
-//         TODO - check if matchEntryLength is in bytes
         MaskMatchEntryBuilder maskBuilder = new MaskMatchEntryBuilder();
         byte[] mask = new byte[matchEntryLength];
         in.readBytes(mask);

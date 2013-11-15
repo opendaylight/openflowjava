@@ -139,7 +139,7 @@ public class MatchSerializer {
         }
         for (MatchEntries entry : matchEntries) {
             encodeClass(entry.getOxmClass(), out);
-            encodeRest(entry, null);
+            encodeRest(entry, out);
         }
     }
 
