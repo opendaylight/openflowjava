@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Activate library bundle, expose provided implementations:
+ * Activates library bundle, exposes provided implementations:
  * <ul>
  *  <li>{@link SwitchConnectionProviderImpl}</li>
  * </ul>

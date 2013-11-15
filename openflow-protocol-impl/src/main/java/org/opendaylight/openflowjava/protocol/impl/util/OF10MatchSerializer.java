@@ -6,8 +6,8 @@ import io.netty.buffer.ByteBuf;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.v10.grouping.MatchV10;
 
 /**
+ * Serializes ofp_match (OpenFlow v1.0) structure
  * @author michal.polkorab
- *
  */
 public abstract class OF10MatchSerializer {
 
@@ -16,8 +16,8 @@ public abstract class OF10MatchSerializer {
     
     /**
      * Encodes ofp_match (OpenFlow v1.0)
-     * @param out
-     * @param match
+     * @param out output ByteBuf that match will be written into
+     * @param match match to be encoded
      */
     public static void encodeMatchV10(ByteBuf out, MatchV10 match) {
         out.writeInt(match.getWildcards().intValue());

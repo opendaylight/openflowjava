@@ -4,6 +4,7 @@ package org.opendaylight.openflowjava.protocol.impl.core;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
+import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionAdapterImpl;
 import org.opendaylight.openflowjava.protocol.impl.connection.MessageConsumer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.DisconnectEventBuilder;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -11,8 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Holds reference to {@link ConnectionAdapterImpl} and passes messages for further processing.
+ * Also informs on switch disconnection.
  * @author michal.polkorab
- *
  */
 public class DelegatingInboundHandler extends ChannelInboundHandlerAdapter {
 

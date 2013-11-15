@@ -18,8 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Initializes the channel
  * @author michal.polkorab
- *
  */
 public class PublishingChannelInitializer extends ChannelInitializer<SocketChannel> {
 

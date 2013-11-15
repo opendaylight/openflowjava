@@ -14,8 +14,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.matc
 import com.google.common.base.Joiner;
 
 /**
+ * Deserializes ofp_match (OpenFlow v1.0) structure
  * @author michal.polkorab
- *
  */
 public abstract class OF10MatchDeserializer {
     
@@ -25,8 +25,8 @@ public abstract class OF10MatchDeserializer {
     private static final byte GROUPS_IN_IPV4_ADDRESS = 4;
 
     /**
-     * Creates match 
-     * @param rawMessage
+     * Creates ofp_match (OpenFlow v1.0) structure
+     * @param rawMessage ByteBuf with input data
      * @return ofp_match (OpenFlow v1.0)
      */
     public static MatchV10 createMatchV10(ByteBuf rawMessage) {

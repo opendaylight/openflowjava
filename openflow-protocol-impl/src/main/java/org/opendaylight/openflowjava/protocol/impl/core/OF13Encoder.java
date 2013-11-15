@@ -12,8 +12,8 @@ import io.netty.handler.codec.MessageToByteEncoder;
 
 /**
  * Transforms OpenFlow Protocol messages to POJOs
- * 
  * @author michal.polkorab
+ * @author timotej.kubas
  */
 public class OF13Encoder extends MessageToByteEncoder<OfHeader> {
 
@@ -23,6 +23,7 @@ public class OF13Encoder extends MessageToByteEncoder<OfHeader> {
     public OF13Encoder() {
         LOGGER.debug("Creating OF13Encoder");
     }
+    
     @Override
     protected void encode(ChannelHandlerContext ctx, OfHeader msg, ByteBuf out)
             throws Exception {

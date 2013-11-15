@@ -6,8 +6,9 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import io.netty.buffer.ByteBuf;
 
 /**
+ * Uniform interface for deserializing factories
  * @author michal.polkorab
- *
+ * @author timotej.kubas
  * @param <E> message code type
  */
 public interface OFDeserializer<E extends DataObject> {

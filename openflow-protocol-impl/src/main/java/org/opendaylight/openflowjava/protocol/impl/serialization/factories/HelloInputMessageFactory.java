@@ -14,8 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Translates Hello messages
  * @author michal.polkorab
- *
+ * @author timotej.kubas
  */
 public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
 

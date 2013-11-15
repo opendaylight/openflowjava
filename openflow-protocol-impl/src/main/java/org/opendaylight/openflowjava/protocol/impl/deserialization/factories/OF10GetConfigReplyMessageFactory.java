@@ -9,8 +9,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetConfigOutputBuilder;
 
 /**
+ * Translates GetConfigReply messages (OpenFlow v1.0)
  * @author michal.polkorab
- *
  */
 public class OF10GetConfigReplyMessageFactory implements OFDeserializer<GetConfigOutput> {
     

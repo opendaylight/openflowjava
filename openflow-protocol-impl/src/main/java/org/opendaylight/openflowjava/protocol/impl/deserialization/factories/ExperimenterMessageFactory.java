@@ -8,10 +8,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterMessageBuilder;
 
 /**
- * 
+ * Translates Experimenter messages
  * @author michal.polkorab, 
  * @author timotej.kubas
- *
  */
 public class ExperimenterMessageFactory implements OFDeserializer<ExperimenterMessage>{
 

@@ -9,8 +9,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ErrorMessageBuilder;
 
 /**
+ * Translates Error messages
  * @author michal.polkorab
- *
+ * @author timotej.kubas
  */
 public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
 

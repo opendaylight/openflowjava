@@ -31,15 +31,15 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.actions.list.Action;
 
 /**
+ * Serializes ofp_action (OpenFlow v1.0) structures
  * @author michal.polkorab
- *
  */
 public abstract class OF10ActionsSerializer {
     
     /**
-     * Encodes actions (OpenFlow v1.0)
-     * @param out
-     * @param actionsList
+     * Encodes ofp_action (OpenFlow v1.0) structures
+     * @param out output ByteBuf that actions will be written into
+     * @param actionsList actions to be encoded
      */
     public static void encodeActionsV10(ByteBuf out, List<ActionsList> actionsList) {
         if (actionsList == null) {

@@ -9,8 +9,8 @@ import org.opendaylight.openflowjava.protocol.impl.util.OF10ActionsSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketOutInput;
 
 /**
+ * Translates PacketOut messages
  * @author michal.polkorab
- *
  */
 public class OF10PacketOutInputMessageFactory implements OFSerializer<PacketOutInput> {
 

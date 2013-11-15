@@ -27,8 +27,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction
 import io.netty.buffer.ByteBuf;
 
 /**
+ * Deserializes ofp_instruction (OpenFlow v1.3) structures
  * @author michal.polkorab
- *
+ * @author timotej.kubas
  */
 public class InstructionsDeserializer {
     

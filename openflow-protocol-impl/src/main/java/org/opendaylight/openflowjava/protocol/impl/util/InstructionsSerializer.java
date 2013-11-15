@@ -22,8 +22,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.Instruction;
 
 /**
+ * Serializes ofp_instruction (OpenFlow v 1.3) structure
  * @author michal.polkorab
- *
+ * @author timotej.kubas
  */
 public abstract class InstructionsSerializer {
 
@@ -102,7 +103,7 @@ public abstract class InstructionsSerializer {
     /**
      * Computes length of instructions
      * @param instructions List of instructions
-     * @return length of instructions(in bytes)
+     * @return length of instructions (in bytes)
      */
     public static int computeInstructionsLength(List<Instructions> instructions) {
         int length = 0;

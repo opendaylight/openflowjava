@@ -35,6 +35,7 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.Que
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.RoleReplyMessageFactory;
 
 /**
+ * Stores and provides correct decoders for received messages
  * @author michal.polkorab
  * 
  *  <pre>         

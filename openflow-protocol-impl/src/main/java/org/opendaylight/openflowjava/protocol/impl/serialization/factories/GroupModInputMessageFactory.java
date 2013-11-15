@@ -12,6 +12,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.buckets.BucketsList;
 
 /**
+ * Translates GroupMod messages
  * @author timotej.kubas
  * @author michal.polkorab
  */

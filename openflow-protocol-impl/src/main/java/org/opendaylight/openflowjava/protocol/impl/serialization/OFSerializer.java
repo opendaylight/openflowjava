@@ -6,8 +6,9 @@ import io.netty.buffer.ByteBuf;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
+ * Uniform interface for serializing factories
  * @author michal.polkorab
- *
+ * @author timotej.kubas
  * @param <E> message type
  */
 public interface OFSerializer <E extends DataObject> {
@@ -28,7 +29,6 @@ public interface OFSerializer <E extends DataObject> {
     public abstract int computeLength(E message);
     
     /**
-     * 
      * @return message code type
      */
     public byte getMessageType();

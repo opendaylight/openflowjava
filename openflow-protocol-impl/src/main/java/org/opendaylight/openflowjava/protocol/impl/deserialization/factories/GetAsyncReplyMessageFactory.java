@@ -20,10 +20,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.get.async.reply.PortStatusMaskBuilder;
 
 /**
+ * Translates GetAsyncReply messages
  * @author timotej.kubas
  * @author michal.polkorab
  */
 public class GetAsyncReplyMessageFactory implements OFDeserializer<GetAsyncOutput> {
+    
     private static GetAsyncReplyMessageFactory instance;
     
     private GetAsyncReplyMessageFactory() {
