@@ -541,6 +541,11 @@ module openflow-protocol {
                     type oft:multipart-request-flags;
                 }      
                 choice multipart-request-body {
+                    case multipart-request-desc {
+                        leaf desc {
+                            type empty;
+                        }
+                    }
                     case multipart-request-flow {
                         leaf table-id {
                             type uint8;
@@ -1306,9 +1311,16 @@ module openflow-protocol {
         /* Multipart messages. */
             //FIXME: Arent this wire protocol specific?
 
+            rpc send-multipart-request-message {
+                input {
+                    uses multipart-request;
+                }
+            }
+
             notification multipart-request-message {
                 uses multipart-request;
                 // reference "OFPT_MULTIPART_REQUEST message in Openflow Switch 1.3 Spec"
+                // TODO: This should probably be deprecated as I think it should have been an rpc - eaw@cisco.com
                 
             } /* Controller/switch message */
             notification multipart-reply-message {
