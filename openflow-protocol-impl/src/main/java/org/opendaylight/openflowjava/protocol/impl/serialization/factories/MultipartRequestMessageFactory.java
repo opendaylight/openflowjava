@@ -28,6 +28,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.MultipartRequestBody;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestAggregate;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestDesc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestFlow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestGroup;
@@ -48,12 +49,12 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
     private static final int MESSAGE_LENGTH = 16;
     private static final byte PADDING_IN_MULTIPART_REQUEST_MESSAGE = 4;
     private static final byte TABLE_FEAT_HEADER_LENGTH = 4;
-    private static MultipartRequestMessageFactory instance; 
-    
+    private static MultipartRequestMessageFactory instance;
+
     private MultipartRequestMessageFactory() {
         // singleton
     }
-    
+
     /**
      * @return singleton factory
      */
@@ -63,7 +64,7 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
         }
         return instance;
     }
-    
+
     @Override
     public void messageToBuffer(short version, ByteBuf out,
             MultipartRequestMessage message) {
@@ -71,8 +72,10 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
         out.writeShort(message.getType().getIntValue());
         out.writeShort(createMultipartRequestFlagsBitmask(message.getFlags()));
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_MESSAGE, out);
-        
-        if (message.getMultipartRequestBody() instanceof MultipartRequestFlow) {
+
+        if (message.getMultipartRequestBody() instanceof MultipartRequestDesc ){
+            encodeDescBody(message.getMultipartRequestBody(), out);
+        } else if (message.getMultipartRequestBody() instanceof MultipartRequestFlow) {
             encodeFlowBody(message.getMultipartRequestBody(), out);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestAggregate) {
             encodeAggregateBody(message.getMultipartRequestBody(), out);
@@ -92,7 +95,7 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
             encodeExperimenterBody(message.getMultipartRequestBody(), out);
         }
     }
-    
+
     @Override
     public int computeLength(MultipartRequestMessage message) {
         return MESSAGE_LENGTH + computeBodyLength(message);
@@ -101,9 +104,9 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
     public byte getMessageType() {
         return MESSAGE_TYPE;
     }
-    
+
     /**
-     * 
+     *
      * @param message
      * @return length of MultipartRequestMessage
      */
@@ -189,16 +192,22 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
         }
         return length;
     }
-    
+
     private static int createMultipartRequestFlagsBitmask(MultipartRequestFlags flags) {
         int multipartRequestFlagsBitmask = 0;
         Map<Integer, Boolean> multipartRequestFlagsMap = new HashMap<>();
         multipartRequestFlagsMap.put(0, flags.isOFPMPFREQMORE());
-        
+
         multipartRequestFlagsBitmask = ByteBufUtils.fillBitMaskFromMap(multipartRequestFlagsMap);
         return multipartRequestFlagsBitmask;
     }
-    
+
+    private void encodeDescBody(MultipartRequestBody multipartRequestBody,
+            ByteBuf output) {
+        // The body of MultiPartRequestDesc is empty
+
+    }
+
     private static void encodeFlowBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_01 = 3;
         final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_02 = 4;
@@ -208,11 +217,11 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
         output.writeInt(flow.getOutPort().intValue());
         output.writeInt(flow.getOutGroup().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_02, output);
-        output.writeLong(flow.getCookie().longValue()); 
+        output.writeLong(flow.getCookie().longValue());
         output.writeLong(flow.getCookieMask().longValue());
         MatchSerializer.encodeMatch(flow.getMatch(), output);
     }
-    
+
     private static void encodeAggregateBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         final byte PADDING_IN_MULTIPART_REQUEST_AGREGGATE_BODY_01 = 3;
         final byte PADDING_IN_MULTIPART_REQUEST_AGREGGATE_BODY_02 = 4;
@@ -222,45 +231,45 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
         output.writeInt(aggregate.getOutPort().intValue());
         output.writeInt(aggregate.getOutGroup().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_AGREGGATE_BODY_02, output);
-        output.writeLong(aggregate.getCookie().longValue()); 
+        output.writeLong(aggregate.getCookie().longValue());
         output.writeLong(aggregate.getCookieMask().longValue());
         MatchSerializer.encodeMatch(aggregate.getMatch(), output);
     }
-    
+
     private static void encodePortStatsBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         final byte PADDING_IN_MULTIPART_REQUEST_PORTSTATS_BODY = 4;
         MultipartRequestPortStats portstats = (MultipartRequestPortStats) multipartRequestBody;
         output.writeInt(portstats.getPortNo().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_PORTSTATS_BODY, output);
     }
-    
+
     private static void encodeQueueBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         MultipartRequestQueue queue = (MultipartRequestQueue) multipartRequestBody;
         output.writeInt(queue.getPortNo().intValue());
         output.writeInt(queue.getQueueId().intValue());
     }
-    
+
     private static void encodeGroupStatsBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         final byte PADDING_IN_MULTIPART_REQUEST_GROUP_BODY = 4;
         MultipartRequestGroup groupStats = (MultipartRequestGroup) multipartRequestBody;
         output.writeInt(groupStats.getGroupId().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_GROUP_BODY, output);
     }
-    
+
     private static void encodeMeterBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         final byte PADDING_IN_MULTIPART_REQUEST_METER_BODY = 4;
         MultipartRequestMeter meter = (MultipartRequestMeter) multipartRequestBody;
         output.writeInt(meter.getMeterId().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_METER_BODY, output);
     }
-    
+
     private static void encodeMeterConfigBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         final byte PADDING_IN_MULTIPART_REQUEST_METER_CONFIG_BODY = 4;
         MultipartRequestMeterConfig meterConfig = (MultipartRequestMeterConfig) multipartRequestBody;
         output.writeInt(meterConfig.getMeterId().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_METER_CONFIG_BODY, output);
     }
-    
+
     private static void encodeExperimenterBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         MultipartRequestExperimenter experimenter = (MultipartRequestExperimenter) multipartRequestBody;
         output.writeInt(experimenter.getExperimenter().intValue());
@@ -270,7 +279,7 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
             output.writeBytes(data);
         }
     }
-    
+
     private static void encodeTableFeaturesBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         if (multipartRequestBody != null) {
             MultipartRequestTableFeatures tableFeatures = (MultipartRequestTableFeatures) multipartRequestBody;
@@ -288,7 +297,7 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
             }
         }
     }
-    
+
     private static void writeTableFeatureProperties(ByteBuf output, List<TableFeatureProperties> props) {
         if (props != null) {
             for (TableFeatureProperties property : props) {
@@ -341,7 +350,7 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTEXPERIMENTERMISS)) {
                     final int EXPERIMENTER_MISS_CODE = 65535; // 0xFFFF
                     writeExperimenterRelatedTableProperty(output, property, EXPERIMENTER_MISS_CODE);
-                } 
+                }
             }
         }
     }
@@ -360,7 +369,7 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
             output.writeShort(length);
         }
     }
-    
+
     private static void writeNextTableRelatedTableProperty(ByteBuf output,
             TableFeatureProperties property, byte code) {
         output.writeShort(code);
@@ -376,7 +385,7 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
             output.writeShort(length);
         }
     }
-    
+
     private static void writeActionsRelatedTableProperty(ByteBuf output,
             TableFeatureProperties property, byte code) {
         output.writeShort(code);
@@ -391,7 +400,7 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
             output.writeShort(length);
         }
     }
-    
+
     private static void writeOxmRelatedTableProperty(ByteBuf output,
             TableFeatureProperties property, byte code) {
         output.writeShort(code);
@@ -406,7 +415,7 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
             output.writeShort(length);
         }
     }
-    
+
     private static void writeExperimenterRelatedTableProperty(ByteBuf output,
             TableFeatureProperties property, int code) {
         output.writeShort(code);
@@ -425,12 +434,12 @@ public class MultipartRequestMessageFactory implements OFSerializer<MultipartReq
             output.writeInt(exp.getExpType().intValue());
         }
     }
-    
+
     private static int createTableConfigBitmask(TableConfig tableConfig) {
         int tableConfigBitmask = 0;
         Map<Integer, Boolean> tableConfigMap = new HashMap<>();
         tableConfigMap.put(3, tableConfig.isOFPTCDEPRECATEDMASK());
-        
+
         tableConfigBitmask = ByteBufUtils.fillBitMaskFromMap(tableConfigMap);
         return tableConfigBitmask;
     }
