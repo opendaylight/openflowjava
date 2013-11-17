@@ -34,6 +34,7 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.factories.OF10V
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.PacketOutInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.PortModInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.RoleRequestInputMessageFactory;
+import org.opendaylight.openflowjava.protocol.impl.serialization.factories.SendMultipartRequestMessageInputFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.SetAsyncInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.SetConfigMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.TableModInputMessageFactory;
@@ -53,6 +54,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketOutInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.RoleRequestInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SendMultipartRequestMessageInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetAsyncInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetConfigInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInput;
@@ -64,17 +66,17 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * @author timotej.kubas
  */
 public class EncoderTable {
-    
+
     private static final short OF10 = OFVersionDetector.OF10_VERSION_ID;
     private static final short OF13 = OFVersionDetector.OF13_VERSION_ID;
     private static EncoderTable instance;
     private Map<MessageTypeKey<?>, OFSerializer<?>> table;
-    
+
 
     private EncoderTable() {
         // do nothing
     }
-    
+
     /**
      * @return singleton instance
      */
@@ -85,7 +87,7 @@ public class EncoderTable {
         }
         return instance;
     }
-    
+
     /**
      * Encoder table provisioning
      */
@@ -117,6 +119,7 @@ public class EncoderTable {
         table.put(new MessageTypeKey<>(OF13, HelloInput.class), HelloInputMessageFactory.getInstance());
         table.put(new MessageTypeKey<>(OF13, MeterModInput.class), MeterModInputMessageFactory.getInstance());
         table.put(new MessageTypeKey<>(OF13, MultipartRequestMessage.class), MultipartRequestMessageFactory.getInstance());
+        table.put(new MessageTypeKey<>(OF13, SendMultipartRequestMessageInput.class), SendMultipartRequestMessageInputFactory.getInstance());
         table.put(new MessageTypeKey<>(OF13, PacketOutInput.class), PacketOutInputMessageFactory.getInstance());
         table.put(new MessageTypeKey<>(OF13, PortModInput.class), PortModInputMessageFactory.getInstance());
         table.put(new MessageTypeKey<>(OF13, RoleRequestInput.class), RoleRequestInputMessageFactory.getInstance());
@@ -124,7 +127,7 @@ public class EncoderTable {
         table.put(new MessageTypeKey<>(OF13, SetConfigInput.class), SetConfigMessageFactory.getInstance());
         table.put(new MessageTypeKey<>(OF13, TableModInput.class), TableModInputMessageFactory.getInstance());
     }
-    
+
     /**
      * @param msgTypeKey
      * @return encoder for current type of message (msgTypeKey)
