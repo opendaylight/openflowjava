@@ -39,7 +39,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OpenflowProtocolListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketInMessage;
@@ -48,7 +48,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortStatusMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.RoleRequestInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.RoleRequestOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SendMultipartRequestMessageInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetAsyncInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetConfigInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInput;
@@ -182,7 +181,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     }
 
     @Override
-    public Future<RpcResult<Void>> sendMultipartRequestMessage(SendMultipartRequestMessageInput input) {
+    public Future<RpcResult<Void>> multipartRequest(MultipartRequestInput input) {
         return sendToSwitchFuture(input, "multi-part-request sending failed");
     }
 
@@ -270,8 +269,6 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 messageListener.onHelloMessage((HelloMessage) message);
             } else if (message instanceof MultipartReplyMessage) {
                 messageListener.onMultipartReplyMessage((MultipartReplyMessage) message);
-            } else if (message instanceof MultipartRequestMessage) {
-                messageListener.onMultipartRequestMessage((MultipartRequestMessage) message);
             } else if (message instanceof PacketInMessage) {
                 messageListener.onPacketInMessage((PacketInMessage) message);
             } else if (message instanceof PortStatusMessage) {

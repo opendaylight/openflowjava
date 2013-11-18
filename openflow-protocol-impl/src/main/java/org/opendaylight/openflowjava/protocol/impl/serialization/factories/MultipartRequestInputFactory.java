@@ -25,17 +25,22 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableFeaturesPropType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.MatchEntries;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SendMultipartRequestMessageInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.MultipartRequestBody;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestAggregate;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestDesc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestFlow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestGroup;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestGroupDesc;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestGroupFeatures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestMeter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestMeterConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestMeterFeatures;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestPortDesc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestPortStats;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestQueue;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestTable;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestTableFeatures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.table.features.TableFeatures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.TableFeatureProperties;
@@ -45,30 +50,30 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author timotej.kubas
  * @author michal.polkorab
  */
-public class SendMultipartRequestMessageInputFactory implements OFSerializer<SendMultipartRequestMessageInput> {
+public class MultipartRequestInputFactory implements OFSerializer<MultipartRequestInput> {
     private static final byte MESSAGE_TYPE = 18;
     private static final int MESSAGE_LENGTH = 16;
     private static final byte PADDING_IN_MULTIPART_REQUEST_MESSAGE = 4;
     private static final byte TABLE_FEAT_HEADER_LENGTH = 4;
-    private static SendMultipartRequestMessageInputFactory instance;
+    private static MultipartRequestInputFactory instance;
 
-    private SendMultipartRequestMessageInputFactory() {
+    private MultipartRequestInputFactory() {
         // singleton
     }
 
     /**
      * @return singleton factory
      */
-    public static synchronized SendMultipartRequestMessageInputFactory getInstance() {
+    public static synchronized MultipartRequestInputFactory getInstance() {
         if (instance == null) {
-            instance = new SendMultipartRequestMessageInputFactory();
+            instance = new MultipartRequestInputFactory();
         }
         return instance;
     }
 
     @Override
     public void messageToBuffer(short version, ByteBuf out,
-            SendMultipartRequestMessageInput message) {
+            MultipartRequestInput message) {
         ByteBufUtils.writeOFHeader(instance, message, out);
         out.writeShort(message.getType().getIntValue());
         out.writeShort(createMultipartRequestFlagsBitmask(message.getFlags()));
@@ -80,25 +85,35 @@ public class SendMultipartRequestMessageInputFactory implements OFSerializer<Sen
             encodeFlowBody(message.getMultipartRequestBody(), out);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestAggregate) {
             encodeAggregateBody(message.getMultipartRequestBody(), out);
+        } else if (message.getMultipartRequestBody() instanceof MultipartRequestTable) {
+            encodeTableBody(message.getMultipartRequestBody(), out);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestPortStats) {
             encodePortStatsBody(message.getMultipartRequestBody(), out);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestQueue) {
             encodeQueueBody(message.getMultipartRequestBody(), out);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestGroup) {
             encodeGroupStatsBody(message.getMultipartRequestBody(), out);
+        } else if (message.getMultipartRequestBody() instanceof MultipartRequestGroupDesc) {
+            encodeGroupDescBody(message.getMultipartRequestBody(), out);
+        } else if (message.getMultipartRequestBody() instanceof MultipartRequestGroupFeatures) {
+            encodeGroupFeaturesBody(message.getMultipartRequestBody(), out);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestMeter) {
             encodeMeterBody(message.getMultipartRequestBody(), out);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestMeterConfig) {
             encodeMeterConfigBody(message.getMultipartRequestBody(), out);
+        } else if (message.getMultipartRequestBody() instanceof MultipartRequestMeterFeatures) {
+            encodeMeterFeaturesBody(message.getMultipartRequestBody(), out);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestTableFeatures) {
             encodeTableFeaturesBody(message.getMultipartRequestBody(), out);
+        } else if (message.getMultipartRequestBody() instanceof MultipartRequestPortDesc) {
+            encodePortDescBody(message.getMultipartRequestBody(), out);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestExperimenter) {
             encodeExperimenterBody(message.getMultipartRequestBody(), out);
         }
     }
 
     @Override
-    public int computeLength(SendMultipartRequestMessageInput message) {
+    public int computeLength(MultipartRequestInput message) {
         return MESSAGE_LENGTH + computeBodyLength(message);
     }
     @Override
@@ -109,9 +124,9 @@ public class SendMultipartRequestMessageInputFactory implements OFSerializer<Sen
     /**
      *
      * @param message
-     * @return length of SendMultipartRequestMessageInput
+     * @return length of MultipartRequestMessage
      */
-    public int computeBodyLength(SendMultipartRequestMessageInput message) {
+    public int computeBodyLength(MultipartRequestInput message) {
         int length = 0;
         MultipartType type = message.getType();
         if (type.equals(MultipartType.OFPMPFLOW)) {
@@ -203,12 +218,60 @@ public class SendMultipartRequestMessageInputFactory implements OFSerializer<Sen
         return multipartRequestFlagsBitmask;
     }
 
+    /**
+     * @param multipartRequestBody  
+     * @param output 
+     */
     private void encodeDescBody(MultipartRequestBody multipartRequestBody,
             ByteBuf output) {
         // The body of MultiPartRequestDesc is empty
-
     }
 
+    /**
+     * @param multipartRequestBody
+     * @param out
+     */
+    private void encodeTableBody(MultipartRequestBody multipartRequestBody,
+            ByteBuf out) {
+     // The body of MultiPartTable is empty
+    }
+
+    /**
+     * @param multipartRequestBody
+     * @param out
+     */
+    private void encodeGroupDescBody(MultipartRequestBody multipartRequestBody,
+            ByteBuf out) {
+     // The body of MultiPartRequestGroupDesc is empty
+    }
+
+    /**
+     * @param multipartRequestBody
+     * @param out
+     */
+    private void encodeGroupFeaturesBody(
+            MultipartRequestBody multipartRequestBody, ByteBuf out) {
+     // The body of MultiPartRequestGroupFeatures is empty
+    }
+
+    /**
+     * @param multipartRequestBody
+     * @param out
+     */
+    private void encodeMeterFeaturesBody(
+            MultipartRequestBody multipartRequestBody, ByteBuf out) {
+     // The body of MultiPartMeterFeatures is empty
+    }
+
+    /**
+     * @param multipartRequestBody
+     * @param out
+     */
+    private void encodePortDescBody(MultipartRequestBody multipartRequestBody,
+            ByteBuf out) {
+     // The body of MultiPartPortDesc is empty
+    }
+    
     private static void encodeFlowBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_01 = 3;
         final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_02 = 4;

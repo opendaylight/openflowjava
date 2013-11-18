@@ -24,7 +24,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OpenflowProtocolListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketInMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortStatusMessage;
@@ -172,12 +171,6 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
     @Override
     public void onMultipartReplyMessage(MultipartReplyMessage notification) {
         LOGGER.debug("MultipartReply message received");
-        
-    }
-
-    @Override
-    public void onMultipartRequestMessage(MultipartRequestMessage notification) {
-        LOGGER.debug("MultipartRequest message received");
         
     }
 
