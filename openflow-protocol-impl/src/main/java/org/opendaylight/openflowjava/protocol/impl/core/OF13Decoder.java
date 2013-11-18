@@ -36,6 +36,8 @@ public class OF13Decoder extends MessageToMessageDecoder<VersionMessageWrapper> 
             LOGGER.warn("Translated POJO is null");
             return;
         }
+        msg.getMessageBuffer().discardReadBytes();
+        msg.getMessageBuffer().release();
         out.add(dataObject);
     }
 }
