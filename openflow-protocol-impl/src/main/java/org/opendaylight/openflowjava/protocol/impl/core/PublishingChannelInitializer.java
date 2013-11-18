@@ -66,6 +66,9 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
             ch.pipeline().addLast(COMPONENT_NAMES.OF_DECODER.name(), new OF13Decoder());
             ch.pipeline().addLast(COMPONENT_NAMES.OF_ENCODER.name(), new OF13Encoder());
             ch.pipeline().addLast(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name(), new DelegatingInboundHandler(connectionFacade));
+            if (!encryption) {
+                connectionFacade.fireConnectionReadyNotification();
+            }
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             ch.close();
