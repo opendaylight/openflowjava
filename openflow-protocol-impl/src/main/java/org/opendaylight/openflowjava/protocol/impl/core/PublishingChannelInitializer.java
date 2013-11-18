@@ -28,6 +28,7 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
     private DefaultChannelGroup allChannels;
     private SwitchConnectionHandler switchConnectionHandler;
     private long switchIdleTimeout;
+    private boolean encryption;
     
     /**
      * default ctor
@@ -53,12 +54,13 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
             LOGGER.debug("calling plugin: "+switchConnectionHandler);
             switchConnectionHandler.onSwitchConnected(connectionFacade);
             connectionFacade.checkListeners();
-
-            TlsDetector tlsDetector = new TlsDetector();
-            tlsDetector.setConnectionFacade(connectionFacade);
-            
+            TlsDetector tlsDetector;
             ch.pipeline().addLast(COMPONENT_NAMES.IDLE_HANDLER.name(), new IdleHandler(switchIdleTimeout, 0, 0, TimeUnit.MILLISECONDS));
-            ch.pipeline().addLast(COMPONENT_NAMES.TLS_DETECTOR.name(), tlsDetector);
+            if (encryption) {
+                tlsDetector =  new TlsDetector();
+                tlsDetector.setConnectionFacade(connectionFacade);
+                ch.pipeline().addLast(COMPONENT_NAMES.TLS_DETECTOR.name(), tlsDetector);
+            }
             ch.pipeline().addLast(COMPONENT_NAMES.OF_FRAME_DECODER.name(), new OFFrameDecoder());
             ch.pipeline().addLast(COMPONENT_NAMES.OF_VERSION_DETECTOR.name(), new OFVersionDetector());
             ch.pipeline().addLast(COMPONENT_NAMES.OF_DECODER.name(), new OF13Decoder());
@@ -96,6 +98,13 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
      */
     public void setSwitchIdleTimeout(long switchIdleTimeout) {
         this.switchIdleTimeout = switchIdleTimeout;
+    }
+
+    /**
+     * @param tlsSupported
+     */
+    public void setEncryption(boolean tlsSupported) {
+        encryption = tlsSupported;
     }
     
 }

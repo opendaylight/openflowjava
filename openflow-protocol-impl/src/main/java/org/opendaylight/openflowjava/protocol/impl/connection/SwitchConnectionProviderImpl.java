@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
+import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration.FEATURE_SUPPORT;
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
@@ -42,6 +43,8 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
             TcpHandler server = new TcpHandler(connConfig.getAddress(), connConfig.getPort());
             server.setSwitchConnectionHandler(switchConnectionHandler);
             server.setSwitchIdleTimeout(connConfig.getSwitchIdleTimeout());
+            boolean tlsSupported = FEATURE_SUPPORT.REQUIRED.equals(connConfig.getTlsSupport());
+            server.setEncryption(tlsSupported);
             serverLot.add(server);
         }
     }

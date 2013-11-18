@@ -209,5 +209,12 @@ public class TcpHandler implements ServerFacade {
     public void setSwitchIdleTimeout(long switchIdleTimeout) {
         channelInitializer.setSwitchIdleTimeout(switchIdleTimeout);
     }
+
+    /**
+     * @param tlsSupported
+     */
+    public void setEncryption(boolean tlsSupported) {
+        channelInitializer.setEncryption(tlsSupported);
+    }
     
 }
