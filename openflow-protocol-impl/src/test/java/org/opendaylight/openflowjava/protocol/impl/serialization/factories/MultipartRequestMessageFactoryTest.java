@@ -16,8 +16,8 @@ import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableConfig;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestMessage;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestMessageBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.MultipartRequestBody;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestAggregate;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestAggregateBuilder;
@@ -54,12 +54,12 @@ public class MultipartRequestMessageFactoryTest {
      */
     @Test
     public void testMultipartRequestMessageFactory() throws Exception {
-        MultipartRequestMessageBuilder builder = new MultipartRequestMessageBuilder();
+        MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
         BufferHelper.setupHeader(builder);
         builder.setType(MultipartType.forValue(1));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestFlow());
-        MultipartRequestMessage message = builder.build();
+        MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
@@ -111,12 +111,12 @@ public class MultipartRequestMessageFactoryTest {
      */
     @Test
     public void testMultipartRequestMessageAggregateBodyFactory() throws Exception {
-        MultipartRequestMessageBuilder builder = new MultipartRequestMessageBuilder();
+        MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
         BufferHelper.setupHeader(builder);
         builder.setType(MultipartType.forValue(2));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestAggregate());
-        MultipartRequestMessage message = builder.build();
+        MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
@@ -174,12 +174,12 @@ public class MultipartRequestMessageFactoryTest {
      */
     @Test
     public void testMultipartRequestMessageTableFactory() throws Exception {
-        MultipartRequestMessageBuilder builder = new MultipartRequestMessageBuilder();
+        MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
         BufferHelper.setupHeader(builder);
         builder.setType(MultipartType.forValue(3));
         builder.setFlags(new MultipartRequestFlags(true));
         //multipart request for table does not have body
-        MultipartRequestMessage message = builder.build();
+        MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
@@ -197,12 +197,12 @@ public class MultipartRequestMessageFactoryTest {
      */
     @Test
     public void testMultipartRequestPortStatsMessageFactory() throws Exception {
-        MultipartRequestMessageBuilder builder = new MultipartRequestMessageBuilder();
+        MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
         BufferHelper.setupHeader(builder);
         builder.setType(MultipartType.forValue(4));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestPortStats());
-        MultipartRequestMessage message = builder.build();
+        MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
@@ -237,12 +237,12 @@ public class MultipartRequestMessageFactoryTest {
      */
     @Test
     public void testMultipartRequestQueueMessageFactory() throws Exception {
-        MultipartRequestMessageBuilder builder = new MultipartRequestMessageBuilder();
+        MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
         BufferHelper.setupHeader(builder);
         builder.setType(MultipartType.forValue(5));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestQueue());
-        MultipartRequestMessage message = builder.build();
+        MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
@@ -277,12 +277,12 @@ public class MultipartRequestMessageFactoryTest {
      */
     @Test
     public void testMultipartRequestGroupMessageFactory() throws Exception {
-        MultipartRequestMessageBuilder builder = new MultipartRequestMessageBuilder();
+        MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
         BufferHelper.setupHeader(builder);
         builder.setType(MultipartType.forValue(6));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestGroup());
-        MultipartRequestMessage message = builder.build();
+        MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
@@ -317,12 +317,12 @@ public class MultipartRequestMessageFactoryTest {
      */
     @Test
     public void testMultipartRequestMeterMessageFactory() throws Exception {
-        MultipartRequestMessageBuilder builder = new MultipartRequestMessageBuilder();
+        MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
         BufferHelper.setupHeader(builder);
         builder.setType(MultipartType.forValue(9));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestMeter());
-        MultipartRequestMessage message = builder.build();
+        MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
@@ -357,12 +357,12 @@ public class MultipartRequestMessageFactoryTest {
      */
     @Test
     public void testMultipartRequestMeterConfigMessageFactory() throws Exception {
-        MultipartRequestMessageBuilder builder = new MultipartRequestMessageBuilder();
+        MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
         BufferHelper.setupHeader(builder);
         builder.setType(MultipartType.forValue(10));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestMeterConfig());
-        MultipartRequestMessage message = builder.build();
+        MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
@@ -397,12 +397,12 @@ public class MultipartRequestMessageFactoryTest {
      */
     @Test
     public void testMultipartRequestExperimenterMessageFactory() throws Exception {
-        MultipartRequestMessageBuilder builder = new MultipartRequestMessageBuilder();
+        MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
         BufferHelper.setupHeader(builder);
         builder.setType(MultipartType.forValue(0xffff));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestExperimenter());
-        MultipartRequestMessage message = builder.build();
+        MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
@@ -437,12 +437,12 @@ public class MultipartRequestMessageFactoryTest {
      */
     @Test
     public void testMultipartRequestDescMessageFactory() throws Exception {
-        MultipartRequestMessageBuilder builder = new MultipartRequestMessageBuilder();
+        MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
         BufferHelper.setupHeader(builder);
         builder.setType(MultipartType.forValue(0));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestDesc());
-        MultipartRequestMessage message = builder.build();
+        MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();
@@ -453,7 +453,7 @@ public class MultipartRequestMessageFactoryTest {
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
     }
 
-    private MultipartRequestBody createRequestDesc() {
+    private static MultipartRequestBody createRequestDesc() {
         MultipartRequestDescBuilder builder = new MultipartRequestDescBuilder();
         return builder.build();
     }
@@ -464,12 +464,12 @@ public class MultipartRequestMessageFactoryTest {
      */
     @Test
     public void testMultipartRequestTableFeaturesMessageFactory() throws Exception {
-        MultipartRequestMessageBuilder builder = new MultipartRequestMessageBuilder();
+        MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
         BufferHelper.setupHeader(builder);
         builder.setType(MultipartType.forValue(12));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestTableFeatures());
-        MultipartRequestMessage message = builder.build();
+        MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         MultipartRequestMessageFactory factory = MultipartRequestMessageFactory.getInstance();

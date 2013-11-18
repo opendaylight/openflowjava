@@ -542,9 +542,7 @@ module openflow-protocol {
                 }      
                 choice multipart-request-body {
                     case multipart-request-desc {
-                        leaf desc {
-                            type empty;
-                        }
+                        // empty body
                     }
                     case multipart-request-flow {
                         leaf table-id {
@@ -588,6 +586,9 @@ module openflow-protocol {
                         // OF1.0 structures
                         uses oxm:match-v10-grouping;
                     }
+                    case multipart-request-table {
+                        // empty body
+                    }
                     case multipart-request-port-stats {
                         leaf port-no {
                             type uint32;
@@ -606,6 +607,12 @@ module openflow-protocol {
                             type uint32;
                         }
                     }
+                    case multipart-request-group-desc {
+                        // empty body
+                    }
+                    case multipart-request-group-features {
+                        // empty body
+                    }
                     case multipart-request-meter {
                         leaf meter-id {
                             type uint32;
@@ -615,6 +622,9 @@ module openflow-protocol {
                         leaf meter-id {
                             type uint32;
                         }
+                    }
+                    case multipart-request-meter-features {
+                        // empty body
                     }
                     case multipart-request-table-features {
                         list table-features {
@@ -638,6 +648,9 @@ module openflow-protocol {
                             }
                             uses table-features-properties;
                         }
+                    }
+                    case multipart-request-port-desc {
+                        // empty body
                     }
                     case multipart-request-experimenter {
                         leaf experimenter {
@@ -1309,24 +1322,18 @@ module openflow-protocol {
             } /* Controller/switch message */
 
         /* Multipart messages. */
-            //FIXME: Arent this wire protocol specific?
 
-            rpc send-multipart-request-message {
+            rpc multipart-request {
                 input {
                     uses multipart-request;
                 }
             }
 
-            notification multipart-request-message {
-                uses multipart-request;
-                // reference "OFPT_MULTIPART_REQUEST message in Openflow Switch 1.3 Spec"
-                // TODO: This should probably be deprecated as I think it should have been an rpc - eaw@cisco.com
-                
-            } /* Controller/switch message */
+             /* Controller/switch message */
             notification multipart-reply-message {
                 uses multipart-reply;
                 // reference "OFPT_MULTIPART_REPLY message in Openflow Switch 1.3 Spec"
-                
+                // notification because of multiple following responses
             } /* Controller/switch message */
             
 
