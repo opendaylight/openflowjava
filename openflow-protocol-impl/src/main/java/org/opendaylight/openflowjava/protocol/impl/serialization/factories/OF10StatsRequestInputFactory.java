@@ -11,49 +11,55 @@ import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.OF10MatchSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.MultipartRequestBody;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestAggregate;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestDesc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestFlow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestPortStats;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestQueue;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestTable;
 
 /**
  * Translates StatsRequest messages
  * @author michal.polkorab
  */
-public class OF10StatsRequestMessageFactory implements OFSerializer<MultipartRequestMessage> {
+public class OF10StatsRequestInputFactory implements OFSerializer<MultipartRequestInput> {
 
     private static final byte MESSAGE_TYPE = 18;
     private static final int MESSAGE_LENGTH = 16;
 
-    private static OF10StatsRequestMessageFactory instance; 
+    private static OF10StatsRequestInputFactory instance; 
     
-    private OF10StatsRequestMessageFactory() {
+    private OF10StatsRequestInputFactory() {
         // singleton
     }
     
     /**
      * @return singleton factory
      */
-    public static synchronized OF10StatsRequestMessageFactory getInstance() {
+    public static synchronized OF10StatsRequestInputFactory getInstance() {
         if (instance == null) {
-            instance = new OF10StatsRequestMessageFactory();
+            instance = new OF10StatsRequestInputFactory();
         }
         return instance;
     }
     
     @Override
     public void messageToBuffer(short version, ByteBuf out,
-            MultipartRequestMessage message) {
+            MultipartRequestInput message) {
         ByteBufUtils.writeOFHeader(instance, message, out);
         out.writeShort(message.getType().getIntValue());
         out.writeShort(createMultipartRequestFlagsBitmask(message.getFlags()));
-        if (message.getMultipartRequestBody() instanceof MultipartRequestFlow) {
+        if (message.getMultipartRequestBody() instanceof MultipartRequestDesc) {
+            encodeDescBody(message.getMultipartRequestBody(), out);
+        } else if (message.getMultipartRequestBody() instanceof MultipartRequestFlow) {
             encodeFlowBody(message.getMultipartRequestBody(), out);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestAggregate) {
             encodeAggregateBody(message.getMultipartRequestBody(), out);
+        } else if (message.getMultipartRequestBody() instanceof MultipartRequestTable) {
+            encodeTableBody(message.getMultipartRequestBody(), out);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestPortStats) {
             encodePortBody(message.getMultipartRequestBody(), out);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestQueue) {
@@ -64,7 +70,7 @@ public class OF10StatsRequestMessageFactory implements OFSerializer<MultipartReq
     }
     
     @Override
-    public int computeLength(MultipartRequestMessage message) {
+    public int computeLength(MultipartRequestInput message) {
         return MESSAGE_LENGTH + computeBodyLength(message);
     }
     @Override
@@ -77,7 +83,7 @@ public class OF10StatsRequestMessageFactory implements OFSerializer<MultipartReq
      * @param message
      * @return length of MultipartRequestMessage
      */
-    public int computeBodyLength(MultipartRequestMessage message) {
+    public int computeBodyLength(MultipartRequestInput message) {
         int length = 0;
         MultipartType type = message.getType();
         if (type.equals(MultipartType.OFPMPFLOW)) {
@@ -109,6 +115,24 @@ public class OF10StatsRequestMessageFactory implements OFSerializer<MultipartReq
         multipartRequestFlagsMap.put(0, flags.isOFPMPFREQMORE());
         multipartRequestFlagsBitmask = ByteBufUtils.fillBitMaskFromMap(multipartRequestFlagsMap);
         return multipartRequestFlagsBitmask;
+    }
+    
+    /**
+     * @param multipartRequestBody  
+     * @param output 
+     */
+    private void encodeDescBody(MultipartRequestBody multipartRequestBody,
+            ByteBuf output) {
+        // The body of MultiPartRequestDesc is empty
+    }
+
+    /**
+     * @param multipartRequestBody
+     * @param out
+     */
+    private void encodeTableBody(MultipartRequestBody multipartRequestBody,
+            ByteBuf out) {
+     // The body of MultiPartTable is empty
     }
     
     private static void encodeFlowBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {

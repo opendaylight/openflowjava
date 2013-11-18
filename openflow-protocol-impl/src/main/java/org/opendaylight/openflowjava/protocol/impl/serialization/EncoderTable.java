@@ -17,7 +17,7 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.factories.GetQu
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.GroupModInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.HelloInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.MeterModInputMessageFactory;
-import org.opendaylight.openflowjava.protocol.impl.serialization.factories.MultipartRequestMessageFactory;
+import org.opendaylight.openflowjava.protocol.impl.serialization.factories.MultipartRequestInputFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.OF10BarrierInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.OF10EchoInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.OF10EchoReplyInputMessageFactory;
@@ -29,12 +29,11 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.factories.OF10P
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.OF10PortModInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.OF10QueueGetConfigInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.OF10SetConfigMessageFactory;
-import org.opendaylight.openflowjava.protocol.impl.serialization.factories.OF10StatsRequestMessageFactory;
+import org.opendaylight.openflowjava.protocol.impl.serialization.factories.OF10StatsRequestInputFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.OF10VendorInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.PacketOutInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.PortModInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.RoleRequestInputMessageFactory;
-import org.opendaylight.openflowjava.protocol.impl.serialization.factories.SendMultipartRequestMessageInputFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.SetAsyncInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.SetConfigMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.TableModInputMessageFactory;
@@ -50,11 +49,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GroupModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterModInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketOutInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.RoleRequestInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SendMultipartRequestMessageInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetAsyncInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetConfigInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInput;
@@ -102,7 +100,7 @@ public class EncoderTable {
         table.put(new MessageTypeKey<>(OF10, GetFeaturesInput.class), OF10FeaturesInputMessageFactory.getInstance());
         table.put(new MessageTypeKey<>(OF10, GetQueueConfigInput.class), OF10QueueGetConfigInputMessageFactory.getInstance());
         table.put(new MessageTypeKey<>(OF10, HelloInput.class), OF10HelloInputMessageFactory.getInstance());
-        table.put(new MessageTypeKey<>(OF10, MultipartRequestMessage.class), OF10StatsRequestMessageFactory.getInstance());
+        table.put(new MessageTypeKey<>(OF10, MultipartRequestInput.class), OF10StatsRequestInputFactory.getInstance());
         table.put(new MessageTypeKey<>(OF10, PacketOutInput.class), OF10PacketOutInputMessageFactory.getInstance());
         table.put(new MessageTypeKey<>(OF10, PortModInput.class), OF10PortModInputMessageFactory.getInstance());
         table.put(new MessageTypeKey<>(OF10, SetConfigInput.class), OF10SetConfigMessageFactory.getInstance());
@@ -118,8 +116,7 @@ public class EncoderTable {
         table.put(new MessageTypeKey<>(OF13, GroupModInput.class), GroupModInputMessageFactory.getInstance());
         table.put(new MessageTypeKey<>(OF13, HelloInput.class), HelloInputMessageFactory.getInstance());
         table.put(new MessageTypeKey<>(OF13, MeterModInput.class), MeterModInputMessageFactory.getInstance());
-        table.put(new MessageTypeKey<>(OF13, MultipartRequestMessage.class), MultipartRequestMessageFactory.getInstance());
-        table.put(new MessageTypeKey<>(OF13, SendMultipartRequestMessageInput.class), SendMultipartRequestMessageInputFactory.getInstance());
+        table.put(new MessageTypeKey<>(OF13, MultipartRequestInput.class), MultipartRequestInputFactory.getInstance());
         table.put(new MessageTypeKey<>(OF13, PacketOutInput.class), PacketOutInputMessageFactory.getInstance());
         table.put(new MessageTypeKey<>(OF13, PortModInput.class), PortModInputMessageFactory.getInstance());
         table.put(new MessageTypeKey<>(OF13, RoleRequestInput.class), RoleRequestInputMessageFactory.getInstance());
