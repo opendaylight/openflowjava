@@ -71,7 +71,7 @@ public class GroupModInputMessageFactoryTest {
         List<BucketsList> bucketsList = new ArrayList<>();
         BucketsListBuilder bucketsBuilder = new BucketsListBuilder();
         BucketsList bucket;
-        out.skipBytes(Short.SIZE / Byte.SIZE);
+        out.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         bucketsBuilder.setWeight(out.readUnsignedShort());
         bucketsBuilder.setWatchPort(new PortNumber(out.readUnsignedInt()));
         bucketsBuilder.setWatchGroup(out.readUnsignedInt());

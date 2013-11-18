@@ -7,6 +7,7 @@ import java.math.BigInteger;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionTypeV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.CapabilitiesV10;
@@ -22,7 +23,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class OF10FeaturesReplyMessageFactory implements OFDeserializer<GetFeaturesOutput> {
     
-    private static final byte MAC_ADDRESS_LENGTH = 6;
     private static final byte MAX_PORT_NAME_LENGTH = 16;
     
     private static final byte PADDING_IN_FEATURES_REPLY_HEADER = 3;
@@ -94,7 +94,7 @@ public class OF10FeaturesReplyMessageFactory implements OFDeserializer<GetFeatur
     
     private static void deserializePort(ByteBuf rawMessage, GetFeaturesOutputBuilder builder) {
         builder.setPortNo((long) rawMessage.readUnsignedShort());
-        byte[] address = new byte[MAC_ADDRESS_LENGTH];
+        byte[] address = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
         rawMessage.readBytes(address);
         builder.setHwAddr(new MacAddress(ByteBufUtils.macAddressToString(address)));
         byte[] name = new byte[MAX_PORT_NAME_LENGTH];

@@ -22,8 +22,6 @@ import com.google.common.base.Joiner;
  */
 public abstract class ByteBufUtils {
 
-    private static final byte MAC_ADDRESS_LENGTH = 6;
-
     /**
      * Converts ByteBuf into String
      * @param bb input ByteBuf
@@ -174,7 +172,7 @@ public abstract class ByteBufUtils {
      */
     public static byte[] macAddressToBytes(String macAddress) {
         String[] sequences = macAddress.split(":");
-        byte[] result = new byte[MAC_ADDRESS_LENGTH];
+        byte[] result = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
         for (int i = 0; i < sequences.length; i++) {
              result[i] = (byte) Short.parseShort(sequences[i], 16);
         }
@@ -189,7 +187,7 @@ public abstract class ByteBufUtils {
      */
     public static String macAddressToString(byte[] address) {
         List<String> groups = new ArrayList<>();
-        for(int i=0; i < MAC_ADDRESS_LENGTH; i++){
+        for(int i=0; i < EncodeConstants.MAC_ADDRESS_LENGTH; i++){
             groups.add(String.format("%02X", address[i]));
         }
         Joiner joiner = Joiner.on(":");

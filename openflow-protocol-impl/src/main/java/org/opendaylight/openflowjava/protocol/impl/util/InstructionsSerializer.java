@@ -28,6 +28,24 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
  */
 public abstract class InstructionsSerializer {
 
+    private static final byte GOTO_TABLE_TYPE = 1;
+    private static final byte WRITE_METADATA_TYPE = 2;
+    private static final byte WRITE_ACTIONS_TYPE = 3;
+    private static final byte APPLY_ACTIONS_TYPE = 4;
+    private static final byte CLEAR_ACTIONS_TYPE = 5;
+    private static final byte METER_TYPE = 6;
+    private static final byte EXPERIMENTER_TYPE = 7;
+    private static final byte GOTO_TABLE_LENGTH = 8;
+    private static final byte WRITE_METADATA_LENGTH = 24;
+    private static final byte WRITE_ACTIONS_LENGTH = 8;
+    private static final byte APPLY_ACTIONS_LENGTH = 8;
+    private static final byte CLEAR_ACTIONS_LENGTH = 8;
+    private static final byte METER_LENGTH = 8;
+    private static final byte EXPERIMENTER_LENGTH = 8;
+    private static final byte PADDING_IN_GOTO_TABLE = 3;
+    private static final byte PADDING_IN_WRITE_METADATA = 4;
+    private static final byte PADDING_IN_CLEAR_ACTIONS = 4;
+    
     /**
      * Encodes instructions
      * @param instructions List of instructions
@@ -38,41 +56,26 @@ public abstract class InstructionsSerializer {
             for (Instructions instruction : instructions) {
                 Class<? extends Instruction> type = instruction.getType();
                 if (type.isAssignableFrom(GotoTable.class)) {
-                    final byte GOTO_TABLE_TYPE = 1;
-                    final byte GOTO_TABLE_LENGTH = 8;
-                    final byte PADDING_IN_GOTO_TABLE = 3;
                     writeTypeAndLength(out, GOTO_TABLE_TYPE, GOTO_TABLE_LENGTH);
                     out.writeByte(instruction.getAugmentation(TableIdInstruction.class).getTableId());
                     ByteBufUtils.padBuffer(PADDING_IN_GOTO_TABLE, out);
                 } else if (type.isAssignableFrom(WriteMetadata.class)) {
-                    final byte WRITE_METADATA_TYPE = 2;
-                    final byte WRITE_METADATA_LENGTH = 24;
-                    final byte PADDING_IN_WRITE_METADATA = 4;
                     writeTypeAndLength(out, WRITE_METADATA_TYPE, WRITE_METADATA_LENGTH);
                     ByteBufUtils.padBuffer(PADDING_IN_WRITE_METADATA, out);
                     MetadataInstruction metadata = instruction.getAugmentation(MetadataInstruction.class);
                     out.writeBytes(metadata.getMetadata());
                     out.writeBytes(metadata.getMetadataMask());
                 } else if (type.isAssignableFrom(WriteActions.class)) {
-                    final byte WRITE_ACTIONS_TYPE = 3;
                     writeActionsInstruction(out, instruction, WRITE_ACTIONS_TYPE);
                 } else if (type.isAssignableFrom(ApplyActions.class)) {
-                    final byte APPLY_ACTIONS_TYPE = 4;
                     writeActionsInstruction(out, instruction, APPLY_ACTIONS_TYPE);
                 } else if (type.isAssignableFrom(ClearActions.class)) {
-                    final byte CLEAR_ACTIONS_TYPE = 5;
-                    final byte CLEAR_ACTIONS_LENGTH = 8;
-                    final byte PADDING_IN_CLEAR_ACTIONS = 4;
                     writeTypeAndLength(out, CLEAR_ACTIONS_TYPE, CLEAR_ACTIONS_LENGTH);
                     ByteBufUtils.padBuffer(PADDING_IN_CLEAR_ACTIONS, out);
                 } else if (type.isAssignableFrom(Meter.class)) {
-                    final byte METER_TYPE = 6;
-                    final byte METER_LENGTH = 8;
                     writeTypeAndLength(out, METER_TYPE, METER_LENGTH);
                     out.writeInt(instruction.getAugmentation(MeterIdInstruction.class).getMeterId().intValue());
                 } else if (type.isAssignableFrom(Experimenter.class)) {
-                    final byte EXPERIMENTER_TYPE = 7;
-                    final byte EXPERIMENTER_LENGTH = 8;
                     ExperimenterInstruction experimenter = instruction.getAugmentation(ExperimenterInstruction.class);
                     byte[] data = experimenter.getData();
                     writeTypeAndLength(out, EXPERIMENTER_TYPE, EXPERIMENTER_LENGTH + data.length);
@@ -111,27 +114,20 @@ public abstract class InstructionsSerializer {
             for (Instructions instruction : instructions) {
                 Class<? extends Instruction> type = instruction.getType();
                 if (type.isAssignableFrom(GotoTable.class)) {
-                    final byte GOTO_TABLE_LENGTH = 8;
                     length += GOTO_TABLE_LENGTH;
                 } else if (type.isAssignableFrom(WriteMetadata.class)) {
-                    final byte WRITE_METADATA_LENGTH = 24;
                     length += WRITE_METADATA_LENGTH;
                 } else if (type.isAssignableFrom(WriteActions.class)) {
-                    final byte WRITE_ACTIONS_LENGTH = 8;
                     length += WRITE_ACTIONS_LENGTH + ActionsSerializer.computeLengthOfActions(
                             instruction.getAugmentation(ActionsInstruction.class).getActionsList());
                 } else if (type.isAssignableFrom(ApplyActions.class)) {
-                    final byte APPLY_ACTIONS_LENGTH = 8;
                     length += APPLY_ACTIONS_LENGTH + ActionsSerializer.computeLengthOfActions(
                             instruction.getAugmentation(ActionsInstruction.class).getActionsList());
                 } else if (type.isAssignableFrom(ClearActions.class)) {
-                    final byte CLEAR_ACTIONS_LENGTH = 8;
                     length += CLEAR_ACTIONS_LENGTH;
                 } else if (type.isAssignableFrom(Meter.class)) {
-                    final byte METER_LENGTH = 8;
                     length += METER_LENGTH;
                 } else if (type.isAssignableFrom(Experimenter.class)) {
-                    final byte EXPERIMENTER_LENGTH = 8;
                     ExperimenterInstruction experimenter = instruction.getAugmentation(ExperimenterInstruction.class);
                     byte[] data = experimenter.getData();
                     length += EXPERIMENTER_LENGTH + data.length;

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.OF10ActionsDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.OF10MatchDeserializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
@@ -42,6 +43,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  */
 public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartReplyMessage> {
+
+    private static final int DESC_STR_LEN = 256;
+    private static final int SERIAL_NUM_LEN = 32;
+    private static final byte PADDING_IN_FLOW_STATS_HEADER = 1;
+    private static final byte PADDING_IN_FLOW_STATS_HEADER_02 = 6;
+    private static final byte PADDING_IN_AGGREGATE_HEADER = 4;
+    private static final byte PADDING_IN_TABLE_HEADER = 3;
+    private static final byte MAX_TABLE_NAME_LENGTH = 32;
+    private static final byte PADDING_IN_PORT_STATS_HEADER = 6;
+    private static final byte PADDING_IN_QUEUE_HEADER = 2;
 
     private static OF10StatsReplyMessageFactory instance;
     
@@ -89,8 +100,6 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyDesc setDesc(ByteBuf input) {
-        final int DESC_STR_LEN = 256;
-        final int SERIAL_NUM_LEN = 32;
         MultipartReplyDescBuilder descBuilder = new MultipartReplyDescBuilder();
         byte[] mfrDescBytes = new byte[DESC_STR_LEN];
         input.readBytes(mfrDescBytes);
@@ -116,13 +125,11 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyFlow setFlow(ByteBuf input) {
-        final byte PADDING_IN_FLOW_STATS_HEADER = 1;
-        final byte PADDING_IN_FLOW_STATS_HEADER_02 = 6;
         MultipartReplyFlowBuilder flowBuilder = new MultipartReplyFlowBuilder();
         List<FlowStats> flowStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
             FlowStatsBuilder flowStatsBuilder = new FlowStatsBuilder();
-            input.skipBytes(Short.SIZE / Byte.SIZE);
+            input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
             flowStatsBuilder.setTableId(input.readUnsignedByte());
             input.skipBytes(PADDING_IN_FLOW_STATS_HEADER);
             flowStatsBuilder.setMatchV10(OF10MatchDeserializer.createMatchV10(input));
@@ -149,7 +156,6 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyAggregate setAggregate(ByteBuf input) {
-        final byte PADDING_IN_AGGREGATE_HEADER = 4;
         MultipartReplyAggregateBuilder builder = new MultipartReplyAggregateBuilder();
         byte[] packetCount = new byte[Long.SIZE/Byte.SIZE];
         input.readBytes(packetCount);
@@ -163,8 +169,6 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyTable setTable(ByteBuf input) {
-        final byte PADDING_IN_TABLE_HEADER = 3;
-        final byte MAX_TABLE_NAME_LENGTH = 32;
         MultipartReplyTableBuilder builder = new MultipartReplyTableBuilder();
         List<TableStats> tableStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
@@ -186,7 +190,6 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyPortStats setPortStats(ByteBuf input) {
-        final byte PADDING_IN_PORT_STATS_HEADER = 6;
         MultipartReplyPortStatsBuilder builder = new MultipartReplyPortStatsBuilder();
         List<PortStats> portStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
@@ -235,7 +238,6 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyQueue setQueue(ByteBuf input) {
-        final byte PADDING_IN_QUEUE_HEADER = 2;
         MultipartReplyQueueBuilder builder = new MultipartReplyQueueBuilder();
         List<QueueStats> queueStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {

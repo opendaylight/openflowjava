@@ -73,7 +73,7 @@ public class PacketOutInputMessageFactoryTest {
         Assert.assertEquals("Wrong action type", 17, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         Assert.assertEquals("Wrong ethertype", 25, out.readUnsignedShort());
-        out.skipBytes(Short.SIZE / Byte.SIZE);
+        out.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         Assert.assertEquals("Wrong action type", 18, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         out.skipBytes(PADDING_IN_ACTION_HEADER);

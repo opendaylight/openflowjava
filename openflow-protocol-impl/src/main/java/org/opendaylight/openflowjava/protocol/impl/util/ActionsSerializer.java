@@ -42,6 +42,40 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
  */
 public abstract class ActionsSerializer {
 
+    private static final byte OUTPUT_CODE = 0;
+    private static final byte COPY_TTL_OUT_CODE = 11;
+    private static final byte COPY_TTL_IN_CODE = 12;
+    private static final byte SET_MPLS_TTL_CODE = 15;
+    private static final byte DEC_MPLS_TTL_CODE = 16;
+    private static final byte PUSH_VLAN_CODE = 17;
+    private static final byte POP_VLAN_CODE = 18;
+    private static final byte PUSH_MPLS_CODE = 19;
+    private static final byte POP_MPLS_CODE = 20;
+    private static final byte SET_QUEUE_CODE = 21;
+    private static final byte GROUP_CODE = 22;
+    private static final byte SET_NW_TTL_CODE = 23;
+    private static final byte DEC_NW_TTL_CODE = 24;
+    private static final int SET_FIELD_CODE = 25;
+    private static final byte PUSH_PBB_CODE = 26;
+    private static final byte POP_PBB_CODE = 27;
+    private static final int EXPERIMENTER_CODE = 65535; // 0xFFFF
+    private static final byte OUTPUT_LENGTH = 16;
+    private static final byte SET_MPLS_TTL_LENGTH = 8;
+    private static final byte SET_QUEUE_LENGTH = 8;
+    private static final byte GROUP_LENGTH = 8;
+    private static final byte SET_NW_TTL_LENGTH = 8;
+    private static final byte EXPERIMENTER_LENGTH = 8;
+    private static final byte ACTION_HEADER_LENGTH = 8;
+    private static final byte LENGTH_OF_ETHERTYPE_ACTION = 8;
+    private static final byte LENGTH_OF_OTHER_ACTIONS = 8;
+    private static final byte SET_FIELD_HEADER_LENGTH = 4; // only type and length
+    private static final byte OUTPUT_PADDING = 6;
+    private static final byte SET_MPLS_TTL_PADDING = 3;
+    private static final byte SET_NW_TTL_PADDING = 3;
+    private static final byte PADDING_IN_ACTION_HEADER = 4;
+    private static final byte ETHERTYPE_ACTION_PADDING = 2;
+
+
     /**
      * Encodes actions to ByteBuf
      * @param actionsList list of actions to be encoded
@@ -92,9 +126,6 @@ public abstract class ActionsSerializer {
     }
 
     private static void encodeOutputAction(Action action, ByteBuf outBuffer) {
-        final byte OUTPUT_CODE = 0;
-        final byte OUTPUT_LENGTH = 16;
-        final byte OUTPUT_PADDING = 6;
         outBuffer.writeShort(OUTPUT_CODE);
         outBuffer.writeShort(OUTPUT_LENGTH);
         PortAction port = action.getAugmentation(PortAction.class);
@@ -105,21 +136,16 @@ public abstract class ActionsSerializer {
     }
 
     private static void encodeCopyTtlOutAction(ByteBuf outBuffer) {
-        final byte COPY_TTL_OUT_CODE = 11;
         outBuffer.writeShort(COPY_TTL_OUT_CODE);
         encodeRestOfActionHeader(outBuffer);
     }
     
     private static void encodeCopyTtlInAction(ByteBuf outBuffer) {
-        final byte COPY_TTL_IN_CODE = 12;
         outBuffer.writeShort(COPY_TTL_IN_CODE);
         encodeRestOfActionHeader(outBuffer);
     }
     
     private static void encodeSetMplsTtltAction(Action action, ByteBuf outBuffer) {
-        final byte SET_MPLS_TTL_CODE = 15;
-        final byte SET_MPLS_TTL_LENGTH = 8;
-        final byte SET_MPLS_TTL_PADDING = 3;
         outBuffer.writeShort(SET_MPLS_TTL_CODE);
         outBuffer.writeShort(SET_MPLS_TTL_LENGTH);
         MplsTtlAction mplsTtl = action.getAugmentation(MplsTtlAction.class);
@@ -128,38 +154,31 @@ public abstract class ActionsSerializer {
     }
     
     private static void encodeDecMplsTtlAction(ByteBuf outBuffer) {
-        final byte DEC_MPLS_TTL_CODE = 16;
         outBuffer.writeShort(DEC_MPLS_TTL_CODE);
         encodeRestOfActionHeader(outBuffer);
     }
     
     private static void encodePushVlanAction(Action action, ByteBuf outBuffer) {
-        final byte PUSH_VLAN_CODE = 17;
         outBuffer.writeShort(PUSH_VLAN_CODE);
         encodeCommonEthertype(action, outBuffer);
     }
 
     private static void encodePopVlanAction(ByteBuf outBuffer) {
-        final byte POP_VLAN_CODE = 18;
         outBuffer.writeShort(POP_VLAN_CODE);
         encodeRestOfActionHeader(outBuffer);
     }
     
     private static void encodePushMplsAction(Action action, ByteBuf outBuffer) {
-        final byte PUSH_MPLS_CODE = 19;
         outBuffer.writeShort(PUSH_MPLS_CODE);
         encodeCommonEthertype(action, outBuffer);
     }
     
     private static void encodePopMplsAction(Action action, ByteBuf outBuffer) {
-        final byte POP_MPLS_CODE = 20;
         outBuffer.writeShort(POP_MPLS_CODE);
         encodeCommonEthertype(action, outBuffer);
     }
     
     private static void encodeSetQueueAction(Action action, ByteBuf outBuffer) {
-        final byte SET_QUEUE_CODE = 21;
-        final byte SET_QUEUE_LENGTH = 8;
         outBuffer.writeShort(SET_QUEUE_CODE);
         outBuffer.writeShort(SET_QUEUE_LENGTH);
         QueueIdAction queueId = action.getAugmentation(QueueIdAction.class);
@@ -167,8 +186,6 @@ public abstract class ActionsSerializer {
     }
 
     private static void encodeGroupAction(Action action, ByteBuf outBuffer) {
-        final byte GROUP_CODE = 22;
-        final byte GROUP_LENGTH = 8;
         outBuffer.writeShort(GROUP_CODE);
         outBuffer.writeShort(GROUP_LENGTH);
         GroupIdAction groupId = action.getAugmentation(GroupIdAction.class);
@@ -176,9 +193,6 @@ public abstract class ActionsSerializer {
     }
     
     private static void encodeSetNwTtlAction(Action action, ByteBuf outBuffer) {
-        final byte SET_NW_TTL_CODE = 23;
-        final byte SET_NW_TTL_LENGTH = 8;
-        final byte SET_NW_TTL_PADDING = 3;
         outBuffer.writeShort(SET_NW_TTL_CODE);
         outBuffer.writeShort(SET_NW_TTL_LENGTH);
         NwTtlAction nwTtl = action.getAugmentation(NwTtlAction.class);
@@ -187,14 +201,11 @@ public abstract class ActionsSerializer {
     }
     
     private static void encodeDecNwTtlAction(ByteBuf outBuffer) {
-        final byte DEC_NW_TTL_CODE = 24;
         outBuffer.writeShort(DEC_NW_TTL_CODE);
         encodeRestOfActionHeader(outBuffer);
     }
     
     private static void encodeSetFieldAction(Action action, ByteBuf outBuffer) {
-        final int SET_FIELD_CODE = 25;
-        final byte SET_FIELD_HEADER_LENGTH = 4; // only type and length
         OxmFieldsAction oxmField = action.getAugmentation(OxmFieldsAction.class);
         int length = MatchSerializer.computeMatchEntriesLength(oxmField.getMatchEntries()) + SET_FIELD_HEADER_LENGTH;
         outBuffer.writeShort(SET_FIELD_CODE);
@@ -208,20 +219,16 @@ public abstract class ActionsSerializer {
     }
     
     private static void encodePushPbbAction(Action action, ByteBuf outBuffer) {
-        final byte PUSH_PBB_CODE = 26;
         outBuffer.writeShort(PUSH_PBB_CODE);
         encodeCommonEthertype(action, outBuffer);
     }
     
     private static void encodePopPbbAction(ByteBuf outBuffer) {
-        final byte POP_PBB_CODE = 27;
         outBuffer.writeShort(POP_PBB_CODE);
         encodeRestOfActionHeader(outBuffer);
     }
 
     private static void encodeExperimenterAction(Action action, ByteBuf outBuffer) {
-        final int EXPERIMENTER_CODE = 65535; // 0xFFFF
-        final byte EXPERIMENTER_LENGTH = 8;
         outBuffer.writeShort(EXPERIMENTER_CODE);
         outBuffer.writeShort(EXPERIMENTER_LENGTH);
         ExperimenterAction experimenter = action.getAugmentation(ExperimenterAction.class);
@@ -229,15 +236,11 @@ public abstract class ActionsSerializer {
     }
     
     private static void encodeRestOfActionHeader(ByteBuf outBuffer) {
-        final byte ACTION_HEADER_LENGTH = 8;
-        final byte PADDING_IN_ACTION_HEADER = 4;
         outBuffer.writeShort(ACTION_HEADER_LENGTH);
         ByteBufUtils.padBuffer(PADDING_IN_ACTION_HEADER, outBuffer);
     }
     
     private static void encodeCommonEthertype(Action action, ByteBuf outBuffer) {
-        final byte LENGTH_OF_ETHERTYPE_ACTION = 8;
-        final byte ETHERTYPE_ACTION_PADDING = 2;        
         EthertypeAction ethertype = action.getAugmentation(EthertypeAction.class);
         outBuffer.writeShort(LENGTH_OF_ETHERTYPE_ACTION);
         outBuffer.writeShort(ethertype.getEthertype().getValue());
@@ -250,9 +253,6 @@ public abstract class ActionsSerializer {
      * @return actions length
      */
     public static int computeLengthOfActions(List<ActionsList> actionsList) {
-        final byte OUTPUT_LENGTH = 16;
-        final byte LENGTH_OF_OTHER_ACTIONS = 8;
-        final byte ACTION_HEADER_LENGTH = 4;
         int lengthOfActions = 0;
         if (actionsList != null) {
             for (ActionsList list : actionsList) {
@@ -261,7 +261,7 @@ public abstract class ActionsSerializer {
                     lengthOfActions += OUTPUT_LENGTH;
                 } else if (action.getType().isAssignableFrom(SetField.class)){
                     List<MatchEntries> entries = action.getAugmentation(OxmFieldsAction.class).getMatchEntries();
-                    int actionLength = ACTION_HEADER_LENGTH + MatchSerializer.computeMatchEntriesLength(entries);
+                    int actionLength = (2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES) + MatchSerializer.computeMatchEntriesLength(entries);
                     lengthOfActions += actionLength;
                     int paddingRemainder = actionLength % EncodeConstants.PADDING;
                     if ((paddingRemainder) != 0) {

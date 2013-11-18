@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterQueuePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.RateQueueProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.RateQueuePropertyBuilder;
@@ -97,7 +98,7 @@ public class QueueGetConfigReplyMessageFactory implements OFDeserializer<GetQueu
                 expBuilder.setExperimenter(input.readUnsignedInt());
                 input.skipBytes(PADDING_IN_EXPERIMENTER_QUEUE_PROPERTY);
                 expBuilder.setData(input.readBytes(currentPropertyLength
-                        - Integer.SIZE / Byte.SIZE - PADDING_IN_EXPERIMENTER_QUEUE_PROPERTY).array());
+                        - EncodeConstants.SIZE_OF_INT_IN_BYTES - PADDING_IN_EXPERIMENTER_QUEUE_PROPERTY).array());
                 propertiesBuilder.addAugmentation(RateQueueProperty.class, expBuilder.build());
             }
             propertiesList.add(propertiesBuilder.build());

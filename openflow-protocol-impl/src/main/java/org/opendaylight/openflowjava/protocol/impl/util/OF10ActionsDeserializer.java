@@ -49,6 +49,14 @@ import com.google.common.base.Joiner;
  * @author michal.polkorab
  */
 public class OF10ActionsDeserializer {
+    
+    private static final byte PADDING_IN_SET_VLAN_VID_ACTION = 2;
+    private static final byte PADDING_IN_SET_VLAN_PCP_ACTION = 3;
+    private static final byte PADDING_IN_STRIP_VLAN_ACTION = 4;
+    private static final byte PADDING_IN_SET_DL_ACTION = 6;
+    private static final byte PADDING_IN_NW_TOS_ACTION = 3;
+    private static final byte PADDING_IN_TP_ACTION = 2;
+    private static final byte PADDING_IN_ENQUEUE_ACTION = 6;
 
     /**
      * Creates list of actions (OpenFlow v1.0) from ofp_action structures
@@ -60,7 +68,7 @@ public class OF10ActionsDeserializer {
         while (input.readableBytes() > 0) {
             ActionsListBuilder actionsBuilder = new ActionsListBuilder();
             int type = input.readUnsignedShort();
-            input.skipBytes(Short.SIZE / Byte.SIZE);
+            input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
             switch(type) {
             case 0:  
                 actions.add(createOutputAction(input, actionsBuilder));
@@ -125,7 +133,6 @@ public class OF10ActionsDeserializer {
     }
 
     private static ActionsList createSetVlanVidAction(ByteBuf input, ActionsListBuilder builder) {
-        final byte PADDING_IN_SET_VLAN_VID_ACTION = 2;
         ActionBuilder actionBuilder = new ActionBuilder();
         actionBuilder.setType(SetVlanVid.class);
         VlanVidActionBuilder vlanBuilder = new VlanVidActionBuilder();
@@ -137,7 +144,6 @@ public class OF10ActionsDeserializer {
     }
 
     private static ActionsList createVlanPcpAction(ByteBuf input, ActionsListBuilder builder) {
-        final byte PADDING_IN_SET_VLAN_PCP_ACTION = 3;
         ActionBuilder actionBuilder = new ActionBuilder();
         actionBuilder.setType(SetVlanPcp.class);
         VlanPcpActionBuilder vlanBuilder = new VlanPcpActionBuilder();
@@ -149,7 +155,6 @@ public class OF10ActionsDeserializer {
     }
 
     private static ActionsList createStripVlanAction(ByteBuf input, ActionsListBuilder builder) {
-        final byte PADDING_IN_STRIP_VLAN_ACTION = 4;
         ActionBuilder actionBuilder = new ActionBuilder();
         actionBuilder.setType(StripVlan.class);
         input.skipBytes(PADDING_IN_STRIP_VLAN_ACTION);
@@ -174,10 +179,8 @@ public class OF10ActionsDeserializer {
     }
     
     private static DlAddressAction createDlAugmentationAndPad(ByteBuf input) {
-        final byte MAC_ADDRESS_LENGTH = 6;
-        final byte PADDING_IN_SET_DL_ACTION = 6;
         DlAddressActionBuilder dlBuilder = new DlAddressActionBuilder();
-        byte[] address = new byte[MAC_ADDRESS_LENGTH];
+        byte[] address = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
         input.readBytes(address);
         dlBuilder.setDlAddress(new MacAddress(ByteBufUtils.macAddressToString(address)));
         input.skipBytes(PADDING_IN_SET_DL_ACTION);
@@ -201,10 +204,9 @@ public class OF10ActionsDeserializer {
     }
     
     private static Augmentation<Action> createNwAddressAugmentationAndPad(ByteBuf input) {
-        final byte GROUPS_IN_IPV4_ADDRESS = 4;
         IpAddressActionBuilder ipBuilder = new IpAddressActionBuilder();
         List<String> groups = new ArrayList<>();
-        for (int i = 0; i < GROUPS_IN_IPV4_ADDRESS; i++) {
+        for (int i = 0; i < EncodeConstants.GROUPS_IN_IPV4_ADDRESS; i++) {
             groups.add(Short.toString(input.readUnsignedByte()));
         }
         Joiner joiner = Joiner.on(".");
@@ -213,7 +215,6 @@ public class OF10ActionsDeserializer {
     }
 
     private static ActionsList createSetNwTosAction(ByteBuf input, ActionsListBuilder builder) {
-        final byte PADDING_IN_NW_TOS_ACTION = 3;
         ActionBuilder actionBuilder = new ActionBuilder();
         actionBuilder.setType(SetNwTos.class);
         NwTosActionBuilder tosBuilder = new NwTosActionBuilder();
@@ -225,7 +226,6 @@ public class OF10ActionsDeserializer {
     }
 
     private static ActionsList createSetTpSrcAction(ByteBuf input, ActionsListBuilder builder) {
-        final byte PADDING_IN_TP_ACTION = 2;
         ActionBuilder actionBuilder = new ActionBuilder();
         actionBuilder.setType(SetTpSrc.class);
         createPortAugmentation(input, actionBuilder);
@@ -235,7 +235,6 @@ public class OF10ActionsDeserializer {
     }
 
     private static ActionsList createSetTpDstAction(ByteBuf input, ActionsListBuilder builder) {
-        final byte PADDING_IN_TP_ACTION = 2;
         ActionBuilder actionBuilder = new ActionBuilder();
         actionBuilder.setType(SetTpDst.class);
         createPortAugmentation(input, actionBuilder);
@@ -251,7 +250,6 @@ public class OF10ActionsDeserializer {
     }
 
     private static ActionsList createEnqueueAction(ByteBuf input, ActionsListBuilder builder) {
-        final byte PADDING_IN_ENQUEUE_ACTION = 6;
         ActionBuilder actionBuilder = new ActionBuilder();
         actionBuilder.setType(Enqueue.class);
         createPortAugmentation(input, actionBuilder);

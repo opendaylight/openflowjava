@@ -10,6 +10,7 @@ import java.util.List;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ActionsDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.InstructionsDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.MatchDeserializer;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
@@ -107,8 +108,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.table.features.TableFeaturesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.TableFeatureProperties;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.TableFeaturePropertiesBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Translates MultipartReply messages
@@ -117,9 +116,38 @@ import org.slf4j.LoggerFactory;
  */
 public class MultipartReplyMessageFactory implements OFDeserializer<MultipartReplyMessage> {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(MultipartReplyMessageFactory.class);
     private static final byte PADDING_IN_MULTIPART_REPLY_HEADER = 4;
+    private static final int DESC_STR_LEN = 256;
+    private static final int SERIAL_NUM_LEN = 32;
+    private static final byte PADDING_IN_FLOW_STATS_HEADER_01 = 1;
+    private static final byte PADDING_IN_FLOW_STATS_HEADER_02 = 4;
+    private static final byte PADDING_IN_AGGREGATE_HEADER = 4;
+    private static final byte PADDING_IN_TABLE_HEADER = 3;
+    private static final byte PADDING_IN_MULTIPART_REPLY_TABLE_FEATURES = 5;
+    private static final byte MAX_TABLE_NAME_LENGTH = 32;
+    private static final byte MULTIPART_REPLY_TABLE_FEATURES_STRUCTURE_LENGTH = 64;
+    private static final byte COMMON_PROPERTY_LENGTH = 4;
+    private static final byte PADDING_IN_PORT_STATS_HEADER = 4;
+    private static final byte PADDING_IN_GROUP_HEADER_01 = 2;
+    private static final byte PADDING_IN_GROUP_HEADER_02 = 4;
+    private static final byte BUCKET_COUNTER_LENGTH = 16;
+    private static final byte GROUP_BODY_LENGTH = 40;
+    private static final byte PADDING_IN_METER_FEATURES_HEADER = 2;
+    private static final byte PADDING_IN_METER_STATS_HEADER = 6;
+    private static final byte METER_BAND_STATS_LENGTH = 16;
+    private static final byte METER_BODY_LENGTH = 40;
+    private static final byte METER_CONFIG_LENGTH = 8;
+    private static final byte PADDING_IN_METER_BAND_DROP_HEADER = 4;
+    private static final byte PADDING_IN_METER_BAND_DSCP_HEADER = 3;
+    private static final byte PADDING_IN_PORT_DESC_HEADER_01 = 4;
+    private static final byte PADDING_IN_PORT_DESC_HEADER_02 = 2;
+    private static final byte MAX_PORT_NAME_LEN = 16;
+    private static final int GROUP_TYPES = 4;
+    private static final byte PADDING_IN_GROUP_DESC_HEADER = 1;
+    private static final byte PADDING_IN_BUCKETS_HEADER = 4;
+    private static final byte GROUP_DESC_HEADER_LENGTH = 8;
+    private static final byte BUCKETS_HEADER_LENGTH = 16;
+
     
     private static MultipartReplyMessageFactory instance;
 
@@ -186,8 +214,6 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyDesc setDesc(ByteBuf input) {
-        final int DESC_STR_LEN = 256;
-        final int SERIAL_NUM_LEN = 32;
         MultipartReplyDescBuilder descBuilder = new MultipartReplyDescBuilder();
         byte[] mfrDescBytes = new byte[DESC_STR_LEN];
         input.readBytes(mfrDescBytes);
@@ -213,13 +239,11 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyFlow setFlow(ByteBuf input) {
-        final byte PADDING_IN_FLOW_STATS_HEADER_01 = 1;
-        final byte PADDING_IN_FLOW_STATS_HEADER_02 = 4;
         MultipartReplyFlowBuilder flowBuilder = new MultipartReplyFlowBuilder();
         List<FlowStats> flowStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
             FlowStatsBuilder flowStatsBuilder = new FlowStatsBuilder();
-            input.skipBytes(Short.SIZE / Byte.SIZE);
+            input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
             flowStatsBuilder.setTableId(input.readUnsignedByte());
             input.skipBytes(PADDING_IN_FLOW_STATS_HEADER_01);
             flowStatsBuilder.setDurationSec(input.readUnsignedInt());
@@ -256,7 +280,6 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyAggregate setAggregate(ByteBuf input) {
-        final byte PADDING_IN_AGGREGATE_HEADER = 4;
         MultipartReplyAggregateBuilder builder = new MultipartReplyAggregateBuilder();
         byte[] packetCount = new byte[Long.SIZE/Byte.SIZE];
         input.readBytes(packetCount);
@@ -270,7 +293,6 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyTable setTable(ByteBuf input) {
-        final byte PADDING_IN_TABLE_HEADER = 3;
         MultipartReplyTableBuilder builder = new MultipartReplyTableBuilder();
         List<TableStats> tableStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
@@ -291,9 +313,6 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyTableFeatures setTableFeatures(ByteBuf input) {
-        final byte PADDING_IN_MULTIPART_REPLY_TABLE_FEATURES = 5;
-        final byte MAX_TABLE_NAME_LENGTH = 32;
-        final byte MULTIPART_REPLY_TABLE_FEATURES_STRUCTURE_LENGTH = 64;
         MultipartReplyTableFeaturesBuilder builder = new MultipartReplyTableFeaturesBuilder();
         List<TableFeatures> features = new ArrayList<>();
         while (input.readableBytes() > 0) {
@@ -302,10 +321,10 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             featuresBuilder.setTableId(input.readUnsignedByte());
             input.skipBytes(PADDING_IN_MULTIPART_REPLY_TABLE_FEATURES);
             featuresBuilder.setName(input.readBytes(MAX_TABLE_NAME_LENGTH).toString());
-            byte[] metadataMatch = new byte[Long.SIZE / Byte.SIZE];
+            byte[] metadataMatch = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
             input.readBytes(metadataMatch);
             featuresBuilder.setMetadataMatch(metadataMatch);
-            byte[] metadataWrite = new byte[Long.SIZE / Byte.SIZE];
+            byte[] metadataWrite = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
             input.readBytes(metadataWrite);
             featuresBuilder.setMetadataWrite(metadataWrite);
             featuresBuilder.setConfig(createTableConfig(input.readUnsignedInt()));
@@ -324,7 +343,6 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static List<TableFeatureProperties> createTableFeaturesProperties(ByteBuf input, int length) {
-        final byte COMMON_PROPERTY_LENGTH = 4;
         List<TableFeatureProperties> properties = new ArrayList<>();
         int tableFeaturesLength = length;
         while (tableFeaturesLength > 0) {
@@ -383,7 +401,6 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyPortStats setPortStats(ByteBuf input) {
-        final byte PADDING_IN_PORT_STATS_HEADER = 4;
         MultipartReplyPortStatsBuilder builder = new MultipartReplyPortStatsBuilder();
         List<PortStats> portStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
@@ -459,10 +476,6 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyGroup setGroup(ByteBuf input) {
-        final byte PADDING_IN_GROUP_HEADER_01 = 2;
-        final byte PADDING_IN_GROUP_HEADER_02 = 4;
-        final byte BUCKET_COUNTER_LENGTH = 16;
-        final byte GROUP_BODY_LENGTH = 40;
         MultipartReplyGroupBuilder builder = new MultipartReplyGroupBuilder();
         List<GroupStats> groupStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
@@ -501,7 +514,6 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyMeterFeatures setMeterFeatures(ByteBuf input) {
-        final byte PADDING_IN_METER_FEATURES_HEADER = 2;
         MultipartReplyMeterFeaturesBuilder builder = new MultipartReplyMeterFeaturesBuilder();
         builder.setMaxMeter(input.readUnsignedInt());
         builder.setBandTypes(createMeterBandsBitmap(input.readUnsignedInt()));
@@ -527,9 +539,6 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyMeter setMeter(ByteBuf input) {
-        final byte PADDING_IN_METER_STATS_HEADER = 6;
-        final byte METER_BAND_STATS_LENGTH = 16;
-        final byte METER_BODY_LENGTH = 40;
         MultipartReplyMeterBuilder builder = new MultipartReplyMeterBuilder();
         List<MeterStats> meterStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
@@ -567,9 +576,6 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyMeterConfig setMeterConfig(ByteBuf input) {
-        final byte METER_CONFIG_LENGTH = 8;
-        final byte PADDING_IN_METER_BAND_DROP_HEADER = 4;
-        final byte PADDING_IN_METER_BAND_DSCP_HEADER = 3;
         MultipartReplyMeterConfigBuilder builder = new MultipartReplyMeterConfigBuilder();
         List<MeterConfig> meterConfigList = new ArrayList<>();
         while (input.readableBytes() > 0) {
@@ -634,17 +640,13 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyPortDesc setPortDesc(ByteBuf input) {
-        final byte PADDING_IN_PORT_DESC_HEADER_01 = 4;
-        final byte PADDING_IN_PORT_DESC_HEADER_02 = 2;
-        final int MAC_ADDRESS_LENGTH = 6;
-        final byte MAX_PORT_NAME_LEN = 16;
         MultipartReplyPortDescBuilder builder = new MultipartReplyPortDescBuilder();
         List<Ports> portsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
             PortsBuilder portsBuilder = new PortsBuilder();
             portsBuilder.setPortNo(input.readUnsignedInt());
             input.skipBytes(PADDING_IN_PORT_DESC_HEADER_01);
-            byte[] hwAddress = new byte[MAC_ADDRESS_LENGTH];
+            byte[] hwAddress = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
             input.readBytes(hwAddress);
             portsBuilder.setHwAddr(new MacAddress(ByteBufUtils.macAddressToString(hwAddress)));
             input.skipBytes(PADDING_IN_PORT_DESC_HEADER_02);
@@ -703,7 +705,6 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyBody setGroupFeatures(ByteBuf rawMessage) {
-        final int GROUP_TYPES = 4;
         MultipartReplyGroupFeaturesBuilder featuresBuilder = new MultipartReplyGroupFeaturesBuilder();
         featuresBuilder.setTypes(createGroupType(rawMessage.readUnsignedInt()));
         featuresBuilder.setCapabilities(createCapabilities(rawMessage.readUnsignedInt()));
@@ -761,38 +762,25 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyGroupDesc setGroupDesc(ByteBuf input) {
-        final byte PADDING_IN_GROUP_DESC_HEADER = 1;
-        final byte PADDING_IN_BUCKETS_HEADER = 4;
-        final byte GROUP_DESC_HEADER_LENGTH = 8;
-        final byte BUCKETS_HEADER_LENGTH = 16;
         MultipartReplyGroupDescBuilder builder = new MultipartReplyGroupDescBuilder();
         List<GroupDesc> groupDescsList = new ArrayList<>();
-        LOGGER.info("readablebytes pred: " + input.readableBytes());
         while (input.readableBytes() > 0) {
-            LOGGER.info("readablebytes po: " + input.readableBytes());
             GroupDescBuilder groupDescBuilder = new GroupDescBuilder();
             int bodyLength = input.readUnsignedShort();
-            LOGGER.info("bodylength: " + bodyLength);
             groupDescBuilder.setType(GroupType.forValue(input.readUnsignedByte()));
             input.skipBytes(PADDING_IN_GROUP_DESC_HEADER);
             groupDescBuilder.setGroupId(input.readUnsignedInt());
             int actualLength = GROUP_DESC_HEADER_LENGTH;
             List<BucketsList> bucketsList = new ArrayList<>();
             while (actualLength < bodyLength) {
-                System.out.println("cyklim v buckets");
                 BucketsListBuilder bucketsBuilder = new BucketsListBuilder();
                 int bucketsLength = input.readUnsignedShort();
                 bucketsBuilder.setWeight(input.readUnsignedShort());
                 bucketsBuilder.setWatchPort(new PortNumber(input.readUnsignedInt()));
                 bucketsBuilder.setWatchGroup(input.readUnsignedInt());
                 input.skipBytes(PADDING_IN_BUCKETS_HEADER);
-                System.out.println("bucketslength: " + bucketsLength);
-                System.out.println("actuallength: " + actualLength);
-                System.out.println("bodylength: " + bodyLength);
-                LOGGER.info("length - length: " + (bucketsLength - BUCKETS_HEADER_LENGTH));
                 List<ActionsList> actionsList = ActionsDeserializer
                         .createActionsList(input, bucketsLength - BUCKETS_HEADER_LENGTH);
-                LOGGER.info("actions size: " + actionsList.size());
                 bucketsBuilder.setActionsList(actionsList);
                 bucketsList.add(bucketsBuilder.build());
                 actualLength += bucketsLength;

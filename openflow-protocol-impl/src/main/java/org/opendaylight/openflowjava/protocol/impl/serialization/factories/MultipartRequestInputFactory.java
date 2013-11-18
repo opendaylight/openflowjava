@@ -10,6 +10,7 @@ import java.util.Map;
 import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ActionsSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.InstructionsSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.MatchSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeatureProperty;
@@ -56,6 +57,43 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
     private static final byte PADDING_IN_MULTIPART_REQUEST_MESSAGE = 4;
     private static final byte TABLE_FEAT_HEADER_LENGTH = 4;
     private static MultipartRequestInputFactory instance;
+    private static final byte INSTRUCTIONS_CODE = 0;
+    private static final byte INSTRUCTIONS_MISS_CODE = 1;
+    private static final byte NEXT_TABLE_CODE = 2;
+    private static final byte NEXT_TABLE_MISS_CODE = 3;
+    private static final byte WRITE_ACTIONS_CODE = 4;
+    private static final byte WRITE_ACTIONS_MISS_CODE = 5;
+    private static final byte APPLY_ACTIONS_CODE = 6;
+    private static final byte APPLY_ACTIONS_MISS_CODE = 7;
+    private static final byte MATCH_CODE = 8;
+    private static final byte WILDCARDS_CODE = 10;
+    private static final byte WRITE_SETFIELD_CODE = 12;
+    private static final byte WRITE_SETFIELD_MISS_CODE = 13;
+    private static final byte APPLY_SETFIELD_CODE = 14;
+    private static final byte APPLY_SETFIELD_MISS_CODE = 15;
+    private static final int EXPERIMENTER_CODE = 65534; // 0xFFFE
+    private static final int EXPERIMENTER_MISS_CODE = 65535; // 0xFFFF
+    private static final byte FLOW_BODY_LENGTH = 32;
+    private static final byte AGGREGATE_BODY_LENGTH = 32;
+    private static final byte PORT_STATS_BODY_LENGTH = 8;
+    private static final byte QUEUE_BODY_LENGTH = 8;
+    private static final byte GROUP_BODY_LENGTH = 8;
+    private static final byte METER_BODY_LENGTH = 8;
+    private static final byte METER_CONFIG_BODY_LENGTH = 8;
+    private static final byte EXPERIMENTER_BODY_LENGTH = 8;
+    private static final byte TABLE_FEATURES_LENGTH = 64;
+    private static final byte STRUCTURE_HEADER_LENGTH = 4;
+    private static final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_01 = 3;
+    private static final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_02 = 4;
+    private static final byte PADDING_IN_MULTIPART_REQUEST_AGREGGATE_BODY_01 = 3;
+    private static final byte PADDING_IN_MULTIPART_REQUEST_AGREGGATE_BODY_02 = 4;
+    private static final byte PADDING_IN_MULTIPART_REQUEST_PORTSTATS_BODY = 4;
+    private static final byte PADDING_IN_MULTIPART_REQUEST_GROUP_BODY = 4;
+    private static final byte PADDING_IN_MULTIPART_REQUEST_METER_BODY = 4;
+    private static final byte PADDING_IN_MULTIPART_REQUEST_METER_CONFIG_BODY = 4;
+    private static final byte PADDING_IN_MULTIPART_REQUEST_TABLE_FEATURES_BODY = 5;
+    
+
 
     private MultipartRequestInputFactory() {
         // singleton
@@ -130,33 +168,25 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         int length = 0;
         MultipartType type = message.getType();
         if (type.equals(MultipartType.OFPMPFLOW)) {
-            final byte FLOW_BODY_LENGTH = 32;
             MultipartRequestFlow body = (MultipartRequestFlow) message.getMultipartRequestBody();
             length += FLOW_BODY_LENGTH + MatchSerializer.computeMatchLength(body.getMatch());
         } else if (type.equals(MultipartType.OFPMPAGGREGATE)) {
-            final byte AGGREGATE_BODY_LENGTH = 32;
             MultipartRequestAggregate body = (MultipartRequestAggregate) message.getMultipartRequestBody();
             length += AGGREGATE_BODY_LENGTH + MatchSerializer.computeMatchLength(body.getMatch());
         } else if (type.equals(MultipartType.OFPMPPORTSTATS)) {
-            final byte PORT_STATS_BODY_LENGTH = 8;
             length += PORT_STATS_BODY_LENGTH;
         } else if (type.equals(MultipartType.OFPMPQUEUE)) {
-            final byte QUEUE_BODY_LENGTH = 8;
             length += QUEUE_BODY_LENGTH;
         } else if (type.equals(MultipartType.OFPMPGROUP)) {
-            final byte GROUP_BODY_LENGTH = 8;
             length += GROUP_BODY_LENGTH;
         } else if (type.equals(MultipartType.OFPMPMETER)) {
-            final byte METER_BODY_LENGTH = 8;
             length += METER_BODY_LENGTH;
         } else if (type.equals(MultipartType.OFPMPMETERCONFIG)) {
-            final byte METER_CONFIG_BODY_LENGTH = 8;
             length += METER_CONFIG_BODY_LENGTH;
         } else if (type.equals(MultipartType.OFPMPTABLEFEATURES)) {
             MultipartRequestTableFeatures body = (MultipartRequestTableFeatures) message.getMultipartRequestBody();
             length += computeTableFeaturesLength(body);
         } else if (type.equals(MultipartType.OFPMPEXPERIMENTER)) {
-            final byte EXPERIMENTER_BODY_LENGTH = 8;
             MultipartRequestExperimenter body = (MultipartRequestExperimenter) message.getMultipartRequestBody();
             length += EXPERIMENTER_BODY_LENGTH;
             if (body.getData() != null) {
@@ -167,8 +197,6 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
     }
 
     private static int computeTableFeaturesLength(MultipartRequestTableFeatures body) {
-        final byte TABLE_FEATURES_LENGTH = 64;
-        final byte STRUCTURE_HEADER_LENGTH = 4;
         int length = 0;
         if (body != null && body.getTableFeatures() != null) {
             List<TableFeatures> tableFeatures = body.getTableFeatures();
@@ -197,7 +225,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
                         } else if (featProp.getAugmentation(ExperimenterRelatedTableFeatureProperty.class) != null) {
                             ExperimenterRelatedTableFeatureProperty property =
                                     featProp.getAugmentation(ExperimenterRelatedTableFeatureProperty.class);
-                            length += 2 * (Integer.SIZE / Byte.SIZE);
+                            length += 2 * (EncodeConstants.SIZE_OF_INT_IN_BYTES);
                             if (property.getData() != null) {
                                 length += property.getData().length;
                             }
@@ -273,8 +301,6 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
     }
 
     private static void encodeFlowBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
-        final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_01 = 3;
-        final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_02 = 4;
         MultipartRequestFlow flow = (MultipartRequestFlow) multipartRequestBody;
         output.writeByte(flow.getTableId().byteValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_01, output);
@@ -287,8 +313,6 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
     }
 
     private static void encodeAggregateBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
-        final byte PADDING_IN_MULTIPART_REQUEST_AGREGGATE_BODY_01 = 3;
-        final byte PADDING_IN_MULTIPART_REQUEST_AGREGGATE_BODY_02 = 4;
         MultipartRequestAggregate aggregate = (MultipartRequestAggregate) multipartRequestBody;
         output.writeByte(aggregate.getTableId().byteValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_AGREGGATE_BODY_01, output);
@@ -301,7 +325,6 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
     }
 
     private static void encodePortStatsBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
-        final byte PADDING_IN_MULTIPART_REQUEST_PORTSTATS_BODY = 4;
         MultipartRequestPortStats portstats = (MultipartRequestPortStats) multipartRequestBody;
         output.writeInt(portstats.getPortNo().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_PORTSTATS_BODY, output);
@@ -314,21 +337,18 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
     }
 
     private static void encodeGroupStatsBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
-        final byte PADDING_IN_MULTIPART_REQUEST_GROUP_BODY = 4;
         MultipartRequestGroup groupStats = (MultipartRequestGroup) multipartRequestBody;
         output.writeInt(groupStats.getGroupId().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_GROUP_BODY, output);
     }
 
     private static void encodeMeterBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
-        final byte PADDING_IN_MULTIPART_REQUEST_METER_BODY = 4;
         MultipartRequestMeter meter = (MultipartRequestMeter) multipartRequestBody;
         output.writeInt(meter.getMeterId().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_METER_BODY, output);
     }
 
     private static void encodeMeterConfigBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
-        final byte PADDING_IN_MULTIPART_REQUEST_METER_CONFIG_BODY = 4;
         MultipartRequestMeterConfig meterConfig = (MultipartRequestMeterConfig) multipartRequestBody;
         output.writeInt(meterConfig.getMeterId().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_METER_CONFIG_BODY, output);
@@ -349,7 +369,6 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
             MultipartRequestTableFeatures tableFeatures = (MultipartRequestTableFeatures) multipartRequestBody;
             if(tableFeatures.getTableFeatures() != null) {
                 for (TableFeatures currTableFeature : tableFeatures.getTableFeatures()) {
-                    final byte PADDING_IN_MULTIPART_REQUEST_TABLE_FEATURES_BODY = 5;
                     output.writeByte(currTableFeature.getTableId());
                     ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_TABLE_FEATURES_BODY, output);
                     output.writeBytes(currTableFeature.getName().getBytes());
@@ -369,52 +388,36 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
             for (TableFeatureProperties property : props) {
                 TableFeaturesPropType type = property.getType();
                 if (type.equals(TableFeaturesPropType.OFPTFPTINSTRUCTIONS)) {
-                    final byte INSTRUCTIONS_CODE = 0;
                     writeInstructionRelatedTableProperty(output, property, INSTRUCTIONS_CODE);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTINSTRUCTIONSMISS)) {
-                    final byte INSTRUCTIONS_MISS_CODE = 1;
                     writeInstructionRelatedTableProperty(output, property, INSTRUCTIONS_MISS_CODE);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTNEXTTABLES)) {
-                    final byte NEXT_TABLE_CODE = 2;
                     writeNextTableRelatedTableProperty(output, property, NEXT_TABLE_CODE);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTNEXTTABLESMISS)) {
-                    final byte NEXT_TABLE_MISS_CODE = 3;
                     writeNextTableRelatedTableProperty(output, property, NEXT_TABLE_MISS_CODE);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTWRITEACTIONS)) {
-                    final byte WRITE_ACTIONS_CODE = 4;
                     writeActionsRelatedTableProperty(output, property, WRITE_ACTIONS_CODE);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTWRITEACTIONSMISS)) {
-                    final byte WRITE_ACTIONS_MISS_CODE = 5;
                     writeActionsRelatedTableProperty(output, property, WRITE_ACTIONS_MISS_CODE);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTAPPLYACTIONS)) {
-                    final byte APPLY_ACTIONS_CODE = 6;
                     writeActionsRelatedTableProperty(output, property, APPLY_ACTIONS_CODE);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTAPPLYACTIONSMISS)) {
-                    final byte APPLY_ACTIONS_MISS_CODE = 7;
                     writeActionsRelatedTableProperty(output, property, APPLY_ACTIONS_MISS_CODE);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTMATCH)) {
-                    final byte MATCH_CODE = 8;
                     writeOxmRelatedTableProperty(output, property, MATCH_CODE);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTWILDCARDS)) {
-                    final byte WILDCARDS_CODE = 10;
                     writeOxmRelatedTableProperty(output, property, WILDCARDS_CODE);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTWRITESETFIELD)) {
-                    final byte WRITE_SETFIELD_CODE = 12;
                     writeOxmRelatedTableProperty(output, property, WRITE_SETFIELD_CODE);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTWRITESETFIELDMISS)) {
-                    final byte WRITE_SETFIELD_MISS_CODE = 13;
                     writeOxmRelatedTableProperty(output, property, WRITE_SETFIELD_MISS_CODE);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTAPPLYSETFIELD)) {
-                    final byte APPLY_SETFIELD_CODE = 14;
                     writeOxmRelatedTableProperty(output, property, APPLY_SETFIELD_CODE);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTAPPLYSETFIELDMISS)) {
-                    final byte APPLY_SETFIELD_MISS_CODE = 15;
                     writeOxmRelatedTableProperty(output, property, APPLY_SETFIELD_MISS_CODE);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTEXPERIMENTER)) {
-                    final int EXPERIMENTER_CODE = 65534; // 0xFFFE
                     writeExperimenterRelatedTableProperty(output, property, EXPERIMENTER_CODE);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTEXPERIMENTERMISS)) {
-                    final int EXPERIMENTER_MISS_CODE = 65535; // 0xFFFF
                     writeExperimenterRelatedTableProperty(output, property, EXPERIMENTER_MISS_CODE);
                 }
             }
@@ -488,7 +491,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         ExperimenterRelatedTableFeatureProperty exp = property.
                 getAugmentation(ExperimenterRelatedTableFeatureProperty.class);
         byte[] data = exp.getData();
-        int length = TABLE_FEAT_HEADER_LENGTH + 2 * (Integer.SIZE / Byte.SIZE);
+        int length = TABLE_FEAT_HEADER_LENGTH + 2 * (EncodeConstants.SIZE_OF_INT_IN_BYTES);
         if (data != null) {
             output.writeShort(length + data.length);
             output.writeInt(exp.getExperimenter().intValue());

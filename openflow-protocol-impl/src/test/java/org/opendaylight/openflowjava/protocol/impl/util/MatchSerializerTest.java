@@ -49,10 +49,10 @@ public class MatchSerializerTest {
         MatchSerializer.encodeMatch(match, out);
         
         Assert.assertEquals("Wrong type", 1, out.readUnsignedShort());
-        out.skipBytes(Short.SIZE / Byte.SIZE);
+        out.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         Assert.assertEquals("Wrong class", 0x8000, out.readUnsignedShort());
         Assert.assertEquals("Wrong field and mask", 22, out.readUnsignedByte());
-        out.skipBytes(Byte.SIZE / Byte.SIZE);
+        out.skipBytes(EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
         Assert.assertEquals("Wrong ip address (first number)", 1, out.readUnsignedByte());
         Assert.assertEquals("Wrong ip address (second number)", 2, out.readUnsignedByte());
         Assert.assertEquals("Wrong ip address (third number)", 3, out.readUnsignedByte());

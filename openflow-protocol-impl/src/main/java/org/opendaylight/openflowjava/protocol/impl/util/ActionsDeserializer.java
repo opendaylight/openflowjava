@@ -55,6 +55,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 public abstract class ActionsDeserializer {
     
     private static final byte ACTION_HEADER_LENGTH = 4;
+    private static final byte PADDING_IN_ACTIONS_HEADER = 4;
+    private static final byte PADDING_IN_OUTPUT_ACTIONS_HEADER = 6;
+    private static final byte PADDING_IN_SET_MPLS_TTL_ACTIONS_HEADER = 3;
+    private static final byte PADDING_IN_PUSH_VLAN_ACTIONS_HEADER = 2;
+    private static final byte PADDING_IN_NW_TTL_ACTIONS_HEADER = 3;
     
     /**
      * Creates list of actions (OpenFlow v1.3)
@@ -161,7 +166,6 @@ public abstract class ActionsDeserializer {
     private static ActionsList createEmptyHeader(Class<? extends org.opendaylight.yang.gen.v1.
             urn.opendaylight.openflow.common.types.rev130731.Action> action,
             ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        final byte PADDING_IN_ACTIONS_HEADER = 4;
         ActionBuilder actionBuilder = new ActionBuilder();
         actionBuilder.setType(action);
         in.skipBytes(PADDING_IN_ACTIONS_HEADER);
@@ -194,7 +198,6 @@ public abstract class ActionsDeserializer {
     }
     
     private static ActionsList createOutputAction(ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        final byte PADDING_IN_OUTPUT_ACTIONS_HEADER = 6;
         ActionBuilder actionBuilder = new ActionBuilder();
         actionBuilder.setType(Output.class);
         PortActionBuilder port = new PortActionBuilder();
@@ -209,7 +212,6 @@ public abstract class ActionsDeserializer {
     }
     
     private static ActionsList createSetMplsTtlAction(ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        final byte PADDING_IN_SET_MPLS_TTL_ACTIONS_HEADER = 3;
         ActionBuilder actionBuilder = new ActionBuilder();
         actionBuilder.setType(SetMplsTtl.class);
         MplsTtlActionBuilder mplsTtl = new MplsTtlActionBuilder();
@@ -223,7 +225,6 @@ public abstract class ActionsDeserializer {
     private static ActionsList createPushAction(Class<? extends org.opendaylight.yang.gen.
             v1.urn.opendaylight.openflow.common.types.rev130731.Action> action,
             ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        final byte PADDING_IN_PUSH_VLAN_ACTIONS_HEADER = 2;
         ActionBuilder actionBuilder = new ActionBuilder();
         actionBuilder.setType(action);
         EthertypeActionBuilder etherType = new EthertypeActionBuilder();
@@ -281,7 +282,6 @@ public abstract class ActionsDeserializer {
     }
     
     private static ActionsList createSetNwTtlAction(ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        final byte PADDING_IN_NW_TTL_ACTIONS_HEADER = 3;
         ActionBuilder actionBuilder = new ActionBuilder();
         actionBuilder.setType(SetNwTtl.class);
         NwTtlActionBuilder nwTtl = new NwTtlActionBuilder();

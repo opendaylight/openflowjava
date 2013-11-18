@@ -19,10 +19,8 @@ import com.google.common.base.Joiner;
  */
 public abstract class OF10MatchDeserializer {
     
-    private static final byte MAC_ADDRESS_LENGTH = 6;
     private static final byte PADDING_IN_MATCH = 1;
     private static final byte PADDING_IN_MATCH_2 = 2;
-    private static final byte GROUPS_IN_IPV4_ADDRESS = 4;
 
     /**
      * Creates ofp_match (OpenFlow v1.0) structure
@@ -33,12 +31,13 @@ public abstract class OF10MatchDeserializer {
         MatchV10Builder builder = new MatchV10Builder();
         builder.setWildcards(rawMessage.readUnsignedInt());
         builder.setInPort(rawMessage.readUnsignedShort());
-        byte[] dlSrc = new byte[MAC_ADDRESS_LENGTH];
+        byte[] dlSrc = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
         rawMessage.readBytes(dlSrc);
         builder.setDlSrc(new MacAddress(ByteBufUtils.macAddressToString(dlSrc)));
-        byte[] dlDst = new byte[MAC_ADDRESS_LENGTH];
+        byte[] dlDst = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
         rawMessage.readBytes(dlDst);
         builder.setDlDst(new MacAddress(ByteBufUtils.macAddressToString(dlDst)));
+
         builder.setDlVlan(rawMessage.readUnsignedShort());
         builder.setDlVlanPcp(rawMessage.readUnsignedByte());
         rawMessage.skipBytes(PADDING_IN_MATCH);
@@ -47,13 +46,13 @@ public abstract class OF10MatchDeserializer {
         builder.setNwProto(rawMessage.readUnsignedByte());
         rawMessage.skipBytes(PADDING_IN_MATCH_2);
         List<String> srcGroups = new ArrayList<>();
-        for (int i = 0; i < GROUPS_IN_IPV4_ADDRESS; i++) {
+        for (int i = 0; i < EncodeConstants.GROUPS_IN_IPV4_ADDRESS; i++) {
             srcGroups.add(Short.toString(rawMessage.readUnsignedByte()));
         }
         Joiner joiner = Joiner.on(".");
         builder.setNwSrc(new Ipv4Address(joiner.join(srcGroups)));
         List<String> dstGroups = new ArrayList<>();
-        for (int i = 0; i < GROUPS_IN_IPV4_ADDRESS; i++) {
+        for (int i = 0; i < EncodeConstants.GROUPS_IN_IPV4_ADDRESS; i++) {
             dstGroups.add(Short.toString(rawMessage.readUnsignedByte()));
         }
         builder.setNwSrc(new Ipv4Address(joiner.join(dstGroups)));

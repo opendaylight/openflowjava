@@ -29,6 +29,14 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
 
     private static final byte MESSAGE_TYPE = 16;
     private static final int MESSAGE_LENGTH = 12;
+    private static final byte FLOW_BODY_LENGTH = 44;
+    private static final byte AGGREGATE_BODY_LENGTH = 44;
+    private static final byte PORT_STATS_BODY_LENGTH = 8;
+    private static final byte QUEUE_BODY_LENGTH = 8;
+    private static final byte EXPERIMENTER_BODY_LENGTH = 4;
+    private static final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY = 1;
+    private static final byte PADDING_IN_MULTIPART_REQUEST_PORT_BODY = 6;
+    private static final byte PADING_IN_QUEUE_BODY = 2;
 
     private static OF10StatsRequestInputFactory instance; 
     
@@ -87,19 +95,14 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
         int length = 0;
         MultipartType type = message.getType();
         if (type.equals(MultipartType.OFPMPFLOW)) {
-            final byte FLOW_BODY_LENGTH = 44;
             length += FLOW_BODY_LENGTH;
         } else if (type.equals(MultipartType.OFPMPAGGREGATE)) {
-            final byte AGGREGATE_BODY_LENGTH = 44;
             length += AGGREGATE_BODY_LENGTH;
         } else if (type.equals(MultipartType.OFPMPPORTSTATS)) {
-            final byte PORT_STATS_BODY_LENGTH = 8;
             length += PORT_STATS_BODY_LENGTH;
         } else if (type.equals(MultipartType.OFPMPQUEUE)) {
-            final byte QUEUE_BODY_LENGTH = 8;
             length += QUEUE_BODY_LENGTH;
         } else if (type.equals(MultipartType.OFPMPEXPERIMENTER)) {
-            final byte EXPERIMENTER_BODY_LENGTH = 4;
             MultipartRequestExperimenter body = (MultipartRequestExperimenter) message.getMultipartRequestBody();
             length += EXPERIMENTER_BODY_LENGTH;
             if (body.getData() != null) {
@@ -145,7 +148,6 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
 
     private static void encodeFlowAndAggregateBody(
             MultipartRequestBody multipartRequestBody, ByteBuf output) {
-        final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY = 1;
         MultipartRequestFlow flow = (MultipartRequestFlow) multipartRequestBody;
         OF10MatchSerializer.encodeMatchV10(output, flow.getMatchV10());
         output.writeByte(flow.getTableId().shortValue());
@@ -154,14 +156,12 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
     }
     
     private static void encodePortBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
-        final byte PADDING_IN_MULTIPART_REQUEST_PORT_BODY = 6;
         MultipartRequestPortStats portstats = (MultipartRequestPortStats) multipartRequestBody;
         output.writeShort(portstats.getPortNo().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_PORT_BODY, output);
     }
     
     private static void encodeQueueBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
-        final byte PADING_IN_QUEUE_BODY = 2;
         MultipartRequestQueue queue = (MultipartRequestQueue) multipartRequestBody;
         output.writeShort(queue.getPortNo().intValue());
         ByteBufUtils.padBuffer(PADING_IN_QUEUE_BODY, output);

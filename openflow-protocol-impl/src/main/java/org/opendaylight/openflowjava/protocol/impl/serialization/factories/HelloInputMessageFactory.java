@@ -106,7 +106,7 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
     private static short computeVersionBitmapLength(Elements element) {
         short elementlength = HELLO_ELEMENT_HEADER_SIZE;
         if (!element.getVersionBitmap().isEmpty()) {
-            elementlength += ((element.getVersionBitmap().size() - 1) / Integer.SIZE + 1) * (Integer.SIZE / Byte.SIZE);
+            elementlength += ((element.getVersionBitmap().size() - 1) / Integer.SIZE + 1) * (EncodeConstants.SIZE_OF_INT_IN_BYTES);
         }
         return elementlength;
     }

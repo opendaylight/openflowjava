@@ -34,6 +34,10 @@ import io.netty.buffer.ByteBuf;
 public class InstructionsDeserializer {
     
     private static final byte WRITE_APPLY_CLEAR_ACTION_LENGTH = 8;
+    private static final byte EXPERIMENTER_HEADER_LENGTH = 8;
+    private static final byte GOTO_TABLE_PADDING = 3;
+    private static final byte WRITE_METADATA_PADDING = 4;
+    private static final byte ACTIONS_RELATED_INSTRUCTION_PADDING = 4;
 
     /**
      * Creates list of instructions
@@ -76,7 +80,6 @@ public class InstructionsDeserializer {
                     builder.addAugmentation(MeterIdInstruction.class, meterBuilder.build());
                     break;
                 case 65535:
-                    final byte EXPERIMENTER_HEADER_LENGTH = 8;
                     builder.setType(Experimenter.class);
                     ExperimenterInstructionBuilder expBuilder = new ExperimenterInstructionBuilder();
                     expBuilder.setExperimenter(input.readUnsignedInt());
@@ -99,7 +102,6 @@ public class InstructionsDeserializer {
 
     private static void createGotoTableInstruction(InstructionsBuilder builder,
             ByteBuf input) {
-        final byte GOTO_TABLE_PADDING = 3;
         builder.setType(GotoTable.class);
         TableIdInstructionBuilder tableBuilder = new TableIdInstructionBuilder();
         tableBuilder.setTableId(input.readUnsignedByte());
@@ -109,14 +111,13 @@ public class InstructionsDeserializer {
     
     private static void createMetadataInstruction(InstructionsBuilder builder,
             ByteBuf input) {
-        final byte WRITE_METADATA_PADDING = 4;
         input.skipBytes(WRITE_METADATA_PADDING);
         builder.setType(WriteMetadata.class);
         MetadataInstructionBuilder metadataBuilder = new MetadataInstructionBuilder();
-        byte[] metadata = new byte[Long.SIZE / Byte.SIZE];
+        byte[] metadata = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         input.readBytes(metadata);
         metadataBuilder.setMetadata(metadata);
-        byte[] metadata_mask = new byte[Long.SIZE / Byte.SIZE];
+        byte[] metadata_mask = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         input.readBytes(metadata_mask);
         metadataBuilder.setMetadata(metadata_mask);
         builder.addAugmentation(MetadataInstruction.class, metadataBuilder.build());
@@ -124,7 +125,6 @@ public class InstructionsDeserializer {
     
     private static void createActionRelatedInstruction(ByteBuf input,
             InstructionsBuilder builder, int instructionLength) {
-        final byte ACTIONS_RELATED_INSTRUCTION_PADDING = 4;
         input.skipBytes(ACTIONS_RELATED_INSTRUCTION_PADDING);
         ActionsInstructionBuilder actionsBuilder = new ActionsInstructionBuilder();
         actionsBuilder.setActionsList(ActionsDeserializer.createActionsList(input, instructionLength));
