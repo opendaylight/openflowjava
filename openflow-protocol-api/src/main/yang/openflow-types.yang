@@ -435,6 +435,29 @@ module openflow-types {
         }
     }
 
+	typedef group {
+		/* ofp_group - Group numbering. Groups can use any number up to OFPG_MAX.*/
+		type enumeration {
+			enum OFPG_MAX {
+				value -2147483393; //0xffffff00
+				description "Last usable group number";
+			}
+			
+			/* Fake groups. */
+			enum OFPG_ALL {
+				value -2147483645; //0xfffffffc
+				description "Represents all groups for group delete commands";
+			}
+			enum OFPG_ANY {
+				value -2147483648; //0xffffffff
+				description "Wildcard group used only for flow stats requests. 
+								Selects all flows regardless of group (including flows with no group)";
+				
+			}
+		}
+		
+	}
+	
     typedef multipart-request-flags {
         description
             "enum ofp_multipart_request_flags ";
@@ -735,6 +758,31 @@ module openflow-types {
             }
         }
     }
+
+	typedef meter {
+		/* ofp_meter - Meter numbering. Flow meters can use any number up to OFPM_MAX*/
+		type enumeration {
+			enum OFPM_MAX {
+				value -2147418113; //0xffff0000
+				description "Last usable meter number";
+			}
+			
+			/* Virtual meters. */
+			enum OFPM_SLOWPATH {
+				value -2147483646; //0xfffffffd
+				description "Meter for slow datapath";
+			}
+			enum OFPM_CONTROLLER {
+				value -2147483647; //0xfffffffe
+				description "Meter for controller connection";
+			}
+			enum OFPM_ALL {
+				value -2147483648; //0xffffffff
+				description "Represents all meters for stat requests commands";
+			}
+		}
+		
+	}
 
     typedef table-config {
         /* ofp_table_config */
