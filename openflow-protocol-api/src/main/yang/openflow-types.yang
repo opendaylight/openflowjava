@@ -7,8 +7,47 @@ module openflow-types {
     }
 
     typedef port-number {
-        type uint32 {
-            range "0..4294967040"; // 0xffffff00 See for actual value
+        type uint32;
+    }
+    
+    typedef port-number-values {
+        type enumeration {
+            enum MAX {
+                value -256; // 0xffffff00 
+                description "Hello Protocol failed.";
+            }
+            enum IN_PORT {
+                value -8; // 0xfffffff8
+                description "Request was not understood.";
+            }
+            enum TABLE {
+                value -7; // 0xfffffff9 
+                description "Error in action description.";
+            }
+            enum NORMAL {
+                value -6; // 0xfffffffa 
+                description "Error in instruction list.";
+            }
+            enum FLOOD {
+                value -5; // 0xfffffffb 
+                description "Error in match.";
+            }
+            enum ALL {
+                value -4; // 0xfffffffc 
+                description "Problem modifying flow entry.";
+            }
+            enum CONTROLLER {
+                value -3; // 0xfffffffd
+                description "Problem modifying group entry.";
+            }
+            enum LOCAL {
+                value -2; // 0xfffffffe
+                description "Port mod request failed.";
+            }
+            enum ANY {
+                value -1; // 0xffffffff
+                description "Table mod request failed.";
+            }
         }
     }
 
@@ -910,6 +949,47 @@ module openflow-types {
 // OPENFLOW v1.0 STRUCTURES
     // Structures under this line are needed to support OpenFlow version 1.0 
     // wire protocol 0x01; 
+    
+    typedef port-number-values-v10 {
+        type enumeration {
+            enum MAX {
+                value 65280; // 0xff00 
+                description "Hello Protocol failed.";
+            }
+            enum IN_PORT {
+                value 65528; // 0xfff8
+                description "Request was not understood.";
+            }
+            enum TABLE {
+                value 65529; // 0xfff9 
+                description "Error in action description.";
+            }
+            enum NORMAL {
+                value 65530; // 0xfffa 
+                description "Error in instruction list.";
+            }
+            enum FLOOD {
+                value 65531; // 0xfffb 
+                description "Error in match.";
+            }
+            enum ALL {
+                value 65532; // 0xfffc 
+                description "Problem modifying flow entry.";
+            }
+            enum CONTROLLER {
+                value 65533; // 0xfffd
+                description "Problem modifying group entry.";
+            }
+            enum LOCAL {
+                value 65534; // 0xfffe
+                description "Port mod request failed.";
+            }
+            enum ANY {
+                value 65535; // 0xffff
+                description "Table mod request failed.";
+            }
+        }
+    }
     
     typedef port-config-v10 {
         description 
