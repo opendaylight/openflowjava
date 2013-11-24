@@ -170,7 +170,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         final byte TABLE_FEATURES_LENGTH = 64;
         final byte STRUCTURE_HEADER_LENGTH = 4;
         int length = 0;
-        if (body != null) {
+        if (body != null && body.getTableFeatures() != null) {
             List<TableFeatures> tableFeatures = body.getTableFeatures();
             for (TableFeatures feature : tableFeatures) {
                 length += TABLE_FEATURES_LENGTH;
@@ -219,8 +219,8 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
     }
 
     /**
-     * @param multipartRequestBody  
-     * @param output 
+     * @param multipartRequestBody
+     * @param output
      */
     private void encodeDescBody(MultipartRequestBody multipartRequestBody,
             ByteBuf output) {
@@ -271,7 +271,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
             ByteBuf out) {
      // The body of MultiPartPortDesc is empty
     }
-    
+
     private static void encodeFlowBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_01 = 3;
         final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_02 = 4;
@@ -347,17 +347,19 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
     private static void encodeTableFeaturesBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         if (multipartRequestBody != null) {
             MultipartRequestTableFeatures tableFeatures = (MultipartRequestTableFeatures) multipartRequestBody;
-            for (TableFeatures currTableFeature : tableFeatures.getTableFeatures()) {
-                final byte PADDING_IN_MULTIPART_REQUEST_TABLE_FEATURES_BODY = 5;
-                output.writeByte(currTableFeature.getTableId());
-                ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_TABLE_FEATURES_BODY, output);
-                output.writeBytes(currTableFeature.getName().getBytes());
-                ByteBufUtils.padBuffer((32 - currTableFeature.getName().getBytes().length), output);
-                output.writeLong(currTableFeature.getMetadataMatch().longValue());
-                output.writeLong(currTableFeature.getMetadataWrite().longValue());
-                output.writeInt(createTableConfigBitmask(currTableFeature.getConfig()));
-                output.writeInt(currTableFeature.getMaxEntries().intValue());
-                writeTableFeatureProperties(output, currTableFeature.getTableFeatureProperties());
+            if(tableFeatures.getTableFeatures() != null) {
+                for (TableFeatures currTableFeature : tableFeatures.getTableFeatures()) {
+                    final byte PADDING_IN_MULTIPART_REQUEST_TABLE_FEATURES_BODY = 5;
+                    output.writeByte(currTableFeature.getTableId());
+                    ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_TABLE_FEATURES_BODY, output);
+                    output.writeBytes(currTableFeature.getName().getBytes());
+                    ByteBufUtils.padBuffer((32 - currTableFeature.getName().getBytes().length), output);
+                    output.writeLong(currTableFeature.getMetadataMatch().longValue());
+                    output.writeLong(currTableFeature.getMetadataWrite().longValue());
+                    output.writeInt(createTableConfigBitmask(currTableFeature.getConfig()));
+                    output.writeInt(currTableFeature.getMaxEntries().intValue());
+                    writeTableFeatureProperties(output, currTableFeature.getTableFeatureProperties());
+                }
             }
         }
     }
