@@ -31,6 +31,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterBandType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterBandTypeBitmap;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
@@ -496,7 +497,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         final byte PADDING_IN_METER_FEATURES_HEADER = 2;
         MultipartReplyMeterFeaturesBuilder builder = new MultipartReplyMeterFeaturesBuilder();
         builder.setMaxMeter(input.readUnsignedInt());
-        builder.setBandTypes(MeterBandType.forValue(input.readInt()));
+        builder.setBandTypes(createMeterBandsBitmap(input.readUnsignedInt()));
         builder.setCapabilities(createMeterFlags(input.readUnsignedInt()));
         builder.setMaxBands(input.readUnsignedByte());
         builder.setMaxColor(input.readUnsignedByte());
@@ -510,6 +511,12 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         final Boolean _oFPMFBURST = (input & (1 << 2)) != 0;
         final Boolean _oFPMFSTATS = (input & (1 << 3)) != 0;
         return new MeterFlags(_oFPMFBURST, _oFPMFKBPS, _oFPMFPKTPS, _oFPMFSTATS);
+    }
+    
+    private static MeterBandTypeBitmap createMeterBandsBitmap(long input) {
+        final Boolean _oFPMBTDROP = (input & (1 << 0)) != 0;
+        final Boolean _oFPMBTDSCPREMARK = (input & (1 << 1)) != 0;
+        return new MeterBandTypeBitmap(_oFPMBTDROP, _oFPMBTDSCPREMARK);
     }
     
     private static MultipartReplyMeter setMeter(ByteBuf input) {

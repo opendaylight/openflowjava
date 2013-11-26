@@ -36,6 +36,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetNwTtl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetQueue;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowModFlags;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterBandTypeBitmap;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeatures;
@@ -466,7 +467,7 @@ public class MultipartReplyMessageFactoryTest {
         MultipartReplyMeterFeatures message = (MultipartReplyMeterFeatures) builtByFactory.getMultipartReplyBody();
         
         Assert.assertEquals("Wrong maxMeter", 9, message.getMaxMeter().intValue());
-        Assert.assertEquals("Wrong bandTypes", 1, message.getBandTypes().getIntValue());
+        Assert.assertEquals("Wrong bandTypes", new MeterBandTypeBitmap(true, false), message.getBandTypes());
         Assert.assertEquals("Wrong capabilities", new MeterFlags(false, true, true, false), 
                                                       message.getCapabilities());
         Assert.assertEquals("Wrong maxBands", 3, message.getMaxBands().intValue());

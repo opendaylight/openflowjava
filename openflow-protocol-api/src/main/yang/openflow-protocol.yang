@@ -945,7 +945,7 @@ module openflow-protocol {
                             type uint32;
                         }
                         leaf band-types {
-                            type oft:meter-band-type;
+                            type oft:meter-band-type-bitmap;
                         }
                         leaf capabilities {
                             type oft:meter-flags;

@@ -797,6 +797,20 @@ module openflow-types {
             }
         }
     }
+    
+    typedef meter-band-type-bitmap {
+        /* ofp_meter_band_type */
+        type bits {
+            bit OFPMBT_DROP {
+              position 1;
+              description "Drop packet. ";
+            }
+            bit OFPMBT_DSCP_REMARK {
+              position 2;
+              description "Remark DSCP in the IP header. ";
+            }
+        }
+    }
 
 	typedef meter {
 		/* ofp_meter - Meter numbering. Flow meters can use any number up to OFPM_MAX*/
