@@ -655,7 +655,7 @@ public class MultipartReplyMessageFactoryTest {
     public void testMultipartReplyMeterConfigBody(){
         ByteBuf bb = BufferHelper.buildBuffer("00 0A 00 01 00 00 00 00 "+
                                               "00 38 "+//len
-                                              "00 01 "+//flags
+                                              "00 0A "+//flags
                                               "00 00 00 09 "+//meterId
                                               "00 01 "+//meterBandDrop.type
                                               "00 10 "+//meterBandDrop.len
@@ -683,8 +683,8 @@ public class MultipartReplyMessageFactoryTest {
         
         MultipartReplyMeterConfig message = (MultipartReplyMeterConfig) builtByFactory.getMultipartReplyBody();
         
-        Assert.assertEquals("Wrong flags", 1, 
-                             message.getMeterConfig().get(0).getFlags().getIntValue());
+        Assert.assertEquals("Wrong flags", new MeterFlags(false, false, true, true),
+                             message.getMeterConfig().get(0).getFlags());
         Assert.assertEquals("Wrong meterId", 9, 
                              message.getMeterConfig().get(0).getMeterId().intValue());
         
@@ -713,7 +713,7 @@ public class MultipartReplyMessageFactoryTest {
     public void testMultipartReplyMeterConfigBodyMulti(){
         ByteBuf bb = BufferHelper.buildBuffer("00 0A 00 01 00 00 00 00 "+
                                               "00 38 "+//len
-                                              "00 01 "+//flags
+                                              "00 06 "+//flags
                                               "00 00 00 09 "+//meterId
                                               "00 01 "+//meterBandDrop.type
                                               "00 10 "+//meterBandDrop.len
@@ -733,7 +733,7 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 04 "+//meterBandExperimenter.experimenter
                                               
                                               "00 18 "+//len01
-                                              "00 00 "+//flags01
+                                              "00 03 "+//flags01
                                               "00 00 00 07 "+//meterId01
                                               "00 02 "+//meterBandDscp01.type
                                               "00 10 "+//meterBandDscp01.len
@@ -751,8 +751,8 @@ public class MultipartReplyMessageFactoryTest {
         
         MultipartReplyMeterConfig message = (MultipartReplyMeterConfig) builtByFactory.getMultipartReplyBody();
         
-        Assert.assertEquals("Wrong flags", 1, 
-                             message.getMeterConfig().get(0).getFlags().getIntValue());
+        Assert.assertEquals("Wrong flags", new MeterFlags(true, false, true, false), 
+                             message.getMeterConfig().get(0).getFlags());
         Assert.assertEquals("Wrong meterId", 9, 
                              message.getMeterConfig().get(0).getMeterId().intValue());
         
@@ -773,8 +773,9 @@ public class MultipartReplyMessageFactoryTest {
         Assert.assertEquals("Wrong meterBandExperimenter.burstSize", 32, meterBandExperimenter.getBurstSize().intValue());
         Assert.assertEquals("Wrong meterBandExperimenter.experimenter", 4, meterBandExperimenter.getExperimenter().intValue());
         
-        Assert.assertEquals("Wrong flags01", 1, 
-                             message.getMeterConfig().get(0).getFlags().getIntValue());
+        LOGGER.info(message.getMeterConfig().get(0).getFlags().toString());
+        Assert.assertEquals("Wrong flags01", new MeterFlags(false, true, true, false),
+                             message.getMeterConfig().get(1).getFlags());
         Assert.assertEquals("Wrong meterId01", 7, 
                              message.getMeterConfig().get(1).getMeterId().intValue());
         

@@ -32,7 +32,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterBandType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterFlags;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterModCommand;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
@@ -498,17 +497,17 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         MultipartReplyMeterFeaturesBuilder builder = new MultipartReplyMeterFeaturesBuilder();
         builder.setMaxMeter(input.readUnsignedInt());
         builder.setBandTypes(MeterBandType.forValue(input.readInt()));
-        builder.setCapabilities(decodeMeterModFlags(input.readUnsignedInt()));
+        builder.setCapabilities(createMeterFlags(input.readUnsignedInt()));
         builder.setMaxBands(input.readUnsignedByte());
         builder.setMaxColor(input.readUnsignedByte());
         input.skipBytes(PADDING_IN_METER_FEATURES_HEADER);
         return builder.build();
     }
     
-    private static MeterFlags decodeMeterModFlags(long input){
+    private static MeterFlags createMeterFlags(long input){
         final Boolean _oFPMFKBPS = (input & (1 << 0)) != 0;
         final Boolean _oFPMFPKTPS = (input & (1 << 1)) != 0;
-        final Boolean _oFPMFBURST = (input & (1 << 2)) != 0; 
+        final Boolean _oFPMFBURST = (input & (1 << 2)) != 0;
         final Boolean _oFPMFSTATS = (input & (1 << 3)) != 0;
         return new MeterFlags(_oFPMFBURST, _oFPMFKBPS, _oFPMFPKTPS, _oFPMFSTATS);
     }
@@ -562,7 +561,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         while (input.readableBytes() > 0) {
             MeterConfigBuilder meterConfigBuilder = new MeterConfigBuilder();
             int meterConfigBodyLength = input.readUnsignedShort();
-            meterConfigBuilder.setFlags(MeterModCommand.forValue(input.readUnsignedShort()));
+            meterConfigBuilder.setFlags(createMeterFlags(input.readUnsignedShort()));
             meterConfigBuilder.setMeterId(input.readUnsignedInt());
             int actualLength = METER_CONFIG_LENGTH;
             List<Bands> bandsList = new ArrayList<>();

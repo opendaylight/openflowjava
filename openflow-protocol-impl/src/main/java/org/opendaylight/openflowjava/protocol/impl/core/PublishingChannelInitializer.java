@@ -63,8 +63,8 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
             }
             ch.pipeline().addLast(COMPONENT_NAMES.OF_FRAME_DECODER.name(), new OFFrameDecoder());
             ch.pipeline().addLast(COMPONENT_NAMES.OF_VERSION_DETECTOR.name(), new OFVersionDetector());
-            ch.pipeline().addLast(COMPONENT_NAMES.OF_DECODER.name(), new OF13Decoder());
-            ch.pipeline().addLast(COMPONENT_NAMES.OF_ENCODER.name(), new OF13Encoder());
+            ch.pipeline().addLast(COMPONENT_NAMES.OF_DECODER.name(), new OFDecoder());
+            ch.pipeline().addLast(COMPONENT_NAMES.OF_ENCODER.name(), new OFEncoder());
             ch.pipeline().addLast(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name(), new DelegatingInboundHandler(connectionFacade));
             if (!encryption) {
                 connectionFacade.fireConnectionReadyNotification();

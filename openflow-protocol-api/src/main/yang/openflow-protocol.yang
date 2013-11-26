@@ -930,7 +930,7 @@ module openflow-protocol {
                     case multipart-reply-meter-config {
                         list meter-config {
                             leaf flags {
-                                type oft:meter-mod-command;
+                                type oft:meter-flags;
                             }
                             leaf meter-id {
                                 type uint32;
