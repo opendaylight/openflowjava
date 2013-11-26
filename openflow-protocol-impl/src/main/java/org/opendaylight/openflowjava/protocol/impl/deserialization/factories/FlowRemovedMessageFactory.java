@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBuf;
 import java.math.BigInteger;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.util.MatchDeserializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowRemovedReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowRemovedMessage;
@@ -55,6 +56,7 @@ public class FlowRemovedMessageFactory implements OFDeserializer<FlowRemovedMess
         byte[] byte_count = new byte[Long.SIZE/Byte.SIZE];
         rawMessage.readBytes(byte_count);
         builder.setByteCount(new BigInteger(byte_count));
+        builder.setMatch(MatchDeserializer.createMatch(rawMessage));
         return builder.build();
     }
 }

@@ -23,7 +23,7 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
     private static final byte PADDING_IN_PORT_STATUS_HEADER = 7;
     private static final byte PADDING_IN_OFP_PORT_HEADER_1 = 4;
     private static final byte PADDING_IN_OFP_PORT_HEADER_2 = 2;
-    private static final int macAddressLength = 6;
+    private static final int MAC_ADDRESS_LENGTH = 6;
     
     private PortStatusMessageFactory() {
         // Singleton
@@ -49,7 +49,7 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
         builder.setPortNo(rawMessage.readUnsignedInt());
         rawMessage.skipBytes(PADDING_IN_OFP_PORT_HEADER_1);
         StringBuffer macToString = new StringBuffer();
-        for(int i=0; i<macAddressLength; i++){
+        for(int i=0; i<MAC_ADDRESS_LENGTH; i++){
             short mac = 0;
             mac = rawMessage.readUnsignedByte();
             macToString.append(String.format("%02X", mac));

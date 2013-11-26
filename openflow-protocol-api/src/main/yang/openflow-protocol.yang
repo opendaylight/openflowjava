@@ -314,7 +314,7 @@ module openflow-protocol {
                 }
                 leaf reason {
                     // Reason packet is being sent (one of OFPR_*) 
-                    type uint8;
+                    type oft:packet-in-reason;
                 }
                 leaf table-id {
                     // ID of the table that was looked up

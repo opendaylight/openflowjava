@@ -59,23 +59,26 @@ public class SetAsyncInputMessageFactory implements OFSerializer<SetAsyncInput> 
     }
     
     private static void encodePacketInMask(List<PacketInReason> packetInMask, ByteBuf outBuffer) {
-        for (Iterator<PacketInReason> iterator = packetInMask.iterator(); iterator.hasNext();) {
-            PacketInReason currentPacketInReason = iterator.next();
-            outBuffer.writeInt(packetInReasonToBitmask(currentPacketInReason.getIntValue()));
+        if (packetInMask != null) {
+            for (PacketInReason currentPacketInReason : packetInMask) {
+                outBuffer.writeInt(packetInReasonToBitmask(currentPacketInReason.getIntValue()));
+            }
         }
     }
     
     private static void encodePortStatusMask(List<PortReason> portStatusMask, ByteBuf outBuffer) {
-        for (Iterator<PortReason> iterator = portStatusMask.iterator(); iterator.hasNext();) {
-            PortReason currentPortReason = iterator.next();
-            outBuffer.writeInt(portReasonToBitmask(currentPortReason.getIntValue()));
+        if (portStatusMask != null) {
+            for (PortReason currentPortReason : portStatusMask) {
+                outBuffer.writeInt(portReasonToBitmask(currentPortReason.getIntValue()));
+            }
         }
     }
     
     private static void encodeFlowRemovedMask(List<FlowRemovedReason> flowRemovedMask, ByteBuf outBuffer) {
-        for (Iterator<FlowRemovedReason> iterator = flowRemovedMask.iterator(); iterator.hasNext();) {
-            FlowRemovedReason currentFlowRemovedReason = iterator.next();
-            outBuffer.writeInt(flowRemovedReasonToBitmask(currentFlowRemovedReason.getIntValue()));
+        if (flowRemovedMask != null) {
+            for (FlowRemovedReason currentFlowRemovedReason : flowRemovedMask) {
+                outBuffer.writeInt(flowRemovedReasonToBitmask(currentFlowRemovedReason.getIntValue()));
+            }
         }
     }
     

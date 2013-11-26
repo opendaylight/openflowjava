@@ -7,6 +7,7 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
+import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,7 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
     protected void decode(ChannelHandlerContext ctx, VersionMessageWrapper msg,
             List<Object> out) throws Exception {
         LOGGER.debug("VersionMessageWrapper received");
+        LOGGER.debug("<< " + ByteBufUtils.byteBufToHexString(msg.getMessageBuffer()));
         DataObject dataObject = null;
         try {
             dataObject = DeserializationFactory.bufferToMessage(msg.getMessageBuffer(),

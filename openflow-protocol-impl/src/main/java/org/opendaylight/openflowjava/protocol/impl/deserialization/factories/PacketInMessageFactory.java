@@ -7,6 +7,7 @@ import java.math.BigInteger;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.MatchDeserializer;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PacketInReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketInMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketInMessageBuilder;
@@ -42,7 +43,7 @@ public class PacketInMessageFactory implements OFDeserializer<PacketInMessage> {
         builder.setXid(rawMessage.readUnsignedInt());
         builder.setBufferId(rawMessage.readUnsignedInt());
         builder.setTotalLen(rawMessage.readUnsignedShort());
-        builder.setReason(rawMessage.readUnsignedByte());
+        builder.setReason(PacketInReason.forValue(rawMessage.readUnsignedByte()));
         builder.setTableId(new TableId((long)rawMessage.readUnsignedByte()));
         byte[] cookie = new byte[Long.SIZE/Byte.SIZE];
         rawMessage.readBytes(cookie);

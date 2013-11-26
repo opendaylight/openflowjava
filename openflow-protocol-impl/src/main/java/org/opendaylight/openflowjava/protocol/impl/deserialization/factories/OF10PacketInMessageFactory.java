@@ -4,6 +4,7 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PacketInReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketInMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketInMessageBuilder;
 
@@ -39,7 +40,7 @@ public class OF10PacketInMessageFactory implements OFDeserializer<PacketInMessag
         builder.setBufferId(rawMessage.readUnsignedInt());
         builder.setTotalLen(rawMessage.readUnsignedShort());
         builder.setInPort(rawMessage.readUnsignedShort());
-        builder.setReason(rawMessage.readUnsignedByte());
+        builder.setReason(PacketInReason.forValue(rawMessage.readUnsignedByte()));
         rawMessage.skipBytes(PADDING_IN_PACKET_IN_HEADER);
         int remainingBytes = rawMessage.readableBytes();
         if (remainingBytes > 0) {
