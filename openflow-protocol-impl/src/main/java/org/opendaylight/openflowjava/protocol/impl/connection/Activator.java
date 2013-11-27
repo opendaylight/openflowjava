@@ -30,6 +30,7 @@ public class Activator implements BundleActivator {
         context.registerService(
                 SwitchConnectionProvider.class.getName(), 
                 new SwitchConnectionProviderImpl(), props);
+        LOG.debug("started OF Library");
     }
 
     @Override
