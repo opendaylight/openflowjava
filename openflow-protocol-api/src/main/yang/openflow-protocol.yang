@@ -1091,7 +1091,17 @@ module openflow-protocol {
                 /* Controller/switch message */
 
                 uses ofHeader;
+                uses async-body-grouping;
+            } 
+            grouping set-async {
+                // reference "OFPT_SET_ASYNC message in Openflow Switch 1.3 Spec"
+                /* Controller/switch message */
                 
+                uses ofHeader;
+                uses async-body-grouping;
+            }
+            
+            grouping async-body-grouping {
                 list packet-in-mask {
                     leaf-list mask {
                         type oft:packet-in-reason;
@@ -1107,23 +1117,7 @@ module openflow-protocol {
                         type oft:flow-removed-reason;
                     }
                 }
-            } 
-            grouping set-async {
-                // reference "OFPT_SET_ASYNC message in Openflow Switch 1.3 Spec"
-                /* Controller/switch message */
-                
-                uses ofHeader;
-                
-                leaf-list packet-in-mask {
-                    type oft:packet-in-reason;
-                }
-                leaf-list port-status-mask {
-                    type oft:port-reason;
-                }
-                leaf-list flow-removed-mask {
-                    type oft:flow-removed-reason;
-                }
-            } 
+            }
             /* Meters and rate limiters configuration messages. */
             grouping meter-mod {
                 // reference "OFPT_METER_MOD message in Openflow Switch 1.3 Spec"

@@ -12,12 +12,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetAsyncOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetAsyncOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.get.async.reply.FlowRemovedMask;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.get.async.reply.FlowRemovedMaskBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.get.async.reply.PacketInMask;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.get.async.reply.PacketInMaskBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.get.async.reply.PortStatusMask;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.get.async.reply.PortStatusMaskBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.async.body.grouping.FlowRemovedMask;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.async.body.grouping.FlowRemovedMaskBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.async.body.grouping.PacketInMask;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.async.body.grouping.PacketInMaskBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.async.body.grouping.PortStatusMask;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.async.body.grouping.PortStatusMaskBuilder;
 
 /**
  * Translates GetAsyncReply messages
@@ -27,6 +27,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class GetAsyncReplyMessageFactory implements OFDeserializer<GetAsyncOutput> {
     
     private static GetAsyncReplyMessageFactory instance;
+    private static final byte SEPARATE_ROLES = 2;
     
     private GetAsyncReplyMessageFactory() {
         // singleton
@@ -53,97 +54,81 @@ public class GetAsyncReplyMessageFactory implements OFDeserializer<GetAsyncOutpu
         return builder.build();
     }
     
-    private static List<PacketInMask> decodePacketInMask(ByteBuf outputBuf) {
-        List<PacketInReason> readPIRList = new ArrayList<>();
+    private static List<PacketInMask> decodePacketInMask(ByteBuf input) {
         List<PacketInMask> inMasks = new ArrayList<>();
-        PacketInMaskBuilder maskBuilder = new PacketInMaskBuilder();
-        
-        readPIRList.add(decodedPacketInReason((int) outputBuf.readUnsignedInt()));
-        readPIRList.add(decodedPacketInReason((int) outputBuf.readUnsignedInt()));
-        inMasks.add(maskBuilder.setMask(readPIRList).build()); 
+        PacketInMaskBuilder maskBuilder;
+        for (int i = 0; i < SEPARATE_ROLES; i++) {
+            maskBuilder = new PacketInMaskBuilder();
+            maskBuilder.setMask(decodePacketInReasons(input.readUnsignedInt()));
+            inMasks.add(maskBuilder.build()); 
+        }
         return inMasks;
     }
     
-    private static List<PortStatusMask> decodePortStatusMask(ByteBuf outputBuf) {
-        List<PortReason> readPortReasonList = new ArrayList<>();
+    private static List<PortStatusMask> decodePortStatusMask(ByteBuf input) {
         List<PortStatusMask> inMasks = new ArrayList<>();
-        PortStatusMaskBuilder maskBuilder = new PortStatusMaskBuilder();
-        
-        readPortReasonList.add(decodePortReason((int) outputBuf.readUnsignedInt()));
-        readPortReasonList.add(decodePortReason((int) outputBuf.readUnsignedInt()));
-        inMasks.add(maskBuilder.setMask(readPortReasonList).build()); 
+        PortStatusMaskBuilder maskBuilder;
+        for (int i = 0; i < SEPARATE_ROLES; i++) {
+            maskBuilder = new PortStatusMaskBuilder();
+            maskBuilder.setMask(decodePortReasons(input.readUnsignedInt()));
+            inMasks.add(maskBuilder.build());
+        }
         return inMasks;
     }
     
-    private static List<FlowRemovedMask> decodeFlowRemovedMask(ByteBuf outputBuf) {
-        List<FlowRemovedReason> readFlowRemovedReasonList = new ArrayList<>();
+    private static List<FlowRemovedMask> decodeFlowRemovedMask(ByteBuf input) {
         List<FlowRemovedMask> inMasks = new ArrayList<>();
-        FlowRemovedMaskBuilder maskBuilder = new FlowRemovedMaskBuilder();
-        
-        readFlowRemovedReasonList.add(decodeFlowRemovedReason((int) outputBuf.readUnsignedInt()));
-        readFlowRemovedReasonList.add(decodeFlowRemovedReason((int) outputBuf.readUnsignedInt()));
-        inMasks.add(maskBuilder.setMask(readFlowRemovedReasonList).build()); 
+        FlowRemovedMaskBuilder maskBuilder;
+        for (int i = 0; i < SEPARATE_ROLES; i++) {
+            maskBuilder = new FlowRemovedMaskBuilder();
+            maskBuilder.setMask(decodeFlowRemovedReasons(input.readUnsignedInt()));
+            inMasks.add(maskBuilder.build());
+        }
         return inMasks;
     }
     
-    private static PacketInReason decodedPacketInReason(int input) {
-        PacketInReason reason = null;
-        Boolean OFPRNOMATCH = (input & (1 << 0)) != 0;
-        Boolean OFPRACTION = (input & (1 << 1)) != 0;
-        Boolean OFPRINVALIDTTL = (input & (1 << 2)) != 0;
-        
-        if (OFPRNOMATCH) {
-            return PacketInReason.forValue(0);
-            }
-        if (OFPRACTION) {
-            return PacketInReason.forValue(1);
-            }
-        if (OFPRINVALIDTTL) {
-            return PacketInReason.forValue(2);
-            }
-        
-        return reason;
+    private static List<PacketInReason> decodePacketInReasons(long input) {
+        List<PacketInReason> reasons = new ArrayList<>();
+        if ((input & (1 << 0)) != 0) {
+            reasons.add(PacketInReason.OFPRNOMATCH);
+        }
+        if ((input & (1 << 1)) != 0) {
+            reasons.add(PacketInReason.OFPRACTION);
+        }
+        if ((input & (1 << 2)) != 0) {
+            reasons.add(PacketInReason.OFPRINVALIDTTL);
+        }
+        return reasons;
     }
     
-    private static PortReason decodePortReason(int input) {
-        PortReason reason = null;
-        Boolean OFPPRADD = (input & (1 << 0)) != 0;
-        Boolean OFPPRDELETE = (input & (1 << 1)) != 0;
-        Boolean OFPPRMODIFY = (input & (1 << 2)) != 0;
-        
-        if (OFPPRADD) {
-            return PortReason.forValue(0);
-            }
-        if (OFPPRDELETE) {
-            return PortReason.forValue(1);
-            }
-        if (OFPPRMODIFY) {
-            return PortReason.forValue(2);
-            }
-        
-        return reason;
+    private static List<PortReason> decodePortReasons(long input) {
+        List<PortReason> reasons = new ArrayList<>();
+        if ((input & (1 << 0)) != 0) {
+            reasons.add(PortReason.OFPPRADD);
+        }
+        if ((input & (1 << 1)) != 0) {
+            reasons.add(PortReason.OFPPRDELETE);
+        }
+        if ((input & (1 << 2)) != 0) {
+            reasons.add(PortReason.OFPPRMODIFY);
+        }
+        return reasons;
     }
     
-    private static FlowRemovedReason decodeFlowRemovedReason(int input) {
-        FlowRemovedReason reason = null;
-        Boolean OFPRRIDLETIMEOUT = (input & (1 << 0)) != 0;
-        Boolean OFPRRHARDTIMEOUT = (input & (1 << 1)) != 0;
-        Boolean OFPRRDELETE = (input & (1 << 2)) != 0;
-        Boolean OFPRRGROUPDELETE = (input & (1 << 3)) != 0;
-        
-        if (OFPRRIDLETIMEOUT) {
-            return FlowRemovedReason.forValue(0);
-            }
-        if (OFPRRHARDTIMEOUT) {
-            return FlowRemovedReason.forValue(1);
-            }
-        if (OFPRRDELETE) {
-            return FlowRemovedReason.forValue(2);
-            }
-        if (OFPRRGROUPDELETE) {
-            return FlowRemovedReason.forValue(3);
-            }
-        
-        return reason;
+    private static List<FlowRemovedReason> decodeFlowRemovedReasons(long input) {
+        List<FlowRemovedReason> reasons = new ArrayList<>();
+        if ((input & (1 << 0)) != 0) {
+            reasons.add(FlowRemovedReason.OFPRRIDLETIMEOUT);
+        }
+        if ((input & (1 << 1)) != 0) {
+            reasons.add(FlowRemovedReason.OFPRRHARDTIMEOUT);
+        }
+        if ((input & (1 << 2)) != 0) {
+            reasons.add(FlowRemovedReason.OFPRRDELETE);
+        }
+        if ((input & (1 << 3)) != 0) {
+            reasons.add(FlowRemovedReason.OFPRRGROUPDELETE);
+        }
+        return reasons;
     }
 }

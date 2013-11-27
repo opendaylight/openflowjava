@@ -4,7 +4,6 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 import io.netty.buffer.ByteBuf;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +13,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PacketInReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetAsyncInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.async.body.grouping.FlowRemovedMask;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.async.body.grouping.PacketInMask;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.async.body.grouping.PortStatusMask;
 
 /**
  * Translates SetAsync messages
@@ -25,6 +27,7 @@ public class SetAsyncInputMessageFactory implements OFSerializer<SetAsyncInput> 
     private static final int MESSAGE_LENGTH = 32; 
     private static SetAsyncInputMessageFactory instance;
     
+
     private SetAsyncInputMessageFactory() {
         // singleton
     }
@@ -58,99 +61,69 @@ public class SetAsyncInputMessageFactory implements OFSerializer<SetAsyncInput> 
         return MESSAGE_TYPE;
     }
     
-    private static void encodePacketInMask(List<PacketInReason> packetInMask, ByteBuf outBuffer) {
+    private static void encodePacketInMask(List<PacketInMask> packetInMask, ByteBuf outBuffer) {
         if (packetInMask != null) {
-            for (PacketInReason currentPacketInReason : packetInMask) {
-                outBuffer.writeInt(packetInReasonToBitmask(currentPacketInReason.getIntValue()));
+            for (PacketInMask currentPacketMask : packetInMask) {
+                List<PacketInReason> mask = currentPacketMask.getMask();
+                if (mask != null)  {
+                    Map<Integer, Boolean> packetInReasonMap = new HashMap<>();
+                    for (PacketInReason packetInReason : mask) {
+                        if (PacketInReason.OFPRNOMATCH.equals(packetInReason)) {
+                            packetInReasonMap.put(PacketInReason.OFPRNOMATCH.getIntValue(), true);
+                        } else if (PacketInReason.OFPRACTION.equals(packetInReason)) {
+                            packetInReasonMap.put(PacketInReason.OFPRACTION.getIntValue(), true);
+                        } else if (PacketInReason.OFPRINVALIDTTL.equals(packetInReason)) {
+                            packetInReasonMap.put(PacketInReason.OFPRINVALIDTTL.getIntValue(), true);
+                        }
+                    }
+                    outBuffer.writeInt(ByteBufUtils.fillBitMaskFromMap(packetInReasonMap));
+                }
             }
         }
     }
     
-    private static void encodePortStatusMask(List<PortReason> portStatusMask, ByteBuf outBuffer) {
+    private static void encodePortStatusMask(List<PortStatusMask> portStatusMask, ByteBuf outBuffer) {
         if (portStatusMask != null) {
-            for (PortReason currentPortReason : portStatusMask) {
-                outBuffer.writeInt(portReasonToBitmask(currentPortReason.getIntValue()));
+            for (PortStatusMask currentPortStatusMask : portStatusMask) {
+                List<PortReason> mask = currentPortStatusMask.getMask();
+                if (mask != null)  {
+                    Map<Integer, Boolean> portStatusReasonMap = new HashMap<>();
+                    for (PortReason packetInReason : mask) {
+                        if (PortReason.OFPPRADD.equals(packetInReason)) {
+                            portStatusReasonMap.put(PortReason.OFPPRADD.getIntValue(), true);
+                        } else if (PortReason.OFPPRDELETE.equals(packetInReason)) {
+                            portStatusReasonMap.put(PortReason.OFPPRDELETE.getIntValue(), true);
+                        } else if (PortReason.OFPPRMODIFY.equals(packetInReason)) {
+                            portStatusReasonMap.put(PortReason.OFPPRMODIFY.getIntValue(), true);
+                        }
+                    }
+                    outBuffer.writeInt(ByteBufUtils.fillBitMaskFromMap(portStatusReasonMap));
+                }
             }
         }
     }
     
-    private static void encodeFlowRemovedMask(List<FlowRemovedReason> flowRemovedMask, ByteBuf outBuffer) {
+    private static void encodeFlowRemovedMask(List<FlowRemovedMask> flowRemovedMask, ByteBuf outBuffer) {
         if (flowRemovedMask != null) {
-            for (FlowRemovedReason currentFlowRemovedReason : flowRemovedMask) {
-                outBuffer.writeInt(flowRemovedReasonToBitmask(currentFlowRemovedReason.getIntValue()));
+            for (FlowRemovedMask currentFlowRemovedMask : flowRemovedMask) {
+                List<FlowRemovedReason> mask = currentFlowRemovedMask.getMask();
+                if (mask != null)  {
+                    Map<Integer, Boolean> flowRemovedReasonMap = new HashMap<>();
+                    for (FlowRemovedReason packetInReason : mask) {
+                        if (FlowRemovedReason.OFPRRIDLETIMEOUT.equals(packetInReason)) {
+                            flowRemovedReasonMap.put(FlowRemovedReason.OFPRRIDLETIMEOUT.getIntValue(), true);
+                        } else if (FlowRemovedReason.OFPRRHARDTIMEOUT.equals(packetInReason)) {
+                            flowRemovedReasonMap.put(FlowRemovedReason.OFPRRHARDTIMEOUT.getIntValue(), true);
+                        } else if (FlowRemovedReason.OFPRRDELETE.equals(packetInReason)) {
+                            flowRemovedReasonMap.put(FlowRemovedReason.OFPRRDELETE.getIntValue(), true);
+                        } else if (FlowRemovedReason.OFPRRGROUPDELETE.equals(packetInReason)) {
+                            flowRemovedReasonMap.put(FlowRemovedReason.OFPRRGROUPDELETE.getIntValue(), true);
+                        }
+                    }
+                    outBuffer.writeInt(ByteBufUtils.fillBitMaskFromMap(flowRemovedReasonMap));
+                }
             }
         }
     }
     
-    private static int packetInReasonToBitmask(int option) {
-        Boolean OFPRNOMATCH = false;
-        Boolean OFPRACTION = false;
-        Boolean OFPRINVALIDTTL = false;
-        int packetInReasonBitmask = 0;
-        
-        switch(option) {
-        case 0: OFPRNOMATCH = true; break;
-        case 1: OFPRACTION = true; break;
-        case 2: OFPRINVALIDTTL = true; break;
-        default: break;
-        }
-        
-        Map<Integer, Boolean> packetInReasonMap = new HashMap<>();
-        packetInReasonMap.put(0, OFPRNOMATCH);
-        packetInReasonMap.put(1, OFPRACTION);
-        packetInReasonMap.put(2, OFPRINVALIDTTL);
-        
-        packetInReasonBitmask = ByteBufUtils.fillBitMaskFromMap(packetInReasonMap);
-        
-        return packetInReasonBitmask;
-    }
-    
-    private static int portReasonToBitmask(int option) {
-        Boolean OFPPRADD = false;
-        Boolean OFPPRDELETE = false;
-        Boolean OFPPRMODIFY = false;
-        int portReasonBitmask = 0;
-        
-        switch(option) {
-        case 0: OFPPRADD = true; break;
-        case 1: OFPPRDELETE = true; break;
-        case 2: OFPPRMODIFY = true; break;
-        default: break;
-        }
-        
-        Map<Integer, Boolean> portReasonMap = new HashMap<>();
-        portReasonMap.put(0, OFPPRADD);
-        portReasonMap.put(1, OFPPRDELETE);
-        portReasonMap.put(2, OFPPRMODIFY);
-        
-        portReasonBitmask = ByteBufUtils.fillBitMaskFromMap(portReasonMap);
-        
-        return portReasonBitmask;
-    }
-    
-    private static int flowRemovedReasonToBitmask(int option) {
-        Boolean OFPRRIDLETIMEOUT = false;
-        Boolean OFPRRHARDTIMEOUT = false;
-        Boolean OFPRRDELETE = false;
-        Boolean OFPRRGROUPDELETE = false;
-        int flowRemovedReasonBitmask = 0;
-        
-        switch(option) {
-        case 0: OFPRRIDLETIMEOUT = true; break;
-        case 1: OFPRRHARDTIMEOUT = true; break;
-        case 2: OFPRRDELETE = true; break;
-        case 3: OFPRRGROUPDELETE = true; break;
-        default: break;
-        }
-        
-        Map<Integer, Boolean> portReasonMap = new HashMap<>();
-        portReasonMap.put(0, OFPRRIDLETIMEOUT);
-        portReasonMap.put(1, OFPRRHARDTIMEOUT);
-        portReasonMap.put(2, OFPRRDELETE);
-        portReasonMap.put(3, OFPRRGROUPDELETE);
-        
-        flowRemovedReasonBitmask = ByteBufUtils.fillBitMaskFromMap(portReasonMap);
-        
-        return flowRemovedReasonBitmask;
-    }
 }

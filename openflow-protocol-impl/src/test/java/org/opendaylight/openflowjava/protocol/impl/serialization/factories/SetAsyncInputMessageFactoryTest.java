@@ -11,18 +11,28 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowRemovedReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PacketInReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetAsyncInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetAsyncInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.async.body.grouping.FlowRemovedMask;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.async.body.grouping.FlowRemovedMaskBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.async.body.grouping.PacketInMask;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.async.body.grouping.PacketInMaskBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.async.body.grouping.PortStatusMask;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.async.body.grouping.PortStatusMaskBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author timotej.kubas
  * @author michal.polkorab
  */
 public class SetAsyncInputMessageFactoryTest {
-
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(SetAsyncInputMessageFactoryTest.class);
     /**
      * @throws Exception 
      * Testing of {@link SetAsyncInputMessageFactory} for correct translation from POJO
@@ -39,114 +49,74 @@ public class SetAsyncInputMessageFactoryTest {
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         SetAsyncInputMessageFactory factory = SetAsyncInputMessageFactory.getInstance();
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
-        
+        LOGGER.debug("<< " + ByteBufUtils.byteBufToHexString(out));
         BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
-        Assert.assertEquals("Wrong packetInMask", message.getPacketInMask(), readPacketInMask(out));
-        Assert.assertEquals("Wrong packetInMask", message.getPortStatusMask(), readPortStatusMask(out));
-        Assert.assertEquals("Wrong packetInMask", message.getFlowRemovedMask(), readFlowRemovedReasonMask(out));
+        Assert.assertEquals("Wrong packetInMask", 5, out.readUnsignedInt());
+        Assert.assertEquals("Wrong packetInMask", 7, out.readUnsignedInt());
+        Assert.assertEquals("Wrong portStatusMask", 6, out.readUnsignedInt());
+        Assert.assertEquals("Wrong portStatusMask", 0, out.readUnsignedInt());
+        Assert.assertEquals("Wrong flowRemovedMask", 10, out.readUnsignedInt());
+        Assert.assertEquals("Wrong flowRemovedMask", 5, out.readUnsignedInt());
         
     }
     
-    private static List<PacketInReason> createPacketInMask() {
+    private static List<PacketInMask> createPacketInMask() {
+        List<PacketInMask> masks = new ArrayList<>();
+        PacketInMaskBuilder builder;
+        // OFPCR_ROLE_EQUAL or OFPCR_ROLE_MASTER
+        builder = new PacketInMaskBuilder();
         List<PacketInReason> packetInReasonList = new ArrayList<>();
-        packetInReasonList.add(PacketInReason.forValue(1));
-        packetInReasonList.add(PacketInReason.forValue(2));
-        return packetInReasonList;
+        packetInReasonList.add(PacketInReason.OFPRNOMATCH);
+        packetInReasonList.add(PacketInReason.OFPRINVALIDTTL);
+        builder.setMask(packetInReasonList);
+        masks.add(builder.build());
+        // OFPCR_ROLE_SLAVE
+        builder = new PacketInMaskBuilder();
+        packetInReasonList = new ArrayList<>();
+        packetInReasonList.add(PacketInReason.OFPRNOMATCH);
+        packetInReasonList.add(PacketInReason.OFPRACTION);
+        packetInReasonList.add(PacketInReason.OFPRINVALIDTTL);
+        builder.setMask(packetInReasonList);
+        masks.add(builder.build());
+        System.out.println(masks.size());
+        return masks;
     }
     
-    private static List<PortReason> createPortStatusMask() {
+    private static List<PortStatusMask> createPortStatusMask() {
+        List<PortStatusMask> masks = new ArrayList<>();
+        PortStatusMaskBuilder builder;
+        builder = new PortStatusMaskBuilder();
+        // OFPCR_ROLE_EQUAL or OFPCR_ROLE_MASTER
         List<PortReason> portReasonList = new ArrayList<>();
-        portReasonList.add(PortReason.forValue(1));
-        portReasonList.add(PortReason.forValue(2));
-        return portReasonList;
+        portReasonList.add(PortReason.OFPPRDELETE);
+        portReasonList.add(PortReason.OFPPRMODIFY);
+        builder.setMask(portReasonList);
+        masks.add(builder.build());
+        // OFPCR_ROLE_SLAVE
+        builder = new PortStatusMaskBuilder();
+        portReasonList = new ArrayList<>();
+        builder.setMask(portReasonList);
+        masks.add(builder.build());
+        return masks;
     }
     
-    private static List<FlowRemovedReason> createFlowRemowedMask() {
+    private static List<FlowRemovedMask> createFlowRemowedMask() {
+        List<FlowRemovedMask> masks = new ArrayList<>();
+        FlowRemovedMaskBuilder builder;
+        // OFPCR_ROLE_EQUAL or OFPCR_ROLE_MASTER
+        builder = new FlowRemovedMaskBuilder();
         List<FlowRemovedReason> flowRemovedReasonList = new ArrayList<>();
-        flowRemovedReasonList.add(FlowRemovedReason.forValue(2));
-        flowRemovedReasonList.add(FlowRemovedReason.forValue(3));
-        return flowRemovedReasonList;
-    }
-    
-    private static List<PacketInReason> readPacketInMask(ByteBuf outputBuf) {
-        List<PacketInReason> readPIRList = new ArrayList<>();
-        readPIRList.add(readPacketInReason((int) outputBuf.readUnsignedInt()));
-        readPIRList.add(readPacketInReason((int) outputBuf.readUnsignedInt()));
-        return readPIRList;
-    }
-    
-    private static List<PortReason> readPortStatusMask(ByteBuf outputBuf) {
-        List<PortReason> readPortReasonList = new ArrayList<>();
-        readPortReasonList.add(readPortReason((int) outputBuf.readUnsignedInt()));
-        readPortReasonList.add(readPortReason((int) outputBuf.readUnsignedInt()));
-        return readPortReasonList;
-    }
-    
-    private static List<FlowRemovedReason> readFlowRemovedReasonMask(ByteBuf outputBuf) {
-        List<FlowRemovedReason> readFlowRemovedReasonList = new ArrayList<>();
-        readFlowRemovedReasonList.add(readFlowRemovedReason((int) outputBuf.readUnsignedInt()));
-        readFlowRemovedReasonList.add(readFlowRemovedReason((int) outputBuf.readUnsignedInt()));
-        return readFlowRemovedReasonList;
-    }
-    
-    private static PacketInReason readPacketInReason(int input) {
-        PacketInReason reason = null;
-        boolean OFPRNOMATCH = (input & (1 << 0)) > 0;
-        boolean OFPRACTION = (input & (1 << 1)) > 0;
-        boolean OFPRINVALIDTTL = (input & (1 << 2)) > 0;
-        
-        if (OFPRNOMATCH) {
-            return PacketInReason.forValue(0);
-            }
-        if (OFPRACTION) {
-            return PacketInReason.forValue(1);
-            }
-        if (OFPRINVALIDTTL) {
-            return PacketInReason.forValue(2);
-            }
-        
-        return reason;
-    }
-    
-    private static PortReason readPortReason(int input) {
-        PortReason reason = null;
-        boolean OFPPRADD = (input & (1 << 0)) > 0;
-        boolean OFPPRDELETE = (input & (1 << 1)) > 0;
-        boolean OFPPRMODIFY = (input & (1 << 2)) > 0;
-        
-        if (OFPPRADD) {
-            return PortReason.forValue(0);
-            }
-        if (OFPPRDELETE) {
-            return PortReason.forValue(1);
-            }
-        if (OFPPRMODIFY) {
-            return PortReason.forValue(2);
-            }
-        
-        return reason;
-    }
-    
-    private static FlowRemovedReason readFlowRemovedReason(int input) {
-        FlowRemovedReason reason = null;
-        boolean OFPRRIDLETIMEOUT = (input & (1 << 0)) > 0;
-        boolean OFPRRHARDTIMEOUT = (input & (1 << 1)) > 0;
-        boolean OFPRRDELETE = (input & (1 << 2)) > 0;
-        boolean OFPRRGROUPDELETE = (input & (1 << 3)) > 0;
-        
-        if (OFPRRIDLETIMEOUT) {
-            return FlowRemovedReason.forValue(0);
-            }
-        if (OFPRRHARDTIMEOUT) {
-            return FlowRemovedReason.forValue(1);
-            }
-        if (OFPRRDELETE) {
-            return FlowRemovedReason.forValue(2);
-            }
-        if (OFPRRGROUPDELETE) {
-            return FlowRemovedReason.forValue(3);
-            }
-        
-        return reason;
+        flowRemovedReasonList.add(FlowRemovedReason.OFPRRHARDTIMEOUT);
+        flowRemovedReasonList.add(FlowRemovedReason.OFPRRGROUPDELETE);
+        builder.setMask(flowRemovedReasonList);
+        masks.add(builder.build());
+        // OFPCR_ROLE_SLAVE
+        builder = new FlowRemovedMaskBuilder();
+        flowRemovedReasonList = new ArrayList<>();
+        flowRemovedReasonList.add(FlowRemovedReason.OFPRRIDLETIMEOUT);
+        flowRemovedReasonList.add(FlowRemovedReason.OFPRRDELETE);
+        builder.setMask(flowRemovedReasonList);
+        masks.add(builder.build());
+        return masks;
     }
 }
