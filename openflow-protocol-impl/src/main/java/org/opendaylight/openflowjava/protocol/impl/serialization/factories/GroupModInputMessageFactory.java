@@ -18,9 +18,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class GroupModInputMessageFactory implements OFSerializer<GroupModInput> {
     private static final byte MESSAGE_TYPE = 15;
-    private static final byte PADDING_IN_GROUP_MOD_MESSAGE = 1;
     private static final int MESSAGE_LENGTH = 16;
+    private static final byte PADDING_IN_GROUP_MOD_MESSAGE = 1;
     private static final byte LENGTH_OF_BUCKET_STRUCTURE = 16;
+    private static final byte PADDING_IN_BUCKET = 4;
     private static GroupModInputMessageFactory instance;
 
     private GroupModInputMessageFactory() {
@@ -59,7 +60,6 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupModInput> 
     }
     
     private static void encodeBuckets(List<BucketsList> buckets, ByteBuf outBuffer) {
-        final byte PADDING_IN_BUCKET = 4;
         if (buckets != null) {
             for (BucketsList currentBucket : buckets) {
                 outBuffer.writeShort(computeLengthOfBucket(currentBucket));

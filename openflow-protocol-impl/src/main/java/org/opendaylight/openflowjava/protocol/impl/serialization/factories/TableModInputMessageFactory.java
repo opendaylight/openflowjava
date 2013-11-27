@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInput;
 
 /**
@@ -55,18 +55,13 @@ public class TableModInputMessageFactory implements OFSerializer<TableModInput> 
     }
     
     /**
-     * @param config
+     * @param tableConfig
      * @return port config bitmask 
      */
-    private static int createConfigBitmask(PortConfig config) {
-        int configBitmask = 0;
+    private static int createConfigBitmask(TableConfig tableConfig) {
         Map<Integer, Boolean> portConfigMap = new HashMap<>();
-        portConfigMap.put(0, config.isPortDown());
-        portConfigMap.put(2, config.isNoRecv());
-        portConfigMap.put(5, config.isNoFwd());
-        portConfigMap.put(6, config.isNoPacketIn());
-        
-        configBitmask = ByteBufUtils.fillBitMaskFromMap(portConfigMap);
+        portConfigMap.put(3, tableConfig.isOFPTCDEPRECATEDMASK());
+        int configBitmask = ByteBufUtils.fillBitMaskFromMap(portConfigMap);
         return configBitmask;
     }
 }

@@ -523,7 +523,7 @@ module openflow-protocol {
                     type oft:table-id;
                 }
                 leaf config {
-                    type oft:port-config;
+                    type oft:table-config;
                 }
             } 
             

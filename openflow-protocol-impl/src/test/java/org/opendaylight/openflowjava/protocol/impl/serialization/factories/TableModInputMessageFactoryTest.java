@@ -8,7 +8,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInputBuilder;
@@ -30,7 +30,7 @@ public class TableModInputMessageFactoryTest {
         TableModInputBuilder builder = new TableModInputBuilder();
         BufferHelper.setupHeader(builder);
         builder.setTableId(new TableId(9L));
-        builder.setConfig(new PortConfig(true, false, true, false));
+        builder.setConfig(new TableConfig(true));
         TableModInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
@@ -38,16 +38,9 @@ public class TableModInputMessageFactoryTest {
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
         BufferHelper.checkHeaderV13(out, MESSAGE_TYPE, 16);
-        Assert.assertEquals("Wrong TableID", message.getTableId().getValue().intValue(), out.readByte());
+        Assert.assertEquals("Wrong TableID", message.getTableId().getValue().intValue(), out.readUnsignedByte());
         out.skipBytes(PADDING_IN_TABLE_MOD_MESSAGE);
-        Assert.assertEquals("Wrong PortConfig", message.getConfig(), createPortConfig(out.readInt()));
+        Assert.assertEquals("Wrong TableConfig", 8, out.readUnsignedInt());
     }
     
-    private static PortConfig createPortConfig(long input){
-        final Boolean _portDown   = ((input) & (1<<0)) > 0;
-        final Boolean _noRecv    = ((input) & (1<<2)) > 0;
-        final Boolean _noFwd       = ((input) & (1<<5)) > 0;
-        final Boolean _noPacketIn = ((input) & (1<<6)) > 0;
-        return new PortConfig(_noFwd, _noPacketIn, _noRecv, _portDown);
-    }
 }
