@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da6255ed_f7cc5563",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/deserialization/factories/OF10ErrorMessageFactory.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2013-11-28T16:49:06Z",
+      "side": 1,
+      "message": "why not switch-case?",
+      "revId": "b2c77a55c7997de135d1a5d974c6af0acddc1a2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
