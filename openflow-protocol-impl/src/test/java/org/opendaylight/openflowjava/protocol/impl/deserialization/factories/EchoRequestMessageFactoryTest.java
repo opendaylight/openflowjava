@@ -40,5 +40,31 @@ public class EchoRequestMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertArrayEquals("Wrong data", data, builtByFactory.getData());
     }
+    
+    /**
+     * Testing {@link EchoRequestMessageFactory} for correct translation into POJO
+     */
+    @Test
+    public void testWithEmptyDataFieldV10() {
+        ByteBuf bb = BufferHelper.buildBuffer();
+        EchoRequestMessage builtByFactory = BufferHelper.decodeV10(
+                EchoRequestMessageFactory.getInstance(), bb);
+
+        BufferHelper.checkHeaderV10(builtByFactory);
+    }
+    
+    /**
+     * Testing {@link EchoRequestMessageFactory} for correct translation into POJO
+     */
+    @Test
+    public void testWithDataFieldSetV10() {
+        byte[] data = new byte[]{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
+        ByteBuf bb = BufferHelper.buildBuffer(data);
+        EchoRequestMessage builtByFactory = BufferHelper.decodeV10(
+                EchoRequestMessageFactory.getInstance(), bb);
+
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertArrayEquals("Wrong data", data, builtByFactory.getData());
+    }
 
 }

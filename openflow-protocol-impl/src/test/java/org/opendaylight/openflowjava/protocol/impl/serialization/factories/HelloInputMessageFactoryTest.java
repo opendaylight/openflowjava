@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.HelloElementType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloInputBuilder;
@@ -35,7 +36,7 @@ public class HelloInputMessageFactoryTest {
     @Test
     public void testWithoutElementsSet() throws Exception {
         HelloInputBuilder hib = new HelloInputBuilder();
-        BufferHelper.setupHeader(hib);
+        BufferHelper.setupHeader(hib, EncodeConstants.OF13_VERSION_ID);
         HelloInput hi = hib.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
@@ -53,7 +54,7 @@ public class HelloInputMessageFactoryTest {
     public void testWith4BitVersionBitmap() throws Exception {
         int lengthOfBitmap = 4;
         HelloInputBuilder builder = new HelloInputBuilder();
-        BufferHelper.setupHeader(builder);
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         List<Elements> expectedElement = createElement(lengthOfBitmap);
         builder.setElements(expectedElement);
         HelloInput message = builder.build();
@@ -78,7 +79,7 @@ public class HelloInputMessageFactoryTest {
     public void testWith64BitVersionBitmap() throws Exception {
         int lengthOfBitmap = 64;
         HelloInputBuilder builder = new HelloInputBuilder();
-        BufferHelper.setupHeader(builder);
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         List<Elements> expectedElement = createElement(lengthOfBitmap);
         builder.setElements(expectedElement);
         HelloInput message = builder.build();

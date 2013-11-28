@@ -183,17 +183,13 @@ module openflow-protocol {
                 uses ofHeader;
                 
                 leaf type {
-                    type oft:error-type;
+                    type string;
                 }
                 leaf code {
-                    type uint16;
+                    type string;
                 }
                 leaf data {
                     type binary; 
-                }
-                // OF1.0 structures
-                leaf type-v10 {
-                    type oft:error-type-v10;
                 }
             }
             grouping echo-request {
@@ -542,7 +538,9 @@ module openflow-protocol {
                 }      
                 choice multipart-request-body {
                     case multipart-request-desc {
-                        // empty body
+                        leaf empty {
+                            type empty;
+                        }
                     }
                     case multipart-request-flow {
                         leaf table-id {
@@ -587,7 +585,9 @@ module openflow-protocol {
                         uses oxm:match-v10-grouping;
                     }
                     case multipart-request-table {
-                        // empty body
+                        leaf empty {
+                            type empty;
+                        }
                     }
                     case multipart-request-port-stats {
                         leaf port-no {
@@ -608,10 +608,14 @@ module openflow-protocol {
                         }
                     }
                     case multipart-request-group-desc {
-                        // empty body
+                        leaf empty {
+                            type empty;
+                        }
                     }
                     case multipart-request-group-features {
-                        // empty body
+                        leaf empty {
+                            type empty;
+                        }
                     }
                     case multipart-request-meter {
                         leaf meter-id {
@@ -624,7 +628,9 @@ module openflow-protocol {
                         }
                     }
                     case multipart-request-meter-features {
-                        // empty body
+                        leaf empty {
+                            type empty;
+                        }
                     }
                     case multipart-request-table-features {
                         list table-features {
@@ -650,7 +656,9 @@ module openflow-protocol {
                         }
                     }
                     case multipart-request-port-desc {
-                        // empty body
+                        leaf empty {
+                            type empty;
+                        }
                     }
                     case multipart-request-experimenter {
                         leaf experimenter {

@@ -4,7 +4,6 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.opendaylight.openflowjava.protocol.impl.core.OFVersionDetector;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.BarrierReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.EchoReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.EchoRequestMessageFactory;
@@ -16,13 +15,9 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.Get
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.GetConfigReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.MultipartReplyMessageFactory;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10BarrierReplyMessageFactory;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10EchoReplyMessageFactory;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10EchoRequestMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10ErrorMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10FeaturesReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10FlowRemovedMessageFactory;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10GetConfigReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10HelloMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10PacketInMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10PortStatusMessageFactory;
@@ -33,6 +28,7 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.Pac
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.PortStatusMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.QueueGetConfigReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.RoleReplyMessageFactory;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 
 /**
  * Stores and provides correct decoders for received messages
@@ -74,8 +70,8 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.Rol
  */
 public class DecoderTable {
     
-    private static final short OF10 = OFVersionDetector.OF10_VERSION_ID;
-    private static final short OF13 = OFVersionDetector.OF13_VERSION_ID;
+    private static final short OF10 = EncodeConstants.OF10_VERSION_ID;
+    private static final short OF13 = EncodeConstants.OF13_VERSION_ID;
     private Map<MessageTypeCodeKey, OFDeserializer<?>> table;
     private static DecoderTable instance;
     
@@ -102,16 +98,16 @@ public class DecoderTable {
         table = new HashMap<>();
         table.put(new MessageTypeCodeKey(OF10, (short) 0), OF10HelloMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF10, (short) 1), OF10ErrorMessageFactory.getInstance());
-        table.put(new MessageTypeCodeKey(OF10, (short) 2), OF10EchoRequestMessageFactory.getInstance());
-        table.put(new MessageTypeCodeKey(OF10, (short) 3), OF10EchoReplyMessageFactory.getInstance());
+        table.put(new MessageTypeCodeKey(OF10, (short) 2), EchoRequestMessageFactory.getInstance());
+        table.put(new MessageTypeCodeKey(OF10, (short) 3), EchoReplyMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF10, (short) 4), OF10VendorMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF10, (short) 6), OF10FeaturesReplyMessageFactory.getInstance());
-        table.put(new MessageTypeCodeKey(OF10, (short) 8), OF10GetConfigReplyMessageFactory.getInstance());
+        table.put(new MessageTypeCodeKey(OF10, (short) 8), GetConfigReplyMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF10, (short) 10), OF10PacketInMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF10, (short) 11), OF10FlowRemovedMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF10, (short) 12), OF10PortStatusMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF10, (short) 16), OF10StatsReplyMessageFactory.getInstance());
-        table.put(new MessageTypeCodeKey(OF10, (short) 18), OF10BarrierReplyMessageFactory.getInstance());
+        table.put(new MessageTypeCodeKey(OF10, (short) 18), BarrierReplyMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF10, (short) 20), OF10QueueGetConfigReplyMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF13, (short) 0), HelloMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF13, (short) 1), ErrorMessageFactory.getInstance());

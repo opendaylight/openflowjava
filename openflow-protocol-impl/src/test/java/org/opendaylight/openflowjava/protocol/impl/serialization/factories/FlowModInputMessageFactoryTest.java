@@ -12,6 +12,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EcnMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EcnMatchEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MetadataInstruction;
@@ -52,7 +53,7 @@ public class FlowModInputMessageFactoryTest {
     @Test
     public void testFlowModInputMessageFactory() throws Exception {
         FlowModInputBuilder builder = new FlowModInputBuilder();
-        BufferHelper.setupHeader(builder);
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         byte[] cookie = new byte[]{0x00, 0x01, 0x04, 0x01, 0x06, 0x00, 0x07, 0x01};
         builder.setCookie(new BigInteger(cookie));
         byte[] cookieMask = new byte[]{0x01, 0x05, 0x00, 0x00, 0x09, 0x30, 0x00, 0x30};

@@ -65,7 +65,17 @@ public abstract class BufferHelper {
      * @param length expected length of message in header
      */
     public static void checkHeaderV13(ByteBuf input, byte msgType, int length) {
-        checkHeader(input, msgType, length, HelloMessageFactoryTest.VERSION_YET_SUPPORTED);
+        checkHeader(input, msgType, length, (short) EncodeConstants.OF13_VERSION_ID);
+    }
+    
+    /**
+     * Use version 1.0 for encoded message
+     * @param input ByteBuf to be checked for correct OpenFlow Protocol header
+     * @param msgType type of received message
+     * @param length expected length of message in header
+     */
+    public static void checkHeaderV10(ByteBuf input, byte msgType, int length) {
+        checkHeader(input, msgType, length, (short) EncodeConstants.OF10_VERSION_ID);
     }
     
     private static void checkHeader(ByteBuf input, byte msgType, int length, Short version) {
@@ -80,7 +90,14 @@ public abstract class BufferHelper {
      * @param ofHeader OpenFlow protocol header
      */
     public static void checkHeaderV13(OfHeader ofHeader) {
-        checkHeader(ofHeader,  HelloMessageFactoryTest.VERSION_YET_SUPPORTED);
+        checkHeader(ofHeader, (short) EncodeConstants.OF13_VERSION_ID);
+    }
+    
+    /**
+     * @param ofHeader OpenFlow protocol header
+     */
+    public static void checkHeaderV10(OfHeader ofHeader) {
+        checkHeader(ofHeader, (short) EncodeConstants.OF10_VERSION_ID);
     }
     
     private static void checkHeader(OfHeader ofHeader, Short version) {
@@ -90,15 +107,16 @@ public abstract class BufferHelper {
     
     /**
      * @param builder
+     * @param version wire protocol number used
      * @throws NoSuchMethodException
      * @throws SecurityException
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
      */
-    public static void setupHeader(Object builder) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public static void setupHeader(Object builder, int version) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         Method m = builder.getClass().getMethod("setVersion", Short.class);
-        m.invoke(builder, HelloMessageFactoryTest.VERSION_YET_SUPPORTED);
+        m.invoke(builder, (short) version);
         Method m2 = builder.getClass().getMethod("setXid", Long.class);
         m2.invoke(builder, BufferHelper.DEFAULT_XID);
     }
@@ -110,7 +128,17 @@ public abstract class BufferHelper {
      * @return message decoded pojo
      */
     public static <E extends DataObject> E decodeV13(OFDeserializer<E> decoder, ByteBuf bb) {
-        return bufferToMessage(decoder, HelloMessageFactoryTest.VERSION_YET_SUPPORTED, bb);
+        return bufferToMessage(decoder, EncodeConstants.OF13_VERSION_ID, bb);
+    }
+    
+    /**
+     * Use version 1.0 for decoding message
+     * @param decoder decoder instance
+     * @param bb data input buffer
+     * @return message decoded pojo
+     */
+    public static <E extends DataObject> E decodeV10(OFDeserializer<E> decoder, ByteBuf bb) {
+        return bufferToMessage(decoder, EncodeConstants.OF10_VERSION_ID, bb);
     }
     
     private static <E extends DataObject> E bufferToMessage(OFDeserializer<E> decoder, short version, ByteBuf bb) {

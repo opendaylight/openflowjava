@@ -14,39 +14,30 @@ module openflow-types {
         type enumeration {
             enum MAX {
                 value -256; // 0xffffff00 
-                description "Hello Protocol failed.";
             }
             enum IN_PORT {
                 value -8; // 0xfffffff8
-                description "Request was not understood.";
             }
             enum TABLE {
                 value -7; // 0xfffffff9 
-                description "Error in action description.";
             }
             enum NORMAL {
                 value -6; // 0xfffffffa 
-                description "Error in instruction list.";
             }
             enum FLOOD {
                 value -5; // 0xfffffffb 
-                description "Error in match.";
             }
             enum ALL {
                 value -4; // 0xfffffffc 
-                description "Problem modifying flow entry.";
             }
             enum CONTROLLER {
                 value -3; // 0xfffffffd
-                description "Problem modifying group entry.";
             }
             enum LOCAL {
                 value -2; // 0xfffffffe
-                description "Port mod request failed.";
             }
             enum ANY {
                 value -1; // 0xffffffff
-                description "Table mod request failed.";
             }
         }
     }
@@ -277,7 +268,412 @@ module openflow-types {
             }
         }
     }
+    
+    typedef hello-failed-code {
+        type enumeration {
+            enum INCOMPATIBLE {
+                value 0; 
+                description "Hello Protocol failed.";
+            }
+            enum EPERM {
+                value 1; 
+                description "Request was not understood.";
+            }
+        }
+    }
+    
+    typedef bad-request-code {
+        type enumeration {
+            enum BAD_VERSION {
+                value 0; 
+            }
+            enum BAD_TYPE {
+                value 1; 
+            }
+            enum BAD_MULTIPART {
+                value 2; 
+            }
+            enum BAD_EXPERIMENTER {
+                value 3; 
+            }
+            enum BAD_EXP_TYPE {
+                value 4; 
+            }
+            enum EPERM {
+                value 5; 
+            }
+            enum BAD_LEN {
+                value 6; 
+            }
+            enum BUFFER_EMPTY {
+                value 7; 
+            }
+            enum BUFFER_UNKNOWN {
+                value 8; 
+            }
+            enum BAD_TABLE_ID {
+                value 9; 
+            }
+            enum IS_SLAVE {
+                value 10; 
+            }
+            enum BAD_PORT {
+                value 11; 
+            }
+            enum BAD_PACKET {
+                value 12; 
+            }
+            enum MULTIPART_BUFFER_OVERFLOW {
+                value 13; 
+            }
+        }
+    }
+    
+    typedef bad-action-code {
+        type enumeration {
+            enum BAD_TYPE {
+                value 0; 
+            }
+            enum BAD_LEN {
+                value 1; 
+            }
+            enum BAD_EXPERIMENTER {
+                value 2; 
+            }
+            enum BAD_EXP_TYPE {
+                value 3; 
+            }
+            enum BAD_OUT_PORT {
+                value 4; 
+            }
+            enum BAD_ARGUMENT {
+                value 5; 
+            }
+            enum EPERM {
+                value 6; 
+            }
+            enum TOO_MANY {
+                value 7; 
+            }
+            enum BAD_QUEUE {
+                value 8; 
+            }
+            enum BAD_OUT_GROUP {
+                value 9; 
+            }
+            enum MATCH_INCONSISTENT {
+                value 10; 
+            }
+            enum UNSUPPORTED_ORDER {
+                value 11; 
+            }
+            enum BAD_TAG {
+                value 12; 
+            }
+            enum BAD_SET_TYPE {
+                value 13; 
+            }
+            enum BAD_SET_LEN {
+                value 14; 
+            }
+            enum BAD_SET_ARGUMENT {
+                value 15; 
+            }
+        }
+    }
+    
+    typedef bad-instruction-code {
+        type enumeration {
+            enum UNKNOWN_INST {
+                value 0; 
+            }
+            enum UNSUP_INST {
+                value 1; 
+            }
+            enum BAD_TABLE_ID {
+                value 2; 
+            }
+            enum UNSUP_METADATA {
+                value 3; 
+            }
+            enum UNSUP_METADATA_MASK {
+                value 4; 
+            }
+            enum BAD_EXPERIMENTER {
+                value 5; 
+            }
+            enum BAD_EXP_TYPE {
+                value 6; 
+            }
+            enum BAD_LEN {
+                value 7; 
+            }
+            enum EPERM {
+                value 8; 
+            }
+        }
+    }
+    
+    typedef bad-match-code {
+        type enumeration {
+            enum BAD_TYPE {
+                value 0; 
+            }
+            enum BAD_LEN {
+                value 1; 
+            }
+            enum BAD_TAG {
+                value 2; 
+            }
+            enum BAD_DL_ADDR_MASK {
+                value 3; 
+            }
+            enum BAD_NW_ADDR_MASK {
+                value 4; 
+            }
+            enum BAD_WILDCARDS {
+                value 5; 
+            }
+            enum BAD_FIELD {
+                value 6; 
+            }
+            enum BAD_VALUE {
+                value 7; 
+            }
+            enum BAD_MASK {
+                value 8; 
+            }
+            enum BAD_PREREQ {
+                value 9; 
+            }
+            enum DUP_FIELD {
+                value 10; 
+            }
+            enum EPERM {
+                value 11; 
+            }
+        }
+    }
+    
+    typedef flow-mod-failed-code {
+        type enumeration {
+            enum UNKNOWN {
+                value 0; 
+            }
+            enum TABLE_FULL {
+                value 1; 
+            }
+            enum BAD_TABLE_ID {
+                value 2; 
+            }
+            enum OVERLAP {
+                value 3; 
+            }
+            enum EPERM {
+                value 4; 
+            }
+            enum BAD_TIMEOUT {
+                value 5; 
+            }
+            enum BAD_COMMAND {
+                value 6; 
+            }
+            enum BAD_FLAGS {
+                value 7; 
+            }
+        }
+    }
+    
+    typedef group-mod-failed-code {
+        type enumeration {
+            enum GROUP_EXISTS {
+                value 0; 
+            }
+            enum INVALID_GROUP {
+                value 1; 
+            }
+            enum WEIGHT_UNSUPPORTED {
+                value 2; 
+            }
+            enum OUT_OF_GROUPS {
+                value 3; 
+            }
+            enum OUT_OF_BUCKETS {
+                value 4; 
+            }
+            enum CHAINING_UNSUPPORTED {
+                value 5; 
+            }
+            enum WATCH_UNSUPPORTED {
+                value 6; 
+            }
+            enum LOOP {
+                value 7; 
+            }
+            enum UNKNOWN_GROUP {
+                value 8; 
+            }
+            enum CHAINED_GROUP {
+                value 9; 
+            }
+            enum BAD_TYPE {
+                value 10; 
+            }
+            enum BAD_COMMAND {
+                value 11; 
+            }
+            enum BAD_BUCKET {
+                value 12; 
+            }
+            enum BAD_WATCH {
+                value 13; 
+            }
+            enum EPERM {
+                value 14; 
+            }
+        }
+    }
+    
+    typedef port-mod-failed-code {
+        type enumeration {
+            enum BAD_PORT {
+                value 0; 
+            }
+            enum BAD_HW_ADDR {
+                value 1; 
+            }
+            enum BAD_CONFIG {
+                value 2; 
+            }
+            enum BAD_ADVERTISE {
+                value 3; 
+            }
+            enum EPERM {
+                value 4; 
+            }
+        }
+    }
+    
+    typedef table-mod-failed-code {
+        type enumeration {
+            enum BAD_TABLE {
+                value 0; 
+            }
+            enum BAD_CONFIG {
+                value 1; 
+            }
+            enum EPERM {
+                value 2; 
+            }
+        }
+    }
 
+    typedef queue-op-failed-code {
+        type enumeration {
+            enum BAD_PORT {
+                value 0; 
+            }
+            enum BAD_QUEUE {
+                value 1; 
+            }
+            enum EPERM {
+                value 2; 
+            }
+        }
+    }
+    
+    typedef switch-config-failed-code {
+        type enumeration {
+            enum BAD_FLAGS {
+                value 0; 
+            }
+            enum BAD_LEN {
+                value 1; 
+            }
+            enum EPERM {
+                value 2; 
+            }
+        }
+    }
+    
+    typedef role-request-failed-code {
+        type enumeration {
+            enum STALE {
+                value 0; 
+            }
+            enum UNSUP {
+                value 1; 
+            }
+            enum BAD_ROLE {
+                value 2; 
+            }
+        }
+    }
+    
+    typedef meter-mod-failed-code {
+        type enumeration {
+            enum UNKNOWN {
+                value 0; 
+            }
+            enum METER_EXISTS {
+                value 1; 
+            }
+            enum INVALID_METER {
+                value 2; 
+            }
+            enum UNKNOWN_METER {
+                value 3; 
+            }
+            enum BAD_COMMAND {
+                value 4; 
+            }
+            enum BAD_FLAGS {
+                value 5; 
+            }
+            enum BAD_RATE {
+                value 6; 
+            }
+            enum BAD_BURST {
+                value 7; 
+            }
+            enum BAD_BAND {
+                value 8; 
+            }
+            enum BAD_BAND_VALUE {
+                value 9; 
+            }
+            enum OUT_OF_METERS {
+                value 10; 
+            }
+            enum OUT_OF_BANDS {
+                value 11; 
+            }
+        }
+    }
+    
+    typedef table-features-failed-code {
+        type enumeration {
+            enum BAD_TABLE {
+                value 0; 
+            }
+            enum BAD_METADATA {
+                value 1; 
+            }
+            enum BAD_TYPE {
+                value 2; 
+            }
+            enum BAD_LEN {
+                value 3; 
+            }
+            enum BAD_ARGUMENT {
+                value 4; 
+            }
+            enum EPERM {
+                value 5; 
+            }
+        }
+    }
+    
     typedef hello-element-type {
         type enumeration {
             enum VERSIONBITMAP {
@@ -962,45 +1358,190 @@ module openflow-types {
     
 // OPENFLOW v1.0 STRUCTURES
     // Structures under this line are needed to support OpenFlow version 1.0 
-    // wire protocol 0x01; 
+    // wire protocol 0x01;
+    
+    typedef error-type-v10 {
+        type enumeration {
+            enum HELLO_FAILED {
+                value 0; 
+                description "Hello Protocol failed.";
+            }
+            enum BAD_REQUEST {
+                value 1; 
+                description "Request was not understood.";
+            }
+            enum BAD_ACTION {
+                value 2; 
+                description "Error in action description.";
+            }
+            enum FLOW_MOD_FAILED {
+                value 3; 
+                description "Problem modifying flow entry.";
+            }
+            enum PORT_MOD_FAILED {
+                value 4; 
+                description "Port mod request failed.";
+            }
+            enum QUEUE_OP_FAILED {
+                value 5; 
+                description "Queue operation failed.";
+            }
+        }
+    }
+    
+    typedef hello-failed-code-v10 {
+        type enumeration {
+            enum INCOMPATIBLE {
+                value 0; 
+                description "Hello Protocol failed.";
+            }
+            enum EPERM {
+                value 1; 
+                description "Request was not understood.";
+            }
+        }
+    }
+    
+    typedef bad-request-code-v10 {
+        type enumeration {
+            enum BAD_VERSION {
+                value 0; 
+            }
+            enum BAD_TYPE {
+                value 1; 
+            }
+            enum BAD_STAT {
+                value 2; 
+            }
+            enum BAD_VENDOR {
+                value 3; 
+            }
+            enum BAD_SUBTYPE {
+                value 4; 
+            }
+            enum EPERM {
+                value 5; 
+            }
+            enum BAD_LEN {
+                value 6; 
+            }
+            enum BUFFER_EMPTY {
+                value 7; 
+            }
+            enum BUFFER_UNKNOWN {
+                value 8; 
+            }
+        }
+    }
+    
+    typedef bad-action-code-v10 {
+        type enumeration {
+            enum BAD_TYPE {
+                value 0; 
+            }
+            enum BAD_LEN {
+                value 1; 
+            }
+            enum VENDOR {
+                value 2; 
+            }
+            enum BAD_VENDOR_TYPE {
+                value 3; 
+            }
+            enum BAD_OUT_PORT {
+                value 4; 
+            }
+            enum BAD_ARGUMENT {
+                value 5; 
+            }
+            enum EPERM {
+                value 6; 
+            }
+            enum TOO_MANY {
+                value 7; 
+            }
+            enum BAD_QUEUE {
+                value 8; 
+            }
+        }
+    }
+    
+    typedef flow-mod-failed-code-v10 {
+        type enumeration {
+            enum ALL_TABLES_FULL {
+                value 0; 
+            }
+            enum OVERLAP {
+                value 1; 
+            }
+            enum EPERM {
+                value 2; 
+            }
+            enum BAD_EMERG_TIMEOUT {
+                value 3; 
+            }
+            enum BAD_COMMAND {
+                value 4; 
+            }
+            enum UNSUPPORTED {
+                value 5; 
+            }
+        }
+    }
+    
+    typedef port-mod-failed-code-v10 {
+        type enumeration {
+            enum BAD_PORT {
+                value 0; 
+            }
+            enum BAD_HW_ADDR {
+                value 1; 
+            }
+        }
+    }
+    
+    typedef queue-op-failed-code-v10 {
+        type enumeration {
+            enum BAD_PORT {
+                value 0; 
+            }
+            enum BAD_QUEUE {
+                value 1; 
+            }
+            enum EPERM {
+                value 2; 
+            }
+        }
+    }
     
     typedef port-number-values-v10 {
         type enumeration {
             enum MAX {
                 value 65280; // 0xff00 
-                description "Hello Protocol failed.";
             }
             enum IN_PORT {
                 value 65528; // 0xfff8
-                description "Request was not understood.";
             }
             enum TABLE {
                 value 65529; // 0xfff9 
-                description "Error in action description.";
             }
             enum NORMAL {
                 value 65530; // 0xfffa 
-                description "Error in instruction list.";
             }
             enum FLOOD {
                 value 65531; // 0xfffb 
-                description "Error in match.";
             }
             enum ALL {
                 value 65532; // 0xfffc 
-                description "Problem modifying flow entry.";
             }
             enum CONTROLLER {
                 value 65533; // 0xfffd
-                description "Problem modifying group entry.";
             }
             enum LOCAL {
                 value 65534; // 0xfffe
-                description "Port mod request failed.";
             }
             enum ANY {
                 value 65535; // 0xffff
-                description "Table mod request failed.";
             }
         }
     }
@@ -1250,32 +1791,4 @@ module openflow-types {
         }
     }
     
-    typedef error-type-v10 {
-        type enumeration {
-            enum HELLO_FAILED {
-                value 0; 
-                description "Hello Protocol failed.";
-            }
-            enum BAD_REQUEST {
-                value 1; 
-                description "Request was not understood.";
-            }
-            enum BAD_ACTION {
-                value 2; 
-                description "Error in action description.";
-            }
-            enum FLOW_MOD_FAILED {
-                value 3; 
-                description "Problem modifying flow entry.";
-            }
-            enum PORT_MOD_FAILED {
-                value 4; 
-                description "Port mod request failed.";
-            }
-            enum QUEUE_OP_FAILED {
-                value 5; 
-                description "Queue operation failed.";
-            }
-        }
-    }
 }
