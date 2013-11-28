@@ -12,6 +12,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterBandType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterId;
@@ -37,7 +38,7 @@ public class MeterModInputMessageFactoryTest {
     @Test
     public void testMeterModInputMessage() throws Exception {
         MeterModInputBuilder builder = new MeterModInputBuilder();
-        BufferHelper.setupHeader(builder);
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setCommand(MeterModCommand.forValue(1));
         builder.setFlags(new MeterFlags(false, true, true, false));
         builder.setMeterId(new MeterId(2248L));

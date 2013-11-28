@@ -7,6 +7,7 @@ import io.netty.buffer.UnpooledByteBufAllocator;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetAsyncInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetAsyncInputBuilder;
 
@@ -25,7 +26,7 @@ public class GetaAsyncRequestMessageFactoryTest {
     @Test
     public void testGetAsyncReques() throws Exception {
         GetAsyncInputBuilder builder = new GetAsyncInputBuilder();
-        BufferHelper.setupHeader(builder);
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         GetAsyncInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();

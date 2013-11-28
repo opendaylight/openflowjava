@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterInputBuilder;
 
@@ -26,7 +27,7 @@ public class ExperimenterInputMessageFactoryTest {
     @Test
     public void test() throws Exception {
         ExperimenterInputBuilder builder = new ExperimenterInputBuilder();
-        BufferHelper.setupHeader(builder);
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setExperimenter(0x0001020304L);
         builder.setExpType(0x0001020304L);
         builder.setData(new byte[] {0x01, 0x02, 0x03});

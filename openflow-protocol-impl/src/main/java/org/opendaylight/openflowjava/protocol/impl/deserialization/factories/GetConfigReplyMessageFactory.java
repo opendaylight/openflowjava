@@ -9,7 +9,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetConfigOutputBuilder;
 
 /**
- * Translates GetConfigReply messages
+ * Translates GetConfigReply messages (both OpenFlow v1.0 and OpenFlow v1.3)
  * @author michal.polkorab
  * @author timotej.kubas
  */

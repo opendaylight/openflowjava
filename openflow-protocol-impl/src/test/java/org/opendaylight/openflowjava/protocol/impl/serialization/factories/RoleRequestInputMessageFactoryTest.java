@@ -11,6 +11,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ControllerRole;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.RoleRequestInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.RoleRequestInputBuilder;
@@ -31,7 +32,7 @@ public class RoleRequestInputMessageFactoryTest {
     @Test
     public void testRoleRequestInputMessage() throws Exception {
         RoleRequestInputBuilder builder = new RoleRequestInputBuilder();
-        BufferHelper.setupHeader(builder);
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setRole(ControllerRole.forValue(2));
         byte[] generationId = new byte[]{0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01};
         builder.setGenerationId(new BigInteger(generationId));

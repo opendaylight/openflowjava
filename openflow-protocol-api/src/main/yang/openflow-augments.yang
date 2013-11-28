@@ -373,4 +373,16 @@ module openflow-augments {
              type binary;
          }
      }
+     
+// OFP_ERROR_AUGMENTS (only experimenter till OpenFlow v1.3)
+    augment "/ofproto:error-message" {
+         ext:augment-identifier "experimenter-error";
+         leaf exp_type {
+             type uint16;
+         }
+         leaf experimenter {
+             type uint32;
+         }
+     }
+
 }

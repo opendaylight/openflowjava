@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowRemovedReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PacketInReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortReason;
@@ -40,7 +41,7 @@ public class SetAsyncInputMessageFactoryTest {
     @Test
     public void testSetAsyncInputMessage() throws Exception {
         SetAsyncInputBuilder builder = new SetAsyncInputBuilder();
-        BufferHelper.setupHeader(builder);
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setPacketInMask(createPacketInMask());
         builder.setPortStatusMask(createPortStatusMask());
         builder.setFlowRemovedMask(createFlowRemowedMask());

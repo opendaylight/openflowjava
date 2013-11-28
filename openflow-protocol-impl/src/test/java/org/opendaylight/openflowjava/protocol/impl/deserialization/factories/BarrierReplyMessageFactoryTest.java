@@ -24,4 +24,16 @@ public class BarrierReplyMessageFactoryTest {
 
         BufferHelper.checkHeaderV13(builtByFactory);
     }
+    
+    /**
+     * Testing of {@link BarrierReplyMessageFactory} for correct translation into POJO
+     */
+    @Test
+    public void testV10() {
+        ByteBuf bb = BufferHelper.buildBuffer();
+        BarrierOutput builtByFactory = BufferHelper.decodeV10(
+                BarrierReplyMessageFactory.getInstance(), bb);
+
+        BufferHelper.checkHeaderV10(builtByFactory);
+    }
 }
