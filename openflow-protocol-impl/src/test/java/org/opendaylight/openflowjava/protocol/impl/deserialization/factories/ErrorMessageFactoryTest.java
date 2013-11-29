@@ -23,8 +23,8 @@ public class ErrorMessageFactoryTest {
         ErrorMessage builtByFactory = BufferHelper.decodeV13(ErrorMessageFactory.getInstance(), bb);
         BufferHelper.checkHeaderV13(builtByFactory);
         
-        Assert.assertEquals("Wrong reason", 0x04, builtByFactory.getType().getIntValue());
-        Assert.assertEquals("Wrong code", 3, builtByFactory.getCode().intValue());
+        Assert.assertEquals("Wrong reason", "BADMATCH", builtByFactory.getType());
+        Assert.assertEquals("Wrong code", "BADDLADDRMASK", builtByFactory.getCode());
         Assert.assertArrayEquals("Wrong body", new byte[]{0x01, 0x02, 0x03, 0x04}, builtByFactory.getData());
     }
 }

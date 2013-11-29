@@ -13,6 +13,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableConfig;
@@ -55,7 +56,7 @@ public class MultipartRequestInputFactoryTest {
     @Test
     public void testMultipartRequestInputFactory() throws Exception {
         MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
-        BufferHelper.setupHeader(builder);
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setType(MultipartType.forValue(1));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestFlow());
@@ -112,7 +113,7 @@ public class MultipartRequestInputFactoryTest {
     @Test
     public void testMultipartRequestInputAggregateBodyFactory() throws Exception {
         MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
-        BufferHelper.setupHeader(builder);
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setType(MultipartType.forValue(2));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestAggregate());
@@ -175,7 +176,7 @@ public class MultipartRequestInputFactoryTest {
     @Test
     public void testMultipartRequestInputTableFactory() throws Exception {
         MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
-        BufferHelper.setupHeader(builder);
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setType(MultipartType.forValue(3));
         builder.setFlags(new MultipartRequestFlags(true));
         //multipart request for table does not have body
@@ -198,7 +199,7 @@ public class MultipartRequestInputFactoryTest {
     @Test
     public void testMultipartRequestPortStatsMessageFactory() throws Exception {
         MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
-        BufferHelper.setupHeader(builder);
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setType(MultipartType.forValue(4));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestPortStats());
@@ -238,7 +239,7 @@ public class MultipartRequestInputFactoryTest {
     @Test
     public void testMultipartRequestQueueMessageFactory() throws Exception {
         MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
-        BufferHelper.setupHeader(builder);
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setType(MultipartType.forValue(5));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestQueue());
@@ -278,7 +279,7 @@ public class MultipartRequestInputFactoryTest {
     @Test
     public void testMultipartRequestGroupMessageFactory() throws Exception {
         MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
-        BufferHelper.setupHeader(builder);
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setType(MultipartType.forValue(6));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestGroup());
@@ -318,7 +319,7 @@ public class MultipartRequestInputFactoryTest {
     @Test
     public void testMultipartRequestMeterMessageFactory() throws Exception {
         MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
-        BufferHelper.setupHeader(builder);
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setType(MultipartType.forValue(9));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestMeter());
@@ -358,7 +359,7 @@ public class MultipartRequestInputFactoryTest {
     @Test
     public void testMultipartRequestMeterConfigMessageFactory() throws Exception {
         MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
-        BufferHelper.setupHeader(builder);
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setType(MultipartType.forValue(10));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestMeterConfig());
@@ -398,7 +399,7 @@ public class MultipartRequestInputFactoryTest {
     @Test
     public void testMultipartRequestExperimenterMessageFactory() throws Exception {
         MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
-        BufferHelper.setupHeader(builder);
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setType(MultipartType.forValue(0xffff));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestExperimenter());
@@ -438,7 +439,7 @@ public class MultipartRequestInputFactoryTest {
     @Test
     public void testMultipartRequestDescMessageFactory() throws Exception {
         MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
-        BufferHelper.setupHeader(builder);
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setType(MultipartType.forValue(0));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestDesc());
@@ -465,7 +466,7 @@ public class MultipartRequestInputFactoryTest {
     @Test
     public void testMultipartRequestTableFeaturesMessageFactory() throws Exception {
         MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
-        BufferHelper.setupHeader(builder);
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setType(MultipartType.forValue(12));
         builder.setFlags(new MultipartRequestFlags(true));
         builder.setMultipartRequestBody(createRequestTableFeatures());

@@ -7,6 +7,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
 
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,9 +18,9 @@ import org.slf4j.LoggerFactory;
 public class OFVersionDetector extends ByteToMessageDecoder {
 
     /** Version number of OpenFlow 1.0 protocol */
-    public static final byte OF10_VERSION_ID = 0x01;
+    private static final byte OF10_VERSION_ID = EncodeConstants.OF10_VERSION_ID;
     /** Version number of OpenFlow 1.3 protocol */
-    public static final byte OF13_VERSION_ID = 0x04;
+    private static final byte OF13_VERSION_ID = EncodeConstants.OF13_VERSION_ID;
     private static final Logger LOGGER = LoggerFactory.getLogger(OFVersionDetector.class);
 
     /**
