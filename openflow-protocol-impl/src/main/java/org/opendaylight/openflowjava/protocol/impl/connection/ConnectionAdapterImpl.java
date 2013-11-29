@@ -337,7 +337,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
             IN input, Class<OUT> responseClazz, final String failureInfo) {
         LOG.debug("going to flush");
         SettableFuture<RpcResult<OUT>> rpcResult = SettableFuture.create();
-        RpcResponseKey key = new RpcResponseKey(input.getXid(), responseClazz);
+        RpcResponseKey key = new RpcResponseKey(input.getXid(), responseClazz.getName());
         responseCache.put(key, rpcResult);
         ChannelFuture resultFuture = channel.writeAndFlush(input);
         LOG.debug("flushed");
@@ -488,7 +488,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
      * @return
      */
     private static RpcResponseKey createRpcResponseKey(OfHeader message) {
-        return new RpcResponseKey(message.getXid(), message.getClass());
+        return new RpcResponseKey(message.getXid(), message.getImplementedInterface().getName());
     }
 
     /**
