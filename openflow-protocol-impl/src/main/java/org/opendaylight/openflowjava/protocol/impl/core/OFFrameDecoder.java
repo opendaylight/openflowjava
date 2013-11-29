@@ -8,6 +8,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
 
+import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,19 +38,29 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext chc, ByteBuf bb, List<Object> list) throws Exception {
-        if (bb.readableBytes() < LENGTH_OF_HEADER) {
-            LOGGER.debug("skipping bb - too few data for header: " + bb.readableBytes());
+        int readableBytes = bb.readableBytes();
+        if (readableBytes < LENGTH_OF_HEADER) {
+            LOGGER.debug("skipping bb - too few data for header: " + readableBytes);
             return;
         }
-
-        int length = bb.getUnsignedShort(LENGTH_INDEX_IN_HEADER);
-        if (bb.readableBytes() < length) {
-            LOGGER.debug("skipping bb - too few data for msg: " +
-                    bb.readableBytes() + " < " + length);
+        
+        int length = bb.getUnsignedShort(bb.readerIndex() + LENGTH_INDEX_IN_HEADER);
+        LOGGER.debug("length of actual message: {}", length);
+        
+        if (readableBytes < length) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("skipping bb - too few data for msg: " +
+                        readableBytes + " < " + length);
+                LOGGER.debug("bb: " + ByteBufUtils.byteBufToHexString(bb));
+                LOGGER.debug("readableBytes: " + readableBytes);
+            }
+            
             return;
+        } else {
+            LOGGER.debug("[enough bytes] readableBytes: " + readableBytes);
         }
-        LOGGER.info("OF Protocol message received, type:{}", bb.getByte(1));
-
+        LOGGER.info("OF Protocol message received, type:{}", bb.getByte(bb.readerIndex() + 1));
+        
         ByteBuf messageBuffer = bb.slice(bb.readerIndex(), length);
         list.add(messageBuffer);
         messageBuffer.retain();
