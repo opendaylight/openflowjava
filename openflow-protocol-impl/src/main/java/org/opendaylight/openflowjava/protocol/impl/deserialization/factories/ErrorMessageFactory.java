@@ -31,6 +31,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
 
+    private static final String UNKNOWN_CODE = "UNKNOWN_CODE";
+    private static final String UNKNOWN_TYPE = "UNKNOWN_TYPE";
+    private static final int NO_CORRECT_ENUM_FOUND_VALUE = -1;
+    
     private static ErrorMessageFactory instance;
     
     private ErrorMessageFactory() {
@@ -69,7 +73,8 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
         {
             HelloFailedCode code = HelloFailedCode.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
@@ -77,7 +82,8 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
         {
             BadRequestCode code = BadRequestCode.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
@@ -85,7 +91,8 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
         {
             BadActionCode code = BadActionCode.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
@@ -93,7 +100,8 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
         {
             BadInstructionCode code = BadInstructionCode.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
@@ -101,7 +109,8 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
         {
             BadMatchCode code = BadMatchCode.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
@@ -109,7 +118,8 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
         {
             FlowModFailedCode code = FlowModFailedCode.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
@@ -117,7 +127,8 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
         {
             GroupModFailedCode code = GroupModFailedCode.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
@@ -125,7 +136,8 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
         {
             PortModFailedCode code = PortModFailedCode.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
@@ -133,7 +145,8 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
         {
             TableModFailedCode code = TableModFailedCode.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
@@ -141,7 +154,8 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
         {
             QueueOpFailedCode code = QueueOpFailedCode.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
@@ -149,7 +163,8 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
         {
             SwitchConfigFailedCode code = SwitchConfigFailedCode.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
@@ -157,7 +172,8 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
         {
             RoleRequestFailedCode code = RoleRequestFailedCode.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
@@ -165,7 +181,8 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
         {
             MeterModFailedCode code = MeterModFailedCode.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
@@ -173,7 +190,8 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
         {
             TableFeaturesFailedCode code = TableFeaturesFailedCode.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
@@ -184,16 +202,19 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
             builder.addAugmentation(ExperimenterError.class, expBuilder.build());
             break;
         default:
-            builder.setCode("UNKNOWN_CODE");
+            builder.setCode(NO_CORRECT_ENUM_FOUND_VALUE);
+            builder.setCodeString(UNKNOWN_CODE);
             break;
         }
     }
 
     private static void decodeType(ErrorMessageBuilder builder, ErrorType type) {
         if (type != null) {
-            builder.setType(type.name());
+            builder.setType(type.getIntValue());
+            builder.setTypeString(type.name());
         } else {
-            builder.setType("UNKNOWN_TYPE");
+            builder.setType(NO_CORRECT_ENUM_FOUND_VALUE);
+            builder.setTypeString(UNKNOWN_TYPE);
         }
     }
 

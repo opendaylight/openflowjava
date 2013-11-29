@@ -183,9 +183,15 @@ module openflow-protocol {
                 uses ofHeader;
                 
                 leaf type {
-                    type string;
+                    type uint16;
                 }
                 leaf code {
+                    type uint16;
+                }
+                leaf type-string {
+                    type string;
+                }
+                leaf code-string {
                     type string;
                 }
                 leaf data {

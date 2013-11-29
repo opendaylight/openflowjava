@@ -20,7 +20,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class OF10ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
 
-private static OF10ErrorMessageFactory instance;
+    private static final String UNKNOWN_TYPE = "UNKNOWN_TYPE";
+    private static final String UNKNOWN_CODE = "UNKNOWN_CODE";
+    private static final int NO_CORRECT_ENUM_FOUND_VALUE = -1;
+    
+    private static OF10ErrorMessageFactory instance;
     
     private OF10ErrorMessageFactory() {
         // do nothing, just singleton
@@ -57,7 +61,8 @@ private static OF10ErrorMessageFactory instance;
         {
             HelloFailedCodeV10 code = HelloFailedCodeV10.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
@@ -65,7 +70,8 @@ private static OF10ErrorMessageFactory instance;
         {
             BadRequestCodeV10 code = BadRequestCodeV10.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
@@ -73,7 +79,8 @@ private static OF10ErrorMessageFactory instance;
         {
             BadActionCodeV10 code = BadActionCodeV10.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
@@ -81,7 +88,8 @@ private static OF10ErrorMessageFactory instance;
         {
             FlowModFailedCodeV10 code = FlowModFailedCodeV10.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
@@ -89,7 +97,8 @@ private static OF10ErrorMessageFactory instance;
         {
             PortModFailedCodeV10 code = PortModFailedCodeV10.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
@@ -97,21 +106,25 @@ private static OF10ErrorMessageFactory instance;
         {
             QueueOpFailedCodeV10 code = QueueOpFailedCodeV10.forValue(rawMessage.readUnsignedShort());
             if (code != null) {
-                builder.setCode(code.name());
+                builder.setCode(code.getIntValue());
+                builder.setCodeString(code.name());
             }
             break;
         }
         default:
-            builder.setCode("UNKNOWN_CODE");
+            builder.setCode(NO_CORRECT_ENUM_FOUND_VALUE);
+            builder.setCodeString(UNKNOWN_CODE);
             break;
         }
     }
 
     private static void decodeType(ErrorMessageBuilder builder, ErrorTypeV10 type) {
         if (type != null) {
-            builder.setType(type.name());
+            builder.setType(NO_CORRECT_ENUM_FOUND_VALUE);
+            builder.setTypeString(type.name());
         } else {
-            builder.setType("UNKNOWN_TYPE");
+            builder.setType(NO_CORRECT_ENUM_FOUND_VALUE);
+            builder.setTypeString(UNKNOWN_TYPE);
         }
     }
 
