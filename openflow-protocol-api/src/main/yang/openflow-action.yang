@@ -83,6 +83,7 @@ module openflow-action {
     
     grouping actions {
         list actions-list {
+            key "action";
             container action {
                 leaf type {
                     type identityref {

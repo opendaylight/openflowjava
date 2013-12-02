@@ -20,13 +20,18 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.MultipartRequestBody;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestAggregate;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestDesc;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenter;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestFlow;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestPortStats;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestQueue;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestTable;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestAggregateCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestDescCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenterCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestFlowCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestPortStatsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestQueueCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestTableCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.aggregate._case.MultipartRequestAggregate;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.experimenter._case.MultipartRequestExperimenter;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.flow._case.MultipartRequestFlow;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.port.stats._case.MultipartRequestPortStats;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.queue._case.MultipartRequestQueue;
 
 /**
  * Translates StatsRequest messages
@@ -67,19 +72,19 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
         ByteBufUtils.writeOFHeader(instance, message, out);
         out.writeShort(message.getType().getIntValue());
         out.writeShort(createMultipartRequestFlagsBitmask(message.getFlags()));
-        if (message.getMultipartRequestBody() instanceof MultipartRequestDesc) {
+        if (message.getMultipartRequestBody() instanceof MultipartRequestDescCase) {
             encodeDescBody(message.getMultipartRequestBody(), out);
-        } else if (message.getMultipartRequestBody() instanceof MultipartRequestFlow) {
+        } else if (message.getMultipartRequestBody() instanceof MultipartRequestFlowCase) {
             encodeFlowBody(message.getMultipartRequestBody(), out);
-        } else if (message.getMultipartRequestBody() instanceof MultipartRequestAggregate) {
+        } else if (message.getMultipartRequestBody() instanceof MultipartRequestAggregateCase) {
             encodeAggregateBody(message.getMultipartRequestBody(), out);
-        } else if (message.getMultipartRequestBody() instanceof MultipartRequestTable) {
+        } else if (message.getMultipartRequestBody() instanceof MultipartRequestTableCase) {
             encodeTableBody(message.getMultipartRequestBody(), out);
-        } else if (message.getMultipartRequestBody() instanceof MultipartRequestPortStats) {
+        } else if (message.getMultipartRequestBody() instanceof MultipartRequestPortStatsCase) {
             encodePortBody(message.getMultipartRequestBody(), out);
-        } else if (message.getMultipartRequestBody() instanceof MultipartRequestQueue) {
+        } else if (message.getMultipartRequestBody() instanceof MultipartRequestQueueCase) {
             encodeQueueBody(message.getMultipartRequestBody(), out);
-        } else if (message.getMultipartRequestBody() instanceof MultipartRequestExperimenter) {
+        } else if (message.getMultipartRequestBody() instanceof MultipartRequestExperimenterCase) {
             encodeExperimenterBody(message.getMultipartRequestBody(), out);
         }
     }
@@ -110,7 +115,8 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
         } else if (type.equals(MultipartType.OFPMPQUEUE)) {
             length += QUEUE_BODY_LENGTH;
         } else if (type.equals(MultipartType.OFPMPEXPERIMENTER)) {
-            MultipartRequestExperimenter body = (MultipartRequestExperimenter) message.getMultipartRequestBody();
+            MultipartRequestExperimenterCase bodyCase = (MultipartRequestExperimenterCase) message.getMultipartRequestBody();
+            MultipartRequestExperimenter body = bodyCase.getMultipartRequestExperimenter();
             length += EXPERIMENTER_BODY_LENGTH;
             if (body.getData() != null) {
                 length += body.getData().length;
@@ -146,37 +152,42 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
     }
     
     private static void encodeFlowBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
-        encodeFlowAndAggregateBody(multipartRequestBody, output);
-    }
-    
-    private static void encodeAggregateBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
-        encodeFlowAndAggregateBody(multipartRequestBody, output);
-    }
-
-    private static void encodeFlowAndAggregateBody(
-            MultipartRequestBody multipartRequestBody, ByteBuf output) {
-        MultipartRequestFlow flow = (MultipartRequestFlow) multipartRequestBody;
+        MultipartRequestFlowCase flowCase = (MultipartRequestFlowCase) multipartRequestBody;
+        MultipartRequestFlow flow = flowCase.getMultipartRequestFlow();
         OF10MatchSerializer.encodeMatchV10(output, flow.getMatchV10());
         output.writeByte(flow.getTableId().shortValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_FLOW_BODY, output);
         output.writeShort(flow.getOutPort().intValue());
     }
     
+    private static void encodeAggregateBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
+        final byte PADDING_IN_MULTIPART_REQUEST_AGGREGATE_BODY = 1;
+        MultipartRequestAggregateCase aggregateCase = (MultipartRequestAggregateCase) multipartRequestBody;
+        MultipartRequestAggregate aggregate = aggregateCase.getMultipartRequestAggregate();
+        OF10MatchSerializer.encodeMatchV10(output, aggregate.getMatchV10());
+        output.writeByte(aggregate.getTableId().shortValue());
+        ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_AGGREGATE_BODY, output);
+        output.writeShort(aggregate.getOutPort().intValue());
+    }
+
     private static void encodePortBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
-        MultipartRequestPortStats portstats = (MultipartRequestPortStats) multipartRequestBody;
+        MultipartRequestPortStatsCase portstatsCase = (MultipartRequestPortStatsCase) multipartRequestBody;
+        MultipartRequestPortStats portstats = portstatsCase.getMultipartRequestPortStats();
         output.writeShort(portstats.getPortNo().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_PORT_BODY, output);
     }
     
     private static void encodeQueueBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
-        MultipartRequestQueue queue = (MultipartRequestQueue) multipartRequestBody;
+        MultipartRequestQueueCase queueCase = (MultipartRequestQueueCase) multipartRequestBody;
+        MultipartRequestQueue queue = queueCase.getMultipartRequestQueue();
         output.writeShort(queue.getPortNo().intValue());
         ByteBufUtils.padBuffer(PADING_IN_QUEUE_BODY, output);
         output.writeInt(queue.getQueueId().intValue());
     }
     
     private static void encodeExperimenterBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
-        MultipartRequestExperimenter experimenter = (MultipartRequestExperimenter) multipartRequestBody;
+        MultipartRequestExperimenterCase experimenterCase = (MultipartRequestExperimenterCase) multipartRequestBody;
+        MultipartRequestExperimenter experimenter = experimenterCase.getMultipartRequestExperimenter();
         output.writeInt(experimenter.getExperimenter().intValue());
         output.writeBytes(experimenter.getData());
     }

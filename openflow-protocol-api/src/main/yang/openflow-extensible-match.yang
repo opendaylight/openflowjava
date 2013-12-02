@@ -213,6 +213,7 @@ module openflow-extensible-match {
         
         grouping oxm-fields {
             list match-entries {
+                key "oxm-class oxm-match-field has-mask";
                 leaf oxm-class {
                     type identityref {
                         base clazz;

@@ -20,9 +20,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterBandCommons;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.MeterBand;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDrop;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDscpRemark;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenter;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDropCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDscpRemarkCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.drop._case.MeterBandDrop;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.dscp.remark._case.MeterBandDscpRemark;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.experimenter._case.MeterBandExperimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.mod.Bands;
 
 /**
@@ -92,15 +95,21 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput> 
         if (bands != null) {
             for (Bands currentBand : bands) {
                 MeterBand meterBand = currentBand.getMeterBand();
-                writeBandCommonFields((MeterBandCommons) meterBand, outBuffer);
-                if (meterBand instanceof MeterBandDrop) {
+                if (meterBand instanceof MeterBandDropCase) {
+                    MeterBandDropCase dropBandCase = (MeterBandDropCase) meterBand;
+                    MeterBandDrop dropBand = dropBandCase.getMeterBandDrop();
+                    writeBandCommonFields(dropBand, outBuffer);
                     ByteBufUtils.padBuffer(PADDING_IN_METER_BAND_DROP, outBuffer);
-                } else if (meterBand instanceof MeterBandDscpRemark) {
-                    MeterBandDscpRemark dscpRemarkBand = (MeterBandDscpRemark) meterBand;
+                } else if (meterBand instanceof MeterBandDscpRemarkCase) {
+                    MeterBandDscpRemarkCase dscpRemarkBandCase = (MeterBandDscpRemarkCase) meterBand;
+                    MeterBandDscpRemark dscpRemarkBand = dscpRemarkBandCase.getMeterBandDscpRemark();
+                    writeBandCommonFields(dscpRemarkBand, outBuffer);
                     outBuffer.writeByte(dscpRemarkBand.getPrecLevel());
                     ByteBufUtils.padBuffer(PADDING_IN_METER_BAND_DSCP_REMARK, outBuffer);
-                } else if (meterBand instanceof MeterBandExperimenter) {
-                    MeterBandExperimenter experimenterBand = (MeterBandExperimenter) meterBand;
+                } else if (meterBand instanceof MeterBandExperimenterCase) {
+                    MeterBandExperimenterCase experimenterBandCase = (MeterBandExperimenterCase) meterBand;
+                    MeterBandExperimenter experimenterBand = experimenterBandCase.getMeterBandExperimenter();
+                    writeBandCommonFields(experimenterBand, outBuffer);
                     outBuffer.writeInt(experimenterBand.getExperimenter().intValue());
                 }
             }

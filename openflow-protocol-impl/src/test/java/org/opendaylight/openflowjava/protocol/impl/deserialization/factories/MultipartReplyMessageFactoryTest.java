@@ -51,22 +51,38 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.InPort;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDrop;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDscpRemark;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenter;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyAggregate;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyDesc;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyExperimenter;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyFlow;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyGroup;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyGroupDesc;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeter;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeterConfig;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeterFeatures;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyPortDesc;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyPortStats;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyQueue;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyTable;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDropCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDscpRemarkCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.drop._case.MeterBandDrop;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.dscp.remark._case.MeterBandDscpRemark;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.experimenter._case.MeterBandExperimenter;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyAggregateCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyDescCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyExperimenterCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyFlowCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyGroupCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyGroupDescCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeterCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeterConfigCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeterFeaturesCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyPortDescCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyPortStatsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyQueueCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyTableCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.aggregate._case.MultipartReplyAggregate;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.desc._case.MultipartReplyDesc;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.experimenter._case.MultipartReplyExperimenter;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow._case.MultipartReplyFlow;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group._case.MultipartReplyGroup;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group.desc._case.MultipartReplyGroupDesc;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.meter._case.MultipartReplyMeter;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.meter.config._case.MultipartReplyMeterConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.meter.features._case.MultipartReplyMeterFeatures;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.port.desc._case.MultipartReplyPortDesc;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.port.stats._case.MultipartReplyPortStats;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.queue._case.MultipartReplyQueue;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.table._case.MultipartReplyTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,21 +94,6 @@ public class MultipartReplyMessageFactoryTest {
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(MultipartReplyMessageFactoryTest.class);
-    
-    /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
-     *//*
-    @Test
-    public void test(){
-        ByteBuf bb = BufferHelper.buildBuffer("00 07 00 01 00 00 00 00 01 02 03 04");
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
-        
-        BufferHelper.checkHeaderV13(builtByFactory);
-        
-        Assert.assertEquals("Wrong type", 0x07, builtByFactory.getType().getIntValue());
-        Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        //Assert.assertArrayEquals("Wrong body", new byte[]{0x01, 0x02, 0x03, 0x04}, builtByFactory.getBody());
-    }*/
     
     /**
      * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
@@ -138,7 +139,8 @@ public class MultipartReplyMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x00, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        MultipartReplyDesc message = (MultipartReplyDesc) builtByFactory.getMultipartReplyBody();
+        MultipartReplyDescCase messageCase = (MultipartReplyDescCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyDesc message = messageCase.getMultipartReplyDesc();
         Assert.assertEquals("Wrong mfrDesc", "Manufacturer description", message.getMfrDesc());
         Assert.assertEquals("Wrong hwDesc", "Hardware description", message.getHwDesc());
         Assert.assertEquals("Wrong swDesc", "Software description", message.getSwDesc());
@@ -172,7 +174,8 @@ public class MultipartReplyMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x01, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        MultipartReplyFlow message = (MultipartReplyFlow) builtByFactory.getMultipartReplyBody();
+        MultipartReplyFlowCase messageCase = (MultipartReplyFlowCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyFlow message = messageCase.getMultipartReplyFlow();
         Assert.assertEquals("Wrong tableId", 8, message.getFlowStats().get(0).getTableId().intValue());
         Assert.assertEquals("Wrong durationSec", 9, message.getFlowStats().get(0).getDurationSec().intValue());
         Assert.assertEquals("Wrong durationNsec", 7, message.getFlowStats().get(0).getDurationNsec().intValue());
@@ -209,7 +212,8 @@ public class MultipartReplyMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x02, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        MultipartReplyAggregate message = (MultipartReplyAggregate) builtByFactory.getMultipartReplyBody();
+        MultipartReplyAggregateCase messageCase = (MultipartReplyAggregateCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyAggregate message = messageCase.getMultipartReplyAggregate();
         Assert.assertEquals("Wrong packetCount", 
                 new BigInteger(new byte[]{0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
                 message.getPacketCount());
@@ -240,7 +244,8 @@ public class MultipartReplyMessageFactoryTest {
         Assert.assertEquals("Wrong type", 0x03, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         
-        MultipartReplyTable message = (MultipartReplyTable) builtByFactory.getMultipartReplyBody();
+        MultipartReplyTableCase messageCase = (MultipartReplyTableCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyTable message = messageCase.getMultipartReplyTable();
         Assert.assertEquals("Wrong tableId", 8, message.getTableStats().get(0).getTableId().intValue());
         Assert.assertEquals("Wrong activeCount", 16, message.getTableStats().get(0).getActiveCount().longValue());
         Assert.assertEquals("Wrong lookupCount", 
@@ -280,9 +285,8 @@ public class MultipartReplyMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x04, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        
-        MultipartReplyPortStats message = (MultipartReplyPortStats) builtByFactory.getMultipartReplyBody();
-        
+        MultipartReplyPortStatsCase messageCase = (MultipartReplyPortStatsCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyPortStats message = messageCase.getMultipartReplyPortStats();
         Assert.assertEquals("Wrong portNo", 255, message.getPortStats().get(0).getPortNo().intValue());
         Assert.assertEquals("Wrong rxPackets", 
                 new BigInteger(new byte[]{0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
@@ -344,9 +348,8 @@ public class MultipartReplyMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x05, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        
-        MultipartReplyQueue message = (MultipartReplyQueue) builtByFactory.getMultipartReplyBody();
-        
+        MultipartReplyQueueCase messageCase = (MultipartReplyQueueCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyQueue message = messageCase.getMultipartReplyQueue();
         Assert.assertEquals("Wrong portNo", 255, message.getQueueStats().get(0).getPortNo().intValue());
         Assert.assertEquals("Wrong queueId", 16, message.getQueueStats().get(0).getQueueId().intValue());
         Assert.assertEquals("Wrong txBytes", 
@@ -401,9 +404,8 @@ public class MultipartReplyMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x06, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        
-        MultipartReplyGroup message = (MultipartReplyGroup) builtByFactory.getMultipartReplyBody();
-        
+        MultipartReplyGroupCase messageCase = (MultipartReplyGroupCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyGroup message = messageCase.getMultipartReplyGroup();
         Assert.assertEquals("Wrong groupId", 16, message.getGroupStats().get(0).getGroupId().getValue().intValue());
         Assert.assertEquals("Wrong refCount", 18, message.getGroupStats().get(0).getRefCount().intValue());
         Assert.assertEquals("Wrong packetCount", 
@@ -470,9 +472,8 @@ public class MultipartReplyMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 11, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        
-        MultipartReplyMeterFeatures message = (MultipartReplyMeterFeatures) builtByFactory.getMultipartReplyBody();
-        
+        MultipartReplyMeterFeaturesCase messageCase = (MultipartReplyMeterFeaturesCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyMeterFeatures message = messageCase.getMultipartReplyMeterFeatures();        
         Assert.assertEquals("Wrong maxMeter", 9, message.getMaxMeter().intValue());
         Assert.assertEquals("Wrong bandTypes", new MeterBandTypeBitmap(true, false), message.getBandTypes());
         Assert.assertEquals("Wrong capabilities", new MeterFlags(false, true, true, false), 
@@ -508,9 +509,8 @@ public class MultipartReplyMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 9, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        
-        MultipartReplyMeter message = (MultipartReplyMeter) builtByFactory.getMultipartReplyBody();
-        
+        MultipartReplyMeterCase messageCase = (MultipartReplyMeterCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyMeter message = messageCase.getMultipartReplyMeter();
         Assert.assertEquals("Wrong meterId", 9, 
                              message.getMeterStats().get(0).getMeterId().getValue().intValue());
         Assert.assertEquals("Wrong flowCount", 7, 
@@ -586,9 +586,8 @@ public class MultipartReplyMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 9, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        
-        MultipartReplyMeter message = (MultipartReplyMeter) builtByFactory.getMultipartReplyBody();
-        
+        MultipartReplyMeterCase messageCase = (MultipartReplyMeterCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyMeter message = messageCase.getMultipartReplyMeter();        
         Assert.assertEquals("Wrong meterId", 9, 
                              message.getMeterStats().get(0).getMeterId().getValue().intValue());
         Assert.assertEquals("Wrong flowCount", 7, 
@@ -688,26 +687,28 @@ public class MultipartReplyMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 10, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        
-        MultipartReplyMeterConfig message = (MultipartReplyMeterConfig) builtByFactory.getMultipartReplyBody();
-        
+        MultipartReplyMeterConfigCase messageCase = (MultipartReplyMeterConfigCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyMeterConfig message = messageCase.getMultipartReplyMeterConfig();        
         Assert.assertEquals("Wrong flags", new MeterFlags(false, false, true, true),
                              message.getMeterConfig().get(0).getFlags());
         Assert.assertEquals("Wrong meterId", 9, 
                              message.getMeterConfig().get(0).getMeterId().getValue().intValue());
         
-        MeterBandDrop meterBandDrop = (MeterBandDrop) message.getMeterConfig().get(0).getBands().get(0).getMeterBand(); 
+        MeterBandDropCase dropCase = (MeterBandDropCase) message.getMeterConfig().get(0).getBands().get(0).getMeterBand(); 
+        MeterBandDrop meterBandDrop = dropCase.getMeterBandDrop();
         Assert.assertEquals("Wrong meterBandDrop.type", 1, meterBandDrop.getType().getIntValue()); 
         Assert.assertEquals("Wrong meterBandDrop.rate", 17, meterBandDrop.getRate().intValue());
         Assert.assertEquals("Wrong meterBandDrop.burstSize", 32, meterBandDrop.getBurstSize().intValue());
         
-        MeterBandDscpRemark meterBandDscp = (MeterBandDscpRemark) message.getMeterConfig().get(0).getBands().get(1).getMeterBand(); 
+        MeterBandDscpRemarkCase dscpCase = (MeterBandDscpRemarkCase) message.getMeterConfig().get(0).getBands().get(1).getMeterBand(); 
+        MeterBandDscpRemark meterBandDscp = dscpCase.getMeterBandDscpRemark();
         Assert.assertEquals("Wrong meterBandDscp.type", 2, meterBandDscp.getType().getIntValue()); 
         Assert.assertEquals("Wrong meterBandDscp.rate", 17, meterBandDscp.getRate().intValue());
         Assert.assertEquals("Wrong meterBandDscp.burstSize", 32, meterBandDscp.getBurstSize().intValue());
         Assert.assertEquals("Wrong meterBandDscp.precLevel", 4, meterBandDscp.getPrecLevel().intValue());
         
-        MeterBandExperimenter meterBandExperimenter = (MeterBandExperimenter) message.getMeterConfig().get(0).getBands().get(2).getMeterBand(); 
+        MeterBandExperimenterCase experimenterCase = (MeterBandExperimenterCase) message.getMeterConfig().get(0).getBands().get(2).getMeterBand(); 
+        MeterBandExperimenter meterBandExperimenter = experimenterCase.getMeterBandExperimenter();
         Assert.assertEquals("Wrong meterBandExperimenter.type", 0xFFFF, meterBandExperimenter.getType().getIntValue()); 
         Assert.assertEquals("Wrong meterBandExperimenter.rate", 17, meterBandExperimenter.getRate().intValue());
         Assert.assertEquals("Wrong meterBandExperimenter.burstSize", 32, meterBandExperimenter.getBurstSize().intValue());
@@ -756,26 +757,28 @@ public class MultipartReplyMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 10, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        
-        MultipartReplyMeterConfig message = (MultipartReplyMeterConfig) builtByFactory.getMultipartReplyBody();
-        
+        MultipartReplyMeterConfigCase messageCase = (MultipartReplyMeterConfigCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyMeterConfig message = messageCase.getMultipartReplyMeterConfig();        
         Assert.assertEquals("Wrong flags", new MeterFlags(true, false, true, false), 
                              message.getMeterConfig().get(0).getFlags());
         Assert.assertEquals("Wrong meterId", 9, 
                              message.getMeterConfig().get(0).getMeterId().getValue().intValue());
         
-        MeterBandDrop meterBandDrop = (MeterBandDrop) message.getMeterConfig().get(0).getBands().get(0).getMeterBand(); 
+        MeterBandDropCase dropCase = (MeterBandDropCase) message.getMeterConfig().get(0).getBands().get(0).getMeterBand(); 
+        MeterBandDrop meterBandDrop = dropCase.getMeterBandDrop(); 
         Assert.assertEquals("Wrong meterBandDrop.type", 1, meterBandDrop.getType().getIntValue()); 
         Assert.assertEquals("Wrong meterBandDrop.rate", 17, meterBandDrop.getRate().intValue());
         Assert.assertEquals("Wrong meterBandDrop.burstSize", 32, meterBandDrop.getBurstSize().intValue());
         
-        MeterBandDscpRemark meterBandDscp = (MeterBandDscpRemark) message.getMeterConfig().get(0).getBands().get(1).getMeterBand(); 
+        MeterBandDscpRemarkCase dscpCase = (MeterBandDscpRemarkCase) message.getMeterConfig().get(0).getBands().get(1).getMeterBand(); 
+        MeterBandDscpRemark meterBandDscp = dscpCase.getMeterBandDscpRemark();
         Assert.assertEquals("Wrong meterBandDscp.type", 2, meterBandDscp.getType().getIntValue()); 
         Assert.assertEquals("Wrong meterBandDscp.rate", 17, meterBandDscp.getRate().intValue());
         Assert.assertEquals("Wrong meterBandDscp.burstSize", 32, meterBandDscp.getBurstSize().intValue());
         Assert.assertEquals("Wrong meterBandDscp.precLevel", 4, meterBandDscp.getPrecLevel().intValue());
         
-        MeterBandExperimenter meterBandExperimenter = (MeterBandExperimenter) message.getMeterConfig().get(0).getBands().get(2).getMeterBand(); 
+        MeterBandExperimenterCase experimenterCase = (MeterBandExperimenterCase) message.getMeterConfig().get(0).getBands().get(2).getMeterBand(); 
+        MeterBandExperimenter meterBandExperimenter = experimenterCase.getMeterBandExperimenter();
         Assert.assertEquals("Wrong meterBandExperimenter.type", 0xFFFF, meterBandExperimenter.getType().getIntValue()); 
         Assert.assertEquals("Wrong meterBandExperimenter.rate", 17, meterBandExperimenter.getRate().intValue());
         Assert.assertEquals("Wrong meterBandExperimenter.burstSize", 32, meterBandExperimenter.getBurstSize().intValue());
@@ -787,7 +790,8 @@ public class MultipartReplyMessageFactoryTest {
         Assert.assertEquals("Wrong meterId01", 7, 
                              message.getMeterConfig().get(1).getMeterId().getValue().intValue());
         
-        MeterBandDscpRemark meterBandDscp01 = (MeterBandDscpRemark) message.getMeterConfig().get(1).getBands().get(0).getMeterBand(); 
+        MeterBandDscpRemarkCase dscpCase01 = (MeterBandDscpRemarkCase) message.getMeterConfig().get(1).getBands().get(0).getMeterBand(); 
+        MeterBandDscpRemark meterBandDscp01 = dscpCase01.getMeterBandDscpRemark();
         Assert.assertEquals("Wrong meterBandDscp01.type", 2, meterBandDscp01.getType().getIntValue()); 
         Assert.assertEquals("Wrong meterBandDscp01.rate", 17, meterBandDscp01.getRate().intValue());
         Assert.assertEquals("Wrong meterBandDscp01.burstSize", 32, meterBandDscp01.getBurstSize().intValue());
@@ -811,9 +815,8 @@ public class MultipartReplyMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0xFFFF, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        
-        MultipartReplyExperimenter message = (MultipartReplyExperimenter) builtByFactory.getMultipartReplyBody();
-        
+        MultipartReplyExperimenterCase messageCase = (MultipartReplyExperimenterCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyExperimenter message = messageCase.getMultipartReplyExperimenter();        
         Assert.assertEquals("Wrong experimenterId", 15, message.getExperimenter().intValue());
         Assert.assertEquals("Wrong expType", 255, message.getExpType().intValue());
         Assert.assertArrayEquals("Wrong data", new byte[]{0x00, 0x00, 0x01, 0x01, 0x00, 0x00, 0x01, 0x01}, 
@@ -854,9 +857,8 @@ public class MultipartReplyMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 13, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        
-        MultipartReplyPortDesc message = (MultipartReplyPortDesc) builtByFactory.getMultipartReplyBody();
-        
+        MultipartReplyPortDescCase messageCase = (MultipartReplyPortDescCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyPortDesc message = messageCase.getMultipartReplyPortDesc();
         Assert.assertEquals("Wrong portNo", 66051L, message.getPorts().get(0).getPortNo().longValue());
         Assert.assertEquals("Wrong macAddress", new MacAddress("08:00:27:00:B0:EB"), 
                                                 message.getPorts().get(0).getHwAddr());
@@ -926,9 +928,8 @@ public class MultipartReplyMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        
-        MultipartReplyGroupDesc message = (MultipartReplyGroupDesc) builtByFactory.getMultipartReplyBody();
-        
+        MultipartReplyGroupDescCase messageCase = (MultipartReplyGroupDescCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyGroupDesc message = messageCase.getMultipartReplyGroupDesc();
         Assert.assertEquals("Wrong type", 1, 
                              message.getGroupDesc().get(0).getType().getIntValue());
         Assert.assertEquals("Wrong groupId", 8, 
@@ -1006,9 +1007,8 @@ public class MultipartReplyMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        
-        MultipartReplyGroupDesc message = (MultipartReplyGroupDesc) builtByFactory.getMultipartReplyBody();
-        
+        MultipartReplyGroupDescCase messageCase = (MultipartReplyGroupDescCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyGroupDesc message = messageCase.getMultipartReplyGroupDesc();        
         Assert.assertEquals("Wrong type", 1, 
                              message.getGroupDesc().get(0).getType().getIntValue());
         Assert.assertEquals("Wrong groupId", 8, 
@@ -1016,52 +1016,40 @@ public class MultipartReplyMessageFactoryTest {
         Assert.assertEquals("Wrong bucketWeight", 6, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWeight().intValue());
         Assert.assertEquals("Wrong bucketWatchPort", 5, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getWatchPort().
-                                                                        getValue().intValue());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getWatchPort().getValue().intValue());
         Assert.assertEquals("Wrong bucketWatchGroup", 4, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWatchGroup().intValue());
-        
-        
         Assert.assertEquals("Wrong setMplsTtlType", SetMplsTtl.class, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
                 getAction().getType());
-        
         Assert.assertEquals("Wrong setMplsTtlMPLS_TTL", 9, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
                 getAction().getAugmentation(MplsTtlAction.class).
                 getMplsTtl().intValue());
-        
         Assert.assertEquals("Wrong decMplsTtlType", DecMplsTtl.class, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
                 getAction().getType());
-        
         Assert.assertEquals("Wrong pushVlanType", PushVlan.class, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
                 getAction().getType());
-        
         Assert.assertEquals("Wrong pushVlanEthertype", 32, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
                 getAction().getAugmentation(EthertypeAction.class).
                 getEthertype().getValue().intValue());
-        
         Assert.assertEquals("Wrong pushMplsType", PushMpls.class, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(3).
                 getAction().getType());
-        
         Assert.assertEquals("Wrong pushMplsEthertype", 255, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(3).
                 getAction().getAugmentation(EthertypeAction.class).
                 getEthertype().getValue().intValue());
-        
         Assert.assertEquals("Wrong pushPbbType", PushPbb.class, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(4).
                 getAction().getType());
-        
         Assert.assertEquals("Wrong pushPbbEthertype", 4095, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(4).
                 getAction().getAugmentation(EthertypeAction.class).
                 getEthertype().getValue().intValue());
-        
     }
     
     /**
@@ -1106,56 +1094,43 @@ public class MultipartReplyMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        
-        MultipartReplyGroupDesc message = (MultipartReplyGroupDesc) builtByFactory.getMultipartReplyBody();
-        
-        Assert.assertEquals("Wrong type", 1, 
-                             message.getGroupDesc().get(0).getType().getIntValue());
-        Assert.assertEquals("Wrong groupId", 8, 
-                             message.getGroupDesc().get(0).getGroupId().getValue().intValue());
+        MultipartReplyGroupDescCase messageCase = (MultipartReplyGroupDescCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyGroupDesc message = messageCase.getMultipartReplyGroupDesc();        
+        Assert.assertEquals("Wrong type", 1, message.getGroupDesc().get(0).getType().getIntValue());
+        Assert.assertEquals("Wrong groupId", 8, message.getGroupDesc().get(0).getGroupId().getValue().intValue());
         Assert.assertEquals("Wrong bucketWeight", 6, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWeight().intValue());
         Assert.assertEquals("Wrong bucketWatchPort", 5, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getWatchPort().
-                                                                        getValue().intValue());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getWatchPort().getValue().intValue());
         Assert.assertEquals("Wrong bucketWatchGroup", 4, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWatchGroup().intValue());
-        
         Assert.assertEquals("Wrong popVlanType", PopVlan.class, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
                 getAction().getType());
-        
         Assert.assertEquals("Wrong popPbbType", PopPbb.class, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
                 getAction().getType());
-        
         Assert.assertEquals("Wrong popMplsType", PopMpls.class, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
                 getAction().getType());
-        
         Assert.assertEquals("Wrong popMplsEthertype", 207, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
                 getAction().getAugmentation(EthertypeAction.class).
                 getEthertype().getValue().intValue());
-        
         Assert.assertEquals("Wrong setQueueType", SetQueue.class, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(3).
                 getAction().getType());
-        
         Assert.assertEquals("Wrong setQueueQueueId", 13565952, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(3).
                 getAction().getAugmentation(QueueIdAction.class).
                 getQueueId().intValue());
-        
         Assert.assertEquals("Wrong groupType", Group.class, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(4).
                 getAction().getType());
-        
         Assert.assertEquals("Wrong groupGroupId", 13565952, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(4).
                 getAction().getAugmentation(GroupIdAction.class).
                 getGroupId().intValue());
-        
         Assert.assertEquals("Wrong decNwTtlType", DecNwTtl.class, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(5).
                 getAction().getType());
@@ -1195,9 +1170,8 @@ public class MultipartReplyMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        
-        MultipartReplyGroupDesc message = (MultipartReplyGroupDesc) builtByFactory.getMultipartReplyBody();
-        
+        MultipartReplyGroupDescCase messageCase = (MultipartReplyGroupDescCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyGroupDesc message = messageCase.getMultipartReplyGroupDesc();
         Assert.assertEquals("Wrong type", 1, 
                              message.getGroupDesc().get(0).getType().getIntValue());
         Assert.assertEquals("Wrong groupId", 8, 

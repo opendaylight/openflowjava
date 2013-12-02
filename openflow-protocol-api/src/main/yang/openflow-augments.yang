@@ -295,6 +295,7 @@ module openflow-augments {
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          ext:augment-identifier "next-table-related-table-feature-property";
          list next-table-ids {
+             key "table-id";
              leaf table-id {
                  type uint8;
              }

@@ -46,43 +46,43 @@ module openflow-types {
         ////description "Features of ports available in datapath.";
         //reference "ofp_port_features";
         type bits {
-            bit 10mb_hd { 
+            bit _10mb_hd { 
                 position 0;
                 //description "10 Mb half-duplex rate support.";
             }
-            bit 10mb-fd { 
+            bit _10mb-fd { 
                 position 1;
                 //description "10 Mb full-duplex rate support.";
             }
-            bit 100mb-hd { 
+            bit _100mb-hd { 
                 position 2;
                 //description "100 Mb half-duplex rate support.";
             }
-            bit 100mb-fd { 
+            bit _100mb-fd { 
                 position 3;
                 //description "100 Mb full-duplex rate support.";
             }
-            bit 1gb-hd { 
+            bit _1gb-hd { 
                 position 4;
                 //description "1 Gb half-duplex rate support.";
             }
-            bit 1gb-fd { 
+            bit _1gb-fd { 
                 position 5;
                 //description "1 Gb full-duplex rate support.";
             }
-            bit 10gb-fd { 
+            bit _10gb-fd { 
                 position 6;
                 //description "10 Gb full-duplex rate support.";
             }
-            bit 40gb-fd { 
+            bit _40gb-fd { 
                 position 7;
                 //description "40 Gb full-duplex rate support.";
             }
-            bit 100gb-fd { 
+            bit _100gb-fd { 
                 position 8;
                 //description "100 Gb full-duplex rate support.";
             }
-            bit 1tb-fd { 
+            bit _1tb-fd { 
                 position 9;
                 //description "1 Tb full-duplex rate support.";
             }
@@ -167,14 +167,7 @@ module openflow-types {
     }
 
     identity standard-match-type {
-        deprecated true;
         base oft:match-type-base;
-    }
-
-    typedef oxm-match-type {
-        type identityref {
-            base oft:match-type-base;
-        }
     }
 
     identity instruction {
@@ -1540,7 +1533,7 @@ module openflow-types {
             enum LOCAL {
                 value 65534; // 0xfffe
             }
-            enum ANY {
+            enum NONE {
                 value 65535; // 0xffff
             }
         }
@@ -1601,24 +1594,19 @@ module openflow-types {
                 position 2;
             }
             bit stp_listen {
-                //description "Live for Fast Failover Group.";
-                position 8;
+                //description "Not learning or relaying frames.";
             }
             bit stp_learn {
-                //description "Live for Fast Failover Group.";
-                position 8;
+                //description "Learning but not relaying frames.";
             }
             bit stp_forward {
-                //description "Live for Fast Failover Group.";
-                position 8;
+                //description "Learning and relaying frames.";
             }
             bit stp_block {
-                //description "Live for Fast Failover Group.";
-                position 8;
+                //description "Not part of spanning tree.";
             }
             bit stp_mask {
-                //description "Live for Fast Failover Group.";
-                position 8;
+                //description "Bit mask for OFPPS_STP_* values.";
             }
         }
     }
@@ -1627,31 +1615,31 @@ module openflow-types {
         ////description "Features of ports available in datapath.";
         //reference "ofp_port_features";
         type bits {
-            bit 10mb-hd { 
+            bit _10mb-hd { 
                 position 0;
                 //description "10 Mb half-duplex rate support.";
             }
-            bit 10mb-fd { 
+            bit _10mb-fd { 
                 position 1;
                 //description "10 Mb full-duplex rate support.";
             }
-            bit 100mb-hd { 
+            bit _100mb-hd { 
                 position 2;
                 //description "100 Mb half-duplex rate support.";
             }
-            bit 100mb-fd { 
+            bit _100mb-fd { 
                 position 3;
                 //description "100 Mb full-duplex rate support.";
             }
-            bit 1gb-hd { 
+            bit _1gb-hd { 
                 position 4;
                 //description "1 Gb half-duplex rate support.";
             }
-            bit 1gb-fd { 
+            bit _1gb-fd { 
                 position 5;
                 //description "1 Gb full-duplex rate support.";
             }
-            bit 10gb-fd { 
+            bit _10gb-fd { 
                 position 6;
                 //description "10 Gb full-duplex rate support.";
             }
