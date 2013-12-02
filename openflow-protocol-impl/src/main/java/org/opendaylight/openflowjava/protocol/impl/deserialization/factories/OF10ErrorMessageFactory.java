@@ -20,7 +20,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class OF10ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
 
-    private static final String UNKNOWN_TYPE = "UNKNOWN_TYPE";
+    private static final byte CODE_LENGTH = 2;
+	private static final String UNKNOWN_TYPE = "UNKNOWN_TYPE";
     private static final String UNKNOWN_CODE = "UNKNOWN_CODE";
     private static final int NO_CORRECT_ENUM_FOUND_VALUE = -1;
     
@@ -53,79 +54,99 @@ public class OF10ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
         }
         return builder.build();
     }
-
-    private static void decodeCode(ByteBuf rawMessage, ErrorMessageBuilder builder,
-            ErrorTypeV10 type) {
-        switch (type) {
-        case HELLOFAILED:
-        {
-            HelloFailedCodeV10 code = HelloFailedCodeV10.forValue(rawMessage.readUnsignedShort());
-            if (code != null) {
-                builder.setCode(code.getIntValue());
-                builder.setCodeString(code.name());
-            }
-            break;
-        }
-        case BADREQUEST:
-        {
-            BadRequestCodeV10 code = BadRequestCodeV10.forValue(rawMessage.readUnsignedShort());
-            if (code != null) {
-                builder.setCode(code.getIntValue());
-                builder.setCodeString(code.name());
-            }
-            break;
-        }
-        case BADACTION:
-        {
-            BadActionCodeV10 code = BadActionCodeV10.forValue(rawMessage.readUnsignedShort());
-            if (code != null) {
-                builder.setCode(code.getIntValue());
-                builder.setCodeString(code.name());
-            }
-            break;
-        }
-        case FLOWMODFAILED:
-        {
-            FlowModFailedCodeV10 code = FlowModFailedCodeV10.forValue(rawMessage.readUnsignedShort());
-            if (code != null) {
-                builder.setCode(code.getIntValue());
-                builder.setCodeString(code.name());
-            }
-            break;
-        }
-        case PORTMODFAILED:
-        {
-            PortModFailedCodeV10 code = PortModFailedCodeV10.forValue(rawMessage.readUnsignedShort());
-            if (code != null) {
-                builder.setCode(code.getIntValue());
-                builder.setCodeString(code.name());
-            }
-            break;
-        }
-        case QUEUEOPFAILED:
-        {
-            QueueOpFailedCodeV10 code = QueueOpFailedCodeV10.forValue(rawMessage.readUnsignedShort());
-            if (code != null) {
-                builder.setCode(code.getIntValue());
-                builder.setCodeString(code.name());
-            }
-            break;
-        }
-        default:
-            builder.setCode(NO_CORRECT_ENUM_FOUND_VALUE);
-            builder.setCodeString(UNKNOWN_CODE);
-            break;
-        }
-    }
-
+    
     private static void decodeType(ErrorMessageBuilder builder, ErrorTypeV10 type) {
         if (type != null) {
-            builder.setType(NO_CORRECT_ENUM_FOUND_VALUE);
+            builder.setType(type.getIntValue());
             builder.setTypeString(type.name());
         } else {
             builder.setType(NO_CORRECT_ENUM_FOUND_VALUE);
             builder.setTypeString(UNKNOWN_TYPE);
         }
+    }
+
+    private static void decodeCode(ByteBuf rawMessage, ErrorMessageBuilder builder,
+            ErrorTypeV10 type) {
+    	if (type != null) {
+    		switch (type) {
+    		case HELLOFAILED:
+    		{
+    			HelloFailedCodeV10 code = HelloFailedCodeV10.forValue(rawMessage.readUnsignedShort());
+    			if (code != null) {
+    				setCode(builder, code.getIntValue(), code.name());
+    			} else {
+    				setUnknownCode(builder);
+    			}
+    			break;
+    		}
+    		case BADREQUEST:
+    		{
+    			BadRequestCodeV10 code = BadRequestCodeV10.forValue(rawMessage.readUnsignedShort());
+    			if (code != null) {
+    				setCode(builder, code.getIntValue(), code.name());
+    			} else {
+    				setUnknownCode(builder);
+    			}
+    			break;
+    		}
+    		case BADACTION:
+    		{
+    			BadActionCodeV10 code = BadActionCodeV10.forValue(rawMessage.readUnsignedShort());
+    			if (code != null) {
+    				setCode(builder, code.getIntValue(), code.name());
+    			} else {
+    				setUnknownCode(builder);
+    			}
+    			break;
+    		}
+    		case FLOWMODFAILED:
+    		{
+    			FlowModFailedCodeV10 code = FlowModFailedCodeV10.forValue(rawMessage.readUnsignedShort());
+    			if (code != null) {
+    				setCode(builder, code.getIntValue(), code.name());
+    			} else {
+    				setUnknownCode(builder);
+    			}
+    			break;
+    		}
+    		case PORTMODFAILED:
+    		{
+    			PortModFailedCodeV10 code = PortModFailedCodeV10.forValue(rawMessage.readUnsignedShort());
+    			if (code != null) {
+    				setCode(builder, code.getIntValue(), code.name());
+    			} else {
+    				setUnknownCode(builder);
+    			}
+    			break;
+    		}
+    		case QUEUEOPFAILED:
+    		{
+    			QueueOpFailedCodeV10 code = QueueOpFailedCodeV10.forValue(rawMessage.readUnsignedShort());
+    			if (code != null) {
+    				setCode(builder, code.getIntValue(), code.name());
+    			} else {
+    				setUnknownCode(builder);
+    			}
+    			break;
+    		}
+    		default:
+    			setUnknownCode(builder);
+    			break;
+    		}
+    	} else {
+    		rawMessage.skipBytes(CODE_LENGTH);
+    		setUnknownCode(builder);
+    	}
+    }
+    
+    private static void setUnknownCode(ErrorMessageBuilder builder) {
+    	builder.setCode(NO_CORRECT_ENUM_FOUND_VALUE);
+		builder.setCodeString(UNKNOWN_CODE);
+    }
+    
+    private static void setCode(ErrorMessageBuilder builder, int code, String codeString) {
+    	builder.setCode(code);
+		builder.setCodeString(codeString);
     }
 
 }

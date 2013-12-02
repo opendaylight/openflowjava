@@ -20,27 +20,38 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.MultipartRequestBody;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestAggregate;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestAggregateBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestDescBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenter;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenterBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestFlow;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestFlowBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestGroup;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestGroupBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestMeter;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestMeterBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestMeterConfig;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestMeterConfigBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestPortStats;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestPortStatsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestQueue;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestQueueBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestTableFeatures;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestTableFeaturesBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.table.features.TableFeatures;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.table.features.TableFeaturesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestAggregateCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestAggregateCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestDescCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenterCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenterCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestFlowCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestFlowCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestGroupCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestGroupCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestMeterCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestMeterCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestMeterConfigCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestMeterConfigCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestPortStatsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestPortStatsCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestQueueCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestQueueCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestTableFeaturesCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestTableFeaturesCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.aggregate._case.MultipartRequestAggregateBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.desc._case.MultipartRequestDescBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.experimenter._case.MultipartRequestExperimenterBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.flow._case.MultipartRequestFlowBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.group._case.MultipartRequestGroupBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.meter._case.MultipartRequestMeterBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.meter.config._case.MultipartRequestMeterConfigBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.port.stats._case.MultipartRequestPortStatsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.queue._case.MultipartRequestQueueBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.table.features._case.MultipartRequestTableFeatures;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.table.features._case.MultipartRequestTableFeaturesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.table.features._case.multipart.request.table.features.TableFeatures;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.table.features._case.multipart.request.table.features.TableFeaturesBuilder;
 
 /**
  * @author timotej.kubas
@@ -73,7 +84,8 @@ public class MultipartRequestInputFactoryTest {
         Assert.assertEquals("Wrong flow", message.getMultipartRequestBody(), decodeRequestFlow(out));
     }
 
-    private static MultipartRequestFlow createRequestFlow() {
+    private static MultipartRequestFlowCase createRequestFlow() {
+        MultipartRequestFlowCaseBuilder caseBuilder = new MultipartRequestFlowCaseBuilder();
         MultipartRequestFlowBuilder builder = new MultipartRequestFlowBuilder();
         builder.setTableId((short) 8);
         builder.setOutPort(85L);
@@ -82,14 +94,15 @@ public class MultipartRequestInputFactoryTest {
         builder.setCookie(new BigInteger(cookie));
         byte[] cookieMask = new byte[]{0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01};
         builder.setCookieMask(new BigInteger(cookieMask));
-        MultipartRequestFlow flow = builder.build();
+        caseBuilder.setMultipartRequestFlow(builder.build());
         //TODO match field
-        return flow;
+        return caseBuilder.build();
     }
 
-    private static MultipartRequestFlow decodeRequestFlow(ByteBuf output) {
+    private static MultipartRequestFlowCase decodeRequestFlow(ByteBuf output) {
         final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_01 = 3;
         final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_02 = 4;
+        MultipartRequestFlowCaseBuilder caseBuilder = new MultipartRequestFlowCaseBuilder();
         MultipartRequestFlowBuilder builder = new MultipartRequestFlowBuilder();
         builder.setTableId(output.readUnsignedByte());
         output.skipBytes(PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_01);
@@ -102,8 +115,8 @@ public class MultipartRequestInputFactoryTest {
         byte[] cookieMask = new byte[Long.SIZE/Byte.SIZE];
         output.readBytes(cookieMask);
         builder.setCookieMask(new BigInteger(cookieMask));
-        MultipartRequestFlow flow = builder.build();
-        return flow;
+        caseBuilder.setMultipartRequestFlow(builder.build());
+        return caseBuilder.build();
     }
 
     /**
@@ -136,7 +149,8 @@ public class MultipartRequestInputFactoryTest {
     }
 
 
-    private static MultipartRequestAggregate createRequestAggregate() {
+    private static MultipartRequestAggregateCase createRequestAggregate() {
+        MultipartRequestAggregateCaseBuilder caseBuilder = new MultipartRequestAggregateCaseBuilder();
         MultipartRequestAggregateBuilder builder = new MultipartRequestAggregateBuilder();
         builder.setTableId((short) 8);
         builder.setOutPort(85L);
@@ -145,14 +159,15 @@ public class MultipartRequestInputFactoryTest {
         builder.setCookie(new BigInteger(cookie));
         byte[] cookieMask = new byte[]{0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01};
         builder.setCookieMask(new BigInteger(cookieMask));
-        MultipartRequestAggregate aggregate = builder.build();
+        caseBuilder.setMultipartRequestAggregate(builder.build());
       //TODO match field
-        return aggregate;
+        return caseBuilder.build();
     }
 
-    private static MultipartRequestAggregate decodeRequestAggregate(ByteBuf output) {
+    private static MultipartRequestAggregateCase decodeRequestAggregate(ByteBuf output) {
         final byte PADDING_IN_MULTIPART_REQUEST_AGGREGATE_BODY_01 = 3;
         final byte PADDING_IN_MULTIPART_REQUEST_AGGREGATE_BODY_02 = 4;
+        MultipartRequestAggregateCaseBuilder caseBuilder = new MultipartRequestAggregateCaseBuilder();
         MultipartRequestAggregateBuilder builder = new MultipartRequestAggregateBuilder();
         builder.setTableId(output.readUnsignedByte());
         output.skipBytes(PADDING_IN_MULTIPART_REQUEST_AGGREGATE_BODY_01);
@@ -165,8 +180,8 @@ public class MultipartRequestInputFactoryTest {
         byte[] cookieMask = new byte[Long.SIZE/Byte.SIZE];
         output.readBytes(cookieMask);
         builder.setCookieMask(new BigInteger(cookieMask));
-        MultipartRequestAggregate flow = builder.build();
-        return flow;
+        caseBuilder.setMultipartRequestAggregate(builder.build());
+        return caseBuilder.build();
     }
 
     /**
@@ -216,20 +231,22 @@ public class MultipartRequestInputFactoryTest {
         Assert.assertEquals("Wrong portStatsBody", message.getMultipartRequestBody(), decodeRequestPortStats(out));
     }
 
-    private static MultipartRequestPortStats createRequestPortStats() {
+    private static MultipartRequestPortStatsCase createRequestPortStats() {
+        MultipartRequestPortStatsCaseBuilder caseBuilder = new MultipartRequestPortStatsCaseBuilder();
         MultipartRequestPortStatsBuilder builder = new MultipartRequestPortStatsBuilder();
         builder.setPortNo(2251L);
-        MultipartRequestPortStats portStats = builder.build();
-        return portStats;
+        caseBuilder.setMultipartRequestPortStats(builder.build());
+        return caseBuilder.build();
     }
 
-    private static MultipartRequestPortStats decodeRequestPortStats(ByteBuf output) {
+    private static MultipartRequestPortStatsCase decodeRequestPortStats(ByteBuf output) {
         final byte PADDING_IN_MULTIPART_REQUEST_PORTSTATS_BODY = 4;
+        MultipartRequestPortStatsCaseBuilder caseBuilder = new MultipartRequestPortStatsCaseBuilder();
         MultipartRequestPortStatsBuilder builder = new MultipartRequestPortStatsBuilder();
         builder.setPortNo(output.readUnsignedInt());
         output.skipBytes(PADDING_IN_MULTIPART_REQUEST_PORTSTATS_BODY);
-        MultipartRequestPortStats portRequest = builder.build();
-        return portRequest;
+        caseBuilder.setMultipartRequestPortStats(builder.build());
+        return caseBuilder.build();
     }
 
     /**
@@ -256,20 +273,22 @@ public class MultipartRequestInputFactoryTest {
         Assert.assertEquals("Wrong queueBody", message.getMultipartRequestBody(), decodeRequestQueue(out));
     }
 
-    private static MultipartRequestQueue createRequestQueue() {
+    private static MultipartRequestQueueCase createRequestQueue() {
+        MultipartRequestQueueCaseBuilder caseBuilder = new MultipartRequestQueueCaseBuilder();
         MultipartRequestQueueBuilder builder = new MultipartRequestQueueBuilder();
         builder.setPortNo(2256L);
         builder.setQueueId(2211L);
-        MultipartRequestQueue queue = builder.build();
-        return queue;
+        caseBuilder.setMultipartRequestQueue(builder.build());
+        return caseBuilder.build();
     }
 
-    private static MultipartRequestQueue decodeRequestQueue(ByteBuf output) {
+    private static MultipartRequestQueueCase decodeRequestQueue(ByteBuf output) {
+        MultipartRequestQueueCaseBuilder caseBuilder = new MultipartRequestQueueCaseBuilder();
         MultipartRequestQueueBuilder builder = new MultipartRequestQueueBuilder();
         builder.setPortNo(output.readUnsignedInt());
         builder.setQueueId(output.readUnsignedInt());
-        MultipartRequestQueue queue = builder.build();
-        return queue;
+        caseBuilder.setMultipartRequestQueue(builder.build());
+        return caseBuilder.build();
     }
 
     /**
@@ -296,20 +315,22 @@ public class MultipartRequestInputFactoryTest {
         Assert.assertEquals("Wrong groupBody", message.getMultipartRequestBody(), decodeRequestGroup(out));
     }
 
-    private static MultipartRequestGroup createRequestGroup() {
+    private static MultipartRequestGroupCase createRequestGroup() {
+        MultipartRequestGroupCaseBuilder caseBuilder = new MultipartRequestGroupCaseBuilder();
         MultipartRequestGroupBuilder builder = new MultipartRequestGroupBuilder();
         builder.setGroupId(2258L);
-        MultipartRequestGroup group = builder.build();
-        return group;
+        caseBuilder.setMultipartRequestGroup(builder.build());
+        return caseBuilder.build();
     }
 
-    private static MultipartRequestGroup decodeRequestGroup(ByteBuf output) {
+    private static MultipartRequestGroupCase decodeRequestGroup(ByteBuf output) {
         final byte PADDING_IN_MULTIPART_REQUEST_GROUP_BODY = 4;
+        MultipartRequestGroupCaseBuilder caseBuilder = new MultipartRequestGroupCaseBuilder();
         MultipartRequestGroupBuilder builder = new MultipartRequestGroupBuilder();
         builder.setGroupId(output.readUnsignedInt());
         output.skipBytes(PADDING_IN_MULTIPART_REQUEST_GROUP_BODY);
-        MultipartRequestGroup group = builder.build();
-        return group;
+        caseBuilder.setMultipartRequestGroup(builder.build());
+        return caseBuilder.build();
     }
 
     /**
@@ -336,20 +357,22 @@ public class MultipartRequestInputFactoryTest {
         Assert.assertEquals("Wrong meterBody", message.getMultipartRequestBody(), decodeRequestMeter(out));
     }
 
-    private static MultipartRequestMeter createRequestMeter() {
+    private static MultipartRequestMeterCase createRequestMeter() {
+        MultipartRequestMeterCaseBuilder caseBuilder = new MultipartRequestMeterCaseBuilder();
         MultipartRequestMeterBuilder builder = new MultipartRequestMeterBuilder();
         builder.setMeterId(1121L);
-        MultipartRequestMeter meter = builder.build();
-        return meter;
+        caseBuilder.setMultipartRequestMeter(builder.build());
+        return caseBuilder.build();
     }
 
-    private static MultipartRequestMeter decodeRequestMeter(ByteBuf output) {
+    private static MultipartRequestMeterCase decodeRequestMeter(ByteBuf output) {
         final byte PADDING_IN_MULTIPART_REQUEST_METER_BODY = 4;
+        MultipartRequestMeterCaseBuilder caseBuilder = new MultipartRequestMeterCaseBuilder();
         MultipartRequestMeterBuilder builder = new MultipartRequestMeterBuilder();
         builder.setMeterId(output.readUnsignedInt());
         output.skipBytes(PADDING_IN_MULTIPART_REQUEST_METER_BODY);
-        MultipartRequestMeter meter = builder.build();
-        return meter;
+        caseBuilder.setMultipartRequestMeter(builder.build());
+        return caseBuilder.build();
     }
 
     /**
@@ -376,20 +399,22 @@ public class MultipartRequestInputFactoryTest {
         Assert.assertEquals("Wrong meterConfigBody", message.getMultipartRequestBody(), decodeRequestMeterConfig(out));
     }
 
-    private static MultipartRequestMeterConfig createRequestMeterConfig() {
+    private static MultipartRequestMeterConfigCase createRequestMeterConfig() {
+        MultipartRequestMeterConfigCaseBuilder caseBuilder = new MultipartRequestMeterConfigCaseBuilder();
         MultipartRequestMeterConfigBuilder builder = new MultipartRequestMeterConfigBuilder();
         builder.setMeterId(1133L);
-        MultipartRequestMeterConfig meterConfig = builder.build();
-        return meterConfig;
+        caseBuilder.setMultipartRequestMeterConfig(builder.build());
+        return caseBuilder.build();
     }
 
-    private static MultipartRequestMeterConfig decodeRequestMeterConfig(ByteBuf output) {
+    private static MultipartRequestMeterConfigCase decodeRequestMeterConfig(ByteBuf output) {
         final byte PADDING_IN_MULTIPART_REQUEST_METER_CONFIG_BODY = 4;
+        MultipartRequestMeterConfigCaseBuilder caseBuilder = new MultipartRequestMeterConfigCaseBuilder();
         MultipartRequestMeterConfigBuilder builder = new MultipartRequestMeterConfigBuilder();
         builder.setMeterId(output.readUnsignedInt());
         output.skipBytes(PADDING_IN_MULTIPART_REQUEST_METER_CONFIG_BODY);
-        MultipartRequestMeterConfig meterConfig = builder.build();
-        return meterConfig;
+        caseBuilder.setMultipartRequestMeterConfig(builder.build());
+        return caseBuilder.build();
     }
 
     /**
@@ -416,20 +441,22 @@ public class MultipartRequestInputFactoryTest {
         Assert.assertEquals("Wrong experimenterBody", message.getMultipartRequestBody(), decodeRequestExperimenter(out));
     }
 
-    private static MultipartRequestExperimenter createRequestExperimenter() {
+    private static MultipartRequestExperimenterCase createRequestExperimenter() {
+        MultipartRequestExperimenterCaseBuilder caseBuilder = new MultipartRequestExperimenterCaseBuilder();
         MultipartRequestExperimenterBuilder builder = new MultipartRequestExperimenterBuilder();
         builder.setExperimenter(1133L);
         builder.setExpType(1135L);
-        MultipartRequestExperimenter experimenter = builder.build();
-        return experimenter;
+        caseBuilder.setMultipartRequestExperimenter(builder.build());
+        return caseBuilder.build();
     }
 
-    private static MultipartRequestExperimenter decodeRequestExperimenter(ByteBuf output) {
+    private static MultipartRequestExperimenterCase decodeRequestExperimenter(ByteBuf output) {
+        MultipartRequestExperimenterCaseBuilder caseBuilder = new MultipartRequestExperimenterCaseBuilder();
         MultipartRequestExperimenterBuilder builder = new MultipartRequestExperimenterBuilder();
         builder.setExperimenter(output.readUnsignedInt());
         builder.setExpType(output.readUnsignedInt());
-        MultipartRequestExperimenter experimenter = builder.build();
-        return experimenter;
+        caseBuilder.setMultipartRequestExperimenter(builder.build());
+        return caseBuilder.build();
     }
 
     /**
@@ -455,8 +482,10 @@ public class MultipartRequestInputFactoryTest {
     }
 
     private static MultipartRequestBody createRequestDesc() {
+        MultipartRequestDescCaseBuilder caseBuilder = new MultipartRequestDescCaseBuilder();
         MultipartRequestDescBuilder builder = new MultipartRequestDescBuilder();
-        return builder.build();
+        caseBuilder.setMultipartRequestDesc(builder.build());
+        return caseBuilder.build();
     }
 
     /**
@@ -480,12 +509,14 @@ public class MultipartRequestInputFactoryTest {
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
-
-        MultipartRequestTableFeatures messageTableFeatures = (MultipartRequestTableFeatures) message.getMultipartRequestBody();
-        Assert.assertEquals("Wrong tableFeaturesBody", messageTableFeatures.getTableFeatures(), decodeRequestTableFeatures(out).getTableFeatures());
+        MultipartRequestTableFeaturesCase messageTableFeaturesCase = (MultipartRequestTableFeaturesCase) message.getMultipartRequestBody();
+        MultipartRequestTableFeatures messageTableFeatures = messageTableFeaturesCase.getMultipartRequestTableFeatures();
+        Assert.assertEquals("Wrong tableFeaturesBody", messageTableFeatures.getTableFeatures(), decodeRequestTableFeatures(out).
+                getMultipartRequestTableFeatures().getTableFeatures());
     }
 
-    private static MultipartRequestTableFeatures createRequestTableFeatures() {
+    private static MultipartRequestTableFeaturesCase createRequestTableFeatures() {
+        MultipartRequestTableFeaturesCaseBuilder caseBuilder = new MultipartRequestTableFeaturesCaseBuilder();
         MultipartRequestTableFeaturesBuilder builder = new MultipartRequestTableFeaturesBuilder();
         List<TableFeatures> tableFeaturesList = new ArrayList<>();
         TableFeaturesBuilder tableFeaturesBuilder = new TableFeaturesBuilder();
@@ -498,13 +529,14 @@ public class MultipartRequestInputFactoryTest {
         TableFeatures tableFeature = tableFeaturesBuilder.build();
         tableFeaturesList.add(tableFeature);
         builder.setTableFeatures(tableFeaturesList);
-        MultipartRequestTableFeatures tableFeaturesRequest = builder.build();
-        return tableFeaturesRequest;
+        caseBuilder.setMultipartRequestTableFeatures(builder.build());
+        return caseBuilder.build();
     }
 
-    private static MultipartRequestTableFeatures decodeRequestTableFeatures(ByteBuf output) {
+    private static MultipartRequestTableFeaturesCase decodeRequestTableFeatures(ByteBuf output) {
         final byte PADDING_IN_MULTIPART_REQUEST_TABLE_FEATURES_BODY = 5;
         final byte OFP_MAX_TABLE_NAME_LEN = 32;
+        MultipartRequestTableFeaturesCaseBuilder caseBuilder = new MultipartRequestTableFeaturesCaseBuilder();
         MultipartRequestTableFeaturesBuilder builder = new MultipartRequestTableFeaturesBuilder();
         List<TableFeatures> tableFeaturesList = new ArrayList<>();
         TableFeaturesBuilder tableFeaturesBuilder = new TableFeaturesBuilder();
@@ -525,8 +557,8 @@ public class MultipartRequestInputFactoryTest {
         TableFeatures tableFeature = tableFeaturesBuilder.build();
         tableFeaturesList.add(tableFeature);
         builder.setTableFeatures(tableFeaturesList);
-        MultipartRequestTableFeatures tableFeaturesRequest = builder.build();
-        return tableFeaturesRequest;
+        caseBuilder.setMultipartRequestTableFeatures(builder.build());
+        return caseBuilder.build();
     }
 
     private static TableConfig decodeTableConfig(int input) {
