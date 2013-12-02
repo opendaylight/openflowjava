@@ -49,8 +49,13 @@ public class FlowModInputMessageFactory implements OFSerializer<FlowModInput> {
         out.writeShort(message.getHardTimeout().intValue());
         out.writeShort(message.getPriority());
         out.writeInt(message.getBufferId().intValue());
-        out.writeInt(message.getOutPort().getValue().intValue());
-        out.writeInt(message.getOutGroup().intValue());
+        if (message.getOutPort() != null) {
+            out.writeInt(message.getOutPort().getValue().intValue());
+        }
+        
+        if (message.getOutGroup() != null) {
+            out.writeInt(message.getOutGroup().intValue());
+        }
         out.writeShort(createFlowModFlagsBitmask(message.getFlags()));
         ByteBufUtils.padBuffer(PADDING_IN_FLOW_MOD_MESSAGE, out);
         MatchSerializer.encodeMatch(message.getMatch(), out);
