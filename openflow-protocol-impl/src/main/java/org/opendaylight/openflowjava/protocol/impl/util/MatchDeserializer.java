@@ -204,6 +204,7 @@ public abstract class MatchDeserializer {
 
             int fieldAndMask = in.readUnsignedByte();
             boolean hasMask = (fieldAndMask & 1) != 0;
+            matchEntriesBuilder.setHasMask(hasMask);
             int matchField =  fieldAndMask >> 1;
             int matchEntryLength = in.readUnsignedByte();
             currLength += SIZE_OF_SHORT_IN_BYTES + (2 * SIZE_OF_BYTE_IN_BYTES) + matchEntryLength;
