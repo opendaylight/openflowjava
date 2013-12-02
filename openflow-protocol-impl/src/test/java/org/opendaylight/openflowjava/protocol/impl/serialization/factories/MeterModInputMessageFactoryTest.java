@@ -19,9 +19,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterModCommand;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterModInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDropBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDscpRemarkBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDropCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDscpRemarkCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.drop._case.MeterBandDropBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.dscp.remark._case.MeterBandDscpRemarkBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.experimenter._case.MeterBandExperimenterBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.mod.Bands;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.mod.BandsBuilder;
 
@@ -67,36 +70,45 @@ public class MeterModInputMessageFactoryTest {
     private static List<Bands> createBandsList(){
         List<Bands> bandsList = new ArrayList<>();
         BandsBuilder bandsBuilder = new BandsBuilder();
+        MeterBandDropCaseBuilder dropCaseBuilder = new MeterBandDropCaseBuilder();
         MeterBandDropBuilder dropBand = new MeterBandDropBuilder();
         dropBand.setType(MeterBandType.OFPMBTDROP);
         dropBand.setRate(1L);
         dropBand.setBurstSize(2L);
-        bandsList.add(bandsBuilder.setMeterBand(dropBand.build()).build());
+        dropCaseBuilder.setMeterBandDrop(dropBand.build());
+        bandsList.add(bandsBuilder.setMeterBand(dropCaseBuilder.build()).build());
+        MeterBandDscpRemarkCaseBuilder dscpCaseBuilder = new MeterBandDscpRemarkCaseBuilder();
         MeterBandDscpRemarkBuilder dscpRemarkBand = new MeterBandDscpRemarkBuilder();
         dscpRemarkBand.setType(MeterBandType.OFPMBTDSCPREMARK);
         dscpRemarkBand.setRate(1L);
         dscpRemarkBand.setBurstSize(2L);
         dscpRemarkBand.setPrecLevel((short) 3);
-        bandsList.add(bandsBuilder.setMeterBand(dscpRemarkBand.build()).build());
+        dscpCaseBuilder.setMeterBandDscpRemark(dscpRemarkBand.build());
+        bandsList.add(bandsBuilder.setMeterBand(dscpCaseBuilder.build()).build());
+        MeterBandExperimenterCaseBuilder expCaseBuilder = new MeterBandExperimenterCaseBuilder();
         MeterBandExperimenterBuilder experimenterBand = new MeterBandExperimenterBuilder();
         experimenterBand.setType(MeterBandType.OFPMBTEXPERIMENTER);
         experimenterBand.setRate(1L);
         experimenterBand.setBurstSize(2L);
         experimenterBand.setExperimenter(4L);
-        bandsList.add(bandsBuilder.setMeterBand(experimenterBand.build()).build());
+        expCaseBuilder.setMeterBandExperimenter(experimenterBand.build());
+        bandsList.add(bandsBuilder.setMeterBand(expCaseBuilder.build()).build());
         return bandsList;
     }
     
     private static List<Bands> decodeBandsList(ByteBuf input){
         List<Bands> bandsList = new ArrayList<>();
         BandsBuilder bandsBuilder = new BandsBuilder();
+        MeterBandDropCaseBuilder dropCaseBuilder = new MeterBandDropCaseBuilder();
         MeterBandDropBuilder dropBand = new MeterBandDropBuilder();
         dropBand.setType(MeterBandType.forValue(input.readUnsignedShort()));
         input.skipBytes(Short.SIZE/Byte.SIZE);
         dropBand.setRate(input.readUnsignedInt());
         dropBand.setBurstSize(input.readUnsignedInt());
         input.skipBytes(4);
-        bandsList.add(bandsBuilder.setMeterBand(dropBand.build()).build());
+        dropCaseBuilder.setMeterBandDrop(dropBand.build());
+        bandsList.add(bandsBuilder.setMeterBand(dropCaseBuilder.build()).build());
+        MeterBandDscpRemarkCaseBuilder dscpCaseBuilder = new MeterBandDscpRemarkCaseBuilder();
         MeterBandDscpRemarkBuilder dscpRemarkBand = new MeterBandDscpRemarkBuilder();
         dscpRemarkBand.setType(MeterBandType.forValue(input.readUnsignedShort()));
         input.skipBytes(Short.SIZE/Byte.SIZE);
@@ -104,14 +116,17 @@ public class MeterModInputMessageFactoryTest {
         dscpRemarkBand.setBurstSize(input.readUnsignedInt());
         dscpRemarkBand.setPrecLevel(input.readUnsignedByte());
         input.skipBytes(3);
-        bandsList.add(bandsBuilder.setMeterBand(dscpRemarkBand.build()).build());
+        dscpCaseBuilder.setMeterBandDscpRemark(dscpRemarkBand.build());
+        bandsList.add(bandsBuilder.setMeterBand(dscpCaseBuilder.build()).build());
+        MeterBandExperimenterCaseBuilder expCaseBuilder = new MeterBandExperimenterCaseBuilder();
         MeterBandExperimenterBuilder experimenterBand = new MeterBandExperimenterBuilder();
         experimenterBand.setType(MeterBandType.forValue(input.readUnsignedShort()));
         input.skipBytes(Short.SIZE/Byte.SIZE);
         experimenterBand.setRate(input.readUnsignedInt());
         experimenterBand.setBurstSize(input.readUnsignedInt());
         experimenterBand.setExperimenter(input.readUnsignedInt());
-        bandsList.add(bandsBuilder.setMeterBand(experimenterBand.build()).build());
+        expCaseBuilder.setMeterBandExperimenter(experimenterBand.build());
+        bandsList.add(bandsBuilder.setMeterBand(expCaseBuilder.build()).build());
         return bandsList;
     }
     

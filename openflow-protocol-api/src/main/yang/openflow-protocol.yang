@@ -543,138 +543,168 @@ module openflow-protocol {
                     type oft:multipart-request-flags;
                 }      
                 choice multipart-request-body {
-                    case multipart-request-desc {
-                        leaf empty {
-                            type empty;
+                    case multipart-request-desc-case {
+                        container multipart-request-desc {
+                            leaf empty {
+                                type empty;
+                            }
                         }
                     }
-                    case multipart-request-flow {
-                        leaf table-id {
-                            type uint8;
-                        }
-                        leaf out-port {
-                            type uint32;
-                        }
-                        leaf out-group {
-                            type uint32;
-                        }
-                        leaf cookie {
-                            type uint64;
-                        }
-                        leaf cookie-mask {
-                            type uint64;
-                        }
-                        uses match-grouping;
-                        
-                        // OF1.0 structures
-                        uses oxm:match-v10-grouping;
-                    }
-                    case multipart-request-aggregate {
-                        leaf table-id {
-                            type uint8;
-                        }
-                        leaf out-port {
-                            type uint32;
-                        }
-                        leaf out-group {
-                            type uint32;
-                        }
-                        leaf cookie {
-                            type uint64;
-                        }
-                        leaf cookie-mask {
-                            type uint64;
-                        }
-                        uses match-grouping;
-                        
-                        // OF1.0 structures
-                        uses oxm:match-v10-grouping;
-                    }
-                    case multipart-request-table {
-                        leaf empty {
-                            type empty;
-                        }
-                    }
-                    case multipart-request-port-stats {
-                        leaf port-no {
-                            type uint32;
-                        }
-                    }
-                    case multipart-request-queue {
-                        leaf port-no {
-                            type uint32;
-                        }
-                        leaf queue-id {
-                            type uint32;
-                        }
-                    }
-                    case multipart-request-group {
-                        leaf group-id {
-                            type uint32;
-                        }
-                    }
-                    case multipart-request-group-desc {
-                        leaf empty {
-                            type empty;
-                        }
-                    }
-                    case multipart-request-group-features {
-                        leaf empty {
-                            type empty;
-                        }
-                    }
-                    case multipart-request-meter {
-                        leaf meter-id {
-                            type uint32;
-                        }
-                    }
-                    case multipart-request-meter-config {
-                        leaf meter-id {
-                            type uint32;
-                        }
-                    }
-                    case multipart-request-meter-features {
-                        leaf empty {
-                            type empty;
-                        }
-                    }
-                    case multipart-request-table-features {
-                        list table-features {
+                    case multipart-request-flow-case {
+                        container multipart-request-flow {
                             leaf table-id {
                                 type uint8;
                             }
-                            leaf name {
-                                type string;
-                            }
-                            leaf metadata-match {
-                                type uint64;
-                            }
-                            leaf metadata-write {
-                                type uint64;
-                            }
-                            leaf config {
-                                type oft:table-config;
-                            }
-                            leaf max-entries {
+                            leaf out-port {
                                 type uint32;
                             }
-                            uses table-features-properties;
+                            leaf out-group {
+                                type uint32;
+                            }
+                            leaf cookie {
+                                type uint64;
+                            }
+                            leaf cookie-mask {
+                                type uint64;
+                            }
+                            uses match-grouping;
+                            
+                            // OF1.0 structures
+                            uses oxm:match-v10-grouping;
                         }
                     }
-                    case multipart-request-port-desc {
-                        leaf empty {
-                            type empty;
+                    case multipart-request-aggregate-case {
+                        container multipart-request-aggregate {
+                            leaf table-id {
+                                type uint8;
+                            }
+                            leaf out-port {
+                                type uint32;
+                            }
+                            leaf out-group {
+                                type uint32;
+                            }
+                            leaf cookie {
+                                type uint64;
+                            }
+                            leaf cookie-mask {
+                                type uint64;
+                            }
+                            uses match-grouping;
+                            
+                            // OF1.0 structures
+                            uses oxm:match-v10-grouping;
                         }
                     }
-                    case multipart-request-experimenter {
-                        leaf experimenter {
-                            type uint32;
+                    case multipart-request-table-case {
+                        container multipart-request-table {
+                            leaf empty {
+                                type empty;
+                            }
                         }
-                        leaf exp-type {
-                            type uint32;
+                    }
+                    case multipart-request-port-stats-case {
+                        container multipart-request-port-stats {
+                            leaf port-no {
+                                type uint32;
+                            }
                         }
-                        leaf data {
-                            type binary;
+                    }
+                    case multipart-request-queue-case {
+                        container multipart-request-queue {
+                            leaf port-no {
+                                type uint32;
+                            }
+                            leaf queue-id {
+                                type uint32;
+                            }
+                        }
+                    }
+                    case multipart-request-group-case {
+                        container multipart-request-group {
+                            leaf group-id {
+                                type uint32;
+                            }
+                        }
+                    }
+                    case multipart-request-group-desc-case {
+                        container multipart-request-group-desc {
+                            leaf empty {
+                                type empty;
+                            }
+                        }
+                    }
+                    case multipart-request-group-features-case {
+                        container multipart-request-group-features {
+                            leaf empty {
+                                type empty;
+                            }
+                        }
+                    }
+                    case multipart-request-meter-case {
+                        container multipart-request-meter {
+                            leaf meter-id {
+                                type uint32;
+                            }
+                        }
+                    }
+                    case multipart-request-meter-config-case {
+                        container multipart-request-meter-config {
+                            leaf meter-id {
+                                type uint32;
+                            }
+                        }
+                    }
+                    case multipart-request-meter-features-case {
+                        container multipart-request-meter-features {
+                            leaf empty {
+                                type empty;
+                            }
+                        }
+                    }
+                    case multipart-request-table-features-case {
+                        container multipart-request-table-features {
+                            list table-features {
+                                leaf table-id {
+                                    type uint8;
+                                }
+                                leaf name {
+                                    type string;
+                                }
+                                leaf metadata-match {
+                                    type uint64;
+                                }
+                                leaf metadata-write {
+                                    type uint64;
+                                }
+                                leaf config {
+                                    type oft:table-config;
+                                }
+                                leaf max-entries {
+                                    type uint32;
+                                }
+                                uses table-features-properties;
+                            }
+                        }
+                    }
+                    case multipart-request-port-desc-case {
+                        container multipart-request-port-desc {
+                            leaf empty {
+                                type empty;
+                            }
+                        }
+                    }
+                    case multipart-request-experimenter-case {
+                        container multipart-request-experimenter {
+                            leaf experimenter {
+                                type uint32;
+                            }
+                            leaf exp-type {
+                                type uint32;
+                            }
+                            leaf data {
+                                type binary;
+                            }
                         }
                     }
                 }
@@ -692,322 +722,352 @@ module openflow-protocol {
                     type oft:multipart-request-flags;
                 }
                 choice multipart-reply-body {
-                    case multipart-reply-desc {
-                        leaf mfr_desc {
-                            type string;
-                        }
-                        leaf hw_desc {
-                            type string;
-                        }
-                        leaf sw_desc {
-                            type string;
-                        }
-                        leaf serial_num {
-                            type string;
-                        }
-                        leaf dp_desc {
-                            type string;
-                        }
-                    }
-                    case multipart-reply-flow {
-                        list flow-stats {
-                            leaf table-id {
-                                type uint8;
+                    case multipart-reply-desc-case {
+                        container multipart-reply-desc {
+                            leaf mfr_desc {
+                                type string;
                             }
-                            leaf duration-sec {
-                                type uint32;
+                            leaf hw_desc {
+                                type string;
                             }
-                            leaf duration-nsec {
-                                type uint32;
+                            leaf sw_desc {
+                                type string;
                             }
-                            leaf priority {
-                                type uint16;
+                            leaf serial_num {
+                                type string;
                             }
-                            leaf idle-timeout {
-                                type uint16;
-                            }
-                            leaf hard-timeout {
-                                type uint16;
-                            }
-                            leaf flags {
-                                type oft:flow-mod-flags;
-                            }
-                            leaf cookie {
-                                type uint64;
-                            }
-                            leaf packet-count {
-                                type uint64;
-                            }
-                            leaf byte-count {
-                                type uint64;
-                            }
-                            uses match-grouping;
-                            
-                            uses ofinstruction:instructions;
-                            
-                            // OF1.0 structures
-                            uses oxm:match-v10-grouping;
-                            uses ofaction:actions;
-                        }
-                    }
-                    case multipart-reply-aggregate {
-                        leaf packet-count {
-                            type uint64;
-                        }
-                        leaf byte-count {
-                            type uint64;
-                        }
-                        leaf flow-count {
-                            type uint32;
-                        }
-                    }
-                    case multipart-reply-table {
-                        list table-stats {
-                            leaf table-id {
-                                type uint8;
-                            }
-                            leaf active-count {
-                                type uint32;
-                            }
-                            leaf lookup-count {
-                                type uint64;
-                            }
-                            leaf matched-count {
-                                type uint64;
-                            }
-                            
-                            // OF1.0 structures
-                            leaf name {
+                            leaf dp_desc {
                                 type string;
                             }
                         }
                     }
-                    case multipart-reply-port-stats {
-                        list port-stats {
-                            leaf port-no {
-                                type uint32;
-                            }
-                            leaf rx-packets {
-                                type uint64;
-                            }
-                            leaf tx-packets {
-                                type uint64;
-                            }
-                            leaf rx-bytes {
-                                type uint64;
-                            }
-                            leaf tx-bytes {
-                                type uint64;
-                            }
-                            leaf rx-dropped {
-                                type uint64;
-                            }
-                            leaf tx-dropped {
-                                type uint64;
-                            }
-                            leaf rx-errors {
-                                type uint64;
-                            }
-                            leaf tx-errors {
-                                type uint64;
-                            }
-                            leaf rx-frame-err {
-                                type uint64;
-                            }
-                            leaf rx-over-err {
-                                type uint64;
-                            }
-                            leaf rx-crc-err {
-                                type uint64;
-                            }
-                            leaf collisions {
-                                type uint64;
-                            }
-                            leaf duration-sec {
-                                type uint32;
-                            }
-                            leaf duration-nsec {
-                                type uint32;
-                            }
-                        }
-                    }
-                    case multipart-reply-queue {
-                        list queue-stats {
-                            leaf port-no {
-                                type uint32;
-                            }
-                            leaf queue-id {
-                                type uint32;
-                            }
-                            leaf tx-bytes {
-                                type uint64;
-                            }
-                            leaf tx-packets {
-                                type uint64;
-                            }
-                            leaf tx-errors {
-                                type uint64;
-                            }
-                            leaf duration-sec {
-                                type uint32;
-                            }
-                            leaf duration-nsec {
-                                type uint32;
-                            }
-                        }
-                    }
-                    case multipart-reply-group {
-                        list group-stats {
-                            leaf group-id {
-                                type uint32;
-                            }
-                            leaf ref-count {
-                                type uint32;
-                            }
-                            leaf packet-count {
-                                type uint64;
-                            }
-                            leaf byte-count {
-                                type uint64;
-                            }
-                            leaf duration-sec {
-                                type uint32;
-                            }
-                            leaf duration-nsec {
-                                type uint32;
-                            }
-                            list bucket-stats {
+                    case multipart-reply-flow-case {
+                        container multipart-reply-flow {
+                            list flow-stats {
+                                leaf table-id {
+                                    type uint8;
+                                }
+                                leaf duration-sec {
+                                    type uint32;
+                                }
+                                leaf duration-nsec {
+                                    type uint32;
+                                }
+                                leaf priority {
+                                    type uint16;
+                                }
+                                leaf idle-timeout {
+                                    type uint16;
+                                }
+                                leaf hard-timeout {
+                                    type uint16;
+                                }
+                                leaf flags {
+                                    type oft:flow-mod-flags;
+                                }
+                                leaf cookie {
+                                    type uint64;
+                                }
                                 leaf packet-count {
                                     type uint64;
                                 }
                                 leaf byte-count {
                                     type uint64;
                                 }
+                                uses match-grouping;
+                                
+                                uses ofinstruction:instructions;
+                                
+                                // OF1.0 structures
+                                uses oxm:match-v10-grouping;
+                                uses ofaction:actions;
                             }
                         }
                     }
-                    case multipart-reply-group-desc {
-                        list group-desc {
-                            leaf type {
-                                type oft:group-type;
+                    case multipart-reply-aggregate-case {
+                        container multipart-reply-aggregate {
+                            leaf packet-count {
+                                type uint64;
                             }
-                            leaf group-id {
-                                type uint32;
-                            }
-                            uses buckets;
-                        }
-                    }
-                    case multipart-reply-group-features {
-                        leaf types {
-                            type oft:group-types;
-                        }
-                        leaf capabilities {
-                            type oft:group-capabilities;
-                        }
-                        leaf-list max_groups {
-                            type uint32;
-                        }
-                        leaf-list actions-bitmap {
-                            type oft:action-type;
-                        }
-                    }
-                    case multipart-reply-meter {
-                        list meter-stats {
-                            leaf meter-id {
-                                type uint32;
+                            leaf byte-count {
+                                type uint64;
                             }
                             leaf flow-count {
                                 type uint32;
                             }
-                            leaf packet-in-count {
-                                type uint64;
-                            }
-                            leaf byte-in-count {
-                                type uint64;
-                            }
-                            leaf duration-sec {
-                                type uint32;
-                            }
-                            leaf duration-nsec {
-                                type uint32;
-                            }
-                            list meter-band-stats {
-                                leaf packet-band-count {
+                        }
+                    }
+                    case multipart-reply-table-case {
+                        container multipart-reply-table {
+                            list table-stats {
+                                leaf table-id {
+                                    type uint8;
+                                }
+                                leaf active-count {
+                                    type uint32;
+                                }
+                                leaf lookup-count {
                                     type uint64;
                                 }
-                                leaf byte-band-count {
+                                leaf matched-count {
                                     type uint64;
+                                }
+                                
+                                // OF1.0 structures
+                                leaf name {
+                                    type string;
                                 }
                             }
                         }
                     }
-                    case multipart-reply-meter-config {
-                        list meter-config {
-                            leaf flags {
+                    case multipart-reply-port-stats-case {
+                        container multipart-reply-port-stats {
+                            list port-stats {
+                                leaf port-no {
+                                    type uint32;
+                                }
+                                leaf rx-packets {
+                                    type uint64;
+                                }
+                                leaf tx-packets {
+                                    type uint64;
+                                }
+                                leaf rx-bytes {
+                                    type uint64;
+                                }
+                                leaf tx-bytes {
+                                    type uint64;
+                                }
+                                leaf rx-dropped {
+                                    type uint64;
+                                }
+                                leaf tx-dropped {
+                                    type uint64;
+                                }
+                                leaf rx-errors {
+                                    type uint64;
+                                }
+                                leaf tx-errors {
+                                    type uint64;
+                                }
+                                leaf rx-frame-err {
+                                    type uint64;
+                                }
+                                leaf rx-over-err {
+                                    type uint64;
+                                }
+                                leaf rx-crc-err {
+                                    type uint64;
+                                }
+                                leaf collisions {
+                                    type uint64;
+                                }
+                                leaf duration-sec {
+                                    type uint32;
+                                }
+                                leaf duration-nsec {
+                                    type uint32;
+                                }
+                            }
+                        }
+                    }
+                    case multipart-reply-queue-case {
+                        container multipart-reply-queue {
+                            list queue-stats {
+                                leaf port-no {
+                                    type uint32;
+                                }
+                                leaf queue-id {
+                                    type uint32;
+                                }
+                                leaf tx-bytes {
+                                    type uint64;
+                                }
+                                leaf tx-packets {
+                                    type uint64;
+                                }
+                                leaf tx-errors {
+                                    type uint64;
+                                }
+                                leaf duration-sec {
+                                    type uint32;
+                                }
+                                leaf duration-nsec {
+                                    type uint32;
+                                }
+                            }
+                        }
+                    }
+                    case multipart-reply-group-case {
+                        container multipart-reply-group {
+                            list group-stats {
+                                leaf group-id {
+                                    type uint32;
+                                }
+                                leaf ref-count {
+                                    type uint32;
+                                }
+                                leaf packet-count {
+                                    type uint64;
+                                }
+                                leaf byte-count {
+                                    type uint64;
+                                }
+                                leaf duration-sec {
+                                    type uint32;
+                                }
+                                leaf duration-nsec {
+                                    type uint32;
+                                }
+                                list bucket-stats {
+                                    leaf packet-count {
+                                        type uint64;
+                                    }
+                                    leaf byte-count {
+                                        type uint64;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    case multipart-reply-group-desc-case {
+                        container multipart-reply-group-desc {
+                            list group-desc {
+                                leaf type {
+                                    type oft:group-type;
+                                }
+                                leaf group-id {
+                                    type uint32;
+                                }
+                                uses buckets;
+                            }
+                        }
+                    }
+                    case multipart-reply-group-features-case {
+                        container multipart-reply-group-features {
+                            leaf types {
+                                type oft:group-types;
+                            }
+                            leaf capabilities {
+                                type oft:group-capabilities;
+                            }
+                            leaf-list max_groups {
+                                type uint32;
+                            }
+                            leaf-list actions-bitmap {
+                                type oft:action-type;
+                            }
+                        }
+                    }
+                    case multipart-reply-meter-case {
+                        container multipart-reply-meter {
+                            list meter-stats {
+                                leaf meter-id {
+                                    type uint32;
+                                }
+                                leaf flow-count {
+                                    type uint32;
+                                }
+                                leaf packet-in-count {
+                                    type uint64;
+                                }
+                                leaf byte-in-count {
+                                    type uint64;
+                                }
+                                leaf duration-sec {
+                                    type uint32;
+                                }
+                                leaf duration-nsec {
+                                    type uint32;
+                                }
+                                list meter-band-stats {
+                                    leaf packet-band-count {
+                                        type uint64;
+                                    }
+                                    leaf byte-band-count {
+                                        type uint64;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    case multipart-reply-meter-config-case {
+                        container multipart-reply-meter-config {
+                            list meter-config {
+                                leaf flags {
+                                    type oft:meter-flags;
+                                }
+                                leaf meter-id {
+                                    type uint32;
+                                }
+                                list bands {
+                                    uses meter-band-header;
+                                }
+                            }
+                        }
+                    }
+                    case multipart-reply-meter-features-case {
+                        container multipart-reply-meter-features {
+                            leaf max-meter {
+                                type uint32;
+                            }
+                            leaf band-types {
+                                type oft:meter-band-type-bitmap;
+                            }
+                            leaf capabilities {
                                 type oft:meter-flags;
                             }
-                            leaf meter-id {
-                                type uint32;
-                            }
-                            list bands {
-                                uses meter-band-header;
-                            }
-                        }
-                    }
-                    case multipart-reply-meter-features {
-                        leaf max-meter {
-                            type uint32;
-                        }
-                        leaf band-types {
-                            type oft:meter-band-type-bitmap;
-                        }
-                        leaf capabilities {
-                            type oft:meter-flags;
-                        }
-                        leaf max-bands {
-                            type uint8;
-                        }
-                        leaf max-color {
-                            type uint8;
-                        }
-                    }
-                    case multipart-reply-table-features {
-                        list table-features {
-                            leaf table-id {
+                            leaf max-bands {
                                 type uint8;
                             }
-                            leaf name {
-                                type string;
+                            leaf max-color {
+                                type uint8;
                             }
-                            leaf metadata-match {
-                                type binary;
+                        }
+                    }
+                    case multipart-reply-table-features-case {
+                        container multipart-reply-table-features {
+                            list table-features {
+                                leaf table-id {
+                                    type uint8;
+                                }
+                                leaf name {
+                                    type string;
+                                }
+                                leaf metadata-match {
+                                    type binary;
+                                }
+                                leaf metadata-write {
+                                    type binary;
+                                }
+                                leaf config {
+                                    type oft:table-config;
+                                } 
+                                leaf max-entries {
+                                    type uint32;
+                                }
+                                uses table-features-properties;
                             }
-                            leaf metadata-write {
-                                type binary;
+                        }
+                    }
+                    case multipart-reply-port-desc-case {
+                        container multipart-reply-port-desc {
+                            list ports {
+                                uses port;
                             }
-                            leaf config {
-                                type oft:table-config;
-                            } 
-                            leaf max-entries {
+                        }
+                    }
+                    case multipart-reply-experimenter-case {
+                        container multipart-reply-experimenter {
+                            leaf experimenter {
                                 type uint32;
                             }
-                            uses table-features-properties;
-                        }
-                    }
-                    case multipart-reply-port-desc {
-                        list ports {
-                            uses port;
-                        }
-                    }
-                    case multipart-reply-experimenter {
-                        leaf experimenter {
-                            type uint32;
-                        }
-                        leaf exp-type {
-                            type uint32;
-                        }
-                        leaf data {
-                            type binary;
+                            leaf exp-type {
+                                type uint32;
+                            }
+                            leaf data {
+                                type binary;
+                            }
                         }
                     }
                 }
@@ -1144,30 +1204,36 @@ module openflow-protocol {
                 } 
                 leaf flags {
                     type oft:meter-flags;
-                }            
+                }
                 leaf meter-id {
                     type oft:meter-id;
-                }   
+                }
                 list bands {
                     uses meter-band-header;
                 }
-            } 
+            }
             
             grouping meter-band-header {
                 choice meter-band {
-                    case meter-band-drop {
-                        uses meter-band-commons;
-                    }
-                    case meter-band-dscp-remark {
-                        uses meter-band-commons;
-                        leaf prec-level {
-                            type uint8;
+                    case meter-band-drop-case {
+                        container meter-band-drop {
+                            uses meter-band-commons;
                         }
                     }
-                    case meter-band-experimenter {
-                        uses meter-band-commons;
-                        leaf experimenter {
-                            type uint32;
+                    case meter-band-dscp-remark-case {
+                        container meter-band-dscp-remark {
+                            uses meter-band-commons;
+                            leaf prec-level {
+                                type uint8;
+                            }
+                        }
+                    }
+                    case meter-band-experimenter-case {
+                        container meter-band-experimenter {
+                            uses meter-band-commons;
+                            leaf experimenter {
+                                type uint32;
+                            }
                         }
                     }
                 }

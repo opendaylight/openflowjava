@@ -14,28 +14,35 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessageBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyAggregate;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyAggregateBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyDesc;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyDescBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyExperimenter;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyExperimenterBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyFlow;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyFlowBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyPortStats;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyPortStatsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyQueue;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyQueueBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyTable;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyTableBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow.FlowStats;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow.FlowStatsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.port.stats.PortStats;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.port.stats.PortStatsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.queue.QueueStats;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.queue.QueueStatsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.table.TableStats;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.table.TableStatsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyAggregateCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyAggregateCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyDescCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyDescCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyExperimenterCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyExperimenterCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyFlowCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyFlowCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyPortStatsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyPortStatsCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyQueueCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyQueueCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyTableCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyTableCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.aggregate._case.MultipartReplyAggregateBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.desc._case.MultipartReplyDescBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.experimenter._case.MultipartReplyExperimenterBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow._case.MultipartReplyFlowBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow._case.multipart.reply.flow.FlowStats;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow._case.multipart.reply.flow.FlowStatsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.port.stats._case.MultipartReplyPortStatsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.port.stats._case.multipart.reply.port.stats.PortStats;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.port.stats._case.multipart.reply.port.stats.PortStatsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.queue._case.MultipartReplyQueueBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.queue._case.multipart.reply.queue.QueueStats;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.queue._case.multipart.reply.queue.QueueStatsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.table._case.MultipartReplyTableBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.table._case.multipart.reply.table.TableStats;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.table._case.multipart.reply.table.TableStatsBuilder;
 
 /**
  * Translates StatsReply messages (OpenFlow v1.0)
@@ -88,9 +95,10 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         return builder.build();
     }
     
-    private static MultipartReplyDesc setDesc(ByteBuf input) {
+    private static MultipartReplyDescCase setDesc(ByteBuf input) {
         final int DESC_STR_LEN = 256;
         final int SERIAL_NUM_LEN = 32;
+        MultipartReplyDescCaseBuilder caseBuilder = new MultipartReplyDescCaseBuilder();
         MultipartReplyDescBuilder descBuilder = new MultipartReplyDescBuilder();
         byte[] mfrDescBytes = new byte[DESC_STR_LEN];
         input.readBytes(mfrDescBytes);
@@ -112,12 +120,14 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         input.readBytes(dpDescBytes);
         String dpDesc = new String(dpDescBytes);
         descBuilder.setDpDesc(dpDesc.trim());
-        return descBuilder.build();
+        caseBuilder.setMultipartReplyDesc(descBuilder.build());
+        return caseBuilder.build();
     }
     
-    private static MultipartReplyFlow setFlow(ByteBuf input) {
+    private static MultipartReplyFlowCase setFlow(ByteBuf input) {
         final byte PADDING_IN_FLOW_STATS_HEADER = 1;
         final byte PADDING_IN_FLOW_STATS_HEADER_02 = 6;
+        MultipartReplyFlowCaseBuilder caseBuilder = new MultipartReplyFlowCaseBuilder();
         MultipartReplyFlowBuilder flowBuilder = new MultipartReplyFlowBuilder();
         List<FlowStats> flowStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
@@ -145,11 +155,13 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
             flowStatsList.add(flowStatsBuilder.build());
         }
         flowBuilder.setFlowStats(flowStatsList);
-        return flowBuilder.build();
+        caseBuilder.setMultipartReplyFlow(flowBuilder.build());
+        return caseBuilder.build();
     }
     
-    private static MultipartReplyAggregate setAggregate(ByteBuf input) {
+    private static MultipartReplyAggregateCase setAggregate(ByteBuf input) {
         final byte PADDING_IN_AGGREGATE_HEADER = 4;
+        MultipartReplyAggregateCaseBuilder caseBuilder = new MultipartReplyAggregateCaseBuilder();
         MultipartReplyAggregateBuilder builder = new MultipartReplyAggregateBuilder();
         byte[] packetCount = new byte[Long.SIZE/Byte.SIZE];
         input.readBytes(packetCount);
@@ -159,12 +171,14 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         builder.setByteCount(new BigInteger(byteCount));
         builder.setFlowCount(input.readUnsignedInt());
         input.skipBytes(PADDING_IN_AGGREGATE_HEADER);
-        return builder.build();
+        caseBuilder.setMultipartReplyAggregate(builder.build());
+        return caseBuilder.build();
     }
     
-    private static MultipartReplyTable setTable(ByteBuf input) {
+    private static MultipartReplyTableCase setTable(ByteBuf input) {
         final byte PADDING_IN_TABLE_HEADER = 3;
         final byte MAX_TABLE_NAME_LENGTH = 32;
+        MultipartReplyTableCaseBuilder caseBuilder = new MultipartReplyTableCaseBuilder();
         MultipartReplyTableBuilder builder = new MultipartReplyTableBuilder();
         List<TableStats> tableStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
@@ -182,11 +196,13 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
             tableStatsList.add(tableStatsBuilder.build());
         }
         builder.setTableStats(tableStatsList);
-        return builder.build();
+        caseBuilder.setMultipartReplyTable(builder.build());
+        return caseBuilder.build();
     }
     
-    private static MultipartReplyPortStats setPortStats(ByteBuf input) {
+    private static MultipartReplyPortStatsCase setPortStats(ByteBuf input) {
         final byte PADDING_IN_PORT_STATS_HEADER = 6;
+        MultipartReplyPortStatsCaseBuilder caseBuilder = new MultipartReplyPortStatsCaseBuilder();
         MultipartReplyPortStatsBuilder builder = new MultipartReplyPortStatsBuilder();
         List<PortStats> portStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
@@ -231,11 +247,13 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
             portStatsBuilder.setCollisions(new BigInteger(collisions));
         }
         builder.setPortStats(portStatsList);
-        return builder.build();
+        caseBuilder.setMultipartReplyPortStats(builder.build());
+        return caseBuilder.build();
     }
     
-    private static MultipartReplyQueue setQueue(ByteBuf input) {
+    private static MultipartReplyQueueCase setQueue(ByteBuf input) {
         final byte PADDING_IN_QUEUE_HEADER = 2;
+        MultipartReplyQueueCaseBuilder caseBuilder = new MultipartReplyQueueCaseBuilder();
         MultipartReplyQueueBuilder builder = new MultipartReplyQueueBuilder();
         List<QueueStats> queueStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
@@ -255,15 +273,18 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
             queueStatsList.add(queueStatsBuilder.build());
         }
         builder.setQueueStats(queueStatsList);
-        return builder.build();
+        caseBuilder.setMultipartReplyQueue(builder.build());
+        return caseBuilder.build();
     }
     
-    private static MultipartReplyExperimenter setExperimenter(ByteBuf input) {
+    private static MultipartReplyExperimenterCase setExperimenter(ByteBuf input) {
+    	MultipartReplyExperimenterCaseBuilder caseBuilder = new MultipartReplyExperimenterCaseBuilder();
         MultipartReplyExperimenterBuilder builder = new MultipartReplyExperimenterBuilder();
         builder.setExperimenter(input.readUnsignedInt());
         byte[] data = new byte[Long.SIZE/Byte.SIZE];
         input.readBytes(data);
         builder.setData(data);
-        return builder.build();
+        caseBuilder.setMultipartReplyExperimenter(builder.build());
+        return caseBuilder.build();
     }
 }
