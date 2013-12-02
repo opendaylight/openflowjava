@@ -53,39 +53,39 @@ public abstract class ActionsSerializer {
         }
         for (ActionsList list : actionsList) {
             Action action = list.getAction();
-            if (action.getType().equals(Output.class)) {
+            if (action.getType().isAssignableFrom(Output.class)) {
                 encodeOutputAction(action, outBuffer);
-            } else if (action.getType().equals(CopyTtlOut.class)) {
+            } else if (action.getType().isAssignableFrom(CopyTtlOut.class)) {
                 encodeCopyTtlOutAction(outBuffer);
-            } else if (action.getType().equals(CopyTtlIn.class)) {
+            } else if (action.getType().isAssignableFrom(CopyTtlIn.class)) {
                 encodeCopyTtlInAction(outBuffer);
-            } else if (action.getType().equals(SetMplsTtl.class)) {
+            } else if (action.getType().isAssignableFrom(SetMplsTtl.class)) {
                 encodeSetMplsTtltAction(action, outBuffer);
-            } else if (action.getType().equals(DecMplsTtl.class)) {
+            } else if (action.getType().isAssignableFrom(DecMplsTtl.class)) {
                 encodeDecMplsTtlAction(outBuffer);
-            } else if (action.getType().equals(PushVlan.class)) {
+            } else if (action.getType().isAssignableFrom(PushVlan.class)) {
                 encodePushVlanAction(action, outBuffer);
-            } else if (action.getType().equals(PopVlan.class)) {
+            } else if (action.getType().isAssignableFrom(PopVlan.class)) {
                 encodePopVlanAction(outBuffer);
-            } else if (action.getType().equals(PushMpls.class)) {
+            } else if (action.getType().isAssignableFrom(PushMpls.class)) {
                 encodePushMplsAction(action, outBuffer);
-            } else if (action.getType().equals(PopMpls.class)) {
+            } else if (action.getType().isAssignableFrom(PopMpls.class)) {
                 encodePopMplsAction(action, outBuffer);
-            } else if (action.getType().equals(SetQueue.class)) {
+            } else if (action.getType().isAssignableFrom(SetQueue.class)) {
                 encodeSetQueueAction(action, outBuffer);
-            } else if (action.getType().equals(Group.class)) {
+            } else if (action.getType().isAssignableFrom(Group.class)) {
                 encodeGroupAction(action, outBuffer);
-            } else if (action.getType().equals(SetNwTtl.class)) {
+            } else if (action.getType().isAssignableFrom(SetNwTtl.class)) {
                 encodeSetNwTtlAction(action, outBuffer);
-            } else if (action.getType().equals(DecNwTtl.class)) {
+            } else if (action.getType().isAssignableFrom(DecNwTtl.class)) {
                 encodeDecNwTtlAction(outBuffer);
-            } else if (action.getType().equals(SetField.class)) {
+            } else if (action.getType().isAssignableFrom(SetField.class)) {
                 encodeSetFieldAction(action, outBuffer);
-            } else if (action.getType().equals(PushPbb.class)) {
+            } else if (action.getType().isAssignableFrom(PushPbb.class)) {
                 encodePushPbbAction(action, outBuffer);
-            } else if (action.getType().equals(PopPbb.class)) {
+            } else if (action.getType().isAssignableFrom(PopPbb.class)) {
                 encodePopPbbAction(outBuffer);
-            } else if (action.getType().equals(Experimenter.class)) {
+            } else if (action.getType().isAssignableFrom(Experimenter.class)) {
                 encodeExperimenterAction(action, outBuffer);
             } 
         }
@@ -257,9 +257,9 @@ public abstract class ActionsSerializer {
         if (actionsList != null) {
             for (ActionsList list : actionsList) {
                 Action action = list.getAction();
-                if (action.getType().equals(Output.class)) {
+                if (action.getType().isAssignableFrom(Output.class)) {
                     lengthOfActions += OUTPUT_LENGTH;
-                } else if (action.getType().equals(SetField.class)){
+                } else if (action.getType().isAssignableFrom(SetField.class)){
                     List<MatchEntries> entries = action.getAugmentation(OxmFieldsAction.class).getMatchEntries();
                     int actionLength = ACTION_HEADER_LENGTH + MatchSerializer.computeMatchEntriesLength(entries);
                     lengthOfActions += actionLength;

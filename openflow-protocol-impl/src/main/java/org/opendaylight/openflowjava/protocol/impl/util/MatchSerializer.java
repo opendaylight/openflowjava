@@ -107,7 +107,7 @@ public class MatchSerializer {
         }
         encodeType(match, out);
         // Length of ofp_match (excluding padding)
-        int length = computeMatchLength(match);
+        int length = computeMatchLengthInternal(match);
         out.writeShort(length);
         encodeMatchEntries(match.getMatchEntries(), out);
         int paddingRemainder = length % EncodeConstants.PADDING;
@@ -119,9 +119,9 @@ public class MatchSerializer {
     private static void encodeType(Match match, ByteBuf out) {
         final byte STANDARD_MATCH_TYPE_CODE = 0;
         final byte OXM_MATCH_TYPE_CODE = 1;
-        if (match.getType().equals(StandardMatchType.class)) {
+        if (match.getType().isAssignableFrom(StandardMatchType.class)) {
             out.writeShort(STANDARD_MATCH_TYPE_CODE);
-        } else if (match.getType().equals(OxmMatchType.class)) {
+        } else if (match.getType().isAssignableFrom(OxmMatchType.class)) {
             out.writeShort(OXM_MATCH_TYPE_CODE);
         }
     }
@@ -147,13 +147,13 @@ public class MatchSerializer {
         final int NXM1_CLASS_CODE = 0x0001;
         final int OPENFLOW_BASIC_CLASS_CODE = 0x8000;
         final int EXPERIMENTER_CLASS_CODE = 0xFFFF;
-        if (Nxm0Class.class.equals(clazz)) {
+        if (clazz.isAssignableFrom(Nxm0Class.class)) {
             out.writeShort(NXM0_CLASS_CODE);
-        } else if (Nxm1Class.class.equals(clazz)) {
+        } else if (clazz.isAssignableFrom(Nxm1Class.class)) {
             out.writeShort(NXM1_CLASS_CODE);
-        } else if (OpenflowBasicClass.class.equals(clazz)) {
+        } else if (clazz.isAssignableFrom(OpenflowBasicClass.class)) {
             out.writeShort(OPENFLOW_BASIC_CLASS_CODE);
-        } else if (ExperimenterClass.class.equals(clazz)) {
+        } else if (clazz.isAssignableFrom(ExperimenterClass.class)) {
             out.writeShort(EXPERIMENTER_CLASS_CODE);
         }
     }
@@ -161,28 +161,28 @@ public class MatchSerializer {
     private static void encodeRest(MatchEntries entry, ByteBuf out) {
         int fieldValue = 0;
         Class<? extends MatchField> field = entry.getOxmMatchField();
-        if (field.equals(InPort.class)) {
+        if (field.isAssignableFrom(InPort.class)) {
             fieldValue = 0;
             writeOxmFieldAndLength(out, fieldValue, Integer.SIZE / Byte.SIZE);
             out.writeInt(entry.getAugmentation(PortNumberMatchEntry.class).getPortNumber().getValue().intValue());
-        } else if (field.equals(InPhyPort.class)) {
+        } else if (field.isAssignableFrom(InPhyPort.class)) {
             fieldValue = 1;
             writeOxmFieldAndLength(out, fieldValue, Integer.SIZE / Byte.SIZE);
             out.writeInt(entry.getAugmentation(PortNumberMatchEntry.class).getPortNumber().getValue().intValue());
-        } else if (field.equals(Metadata.class)) {
+        } else if (field.isAssignableFrom(Metadata.class)) {
             fieldValue = 2;
             writeMetadataRelatedEntry(entry, out, fieldValue);
-        } else if (field.equals(EthDst.class)) {
+        } else if (field.isAssignableFrom(EthDst.class)) {
             fieldValue = 3;
             writeMacAddressRelatedEntry(entry, out, fieldValue);
-        } else if (field.equals(EthSrc.class)) {
+        } else if (field.isAssignableFrom(EthSrc.class)) {
             fieldValue = 4;
             writeMacAddressRelatedEntry(entry, out, fieldValue);
-        } else if (field.equals(EthType.class)) {
+        } else if (field.isAssignableFrom(EthType.class)) {
             fieldValue = 5;
             writeOxmFieldAndLength(out, fieldValue, Short.SIZE / Byte.SIZE);
             out.writeShort(entry.getAugmentation(EthTypeMatchEntry.class).getEthType().getValue().shortValue());
-        } else if (field.equals(VlanVid.class)) {
+        } else if (field.isAssignableFrom(VlanVid.class)) {
             fieldValue = 6;
             fieldValue = fieldValue << 1;
             VlanVidMatchEntry vlanVid = entry.getAugmentation(VlanVidMatchEntry.class);
@@ -201,83 +201,83 @@ public class MatchSerializer {
                 writeOxmFieldAndLength(out, fieldValue, Short.SIZE / Byte.SIZE);
                 out.writeShort(vlanVidValue);
             }
-        } else if (field.equals(VlanPcp.class)) {
+        } else if (field.isAssignableFrom(VlanPcp.class)) {
             fieldValue = 7;
             writeOxmFieldAndLength(out, fieldValue, Byte.SIZE / Byte.SIZE);
             out.writeByte(entry.getAugmentation(VlanPcpMatchEntry.class).getVlanPcp().byteValue());
-        } else if (field.equals(IpDscp.class)) {
+        } else if (field.isAssignableFrom(IpDscp.class)) {
             fieldValue = 8;
             writeOxmFieldAndLength(out, fieldValue, Byte.SIZE / Byte.SIZE);
             out.writeByte(entry.getAugmentation(DscpMatchEntry.class).getDscp().getValue());
-        } else if (field.equals(IpEcn.class)) {
+        } else if (field.isAssignableFrom(IpEcn.class)) {
             fieldValue = 9;
             writeOxmFieldAndLength(out, fieldValue, Byte.SIZE / Byte.SIZE);
             out.writeByte(entry.getAugmentation(EcnMatchEntry.class).getEcn());
-        } else if (field.equals(IpProto.class)) {
+        } else if (field.isAssignableFrom(IpProto.class)) {
             fieldValue = 10;
             writeOxmFieldAndLength(out, fieldValue, Byte.SIZE / Byte.SIZE);
             out.writeByte(entry.getAugmentation(ProtocolNumberMatchEntry.class).getProtocolNumber());
-        } else if (field.equals(Ipv4Src.class)) {
+        } else if (field.isAssignableFrom(Ipv4Src.class)) {
             fieldValue = 11;
             writeIpv4AddressRelatedEntry(entry, out, fieldValue);
-        } else if (field.equals(Ipv4Dst.class)) {
+        } else if (field.isAssignableFrom(Ipv4Dst.class)) {
             fieldValue = 12;
             writeIpv4AddressRelatedEntry(entry, out, fieldValue);
-        } else if (field.equals(TcpSrc.class)) {
+        } else if (field.isAssignableFrom(TcpSrc.class)) {
             fieldValue = 13;
             writeOxmFieldAndLength(out, fieldValue, Short.SIZE / Byte.SIZE);
             out.writeShort(entry.getAugmentation(PortMatchEntry.class).getPort().getValue().intValue());
-        } else if (field.equals(TcpDst.class)) {
+        } else if (field.isAssignableFrom(TcpDst.class)) {
             fieldValue = 14;
             writeOxmFieldAndLength(out, fieldValue, Short.SIZE / Byte.SIZE);
             out.writeShort(entry.getAugmentation(PortMatchEntry.class).getPort().getValue().intValue());
-        } else if (field.equals(UdpSrc.class)) {
+        } else if (field.isAssignableFrom(UdpSrc.class)) {
             fieldValue = 15;
             writeOxmFieldAndLength(out, fieldValue, Short.SIZE / Byte.SIZE);
             out.writeShort(entry.getAugmentation(PortMatchEntry.class).getPort().getValue().intValue());
-        } else if (field.equals(UdpDst.class)) {
+        } else if (field.isAssignableFrom(UdpDst.class)) {
             fieldValue = 16;
             writeOxmFieldAndLength(out, fieldValue, Short.SIZE / Byte.SIZE);
             out.writeShort(entry.getAugmentation(PortMatchEntry.class).getPort().getValue().intValue());
-        } else if (field.equals(SctpSrc.class)) {
+        } else if (field.isAssignableFrom(SctpSrc.class)) {
             fieldValue = 17;
             writeOxmFieldAndLength(out, fieldValue, Short.SIZE / Byte.SIZE);
             out.writeShort(entry.getAugmentation(PortMatchEntry.class).getPort().getValue().intValue());
-        } else if (field.equals(SctpDst.class)) {
+        } else if (field.isAssignableFrom(SctpDst.class)) {
             fieldValue = 18;
             writeOxmFieldAndLength(out, fieldValue, Short.SIZE / Byte.SIZE);
             out.writeShort(entry.getAugmentation(PortMatchEntry.class).getPort().getValue().intValue());
-        } else if (field.equals(Icmpv4Type.class)) {
+        } else if (field.isAssignableFrom(Icmpv4Type.class)) {
             fieldValue = 19;
             writeOxmFieldAndLength(out, fieldValue, Byte.SIZE / Byte.SIZE);
             out.writeByte(entry.getAugmentation(Icmpv4TypeMatchEntry.class).getIcmpv4Type());
-        } else if (field.equals(Icmpv4Code.class)) {
+        } else if (field.isAssignableFrom(Icmpv4Code.class)) {
             fieldValue = 20;
             writeOxmFieldAndLength(out, fieldValue, Byte.SIZE / Byte.SIZE);
             out.writeByte(entry.getAugmentation(Icmpv4CodeMatchEntry.class).getIcmpv4Code());
-        } else if (field.equals(ArpOp.class)) {
+        } else if (field.isAssignableFrom(ArpOp.class)) {
             fieldValue = 21;
             writeOxmFieldAndLength(out, fieldValue, Short.SIZE / Byte.SIZE);
             out.writeShort(entry.getAugmentation(OpCodeMatchEntry.class).getOpCode());
-        } else if (field.equals(ArpSpa.class)) {
+        } else if (field.isAssignableFrom(ArpSpa.class)) {
             fieldValue = 22;
             writeIpv4AddressRelatedEntry(entry, out, fieldValue);
-        } else if (field.equals(ArpTpa.class)) {
+        } else if (field.isAssignableFrom(ArpTpa.class)) {
             fieldValue = 23;
             writeIpv4AddressRelatedEntry(entry, out, fieldValue);
-        } else if (field.equals(ArpSha.class)) {
+        } else if (field.isAssignableFrom(ArpSha.class)) {
             fieldValue = 24;
             writeMacAddressRelatedEntry(entry, out, fieldValue);
-        } else if (field.equals(ArpTha.class)) {
+        } else if (field.isAssignableFrom(ArpTha.class)) {
             fieldValue = 25;
             writeMacAddressRelatedEntry(entry, out, fieldValue);
-        } else if (field.equals(Ipv6Src.class)) {
+        } else if (field.isAssignableFrom(Ipv6Src.class)) {
             fieldValue = 26;
             writeIpv6AddressRelatedEntry(entry, out, fieldValue);
-        } else if (field.equals(Ipv6Dst.class)) {
+        } else if (field.isAssignableFrom(Ipv6Dst.class)) {
             fieldValue = 27;
             writeIpv6AddressRelatedEntry(entry, out, fieldValue);
-        } else if (field.equals(Ipv6Flabel.class)) {
+        } else if (field.isAssignableFrom(Ipv6Flabel.class)) {
             fieldValue = 28;
             fieldValue = fieldValue << 1;
             if (entry.isHasMask()) {
@@ -294,37 +294,37 @@ public class MatchSerializer {
                 LOGGER.warn("Ipv6Flabel match entry: possible wrong length written (wrote 4 - maybe must be 3)");
                 out.writeInt(entry.getAugmentation(Ipv6FlabelMatchEntry.class).getIpv6Flabel().getValue().intValue());
             }
-        } else if (field.equals(Icmpv6Type.class)) {
+        } else if (field.isAssignableFrom(Icmpv6Type.class)) {
             fieldValue = 29;
             writeOxmFieldAndLength(out, fieldValue, Byte.SIZE / Byte.SIZE);
             out.writeByte(entry.getAugmentation(Icmpv6TypeMatchEntry.class).getIcmpv6Type());
-        } else if (field.equals(Icmpv6Code.class)) {
+        } else if (field.isAssignableFrom(Icmpv6Code.class)) {
             fieldValue = 30;
             writeOxmFieldAndLength(out, fieldValue, Byte.SIZE / Byte.SIZE);
             out.writeByte(entry.getAugmentation(Icmpv6CodeMatchEntry.class).getIcmpv6Code());
-        } else if (field.equals(Ipv6NdTarget.class)) {
+        } else if (field.isAssignableFrom(Ipv6NdTarget.class)) {
             fieldValue = 31;
             writeIpv6AddressRelatedEntry(entry, out, fieldValue);
-        } else if (field.equals(Ipv6NdSll.class)) {
+        } else if (field.isAssignableFrom(Ipv6NdSll.class)) {
             fieldValue = 32;
             writeMacAddressRelatedEntry(entry, out, fieldValue);
-        } else if (field.equals(Ipv6NdTll.class)) {
+        } else if (field.isAssignableFrom(Ipv6NdTll.class)) {
             fieldValue = 33;
             writeMacAddressRelatedEntry(entry, out, fieldValue);
-        } else if (field.equals(MplsLabel.class)) {
+        } else if (field.isAssignableFrom(MplsLabel.class)) {
             fieldValue = 34;
             writeOxmFieldAndLength(out, fieldValue, Integer.SIZE / Byte.SIZE);
             LOGGER.warn("MplsLabel match entry: possible wrong length written (wrote 4 - maybe must be 3)");
             out.writeInt(entry.getAugmentation(MplsLabelMatchEntry.class).getMplsLabel().intValue());
-        } else if (field.equals(MplsTc.class)) {
+        } else if (field.isAssignableFrom(MplsTc.class)) {
             fieldValue = 35;
             writeOxmFieldAndLength(out, fieldValue, Byte.SIZE / Byte.SIZE);
             out.writeByte(entry.getAugmentation(TcMatchEntry.class).getTc());
-        } else if (field.equals(MplsBos.class)) {
+        } else if (field.isAssignableFrom(MplsBos.class)) {
             fieldValue = 36;
             writeOxmFieldAndLength(out, fieldValue, Byte.SIZE / Byte.SIZE);
             out.writeBoolean(entry.getAugmentation(BosMatchEntry.class).isBos().booleanValue());
-        } else if (field.equals(PbbIsid.class)) {
+        } else if (field.isAssignableFrom(PbbIsid.class)) {
             fieldValue = 37;
             fieldValue = fieldValue << 1;
             if (entry.isHasMask()) {
@@ -341,10 +341,10 @@ public class MatchSerializer {
                 LOGGER.warn("PbbIsid match entry: possible wrong length written (wrote 4 - maybe must be 3)");
                 out.writeInt(entry.getAugmentation(IsidMatchEntry.class).getIsid().intValue());
             }
-        } else if (field.equals(TunnelId.class)) {
+        } else if (field.isAssignableFrom(TunnelId.class)) {
             fieldValue = 38;
             writeMetadataRelatedEntry(entry, out, fieldValue);
-        } else if (field.equals(Ipv6Exthdr.class)) {
+        } else if (field.isAssignableFrom(Ipv6Exthdr.class)) {
             fieldValue = 39;
             fieldValue = fieldValue << 1;
             PseudoField pseudoField = entry.getAugmentation(PseudoFieldMatchEntry.class).getPseudoField();
@@ -429,7 +429,7 @@ public class MatchSerializer {
     }
     
     private static void writeIpv4Address(MatchEntries entry, ByteBuf out) {
-        String[] addressGroups = entry.getAugmentation(Ipv4AddressMatchEntry.class).getIpv4Address().getValue().split(".");
+        String[] addressGroups = entry.getAugmentation(Ipv4AddressMatchEntry.class).getIpv4Address().getValue().split("\\.");
         for (int i = 0; i < addressGroups.length; i++) {
             out.writeByte(Integer.parseInt(addressGroups[i]));
         }
@@ -503,11 +503,25 @@ public class MatchSerializer {
      * @param match
      * @return length of ofp_match (excluding padding)
      */
-    public static int computeMatchLength(Match match) {
+    public static int computeMatchLengthInternal(Match match) {
         final byte MATCH_TYPE_AND_LENGTH_SIZE = 4;
         int length = 0;
         if (match != null) {
             length += MATCH_TYPE_AND_LENGTH_SIZE + computeMatchEntriesLength(match.getMatchEntries());
+        }
+        return length;
+    }
+    
+    /**
+     * Computes length of match (in bytes)
+     * @param match
+     * @return length of ofp_match (excluding padding)
+     */
+    public static int computeMatchLength(Match match) {
+        int length = computeMatchLengthInternal(match);
+        int paddingRemainder = length % EncodeConstants.PADDING;
+        if (paddingRemainder != 0) {
+            length += EncodeConstants.PADDING - paddingRemainder;
         }
         return length;
     }
@@ -524,85 +538,85 @@ public class MatchSerializer {
             for (MatchEntries entry : matchEntries) {
                 length += MATCH_ENTRY_HEADER_LENGTH;
                 Class<? extends MatchField> field = entry.getOxmMatchField();
-                if (field.equals(InPort.class)) {
+                if (field.isAssignableFrom(InPort.class)) {
                     length += Integer.SIZE / Byte.SIZE;
-                } else if (field.equals(InPhyPort.class)) {
+                } else if (field.isAssignableFrom(InPhyPort.class)) {
                     length += Integer.SIZE / Byte.SIZE;
-                } else if (field.equals(Metadata.class)) {
+                } else if (field.isAssignableFrom(Metadata.class)) {
                     length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
-                } else if (field.equals(EthDst.class)) {
+                } else if (field.isAssignableFrom(EthDst.class)) {
                     length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
-                } else if (field.equals(EthSrc.class)) {
+                } else if (field.isAssignableFrom(EthSrc.class)) {
                     length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
-                } else if (field.equals(EthType.class)) {
+                } else if (field.isAssignableFrom(EthType.class)) {
                     length += Short.SIZE / Byte.SIZE;
-                } else if (field.equals(VlanVid.class)) {
+                } else if (field.isAssignableFrom(VlanVid.class)) {
                     length += computePossibleMaskEntryLength(entry, Short.SIZE / Byte.SIZE);
-                } else if (field.equals(VlanPcp.class)) {
+                } else if (field.isAssignableFrom(VlanPcp.class)) {
                     length += Byte.SIZE / Byte.SIZE;
-                } else if (field.equals(IpDscp.class)) {
+                } else if (field.isAssignableFrom(IpDscp.class)) {
                     length += Byte.SIZE / Byte.SIZE;
-                } else if (field.equals(IpEcn.class)) {
+                } else if (field.isAssignableFrom(IpEcn.class)) {
                     length += Byte.SIZE / Byte.SIZE;
-                } else if (field.equals(IpProto.class)) {
+                } else if (field.isAssignableFrom(IpProto.class)) {
                     length += Byte.SIZE / Byte.SIZE;
-                } else if (field.equals(Ipv4Src.class)) {
+                } else if (field.isAssignableFrom(Ipv4Src.class)) {
                     length += computePossibleMaskEntryLength(entry, Integer.SIZE / Byte.SIZE);
-                } else if (field.equals(Ipv4Dst.class)) {
+                } else if (field.isAssignableFrom(Ipv4Dst.class)) {
                     length += computePossibleMaskEntryLength(entry, Integer.SIZE / Byte.SIZE);
-                } else if (field.equals(TcpSrc.class)) {
+                } else if (field.isAssignableFrom(TcpSrc.class)) {
                     length += Short.SIZE / Byte.SIZE;
-                } else if (field.equals(TcpDst.class)) {
+                } else if (field.isAssignableFrom(TcpDst.class)) {
                     length += Short.SIZE / Byte.SIZE;
-                } else if (field.equals(UdpSrc.class)) {
+                } else if (field.isAssignableFrom(UdpSrc.class)) {
                     length += Short.SIZE / Byte.SIZE;
-                } else if (field.equals(UdpDst.class)) {
+                } else if (field.isAssignableFrom(UdpDst.class)) {
                     length += Short.SIZE / Byte.SIZE;
-                } else if (field.equals(SctpSrc.class)) {
+                } else if (field.isAssignableFrom(SctpSrc.class)) {
                     length += Short.SIZE / Byte.SIZE;
-                } else if (field.equals(SctpDst.class)) {
+                } else if (field.isAssignableFrom(SctpDst.class)) {
                     length += Short.SIZE / Byte.SIZE;
-                } else if (field.equals(Icmpv4Type.class)) {
+                } else if (field.isAssignableFrom(Icmpv4Type.class)) {
                     length += Byte.SIZE / Byte.SIZE;
-                } else if (field.equals(Icmpv4Code.class)) {
+                } else if (field.isAssignableFrom(Icmpv4Code.class)) {
                     length += Byte.SIZE / Byte.SIZE;
-                } else if (field.equals(ArpOp.class)) {
+                } else if (field.isAssignableFrom(ArpOp.class)) {
                     length += Short.SIZE / Byte.SIZE;
-                } else if (field.equals(ArpSpa.class)) {
+                } else if (field.isAssignableFrom(ArpSpa.class)) {
                     length += computePossibleMaskEntryLength(entry, Integer.SIZE / Byte.SIZE);
-                } else if (field.equals(ArpTpa.class)) {
+                } else if (field.isAssignableFrom(ArpTpa.class)) {
                     length += computePossibleMaskEntryLength(entry, Integer.SIZE / Byte.SIZE);
-                } else if (field.equals(ArpSha.class)) {
+                } else if (field.isAssignableFrom(ArpSha.class)) {
                     length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
-                } else if (field.equals(ArpTha.class)) {
+                } else if (field.isAssignableFrom(ArpTha.class)) {
                     length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
-                } else if (field.equals(Ipv6Src.class)) {
+                } else if (field.isAssignableFrom(Ipv6Src.class)) {
                     length += computePossibleMaskEntryLength(entry, 8 * (Short.SIZE / Byte.SIZE));
-                } else if (field.equals(Ipv6Dst.class)) {
+                } else if (field.isAssignableFrom(Ipv6Dst.class)) {
                     length += computePossibleMaskEntryLength(entry, 8 * (Short.SIZE / Byte.SIZE));
-                } else if (field.equals(Ipv6Flabel.class)) {
+                } else if (field.isAssignableFrom(Ipv6Flabel.class)) {
                     length += computePossibleMaskEntryLength(entry, Integer.SIZE / Byte.SIZE);
-                } else if (field.equals(Icmpv6Type.class)) {
+                } else if (field.isAssignableFrom(Icmpv6Type.class)) {
                     length += Byte.SIZE / Byte.SIZE;
-                } else if (field.equals(Icmpv6Code.class)) {
+                } else if (field.isAssignableFrom(Icmpv6Code.class)) {
                     length += Byte.SIZE / Byte.SIZE;
-                } else if (field.equals(Ipv6NdTarget.class)) {
+                } else if (field.isAssignableFrom(Ipv6NdTarget.class)) {
                     length += computePossibleMaskEntryLength(entry, 8 * (Short.SIZE / Byte.SIZE));
-                } else if (field.equals(Ipv6NdSll.class)) {
+                } else if (field.isAssignableFrom(Ipv6NdSll.class)) {
                     length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
-                } else if (field.equals(Ipv6NdTll.class)) {
+                } else if (field.isAssignableFrom(Ipv6NdTll.class)) {
                     length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
-                } else if (field.equals(MplsLabel.class)) {
+                } else if (field.isAssignableFrom(MplsLabel.class)) {
                     length += Integer.SIZE / Byte.SIZE;
-                } else if (field.equals(MplsTc.class)) {
+                } else if (field.isAssignableFrom(MplsTc.class)) {
                     length += Byte.SIZE / Byte.SIZE;
-                } else if (field.equals(MplsBos.class)) {
+                } else if (field.isAssignableFrom(MplsBos.class)) {
                     length += Byte.SIZE / Byte.SIZE;
-                } else if (field.equals(PbbIsid.class)) {
+                } else if (field.isAssignableFrom(PbbIsid.class)) {
                     length += computePossibleMaskEntryLength(entry, Integer.SIZE / Byte.SIZE);
-                } else if (field.equals(TunnelId.class)) {
+                } else if (field.isAssignableFrom(TunnelId.class)) {
                     length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
-                } else if (field.equals(Ipv6Exthdr.class)) {
+                } else if (field.isAssignableFrom(Ipv6Exthdr.class)) {
                     length += computePossibleMaskEntryLength(entry, Short.SIZE / Byte.SIZE);
                 }
             }
