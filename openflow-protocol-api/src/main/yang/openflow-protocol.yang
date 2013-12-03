@@ -986,7 +986,7 @@ module openflow-protocol {
                                 type binary;
                             }
                             leaf config {
-                                type oft:port-config;
+                                type oft:table-config;
                             } 
                             leaf max-entries {
                                 type uint32;

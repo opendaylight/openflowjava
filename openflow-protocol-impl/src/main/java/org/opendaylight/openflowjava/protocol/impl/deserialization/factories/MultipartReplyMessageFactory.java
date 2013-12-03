@@ -39,6 +39,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeatures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortState;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableFeaturesPropType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessageBuilder;
@@ -306,7 +307,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             byte[] metadataWrite = new byte[Long.SIZE / Byte.SIZE];
             input.readBytes(metadataWrite);
             featuresBuilder.setMetadataWrite(metadataWrite);
-            featuresBuilder.setConfig(createPortConfig(input.readUnsignedInt()));
+            featuresBuilder.setConfig(createTableConfig(input.readUnsignedInt()));
             featuresBuilder.setMaxEntries(input.readUnsignedInt());
             featuresBuilder.setTableFeatureProperties(createTableFeaturesProperties(input, 
                     length - MULTIPART_REPLY_TABLE_FEATURES_STRUCTURE_LENGTH));
@@ -314,6 +315,11 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         }
         builder.setTableFeatures(features);
         return builder.build();
+    }
+    
+    private static TableConfig createTableConfig(long input) {
+        boolean deprecated = (input & 3) != 0;
+        return new TableConfig(deprecated);
     }
     
     private static List<TableFeatureProperties> createTableFeaturesProperties(ByteBuf input, int length) {
