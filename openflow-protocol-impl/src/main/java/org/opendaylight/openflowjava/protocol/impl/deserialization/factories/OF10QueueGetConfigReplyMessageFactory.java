@@ -29,7 +29,7 @@ public class OF10QueueGetConfigReplyMessageFactory implements OFDeserializer<Get
     private static final byte PADDING_IN_PACKET_QUEUE_HEADER = 2;
     private static final byte PADDING_IN_QUEUE_PROPERTY_HEADER = 4;
     private static final byte PADDING_IN_RATE_QUEUE_PROPERTY = 6;
-    private static final byte PACKET_QUEUE_LENGTH = 16;
+    private static final byte PACKET_QUEUE_HEADER_LENGTH = 8;
 
     private static OF10QueueGetConfigReplyMessageFactory instance;
     
@@ -67,7 +67,7 @@ public class OF10QueueGetConfigReplyMessageFactory implements OFDeserializer<Get
             queueBuilder.setQueueId(new QueueId(input.readUnsignedInt()));
             int length = input.readUnsignedShort();
             input.skipBytes(PADDING_IN_PACKET_QUEUE_HEADER);
-            queueBuilder.setQueueProperty(createPropertiesList(input, length - PACKET_QUEUE_LENGTH));
+            queueBuilder.setQueueProperty(createPropertiesList(input, length - PACKET_QUEUE_HEADER_LENGTH));
             queuesList.add(queueBuilder.build());
         } 
         return queuesList;

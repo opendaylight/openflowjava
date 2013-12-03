@@ -57,13 +57,13 @@ module openflow-protocol {
                 // reference "ofp_port.peer"; 
                 type oft:port-features; 
             }
-            leaf curr_speed { 
+            leaf curr-speed { 
                 description "Current port bitrate in kbps.";
                 // reference "ofp_port.curr_speed"; 
                 type uint32; 
                 units "kbps";
             }
-            leaf max_speed { 
+            leaf max-speed { 
                 description "Max port bitrate in kbps";
                 // reference "ofp_port.max_speed"; 
                 type uint32;
@@ -267,7 +267,9 @@ module openflow-protocol {
                 leaf actions-v10 {
                     type oft:action-type-v10;
                 }
-                uses port;
+                list phy-port {
+                    uses port;
+                }
             }
             grouping get-config-request {
                 // reference "OFPT_GET_CONFIG_REQUEST message in Openflow Switch 1.3 Spec"

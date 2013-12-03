@@ -1791,4 +1791,54 @@ module openflow-types {
         }
     }
     
+    typedef flow-wildcards-v10 {
+        /* ofp_flow_wildcards */
+        type bits {
+            bit IN_PORT {
+                position 0;
+                /* Switch input port. */
+            }
+            bit DL_VLAN {
+                position 1;
+                /* Switch input port. */
+            }
+            bit DL_SRC {
+                position 2;
+                /* Switch input port. */
+            }
+            bit DL_DST {
+                position 3;
+                /* Switch input port. */
+            }
+            bit DL_TYPE {
+                position 4;
+                /* Switch input port. */
+            }
+            bit NW_PROTO {
+                position 5;
+                /* Switch input port. */
+            }
+            bit TP_SRC {
+                position 6;
+                /* Switch input port. */
+            }
+            bit TP_DST {
+                position 7;
+                /* Switch input port. */
+            }
+            bit DL_VLAN_PCP {
+                position 20;
+                /* Switch input port. */
+            }
+            bit NW_TOS {
+                position 21;
+                /* Switch input port. */
+            }
+            bit ALL {
+                position 22;
+                /* Switch input port. */
+            }
+        }
+    }
+    
 }
