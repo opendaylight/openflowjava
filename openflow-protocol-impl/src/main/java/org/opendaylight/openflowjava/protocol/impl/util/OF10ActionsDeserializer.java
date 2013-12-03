@@ -11,6 +11,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.DlAddressAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.DlAddressActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IpAddressAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IpAddressActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthActionBuilder;
@@ -190,7 +191,7 @@ public class OF10ActionsDeserializer {
     private static ActionsList createSetNwSrcAction(ByteBuf input, ActionsListBuilder builder) {
         ActionBuilder actionBuilder = new ActionBuilder();
         actionBuilder.setType(SetNwSrc.class);
-        actionBuilder.addAugmentation(DlAddressAction.class, createNwAddressAugmentationAndPad(input));
+        actionBuilder.addAugmentation(IpAddressAction.class, createNwAddressAugmentationAndPad(input));
         builder.setAction(actionBuilder.build());
         return builder.build();
     }
@@ -198,7 +199,7 @@ public class OF10ActionsDeserializer {
     private static ActionsList createSetNwDstAction(ByteBuf input, ActionsListBuilder builder) {
         ActionBuilder actionBuilder = new ActionBuilder();
         actionBuilder.setType(SetNwDst.class);
-        actionBuilder.addAugmentation(DlAddressAction.class, createNwAddressAugmentationAndPad(input));
+        actionBuilder.addAugmentation(IpAddressAction.class, createNwAddressAugmentationAndPad(input));
         builder.setAction(actionBuilder.build());
         return builder.build();
     }
