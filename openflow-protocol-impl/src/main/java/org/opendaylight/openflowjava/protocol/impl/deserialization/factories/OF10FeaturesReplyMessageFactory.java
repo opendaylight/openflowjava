@@ -4,6 +4,8 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 import io.netty.buffer.ByteBuf;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
@@ -16,14 +18,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortStateV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.features.reply.PhyPort;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.features.reply.PhyPortBuilder;
 
 /**
  * Translates FeaturesReply messages (OpenFlow v1.0)
  * @author michal.polkorab
  */
 public class OF10FeaturesReplyMessageFactory implements OFDeserializer<GetFeaturesOutput> {
-    
-    private static final byte MAX_PORT_NAME_LENGTH = 16;
     
     private static final byte PADDING_IN_FEATURES_REPLY_HEADER = 3;
     
@@ -56,7 +58,11 @@ public class OF10FeaturesReplyMessageFactory implements OFDeserializer<GetFeatur
         rawMessage.skipBytes(PADDING_IN_FEATURES_REPLY_HEADER);
         builder.setCapabilitiesV10(createCapabilitiesV10(rawMessage.readUnsignedInt()));
         builder.setActionsV10(createActionsV10(rawMessage.readUnsignedInt()));
-        deserializePort(rawMessage, builder);
+        List<PhyPort> ports = new ArrayList<>();
+        while (rawMessage.readableBytes() > 0) {
+            ports.add(deserializePort(rawMessage));
+        }
+        builder.setPhyPort(ports);
         return builder.build();
     }
 
@@ -92,21 +98,23 @@ public class OF10FeaturesReplyMessageFactory implements OFDeserializer<GetFeatur
                 SET_VLAN_PCP, SET_VLAN_VID, STRIP_VLAN, VENDOR);
     }
     
-    private static void deserializePort(ByteBuf rawMessage, GetFeaturesOutputBuilder builder) {
+    private static PhyPort deserializePort(ByteBuf rawMessage) {
+        PhyPortBuilder builder = new PhyPortBuilder();
         builder.setPortNo((long) rawMessage.readUnsignedShort());
         byte[] address = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
         rawMessage.readBytes(address);
         builder.setHwAddr(new MacAddress(ByteBufUtils.macAddressToString(address)));
-        byte[] name = new byte[MAX_PORT_NAME_LENGTH];
-        rawMessage.readBytes(name);
-        builder.setName(name.toString());
+        builder.setName(ByteBufUtils.processPortName(rawMessage));
         builder.setConfigV10(createPortConfig(rawMessage.readUnsignedInt()));
         builder.setStateV10(createPortState(rawMessage.readUnsignedInt()));
         builder.setCurrentFeaturesV10(createPortFeatures(rawMessage.readUnsignedInt()));
         builder.setAdvertisedFeaturesV10(createPortFeatures(rawMessage.readUnsignedInt()));
         builder.setSupportedFeaturesV10(createPortFeatures(rawMessage.readUnsignedInt()));
         builder.setPeerFeaturesV10(createPortFeatures(rawMessage.readUnsignedInt()));
+        return builder.build();
     }
+
+    
     
     private static PortStateV10 createPortState(long input){
         final Boolean _linkDown = ((input) & (1<<0)) != 0;

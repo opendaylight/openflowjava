@@ -233,7 +233,13 @@ module openflow-extensible-match {
         grouping match-v10-grouping {
             container match-v10 {
                 leaf wildcards {
-                    type uint32;
+                    type oft:flow-wildcards-v10;
+                }
+                leaf nw-src-mask {
+                    type uint8;
+                }
+                leaf nw-dst-mask {
+                    type uint8;
                 }
                 leaf in-port {
                     type uint16;

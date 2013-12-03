@@ -32,4 +32,7 @@ public abstract class EncodeConstants {
     /** Length of byte in bytes */
     public static final byte SIZE_OF_BYTE_IN_BYTES = Byte.SIZE / Byte.SIZE;
 
+    
+    /** OF v1.0 maximal port name length */
+    public static final byte MAX_PORT_NAME_LENGTH = 16;
 }

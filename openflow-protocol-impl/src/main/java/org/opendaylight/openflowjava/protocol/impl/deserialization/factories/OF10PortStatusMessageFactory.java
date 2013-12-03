@@ -21,7 +21,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class OF10PortStatusMessageFactory implements OFDeserializer<PortStatusMessage> {
 
     private static final byte PADDING_IN_PORT_STATUS_HEADER = 7;
-    private static final int MAX_PORT_NAME_LENGTH = 16;
 
     private static OF10PortStatusMessageFactory instance;
     
@@ -95,9 +94,7 @@ public class OF10PortStatusMessageFactory implements OFDeserializer<PortStatusMe
         byte[] address = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
         rawMessage.readBytes(address);
         builder.setHwAddr(new MacAddress(ByteBufUtils.macAddressToString(address)));
-        byte[] name = new byte[MAX_PORT_NAME_LENGTH];
-        rawMessage.readBytes(name);
-        builder.setName(name.toString());
+        builder.setName(ByteBufUtils.processPortName(rawMessage));
         builder.setConfigV10(createPortConfig(rawMessage.readUnsignedInt()));
         builder.setStateV10(createPortState(rawMessage.readUnsignedInt()));
         builder.setCurrentFeaturesV10(createPortFeatures(rawMessage.readUnsignedInt()));

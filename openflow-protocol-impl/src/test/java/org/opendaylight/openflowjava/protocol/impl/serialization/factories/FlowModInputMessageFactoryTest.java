@@ -46,6 +46,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class FlowModInputMessageFactoryTest {
     private static final byte PADDING_IN_FLOW_MOD_MESSAGE = 2;
+    
     /**
      * @throws Exception 
      * Testing of {@link FlowModInputMessageFactory} for correct translation from POJO
