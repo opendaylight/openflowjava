@@ -92,7 +92,8 @@ import org.slf4j.LoggerFactory;
  * @author timotej.kubas
  */
 public class MatchSerializer {
-    
+    /** MAC-address = 48b = 6B */
+    private static final int ETHERNET_MATCH_LENGTH = 6;
     private static final Logger LOGGER = LoggerFactory.getLogger(MatchSerializer.class);
 
     /**
@@ -402,12 +403,12 @@ public class MatchSerializer {
             fieldValue = fieldValue | 1;
             out.writeByte(fieldValue);
             byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
-            out.writeByte((Integer.SIZE + Short.SIZE) / Byte.SIZE + mask.length); // 48 b + mask [OF 1.3.2 spec]
+            out.writeByte(ETHERNET_MATCH_LENGTH + mask.length); // 48 b + mask [OF 1.3.2 spec]
             out.writeBytes(entry.getAugmentation(MacAddressMatchEntry.class).getMacAddress().getValue().getBytes());
             out.writeBytes(mask);
         } else {
             out.writeByte(fieldValue);
-            out.writeByte((Integer.SIZE + Short.SIZE) / Byte.SIZE); // 48 b [OF 1.3.2 spec]
+            out.writeByte(ETHERNET_MATCH_LENGTH); // 48 b [OF 1.3.2 spec]
             out.writeBytes(entry.getAugmentation(MacAddressMatchEntry.class).getMacAddress().getValue().getBytes());
         }
     }
@@ -545,9 +546,9 @@ public class MatchSerializer {
                 } else if (field.isAssignableFrom(Metadata.class)) {
                     length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
                 } else if (field.isAssignableFrom(EthDst.class)) {
-                    length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
+                    length += computePossibleMaskEntryLength(entry, ETHERNET_MATCH_LENGTH);
                 } else if (field.isAssignableFrom(EthSrc.class)) {
-                    length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
+                    length += computePossibleMaskEntryLength(entry, ETHERNET_MATCH_LENGTH);
                 } else if (field.isAssignableFrom(EthType.class)) {
                     length += Short.SIZE / Byte.SIZE;
                 } else if (field.isAssignableFrom(VlanVid.class)) {
