@@ -63,18 +63,9 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupModInput> 
         if (buckets != null) {
             for (BucketsList currentBucket : buckets) {
                 outBuffer.writeShort(computeLengthOfBucket(currentBucket));
-                
-                if (null != currentBucket.getWeight()) {
-                    outBuffer.writeShort(currentBucket.getWeight().shortValue());
-                }
-                
-                if (null != currentBucket.getWatchPort()) {
-                    outBuffer.writeInt(currentBucket.getWatchPort().getValue().intValue());
-                }
-                
-                if (null != currentBucket.getWatchGroup()) {
-                    outBuffer.writeInt(currentBucket.getWatchGroup().intValue());
-                }
+                outBuffer.writeShort(currentBucket.getWeight().shortValue());
+                outBuffer.writeInt(currentBucket.getWatchPort().getValue().intValue());
+                outBuffer.writeInt(currentBucket.getWatchGroup().intValue());
                 ByteBufUtils.padBuffer(PADDING_IN_BUCKET, outBuffer);
                 ActionsSerializer.encodeActions(currentBucket.getActionsList(), outBuffer);
             }
