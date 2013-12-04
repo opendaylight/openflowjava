@@ -237,11 +237,15 @@ public abstract class ActionsSerializer {
     
     private static void encodeCommonEthertype(Action action, ByteBuf outBuffer) {
         final byte LENGTH_OF_ETHERTYPE_ACTION = 8;
-        final byte ETHERTYPE_ACTION_PADDING = 2;
-        outBuffer.writeShort(LENGTH_OF_ETHERTYPE_ACTION);
+        final byte ETHERTYPE_ACTION_PADDING = 2;        
         EthertypeAction ethertype = action.getAugmentation(EthertypeAction.class);
-        outBuffer.writeShort(ethertype.getEthertype().getValue());
-        ByteBufUtils.padBuffer(ETHERTYPE_ACTION_PADDING, outBuffer);
+        
+        if (null != ethertype && null != ethertype.getEthertype()) {
+            outBuffer.writeShort(LENGTH_OF_ETHERTYPE_ACTION);
+            
+            outBuffer.writeShort(ethertype.getEthertype().getValue());
+            ByteBufUtils.padBuffer(ETHERTYPE_ACTION_PADDING, outBuffer);
+        }
     }
     
     /**
