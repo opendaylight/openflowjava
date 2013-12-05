@@ -177,13 +177,9 @@ public class OF10ActionsDeserializer {
         final byte MAC_ADDRESS_LENGTH = 6;
         final byte PADDING_IN_SET_DL_ACTION = 6;
         DlAddressActionBuilder dlBuilder = new DlAddressActionBuilder();
-        short mac = 0;
-        StringBuffer macAddress = new StringBuffer();
-        for(int i = 0; i < MAC_ADDRESS_LENGTH; i++){
-            mac = input.readUnsignedByte();
-            macAddress.append(String.format("%02X", mac));
-        }
-        dlBuilder.setDlAddress(new MacAddress(macAddress.toString()));
+        byte[] address = new byte[MAC_ADDRESS_LENGTH];
+        input.readBytes(address);
+        dlBuilder.setDlAddress(new MacAddress(ByteBufUtils.macAddressToString(address)));
         input.skipBytes(PADDING_IN_SET_DL_ACTION);
         return dlBuilder.build();
     }
