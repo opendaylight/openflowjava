@@ -4,6 +4,7 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeatures;
@@ -48,13 +49,9 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
         rawMessage.skipBytes(PADDING_IN_PORT_STATUS_HEADER);
         builder.setPortNo(rawMessage.readUnsignedInt());
         rawMessage.skipBytes(PADDING_IN_OFP_PORT_HEADER_1);
-        StringBuffer macToString = new StringBuffer();
-        for(int i=0; i<MAC_ADDRESS_LENGTH; i++){
-            short mac = 0;
-            mac = rawMessage.readUnsignedByte();
-            macToString.append(String.format("%02X", mac));
-        }
-        builder.setHwAddr(new MacAddress(macToString.toString()));
+        byte[] hwAddress = new byte[MAC_ADDRESS_LENGTH];
+        rawMessage.readBytes(hwAddress);
+        builder.setHwAddr(new MacAddress(ByteBufUtils.macAddressToString(hwAddress)));
         rawMessage.skipBytes(PADDING_IN_OFP_PORT_HEADER_2);
         builder.setConfig(createPortConfig(rawMessage.readUnsignedInt()));
         builder.setState(createPortState(rawMessage.readUnsignedInt()));

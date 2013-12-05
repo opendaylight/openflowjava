@@ -8,6 +8,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
@@ -36,7 +37,7 @@ public class PortModInputMessageFactoryTest {
         PortModInputBuilder builder = new PortModInputBuilder();
         BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setPortNo(new PortNumber(9L));
-        builder.setHwAddress(new MacAddress("08002700B0EB"));
+        builder.setHwAddress(new MacAddress("08:00:27:00:B0:EB"));
         builder.setConfig(new PortConfig(true, false, true, false));
         builder.setMask(new PortConfig(false, true, false, true));
         builder.setAdvertise(new PortFeatures(true, false, false, false,
@@ -52,7 +53,10 @@ public class PortModInputMessageFactoryTest {
         BufferHelper.checkHeaderV13(out, MESSAGE_TYPE, MESSAGE_LENGTH);
         Assert.assertEquals("Wrong PortNo", message.getPortNo().getValue().longValue(), out.readUnsignedInt());
         out.skipBytes(PADDING_IN_PORT_MOD_MESSAGE_01);
-        Assert.assertEquals("Wrong MacAddress", message.getHwAddress().getValue(), new MacAddress(makeMacAddress(out)).getValue());
+        byte[] address = new byte[6];
+        out.readBytes(address);
+        Assert.assertEquals("Wrong MacAddress", message.getHwAddress().getValue(),
+                new MacAddress(ByteBufUtils.macAddressToString(address)).getValue());
         out.skipBytes(PADDING_IN_PORT_MOD_MESSAGE_02);
         Assert.assertEquals("Wrong config", message.getConfig(), createPortConfig(out.readInt()));
         Assert.assertEquals("Wrong mask", message.getMask(), createPortConfig(out.readInt()));
@@ -89,15 +93,4 @@ public class PortModInputMessageFactoryTest {
                 _1gbFd, _1gbHd, _1tbFd, _40gbFd, _autoneg, _copper, _fiber, _other, _pause, _pauseAsym);
     }
     
-    private static String makeMacAddress(ByteBuf input) {
-        final int macAddressLength = 6;
-        StringBuffer macToString = new StringBuffer();
-        
-        for(int i=0; i<macAddressLength; i++){
-            short mac = 0;
-            mac = input.readUnsignedByte();
-            macToString.append(String.format("%02X", mac));
-        }
-        return macToString.toString();
-    }
 }

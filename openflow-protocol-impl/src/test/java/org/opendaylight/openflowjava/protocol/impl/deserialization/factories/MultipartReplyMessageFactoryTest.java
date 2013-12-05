@@ -851,7 +851,7 @@ public class MultipartReplyMessageFactoryTest {
         MultipartReplyPortDesc message = (MultipartReplyPortDesc) builtByFactory.getMultipartReplyBody();
         
         Assert.assertEquals("Wrong portNo", 66051L, message.getPorts().get(0).getPortNo().longValue());
-        Assert.assertEquals("Wrong macAddress", new MacAddress("08002700B0EB"), 
+        Assert.assertEquals("Wrong macAddress", new MacAddress("08:00:27:00:B0:EB"), 
                                                 message.getPorts().get(0).getHwAddr());
         Assert.assertEquals("Wrong portName", "SampleText", 
                                                 message.getPorts().get(0).getName());

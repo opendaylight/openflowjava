@@ -404,12 +404,14 @@ public class MatchSerializer {
             out.writeByte(fieldValue);
             byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
             out.writeByte(ETHERNET_MATCH_LENGTH + mask.length); // 48 b + mask [OF 1.3.2 spec]
-            out.writeBytes(entry.getAugmentation(MacAddressMatchEntry.class).getMacAddress().getValue().getBytes());
+            String macAddress = entry.getAugmentation(MacAddressMatchEntry.class).getMacAddress().getValue();
+            out.writeBytes(ByteBufUtils.macAddressToBytes(macAddress));
             out.writeBytes(mask);
         } else {
             out.writeByte(fieldValue);
             out.writeByte(ETHERNET_MATCH_LENGTH); // 48 b [OF 1.3.2 spec]
-            out.writeBytes(entry.getAugmentation(MacAddressMatchEntry.class).getMacAddress().getValue().getBytes());
+            String macAddress = entry.getAugmentation(MacAddressMatchEntry.class).getMacAddress().getValue();
+            out.writeBytes(ByteBufUtils.macAddressToBytes(macAddress));
         }
     }
     
