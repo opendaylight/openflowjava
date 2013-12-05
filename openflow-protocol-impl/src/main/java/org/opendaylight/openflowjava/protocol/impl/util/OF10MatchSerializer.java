@@ -22,8 +22,8 @@ public abstract class OF10MatchSerializer {
     public static void encodeMatchV10(ByteBuf out, MatchV10 match) {
         out.writeInt(match.getWildcards().intValue());
         out.writeShort(match.getInPort());
-        out.writeBytes(match.getDlSrc().getValue().getBytes());
-        out.writeBytes(match.getDlDst().getValue().getBytes());
+        out.writeBytes(ByteBufUtils.macAddressToBytes(match.getDlSrc().getValue()));
+        out.writeBytes(ByteBufUtils.macAddressToBytes(match.getDlDst().getValue()));
         out.writeShort(match.getDlVlan());
         out.writeByte(match.getDlVlanPcp());
         ByteBufUtils.padBuffer(PADDING_IN_MATCH, out);
@@ -31,11 +31,11 @@ public abstract class OF10MatchSerializer {
         out.writeByte(match.getNwTos());
         out.writeByte(match.getNwProto());
         ByteBufUtils.padBuffer(PADDING_IN_MATCH_2, out);
-        String[] srcGroups = match.getNwSrc().getValue().split(".");
+        String[] srcGroups = match.getNwSrc().getValue().split("\\.");
         for (int i = 0; i < srcGroups.length; i++) {
             out.writeByte(Integer.parseInt(srcGroups[i]));
         }
-        String[] dstGroups = match.getNwSrc().getValue().split(".");
+        String[] dstGroups = match.getNwSrc().getValue().split("\\.");
         for (int i = 0; i < dstGroups.length; i++) {
             out.writeByte(Integer.parseInt(dstGroups[i]));
         }

@@ -27,8 +27,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class OF10StatsRequestInputFactory implements OFSerializer<MultipartRequestInput> {
 
-    private static final byte MESSAGE_TYPE = 18;
-    private static final int MESSAGE_LENGTH = 16;
+    private static final byte MESSAGE_TYPE = 16;
+    private static final int MESSAGE_LENGTH = 12;
 
     private static OF10StatsRequestInputFactory instance; 
     

@@ -120,7 +120,7 @@ public class OF10ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
 
     private static void decodeType(ErrorMessageBuilder builder, ErrorTypeV10 type) {
         if (type != null) {
-            builder.setType(NO_CORRECT_ENUM_FOUND_VALUE);
+            builder.setType(type.getIntValue());
             builder.setTypeString(type.name());
         } else {
             builder.setType(NO_CORRECT_ENUM_FOUND_VALUE);
