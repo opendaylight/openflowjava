@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ActionsDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.InstructionsDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.MatchDeserializer;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
@@ -635,7 +636,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     private static MultipartReplyPortDesc setPortDesc(ByteBuf input) {
         final byte PADDING_IN_PORT_DESC_HEADER_01 = 4;
         final byte PADDING_IN_PORT_DESC_HEADER_02 = 2;
-        final int macAddressLength = 6;
+        final int MAC_ADDRESS_LENGTH = 6;
         final byte MAX_PORT_NAME_LEN = 16;
         MultipartReplyPortDescBuilder builder = new MultipartReplyPortDescBuilder();
         List<Ports> portsList = new ArrayList<>();
@@ -643,13 +644,9 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             PortsBuilder portsBuilder = new PortsBuilder();
             portsBuilder.setPortNo(input.readUnsignedInt());
             input.skipBytes(PADDING_IN_PORT_DESC_HEADER_01);
-            StringBuffer macToString = new StringBuffer();
-            for(int i=0; i<macAddressLength; i++){
-                short mac = 0;
-                mac = input.readUnsignedByte();
-                macToString.append(String.format("%02X", mac));
-            }
-            portsBuilder.setHwAddr(new MacAddress(macToString.toString()));
+            byte[] hwAddress = new byte[MAC_ADDRESS_LENGTH];
+            input.readBytes(hwAddress);
+            portsBuilder.setHwAddr(new MacAddress(ByteBufUtils.macAddressToString(hwAddress)));
             input.skipBytes(PADDING_IN_PORT_DESC_HEADER_02);
             byte[] portNameBytes = new byte[MAX_PORT_NAME_LEN];
             input.readBytes(portNameBytes);

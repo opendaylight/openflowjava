@@ -5,12 +5,16 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
+
+import com.google.common.base.Joiner;
 
 /** Class for common operations on ByteBuf
  * @author michal.polkorab
@@ -18,6 +22,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public abstract class ByteBufUtils {
 
+    private static final byte MAC_ADDRESS_LENGTH = 6;
 
     /**
      * Converts ByteBuf into String
@@ -159,5 +164,35 @@ public abstract class ByteBufUtils {
             sb.append(String.format("%02x ", b));
         }
         return sb.toString();
+    }
+    
+    /**
+     * Converts macAddress to byte array
+     * @param macAddress
+     * @return byte representation of mac address
+     * @see {@link MacAddress}
+     */
+    public static byte[] macAddressToBytes(String macAddress) {
+        String[] sequences = macAddress.split(":");
+        byte[] result = new byte[MAC_ADDRESS_LENGTH];
+        for (int i = 0; i < sequences.length; i++) {
+             result[i] = (byte) Short.parseShort(sequences[i], 16);
+        }
+        return result;
+    }
+    
+    /**
+     * Converts mac address represented in bytes to String
+     * @param address
+     * @return String representation of mac address
+     * @see {@link MacAddress}
+     */
+    public static String macAddressToString(byte[] address) {
+        List<String> groups = new ArrayList<>();
+        for(int i=0; i < MAC_ADDRESS_LENGTH; i++){
+            groups.add(String.format("%02X", address[i]));
+        }
+        Joiner joiner = Joiner.on(":");
+        return joiner.join(groups); 
     }
 }

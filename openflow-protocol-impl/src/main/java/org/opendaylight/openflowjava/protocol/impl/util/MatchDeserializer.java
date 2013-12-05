@@ -541,15 +541,11 @@ public abstract class MatchDeserializer {
     }
 
     private static void addMacAddressAugmentation(MatchEntriesBuilder builder, ByteBuf in) {
+        final int MAC_ADDRESS_LENGTH = 6;
         MacAddressMatchEntryBuilder macAddress = new MacAddressMatchEntryBuilder();
-        StringBuffer macToString = new StringBuffer();
-        final int macAddressLength = 6;
-        for(int i=0; i<macAddressLength ; i++){
-            short mac = 0;
-            mac = in.readUnsignedByte();
-            macToString.append(String.format("%02X", mac));
-        }
-        macAddress.setMacAddress(new MacAddress(macToString.toString())); 
+        byte[] address = new byte[MAC_ADDRESS_LENGTH];
+        in.readBytes(address);
+        macAddress.setMacAddress(new MacAddress(ByteBufUtils.macAddressToString(address)));
         builder.addAugmentation(MacAddressMatchEntry.class, macAddress.build());
     }
     
