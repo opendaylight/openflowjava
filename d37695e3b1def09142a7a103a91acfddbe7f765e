@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da6255ed_220e208e",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/deserialization/factories/MultipartReplyMessageFactory.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 639,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2013-12-05T13:41:37Z",
+      "side": 1,
+      "message": "use capitals, please",
+      "revId": "d37695e3b1def09142a7a103a91acfddbe7f765e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da6255ed_e227e810",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/serialization/factories/PortModInputMessageFactory.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2013-12-05T13:41:37Z",
+      "side": 1,
+      "message": "use SLF4J, please",
+      "revId": "d37695e3b1def09142a7a103a91acfddbe7f765e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da6255ed_c222a400",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/util/ByteBufUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2013-12-05T13:41:37Z",
+      "side": 1,
+      "message": "add: @see {@link MacAddress} at the end",
+      "revId": "d37695e3b1def09142a7a103a91acfddbe7f765e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da6255ed_a221f0fc",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/util/ByteBufUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2013-12-05T13:41:37Z",
+      "side": 1,
+      "message": "add: @see {@link MacAddress} at the end",
+      "revId": "d37695e3b1def09142a7a103a91acfddbe7f765e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da6255ed_0288bce5",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/util/MatchDeserializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 547,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2013-12-05T13:41:37Z",
+      "side": 1,
+      "message": "use read to byte[] and ByteBufUtils.macAddressToString, please",
+      "revId": "d37695e3b1def09142a7a103a91acfddbe7f765e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
