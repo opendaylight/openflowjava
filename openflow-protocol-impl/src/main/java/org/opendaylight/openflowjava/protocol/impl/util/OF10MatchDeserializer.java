@@ -33,18 +33,12 @@ public abstract class OF10MatchDeserializer {
         MatchV10Builder builder = new MatchV10Builder();
         builder.setWildcards(rawMessage.readUnsignedInt());
         builder.setInPort(rawMessage.readUnsignedShort());
-        StringBuffer dlSrc = new StringBuffer();
-        for(int i = 0; i < MAC_ADDRESS_LENGTH; i++){
-            short mac = rawMessage.readUnsignedByte();
-            dlSrc.append(String.format("%02X", mac));
-        }
-        builder.setDlSrc(new MacAddress(dlSrc.toString()));
-        StringBuffer dlDst = new StringBuffer();
-        for(int i = 0; i < MAC_ADDRESS_LENGTH; i++){
-            short mac = rawMessage.readUnsignedByte();
-            dlDst.append(String.format("%02X", mac));
-        }
-        builder.setDlDst(new MacAddress(dlDst.toString()));
+        byte[] dlSrc = new byte[MAC_ADDRESS_LENGTH];
+        rawMessage.readBytes(dlSrc);
+        builder.setDlSrc(new MacAddress(ByteBufUtils.macAddressToString(dlSrc)));
+        byte[] dlDst = new byte[MAC_ADDRESS_LENGTH];
+        rawMessage.readBytes(dlDst);
+        builder.setDlDst(new MacAddress(ByteBufUtils.macAddressToString(dlDst)));
         builder.setDlVlan(rawMessage.readUnsignedShort());
         builder.setDlVlanPcp(rawMessage.readUnsignedByte());
         rawMessage.skipBytes(PADDING_IN_MATCH);
