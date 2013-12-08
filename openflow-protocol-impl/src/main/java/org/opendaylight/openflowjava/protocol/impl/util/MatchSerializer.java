@@ -158,7 +158,7 @@ public class MatchSerializer {
             out.writeShort(EXPERIMENTER_CLASS_CODE);
         }
     }
-    
+
     private static void encodeRest(MatchEntries entry, ByteBuf out) {
         int fieldValue = 0;
         Class<? extends MatchField> field = entry.getOxmMatchField();
@@ -374,13 +374,13 @@ public class MatchSerializer {
             }
         }
     }
-    
+
     private static void writeOxmFieldAndLength(ByteBuf out, int fieldValue, int length) {
         int fieldAndMask = fieldValue << 1;
         out.writeByte(fieldAndMask);
         out.writeByte(length);
     }
-    
+
     private static void writeMetadataRelatedEntry(MatchEntries entry, ByteBuf out, int value) {
         int fieldValue = value << 1;
         if (entry.isHasMask()) {
@@ -396,7 +396,7 @@ public class MatchSerializer {
             out.writeBytes(entry.getAugmentation(MetadataMatchEntry.class).getMetadata());
         }
     }
-    
+
     private static void writeMacAddressRelatedEntry(MatchEntries entry, ByteBuf out, int value) {
         int fieldValue = value << 1;
         if (entry.isHasMask()) {
@@ -414,7 +414,7 @@ public class MatchSerializer {
             out.writeBytes(ByteBufUtils.macAddressToBytes(macAddress));
         }
     }
-    
+
     private static void writeIpv4AddressRelatedEntry(MatchEntries entry, ByteBuf out, int value) {
         int fieldValue = value << 1;
         if (entry.isHasMask()) {
@@ -430,7 +430,7 @@ public class MatchSerializer {
             writeIpv4Address(entry, out);
         }
     }
-    
+
     private static void writeIpv4Address(MatchEntries entry, ByteBuf out) {
         String[] addressGroups = entry.getAugmentation(Ipv4AddressMatchEntry.class).getIpv4Address().getValue().split("\\.");
         for (int i = 0; i < addressGroups.length; i++) {
@@ -466,7 +466,7 @@ public class MatchSerializer {
         for (int i = 0; i < addressGroups.length; i++) {
             if (addressGroups[i].equals("")){
                 countEmpty++;
-            } 
+            }
         }
         String[] ready = new String[GROUPS_IN_IPV6_ADDRESS];
         switch (countEmpty) {
@@ -514,7 +514,7 @@ public class MatchSerializer {
         }
         return length;
     }
-    
+
     /**
      * Computes length of match (in bytes)
      * @param match
@@ -590,9 +590,9 @@ public class MatchSerializer {
                 } else if (field.isAssignableFrom(ArpTpa.class)) {
                     length += computePossibleMaskEntryLength(entry, Integer.SIZE / Byte.SIZE);
                 } else if (field.isAssignableFrom(ArpSha.class)) {
-                    length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
+                    length += computePossibleMaskEntryLength(entry, ETHERNET_MATCH_LENGTH);
                 } else if (field.isAssignableFrom(ArpTha.class)) {
-                    length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
+                    length += computePossibleMaskEntryLength(entry, ETHERNET_MATCH_LENGTH);
                 } else if (field.isAssignableFrom(Ipv6Src.class)) {
                     length += computePossibleMaskEntryLength(entry, 8 * (Short.SIZE / Byte.SIZE));
                 } else if (field.isAssignableFrom(Ipv6Dst.class)) {
@@ -606,9 +606,9 @@ public class MatchSerializer {
                 } else if (field.isAssignableFrom(Ipv6NdTarget.class)) {
                     length += computePossibleMaskEntryLength(entry, 8 * (Short.SIZE / Byte.SIZE));
                 } else if (field.isAssignableFrom(Ipv6NdSll.class)) {
-                    length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
+                    length += computePossibleMaskEntryLength(entry, ETHERNET_MATCH_LENGTH);
                 } else if (field.isAssignableFrom(Ipv6NdTll.class)) {
-                    length += computePossibleMaskEntryLength(entry, Long.SIZE / Byte.SIZE);
+                    length += computePossibleMaskEntryLength(entry, ETHERNET_MATCH_LENGTH);
                 } else if (field.isAssignableFrom(MplsLabel.class)) {
                     length += Integer.SIZE / Byte.SIZE;
                 } else if (field.isAssignableFrom(MplsTc.class)) {
