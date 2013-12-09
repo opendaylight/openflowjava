@@ -45,7 +45,7 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupModInput> 
         out.writeShort(message.getCommand().getIntValue());
         out.writeByte(message.getType().getIntValue());
         ByteBufUtils.padBuffer(PADDING_IN_GROUP_MOD_MESSAGE, out);
-        out.writeInt(message.getGroupId().intValue());
+        out.writeInt(message.getGroupId().getValue().intValue());
         encodeBuckets(message.getBucketsList(), out);
     }
 

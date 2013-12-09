@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupModCommand;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
@@ -37,7 +38,7 @@ public class GroupModInputMessageFactoryTest {
         BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setCommand(GroupModCommand.forValue(2));
         builder.setType(GroupType.forValue(3));
-        builder.setGroupId(256L);
+        builder.setGroupId(new GroupId(256L));
         List<BucketsList> exp = createBucketsList();
         builder.setBucketsList(exp);
         GroupModInput message = builder.build();
@@ -50,7 +51,7 @@ public class GroupModInputMessageFactoryTest {
         Assert.assertEquals("Wrong command", message.getCommand().getIntValue(), out.readUnsignedShort());
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readUnsignedByte());
         out.skipBytes(PADDING_IN_GROUP_MOD_MESSAGE);
-        Assert.assertEquals("Wrong groupId", message.getGroupId().intValue(), out.readUnsignedInt());
+        Assert.assertEquals("Wrong groupId", message.getGroupId().getValue().intValue(), out.readUnsignedInt());
         List<BucketsList> rec = createBucketsListFromBufer(out);
         Assert.assertArrayEquals("Wrong bucketList", exp.toArray(), rec.toArray());
     }

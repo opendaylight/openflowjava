@@ -479,7 +479,7 @@ module openflow-protocol {
                     type oft:group-type;
                 }
                 leaf group-id {
-                    type uint32;
+                    type oft:group-id;
                 }
                 
                 uses buckets;
@@ -612,7 +612,7 @@ module openflow-protocol {
                     }
                     case multipart-request-group {
                         leaf group-id {
-                            type uint32;
+                            type oft:group-id;
                         }
                     }
                     case multipart-request-group-desc {
@@ -627,12 +627,12 @@ module openflow-protocol {
                     }
                     case multipart-request-meter {
                         leaf meter-id {
-                            type uint32;
+                            type oft:meter-id;
                         }
                     }
                     case multipart-request-meter-config {
                         leaf meter-id {
-                            type uint32;
+                            type oft:meter-id;
                         }
                     }
                     case multipart-request-meter-features {
@@ -861,7 +861,7 @@ module openflow-protocol {
                     case multipart-reply-group {
                         list group-stats {
                             leaf group-id {
-                                type uint32;
+                                type oft:group-id;
                             }
                             leaf ref-count {
                                 type uint32;
@@ -894,7 +894,7 @@ module openflow-protocol {
                                 type oft:group-type;
                             }
                             leaf group-id {
-                                type uint32;
+                                type oft:group-id;
                             }
                             uses buckets;
                         }
@@ -916,7 +916,7 @@ module openflow-protocol {
                     case multipart-reply-meter {
                         list meter-stats {
                             leaf meter-id {
-                                type uint32;
+                                type oft:meter-id;
                             }
                             leaf flow-count {
                                 type uint32;
@@ -949,7 +949,7 @@ module openflow-protocol {
                                 type oft:meter-flags;
                             }
                             leaf meter-id {
-                                type uint32;
+                                type oft:meter-id;
                             }
                             list bands {
                                 uses meter-band-header;

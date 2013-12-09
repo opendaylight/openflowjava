@@ -14,6 +14,8 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableConfig;
@@ -298,7 +300,7 @@ public class MultipartRequestInputFactoryTest {
 
     private static MultipartRequestGroup createRequestGroup() {
         MultipartRequestGroupBuilder builder = new MultipartRequestGroupBuilder();
-        builder.setGroupId(2258L);
+        builder.setGroupId(new GroupId(2258L));
         MultipartRequestGroup group = builder.build();
         return group;
     }
@@ -306,7 +308,7 @@ public class MultipartRequestInputFactoryTest {
     private static MultipartRequestGroup decodeRequestGroup(ByteBuf output) {
         final byte PADDING_IN_MULTIPART_REQUEST_GROUP_BODY = 4;
         MultipartRequestGroupBuilder builder = new MultipartRequestGroupBuilder();
-        builder.setGroupId(output.readUnsignedInt());
+        builder.setGroupId(new GroupId(output.readUnsignedInt()));
         output.skipBytes(PADDING_IN_MULTIPART_REQUEST_GROUP_BODY);
         MultipartRequestGroup group = builder.build();
         return group;
@@ -338,7 +340,7 @@ public class MultipartRequestInputFactoryTest {
 
     private static MultipartRequestMeter createRequestMeter() {
         MultipartRequestMeterBuilder builder = new MultipartRequestMeterBuilder();
-        builder.setMeterId(1121L);
+        builder.setMeterId(new MeterId(1121L));
         MultipartRequestMeter meter = builder.build();
         return meter;
     }
@@ -346,7 +348,7 @@ public class MultipartRequestInputFactoryTest {
     private static MultipartRequestMeter decodeRequestMeter(ByteBuf output) {
         final byte PADDING_IN_MULTIPART_REQUEST_METER_BODY = 4;
         MultipartRequestMeterBuilder builder = new MultipartRequestMeterBuilder();
-        builder.setMeterId(output.readUnsignedInt());
+        builder.setMeterId(new MeterId(output.readUnsignedInt()));
         output.skipBytes(PADDING_IN_MULTIPART_REQUEST_METER_BODY);
         MultipartRequestMeter meter = builder.build();
         return meter;
@@ -378,7 +380,7 @@ public class MultipartRequestInputFactoryTest {
 
     private static MultipartRequestMeterConfig createRequestMeterConfig() {
         MultipartRequestMeterConfigBuilder builder = new MultipartRequestMeterConfigBuilder();
-        builder.setMeterId(1133L);
+        builder.setMeterId(new MeterId(1133L));
         MultipartRequestMeterConfig meterConfig = builder.build();
         return meterConfig;
     }
@@ -386,7 +388,7 @@ public class MultipartRequestInputFactoryTest {
     private static MultipartRequestMeterConfig decodeRequestMeterConfig(ByteBuf output) {
         final byte PADDING_IN_MULTIPART_REQUEST_METER_CONFIG_BODY = 4;
         MultipartRequestMeterConfigBuilder builder = new MultipartRequestMeterConfigBuilder();
-        builder.setMeterId(output.readUnsignedInt());
+        builder.setMeterId(new MeterId(output.readUnsignedInt()));
         output.skipBytes(PADDING_IN_MULTIPART_REQUEST_METER_CONFIG_BODY);
         MultipartRequestMeterConfig meterConfig = builder.build();
         return meterConfig;

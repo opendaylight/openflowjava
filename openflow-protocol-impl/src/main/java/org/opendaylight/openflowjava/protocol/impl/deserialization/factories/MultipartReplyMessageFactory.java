@@ -30,11 +30,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowModFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupCapabilities;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterBandType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterBandTypeBitmap;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterFlags;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
@@ -482,7 +484,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             GroupStatsBuilder groupStatsBuilder = new GroupStatsBuilder();
             int bodyLength = input.readUnsignedShort();
             input.skipBytes(PADDING_IN_GROUP_HEADER_01);
-            groupStatsBuilder.setGroupId(input.readUnsignedInt());
+            groupStatsBuilder.setGroupId(new GroupId(input.readUnsignedInt()));
             groupStatsBuilder.setRefCount(input.readUnsignedInt());
             input.skipBytes(PADDING_IN_GROUP_HEADER_02);
             byte[] packetCount = new byte[Long.SIZE/Byte.SIZE];
@@ -543,7 +545,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         List<MeterStats> meterStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
             MeterStatsBuilder meterStatsBuilder = new MeterStatsBuilder();
-            meterStatsBuilder.setMeterId(input.readUnsignedInt());
+            meterStatsBuilder.setMeterId(new MeterId(input.readUnsignedInt()));
             int meterStatsBodyLength = input.readUnsignedShort();
             input.skipBytes(PADDING_IN_METER_STATS_HEADER);
             meterStatsBuilder.setFlowCount(input.readUnsignedInt());
@@ -582,7 +584,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             MeterConfigBuilder meterConfigBuilder = new MeterConfigBuilder();
             int meterConfigBodyLength = input.readUnsignedShort();
             meterConfigBuilder.setFlags(createMeterFlags(input.readUnsignedShort()));
-            meterConfigBuilder.setMeterId(input.readUnsignedInt());
+            meterConfigBuilder.setMeterId(new MeterId(input.readUnsignedInt()));
             int actualLength = METER_CONFIG_LENGTH;
             List<Bands> bandsList = new ArrayList<>();
             while (actualLength < meterConfigBodyLength) {
@@ -769,7 +771,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             int bodyLength = input.readUnsignedShort();
             groupDescBuilder.setType(GroupType.forValue(input.readUnsignedByte()));
             input.skipBytes(PADDING_IN_GROUP_DESC_HEADER);
-            groupDescBuilder.setGroupId(input.readUnsignedInt());
+            groupDescBuilder.setGroupId(new GroupId(input.readUnsignedInt()));
             int actualLength = GROUP_DESC_HEADER_LENGTH;
             List<BucketsList> bucketsList = new ArrayList<>();
             while (actualLength < bodyLength) {

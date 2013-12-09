@@ -397,7 +397,7 @@ public class MultipartReplyMessageFactoryTest {
         
         MultipartReplyGroup message = (MultipartReplyGroup) builtByFactory.getMultipartReplyBody();
         
-        Assert.assertEquals("Wrong groupId", 16, message.getGroupStats().get(0).getGroupId().intValue());
+        Assert.assertEquals("Wrong groupId", 16, message.getGroupStats().get(0).getGroupId().getValue().intValue());
         Assert.assertEquals("Wrong refCount", 18, message.getGroupStats().get(0).getRefCount().intValue());
         Assert.assertEquals("Wrong packetCount", 
                 new BigInteger(new byte[]{0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
@@ -420,7 +420,7 @@ public class MultipartReplyMessageFactoryTest {
                 new BigInteger(new byte[]{0x00, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}), 
                 message.getGroupStats().get(0).getBucketStats().get(1).getByteCount());
         
-        Assert.assertEquals("Wrong groupId_2", 16, message.getGroupStats().get(1).getGroupId().intValue());
+        Assert.assertEquals("Wrong groupId_2", 16, message.getGroupStats().get(1).getGroupId().getValue().intValue());
         Assert.assertEquals("Wrong refCount_2", 18, message.getGroupStats().get(1).getRefCount().intValue());
         Assert.assertEquals("Wrong packetCount_2", 
                 new BigInteger(new byte[]{0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
@@ -505,7 +505,7 @@ public class MultipartReplyMessageFactoryTest {
         MultipartReplyMeter message = (MultipartReplyMeter) builtByFactory.getMultipartReplyBody();
         
         Assert.assertEquals("Wrong meterId", 9, 
-                             message.getMeterStats().get(0).getMeterId().intValue());
+                             message.getMeterStats().get(0).getMeterId().getValue().intValue());
         Assert.assertEquals("Wrong flowCount", 7, 
                             message.getMeterStats().get(0).getFlowCount().intValue());
         Assert.assertEquals("Wrong packetInCount", 
@@ -583,7 +583,7 @@ public class MultipartReplyMessageFactoryTest {
         MultipartReplyMeter message = (MultipartReplyMeter) builtByFactory.getMultipartReplyBody();
         
         Assert.assertEquals("Wrong meterId", 9, 
-                             message.getMeterStats().get(0).getMeterId().intValue());
+                             message.getMeterStats().get(0).getMeterId().getValue().intValue());
         Assert.assertEquals("Wrong flowCount", 7, 
                             message.getMeterStats().get(0).getFlowCount().intValue());
         Assert.assertEquals("Wrong packetInCount", 
@@ -616,7 +616,7 @@ public class MultipartReplyMessageFactoryTest {
                 message.getMeterStats().get(0).getMeterBandStats().get(2).getByteBandCount());
         
         Assert.assertEquals("Wrong meterId", 8, 
-                message.getMeterStats().get(1).getMeterId().intValue());
+                message.getMeterStats().get(1).getMeterId().getValue().intValue());
         Assert.assertEquals("Wrong flowCount", 7, 
                 message.getMeterStats().get(1).getFlowCount().intValue());
         Assert.assertEquals("Wrong packetInCount", 
@@ -687,7 +687,7 @@ public class MultipartReplyMessageFactoryTest {
         Assert.assertEquals("Wrong flags", new MeterFlags(false, false, true, true),
                              message.getMeterConfig().get(0).getFlags());
         Assert.assertEquals("Wrong meterId", 9, 
-                             message.getMeterConfig().get(0).getMeterId().intValue());
+                             message.getMeterConfig().get(0).getMeterId().getValue().intValue());
         
         MeterBandDrop meterBandDrop = (MeterBandDrop) message.getMeterConfig().get(0).getBands().get(0).getMeterBand(); 
         Assert.assertEquals("Wrong meterBandDrop.type", 1, meterBandDrop.getType().getIntValue()); 
@@ -755,7 +755,7 @@ public class MultipartReplyMessageFactoryTest {
         Assert.assertEquals("Wrong flags", new MeterFlags(true, false, true, false), 
                              message.getMeterConfig().get(0).getFlags());
         Assert.assertEquals("Wrong meterId", 9, 
-                             message.getMeterConfig().get(0).getMeterId().intValue());
+                             message.getMeterConfig().get(0).getMeterId().getValue().intValue());
         
         MeterBandDrop meterBandDrop = (MeterBandDrop) message.getMeterConfig().get(0).getBands().get(0).getMeterBand(); 
         Assert.assertEquals("Wrong meterBandDrop.type", 1, meterBandDrop.getType().getIntValue()); 
@@ -778,7 +778,7 @@ public class MultipartReplyMessageFactoryTest {
         Assert.assertEquals("Wrong flags01", new MeterFlags(false, true, true, false),
                              message.getMeterConfig().get(1).getFlags());
         Assert.assertEquals("Wrong meterId01", 7, 
-                             message.getMeterConfig().get(1).getMeterId().intValue());
+                             message.getMeterConfig().get(1).getMeterId().getValue().intValue());
         
         MeterBandDscpRemark meterBandDscp01 = (MeterBandDscpRemark) message.getMeterConfig().get(1).getBands().get(0).getMeterBand(); 
         Assert.assertEquals("Wrong meterBandDscp01.type", 2, meterBandDscp01.getType().getIntValue()); 
@@ -925,7 +925,7 @@ public class MultipartReplyMessageFactoryTest {
         Assert.assertEquals("Wrong type", 1, 
                              message.getGroupDesc().get(0).getType().getIntValue());
         Assert.assertEquals("Wrong groupId", 8, 
-                             message.getGroupDesc().get(0).getGroupId().intValue());
+                             message.getGroupDesc().get(0).getGroupId().getValue().intValue());
         Assert.assertEquals("Wrong bucketWeight", 6, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWeight().intValue());
         Assert.assertEquals("Wrong bucketWatchPort", 5, 
@@ -1005,7 +1005,7 @@ public class MultipartReplyMessageFactoryTest {
         Assert.assertEquals("Wrong type", 1, 
                              message.getGroupDesc().get(0).getType().getIntValue());
         Assert.assertEquals("Wrong groupId", 8, 
-                             message.getGroupDesc().get(0).getGroupId().intValue());
+                             message.getGroupDesc().get(0).getGroupId().getValue().intValue());
         Assert.assertEquals("Wrong bucketWeight", 6, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWeight().intValue());
         Assert.assertEquals("Wrong bucketWatchPort", 5, 
@@ -1105,7 +1105,7 @@ public class MultipartReplyMessageFactoryTest {
         Assert.assertEquals("Wrong type", 1, 
                              message.getGroupDesc().get(0).getType().getIntValue());
         Assert.assertEquals("Wrong groupId", 8, 
-                             message.getGroupDesc().get(0).getGroupId().intValue());
+                             message.getGroupDesc().get(0).getGroupId().getValue().intValue());
         Assert.assertEquals("Wrong bucketWeight", 6, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWeight().intValue());
         Assert.assertEquals("Wrong bucketWatchPort", 5, 
@@ -1194,7 +1194,7 @@ public class MultipartReplyMessageFactoryTest {
         Assert.assertEquals("Wrong type", 1, 
                              message.getGroupDesc().get(0).getType().getIntValue());
         Assert.assertEquals("Wrong groupId", 8, 
-                             message.getGroupDesc().get(0).getGroupId().intValue());
+                             message.getGroupDesc().get(0).getGroupId().getValue().intValue());
         Assert.assertEquals("Wrong bucketWeight", 6, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWeight().intValue());
         Assert.assertEquals("Wrong bucketWatchPort", 5, 

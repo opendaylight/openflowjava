@@ -338,19 +338,19 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
 
     private static void encodeGroupStatsBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         MultipartRequestGroup groupStats = (MultipartRequestGroup) multipartRequestBody;
-        output.writeInt(groupStats.getGroupId().intValue());
+        output.writeInt(groupStats.getGroupId().getValue().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_GROUP_BODY, output);
     }
 
     private static void encodeMeterBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         MultipartRequestMeter meter = (MultipartRequestMeter) multipartRequestBody;
-        output.writeInt(meter.getMeterId().intValue());
+        output.writeInt(meter.getMeterId().getValue().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_METER_BODY, output);
     }
 
     private static void encodeMeterConfigBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         MultipartRequestMeterConfig meterConfig = (MultipartRequestMeterConfig) multipartRequestBody;
-        output.writeInt(meterConfig.getMeterId().intValue());
+        output.writeInt(meterConfig.getMeterId().getValue().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_METER_CONFIG_BODY, output);
     }
 
