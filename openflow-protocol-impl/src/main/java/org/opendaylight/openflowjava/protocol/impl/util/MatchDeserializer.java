@@ -248,9 +248,9 @@ public abstract class MatchDeserializer {
             case 6:
                 matchEntriesBuilder.setOxmMatchField(VlanVid.class);
                 VlanVidMatchEntryBuilder vlanVidBuilder = new VlanVidMatchEntryBuilder();
-                int vidEntryValue = in.readUnsignedShort(); 
-                vlanVidBuilder.setCfiBit((vidEntryValue & 1) != 0);
-                vlanVidBuilder.setVlanVid(vidEntryValue >> 1);
+                int vidEntryValue = in.readUnsignedShort();
+                vlanVidBuilder.setCfiBit((vidEntryValue & (1 << 12)) != 0); // cfi is 13-th bit
+                vlanVidBuilder.setVlanVid(vidEntryValue & ((1 << 12) - 1)); // value without 13-th bit
                 matchEntriesBuilder.addAugmentation(VlanVidMatchEntry.class, vlanVidBuilder.build());
                 if (hasMask) {
                     addMaskAugmentation(matchEntriesBuilder, in, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
