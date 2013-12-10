@@ -187,9 +187,10 @@ public class MatchSerializer {
             fieldValue = 6;
             fieldValue = fieldValue << 1;
             VlanVidMatchEntry vlanVid = entry.getAugmentation(VlanVidMatchEntry.class);
-            int vlanVidValue = vlanVid.getVlanVid() << 1;
+            int vlanVidValue = vlanVid.getVlanVid();
             if (vlanVid.isCfiBit()) {
-                vlanVidValue = vlanVidValue | 1;
+                short cfi = 1 << 12; // 13-th bit
+                vlanVidValue = vlanVidValue | cfi;
             }
             if (entry.isHasMask()) {
                 fieldValue = fieldValue | 1;
