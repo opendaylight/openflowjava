@@ -207,7 +207,8 @@ public class MatchSerializer {
                 out.writeShort(vlanVidValue);
                 out.writeBytes(mask);
             } else {
-                writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+                out.writeByte(fieldValue);
+                out.writeByte(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
                 out.writeShort(vlanVidValue);
             }
         } else if (field.isAssignableFrom(VlanPcp.class)) {
