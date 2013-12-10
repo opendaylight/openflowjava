@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -192,5 +193,26 @@ public abstract class ByteBufUtils {
         }
         Joiner joiner = Joiner.on(":");
         return joiner.join(groups); 
+    }
+    
+    /**
+     * Reads and parses port name from ByteBuf
+     * @param rawMessage
+     * @param length maximal length of String
+     * @return String with name of port
+     */
+    public static String decodeNullTerminatedString(ByteBuf rawMessage, int length) {
+        byte[] name = new byte[EncodeConstants.MAX_PORT_NAME_LENGTH];
+        rawMessage.readBytes(name);
+        int index = 0;
+        for (int i = 0; i < name.length; i++) {
+            if (name[i] != 0) {
+                index++;
+            } else {
+                break;
+            }
+        }
+        byte[] correctName = Arrays.copyOf(name, index);
+        return new String(correctName);
     }
 }
