@@ -441,22 +441,28 @@ public class MatchSerializer {
 
     private static void writeIpv6AddressRelatedEntry(MatchEntries entry, ByteBuf out, int value) {
         int fieldValue = value << 1;
-        String[] addressGroups = entry.getAugmentation(Ipv6AddressMatchEntry.class).getIpv6Address().getValue().split(":");
-        String[] address = parseIpv6Address(addressGroups);
+        String textAddress = entry.getAugmentation(Ipv6AddressMatchEntry.class).getIpv6Address().getValue();
+        String[] address;
+        if (textAddress.equals("::")) {
+            address = new String[EncodeConstants.GROUPS_IN_IPV6_ADDRESS];
+            Arrays.fill(address, "0");
+        } else {
+            address = parseIpv6Address(textAddress.split(":"));
+        }
         if (entry.isHasMask()) {
             fieldValue = fieldValue | 1;
             out.writeByte(fieldValue);
             byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
             out.writeByte(EncodeConstants.SIZE_OF_IPV6_ADDRESS_IN_BYTES + mask.length);
             for (int i = 0; i < address.length; i++) {
-                out.writeShort(Integer.parseInt(addressGroups[i], 16));
+                out.writeShort(Integer.parseInt(address[i], 16));
             }
             out.writeBytes(mask);
         } else {
             out.writeByte(fieldValue);
             out.writeByte(EncodeConstants.SIZE_OF_IPV6_ADDRESS_IN_BYTES);
-            for (int i = 0; i < addressGroups.length; i++) {
-                out.writeShort(Integer.parseInt(addressGroups[i], 16));
+            for (int i = 0; i < address.length; i++) {
+                out.writeShort(Integer.parseInt(address[i], 16));
             }
         }
     }
@@ -475,15 +481,16 @@ public class MatchSerializer {
             break;
         case 1:
             int zerosToBePushed = EncodeConstants.GROUPS_IN_IPV6_ADDRESS - addressGroups.length + 1;
-            int pushed = 0;
+            int index = 0;
             for (int i = 0; i < addressGroups.length; i++) {
                 if (addressGroups[i].equals("")) {
                     for (int j = 0; j < zerosToBePushed; j++) {
-                        ready[i+j] = "0";
-                        pushed++;
+                        ready[index] = "0";
+                        index++;
                     }
                 } else {
-                    ready[i + pushed] = addressGroups[i];
+                    ready[index] = addressGroups[i];
+                    index++;
                 }
             }
             break;
@@ -491,12 +498,8 @@ public class MatchSerializer {
             Arrays.fill(ready, "0");
             ready[ready.length - 1] = addressGroups[addressGroups.length - 1];
             break;
-        case 3:
-            Arrays.fill(ready, "0");
-            break;
-
         default:
-            break;
+            throw new IllegalStateException("Incorrect ipv6 address");
         }
         return ready;
     }
