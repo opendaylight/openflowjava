@@ -166,7 +166,7 @@ public abstract class ByteBufUtils {
     public static String bytesToHexString(byte[] array) {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < array.length; i++) {
-            short b = array[i];
+            byte b = array[i];
             sb.append(String.format("%02x ", b));
         }
         return sb.toString();

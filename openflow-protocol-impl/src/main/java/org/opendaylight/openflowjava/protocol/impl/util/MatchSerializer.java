@@ -171,11 +171,11 @@ public class MatchSerializer {
         Class<? extends MatchField> field = entry.getOxmMatchField();
         if (field.isAssignableFrom(InPort.class)) {
             fieldValue = 0;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_INT_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_INT_IN_BYTES);
             out.writeInt(entry.getAugmentation(PortNumberMatchEntry.class).getPortNumber().getValue().intValue());
         } else if (field.isAssignableFrom(InPhyPort.class)) {
             fieldValue = 1;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_INT_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_INT_IN_BYTES);
             out.writeInt(entry.getAugmentation(PortNumberMatchEntry.class).getPortNumber().getValue().intValue());
         } else if (field.isAssignableFrom(Metadata.class)) {
             fieldValue = 2;
@@ -188,43 +188,36 @@ public class MatchSerializer {
             writeMacAddressRelatedEntry(entry, out, fieldValue);
         } else if (field.isAssignableFrom(EthType.class)) {
             fieldValue = 5;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
             out.writeShort(entry.getAugmentation(EthTypeMatchEntry.class).getEthType().getValue().shortValue());
         } else if (field.isAssignableFrom(VlanVid.class)) {
             fieldValue = 6;
-            fieldValue = fieldValue << 1;
             VlanVidMatchEntry vlanVid = entry.getAugmentation(VlanVidMatchEntry.class);
             int vlanVidValue = vlanVid.getVlanVid();
             if (vlanVid.isCfiBit()) {
                 short cfi = 1 << 12; // 13-th bit
                 vlanVidValue = vlanVidValue | cfi;
             }
-            if (entry.isHasMask()) {
-                fieldValue = fieldValue | 1;
-                out.writeByte(fieldValue);
-                byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
-                out.writeByte(EncodeConstants.SIZE_OF_SHORT_IN_BYTES + mask.length);
-                out.writeShort(vlanVidValue);
-                out.writeBytes(mask);
-            } else {
-                writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-                out.writeShort(vlanVidValue);
-            }
+            
+            writeOxmFieldAndLength(out, fieldValue, entry.isHasMask(), 
+                    EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+            out.writeShort(vlanVidValue);
+            writeMask(entry, out, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         } else if (field.isAssignableFrom(VlanPcp.class)) {
             fieldValue = 7;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
             out.writeByte(entry.getAugmentation(VlanPcpMatchEntry.class).getVlanPcp().byteValue());
         } else if (field.isAssignableFrom(IpDscp.class)) {
             fieldValue = 8;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
             out.writeByte(entry.getAugmentation(DscpMatchEntry.class).getDscp().getValue());
         } else if (field.isAssignableFrom(IpEcn.class)) {
             fieldValue = 9;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
             out.writeByte(entry.getAugmentation(EcnMatchEntry.class).getEcn());
         } else if (field.isAssignableFrom(IpProto.class)) {
             fieldValue = 10;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
             out.writeByte(entry.getAugmentation(ProtocolNumberMatchEntry.class).getProtocolNumber());
         } else if (field.isAssignableFrom(Ipv4Src.class)) {
             fieldValue = 11;
@@ -234,39 +227,39 @@ public class MatchSerializer {
             writeIpv4AddressRelatedEntry(entry, out, fieldValue);
         } else if (field.isAssignableFrom(TcpSrc.class)) {
             fieldValue = 13;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
             out.writeShort(entry.getAugmentation(PortMatchEntry.class).getPort().getValue().intValue());
         } else if (field.isAssignableFrom(TcpDst.class)) {
             fieldValue = 14;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
             out.writeShort(entry.getAugmentation(PortMatchEntry.class).getPort().getValue().intValue());
         } else if (field.isAssignableFrom(UdpSrc.class)) {
             fieldValue = 15;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
             out.writeShort(entry.getAugmentation(PortMatchEntry.class).getPort().getValue().intValue());
         } else if (field.isAssignableFrom(UdpDst.class)) {
             fieldValue = 16;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
             out.writeShort(entry.getAugmentation(PortMatchEntry.class).getPort().getValue().intValue());
         } else if (field.isAssignableFrom(SctpSrc.class)) {
             fieldValue = 17;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
             out.writeShort(entry.getAugmentation(PortMatchEntry.class).getPort().getValue().intValue());
         } else if (field.isAssignableFrom(SctpDst.class)) {
             fieldValue = 18;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
             out.writeShort(entry.getAugmentation(PortMatchEntry.class).getPort().getValue().intValue());
         } else if (field.isAssignableFrom(Icmpv4Type.class)) {
             fieldValue = 19;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
             out.writeByte(entry.getAugmentation(Icmpv4TypeMatchEntry.class).getIcmpv4Type());
         } else if (field.isAssignableFrom(Icmpv4Code.class)) {
             fieldValue = 20;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
             out.writeByte(entry.getAugmentation(Icmpv4CodeMatchEntry.class).getIcmpv4Code());
         } else if (field.isAssignableFrom(ArpOp.class)) {
             fieldValue = 21;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
             out.writeShort(entry.getAugmentation(OpCodeMatchEntry.class).getOpCode());
         } else if (field.isAssignableFrom(ArpSpa.class)) {
             fieldValue = 22;
@@ -288,28 +281,17 @@ public class MatchSerializer {
             writeIpv6AddressRelatedEntry(entry, out, fieldValue);
         } else if (field.isAssignableFrom(Ipv6Flabel.class)) {
             fieldValue = 28;
-            fieldValue = fieldValue << 1;
-            if (entry.isHasMask()) {
-                fieldValue = fieldValue | 1;
-                out.writeByte(fieldValue);
-                byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
-                out.writeByte(EncodeConstants.SIZE_OF_INT_IN_BYTES + mask.length); // 20 b + mask [OF 1.3.2 spec]
-                LOGGER.warn("Ipv6Flabel match entry: possible wrong length written (wrote 4 - maybe must be 3)");
-                out.writeInt(entry.getAugmentation(Ipv6FlabelMatchEntry.class).getIpv6Flabel().getValue().intValue());
-                out.writeBytes(entry.getAugmentation(MaskMatchEntry.class).getMask());
-            } else {
-                out.writeByte(fieldValue);
-                out.writeByte(EncodeConstants.SIZE_OF_INT_IN_BYTES); // 20 b [OF 1.3.2 spec]
-                LOGGER.warn("Ipv6Flabel match entry: possible wrong length written (wrote 4 - maybe must be 3)");
-                out.writeInt(entry.getAugmentation(Ipv6FlabelMatchEntry.class).getIpv6Flabel().getValue().intValue());
-            }
+            writeOxmFieldAndLength(out, fieldValue, entry.isHasMask(), 
+                    EncodeConstants.SIZE_OF_INT_IN_BYTES);
+            out.writeInt(entry.getAugmentation(Ipv6FlabelMatchEntry.class).getIpv6Flabel().getValue().intValue());
+            writeMask(entry, out, EncodeConstants.SIZE_OF_INT_IN_BYTES);
         } else if (field.isAssignableFrom(Icmpv6Type.class)) {
             fieldValue = 29;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
             out.writeByte(entry.getAugmentation(Icmpv6TypeMatchEntry.class).getIcmpv6Type());
         } else if (field.isAssignableFrom(Icmpv6Code.class)) {
             fieldValue = 30;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
             out.writeByte(entry.getAugmentation(Icmpv6CodeMatchEntry.class).getIcmpv6Code());
         } else if (field.isAssignableFrom(Ipv6NdTarget.class)) {
             fieldValue = 31;
@@ -322,34 +304,23 @@ public class MatchSerializer {
             writeMacAddressRelatedEntry(entry, out, fieldValue);
         } else if (field.isAssignableFrom(MplsLabel.class)) {
             fieldValue = 34;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_INT_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_INT_IN_BYTES);
             LOGGER.warn("MplsLabel match entry: possible wrong length written (wrote 4 - maybe must be 3)");
             out.writeInt(entry.getAugmentation(MplsLabelMatchEntry.class).getMplsLabel().intValue());
         } else if (field.isAssignableFrom(MplsTc.class)) {
             fieldValue = 35;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
             out.writeByte(entry.getAugmentation(TcMatchEntry.class).getTc());
         } else if (field.isAssignableFrom(MplsBos.class)) {
             fieldValue = 36;
-            writeOxmFieldAndLength(out, fieldValue, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
+            writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
             out.writeBoolean(entry.getAugmentation(BosMatchEntry.class).isBos().booleanValue());
         } else if (field.isAssignableFrom(PbbIsid.class)) {
             fieldValue = 37;
-            fieldValue = fieldValue << 1;
-            if (entry.isHasMask()) {
-                fieldValue = fieldValue | 1;
-                out.writeByte(fieldValue);
-                byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
-                out.writeByte(EncodeConstants.SIZE_OF_LONG_IN_BYTES + mask.length);
-                LOGGER.warn("PbbIsid match entry: possible wrong length written (wrote 4 - maybe must be 3)");
-                out.writeInt(entry.getAugmentation(IsidMatchEntry.class).getIsid().intValue());
-                out.writeBytes(mask);
-            } else {
-                out.writeByte(fieldValue);
-                out.writeByte(EncodeConstants.SIZE_OF_LONG_IN_BYTES);
-                LOGGER.warn("PbbIsid match entry: possible wrong length written (wrote 4 - maybe must be 3)");
-                out.writeInt(entry.getAugmentation(IsidMatchEntry.class).getIsid().intValue());
-            }
+            writeOxmFieldAndLength(out, fieldValue, entry.isHasMask(),
+                    EncodeConstants.SIZE_OF_LONG_IN_BYTES);
+            out.writeInt(entry.getAugmentation(IsidMatchEntry.class).getIsid().intValue());
+            writeMask(entry, out, EncodeConstants.SIZE_OF_LONG_IN_BYTES);
         } else if (field.isAssignableFrom(TunnelId.class)) {
             fieldValue = 38;
             writeMetadataRelatedEntry(entry, out, fieldValue);
@@ -368,75 +339,68 @@ public class MatchSerializer {
             map.put(7, pseudoField.isUnrep());
             map.put(8, pseudoField.isUnseq());
             int bitmap = ByteBufUtils.fillBitMaskFromMap(map);
-            if (entry.isHasMask()) {
-                fieldValue = fieldValue | 1;
-                out.writeByte(fieldValue);
-                byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
-                out.writeByte(EncodeConstants.SIZE_OF_SHORT_IN_BYTES + mask.length);
-                out.writeShort(bitmap);
-                out.writeBytes(mask);
-            } else {
-                out.writeByte(fieldValue);
-                out.writeByte(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-                out.writeShort(bitmap);
-            }
+            
+            writeOxmFieldAndLength(out, fieldValue, entry.isHasMask(),
+                    EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+            out.writeShort(bitmap);
+            writeMask(entry, out, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         }
     }
 
-    private static void writeOxmFieldAndLength(ByteBuf out, int fieldValue, int length) {
+    /**
+     * @param entry
+     * @param out
+     * @param length TODO
+     */
+    private static void writeMask(MatchEntries entry, ByteBuf out, int length) {
+        if (entry.isHasMask()) {
+            byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
+            if (mask != null && mask.length != length) {
+                throw new IllegalArgumentException("incorrect length of mask: "+
+                        mask.length + ", expected: " + length);
+            }
+            out.writeBytes(mask);
+        }
+    }
+
+    private static void writeOxmFieldAndLength(ByteBuf out, int fieldValue, boolean hasMask, int lengthArg) {
         int fieldAndMask = fieldValue << 1;
+        int length = lengthArg;
+        if (hasMask) {
+            fieldAndMask |= 1;
+            length *= 2;
+        }
+        
         out.writeByte(fieldAndMask);
         out.writeByte(length);
+        
     }
 
     private static void writeMetadataRelatedEntry(MatchEntries entry, ByteBuf out, int value) {
-        int fieldValue = value << 1;
-        if (entry.isHasMask()) {
-            fieldValue = fieldValue | 1;
-            out.writeByte(fieldValue);
-            byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
-            out.writeByte(EncodeConstants.SIZE_OF_LONG_IN_BYTES + mask.length);
-            out.writeBytes(entry.getAugmentation(MetadataMatchEntry.class).getMetadata());
-            out.writeBytes(mask);
-        } else {
-            out.writeByte(fieldValue);
-            out.writeByte(EncodeConstants.SIZE_OF_LONG_IN_BYTES);
-            out.writeBytes(entry.getAugmentation(MetadataMatchEntry.class).getMetadata());
-        }
+        int fieldValue = value;
+        writeOxmFieldAndLength(out, fieldValue, entry.isHasMask(),
+                EncodeConstants.SIZE_OF_LONG_IN_BYTES);
+        out.writeBytes(entry.getAugmentation(MetadataMatchEntry.class).getMetadata());
+        writeMask(entry, out, EncodeConstants.SIZE_OF_LONG_IN_BYTES);
     }
 
     private static void writeMacAddressRelatedEntry(MatchEntries entry, ByteBuf out, int value) {
-        int fieldValue = value << 1;
-        if (entry.isHasMask()) {
-            fieldValue = fieldValue | 1;
-            out.writeByte(fieldValue);
-            byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
-            out.writeByte(EncodeConstants.MAC_ADDRESS_LENGTH + mask.length); // 48 b + mask [OF 1.3.2 spec]
-            String macAddress = entry.getAugmentation(MacAddressMatchEntry.class).getMacAddress().getValue();
-            out.writeBytes(ByteBufUtils.macAddressToBytes(macAddress));
-            out.writeBytes(mask);
-        } else {
-            out.writeByte(fieldValue);
-            out.writeByte(EncodeConstants.MAC_ADDRESS_LENGTH); // 48 b [OF 1.3.2 spec]
-            String macAddress = entry.getAugmentation(MacAddressMatchEntry.class).getMacAddress().getValue();
-            out.writeBytes(ByteBufUtils.macAddressToBytes(macAddress));
-        }
+        int fieldValue = value;
+        
+        writeOxmFieldAndLength(out, fieldValue, entry.isHasMask(),
+                EncodeConstants.MAC_ADDRESS_LENGTH);
+        String macAddress = entry.getAugmentation(MacAddressMatchEntry.class).getMacAddress().getValue();
+        out.writeBytes(ByteBufUtils.macAddressToBytes(macAddress)); // 48 b + mask [OF 1.3.2 spec]
+        writeMask(entry, out, EncodeConstants.MAC_ADDRESS_LENGTH);
     }
 
     private static void writeIpv4AddressRelatedEntry(MatchEntries entry, ByteBuf out, int value) {
-        int fieldValue = value << 1;
-        if (entry.isHasMask()) {
-            fieldValue = fieldValue | 1;
-            out.writeByte(fieldValue);
-            byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
-            out.writeByte(EncodeConstants.SIZE_OF_INT_IN_BYTES + mask.length);
-            writeIpv4Address(entry, out);
-            out.writeBytes(mask);
-        } else {
-            out.writeByte(fieldValue);
-            out.writeByte(EncodeConstants.SIZE_OF_INT_IN_BYTES);
-            writeIpv4Address(entry, out);
-        }
+        int fieldValue = value;
+        
+        writeOxmFieldAndLength(out, fieldValue, entry.isHasMask(),
+                EncodeConstants.SIZE_OF_INT_IN_BYTES);
+        writeIpv4Address(entry, out);
+        writeMask(entry, out, EncodeConstants.SIZE_OF_INT_IN_BYTES);
     }
 
     private static void writeIpv4Address(MatchEntries entry, ByteBuf out) {
@@ -447,7 +411,7 @@ public class MatchSerializer {
     }
 
     private static void writeIpv6AddressRelatedEntry(MatchEntries entry, ByteBuf out, int value) {
-        int fieldValue = value << 1;
+        int fieldValue = value;
         String textAddress = entry.getAugmentation(Ipv6AddressMatchEntry.class).getIpv6Address().getValue();
         String[] address;
         if (textAddress.equals("::")) {
@@ -456,22 +420,13 @@ public class MatchSerializer {
         } else {
             address = parseIpv6Address(textAddress.split(":"));
         }
-        if (entry.isHasMask()) {
-            fieldValue = fieldValue | 1;
-            out.writeByte(fieldValue);
-            byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
-            out.writeByte(EncodeConstants.SIZE_OF_IPV6_ADDRESS_IN_BYTES + mask.length);
-            for (int i = 0; i < address.length; i++) {
-                out.writeShort(Integer.parseInt(address[i], 16));
-            }
-            out.writeBytes(mask);
-        } else {
-            out.writeByte(fieldValue);
-            out.writeByte(EncodeConstants.SIZE_OF_IPV6_ADDRESS_IN_BYTES);
-            for (int i = 0; i < address.length; i++) {
-                out.writeShort(Integer.parseInt(address[i], 16));
-            }
+        
+        writeOxmFieldAndLength(out, fieldValue, entry.isHasMask(),
+                EncodeConstants.SIZE_OF_IPV6_ADDRESS_IN_BYTES);
+        for (int i = 0; i < address.length; i++) {
+            out.writeShort(Integer.parseInt(address[i], 16));
         }
+        writeMask(entry, out, EncodeConstants.SIZE_OF_IPV6_ADDRESS_IN_BYTES);
     }
 
     private static String[] parseIpv6Address(String[] addressGroups) {

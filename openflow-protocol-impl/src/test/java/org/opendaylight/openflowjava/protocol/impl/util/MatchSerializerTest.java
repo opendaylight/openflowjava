@@ -18,12 +18,18 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6Address;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6FlowLabel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv4AddressMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv4AddressMatchEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv6AddressMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv6AddressMatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv6FlabelMatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv6FlabelMatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv4Src;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6Dst;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6Flabel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6NdTarget;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6Src;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Nxm0Class;
@@ -34,18 +40,23 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.MatchEntriesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.match.grouping.Match;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.match.grouping.MatchBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author michal.polkorab
  *
  */
 public class MatchSerializerTest {
+    
+    private static final Logger LOG = LoggerFactory
+            .getLogger(MatchSerializerTest.class);
 
     /**
      * Test for correct serialization of Ipv4Address match entry
      */
     @Test
-    public void test() {
+    public void testIpv4Src() {
         MatchBuilder builder = new MatchBuilder();
         builder.setType(OxmMatchType.class);
         List<MatchEntries> entries = new ArrayList<>();
@@ -78,7 +89,7 @@ public class MatchSerializerTest {
      * Test for correct serialization of Ipv6Address match entry
      */
     @Test
-    public void test2() {
+    public void testIpv6Various() {
         MatchBuilder builder = new MatchBuilder();
         builder.setType(OxmMatchType.class);
         List<MatchEntries> entries = new ArrayList<>();
@@ -210,5 +221,94 @@ public class MatchSerializerTest {
         Assert.assertEquals("Wrong ipv6 address", 7, out.readUnsignedShort());
         Assert.assertEquals("Wrong ipv6 address", 8, out.readUnsignedShort());
     }
+    
+    /**
+     * Test for correct serialization of Ipv4Address match entry
+     */
+    @Test
+    public void testIpv6Flabel() {
+        Match match = buildIpv6FLabelMatch(0x0f9e8dL, false, null);
+        
+        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+        MatchSerializer.encodeMatch(match, out);
+        
+        Assert.assertEquals("Wrong type", 1, out.readUnsignedShort());
+        out.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+        Assert.assertEquals("Wrong class", 0x8000, out.readUnsignedShort());
+        Assert.assertEquals("Wrong field and mask", 28<<1, out.readUnsignedByte());
+        out.skipBytes(EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
+        byte[] label = new byte[4];
+        out.readBytes(label);
+        
+        LOG.debug("label: "+ByteBufUtils.bytesToHexString(label));
+        Assert.assertArrayEquals("Wrong ipv6FLabel", new byte[]{0, 0x0f, (byte) 0x9e, (byte) 0x8d}, label);
+    }
+    
+    /**
+     * Test for correct serialization of Ipv4Address match entry with mask
+     */
+    @Test
+    public void testIpv6FlabelWithMask() {
+        Match match = buildIpv6FLabelMatch(0x0f9e8dL, true, new byte[]{0, 0x0c, 0x7b, 0x6a});
+        
+        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+        MatchSerializer.encodeMatch(match, out);
+        
+        Assert.assertEquals("Wrong type", 1, out.readUnsignedShort());
+        out.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+        Assert.assertEquals("Wrong class", 0x8000, out.readUnsignedShort());
+        Assert.assertEquals("Wrong field and mask", 28<<1 | 1, out.readUnsignedByte());
+        out.skipBytes(EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
+        byte[] labelAndMask = new byte[8];
+        out.readBytes(labelAndMask);
+        
+        LOG.debug("label: "+ByteBufUtils.bytesToHexString(labelAndMask));
+        Assert.assertArrayEquals("Wrong ipv6FLabel", new byte[]{0, 0x0f, (byte) 0x9e, (byte) 0x8d, 0, 0x0c, 0x7b, 0x6a}, labelAndMask);
+    }
+    
+    /**
+     * Test for correct serialization of Ipv4Address match entry with wrong mask
+     */
+    @Test
+    public void testIpv6FlabelWithMaskBad() {
+        Match match = buildIpv6FLabelMatch(0x0f9e8dL, true, new byte[]{0x0c, 0x7b, 0x6a});
+        
+        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+        
+        try {
+            MatchSerializer.encodeMatch(match, out);
+            Assert.fail("incorrect length of mask ignored");
+        } catch (IllegalArgumentException e) {
+            //expected
+        }
+    }
+
+    /**
+     * @param labelValue ipv6 flow label
+     * @param hasMask
+     * @param mask ipv6 flow label mask
+     * @return
+     */
+    private static Match buildIpv6FLabelMatch(long labelValue, boolean hasMask, byte[] mask) {
+        MatchBuilder builder = new MatchBuilder();
+        builder.setType(OxmMatchType.class);
+        List<MatchEntries> entries = new ArrayList<>();
+        MatchEntriesBuilder entriesBuilder = new MatchEntriesBuilder();
+        entriesBuilder.setOxmClass(OpenflowBasicClass.class);
+        entriesBuilder.setOxmMatchField(Ipv6Flabel.class);
+        entriesBuilder.setHasMask(hasMask);
+        Ipv6FlabelMatchEntryBuilder ip6FLabelBuilder = new Ipv6FlabelMatchEntryBuilder();
+        ip6FLabelBuilder.setIpv6Flabel(new Ipv6FlowLabel(labelValue));
+        entriesBuilder.addAugmentation(Ipv6FlabelMatchEntry.class, ip6FLabelBuilder.build());
+        MaskMatchEntryBuilder maskBuilder = new MaskMatchEntryBuilder();
+        maskBuilder.setMask(mask);
+        entriesBuilder.addAugmentation(MaskMatchEntry.class, maskBuilder.build());
+        entries.add(entriesBuilder.build());
+        builder.setMatchEntries(entries);
+        Match match = builder.build();
+        return match;
+    }
+    
+    
 
 }
