@@ -41,6 +41,9 @@ public abstract class ByteBufUtils {
             short b = bb.getUnsignedByte(i);
             sb.append(String.format("%02x ", b));
         }
+        if (sb.charAt(sb.length() - 1) == ' ') {
+            sb.deleteCharAt(sb.length() - 1);
+        }
         return sb.toString();
     }
     
@@ -168,6 +171,9 @@ public abstract class ByteBufUtils {
         for (int i = 0; i < array.length; i++) {
             byte b = array[i];
             sb.append(String.format("%02x ", b));
+        }
+        if (sb.charAt(sb.length() - 1) == ' ') {
+            sb.deleteCharAt(sb.length() - 1);
         }
         return sb.toString();
     }
