@@ -48,7 +48,9 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
     protected void initChannel(SocketChannel ch) {
         InetAddress switchAddress = ch.remoteAddress().getAddress();
         int port = ch.localAddress().getPort();
-        LOGGER.info("Incoming connection from (remote address): " + switchAddress.toString() + ":" + port);
+        int remotePort = ch.remoteAddress().getPort();
+        LOGGER.info("Incoming connection from (remote address): " + switchAddress.toString()
+                + ":" + remotePort + " --> :" + port);
         if (!switchConnectionHandler.accept(switchAddress)) {
             ch.disconnect();
             LOGGER.info("Incoming connection rejected");
