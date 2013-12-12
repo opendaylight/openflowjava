@@ -126,15 +126,15 @@ public class InstructionsDeserializer {
         metadataBuilder.setMetadata(metadata);
         byte[] metadata_mask = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         input.readBytes(metadata_mask);
-        metadataBuilder.setMetadata(metadata_mask);
+        metadataBuilder.setMetadataMask(metadata_mask);
         builder.addAugmentation(MetadataInstruction.class, metadataBuilder.build());
     }
     
     private static void createActionRelatedInstruction(ByteBuf input,
-            InstructionsBuilder builder, int instructionLength) {
+            InstructionsBuilder builder, int actionsLength) {
         input.skipBytes(ACTIONS_RELATED_INSTRUCTION_PADDING);
         ActionsInstructionBuilder actionsBuilder = new ActionsInstructionBuilder();
-        actionsBuilder.setActionsList(ActionsDeserializer.createActionsList(input, instructionLength));
+        actionsBuilder.setActionsList(ActionsDeserializer.createActionsList(input, actionsLength));
         builder.addAugmentation(ActionsInstruction.class, actionsBuilder.build());
     }
 

@@ -145,7 +145,7 @@ public abstract class ActionsDeserializer {
                 break;
 
             case 25:
-                currentActionLength = input.readUnsignedShort();//8
+                currentActionLength = input.readUnsignedShort();// depends on OXM TLV (match entry)
                 actionsList.add(createSetFieldAction(input, actionsListBuilder, currentActionLength));
                 break; 
             case 26: 
