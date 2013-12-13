@@ -862,6 +862,21 @@ module openflow-types {
             }
         }
     }
+    
+    typedef table-values {
+        /* ofp_table */
+        type enumeration {
+            enum OFPTT_MAX {            
+              value 254; // 0xfe             
+              description "Last usable table number.";            
+            }
+            enum OFPTT_ALL {
+              value 255; // 0xff
+              description "Wildcard table used for table config, 
+                           flow stats and flow deletes.";
+            }
+        }
+    }
 
 	typedef group {
 		/* ofp_group - Group numbering. Groups can use any number up to OFPG_MAX.*/
