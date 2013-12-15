@@ -20,7 +20,7 @@ public abstract class EncodeConstants {
     public static final byte OF10_VERSION_ID = 0x01;
     /** OpenFlow v1.0 wire protocol number */
     public static final byte OF13_VERSION_ID = 0x04;
-    
+
     /** Length of mac address */
     public static final byte MAC_ADDRESS_LENGTH = 6;
     /** Number of groups in ipv4 address */
@@ -29,7 +29,7 @@ public abstract class EncodeConstants {
     public static final byte GROUPS_IN_IPV6_ADDRESS = 8;
     /** Length of ipv6 address in bytes */
     public static final byte SIZE_OF_IPV6_ADDRESS_IN_BYTES = (8 * Short.SIZE) / Byte.SIZE;
-    
+
     /** Length of long in bytes */
     public static final byte SIZE_OF_LONG_IN_BYTES = Long.SIZE / Byte.SIZE;
     /** Length of int in bytes */
@@ -38,8 +38,10 @@ public abstract class EncodeConstants {
     public static final byte SIZE_OF_SHORT_IN_BYTES = Short.SIZE / Byte.SIZE;
     /** Length of byte in bytes */
     public static final byte SIZE_OF_BYTE_IN_BYTES = Byte.SIZE / Byte.SIZE;
+    /** Length of 3 bytes */
+    public static final byte SIZE_OF_3_BYTES = 3;
 
-    
+
     /** OF v1.0 maximal port name length */
     public static final byte MAX_PORT_NAME_LENGTH = 16;
 }
