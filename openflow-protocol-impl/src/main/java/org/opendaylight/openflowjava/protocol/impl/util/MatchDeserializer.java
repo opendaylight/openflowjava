@@ -132,7 +132,7 @@ import com.google.common.base.Joiner;
 public abstract class MatchDeserializer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MatchDeserializer.class);
-    
+
     /**
      * Creates match
      * @param in input ByteBuf
@@ -162,7 +162,7 @@ public abstract class MatchDeserializer {
         }
         return null;
     }
-    
+
     /**
      * Deserializes single match entry (oxm_field)
      * @param in input ByteBuf
@@ -172,7 +172,7 @@ public abstract class MatchDeserializer {
     public static List<MatchEntries> createMatchEntry(ByteBuf in, int matchLength) {
         return createMatchEntriesInternal(in, matchLength, true);
     }
-    
+
     /**
      * @param in input ByteBuf
      * @param matchLength length of match entries
@@ -181,13 +181,13 @@ public abstract class MatchDeserializer {
     public static List<MatchEntries> createMatchEntries(ByteBuf in, int matchLength) {
         return createMatchEntriesInternal(in, matchLength, false);
     }
-    
+
     private static List<MatchEntries> createMatchEntriesInternal(ByteBuf in, int matchLength, boolean oneEntry) {
         List<MatchEntries> matchEntriesList = new ArrayList<>();
         int currLength = 0;
         while(currLength < matchLength) {
-            MatchEntriesBuilder matchEntriesBuilder = new MatchEntriesBuilder(); 
-            switch (in.readUnsignedShort()) { 
+            MatchEntriesBuilder matchEntriesBuilder = new MatchEntriesBuilder();
+            switch (in.readUnsignedShort()) {
             case 0x0000:
                         matchEntriesBuilder.setOxmClass(Nxm0Class.class);
                         break;
@@ -211,18 +211,18 @@ public abstract class MatchDeserializer {
             int matchEntryLength = in.readUnsignedByte();
             currLength += EncodeConstants.SIZE_OF_SHORT_IN_BYTES +
                     (2 * EncodeConstants.SIZE_OF_BYTE_IN_BYTES) + matchEntryLength;
-            
+
             switch(matchField) {
-            case 0: 
+            case 0:
                 matchEntriesBuilder.setOxmMatchField(InPort.class);
                 PortNumberMatchEntryBuilder port = new PortNumberMatchEntryBuilder();
-                port.setPortNumber(new PortNumber(in.readUnsignedInt())); 
+                port.setPortNumber(new PortNumber(in.readUnsignedInt()));
                 matchEntriesBuilder.addAugmentation(PortNumberMatchEntry.class, port.build());
                 break;
             case 1:
                 matchEntriesBuilder.setOxmMatchField(InPhyPort.class);
                 PortNumberMatchEntryBuilder phyPort = new PortNumberMatchEntryBuilder();
-                phyPort.setPortNumber(new PortNumber(in.readUnsignedInt())); 
+                phyPort.setPortNumber(new PortNumber(in.readUnsignedInt()));
                 matchEntriesBuilder.addAugmentation(PortNumberMatchEntry.class, phyPort.build());
                 break;
             case 2:
@@ -236,14 +236,14 @@ public abstract class MatchDeserializer {
                 matchEntriesBuilder.setOxmMatchField(EthDst.class);
                 addMacAddressAugmentation(matchEntriesBuilder, in);
                 if (hasMask) {
-                    addMaskAugmentation(matchEntriesBuilder, in, EncodeConstants.SIZE_OF_LONG_IN_BYTES);
+                    addMaskAugmentation(matchEntriesBuilder, in, EncodeConstants.MAC_ADDRESS_LENGTH);
                 }
                 break;
             case 4:
                 matchEntriesBuilder.setOxmMatchField(EthSrc.class);
                 addMacAddressAugmentation(matchEntriesBuilder, in);
                 if (hasMask) {
-                    addMaskAugmentation(matchEntriesBuilder, in, EncodeConstants.SIZE_OF_LONG_IN_BYTES);
+                    addMaskAugmentation(matchEntriesBuilder, in, EncodeConstants.MAC_ADDRESS_LENGTH);
                 }
                 break;
             case 5:
@@ -365,14 +365,14 @@ public abstract class MatchDeserializer {
                 matchEntriesBuilder.setOxmMatchField(ArpSha.class);
                 addMacAddressAugmentation(matchEntriesBuilder, in);
                 if (hasMask) {
-                    addMaskAugmentation(matchEntriesBuilder, in, EncodeConstants.SIZE_OF_LONG_IN_BYTES);
+                    addMaskAugmentation(matchEntriesBuilder, in, EncodeConstants.MAC_ADDRESS_LENGTH);
                 }
                 break;
             case 25:
                 matchEntriesBuilder.setOxmMatchField(ArpTha.class);
                 addMacAddressAugmentation(matchEntriesBuilder, in);
                 if (hasMask) {
-                    addMaskAugmentation(matchEntriesBuilder, in, EncodeConstants.SIZE_OF_LONG_IN_BYTES);
+                    addMaskAugmentation(matchEntriesBuilder, in, EncodeConstants.MAC_ADDRESS_LENGTH);
                 }
                 break;
             case 26:
@@ -456,7 +456,7 @@ public abstract class MatchDeserializer {
                 isidBuilder.setIsid(in.readUnsignedInt());
                 matchEntriesBuilder.addAugmentation(IsidMatchEntry.class, isidBuilder.build());
                 if (hasMask) {
-                    addMaskAugmentation(matchEntriesBuilder, in, EncodeConstants.SIZE_OF_INT_IN_BYTES);
+                    addMaskAugmentation(matchEntriesBuilder, in, EncodeConstants.SIZE_OF_3_BYTES);
                 }
                 break;
             case 38:
@@ -485,7 +485,7 @@ public abstract class MatchDeserializer {
                     addMaskAugmentation(matchEntriesBuilder, in, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
                 }
                 break;
-            default: 
+            default:
                 break;
             }
           matchEntriesList.add(matchEntriesBuilder.build());
@@ -517,12 +517,12 @@ public abstract class MatchDeserializer {
         ipv6AddressBuilder.setIpv6Address(new Ipv6Address(joiner.join(groups)));
         builder.addAugmentation(Ipv6AddressMatchEntry.class, ipv6AddressBuilder.build());
     }
-    
+
     private static void addMetadataAugmentation(MatchEntriesBuilder builder, ByteBuf in) {
         MetadataMatchEntryBuilder metadata = new MetadataMatchEntryBuilder();
         byte[] metadataBytes = new byte[Long.SIZE/Byte.SIZE];
         in.readBytes(metadataBytes);
-        metadata.setMetadata(metadataBytes); 
+        metadata.setMetadata(metadataBytes);
         builder.addAugmentation(MetadataMatchEntry.class, metadata.build());
     }
 
@@ -544,7 +544,7 @@ public abstract class MatchDeserializer {
         macAddress.setMacAddress(new MacAddress(ByteBufUtils.macAddressToString(address)));
         builder.addAugmentation(MacAddressMatchEntry.class, macAddress.build());
     }
-    
+
     private static void addPortAugmentation(MatchEntriesBuilder builder, ByteBuf in) {
         PortMatchEntryBuilder portBuilder = new PortMatchEntryBuilder();
         portBuilder.setPort(new org.opendaylight.yang.gen.v1.urn.ietf.params.
