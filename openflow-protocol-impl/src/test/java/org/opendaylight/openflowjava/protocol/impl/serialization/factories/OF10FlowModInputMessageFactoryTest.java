@@ -54,7 +54,7 @@ public class OF10FlowModInputMessageFactoryTest {
         FlowModInputBuilder builder = new FlowModInputBuilder();
         BufferHelper.setupHeader(builder, EncodeConstants.OF10_VERSION_ID);
         MatchV10Builder matchBuilder = new MatchV10Builder();
-        matchBuilder.setWildcards(new FlowWildcardsV10(true, true, true, true, true, true, true, true, true, true, true));
+        matchBuilder.setWildcards(new FlowWildcardsV10(true, true, true, true, true, true, true, true, true, true));
         matchBuilder.setNwSrcMask((short) 0);
         matchBuilder.setNwDstMask((short) 0);
         matchBuilder.setInPort(58);
@@ -103,7 +103,7 @@ public class OF10FlowModInputMessageFactoryTest {
         factory.messageToBuffer(EncodeConstants.OF10_VERSION_ID, out, message);
         
         BufferHelper.checkHeaderV10(out, factory.getMessageType(), factory.computeLength(message));
-        Assert.assertEquals("Wrong wildcards", 4194303, out.readUnsignedInt());
+        Assert.assertEquals("Wrong wildcards", 3678463, out.readUnsignedInt());
         Assert.assertEquals("Wrong inPort", 58, out.readUnsignedShort());
         byte[] dlSrc = new byte[6];
         out.readBytes(dlSrc);

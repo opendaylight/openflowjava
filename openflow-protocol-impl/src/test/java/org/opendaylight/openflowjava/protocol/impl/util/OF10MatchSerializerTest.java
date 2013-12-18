@@ -32,7 +32,7 @@ public class OF10MatchSerializerTest {
     public void test() {
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         MatchV10Builder builder = new MatchV10Builder();
-        builder.setWildcards(new FlowWildcardsV10(false, false, false, true, false,
+        builder.setWildcards(new FlowWildcardsV10(false, false, true, false,
                 false, true, false, true, true, true));
         builder.setNwSrcMask((short) 24);
         builder.setNwDstMask((short) 16);
@@ -79,7 +79,7 @@ public class OF10MatchSerializerTest {
     public void test2() {
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         MatchV10Builder builder = new MatchV10Builder();
-        builder.setWildcards(new FlowWildcardsV10(true, true, true, true, true,
+        builder.setWildcards(new FlowWildcardsV10(true, true, true, true,
                 true, true, true, true, true, true));
         builder.setNwSrcMask((short) 0);
         builder.setNwDstMask((short) 0);
@@ -98,7 +98,7 @@ public class OF10MatchSerializerTest {
         MatchV10 match = builder.build();
         OF10MatchSerializer.encodeMatchV10(out, match);
         
-        Assert.assertEquals("Wrong wildcards", 4194303, out.readUnsignedInt());
+        Assert.assertEquals("Wrong wildcards", 3678463, out.readUnsignedInt());
         Assert.assertEquals("Wrong in-port", 6653, out.readUnsignedShort());
         byte[] dlSrc = new byte[6];
         out.readBytes(dlSrc);

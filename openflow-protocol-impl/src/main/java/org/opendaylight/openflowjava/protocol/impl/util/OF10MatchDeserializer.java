@@ -89,9 +89,7 @@ public abstract class OF10MatchDeserializer {
         boolean _tPDST = (input & (1 << 7)) != 0;
         boolean _dLVLANPCP = (input & (1 << 20)) != 0;
         boolean _nWTOS = (input & (1 << 21)) != 0;
-        int allBits = (1 << 22) - 1;
-        boolean _aLL = (input & allBits) == allBits;
-        return new FlowWildcardsV10(_aLL, _dLDST, _dLSRC, _dLTYPE, _dLVLAN,
+        return new FlowWildcardsV10(_dLDST, _dLSRC, _dLTYPE, _dLVLAN,
                 _dLVLANPCP, _iNPORT, _nWPROTO, _nWTOS, _tPDST, _tPSRC);
     }
     
