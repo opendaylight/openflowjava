@@ -148,8 +148,8 @@ public abstract class OF10ActionsSerializer {
     private static void encodeDlAddressAction(Action action, ByteBuf out, byte code) {
         out.writeShort(code);
         out.writeShort(DL_ADDRESS_ACTION_LENGTH);
-        out.writeBytes(action.getAugmentation(DlAddressAction.class)
-                .getDlAddress().getValue().getBytes());
+        out.writeBytes(ByteBufUtils.macAddressToBytes(action.getAugmentation(DlAddressAction.class)
+                .getDlAddress().getValue()));
         ByteBufUtils.padBuffer(PADDING_IN_DL_ADDRESS_ACTION, out);
     }
     
@@ -185,7 +185,7 @@ public abstract class OF10ActionsSerializer {
         out.writeShort(port.getPort().getValue().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_ENQUEUE_ACTION, out);
         QueueIdAction queueId = action.getAugmentation(QueueIdAction.class);
-        out.writeShort(queueId.getQueueId().intValue());
+        out.writeInt(queueId.getQueueId().intValue());
     }
     
     private static void encodeExperimenterAction(Action action, ByteBuf outBuffer) {

@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.DlAddressAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.DlAddressActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IpAddressAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IpAddressActionBuilder;
@@ -28,10 +29,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.QueueIdAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.QueueIdActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanPcpAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanPcpActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Enqueue;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Output;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetDlDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetDlSrc;
@@ -157,7 +160,7 @@ public class OF10ActionsDeserializer {
         VlanPcpActionBuilder vlanBuilder = new VlanPcpActionBuilder();
         vlanBuilder.setVlanPcp(input.readUnsignedByte());
         input.skipBytes(PADDING_IN_SET_VLAN_PCP_ACTION);
-        actionBuilder.addAugmentation(VlanVidAction.class, vlanBuilder.build());
+        actionBuilder.addAugmentation(VlanPcpAction.class, vlanBuilder.build());
         builder.setAction(actionBuilder.build());
         return builder.build();
     }
@@ -271,10 +274,10 @@ public class OF10ActionsDeserializer {
 
     private static ActionsList createExperimenterAction(ByteBuf input, ActionsListBuilder builder) {
         ActionBuilder actionBuilder = new ActionBuilder();
-        actionBuilder.setType(Enqueue.class);
+        actionBuilder.setType(Experimenter.class);
         ExperimenterActionBuilder expBuilder = new ExperimenterActionBuilder();
         expBuilder.setExperimenter(input.readUnsignedInt());
-        actionBuilder.addAugmentation(QueueIdAction.class, expBuilder.build());
+        actionBuilder.addAugmentation(ExperimenterAction.class, expBuilder.build());
         builder.setAction(actionBuilder.build());
         return builder.build();
     }
