@@ -40,6 +40,7 @@ public class OFEncoder extends MessageToByteEncoder<OfHeader> {
         } catch(Exception e) {
             LOGGER.error("Message serialization failed");
             LOGGER.error(e.getMessage(), e);
+            out.clear();
             return;
         }
         if (out.readableBytes() > 0) {
