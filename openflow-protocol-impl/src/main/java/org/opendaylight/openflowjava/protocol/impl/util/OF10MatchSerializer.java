@@ -26,7 +26,6 @@ public abstract class OF10MatchSerializer {
     private static final byte PADDING_IN_MATCH_2 = 2;
     private static final byte NW_SRC_SHIFT = 8;
     private static final byte NW_DST_SHIFT = 14;
-    private static final int ALL = ((1 << 22) - 1);
     
     /**
      * Encodes ofp_match (OpenFlow v1.0)
@@ -59,24 +58,20 @@ public abstract class OF10MatchSerializer {
     
     private static int encodeWildcards(FlowWildcardsV10 wildcards, short srcMask, short dstMask) {
         int bitmask = 0;
-        if (wildcards.isALL()) {
-            bitmask |= ALL;
-        } else {
-            Map<Integer, Boolean> wildcardsMap = new HashMap<>();
-            wildcardsMap.put(0, wildcards.isINPORT());
-            wildcardsMap.put(1, wildcards.isDLVLAN());
-            wildcardsMap.put(2, wildcards.isDLSRC());
-            wildcardsMap.put(3, wildcards.isDLDST());
-            wildcardsMap.put(4, wildcards.isDLTYPE());
-            wildcardsMap.put(5, wildcards.isNWPROTO());
-            wildcardsMap.put(6, wildcards.isTPSRC());
-            wildcardsMap.put(7, wildcards.isTPDST());
-            wildcardsMap.put(20, wildcards.isDLVLANPCP());
-            wildcardsMap.put(21, wildcards.isNWTOS());
-            bitmask = ByteBufUtils.fillBitMaskFromMap(wildcardsMap);
-            bitmask |= ((32 - srcMask) << NW_SRC_SHIFT);
-            bitmask |= ((32 - dstMask) << NW_DST_SHIFT);
-        }
+        Map<Integer, Boolean> wildcardsMap = new HashMap<>();
+        wildcardsMap.put(0, wildcards.isINPORT());
+        wildcardsMap.put(1, wildcards.isDLVLAN());
+        wildcardsMap.put(2, wildcards.isDLSRC());
+        wildcardsMap.put(3, wildcards.isDLDST());
+        wildcardsMap.put(4, wildcards.isDLTYPE());
+        wildcardsMap.put(5, wildcards.isNWPROTO());
+        wildcardsMap.put(6, wildcards.isTPSRC());
+        wildcardsMap.put(7, wildcards.isTPDST());
+        wildcardsMap.put(20, wildcards.isDLVLANPCP());
+        wildcardsMap.put(21, wildcards.isNWTOS());
+        bitmask = ByteBufUtils.fillBitMaskFromMap(wildcardsMap);
+        bitmask |= ((32 - srcMask) << NW_SRC_SHIFT);
+        bitmask |= ((32 - dstMask) << NW_DST_SHIFT);
         return bitmask;
     }
     

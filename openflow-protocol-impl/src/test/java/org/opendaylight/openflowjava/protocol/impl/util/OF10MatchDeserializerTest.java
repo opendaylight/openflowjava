@@ -33,7 +33,7 @@ public class OF10MatchDeserializerTest {
                 + "50 50 20 20");
         message.skipBytes(4); // skip XID
         MatchV10 match = OF10MatchDeserializer.createMatchV10(message);
-        Assert.assertEquals("Wrong wildcards", new FlowWildcardsV10(false, false, false, true, false,
+        Assert.assertEquals("Wrong wildcards", new FlowWildcardsV10(false, false, true, false,
                 false, true, false, true, true, false), match.getWildcards());
         Assert.assertEquals("Wrong srcMask", 24, match.getNwSrcMask().shortValue());
         Assert.assertEquals("Wrong dstMask", 16, match.getNwDstMask().shortValue());
@@ -61,7 +61,7 @@ public class OF10MatchDeserializerTest {
                 + "50 50 20 20");
         message.skipBytes(4); // skip XID
         MatchV10 match = OF10MatchDeserializer.createMatchV10(message);
-        Assert.assertEquals("Wrong wildcards", new FlowWildcardsV10(true, true, true, true, true,
+        Assert.assertEquals("Wrong wildcards", new FlowWildcardsV10(true, true, true, true,
                 true, true, true, true, true, true), match.getWildcards());
         Assert.assertEquals("Wrong srcMask", 0, match.getNwSrcMask().shortValue());
         Assert.assertEquals("Wrong dstMask", 0, match.getNwDstMask().shortValue());
