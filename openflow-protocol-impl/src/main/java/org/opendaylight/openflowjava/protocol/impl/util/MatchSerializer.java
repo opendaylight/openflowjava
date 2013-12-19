@@ -305,7 +305,6 @@ public class MatchSerializer {
         } else if (field.isAssignableFrom(MplsLabel.class)) {
             fieldValue = 34;
             writeOxmFieldAndLength(out, fieldValue, false, EncodeConstants.SIZE_OF_INT_IN_BYTES);
-            LOGGER.warn("MplsLabel match entry: possible wrong length written (wrote 4 - maybe must be 3)");
             out.writeInt(entry.getAugmentation(MplsLabelMatchEntry.class).getMplsLabel().intValue());
         } else if (field.isAssignableFrom(MplsTc.class)) {
             fieldValue = 35;

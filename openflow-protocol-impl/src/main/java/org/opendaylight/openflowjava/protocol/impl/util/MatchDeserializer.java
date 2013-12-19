@@ -119,8 +119,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.MatchEntriesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.match.grouping.Match;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.match.grouping.MatchBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
 
@@ -130,8 +128,6 @@ import com.google.common.base.Joiner;
  * @author michal.polkorab
  */
 public abstract class MatchDeserializer {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MatchDeserializer.class);
 
     /**
      * Creates match
@@ -289,7 +285,6 @@ public abstract class MatchDeserializer {
                 break;
             case 11:
                 matchEntriesBuilder.setOxmMatchField(Ipv4Src.class);
-                LOGGER.warn("IPV4address(ipv4src): received but possible wrong deserialization");
                 addIpv4AddressAugmentation(matchEntriesBuilder, in);
                 if (hasMask) {
                     addMaskAugmentation(matchEntriesBuilder, in, EncodeConstants.SIZE_OF_INT_IN_BYTES);
@@ -297,7 +292,6 @@ public abstract class MatchDeserializer {
                 break;
             case 12:
                 matchEntriesBuilder.setOxmMatchField(Ipv4Dst.class);
-                LOGGER.warn("IPV4address(ipv4dst): received but possible wrong deserialization");
                 addIpv4AddressAugmentation(matchEntriesBuilder, in);
                 if (hasMask) {
                     addMaskAugmentation(matchEntriesBuilder, in, EncodeConstants.SIZE_OF_INT_IN_BYTES);
@@ -347,7 +341,6 @@ public abstract class MatchDeserializer {
                 break;
             case 22:
                 matchEntriesBuilder.setOxmMatchField(ArpSpa.class);
-                LOGGER.warn("IPV4address(arpspa): received but possible wrong deserialization");
                 addIpv4AddressAugmentation(matchEntriesBuilder, in);
                 if (hasMask) {
                     addMaskAugmentation(matchEntriesBuilder, in, EncodeConstants.SIZE_OF_INT_IN_BYTES);
@@ -355,7 +348,6 @@ public abstract class MatchDeserializer {
                 break;
             case 23:
                 matchEntriesBuilder.setOxmMatchField(ArpTpa.class);
-                LOGGER.warn("IPV4address(arptpa): received but possible wrong deserialization");
                 addIpv4AddressAugmentation(matchEntriesBuilder, in);
                 if (hasMask) {
                     addMaskAugmentation(matchEntriesBuilder, in, EncodeConstants.SIZE_OF_INT_IN_BYTES);
@@ -377,8 +369,6 @@ public abstract class MatchDeserializer {
                 break;
             case 26:
                 matchEntriesBuilder.setOxmMatchField(Ipv6Src.class);
-                // TODO - ipv6address - check format with tests
-                LOGGER.warn("IPV6address(Ipv6Src): received but possible wrong deserialization");
                 addIpv6AddressAugmentation(matchEntriesBuilder, in);
                 if (hasMask) {
                     addMaskAugmentation(matchEntriesBuilder, in, EncodeConstants.SIZE_OF_IPV6_ADDRESS_IN_BYTES);
@@ -386,8 +376,6 @@ public abstract class MatchDeserializer {
                 break;
             case 27:
                 matchEntriesBuilder.setOxmMatchField(Ipv6Dst.class);
-                // TODO - ipv6address - check format with tests
-                LOGGER.warn("IPV6address(Ipv6Dst): received but possible wrong deserialization");
                 addIpv6AddressAugmentation(matchEntriesBuilder, in);
                 if (hasMask) {
                     addMaskAugmentation(matchEntriesBuilder, in, EncodeConstants.SIZE_OF_IPV6_ADDRESS_IN_BYTES);
@@ -416,8 +404,6 @@ public abstract class MatchDeserializer {
                 break;
             case 31:
                 matchEntriesBuilder.setOxmMatchField(Ipv6NdTarget.class);
-                // TODO - ipv6address - check format with tests
-                LOGGER.warn("IPV6address(Ipv6NdTarget): received but possible wrong deserialization");
                 addIpv6AddressAugmentation(matchEntriesBuilder, in);
                 break;
             case 32:
@@ -512,7 +498,7 @@ public abstract class MatchDeserializer {
         Ipv6AddressMatchEntryBuilder ipv6AddressBuilder = new Ipv6AddressMatchEntryBuilder();
         List<String> groups = new ArrayList<>();
         for (int i = 0; i < EncodeConstants.GROUPS_IN_IPV6_ADDRESS; i++) {
-            groups.add(String.format("X", in.readUnsignedShort()));
+            groups.add(String.format("%04X", in.readUnsignedShort()));
         }
         Joiner joiner = Joiner.on(":");
         ipv6AddressBuilder.setIpv6Address(new Ipv6Address(joiner.join(groups)));
