@@ -1364,6 +1364,47 @@ module openflow-types {
         }
     }
     
+    typedef ipv6-exthdr-flags {
+        type bits {
+            bit nonext {
+                description "<No next header> encountered.";
+                position 0;
+            }
+            bit esp {
+                description "Encrypted Sec Payload header present.";
+                position 1;
+            }
+            bit auth {
+                description "Authentication header present.";
+                position 2;
+            }
+            bit dest {
+                description "1 or 2 dest headers present.";
+                position 3;
+            }
+            bit frag {
+                description "Fragment header present.";
+                position 4;
+            }
+            bit router {
+                description "Router header present.";
+                position 5;
+            }
+            bit hop {
+                description "Hop-by-hop header present.";
+                position 6;
+            }
+            bit unrep {
+                description "Unexpected repeats encountered.";
+                position 7;
+            }
+            bit unseq {
+                description "Unexpected sequencing encountered.";
+                position 8;
+            }
+        }
+    }
+    
 // OPENFLOW v1.0 STRUCTURES
     // Structures under this line are needed to support OpenFlow version 1.0 
     // wire protocol 0x01;
