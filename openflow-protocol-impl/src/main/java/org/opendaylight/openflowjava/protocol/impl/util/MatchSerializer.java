@@ -36,10 +36,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortNumberMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ProtocolNumberMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PseudoFieldMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PseudoFieldMatchEntry.PseudoField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.TcMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanPcpMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidMatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.Ipv6ExthdrFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.StandardMatchType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpOp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpSha;
@@ -324,8 +324,7 @@ public class MatchSerializer {
             writeMetadataRelatedEntry(entry, out, fieldValue);
         } else if (field.isAssignableFrom(Ipv6Exthdr.class)) {
             fieldValue = 39;
-            fieldValue = fieldValue << 1;
-            PseudoField pseudoField = entry.getAugmentation(PseudoFieldMatchEntry.class).getPseudoField();
+            Ipv6ExthdrFlags pseudoField = entry.getAugmentation(PseudoFieldMatchEntry.class).getPseudoField();
             Map<Integer, Boolean> map = new HashMap<>();
             map.put(0, pseudoField.isNonext());
             map.put(1, pseudoField.isEsp());
