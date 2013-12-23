@@ -113,9 +113,9 @@ public class DecoderTable {
         table.put(new MessageTypeCodeKey(OF10, (short) 10), OF10PacketInMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF10, (short) 11), OF10FlowRemovedMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF10, (short) 12), OF10PortStatusMessageFactory.getInstance());
-        table.put(new MessageTypeCodeKey(OF10, (short) 16), OF10StatsReplyMessageFactory.getInstance());
-        table.put(new MessageTypeCodeKey(OF10, (short) 18), BarrierReplyMessageFactory.getInstance());
-        table.put(new MessageTypeCodeKey(OF10, (short) 20), OF10QueueGetConfigReplyMessageFactory.getInstance());
+        table.put(new MessageTypeCodeKey(OF10, (short) 17), OF10StatsReplyMessageFactory.getInstance());
+        table.put(new MessageTypeCodeKey(OF10, (short) 19), BarrierReplyMessageFactory.getInstance());
+        table.put(new MessageTypeCodeKey(OF10, (short) 21), OF10QueueGetConfigReplyMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF13, (short) 0), HelloMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF13, (short) 1), ErrorMessageFactory.getInstance());
         table.put(new MessageTypeCodeKey(OF13, (short) 2), EchoRequestMessageFactory.getInstance());
