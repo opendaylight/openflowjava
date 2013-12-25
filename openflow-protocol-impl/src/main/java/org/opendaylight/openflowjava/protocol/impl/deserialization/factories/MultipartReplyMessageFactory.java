@@ -168,7 +168,6 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     private static final byte PADDING_IN_METER_BAND_DSCP_HEADER = 3;
     private static final byte PADDING_IN_PORT_DESC_HEADER_01 = 4;
     private static final byte PADDING_IN_PORT_DESC_HEADER_02 = 2;
-    private static final byte MAX_PORT_NAME_LEN = 16;
     private static final int GROUP_TYPES = 4;
     private static final byte PADDING_IN_GROUP_DESC_HEADER = 1;
     private static final byte PADDING_IN_BUCKETS_HEADER = 4;
@@ -708,10 +707,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             input.readBytes(hwAddress);
             portsBuilder.setHwAddr(new MacAddress(ByteBufUtils.macAddressToString(hwAddress)));
             input.skipBytes(PADDING_IN_PORT_DESC_HEADER_02);
-            byte[] portNameBytes = new byte[MAX_PORT_NAME_LEN];
-            input.readBytes(portNameBytes);
-            String portName = new String(portNameBytes);
-            portsBuilder.setName(portName.trim());
+            portsBuilder.setName(ByteBufUtils.decodeNullTerminatedString(input, EncodeConstants.MAX_PORT_NAME_LENGTH));
             portsBuilder.setConfig(createPortConfig(input.readUnsignedInt()));
             portsBuilder.setState(createPortState(input.readUnsignedInt()));
             portsBuilder.setCurrentFeatures(createPortFeatures(input.readUnsignedInt()));

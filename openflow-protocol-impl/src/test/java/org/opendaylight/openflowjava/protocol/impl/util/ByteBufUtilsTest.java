@@ -211,4 +211,34 @@ public class ByteBufUtilsTest {
         Assert.assertEquals("Strings does not match", expectedBinaryString, bitmaskValueInBinarySytring);
     }
 
+    /**
+     * Test of {@link ByteBufUtils#macAddressToBytes(String)}
+     */
+    @Test
+    public void testMacToBytes() {
+        Assert.assertArrayEquals("Wrong byte array", new byte[]{0, 1, 2, 3, (byte) 255, 5},
+                ByteBufUtils.macAddressToBytes("00:01:02:03:FF:05"));
+    }
+
+    /**
+     * Test of {@link ByteBufUtils#macAddressToString(byte[])}
+     */
+    @Test
+    public void testMacToString() {
+        Assert.assertEquals("Wrong string decoded", "00:01:02:03:FF:05",
+                ByteBufUtils.macAddressToString(new byte[]{0, 1, 2, 3, (byte) 255, 5}));
+    }
+
+    /**
+     * Test of {@link ByteBufUtils#decodeNullTerminatedString(ByteBuf, int)}
+     */
+    @Test
+    public void testDecodeString() {
+        ByteBuf buf = ByteBufUtils.hexStringToByteBuf("4A 41 4D 45 53 20 42 4F 4E 44 00 00 00 00 00 00");
+        Assert.assertEquals("Wrong string decoded", "JAMES BOND", ByteBufUtils.decodeNullTerminatedString(buf, 16));
+        
+        ByteBuf buf2 = ByteBufUtils.hexStringToByteBuf("53 50 49 44 45 52 4D 41 4E 00 00 00 00 00 00");
+        Assert.assertEquals("Wrong string decoded", "SPIDERMAN", ByteBufUtils.decodeNullTerminatedString(buf2, 15));
+    }
+
 }
