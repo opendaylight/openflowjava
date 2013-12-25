@@ -819,6 +819,18 @@ module openflow-protocol {
                                 leaf name {
                                     type string;
                                 }
+                                leaf wildcards {
+                                    type oft:flow-wildcards-v10;
+                                }
+                                leaf nw-src-mask {
+                                    type uint8;
+                                }
+                                leaf nw-dst-mask {
+                                    type uint8;
+                                }
+                                leaf max-entries {
+                                    type uint32;
+                                }
                             }
                         }
                     }

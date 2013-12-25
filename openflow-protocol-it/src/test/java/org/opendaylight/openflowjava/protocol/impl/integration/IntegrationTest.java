@@ -8,6 +8,10 @@
 
 package org.opendaylight.openflowjava.protocol.impl.integration;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.UnpooledByteBufAllocator;
+
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -116,9 +120,18 @@ public class IntegrationTest {
      * Library integration and communication test (with virtual machine)
      * @throws Exception
      */
-    //@Test
+    @Test
     public void testCommunicationWithVM() throws Exception {
-        mockPlugin.getFinishedFuture().get();
+        ByteBuf buffer = UnpooledByteBufAllocator.DEFAULT.buffer();
+        buffer.writeLong(-1L);
+        byte[] b = new byte[8];
+        buffer.readBytes(b);
+        System.out.println(new BigInteger(b));
+        
+        
+        
+        
+        //        mockPlugin.getFinishedFuture().get();
     }
     
     /**
