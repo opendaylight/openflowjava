@@ -78,7 +78,12 @@ public abstract class OF10MatchDeserializer {
         return builder.build();
     }
     
-    private static FlowWildcardsV10 createWildcards(long input) {
+    /**
+     * Decodes FlowWildcards
+     * @param input input ByteBuf
+     * @return decoded FlowWildcardsV10
+     */
+    public static FlowWildcardsV10 createWildcards(long input) {
         boolean _iNPORT = (input & (1 << 0)) != 0;
         boolean _dLVLAN = (input & (1 << 1)) != 0;
         boolean _dLSRC = (input & (1 << 2)) != 0;
@@ -93,11 +98,21 @@ public abstract class OF10MatchDeserializer {
                 _dLVLANPCP, _iNPORT, _nWPROTO, _nWTOS, _tPDST, _tPSRC);
     }
     
-    private static short decodeNwSrcMask(long input) {
+    /**
+     * Decodes NwSrcMask from FlowWildcards (represented as uint32)
+     * @param input binary FlowWildcards
+     * @return decoded NwSrcMask
+     */
+    public static short decodeNwSrcMask(long input) {
         return (short) Math.max(32 - ((input & NW_SRC_MASK) >> NW_SRC_SHIFT), 0);
     }
     
-    private static short decodeNwDstMask(long input) {
+    /**
+     * Decodes NwDstMask from FlowWildcards (represented as uint32)
+     * @param input binary FlowWildcards
+     * @return decoded NwDstMask
+     */
+    public static short decodeNwDstMask(long input) {
         return (short) Math.max(32 - ((input & NW_DST_MASK) >> NW_DST_SHIFT), 0);
     }
     

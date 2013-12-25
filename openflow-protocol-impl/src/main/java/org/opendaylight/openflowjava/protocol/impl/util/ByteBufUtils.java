@@ -201,13 +201,13 @@ public abstract class ByteBufUtils {
     }
     
     /**
-     * Reads and parses port name from ByteBuf
+     * Reads and parses null-terminated string from ByteBuf
      * @param rawMessage
      * @param length maximal length of String
      * @return String with name of port
      */
     public static String decodeNullTerminatedString(ByteBuf rawMessage, int length) {
-        byte[] name = new byte[EncodeConstants.MAX_PORT_NAME_LENGTH];
+        byte[] name = new byte[length];
         rawMessage.readBytes(name);
         int index = 0;
         for (int i = 0; i < name.length; i++) {
@@ -220,4 +220,5 @@ public abstract class ByteBufUtils {
         byte[] correctName = Arrays.copyOf(name, index);
         return new String(correctName);
     }
+    
 }
