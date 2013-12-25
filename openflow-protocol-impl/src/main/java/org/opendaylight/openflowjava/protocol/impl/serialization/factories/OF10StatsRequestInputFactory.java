@@ -47,6 +47,7 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
     private static final byte QUEUE_BODY_LENGTH = 8;
     private static final byte EXPERIMENTER_BODY_LENGTH = 4;
     private static final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY = 1;
+    private static final byte PADDING_IN_MULTIPART_REQUEST_AGGREGATE_BODY = 1;
     private static final byte PADDING_IN_MULTIPART_REQUEST_PORT_BODY = 6;
     private static final byte PADING_IN_QUEUE_BODY = 2;
 
@@ -161,7 +162,6 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
     }
     
     private static void encodeAggregateBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
-        final byte PADDING_IN_MULTIPART_REQUEST_AGGREGATE_BODY = 1;
         MultipartRequestAggregateCase aggregateCase = (MultipartRequestAggregateCase) multipartRequestBody;
         MultipartRequestAggregate aggregate = aggregateCase.getMultipartRequestAggregate();
         OF10MatchSerializer.encodeMatchV10(output, aggregate.getMatchV10());

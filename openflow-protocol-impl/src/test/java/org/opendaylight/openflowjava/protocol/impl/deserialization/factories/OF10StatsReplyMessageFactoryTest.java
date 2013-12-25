@@ -1,0 +1,301 @@
+/*
+ * Copyright (c) 2013 Pantheon Technologies s.r.o. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
+
+import io.netty.buffer.ByteBuf;
+
+import java.math.BigInteger;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Output;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetVlanVid;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.actions.list.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowWildcardsV10;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyAggregateCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyDescCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyFlowCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyPortStatsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyQueueCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyTableCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.aggregate._case.MultipartReplyAggregate;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.desc._case.MultipartReplyDesc;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow._case.MultipartReplyFlow;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.port.stats._case.MultipartReplyPortStats;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.queue._case.MultipartReplyQueue;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.table._case.MultipartReplyTable;
+
+/**
+ * @author michal.polkorab
+ *
+ */
+public class OF10StatsReplyMessageFactoryTest {
+
+    /**
+     * Testing OF10StatsReplyMessageFactory (Desc) for correct deserialization
+     */
+    @Test
+    public void testDesc() {
+        final int DESC_STR_LEN = 256;
+        final int SERIAL_NUM_LEN = 32;
+        ByteBuf bb = BufferHelper.buildBuffer("00 00 00 00");
+        
+        String mfrDesc = "Manufacturer description";
+        byte[] mfrDescBytes = new byte[256];
+        mfrDescBytes = mfrDesc.getBytes();
+        bb.writeBytes(mfrDescBytes);
+        ByteBufUtils.padBuffer((DESC_STR_LEN - mfrDescBytes.length), bb);
+        
+        String hwDesc = "Hardware description";
+        byte[] hwDescBytes = new byte[256];
+        hwDescBytes = hwDesc.getBytes();
+        bb.writeBytes(hwDescBytes);
+        ByteBufUtils.padBuffer((DESC_STR_LEN - hwDescBytes.length), bb);
+        
+        String swDesc = "Software description";
+        byte[] swDescBytes = new byte[256];
+        swDescBytes = swDesc.getBytes();
+        bb.writeBytes(swDescBytes);
+        ByteBufUtils.padBuffer((DESC_STR_LEN - swDescBytes.length), bb);
+        
+        String serialNum = "SN0123456789";
+        byte[] serialNumBytes = new byte[32];
+        serialNumBytes = serialNum.getBytes();
+        bb.writeBytes(serialNumBytes);
+        ByteBufUtils.padBuffer((SERIAL_NUM_LEN - serialNumBytes.length), bb);
+        
+        String dpDesc = "switch3 in room 3120";
+        byte[] dpDescBytes = new byte[256];
+        dpDescBytes = dpDesc.getBytes();
+        bb.writeBytes(dpDescBytes);
+        ByteBufUtils.padBuffer((DESC_STR_LEN - dpDescBytes.length), bb);
+        
+        MultipartReplyMessage builtByFactory = BufferHelper.decodeV10(OF10StatsReplyMessageFactory.getInstance(), bb);
+        
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 0, builtByFactory.getType().getIntValue());
+        Assert.assertEquals("Wrong flag", false, builtByFactory.getFlags().isOFPMPFREQMORE().booleanValue());
+        MultipartReplyDescCase messageCase = (MultipartReplyDescCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyDesc message = messageCase.getMultipartReplyDesc();
+        Assert.assertEquals("Wrong mfrDesc", "Manufacturer description", message.getMfrDesc());
+        Assert.assertEquals("Wrong hwDesc", "Hardware description", message.getHwDesc());
+        Assert.assertEquals("Wrong swDesc", "Software description", message.getSwDesc());
+        Assert.assertEquals("Wrong serialNum", "SN0123456789", message.getSerialNum());
+        Assert.assertEquals("Wrong dpDesc", "switch3 in room 3120", message.getDpDesc());
+        Assert.assertTrue("Unread data", bb.readableBytes() == 0);
+    }
+    
+    /**
+     * Testing OF10StatsReplyMessageFactory (Flow) for correct deserialization
+     */
+    @Test
+    public void testFlow() {
+        ByteBuf bb = BufferHelper.buildBuffer("00 01 00 01 00 68 01 00 "
+                + "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                + "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                + "00 00 00 02 00 00 00 03 00 04 00 05 00 06 00 00 00 00 00 00 "
+                + "00 01 02 03 04 05 06 07 00 01 02 03 04 05 06 07 00 00 00 00 00 00 00 20 "
+                + "00 00 00 08 00 01 00 02 00 01 00 08 00 03 00 00");
+        
+        MultipartReplyMessage builtByFactory = 
+                BufferHelper.decodeV10(OF10StatsReplyMessageFactory.getInstance(), bb);
+
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 0x01, builtByFactory.getType().getIntValue());
+        Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE().booleanValue());
+        MultipartReplyFlowCase messageCase = (MultipartReplyFlowCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyFlow message = messageCase.getMultipartReplyFlow();
+        Assert.assertEquals("Wrong tableId", 1, message.getFlowStats().get(0).getTableId().intValue());
+        Assert.assertEquals("Wrong durationSec", 2, message.getFlowStats().get(0).getDurationSec().intValue());
+        Assert.assertEquals("Wrong durationNsec", 3, message.getFlowStats().get(0).getDurationNsec().intValue());
+        Assert.assertEquals("Wrong priority", 4, message.getFlowStats().get(0).getPriority().intValue());
+        Assert.assertEquals("Wrong idleTimeOut", 5, message.getFlowStats().get(0).getIdleTimeout().intValue());
+        Assert.assertEquals("Wrong hardTimeOut", 6, message.getFlowStats().get(0).getHardTimeout().intValue());
+        Assert.assertEquals("Wrong cookie",
+                new BigInteger(new byte[]{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07}), 
+                message.getFlowStats().get(0).getCookie());
+        Assert.assertEquals("Wrong packetCount",
+                new BigInteger(new byte[]{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07}), 
+                message.getFlowStats().get(0).getPacketCount());
+        Assert.assertEquals("Wrong byteCount",
+                new BigInteger(new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20}), 
+                message.getFlowStats().get(0).getByteCount());
+        Action action1 = message.getFlowStats().get(0).getActionsList().get(0).getAction();
+        Assert.assertEquals("Wrong action type", Output.class, action1.getType());
+        Assert.assertEquals("Wrong action port", 1, action1.getAugmentation(PortAction.class)
+                .getPort().getValue().intValue());
+        Assert.assertEquals("Wrong action port", 2, action1.getAugmentation(MaxLengthAction.class)
+                .getMaxLength().intValue());
+        Action action2 = message.getFlowStats().get(0).getActionsList().get(1).getAction();
+        Assert.assertEquals("Wrong action type", SetVlanVid.class, action2.getType());
+        Assert.assertEquals("Wrong action port", 3, action2.getAugmentation(VlanVidAction.class)
+                .getVlanVid().intValue());
+        Assert.assertTrue("Unread data", bb.readableBytes() == 0);
+    }
+    
+    /**
+     * Testing OF10StatsReplyMessageFactory (Aggregate) for correct deserialization
+     */
+    @Test
+    public void testAggregate() {
+        ByteBuf bb = BufferHelper.buildBuffer("00 02 00 01 "
+                + "00 01 02 03 04 05 06 07 00 00 00 00 00 00 00 20 00 00 00 30 00 00 00 00");
+        
+        MultipartReplyMessage builtByFactory = 
+                BufferHelper.decodeV10(OF10StatsReplyMessageFactory.getInstance(), bb);
+
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 0x02, builtByFactory.getType().getIntValue());
+        Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE().booleanValue());
+        MultipartReplyAggregateCase messageCase = (MultipartReplyAggregateCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyAggregate message = messageCase.getMultipartReplyAggregate();
+        Assert.assertEquals("Wrong packet-count",
+                new BigInteger(new byte[]{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07}), 
+                message.getPacketCount());
+        Assert.assertEquals("Wrong byte-count",
+                new BigInteger(new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20}), 
+                message.getByteCount());
+        Assert.assertEquals("Wrong flow-count", 48, message.getFlowCount().intValue());
+        Assert.assertTrue("Unread data", bb.readableBytes() == 0);
+    }
+    
+    /**
+     * Testing OF10StatsReplyMessageFactory (Table) for correct deserialization
+     */
+    @Test
+    public void testTable() {
+        ByteBuf bb = BufferHelper.buildBuffer("00 03 00 01 "
+                + "08 00 00 00 4A 41 4D 45 53 20 42 4F 4E 44 00 00 00 00 00 00 00 00 00 "
+                + "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                + "00 00 00 30 00 00 00 10 00 01 01 01 01 01 01 01 02 01 01 01 01 01 01 00");
+
+        MultipartReplyMessage builtByFactory = BufferHelper.decodeV10(OF10StatsReplyMessageFactory.getInstance(), bb);
+
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 0x03, builtByFactory.getType().getIntValue());
+        Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
+
+        MultipartReplyTableCase messageCase = (MultipartReplyTableCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyTable message = messageCase.getMultipartReplyTable();
+        Assert.assertEquals("Wrong tableId", 8, message.getTableStats().get(0).getTableId().intValue());
+        Assert.assertEquals("Wrong name", "JAMES BOND", message.getTableStats().get(0).getName());
+        Assert.assertEquals("Wrong wildcards", new FlowWildcardsV10(false, false, false, false, false, false, false,
+                false, false, false), message.getTableStats().get(0).getWildcards());
+        Assert.assertEquals("Wrong src-mask", 32, message.getTableStats().get(0).getNwSrcMask().intValue());
+        Assert.assertEquals("Wrong dst-mask", 32, message.getTableStats().get(0).getNwDstMask().intValue());
+        Assert.assertEquals("Wrong max-entries", 48, message.getTableStats().get(0).getMaxEntries().longValue());
+        Assert.assertEquals("Wrong activeCount", 16, message.getTableStats().get(0).getActiveCount().longValue());
+        Assert.assertEquals("Wrong lookupCount", 
+                new BigInteger(new byte[]{0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+                message.getTableStats().get(0).getLookupCount());
+        Assert.assertEquals("Wrong matchedCount", 
+                new BigInteger(new byte[]{0x02, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00}), 
+                message.getTableStats().get(0).getMatchedCount());
+        Assert.assertTrue("Unread data", bb.readableBytes() == 0);
+    }
+    
+    /**
+     * Testing OF10StatsReplyMessageFactory (Port) for correct deserialization
+     */
+    @Test
+    public void testPort() {
+        ByteBuf bb = BufferHelper.buildBuffer("00 04 00 01 "
+                + "00 FF 00 00 00 00 00 00 "
+                + "00 01 01 01 01 01 01 01 00 02 02 02 02 02 02 02 "
+                + "00 02 03 02 03 02 03 02 00 02 03 02 03 02 03 02 "
+                + "00 02 03 02 03 02 03 02 00 02 03 02 03 02 03 02 "
+                + "00 02 03 02 03 02 03 02 00 02 03 02 03 02 03 02 "
+                + "00 02 03 02 03 02 03 02 00 02 03 02 03 02 03 02 00 02 03 02 03 02 03 02 "
+                + "00 02 03 02 03 02 03 02 ");
+
+        MultipartReplyMessage builtByFactory = BufferHelper.decodeV10(OF10StatsReplyMessageFactory.getInstance(), bb);
+
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 0x04, builtByFactory.getType().getIntValue());
+        Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
+        MultipartReplyPortStatsCase messageCase = (MultipartReplyPortStatsCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyPortStats message = messageCase.getMultipartReplyPortStats();
+        Assert.assertEquals("Wrong portNo", 255, message.getPortStats().get(0).getPortNo().intValue());
+        Assert.assertEquals("Wrong rxPackets", 
+                new BigInteger(new byte[]{0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+                message.getPortStats().get(0).getRxPackets());
+        Assert.assertEquals("Wrong txPackets", 
+                new BigInteger(new byte[]{0x00, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}), 
+                message.getPortStats().get(0).getTxPackets());
+        Assert.assertEquals("Wrong rxBytes", 
+                new BigInteger(new byte[]{0x00, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+                message.getPortStats().get(0).getRxBytes());
+        Assert.assertEquals("Wrong txBytes", 
+                new BigInteger(new byte[]{0x00, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+                message.getPortStats().get(0).getTxBytes());
+        Assert.assertEquals("Wrong rxDropped", 
+                new BigInteger(new byte[]{0x00, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+                message.getPortStats().get(0).getRxDropped());
+        Assert.assertEquals("Wrong txDropped", 
+                new BigInteger(new byte[]{0x00, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+                message.getPortStats().get(0).getTxDropped());
+        Assert.assertEquals("Wrong rxErrors", 
+                new BigInteger(new byte[]{0x00, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+                message.getPortStats().get(0).getRxErrors());
+        Assert.assertEquals("Wrong txErrors", 
+                new BigInteger(new byte[]{0x00, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+                message.getPortStats().get(0).getTxErrors());
+        Assert.assertEquals("Wrong rxFrameErr", 
+                new BigInteger(new byte[]{0x00, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+                message.getPortStats().get(0).getRxFrameErr());
+        Assert.assertEquals("Wrong rxOverErr", 
+                new BigInteger(new byte[]{0x00, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+                message.getPortStats().get(0).getRxOverErr());
+        Assert.assertEquals("Wrong rxCrcErr", 
+                new BigInteger(new byte[]{0x00, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+                message.getPortStats().get(0).getRxCrcErr());
+        Assert.assertEquals("Wrong collisions", 
+                new BigInteger(new byte[]{0x00, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+                message.getPortStats().get(0).getCollisions());
+        Assert.assertTrue("Unread data", bb.readableBytes() == 0);
+    }
+    
+    /**
+     * Testing OF10StatsReplyMessageFactory (Queue) for correct deserialization
+     */
+    @Test
+    public void testQueue() {
+        ByteBuf bb = BufferHelper.buildBuffer("00 05 00 00 "
+                + "00 FF 00 00 00 00 00 10 "
+                + "00 02 03 02 03 02 03 02 "
+                + "00 02 02 02 02 02 02 02 "
+                + "00 02 03 02 03 02 03 02 ");
+
+        MultipartReplyMessage builtByFactory = BufferHelper.decodeV10(OF10StatsReplyMessageFactory.getInstance(), bb);
+
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 0x05, builtByFactory.getType().getIntValue());
+        Assert.assertEquals("Wrong flag", false, builtByFactory.getFlags().isOFPMPFREQMORE());
+        MultipartReplyQueueCase messageCase = (MultipartReplyQueueCase) builtByFactory.getMultipartReplyBody();
+        MultipartReplyQueue message = messageCase.getMultipartReplyQueue();
+        Assert.assertEquals("Wrong portNo", 255, message.getQueueStats().get(0).getPortNo().intValue());
+        Assert.assertEquals("Wrong queueId", 16, message.getQueueStats().get(0).getQueueId().intValue());
+        Assert.assertEquals("Wrong txBytes", 
+                new BigInteger(new byte[]{0x00, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+                message.getQueueStats().get(0).getTxBytes());
+        Assert.assertEquals("Wrong txPackets", 
+                new BigInteger(new byte[]{0x00, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}), 
+                message.getQueueStats().get(0).getTxPackets());
+        Assert.assertEquals("Wrong txErrors", 
+                new BigInteger(new byte[]{0x00, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+                message.getQueueStats().get(0).getTxErrors());
+        Assert.assertTrue("Unread data", bb.readableBytes() == 0);
+    }
+
+}

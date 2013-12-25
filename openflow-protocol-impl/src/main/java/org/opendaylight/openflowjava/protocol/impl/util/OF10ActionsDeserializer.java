@@ -77,54 +77,78 @@ public class OF10ActionsDeserializer {
     public static List<ActionsList> createActionsList(ByteBuf input) {
         List<ActionsList> actions = new ArrayList<>();
         while (input.readableBytes() > 0) {
-            ActionsListBuilder actionsBuilder = new ActionsListBuilder();
             int type = input.readUnsignedShort();
             input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-            switch(type) {
-            case 0:  
-                actions.add(createOutputAction(input, actionsBuilder));
-                break;
-            case 1: 
-                actions.add(createSetVlanVidAction(input, actionsBuilder));
-                break;
-            case 2: 
-                actions.add(createVlanPcpAction(input, actionsBuilder));
-                break;
-            case 3: 
-                actions.add(createStripVlanAction(input, actionsBuilder));
-                break;
-            case 4:                              
-                actions.add(createSetDlSrcAction(input, actionsBuilder));
-                break;
-            case 5: 
-                actions.add(createSetDlDstAction(input, actionsBuilder));
-                break;
-            case 6:                              
-                actions.add(createSetNwSrcAction(input, actionsBuilder));
-                break;
-            case 7: 
-                actions.add(createSetNwDstAction(input, actionsBuilder));
-                break;
-            case 8: 
-                actions.add(createSetNwTosAction(input, actionsBuilder));
-                break;
-            case 9: 
-                actions.add(createSetTpSrcAction(input, actionsBuilder));
-                break;
-            case 10: 
-                actions.add(createSetTpDstAction(input, actionsBuilder));
-                break;
-            case 11: 
-                actions.add(createEnqueueAction(input, actionsBuilder));
-                break;
-            case 0xFFFF:
-                actions.add(createExperimenterAction(input, actionsBuilder));
-                break;
-            default: 
-                break;
-            }
+            actions.add(decodeAction(input, type));
         } 
         return actions;
+    }
+
+    /**
+     * Creates list of actions (OpenFlow v1.0) from ofp_action structures, which are not the last structure
+     * in message
+     * @param input input ByteBuf
+     * @param actionsLength length of actions
+     * @return ActionsList list of actions
+     */
+    public static List<ActionsList> createActionsList(ByteBuf input, int actionsLength) {
+        List<ActionsList> actions = new ArrayList<>();
+        int currentLength = 0;
+        while (currentLength < actionsLength) {
+            int type = input.readUnsignedShort();
+            currentLength += input.readUnsignedShort();
+            actions.add(decodeAction(input, type));
+        } 
+        return actions;
+    }
+
+    private static ActionsList decodeAction(ByteBuf input, int type) {
+        ActionsListBuilder actionsBuilder = new ActionsListBuilder();
+        ActionsList actionsList = null;
+        switch(type) {
+        case 0:
+            actionsList = createOutputAction(input, actionsBuilder);
+            break;
+        case 1:
+            actionsList = createSetVlanVidAction(input, actionsBuilder);
+            break;
+        case 2:
+            actionsList = createVlanPcpAction(input, actionsBuilder);
+            break;
+        case 3:
+            actionsList = createStripVlanAction(input, actionsBuilder);
+            break;
+        case 4:
+            actionsList = createSetDlSrcAction(input, actionsBuilder);
+            break;
+        case 5:
+            actionsList = createSetDlDstAction(input, actionsBuilder);
+            break;
+        case 6:
+            actionsList = createSetNwSrcAction(input, actionsBuilder);
+            break;
+        case 7:
+            actionsList = createSetNwDstAction(input, actionsBuilder);
+            break;
+        case 8:
+            actionsList = createSetNwTosAction(input, actionsBuilder);
+            break;
+        case 9:
+            actionsList = createSetTpSrcAction(input, actionsBuilder);
+            break;
+        case 10:
+            actionsList = createSetTpDstAction(input, actionsBuilder);
+            break;
+        case 11:
+            actionsList = createEnqueueAction(input, actionsBuilder);
+            break;
+        case 0xFFFF:
+            actionsList = createExperimenterAction(input, actionsBuilder);
+            break;
+        default:
+            break;
+        }
+        return actionsList;
     }
 
     /**

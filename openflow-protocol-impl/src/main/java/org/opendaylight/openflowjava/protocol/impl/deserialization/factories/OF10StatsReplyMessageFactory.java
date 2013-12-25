@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.OF10ActionsDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.OF10MatchDeserializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
@@ -67,7 +67,8 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
     private static final byte MAX_TABLE_NAME_LENGTH = 32;
     private static final byte PADDING_IN_PORT_STATS_HEADER = 6;
     private static final byte PADDING_IN_QUEUE_HEADER = 2;
-
+    private static final byte LENGTH_OF_FLOW_STATS = 88;
+    
     private static OF10StatsReplyMessageFactory instance;
     
     private OF10StatsReplyMessageFactory() {
@@ -146,7 +147,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         List<FlowStats> flowStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
             FlowStatsBuilder flowStatsBuilder = new FlowStatsBuilder();
-            input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+            int length = input.readUnsignedShort();
             flowStatsBuilder.setTableId(input.readUnsignedByte());
             input.skipBytes(PADDING_IN_FLOW_STATS_HEADER);
             flowStatsBuilder.setMatchV10(OF10MatchDeserializer.createMatchV10(input));
@@ -165,7 +166,8 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
             byte[] byteCount = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(byteCount);
             flowStatsBuilder.setByteCount(new BigInteger(byteCount));
-            flowStatsBuilder.setActionsList(OF10ActionsDeserializer.createActionsList(input));
+            flowStatsBuilder.setActionsList(OF10ActionsDeserializer
+                    .createActionsList(input, length - LENGTH_OF_FLOW_STATS));
             flowStatsList.add(flowStatsBuilder.build());
         }
         flowBuilder.setFlowStats(flowStatsList);
@@ -196,7 +198,12 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
             TableStatsBuilder tableStatsBuilder = new TableStatsBuilder();
             tableStatsBuilder.setTableId(input.readUnsignedByte());
             input.skipBytes(PADDING_IN_TABLE_HEADER);
-            tableStatsBuilder.setName(input.readBytes(MAX_TABLE_NAME_LENGTH).toString());
+            tableStatsBuilder.setName(ByteBufUtils.decodeNullTerminatedString(input, MAX_TABLE_NAME_LENGTH));
+            long wildcards = input.readUnsignedInt();
+            tableStatsBuilder.setWildcards(OF10MatchDeserializer.createWildcards(wildcards));
+            tableStatsBuilder.setNwSrcMask(OF10MatchDeserializer.decodeNwSrcMask(wildcards));
+            tableStatsBuilder.setNwDstMask(OF10MatchDeserializer.decodeNwDstMask(wildcards));
+            tableStatsBuilder.setMaxEntries(input.readUnsignedInt());
             tableStatsBuilder.setActiveCount(input.readUnsignedInt());
             byte[] lookupCount = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(lookupCount);
@@ -255,6 +262,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
             byte[] collisions = new byte[Long.SIZE/Byte.SIZE];
             input.readBytes(collisions);
             portStatsBuilder.setCollisions(new BigInteger(collisions));
+            portStatsList.add(portStatsBuilder.build());
         }
         builder.setPortStats(portStatsList);
         caseBuilder.setMultipartReplyPortStats(builder.build());
