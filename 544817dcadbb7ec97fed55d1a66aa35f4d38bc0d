@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da6255ed_ed80ddc1",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/deserialization/factories/PortStatusMessageFactory.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2013-12-26T16:21:17Z",
+      "side": 1,
+      "message": "Please remove max_port_name_len constant - it is already defined in EncodeConstants class",
+      "revId": "544817dcadbb7ec97fed55d1a66aa35f4d38bc0d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da6255ed_2d1b95cb",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/deserialization/factories/PortStatusMessageFactory.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2013-12-26T16:21:17Z",
+      "side": 1,
+      "message": "Please use builder.setName(ByteBufUtils.decodeNullTerminatedString(rawMessage, EncodeConstants.MAX_PORT_NAME_LENGTH));",
+      "revId": "544817dcadbb7ec97fed55d1a66aa35f4d38bc0d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
