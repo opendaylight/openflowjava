@@ -37,6 +37,7 @@ public class PortStatusMessageFactoryTest {
                                               "00 00 00 00 " + //padding in ofp_port1
                                               "08 00 27 00 B0 EB " + //mac address
                                               "00 00 " + //padding in ofp_port2
+                                              "73 31 2d 65 74 68 31 00 00 00 00 00 00 00 00 00 " + // port name, String "s1-eth1"
                                               "00 00 00 41 " + //port config
                                               "00 00 00 05 " + //port state
                                               "00 00 00 81 " + //current features
@@ -53,6 +54,7 @@ public class PortStatusMessageFactoryTest {
         Assert.assertEquals("Wrong reason", 0x01, builtByFactory.getReason().getIntValue());
         Assert.assertEquals("Wrong portNumber", 66051L, builtByFactory.getPortNo().longValue());
         Assert.assertEquals("Wrong macAddress", new MacAddress("08:00:27:00:B0:EB"), builtByFactory.getHwAddr());
+        Assert.assertEquals("Wrong name", "s1-eth1", builtByFactory.getName());
         Assert.assertEquals("Wrong portConfig", new PortConfig(false, true, false, true), builtByFactory.getConfig());
         Assert.assertEquals("Wrong portState", new PortState(false, true, true), builtByFactory.getState());
         Assert.assertEquals("Wrong currentFeatures", new PortFeatures(true, false, false, false,
