@@ -32,6 +32,7 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
     private static final byte PADDING_IN_PORT_STATUS_HEADER = 7;
     private static final byte PADDING_IN_OFP_PORT_HEADER_1 = 4;
     private static final byte PADDING_IN_OFP_PORT_HEADER_2 = 2;
+    private static final byte MAX_PORT_NAME_LEN = 16;
     
     private PortStatusMessageFactory() {
         // Singleton
@@ -60,6 +61,7 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
         rawMessage.readBytes(hwAddress);
         builder.setHwAddr(new MacAddress(ByteBufUtils.macAddressToString(hwAddress)));
         rawMessage.skipBytes(PADDING_IN_OFP_PORT_HEADER_2);
+        builder.setName(ByteBufUtils.decodeNullTerminatedString(rawMessage, EncodeConstants.MAX_PORT_NAME_LENGTH));
         builder.setConfig(createPortConfig(rawMessage.readUnsignedInt()));
         builder.setState(createPortState(rawMessage.readUnsignedInt()));
         builder.setCurrentFeatures(createPortFeatures(rawMessage.readUnsignedInt()));
