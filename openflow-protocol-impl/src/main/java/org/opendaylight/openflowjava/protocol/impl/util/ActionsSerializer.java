@@ -222,7 +222,9 @@ public abstract class ActionsSerializer {
         }
         outBuffer.writeShort(length);
         MatchSerializer.encodeMatchEntries(oxmField.getMatchEntries(), outBuffer);
-        ByteBufUtils.padBuffer(EncodeConstants.PADDING - paddingRemainder, outBuffer);
+        if (paddingRemainder != 0) {
+            ByteBufUtils.padBuffer(EncodeConstants.PADDING - paddingRemainder, outBuffer);
+        }
     }
     
     private static void encodePushPbbAction(Action action, ByteBuf outBuffer) {
