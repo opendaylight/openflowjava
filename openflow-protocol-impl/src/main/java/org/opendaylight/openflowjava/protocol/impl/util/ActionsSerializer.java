@@ -81,6 +81,8 @@ public abstract class ActionsSerializer {
     private static final byte SET_NW_TTL_PADDING = 3;
     private static final byte PADDING_IN_ACTION_HEADER = 4;
     private static final byte ETHERTYPE_ACTION_PADDING = 2;
+    private static final byte ACTION_IDS_LENGTH = 4;
+    
 
 
     /**
@@ -130,6 +132,60 @@ public abstract class ActionsSerializer {
                 encodeExperimenterAction(action, outBuffer);
             } 
         }
+    }
+    
+    /**
+     * Encodes action ids to ByteBuf (for Multipart - TableFeatures messages)
+     * @param actionsList list of actions to be encoded
+     * @param outBuffer output ByteBuf
+     */
+    public static void encodeActionIds(List<ActionsList> actionsList, ByteBuf outBuffer) {
+        if (actionsList == null) {
+            return;
+        }
+        for (ActionsList list : actionsList) {
+            Action action = list.getAction();
+            if (action.getType().isAssignableFrom(Output.class)) {
+                writeTypeAndLength(outBuffer, OUTPUT_CODE, ACTION_IDS_LENGTH);
+            } else if (action.getType().isAssignableFrom(CopyTtlOut.class)) {
+                writeTypeAndLength(outBuffer, COPY_TTL_OUT_CODE, ACTION_IDS_LENGTH);
+            } else if (action.getType().isAssignableFrom(CopyTtlIn.class)) {
+                writeTypeAndLength(outBuffer, COPY_TTL_IN_CODE, ACTION_IDS_LENGTH);
+            } else if (action.getType().isAssignableFrom(SetMplsTtl.class)) {
+                writeTypeAndLength(outBuffer, SET_MPLS_TTL_CODE, ACTION_IDS_LENGTH);
+            } else if (action.getType().isAssignableFrom(DecMplsTtl.class)) {
+                writeTypeAndLength(outBuffer, DEC_MPLS_TTL_CODE, ACTION_IDS_LENGTH);
+            } else if (action.getType().isAssignableFrom(PushVlan.class)) {
+                writeTypeAndLength(outBuffer, PUSH_VLAN_CODE, ACTION_IDS_LENGTH);
+            } else if (action.getType().isAssignableFrom(PopVlan.class)) {
+                writeTypeAndLength(outBuffer, POP_VLAN_CODE, ACTION_IDS_LENGTH);
+            } else if (action.getType().isAssignableFrom(PushMpls.class)) {
+                writeTypeAndLength(outBuffer, PUSH_MPLS_CODE, ACTION_IDS_LENGTH);
+            } else if (action.getType().isAssignableFrom(PopMpls.class)) {
+                writeTypeAndLength(outBuffer, POP_MPLS_CODE, ACTION_IDS_LENGTH);
+            } else if (action.getType().isAssignableFrom(SetQueue.class)) {
+                writeTypeAndLength(outBuffer, SET_QUEUE_CODE, ACTION_IDS_LENGTH);
+            } else if (action.getType().isAssignableFrom(Group.class)) {
+                writeTypeAndLength(outBuffer, GROUP_CODE, ACTION_IDS_LENGTH);
+            } else if (action.getType().isAssignableFrom(SetNwTtl.class)) {
+                writeTypeAndLength(outBuffer, SET_NW_TTL_CODE, ACTION_IDS_LENGTH);
+            } else if (action.getType().isAssignableFrom(DecNwTtl.class)) {
+                writeTypeAndLength(outBuffer, DEC_NW_TTL_CODE, ACTION_IDS_LENGTH);
+            } else if (action.getType().isAssignableFrom(SetField.class)) {
+                writeTypeAndLength(outBuffer, SET_FIELD_CODE, ACTION_IDS_LENGTH);
+            } else if (action.getType().isAssignableFrom(PushPbb.class)) {
+                writeTypeAndLength(outBuffer, PUSH_PBB_CODE, ACTION_IDS_LENGTH);
+            } else if (action.getType().isAssignableFrom(PopPbb.class)) {
+                writeTypeAndLength(outBuffer, POP_PBB_CODE, ACTION_IDS_LENGTH);
+            } else if (action.getType().isAssignableFrom(Experimenter.class)) {
+                writeTypeAndLength(outBuffer, EXPERIMENTER_CODE, ACTION_IDS_LENGTH);
+            } 
+        }
+    }
+    
+    private static void writeTypeAndLength(ByteBuf out, int type, int length) {
+        out.writeShort(type);
+        out.writeShort(length);
     }
 
     private static void encodeOutputAction(Action action, ByteBuf outBuffer) {

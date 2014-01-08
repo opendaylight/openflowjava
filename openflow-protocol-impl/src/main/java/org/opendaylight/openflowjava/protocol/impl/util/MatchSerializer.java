@@ -154,6 +154,22 @@ public class MatchSerializer {
         }
     }
 
+    /**
+     * Encodes OXM ids (for Multipart - TableFeatures messages)
+     * @param matchEntries list of match entries (oxm_fields)
+     * @param out output ByteBuf
+     */
+    public static void encodeMatchIds(List<MatchEntries> matchEntries, ByteBuf out) {
+        if (matchEntries == null) {
+            LOGGER.warn("Match entries are null");
+            return;
+        }
+        for (MatchEntries entry : matchEntries) {
+            encodeClass(entry.getOxmClass(), out);
+            MatchIdsWriter.encodeIdsRest(entry, out);
+        }
+    }
+
     private static void encodeClass(Class<? extends Clazz> clazz, ByteBuf out) {
         if (clazz.isAssignableFrom(Nxm0Class.class)) {
             out.writeShort(NXM0_CLASS_CODE);
@@ -360,7 +376,7 @@ public class MatchSerializer {
         }
     }
 
-    private static void writeOxmFieldAndLength(ByteBuf out, int fieldValue, boolean hasMask, int lengthArg) {
+    protected static void writeOxmFieldAndLength(ByteBuf out, int fieldValue, boolean hasMask, int lengthArg) {
         int fieldAndMask = fieldValue << 1;
         int length = lengthArg;
         if (hasMask) {
