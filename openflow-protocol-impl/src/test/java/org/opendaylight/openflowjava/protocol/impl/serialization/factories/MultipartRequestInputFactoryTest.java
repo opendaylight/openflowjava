@@ -549,6 +549,7 @@ public class MultipartRequestInputFactoryTest {
         MultipartRequestTableFeaturesBuilder builder = new MultipartRequestTableFeaturesBuilder();
         List<TableFeatures> tableFeaturesList = new ArrayList<>();
         TableFeaturesBuilder tableFeaturesBuilder = new TableFeaturesBuilder();
+        output.skipBytes(2);
         tableFeaturesBuilder.setTableId(output.readUnsignedByte());
         output.skipBytes(PADDING_IN_MULTIPART_REQUEST_TABLE_FEATURES_BODY);
         byte[] tableNameBytes = new byte[OFP_MAX_TABLE_NAME_LEN];
