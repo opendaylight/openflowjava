@@ -221,41 +221,57 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         if (body != null && body.getTableFeatures() != null) {
             List<TableFeatures> tableFeatures = body.getTableFeatures();
             for (TableFeatures feature : tableFeatures) {
-                length += TABLE_FEATURES_LENGTH;
-                List<TableFeatureProperties> featureProperties = feature.getTableFeatureProperties();
-                if (featureProperties != null) {
-                    for (TableFeatureProperties featProp : featureProperties) {
-                        length += TABLE_FEAT_HEADER_LENGTH;
-                        if (featProp.getAugmentation(InstructionRelatedTableFeatureProperty.class) != null) {
-                            InstructionRelatedTableFeatureProperty property =
-                                    featProp.getAugmentation(InstructionRelatedTableFeatureProperty.class);
-                            length += property.getInstructions().size() * STRUCTURE_HEADER_LENGTH;
-                        } else if (featProp.getAugmentation(NextTableRelatedTableFeatureProperty.class) != null) {
-                            NextTableRelatedTableFeatureProperty property =
-                                    featProp.getAugmentation(NextTableRelatedTableFeatureProperty.class);
-                            length += property.getNextTableIds().size();
-                        } else if (featProp.getAugmentation(ActionRelatedTableFeatureProperty.class) != null) {
-                            ActionRelatedTableFeatureProperty property =
-                                    featProp.getAugmentation(ActionRelatedTableFeatureProperty.class);
-                            length += property.getActionsList().size() * STRUCTURE_HEADER_LENGTH;
-                        } else if (featProp.getAugmentation(OxmRelatedTableFeatureProperty.class) != null) {
-                            OxmRelatedTableFeatureProperty property =
-                                    featProp.getAugmentation(OxmRelatedTableFeatureProperty.class);
-                            length += property.getMatchEntries().size() * STRUCTURE_HEADER_LENGTH;
-                        } else if (featProp.getAugmentation(ExperimenterRelatedTableFeatureProperty.class) != null) {
-                            ExperimenterRelatedTableFeatureProperty property =
-                                    featProp.getAugmentation(ExperimenterRelatedTableFeatureProperty.class);
-                            length += 2 * (EncodeConstants.SIZE_OF_INT_IN_BYTES);
-                            if (property.getData() != null) {
-                                length += property.getData().length;
-                            }
-                        }
+                length += computeSingleTableFeatureLength(feature);
+            }
+        }
+        return length;
+    }
+    
+    private static int computeSingleTableFeatureLength(TableFeatures feature) {
+        return TABLE_FEATURES_LENGTH + computeTableFeatPropsLength(feature);
+    }
+
+    private static int computeTableFeatPropsLength(TableFeatures feature) {
+        int length = 0;
+        List<TableFeatureProperties> featureProperties = feature.getTableFeatureProperties();
+        if (featureProperties != null) {
+            for (TableFeatureProperties featProp : featureProperties) {
+                length += TABLE_FEAT_HEADER_LENGTH;
+                if (featProp.getAugmentation(InstructionRelatedTableFeatureProperty.class) != null) {
+                    InstructionRelatedTableFeatureProperty property =
+                            featProp.getAugmentation(InstructionRelatedTableFeatureProperty.class);
+                    length += property.getInstructions().size() * STRUCTURE_HEADER_LENGTH;
+                    length += paddingNeeded(length);
+                } else if (featProp.getAugmentation(NextTableRelatedTableFeatureProperty.class) != null) {
+                    NextTableRelatedTableFeatureProperty property =
+                            featProp.getAugmentation(NextTableRelatedTableFeatureProperty.class);
+                    length += property.getNextTableIds().size();
+                    length += paddingNeeded(length);
+                } else if (featProp.getAugmentation(ActionRelatedTableFeatureProperty.class) != null) {
+                    ActionRelatedTableFeatureProperty property =
+                            featProp.getAugmentation(ActionRelatedTableFeatureProperty.class);
+                    length += property.getActionsList().size() * STRUCTURE_HEADER_LENGTH;
+                    length += paddingNeeded(length);
+                } else if (featProp.getAugmentation(OxmRelatedTableFeatureProperty.class) != null) {
+                    OxmRelatedTableFeatureProperty property =
+                            featProp.getAugmentation(OxmRelatedTableFeatureProperty.class);
+                    length += property.getMatchEntries().size() * STRUCTURE_HEADER_LENGTH;
+                    length += paddingNeeded(length);
+                } else if (featProp.getAugmentation(ExperimenterRelatedTableFeatureProperty.class) != null) {
+                    ExperimenterRelatedTableFeatureProperty property =
+                            featProp.getAugmentation(ExperimenterRelatedTableFeatureProperty.class);
+                    length += 2 * (EncodeConstants.SIZE_OF_INT_IN_BYTES);
+                    if (property.getData() != null) {
+                        length += property.getData().length;
                     }
+                    length += paddingNeeded(length);
                 }
             }
         }
         return length;
     }
+    
+    
 
     private static int createMultipartRequestFlagsBitmask(MultipartRequestFlags flags) {
         int multipartRequestFlagsBitmask = 0;
@@ -398,6 +414,9 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
             MultipartRequestTableFeatures tableFeatures = tableFeaturesCase.getMultipartRequestTableFeatures();
             if(tableFeatures.getTableFeatures() != null) {
                 for (TableFeatures currTableFeature : tableFeatures.getTableFeatures()) {
+                    int length = computeSingleTableFeatureLength(currTableFeature);
+                    length += paddingNeeded(length);
+                    output.writeShort(length);
                     output.writeByte(currTableFeature.getTableId());
                     ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_TABLE_FEATURES_BODY, output);
                     output.writeBytes(currTableFeature.getName().getBytes());
@@ -459,13 +478,17 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         List<Instructions> instructions = property.
                 getAugmentation(InstructionRelatedTableFeatureProperty.class).getInstructions();
         int length = TABLE_FEAT_HEADER_LENGTH;
+        int padding = 0;
         if (instructions != null) {
-        output.writeShort(InstructionsSerializer.computeInstructionsLength(instructions)
-                + TABLE_FEAT_HEADER_LENGTH);
-        InstructionsSerializer.encodeInstructions(instructions, output);
+            length += instructions.size() * STRUCTURE_HEADER_LENGTH;
+            padding = paddingNeeded(length);
+            output.writeShort(length + padding);
+            InstructionsSerializer.encodeInstructionIds(instructions, output);
         } else {
+            padding = paddingNeeded(length);
             output.writeShort(length);
         }
+        ByteBufUtils.padBuffer(padding, output);
     }
 
     private static void writeNextTableRelatedTableProperty(ByteBuf output,
@@ -474,14 +497,28 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         List<NextTableIds> nextTableIds = property.
                 getAugmentation(NextTableRelatedTableFeatureProperty.class).getNextTableIds();
         int length = TABLE_FEAT_HEADER_LENGTH;
+        int padding = 0;
         if (nextTableIds != null) {
-            output.writeShort(length + nextTableIds.size());
+            length += nextTableIds.size();
+            padding = paddingNeeded(length);
+            output.writeShort(length + padding);
             for (NextTableIds next : nextTableIds) {
                 output.writeByte(next.getTableId());
             }
         } else {
-            output.writeShort(length);
+            padding = paddingNeeded(length); 
+            output.writeShort(length + padding);
         }
+        ByteBufUtils.padBuffer(padding, output);
+    }
+
+    private static int paddingNeeded(int length) {
+        int paddingRemainder = length % EncodeConstants.PADDING;
+        int result = 0;
+        if (paddingRemainder != 0) {
+            result = EncodeConstants.PADDING - paddingRemainder;
+        }
+        return result;
     }
 
     private static void writeActionsRelatedTableProperty(ByteBuf output,

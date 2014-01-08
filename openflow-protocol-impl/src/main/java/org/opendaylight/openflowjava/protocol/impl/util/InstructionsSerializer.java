@@ -52,6 +52,7 @@ public abstract class InstructionsSerializer {
     private static final byte PADDING_IN_GOTO_TABLE = 3;
     private static final byte PADDING_IN_WRITE_METADATA = 4;
     private static final byte PADDING_IN_CLEAR_ACTIONS = 4;
+    private static final byte INSTRUCTION_IDS_LENGTH = 4;
     
     /**
      * Encodes instructions
@@ -92,6 +93,34 @@ public abstract class InstructionsSerializer {
             }
         }
         
+    }
+    
+    /**
+     * Encodes instruction ids (for Multipart - TableFeatures message)
+     * @param instructions List of instruction identifiers (without values)
+     * @param out output buffer
+     */
+    public static void encodeInstructionIds(List<Instructions> instructions, ByteBuf out) {
+        if (instructions != null) {
+            for (Instructions instruction : instructions) {
+                Class<? extends Instruction> type = instruction.getType();
+                if (type.isAssignableFrom(GotoTable.class)) {
+                    writeTypeAndLength(out, GOTO_TABLE_TYPE, INSTRUCTION_IDS_LENGTH);
+                } else if (type.isAssignableFrom(WriteMetadata.class)) {
+                    writeTypeAndLength(out, WRITE_METADATA_TYPE, INSTRUCTION_IDS_LENGTH);
+                } else if (type.isAssignableFrom(WriteActions.class)) {
+                    writeTypeAndLength(out, WRITE_ACTIONS_TYPE, INSTRUCTION_IDS_LENGTH);
+                } else if (type.isAssignableFrom(ApplyActions.class)) {
+                    writeTypeAndLength(out, APPLY_ACTIONS_TYPE, INSTRUCTION_IDS_LENGTH);
+                } else if (type.isAssignableFrom(ClearActions.class)) {
+                    writeTypeAndLength(out, CLEAR_ACTIONS_TYPE, INSTRUCTION_IDS_LENGTH);
+                } else if (type.isAssignableFrom(Meter.class)) {
+                    writeTypeAndLength(out, METER_TYPE, INSTRUCTION_IDS_LENGTH);
+                } else if (type.isAssignableFrom(Experimenter.class)) {
+                    writeTypeAndLength(out, EXPERIMENTER_TYPE, EXPERIMENTER_LENGTH);
+                }
+            }
+        }
     }
 
     private static void writeTypeAndLength(ByteBuf out, int type, int length) {
