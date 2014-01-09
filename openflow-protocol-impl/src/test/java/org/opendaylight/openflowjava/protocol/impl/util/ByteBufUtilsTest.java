@@ -241,4 +241,14 @@ public class ByteBufUtilsTest {
         Assert.assertEquals("Wrong string decoded", "SPIDERMAN", ByteBufUtils.decodeNullTerminatedString(buf2, 15));
     }
 
+    /**
+     * Test of {@link ByteBufUtils#byteBufToHexString(ByteBuf)}
+     */
+    @Test
+    public void testByteBufToHexString() {
+        ByteBuf buf = ByteBufUtils.hexStringToByteBuf("00 01 02 03 04 05 06 07");
+        buf.skipBytes(4);
+        Assert.assertEquals("Wrong data read", 67438087, buf.readUnsignedInt());
+    }
+
 }
