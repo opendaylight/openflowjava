@@ -166,7 +166,7 @@ public abstract class MatchSerializer {
         }
         for (MatchEntries entry : matchEntries) {
             encodeClass(entry.getOxmClass(), out);
-            MatchIdsWriter.encodeIdsRest(entry, out);
+            MatchIdsSerializer.encodeIdsRest(entry, out);
         }
     }
 

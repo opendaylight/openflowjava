@@ -117,7 +117,9 @@ public abstract class InstructionsSerializer {
                 } else if (type.isAssignableFrom(Meter.class)) {
                     writeTypeAndLength(out, METER_TYPE, INSTRUCTION_IDS_LENGTH);
                 } else if (type.isAssignableFrom(Experimenter.class)) {
-                    writeTypeAndLength(out, EXPERIMENTER_TYPE, EXPERIMENTER_LENGTH);
+                    ExperimenterInstruction experimenter = instruction.getAugmentation(ExperimenterInstruction.class);
+                    writeTypeAndLength(out, EXPERIMENTER_TYPE, EncodeConstants.EXPERIMENTER_IDS_LENGTH);
+                    out.writeInt(experimenter.getExperimenter().intValue());
                 }
             }
         }

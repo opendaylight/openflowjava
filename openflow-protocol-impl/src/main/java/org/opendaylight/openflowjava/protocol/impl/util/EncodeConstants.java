@@ -44,4 +44,6 @@ public abstract class EncodeConstants {
 
     /** OF v1.0 maximal port name length */
     public static final byte MAX_PORT_NAME_LENGTH = 16;
+    /** OF v1.3 lenght of experimenter_ids - see Multipart TableFeatures (properties) message */
+    public static final byte EXPERIMENTER_IDS_LENGTH = 8;
 }
