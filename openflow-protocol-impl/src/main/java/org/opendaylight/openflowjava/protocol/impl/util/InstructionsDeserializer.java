@@ -38,7 +38,7 @@ import io.netty.buffer.ByteBuf;
  * @author michal.polkorab
  * @author timotej.kubas
  */
-public class InstructionsDeserializer {
+public abstract class InstructionsDeserializer {
     
     private static final byte WRITE_APPLY_CLEAR_ACTION_LENGTH = 8;
     private static final byte EXPERIMENTER_HEADER_LENGTH = 8;
@@ -97,6 +97,52 @@ public class InstructionsDeserializer {
                         expBuilder.setData(data);
                     }
                     builder.addAugmentation(ExperimenterInstruction.class, expBuilder.build());
+                    break;
+                default:
+                    break;
+                }
+                instructions.add(builder.build());
+            }
+        }
+        return instructions;
+    }
+
+    /**
+     * Creates instruction ids (instructions without values)
+     * @param input
+     * @param length
+     * @return list of ofp_instruction without values
+     */
+    public static List<Instructions> createInstructionIds(ByteBuf input, int length) {
+        List<Instructions> instructions = new ArrayList<>();
+        if (input.readableBytes() != 0) {
+            int lengthOfInstructions = length;
+            while (lengthOfInstructions > 0) {
+                InstructionsBuilder builder = new InstructionsBuilder();
+                int type = input.readUnsignedShort();
+                int instructionLength = input.readUnsignedShort();
+                lengthOfInstructions -= instructionLength;
+                switch (type) {
+                case 1:
+                    builder.setType(GotoTable.class);
+                    break;
+                case 2:
+                    builder.setType(WriteMetadata.class);
+                    break;
+                case 3:
+                    builder.setType(WriteActions.class);
+                    break;
+                case 4:
+                    builder.setType(ApplyActions.class);
+                    break;
+                case 5:
+                    builder.setType(ClearActions.class);
+                    break;
+                case 6:
+                    builder.setType(Meter.class);
+                    break;
+                case 65535:
+                    builder.setType(Experimenter.class);
                     break;
                 default:
                     break;

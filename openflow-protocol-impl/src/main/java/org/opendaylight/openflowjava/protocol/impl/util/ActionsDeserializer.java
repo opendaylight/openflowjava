@@ -79,97 +79,146 @@ public abstract class ActionsDeserializer {
         List<ActionsList> actionsList = new ArrayList<>();
         int length = 0;
         while (length < actionsLength) {
-            int currentActionLength = 0;
-            switch(input.readUnsignedShort()) {
-            case 0: currentActionLength = input.readUnsignedShort(); //outputActionLength
-            actionsList.add(createOutputAction(input, actionsListBuilder));
-            break;
-            case 11: 
-                currentActionLength = input.readUnsignedShort();//empty header length
+            int type = input.readUnsignedShort();
+            int currentActionLength = input.readUnsignedShort();
+            switch(type) {
+            case 0:
+                actionsList.add(createOutputAction(input, actionsListBuilder));
+                break;
+            case 11:
                 actionsList.add(createCopyTtlOutAction(input, actionsListBuilder));
                 break;
-
-            case 12: 
-                currentActionLength = input.readUnsignedShort();//empty header length
+            case 12:
                 actionsList.add(createCopyTtlInAction(input, actionsListBuilder));
                 break;
-
-            case 15: 
-                currentActionLength = input.readUnsignedShort();//empty header length
+            case 15:
                 actionsList.add(createSetMplsTtlAction(input, actionsListBuilder));
                 break;
-
-            case 16:                              
-                currentActionLength = input.readUnsignedShort();//empty header length
+            case 16:
                 actionsList.add(createDecMplsTtlOutAction(input, actionsListBuilder));
                 break;
-
-            case 17: 
-                currentActionLength = input.readUnsignedShort();
+            case 17:
                 actionsList.add(createPushVlanAction(input, actionsListBuilder));
                 break;
-
-            case 18:                              
-                currentActionLength = input.readUnsignedShort();//empty header length
+            case 18:
                 actionsList.add(createPopVlanAction(input, actionsListBuilder));
                 break;
-
-            case 19: 
-                currentActionLength = input.readUnsignedShort();//8
+            case 19:
                 actionsList.add(createPushMplsAction(input, actionsListBuilder));
                 break;
-
-            case 20: 
-                currentActionLength = input.readUnsignedShort();//8
+            case 20:
                 actionsList.add(createPopMplsAction(input, actionsListBuilder));
                 break;
-
-            case 21: 
-                currentActionLength = input.readUnsignedShort();
+            case 21:
                 actionsList.add(createSetQueueAction(input, actionsListBuilder));
                 break;
-
-            case 22: 
-                currentActionLength = input.readUnsignedShort();//8
+            case 22:
                 actionsList.add(createGroupAction(input, actionsListBuilder));
                 break;
-
-            case 23: 
-                currentActionLength = input.readUnsignedShort();//8
+            case 23:
                 actionsList.add(createSetNwTtlAction(input, actionsListBuilder));
                 break;
-
-            case 24:                              
-                currentActionLength = input.readUnsignedShort();//empty header length
+            case 24:
                 actionsList.add(createDecNwTtlAction(input, actionsListBuilder));
                 break;
-
             case 25:
-                currentActionLength = input.readUnsignedShort();// depends on OXM TLV (match entry)
                 actionsList.add(createSetFieldAction(input, actionsListBuilder, currentActionLength));
-                break; 
-            case 26: 
-                currentActionLength = input.readUnsignedShort();//8
+                break;
+            case 26:
                 actionsList.add(createPushPbbAction(input, actionsListBuilder));
                 break;
-
-            case 27:                              
-                currentActionLength = input.readUnsignedShort();//empty header length
+            case 27:
                 actionsList.add(createPopPbbAction(input, actionsListBuilder));
                 break;
-
-            case 0xFFFF: 
-                currentActionLength = input.readUnsignedShort();
+            case 0xFFFF:
                 actionsList.add(createExperimenterAction(input, actionsListBuilder));
                 break;
-            default: 
+            default:
                 break;
             }
             length += currentActionLength;
         } 
         return actionsList;
     }
-    
+
+    /**
+     * Creates action ids - actions without values (OpenFlow v1.3)
+     * @param input input ByteBuf
+     * @param actionsLength length of actions
+     * @return ActionsList
+     */
+    public static List<ActionsList> createActionIds(ByteBuf input, int actionsLength) {
+        List<ActionsList> actionsList = new ArrayList<>();
+        int length = 0;
+        ActionBuilder builder;
+        ActionsListBuilder listBuilder;
+        while (length < actionsLength) {
+            int type = input.readUnsignedShort();
+            int currentActionLength = input.readUnsignedShort();
+            builder = new ActionBuilder();
+            listBuilder = new ActionsListBuilder();
+            switch(type) {
+            case 0:
+                builder.setType(Output.class);
+                break;
+            case 11:
+                builder.setType(CopyTtlOut.class);
+                break;
+            case 12:
+                builder.setType(CopyTtlIn.class);
+                break;
+            case 15:
+                builder.setType(SetMplsTtl.class);
+                break;
+            case 16:
+                builder.setType(DecMplsTtl.class);
+                break;
+            case 17:
+                builder.setType(PushVlan.class);
+                break;
+            case 18:
+                builder.setType(PopVlan.class);
+                break;
+            case 19:
+                builder.setType(PushMpls.class);
+                break;
+            case 20:
+                builder.setType(PopMpls.class);
+                break;
+            case 21:
+                builder.setType(SetQueue.class);
+                break;
+            case 22:
+                builder.setType(Group.class);
+                break;
+            case 23:
+                builder.setType(SetNwTtl.class);
+                break;
+            case 24:
+                builder.setType(DecNwTtl.class);
+                break;
+            case 25:
+                builder.setType(SetField.class);
+                break; 
+            case 26:
+                builder.setType(PushPbb.class);
+                break;
+            case 27:
+                builder.setType(PopPbb.class);
+                break;
+            case 0xFFFF:
+                builder.setType(Experimenter.class);
+                break;
+            default: 
+                break;
+            }
+            listBuilder.setAction(builder.build());
+            actionsList.add(listBuilder.build());
+            length += currentActionLength;
+        } 
+        return actionsList;
+    }
+
     private static ActionsList createEmptyHeader(Class<? extends org.opendaylight.yang.gen.v1.
             urn.opendaylight.openflow.common.types.rev130731.Action> action,
             ByteBuf in, ActionsListBuilder actionsListBuilder) {

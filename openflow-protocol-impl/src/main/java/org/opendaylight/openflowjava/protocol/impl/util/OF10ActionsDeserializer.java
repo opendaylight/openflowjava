@@ -59,7 +59,7 @@ import com.google.common.base.Joiner;
  * Deserializes ofp_action (OpenFlow v1.0) structures
  * @author michal.polkorab
  */
-public class OF10ActionsDeserializer {
+public abstract class OF10ActionsDeserializer {
     
     private static final byte PADDING_IN_SET_VLAN_VID_ACTION = 2;
     private static final byte PADDING_IN_SET_VLAN_PCP_ACTION = 3;

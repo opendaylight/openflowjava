@@ -486,6 +486,15 @@ public abstract class MatchDeserializer {
         return matchEntriesList;
     }
 
+    /** Decodes oxm ids
+     * @param in input ByteBuf
+     * @param matchLength match entries length
+     * @return list of match ids
+     */
+    public static List<MatchEntries> createMatchIds(ByteBuf in, int matchLength) {
+        return MatchIdsReader.createOxmIds(in, matchLength);
+    }
+
     private static void addMaskAugmentation(MatchEntriesBuilder builder, ByteBuf in, int matchEntryLength) {
         MaskMatchEntryBuilder maskBuilder = new MaskMatchEntryBuilder();
         byte[] mask = new byte[matchEntryLength];
