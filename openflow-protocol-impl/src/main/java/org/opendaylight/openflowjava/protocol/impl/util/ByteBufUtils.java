@@ -13,7 +13,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -37,7 +36,7 @@ public abstract class ByteBufUtils {
      */
     public static String byteBufToHexString(ByteBuf bb) {
         StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < bb.readableBytes(); i++) {
+        for (int i = bb.readerIndex(); i < (bb.readerIndex() + bb.readableBytes()); i++) {
             sb.append(String.format(" %02x", bb.getUnsignedByte(i)));
         }
         return sb.toString().trim();
