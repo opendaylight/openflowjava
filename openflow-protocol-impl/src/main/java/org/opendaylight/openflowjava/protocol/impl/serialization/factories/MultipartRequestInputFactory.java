@@ -27,6 +27,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OxmRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.table.features.properties.container.table.feature.properties.NextTableIds;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.ActionsList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.Experimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.Instructions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
@@ -480,7 +481,13 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         int length = TABLE_FEAT_HEADER_LENGTH;
         int padding = 0;
         if (instructions != null) {
-            length += instructions.size() * STRUCTURE_HEADER_LENGTH;
+            for (Instructions instruction : instructions) {
+                if (instruction.getType().isAssignableFrom(Experimenter.class)) {
+                    length += EncodeConstants.EXPERIMENTER_IDS_LENGTH;
+                } else {
+                    length += STRUCTURE_HEADER_LENGTH;
+                }
+            }
             padding = paddingNeeded(length);
             output.writeShort(length);
             InstructionsSerializer.encodeInstructionIds(instructions, output);
@@ -529,6 +536,13 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         int length = TABLE_FEAT_HEADER_LENGTH;
         int padding = 0;
         if (actions != null) {
+            for (ActionsList action : actions) {
+                if (action.getAction().getType().isAssignableFrom(Experimenter.class)) {
+                    length += EncodeConstants.EXPERIMENTER_IDS_LENGTH;
+                } else {
+                    length += STRUCTURE_HEADER_LENGTH;
+                }
+            }
             length += actions.size() * STRUCTURE_HEADER_LENGTH;
             padding += paddingNeeded(length);
             output.writeShort(length);
@@ -548,6 +562,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         int length = TABLE_FEAT_HEADER_LENGTH;
         int padding = 0;
         if (entries != null) {
+            // experimenter length / definition ?
             length += entries.size() * STRUCTURE_HEADER_LENGTH;
             padding = paddingNeeded(length);
             output.writeShort(length);
@@ -566,16 +581,20 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
                 getAugmentation(ExperimenterRelatedTableFeatureProperty.class);
         byte[] data = exp.getData();
         int length = TABLE_FEAT_HEADER_LENGTH + 2 * (EncodeConstants.SIZE_OF_INT_IN_BYTES);
+        int padding = 0;
         if (data != null) {
             output.writeShort(length + data.length);
+            padding = paddingNeeded(length + data.length);
             output.writeInt(exp.getExperimenter().intValue());
             output.writeInt(exp.getExpType().intValue());
             output.writeBytes(data);
         } else {
             output.writeShort(length);
+            padding = paddingNeeded(length);
             output.writeInt(exp.getExperimenter().intValue());
             output.writeInt(exp.getExpType().intValue());
         }
+        ByteBufUtils.padBuffer(padding, output);
     }
 
     private static int createTableConfigBitmask(TableConfig tableConfig) {

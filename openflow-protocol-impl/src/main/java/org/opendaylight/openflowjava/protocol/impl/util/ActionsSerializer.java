@@ -82,7 +82,6 @@ public abstract class ActionsSerializer {
     private static final byte PADDING_IN_ACTION_HEADER = 4;
     private static final byte ETHERTYPE_ACTION_PADDING = 2;
     private static final byte ACTION_IDS_LENGTH = 4;
-    
 
 
     /**
@@ -178,7 +177,9 @@ public abstract class ActionsSerializer {
             } else if (action.getType().isAssignableFrom(PopPbb.class)) {
                 writeTypeAndLength(outBuffer, POP_PBB_CODE, ACTION_IDS_LENGTH);
             } else if (action.getType().isAssignableFrom(Experimenter.class)) {
-                writeTypeAndLength(outBuffer, EXPERIMENTER_CODE, ACTION_IDS_LENGTH);
+                writeTypeAndLength(outBuffer, EXPERIMENTER_CODE, EncodeConstants.EXPERIMENTER_IDS_LENGTH);
+                ExperimenterAction experimenter = action.getAugmentation(ExperimenterAction.class);
+                outBuffer.writeInt(experimenter.getExperimenter().intValue());
             } 
         }
     }

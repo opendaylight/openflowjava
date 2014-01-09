@@ -492,7 +492,7 @@ public abstract class MatchDeserializer {
      * @return list of match ids
      */
     public static List<MatchEntries> createMatchIds(ByteBuf in, int matchLength) {
-        return MatchIdsReader.createOxmIds(in, matchLength);
+        return MatchIdsDeserializer.createOxmIds(in, matchLength);
     }
 
     private static void addMaskAugmentation(MatchEntriesBuilder builder, ByteBuf in, int matchEntryLength) {

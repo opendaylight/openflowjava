@@ -143,6 +143,9 @@ public abstract class InstructionsDeserializer {
                     break;
                 case 65535:
                     builder.setType(Experimenter.class);
+                    ExperimenterInstructionBuilder expBuilder = new ExperimenterInstructionBuilder();
+                    expBuilder.setExperimenter(input.readUnsignedInt());
+                    builder.addAugmentation(ExperimenterInstruction.class, expBuilder.build());
                     break;
                 default:
                     break;

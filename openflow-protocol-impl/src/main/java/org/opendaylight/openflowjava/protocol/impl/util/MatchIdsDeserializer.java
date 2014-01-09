@@ -63,7 +63,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
  * Encodes match ids (oxm_ids) needed in Multipart-TableFeatures messages
  * @author michal.polkorab
  */
-public abstract class MatchIdsReader {
+public abstract class MatchIdsDeserializer {
 
     /** Decodes oxm ids
      * @param in input ByteBuf
@@ -96,9 +96,9 @@ public abstract class MatchIdsReader {
             boolean hasMask = (fieldAndMask & 1) != 0;
             matchEntriesBuilder.setHasMask(hasMask);
             int matchField =  fieldAndMask >> 1;
-            int matchEntryLength = in.readUnsignedByte();
+            in.skipBytes(EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
             currLength += EncodeConstants.SIZE_OF_SHORT_IN_BYTES +
-                    (2 * EncodeConstants.SIZE_OF_BYTE_IN_BYTES) + matchEntryLength;
+                    (2 * EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
 
             switch(matchField) {
             case 0:

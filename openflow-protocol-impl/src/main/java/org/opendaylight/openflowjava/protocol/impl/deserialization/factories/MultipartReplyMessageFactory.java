@@ -23,6 +23,7 @@ import org.opendaylight.openflowjava.protocol.impl.util.MatchDeserializer;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeaturePropertyBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterRelatedTableFeaturePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeaturePropertyBuilder;
@@ -426,6 +427,13 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                 ExperimenterRelatedTableFeaturePropertyBuilder expBuilder = new ExperimenterRelatedTableFeaturePropertyBuilder();
                 expBuilder.setExperimenter(input.readUnsignedInt());
                 expBuilder.setExpType(input.readUnsignedInt());
+                int dataLength = propertyLength - COMMON_PROPERTY_LENGTH - 2 * EncodeConstants.SIZE_OF_INT_IN_BYTES;
+                if (dataLength > 0) {
+                    byte[] data = new byte[dataLength];
+                    input.readBytes(data);
+                    expBuilder.setData(data);
+                }
+                builder.addAugmentation(ExperimenterRelatedTableFeatureProperty.class, expBuilder.build());
             }
             if (paddingRemainder != 0) {
                 input.skipBytes(EncodeConstants.PADDING - paddingRemainder);

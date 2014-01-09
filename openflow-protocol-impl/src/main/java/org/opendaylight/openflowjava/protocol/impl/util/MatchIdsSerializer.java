@@ -56,7 +56,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
  * Encodes match ids (oxm_ids) needed in Multipart-TableFeatures messages
  * @author michal.polkorab
  */
-public abstract class MatchIdsWriter {
+public abstract class MatchIdsSerializer {
 
     /**
      * Encodes oxm headers (without values) 
