@@ -41,8 +41,8 @@ public class PortStatusMessageFactoryTest {
                                               "00 00 00 41 " + //port config
                                               "00 00 00 05 " + //port state
                                               "00 00 00 81 " + //current features
-                                              "00 00 00 81 " + //advertised features
-                                              "00 00 00 81 " + //supported features
+                                              "00 00 00 A1 " + //advertised features
+                                              "00 00 00 B1 " + //supported features
                                               "00 00 00 81 " + //peer features
                                               "00 00 00 81 " + //curr speed
                                               "00 00 00 80" //max speed
@@ -57,18 +57,18 @@ public class PortStatusMessageFactoryTest {
         Assert.assertEquals("Wrong name", "s1-eth1", builtByFactory.getName());
         Assert.assertEquals("Wrong portConfig", new PortConfig(false, true, false, true), builtByFactory.getConfig());
         Assert.assertEquals("Wrong portState", new PortState(false, true, true), builtByFactory.getState());
-        Assert.assertEquals("Wrong currentFeatures", new PortFeatures(true, false, false, false,
-                                             false, false, false, true, false, false, false, false, 
+        Assert.assertEquals("Wrong currentFeatures", new PortFeatures(false, false, false, false,
+                                             false, true, false, false, false, true, false, false,
                                              false, false, false, false), builtByFactory.getCurrentFeatures());
-        Assert.assertEquals("Wrong advertisedFeatures", new PortFeatures(true, false, false, false,
-                                             false, false, false, true, false, false, false, false, 
+        Assert.assertEquals("Wrong advertisedFeatures", new PortFeatures(false, false, false, false,
+                                             false, true, true, false, false, true, false, false,
                                              false, false, false, false), builtByFactory.getAdvertisedFeatures());
-        Assert.assertEquals("Wrong supportedFeatures", new PortFeatures(true, false, false, false,
-                                             false, false, false, true, false, false, false, false, 
+        Assert.assertEquals("Wrong supportedFeatures", new PortFeatures(false, false, false, false,
+                                             false, true, true, true, false, true, false, false,
                                              false, false, false, false), builtByFactory.getSupportedFeatures());
-        Assert.assertEquals("Wrong peerFeatures", new PortFeatures(true, false, false, false,
-                                             false, false, false, true, false, false, false, false, 
-                                             false, false, false, false), builtByFactory.getSupportedFeatures());
+        Assert.assertEquals("Wrong peerFeatures", new PortFeatures(false, false, false, false,
+                                                  false, true, false, false, false, true, false, false,
+                                                  false, false, false, false), builtByFactory.getPeerFeatures());
         Assert.assertEquals("Wrong currSpeed", 129L, builtByFactory.getCurrSpeed().longValue());
         Assert.assertEquals("Wrong maxSpeed", 128L, builtByFactory.getMaxSpeed().longValue());
     }

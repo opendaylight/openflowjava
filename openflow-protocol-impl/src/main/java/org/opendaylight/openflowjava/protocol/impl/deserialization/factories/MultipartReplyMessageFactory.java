@@ -755,8 +755,8 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         final Boolean _autoneg = ((input) & (1<<13)) != 0;
         final Boolean _pause = ((input) & (1<<14)) != 0;
         final Boolean _pauseAsym = ((input) & (1<<15)) != 0;
-        return new PortFeatures(_10mbHd, _10mbFd, _100mbHd, _100mbFd, _1gbHd, _1gbFd, _10gbFd,
-                _40gbFd, _100gbFd, _1tbFd, _other, _copper, _fiber, _autoneg, _pause, _pauseAsym);
+        return new PortFeatures(_100gbFd, _100mbFd, _100mbHd, _10gbFd, _10mbFd, _10mbHd, _1gbFd,
+                _1gbHd, _1tbFd, _40gbFd, _autoneg, _copper, _fiber, _other, _pause, _pauseAsym);
     }
     
     private static MultipartReplyGroupFeaturesCase setGroupFeatures(ByteBuf rawMessage) {

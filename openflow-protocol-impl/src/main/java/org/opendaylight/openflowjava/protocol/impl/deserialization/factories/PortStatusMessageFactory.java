@@ -32,7 +32,6 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
     private static final byte PADDING_IN_PORT_STATUS_HEADER = 7;
     private static final byte PADDING_IN_OFP_PORT_HEADER_1 = 4;
     private static final byte PADDING_IN_OFP_PORT_HEADER_2 = 2;
-    private static final byte MAX_PORT_NAME_LEN = 16;
     
     private PortStatusMessageFactory() {
         // Singleton
@@ -74,6 +73,7 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
     }
 
     private static PortFeatures createPortFeatures(long input){
+        System.out.println("long: " + input);
         final Boolean _10mbHd = ((input) & (1<<0)) != 0;
         final Boolean _10mbFd = ((input) & (1<<1)) != 0;
         final Boolean _100mbHd = ((input) & (1<<2)) != 0;
@@ -90,8 +90,8 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
         final Boolean _autoneg = ((input) & (1<<13)) != 0;
         final Boolean _pause = ((input) & (1<<14)) != 0;
         final Boolean _pauseAsym = ((input) & (1<<15)) != 0;
-        return new PortFeatures(_10mbHd, _10mbFd, _100mbHd, _100mbFd, _1gbHd, _1gbFd, _10gbFd,
-                _40gbFd, _100gbFd, _1tbFd, _other, _copper, _fiber, _autoneg, _pause, _pauseAsym);
+        return new PortFeatures(_100gbFd, _100mbFd, _100mbHd, _10gbFd, _10mbFd, _10mbHd, _1gbFd,
+                _1gbHd, _1tbFd, _40gbFd, _autoneg, _copper, _fiber, _other, _pause, _pauseAsym);
     }
     
     private static PortState createPortState(long input){
