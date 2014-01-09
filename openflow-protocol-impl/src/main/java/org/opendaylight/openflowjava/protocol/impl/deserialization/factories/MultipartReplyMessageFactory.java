@@ -23,7 +23,6 @@ import org.opendaylight.openflowjava.protocol.impl.util.MatchDeserializer;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeaturePropertyBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterRelatedTableFeaturePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeaturePropertyBuilder;
@@ -386,11 +385,12 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             TableFeaturesPropType type = TableFeaturesPropType.forValue(input.readUnsignedShort());
             builder.setType(type);
             int propertyLength = input.readUnsignedShort();
+            int paddingRemainder = propertyLength % EncodeConstants.PADDING;
             tableFeaturesLength -= propertyLength;
             if (type.equals(TableFeaturesPropType.OFPTFPTINSTRUCTIONS)
                     || type.equals(TableFeaturesPropType.OFPTFPTINSTRUCTIONSMISS)) {
                 InstructionRelatedTableFeaturePropertyBuilder insBuilder = new InstructionRelatedTableFeaturePropertyBuilder();
-                insBuilder.setInstructions(InstructionsDeserializer.createInstructions(input, propertyLength - COMMON_PROPERTY_LENGTH));
+                insBuilder.setInstructions(InstructionsDeserializer.createInstructionIds(input, propertyLength - COMMON_PROPERTY_LENGTH));
                 builder.addAugmentation(InstructionRelatedTableFeatureProperty.class, insBuilder.build());
             } else if (type.equals(TableFeaturesPropType.OFPTFPTNEXTTABLES)
                     || type.equals(TableFeaturesPropType.OFPTFPTNEXTTABLESMISS)) {
@@ -401,6 +401,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                     NextTableIdsBuilder nextTableIdsBuilder = new NextTableIdsBuilder();
                     nextTableIdsBuilder.setTableId(input.readUnsignedByte());
                     ids.add(nextTableIdsBuilder.build());
+                    propertyLength--;
                 }
                 tableBuilder.setNextTableIds(ids);
                 builder.addAugmentation(NextTableRelatedTableFeatureProperty.class, tableBuilder.build());
@@ -409,7 +410,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                     || type.equals(TableFeaturesPropType.OFPTFPTAPPLYACTIONS)
                     || type.equals(TableFeaturesPropType.OFPTFPTAPPLYACTIONSMISS)) {
                 ActionRelatedTableFeaturePropertyBuilder actionBuilder = new ActionRelatedTableFeaturePropertyBuilder();
-                actionBuilder.setActionsList(ActionsDeserializer.createActionsList(input, propertyLength - COMMON_PROPERTY_LENGTH));
+                actionBuilder.setActionsList(ActionsDeserializer.createActionIds(input, propertyLength - COMMON_PROPERTY_LENGTH));
                 builder.addAugmentation(ActionRelatedTableFeatureProperty.class, actionBuilder.build());
             } else if (type.equals(TableFeaturesPropType.OFPTFPTMATCH)
                     || type.equals(TableFeaturesPropType.OFPTFPTWILDCARDS)
@@ -418,18 +419,17 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                     || type.equals(TableFeaturesPropType.OFPTFPTAPPLYSETFIELD)
                     || type.equals(TableFeaturesPropType.OFPTFPTAPPLYSETFIELDMISS)) {
                 OxmRelatedTableFeaturePropertyBuilder oxmBuilder = new OxmRelatedTableFeaturePropertyBuilder();
-                oxmBuilder.setMatchEntries(MatchDeserializer.createMatchEntries(input, propertyLength - COMMON_PROPERTY_LENGTH));
+                oxmBuilder.setMatchEntries(MatchDeserializer.createMatchIds(input, propertyLength - COMMON_PROPERTY_LENGTH));
                 builder.addAugmentation(OxmRelatedTableFeatureProperty.class, oxmBuilder.build());
             } else if (type.equals(TableFeaturesPropType.OFPTFPTEXPERIMENTER)
                     || type.equals(TableFeaturesPropType.OFPTFPTEXPERIMENTERMISS)) {
-                final byte EXPERIMENTER_PROPERTY_LENGTH = 12;
                 ExperimenterRelatedTableFeaturePropertyBuilder expBuilder = new ExperimenterRelatedTableFeaturePropertyBuilder();
                 expBuilder.setExperimenter(input.readUnsignedInt());
                 expBuilder.setExpType(input.readUnsignedInt());
-                byte[] data = new byte[propertyLength - EXPERIMENTER_PROPERTY_LENGTH];
-                input.readBytes(data);
-                expBuilder.setData(data);
-                builder.addAugmentation(ExperimenterRelatedTableFeatureProperty.class, expBuilder.build());
+            }
+            if (paddingRemainder != 0) {
+                input.skipBytes(EncodeConstants.PADDING - paddingRemainder);
+                tableFeaturesLength -= EncodeConstants.PADDING - paddingRemainder;
             }
             properties.add(builder.build());
         }

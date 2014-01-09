@@ -53,8 +53,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Vlan
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.MatchEntries;
 
 /**
+ * Encodes match ids (oxm_ids) needed in Multipart-TableFeatures messages
  * @author michal.polkorab
- *
  */
 public abstract class MatchIdsWriter {
 

@@ -98,7 +98,7 @@ import org.slf4j.LoggerFactory;
  * @author michal.polkorab
  * @author timotej.kubas
  */
-public class MatchSerializer {
+public abstract class MatchSerializer {
     private static final Logger LOGGER = LoggerFactory.getLogger(MatchSerializer.class);
     private static final byte STANDARD_MATCH_TYPE_CODE = 0;
     private static final byte OXM_MATCH_TYPE_CODE = 1;
@@ -360,11 +360,6 @@ public class MatchSerializer {
         }
     }
 
-    /**
-     * @param entry
-     * @param out
-     * @param length TODO
-     */
     private static void writeMask(MatchEntries entry, ByteBuf out, int length) {
         if (entry.isHasMask()) {
             byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
