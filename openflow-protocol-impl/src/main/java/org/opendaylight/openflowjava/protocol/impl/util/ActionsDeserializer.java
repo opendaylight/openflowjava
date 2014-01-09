@@ -208,6 +208,9 @@ public abstract class ActionsDeserializer {
                 break;
             case 0xFFFF:
                 builder.setType(Experimenter.class);
+                ExperimenterActionBuilder experimenter = new ExperimenterActionBuilder();
+                experimenter.setExperimenter(input.readUnsignedInt());
+                builder.addAugmentation(ExperimenterAction.class, experimenter.build());
                 break;
             default: 
                 break;
