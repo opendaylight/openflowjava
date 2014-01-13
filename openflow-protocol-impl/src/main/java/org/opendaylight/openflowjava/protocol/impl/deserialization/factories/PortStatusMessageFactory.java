@@ -73,7 +73,6 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
     }
 
     private static PortFeatures createPortFeatures(long input){
-        System.out.println("long: " + input);
         final Boolean _10mbHd = ((input) & (1<<0)) != 0;
         final Boolean _10mbFd = ((input) & (1<<1)) != 0;
         final Boolean _100mbHd = ((input) & (1<<2)) != 0;
