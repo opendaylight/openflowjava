@@ -71,7 +71,7 @@ public class OF10FlowModInputMessageFactoryTest {
         matchBuilder.setTpDst(6633);
         builder.setMatchV10(matchBuilder.build());
         byte[] cookie = new byte[]{0x00, 0x01, 0x04, 0x01, 0x06, 0x00, 0x07, 0x01};
-        builder.setCookie(new BigInteger(cookie));
+        builder.setCookie(new BigInteger(1, cookie));
         builder.setCommand(FlowModCommand.forValue(0));
         builder.setIdleTimeout(12);
         builder.setHardTimeout(16);

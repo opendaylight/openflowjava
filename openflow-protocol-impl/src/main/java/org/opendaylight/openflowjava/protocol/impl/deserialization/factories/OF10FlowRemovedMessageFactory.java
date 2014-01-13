@@ -13,6 +13,7 @@ import io.netty.buffer.ByteBuf;
 import java.math.BigInteger;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.OF10MatchDeserializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowRemovedReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowRemovedMessage;
@@ -50,9 +51,9 @@ public class OF10FlowRemovedMessageFactory implements OFDeserializer<FlowRemoved
         builder.setVersion(version);
         builder.setXid(rawMessage.readUnsignedInt());
         builder.setMatchV10(OF10MatchDeserializer.createMatchV10(rawMessage));
-        byte[] cookie = new byte[Long.SIZE/Byte.SIZE];
+        byte[] cookie = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         rawMessage.readBytes(cookie);
-        builder.setCookie(new BigInteger(cookie));
+        builder.setCookie(new BigInteger(1, cookie));
         builder.setPriority(rawMessage.readUnsignedShort());
         builder.setReason(FlowRemovedReason.forValue(rawMessage.readUnsignedByte()));
         rawMessage.skipBytes(PADDING_IN_FLOW_REMOVED_MESSAGE);
@@ -60,12 +61,12 @@ public class OF10FlowRemovedMessageFactory implements OFDeserializer<FlowRemoved
         builder.setDurationNsec(rawMessage.readUnsignedInt());
         builder.setIdleTimeout(rawMessage.readUnsignedShort());
         rawMessage.skipBytes(PADDING_IN_FLOW_REMOVED_MESSAGE_2);
-        byte[] packet_count = new byte[Long.SIZE/Byte.SIZE];
+        byte[] packet_count = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         rawMessage.readBytes(packet_count);
-        builder.setPacketCount(new BigInteger(packet_count));
-        byte[] byte_count = new byte[Long.SIZE/Byte.SIZE];
+        builder.setPacketCount(new BigInteger(1, packet_count));
+        byte[] byte_count = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         rawMessage.readBytes(byte_count);
-        builder.setByteCount(new BigInteger(byte_count));
+        builder.setByteCount(new BigInteger(1, byte_count));
         return builder.build();
     }
 

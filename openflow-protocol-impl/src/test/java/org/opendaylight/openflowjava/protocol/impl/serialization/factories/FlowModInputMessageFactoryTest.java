@@ -63,9 +63,9 @@ public class FlowModInputMessageFactoryTest {
         FlowModInputBuilder builder = new FlowModInputBuilder();
         BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         byte[] cookie = new byte[]{0x00, 0x01, 0x04, 0x01, 0x06, 0x00, 0x07, 0x01};
-        builder.setCookie(new BigInteger(cookie));
+        builder.setCookie(new BigInteger(1, cookie));
         byte[] cookieMask = new byte[]{0x01, 0x05, 0x00, 0x00, 0x09, 0x30, 0x00, 0x30};
-        builder.setCookieMask(new BigInteger(cookieMask));
+        builder.setCookieMask(new BigInteger(1, cookieMask));
         builder.setTableId(new TableId(65L));
         builder.setCommand(FlowModCommand.forValue(2));
         builder.setIdleTimeout(12);

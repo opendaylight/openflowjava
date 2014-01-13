@@ -57,9 +57,9 @@ public class OF10FeaturesReplyMessageFactory implements OFDeserializer<GetFeatur
         GetFeaturesOutputBuilder builder = new GetFeaturesOutputBuilder();
         builder.setVersion(version);
         builder.setXid(rawMessage.readUnsignedInt());
-        byte[] datapathId = new byte[Long.SIZE/Byte.SIZE];
+        byte[] datapathId = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         rawMessage.readBytes(datapathId);
-        builder.setDatapathId(new BigInteger(datapathId));
+        builder.setDatapathId(new BigInteger(1, datapathId));
         builder.setBuffers(rawMessage.readUnsignedInt());
         builder.setTables(rawMessage.readUnsignedByte());
         rawMessage.skipBytes(PADDING_IN_FEATURES_REPLY_HEADER);

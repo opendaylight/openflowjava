@@ -42,7 +42,7 @@ public class RoleRequestInputMessageFactoryTest {
         BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setRole(ControllerRole.forValue(2));
         byte[] generationId = new byte[]{0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01};
-        builder.setGenerationId(new BigInteger(generationId));
+        builder.setGenerationId(new BigInteger(1, generationId));
         RoleRequestInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();

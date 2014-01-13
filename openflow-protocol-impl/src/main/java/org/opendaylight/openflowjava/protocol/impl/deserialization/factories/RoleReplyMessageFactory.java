@@ -50,7 +50,7 @@ public class RoleReplyMessageFactory implements OFDeserializer<RoleRequestOutput
         rawMessage.skipBytes(PADDING_IN_ROLE_REPLY_HEADER);
         byte[] generationID = new byte[8];
         rawMessage.readBytes(generationID);
-        builder.setGenerationId(new BigInteger(generationID));
+        builder.setGenerationId(new BigInteger(1, generationID));
         return builder.build();
     }
 }

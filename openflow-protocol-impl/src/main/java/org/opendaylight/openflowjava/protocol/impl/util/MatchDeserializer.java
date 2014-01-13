@@ -516,7 +516,7 @@ public abstract class MatchDeserializer {
 
     private static void addMetadataAugmentation(MatchEntriesBuilder builder, ByteBuf in) {
         MetadataMatchEntryBuilder metadata = new MetadataMatchEntryBuilder();
-        byte[] metadataBytes = new byte[Long.SIZE/Byte.SIZE];
+        byte[] metadataBytes = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         in.readBytes(metadataBytes);
         metadata.setMetadata(metadataBytes);
         builder.addAugmentation(MetadataMatchEntry.class, metadata.build());

@@ -13,6 +13,7 @@ import io.netty.buffer.ByteBuf;
 import java.math.BigInteger;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.MatchDeserializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowRemovedReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableId;
@@ -47,9 +48,9 @@ public class FlowRemovedMessageFactory implements OFDeserializer<FlowRemovedMess
         FlowRemovedMessageBuilder builder = new FlowRemovedMessageBuilder();
         builder.setVersion(version);
         builder.setXid(rawMessage.readUnsignedInt());
-        byte[] cookie = new byte[Long.SIZE/Byte.SIZE];
+        byte[] cookie = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         rawMessage.readBytes(cookie);
-        builder.setCookie(new BigInteger(cookie));
+        builder.setCookie(new BigInteger(1, cookie));
         builder.setPriority(rawMessage.readUnsignedShort());
         builder.setReason(FlowRemovedReason.forValue(rawMessage.readUnsignedByte()));
         builder.setTableId(new TableId((long)rawMessage.readUnsignedByte()));
@@ -57,12 +58,12 @@ public class FlowRemovedMessageFactory implements OFDeserializer<FlowRemovedMess
         builder.setDurationNsec(rawMessage.readUnsignedInt());
         builder.setIdleTimeout(rawMessage.readUnsignedShort());
         builder.setHardTimeout(rawMessage.readUnsignedShort());
-        byte[] packet_count = new byte[Long.SIZE/Byte.SIZE];
+        byte[] packet_count = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         rawMessage.readBytes(packet_count);
-        builder.setPacketCount(new BigInteger(packet_count));
-        byte[] byte_count = new byte[Long.SIZE/Byte.SIZE];
+        builder.setPacketCount(new BigInteger(1, packet_count));
+        byte[] byte_count = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         rawMessage.readBytes(byte_count);
-        builder.setByteCount(new BigInteger(byte_count));
+        builder.setByteCount(new BigInteger(1, byte_count));
         builder.setMatch(MatchDeserializer.createMatch(rawMessage));
         return builder.build();
     }
