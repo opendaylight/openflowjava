@@ -39,83 +39,58 @@
 
     <pluginRepositories>
         <pluginRepository>
-            <id>central2</id>
-            <name>central2</name>
-            <url>${nexusproxy}/repositories/central2/</url>
+            <id>odlPublic</id>
+            <name>odlPublic</name>
+            <url>${nexusproxy}/groups/public/</url>
+            <snapshots>
+              <enabled>false</enabled>
+            </snapshots>
         </pluginRepository>
        <pluginRepository>
             <id>opendaylight-release</id>
             <url>${nexusproxy}/repositories/opendaylight.release/</url>
+            <snapshots>
+              <enabled>false</enabled>
+            </snapshots>
         </pluginRepository>
         <!-- OpenDayLight Snapshot artifact -->
         <pluginRepository>
             <id>opendaylight-snapshot</id>
             <url>${nexusproxy}/repositories/opendaylight.snapshot/</url>
+            <releases>
+              <enabled>false</enabled>
+            </releases>
         </pluginRepository>
     </pluginRepositories>
 
 
     <repositories>
-        <!-- EBR release -->
-        <!-- http://repository.springsource.com/maven/bundles/release -->
+        <!-- Opendaylight public group -->
         <repository>
-            <id>ebr-bundles-release</id>
-            <name>ebr-bundles-release</name>
-            <url>${nexusproxy}/repositories/ebr-bundles-release/</url>
-        </repository>
-        <!-- EBR external -->
-        <!-- http://repository.springsource.com/maven/bundles/external -->
-        <repository>
-            <id>ebr-bundles-external</id>
-            <name>ebr-bundles-external</name>
-            <url>${nexusproxy}/repositories/ebr-bundles-external/</url>
-        </repository>
-        <!-- Maven repo2 mirror -->
-        <!-- http://repo2.maven.org/maven2 -->
-        <repository>
-            <id>central2</id>
-            <name>central2</name>
-            <url>${nexusproxy}/repositories/central2/</url>
-        </repository>
-        <!-- Maven repo1 mirror -->
-        <!-- http://repo1.maven.org/maven2 -->
-        <repository>
-            <id>central</id>
-            <name>central</name>
-            <url>${nexusproxy}/repositories/central/</url>
-        </repository>
-        <!-- Pax mirror -->
-        <!-- https://oss.sonatype.org/content/repositories/ops4j-releases -->
-        <repository>
-            <id>ops4j-releases</id>
-            <name>ops4j-releases</name>
-            <url>${nexusproxy}/repositories/ops4j-releases/</url>
-        </repository>
-        <!-- Third Packages hosted in local maven because not available in other 
-        places -->
-        <repository>
-            <id>thirdparty</id>
-            <name>thirdparty</name>
-            <url>${nexusproxy}/repositories/thirdparty/</url>
-        </repository>
-        <!-- Jboss mirror -->
-        <!-- https://repository.jboss.org/nexus/content/repositories/releases -->
-        <repository>
-            <id>jboss.releases</id>
-            <name>jboss.releases</name>
-            <url>${nexusproxy}/repositories/jboss.releases/</url>
+            <id>odlPublic</id>
+            <name>odlPublic</name>
+            <url>${nexusproxy}/groups/public/</url>
+            <snapshots>
+              <enabled>false</enabled>
+            </snapshots>
         </repository>
         <!-- OpenDayLight Released artifact -->
         <repository>
             <id>opendaylight-release</id>
             <name>opendaylight-release</name>
             <url>${nexusproxy}/repositories/opendaylight.release/</url>
+            <snapshots>
+              <enabled>false</enabled>
+            </snapshots>
         </repository>
         <!-- OpenDayLight Snapshot artifact -->
         <repository>
             <id>opendaylight-snapshot</id>
             <name>opendaylight-snapshot</name>
             <url>${nexusproxy}/repositories/opendaylight.snapshot/</url>
+            <releases>
+              <enabled>false</enabled>
+            </releases>
         </repository>
     </repositories>
     <distributionManagement>
