@@ -62,10 +62,10 @@ public class FlowModInputMessageFactoryTest {
     public void testFlowModInputMessageFactory() throws Exception {
         FlowModInputBuilder builder = new FlowModInputBuilder();
         BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
-        byte[] cookie = new byte[]{0x00, 0x01, 0x04, 0x01, 0x06, 0x00, 0x07, 0x01};
-        builder.setCookie(new BigInteger(cookie));
-        byte[] cookieMask = new byte[]{0x01, 0x05, 0x00, 0x00, 0x09, 0x30, 0x00, 0x30};
-        builder.setCookieMask(new BigInteger(cookieMask));
+        byte[] cookie = new byte[]{(byte) 0xFF, 0x01, 0x04, 0x01, 0x06, 0x00, 0x07, 0x01};
+        builder.setCookie(new BigInteger(1, cookie));
+        byte[] cookieMask = new byte[]{(byte) 0xFF, 0x05, 0x00, 0x00, 0x09, 0x30, 0x00, 0x30};
+        builder.setCookieMask(new BigInteger(1, cookieMask));
         builder.setTableId(new TableId(65L));
         builder.setCommand(FlowModCommand.forValue(2));
         builder.setIdleTimeout(12);
@@ -116,8 +116,12 @@ public class FlowModInputMessageFactoryTest {
         factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
         
         BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
-        Assert.assertEquals("Wrong cookie", message.getCookie().longValue(), out.readLong());
-        Assert.assertEquals("Wrong cookieMask", message.getCookieMask().longValue(), out.readLong());
+        cookie = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
+        out.readBytes(cookie);
+        Assert.assertEquals("Wrong cookie", message.getCookie(), new BigInteger(1, cookie));
+        cookieMask = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
+        out.readBytes(cookieMask);
+        Assert.assertEquals("Wrong cookieMask", message.getCookieMask(), new BigInteger(1,  cookieMask));
         Assert.assertEquals("Wrong tableId", message.getTableId().getValue().intValue(), out.readUnsignedByte());
         Assert.assertEquals("Wrong command", message.getCommand().getIntValue(), out.readUnsignedByte());
         Assert.assertEquals("Wrong idleTimeOut", message.getIdleTimeout().intValue(), out.readShort());

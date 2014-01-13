@@ -41,8 +41,8 @@ public class RoleRequestInputMessageFactoryTest {
         RoleRequestInputBuilder builder = new RoleRequestInputBuilder();
         BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setRole(ControllerRole.forValue(2));
-        byte[] generationId = new byte[]{0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01};
-        builder.setGenerationId(new BigInteger(generationId));
+        byte[] generationId = new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01};
+        builder.setGenerationId(new BigInteger(1, generationId));
         RoleRequestInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
@@ -52,6 +52,8 @@ public class RoleRequestInputMessageFactoryTest {
         BufferHelper.checkHeaderV13(out, MESSAGE_TYPE, MESSAGE_LENGTH);
         Assert.assertEquals("Wrong role", message.getRole().getIntValue(), ControllerRole.forValue((int) out.readUnsignedInt()).getIntValue());
         out.skipBytes(PADDING_IN_ROLE_REQUEST_MESSAGE);
-        Assert.assertEquals("Wrong generation ID", message.getGenerationId().longValue(), out.readLong());
+        byte[] genId = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
+        out.readBytes(genId);
+        Assert.assertEquals("Wrong generation ID", message.getGenerationId(), new BigInteger(1, genId));
     }
 }

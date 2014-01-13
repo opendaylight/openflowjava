@@ -13,6 +13,7 @@ import io.netty.buffer.ByteBuf;
 import java.math.BigInteger;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.Capabilities;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesOutputBuilder;
@@ -47,9 +48,9 @@ public class FeaturesReplyMessageFactory implements OFDeserializer<GetFeaturesOu
         GetFeaturesOutputBuilder builder = new GetFeaturesOutputBuilder();
         builder.setVersion(version);
         builder.setXid(rawMessage.readUnsignedInt());
-        byte[] datapathId = new byte[Long.SIZE/Byte.SIZE];
+        byte[] datapathId = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         rawMessage.readBytes(datapathId);
-        builder.setDatapathId(new BigInteger(datapathId));
+        builder.setDatapathId(new BigInteger(1, datapathId));
         builder.setBuffers(rawMessage.readUnsignedInt());
         builder.setTables(rawMessage.readUnsignedByte());
         builder.setAuxiliaryId(rawMessage.readUnsignedByte());

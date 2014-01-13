@@ -100,9 +100,9 @@ public class MultipartRequestInputFactoryTest {
         builder.setOutPort(85L);
         builder.setOutGroup(95L);
         byte[] cookie = new byte[]{0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01};
-        builder.setCookie(new BigInteger(cookie));
+        builder.setCookie(new BigInteger(1, cookie));
         byte[] cookieMask = new byte[]{0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01};
-        builder.setCookieMask(new BigInteger(cookieMask));
+        builder.setCookieMask(new BigInteger(1, cookieMask));
         caseBuilder.setMultipartRequestFlow(builder.build());
         //TODO match field
         return caseBuilder.build();
@@ -118,12 +118,12 @@ public class MultipartRequestInputFactoryTest {
         builder.setOutPort(output.readUnsignedInt());
         builder.setOutGroup(output.readUnsignedInt());
         output.skipBytes(PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_02);
-        byte[] cookie = new byte[Long.SIZE/Byte.SIZE];
+        byte[] cookie = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         output.readBytes(cookie);
-        builder.setCookie(new BigInteger(cookie));
-        byte[] cookieMask = new byte[Long.SIZE/Byte.SIZE];
+        builder.setCookie(new BigInteger(1, cookie));
+        byte[] cookieMask = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         output.readBytes(cookieMask);
-        builder.setCookieMask(new BigInteger(cookieMask));
+        builder.setCookieMask(new BigInteger(1, cookieMask));
         caseBuilder.setMultipartRequestFlow(builder.build());
         return caseBuilder.build();
     }
@@ -165,9 +165,9 @@ public class MultipartRequestInputFactoryTest {
         builder.setOutPort(85L);
         builder.setOutGroup(95L);
         byte[] cookie = new byte[]{0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01};
-        builder.setCookie(new BigInteger(cookie));
+        builder.setCookie(new BigInteger(1, cookie));
         byte[] cookieMask = new byte[]{0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01};
-        builder.setCookieMask(new BigInteger(cookieMask));
+        builder.setCookieMask(new BigInteger(1, cookieMask));
         caseBuilder.setMultipartRequestAggregate(builder.build());
       //TODO match field
         return caseBuilder.build();
@@ -183,12 +183,12 @@ public class MultipartRequestInputFactoryTest {
         builder.setOutPort(output.readUnsignedInt());
         builder.setOutGroup(output.readUnsignedInt());
         output.skipBytes(PADDING_IN_MULTIPART_REQUEST_AGGREGATE_BODY_02);
-        byte[] cookie = new byte[Long.SIZE/Byte.SIZE];
+        byte[] cookie = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         output.readBytes(cookie);
-        builder.setCookie(new BigInteger(cookie));
-        byte[] cookieMask = new byte[Long.SIZE/Byte.SIZE];
+        builder.setCookie(new BigInteger(1, cookie));
+        byte[] cookieMask = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         output.readBytes(cookieMask);
-        builder.setCookieMask(new BigInteger(cookieMask));
+        builder.setCookieMask(new BigInteger(1, cookieMask));
         caseBuilder.setMultipartRequestAggregate(builder.build());
         return caseBuilder.build();
     }
@@ -531,8 +531,8 @@ public class MultipartRequestInputFactoryTest {
         TableFeaturesBuilder tableFeaturesBuilder = new TableFeaturesBuilder();
         tableFeaturesBuilder.setTableId((short) 8);
         tableFeaturesBuilder.setName("AAAABBBBCCCCDDDDEEEEFFFFGGGG");
-        tableFeaturesBuilder.setMetadataMatch(new BigInteger(new byte[] {0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}));
-        tableFeaturesBuilder.setMetadataWrite(new BigInteger(new byte[] {0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}));
+        tableFeaturesBuilder.setMetadataMatch(new BigInteger(1, new byte[] {0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}));
+        tableFeaturesBuilder.setMetadataWrite(new BigInteger(1, new byte[] {0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}));
         tableFeaturesBuilder.setConfig(new TableConfig(true));
         tableFeaturesBuilder.setMaxEntries(65L);
         TableFeatures tableFeature = tableFeaturesBuilder.build();
@@ -556,12 +556,12 @@ public class MultipartRequestInputFactoryTest {
         output.readBytes(tableNameBytes);
         String tableName = new String(tableNameBytes);
         tableFeaturesBuilder.setName(tableName.trim());
-        byte[] metadataMatch = new byte[Long.SIZE/Byte.SIZE];
+        byte[] metadataMatch = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         output.readBytes(metadataMatch);
-        tableFeaturesBuilder.setMetadataMatch(new BigInteger(metadataMatch));
-        byte[] metadataWrite = new byte[Long.SIZE/Byte.SIZE];
+        tableFeaturesBuilder.setMetadataMatch(new BigInteger(1, metadataMatch));
+        byte[] metadataWrite = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         output.readBytes(metadataWrite);
-        tableFeaturesBuilder.setMetadataWrite(new BigInteger(metadataWrite));
+        tableFeaturesBuilder.setMetadataWrite(new BigInteger(1, metadataWrite));
         tableFeaturesBuilder.setConfig(decodeTableConfig(output.readInt()));
         tableFeaturesBuilder.setMaxEntries(output.readUnsignedInt());
         TableFeatures tableFeature = tableFeaturesBuilder.build();
