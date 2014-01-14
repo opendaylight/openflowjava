@@ -86,7 +86,6 @@ public class SetAsyncInputMessageFactoryTest {
         packetInReasonList.add(PacketInReason.OFPRINVALIDTTL);
         builder.setMask(packetInReasonList);
         masks.add(builder.build());
-        System.out.println(masks.size());
         return masks;
     }
     
