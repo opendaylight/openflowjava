@@ -272,7 +272,8 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         List<FlowStats> flowStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
             FlowStatsBuilder flowStatsBuilder = new FlowStatsBuilder();
-            input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+            int start = input.readerIndex();
+            int length = input.readUnsignedShort();
             flowStatsBuilder.setTableId(input.readUnsignedByte());
             input.skipBytes(PADDING_IN_FLOW_STATS_HEADER_01);
             flowStatsBuilder.setDurationSec(input.readUnsignedInt());
@@ -292,7 +293,8 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             input.readBytes(byteCount);
             flowStatsBuilder.setByteCount(new BigInteger(1, byteCount));
             flowStatsBuilder.setMatch(MatchDeserializer.createMatch(input));
-            flowStatsBuilder.setInstructions(InstructionsDeserializer.createInstructions(input, input.readableBytes()));
+            flowStatsBuilder.setInstructions(InstructionsDeserializer.
+                    createInstructions(input, length - (input.readerIndex() - start)));
             flowStatsList.add(flowStatsBuilder.build());
         }
         flowBuilder.setFlowStats(flowStatsList);
