@@ -50,6 +50,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.InPort;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmMatchType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDropCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDscpRemarkCase;
@@ -74,6 +75,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.desc._case.MultipartReplyDesc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.experimenter._case.MultipartReplyExperimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow._case.MultipartReplyFlow;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow._case.multipart.reply.flow.FlowStats;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group._case.MultipartReplyGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group.desc._case.MultipartReplyGroupDesc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.meter._case.MultipartReplyMeter;
@@ -154,7 +156,7 @@ public class MultipartReplyMessageFactoryTest {
     @Test
     public void testMultipartReplyFlowBody(){
         ByteBuf bb = BufferHelper.buildBuffer("00 01 00 01 00 00 00 00 "+
-                                              "00 0C "+//length
+                                              "00 48 "+//length
                                               "08 "+//tableId
                                               "00 "+//pad_01
                                               "00 00 00 09 "+//durationSec
@@ -166,8 +168,26 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 00 "+//pad_02
                                               "FF 01 01 01 01 01 01 01 "+//cookie
                                               "EF 01 01 01 01 01 01 01 "+//packetCount
-                                              "7F 01 01 01 01 01 01 01"//byteCount
-                                              );
+                                              "7F 01 01 01 01 01 01 01 "+//byteCount
+                                              "00 01 00 04 00 00 00 00 "+//empty match
+                                              "00 01 00 08 06 00 00 00 "+
+                                              "00 01 00 08 06 00 00 00 "+
+                                              "00 48 "+//length
+                                              "08 "+//tableId
+                                              "00 "+//pad_01
+                                              "00 00 00 09 "+//durationSec
+                                              "00 00 00 07 "+//durationNsec
+                                              "00 0C "+//priority
+                                              "00 0E "+//idleTimeout
+                                              "00 0F "+//hardTimeout
+                                              "00 0B "+//flags
+                                              "00 00 00 00 "+//pad_02
+                                              "FF 01 01 01 01 01 01 01 "+//cookie
+                                              "EF 01 01 01 01 01 01 01 "+//packetCount
+                                              "7F 01 01 01 01 01 01 01 "+//byteCount
+                                              "00 01 00 04 00 00 00 00 "+//empty match
+                                              "00 01 00 08 06 00 00 00 "+
+                                              "00 01 00 08 06 00 00 00");
         
         MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
         
@@ -176,23 +196,25 @@ public class MultipartReplyMessageFactoryTest {
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyFlowCase messageCase = (MultipartReplyFlowCase) builtByFactory.getMultipartReplyBody();
         MultipartReplyFlow message = messageCase.getMultipartReplyFlow();
-        Assert.assertEquals("Wrong tableId", 8, message.getFlowStats().get(0).getTableId().intValue());
-        Assert.assertEquals("Wrong durationSec", 9, message.getFlowStats().get(0).getDurationSec().intValue());
-        Assert.assertEquals("Wrong durationNsec", 7, message.getFlowStats().get(0).getDurationNsec().intValue());
-        Assert.assertEquals("Wrong priority", 12, message.getFlowStats().get(0).getPriority().intValue());
-        Assert.assertEquals("Wrong idleTimeOut", 14, message.getFlowStats().get(0).getIdleTimeout().intValue());
-        Assert.assertEquals("Wrong hardTimeOut", 15, message.getFlowStats().get(0).getHardTimeout().intValue());
+        FlowStats flowStats1 = message.getFlowStats().get(0);
+        Assert.assertEquals("Wrong tableId", 8, flowStats1.getTableId().intValue());
+        Assert.assertEquals("Wrong durationSec", 9, flowStats1.getDurationSec().intValue());
+        Assert.assertEquals("Wrong durationNsec", 7, flowStats1.getDurationNsec().intValue());
+        Assert.assertEquals("Wrong priority", 12, flowStats1.getPriority().intValue());
+        Assert.assertEquals("Wrong idleTimeOut", 14, flowStats1.getIdleTimeout().intValue());
+        Assert.assertEquals("Wrong hardTimeOut", 15, flowStats1.getHardTimeout().intValue());
         Assert.assertEquals("Wrong flags", new FlowModFlags(true, false, true, false, true), 
-                                           message.getFlowStats().get(0).getFlags());
+                flowStats1.getFlags());
         Assert.assertEquals("Wrong cookie", 
                 new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
-                message.getFlowStats().get(0).getCookie());
+                flowStats1.getCookie());
         Assert.assertEquals("Wrong packetCount", 
                 new BigInteger(1, new byte[]{(byte) 0xEF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
-                message.getFlowStats().get(0).getPacketCount());
+                flowStats1.getPacketCount());
         Assert.assertEquals("Wrong byteCount", 
                 new BigInteger(1, new byte[]{(byte) 0x7F, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
-                message.getFlowStats().get(0).getByteCount());
+                flowStats1.getByteCount());
+        Assert.assertEquals("Wrong match type", OxmMatchType.class, flowStats1.getMatch().getType());
     }
     
     /**
