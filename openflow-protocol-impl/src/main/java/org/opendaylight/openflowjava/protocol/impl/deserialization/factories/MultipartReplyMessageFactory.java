@@ -272,27 +272,28 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         List<FlowStats> flowStatsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
             FlowStatsBuilder flowStatsBuilder = new FlowStatsBuilder();
-            input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-            flowStatsBuilder.setTableId(input.readUnsignedByte());
-            input.skipBytes(PADDING_IN_FLOW_STATS_HEADER_01);
-            flowStatsBuilder.setDurationSec(input.readUnsignedInt());
-            flowStatsBuilder.setDurationNsec(input.readUnsignedInt());
-            flowStatsBuilder.setPriority(input.readUnsignedShort());
-            flowStatsBuilder.setIdleTimeout(input.readUnsignedShort());
-            flowStatsBuilder.setHardTimeout(input.readUnsignedShort());
-            flowStatsBuilder.setFlags(createFlowModFlagsFromBitmap(input.readShort()));
-            input.skipBytes(PADDING_IN_FLOW_STATS_HEADER_02);
+            int flowRecordLength = input.readUnsignedShort();
+            ByteBuf subInput = input.readSlice(flowRecordLength - EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+            flowStatsBuilder.setTableId(subInput.readUnsignedByte());
+            subInput.skipBytes(PADDING_IN_FLOW_STATS_HEADER_01);
+            flowStatsBuilder.setDurationSec(subInput.readUnsignedInt());
+            flowStatsBuilder.setDurationNsec(subInput.readUnsignedInt());
+            flowStatsBuilder.setPriority(subInput.readUnsignedShort());
+            flowStatsBuilder.setIdleTimeout(subInput.readUnsignedShort());
+            flowStatsBuilder.setHardTimeout(subInput.readUnsignedShort());
+            flowStatsBuilder.setFlags(createFlowModFlagsFromBitmap(subInput.readUnsignedShort()));
+            subInput.skipBytes(PADDING_IN_FLOW_STATS_HEADER_02);
             byte[] cookie = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
-            input.readBytes(cookie);
+            subInput.readBytes(cookie);
             flowStatsBuilder.setCookie(new BigInteger(1, cookie));
             byte[] packetCount = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
-            input.readBytes(packetCount);
+            subInput.readBytes(packetCount);
             flowStatsBuilder.setPacketCount(new BigInteger(1, packetCount));
             byte[] byteCount = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
-            input.readBytes(byteCount);
+            subInput.readBytes(byteCount);
             flowStatsBuilder.setByteCount(new BigInteger(1, byteCount));
-            flowStatsBuilder.setMatch(MatchDeserializer.createMatch(input));
-            flowStatsBuilder.setInstructions(InstructionsDeserializer.createInstructions(input, input.readableBytes()));
+            flowStatsBuilder.setMatch(MatchDeserializer.createMatch(subInput));
+            flowStatsBuilder.setInstructions(InstructionsDeserializer.createInstructions(subInput, subInput.readableBytes()));
             flowStatsList.add(flowStatsBuilder.build());
         }
         flowBuilder.setFlowStats(flowStatsList);
@@ -300,7 +301,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return caseBuilder.build();
     }
     
-    private static FlowModFlags createFlowModFlagsFromBitmap(short input){
+    private static FlowModFlags createFlowModFlagsFromBitmap(int input){
         final Boolean _oFPFFSENDFLOWREM = (input & (1 << 0)) != 0;
         final Boolean _oFPFFCHECKOVERLAP = (input & (1 << 1)) != 0;
         final Boolean _oFPFFRESETCOUNTS = (input & (1 << 2)) != 0; 
