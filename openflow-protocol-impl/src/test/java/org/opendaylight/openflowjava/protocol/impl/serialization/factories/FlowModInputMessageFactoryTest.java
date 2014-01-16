@@ -28,6 +28,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortNumberMatchEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.TableIdInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.TableIdInstructionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.ApplyActions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.GotoTable;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.WriteMetadata;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.Instructions;
@@ -108,6 +109,10 @@ public class FlowModInputMessageFactoryTest {
         metaBuilder.setMetadataMask(cookieMask);
         insBuilder.addAugmentation(MetadataInstruction.class, metaBuilder.build());
         instructions.add(insBuilder.build());
+        insBuilder = new InstructionsBuilder();
+        insBuilder.setType(ApplyActions.class);
+        insBuilder.addAugmentation(MetadataInstruction.class, metaBuilder.build());
+        instructions.add(insBuilder.build());
         builder.setInstructions(instructions);
         FlowModInput message = builder.build();
         
@@ -159,7 +164,11 @@ public class FlowModInputMessageFactoryTest {
         byte[] cookieMaskRead = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         out.readBytes(cookieMaskRead);
         Assert.assertArrayEquals("Wrong metadata", cookie, cookieRead);
-        Assert.assertArrayEquals("Wrong metadata mask", cookieMask, cookieMaskRead); 
+        Assert.assertArrayEquals("Wrong metadata mask", cookieMask, cookieMaskRead);
+        Assert.assertEquals("Wrong instruction type", 4, out.readUnsignedShort());
+        Assert.assertEquals("Wrong instruction length", 8, out.readUnsignedShort());
+        out.skipBytes(4);
+        Assert.assertTrue("Unread data", out.readableBytes() == 0);
     }
     
     private static FlowModFlags createFlowModFlagsFromBitmap(int input){

@@ -44,15 +44,14 @@ public abstract class InstructionsSerializer {
     private static final byte EXPERIMENTER_TYPE = 7;
     private static final byte GOTO_TABLE_LENGTH = 8;
     private static final byte WRITE_METADATA_LENGTH = 24;
-    private static final byte WRITE_ACTIONS_LENGTH = 8;
-    private static final byte APPLY_ACTIONS_LENGTH = 8;
-    private static final byte CLEAR_ACTIONS_LENGTH = 8;
     private static final byte METER_LENGTH = 8;
     private static final byte EXPERIMENTER_LENGTH = 8;
+    private static final byte ACTIONS_INSTRUCTION_LENGTH = 8;
     private static final byte PADDING_IN_GOTO_TABLE = 3;
     private static final byte PADDING_IN_WRITE_METADATA = 4;
     private static final byte PADDING_IN_CLEAR_ACTIONS = 4;
     private static final byte INSTRUCTION_IDS_LENGTH = 4;
+    private static final byte PADDING_IN_ACTIONS_INSTRUCTION = 4;
     
     /**
      * Encodes instructions
@@ -78,7 +77,7 @@ public abstract class InstructionsSerializer {
                 } else if (type.isAssignableFrom(ApplyActions.class)) {
                     writeActionsInstruction(out, instruction, APPLY_ACTIONS_TYPE);
                 } else if (type.isAssignableFrom(ClearActions.class)) {
-                    writeTypeAndLength(out, CLEAR_ACTIONS_TYPE, CLEAR_ACTIONS_LENGTH);
+                    writeTypeAndLength(out, CLEAR_ACTIONS_TYPE, ACTIONS_INSTRUCTION_LENGTH);
                     ByteBufUtils.padBuffer(PADDING_IN_CLEAR_ACTIONS, out);
                 } else if (type.isAssignableFrom(Meter.class)) {
                     writeTypeAndLength(out, METER_TYPE, METER_LENGTH);
@@ -132,13 +131,16 @@ public abstract class InstructionsSerializer {
 
     private static void writeActionsInstruction(ByteBuf out,
             Instructions instruction, int type) {
-        final byte ACTIONS_INSTRUCTION_LENGTH = 8;
-        final byte PADDING_IN_ACTIONS_INSTRUCTION = 4;
         out.writeShort(type);
-        List<ActionsList> actions = instruction.getAugmentation(ActionsInstruction.class).getActionsList();
-        out.writeShort(ACTIONS_INSTRUCTION_LENGTH + ActionsSerializer.computeLengthOfActions(actions));
-        ByteBufUtils.padBuffer(PADDING_IN_ACTIONS_INSTRUCTION, out);
-        ActionsSerializer.encodeActions(actions, out);
+        if (instruction.getAugmentation(ActionsInstruction.class) != null) {
+            List<ActionsList> actions = instruction.getAugmentation(ActionsInstruction.class).getActionsList();
+            out.writeShort(ACTIONS_INSTRUCTION_LENGTH + ActionsSerializer.computeLengthOfActions(actions));
+            ByteBufUtils.padBuffer(PADDING_IN_ACTIONS_INSTRUCTION, out);
+            ActionsSerializer.encodeActions(actions, out);
+        } else {
+            out.writeShort(ACTIONS_INSTRUCTION_LENGTH);
+            ByteBufUtils.padBuffer(PADDING_IN_ACTIONS_INSTRUCTION, out);
+        }
     }
     
     /**
@@ -156,13 +158,19 @@ public abstract class InstructionsSerializer {
                 } else if (type.isAssignableFrom(WriteMetadata.class)) {
                     length += WRITE_METADATA_LENGTH;
                 } else if (type.isAssignableFrom(WriteActions.class)) {
-                    length += WRITE_ACTIONS_LENGTH + ActionsSerializer.computeLengthOfActions(
+                    length += ACTIONS_INSTRUCTION_LENGTH;
+                    if (instruction.getAugmentation(ActionsInstruction.class) != null) {
+                        length += ActionsSerializer.computeLengthOfActions(
                             instruction.getAugmentation(ActionsInstruction.class).getActionsList());
+                    }
                 } else if (type.isAssignableFrom(ApplyActions.class)) {
-                    length += APPLY_ACTIONS_LENGTH + ActionsSerializer.computeLengthOfActions(
-                            instruction.getAugmentation(ActionsInstruction.class).getActionsList());
+                    length += ACTIONS_INSTRUCTION_LENGTH;
+                    if (instruction.getAugmentation(ActionsInstruction.class) != null) {
+                        length += ActionsSerializer.computeLengthOfActions(
+                                instruction.getAugmentation(ActionsInstruction.class).getActionsList());
+                    }
                 } else if (type.isAssignableFrom(ClearActions.class)) {
-                    length += CLEAR_ACTIONS_LENGTH;
+                    length += ACTIONS_INSTRUCTION_LENGTH;
                 } else if (type.isAssignableFrom(Meter.class)) {
                     length += METER_LENGTH;
                 } else if (type.isAssignableFrom(Experimenter.class)) {
