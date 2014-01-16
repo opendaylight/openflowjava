@@ -9,6 +9,9 @@
     <artifactId>simple-client</artifactId>
     <packaging>bundle</packaging>
     <name>Openflow Protocol Simple Client</name>
+    <scm>
+        <url>https://wiki.opendaylight.org/view/Openflow_Protocol_Library:Main</url>
+    </scm>
     
     <build>
         <plugins>

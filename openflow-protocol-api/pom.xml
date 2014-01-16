@@ -9,6 +9,9 @@
     <artifactId>openflow-protocol-api</artifactId>
     <packaging>bundle</packaging>
     <name>Openflow Protocol Library - API</name>
+    <scm>
+        <url>https://wiki.opendaylight.org/view/Openflow_Protocol_Library:Main</url>
+    </scm>
 
     <properties>
         <yangtools.version>0.6.0-SNAPSHOT</yangtools.version>

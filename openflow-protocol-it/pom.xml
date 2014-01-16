@@ -9,6 +9,9 @@
     <artifactId>openflow-protocol-it</artifactId>
     <packaging>bundle</packaging>
     <name>Openflow Protocol Integration Test</name>
+    <scm>
+        <url>https://wiki.opendaylight.org/view/Openflow_Protocol_Library:Main</url>
+    </scm>
     
     <dependencies>
         <dependency>

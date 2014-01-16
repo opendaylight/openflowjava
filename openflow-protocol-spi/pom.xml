@@ -10,6 +10,9 @@
     <packaging>bundle</packaging>
     
     <name>Openflow Protocol Library - SPI</name>
+    <scm>
+        <url>https://wiki.opendaylight.org/view/Openflow_Protocol_Library:Main</url>
+    </scm>
     
     <dependencies>
     	<dependency>
