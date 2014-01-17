@@ -94,6 +94,9 @@ public abstract class ActionsSerializer {
             return;
         }
         for (ActionsList list : actionsList) {
+            if(list == null){
+                continue;
+            }
             Action action = list.getAction();
             if (action.getType().isAssignableFrom(Output.class)) {
                 encodeOutputAction(action, outBuffer);
@@ -322,6 +325,9 @@ public abstract class ActionsSerializer {
         int lengthOfActions = 0;
         if (actionsList != null) {
             for (ActionsList list : actionsList) {
+                if(list == null){
+                    continue;
+                }
                 Action action = list.getAction();
                 if (action.getType().isAssignableFrom(Output.class)) {
                     lengthOfActions += OUTPUT_LENGTH;
