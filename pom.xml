@@ -11,8 +11,6 @@
         <module>openflow-protocol-impl</module>
         <module>openflow-protocol-it</module>
         <module>simple-client</module>
-        <module>third-party/openflow-codec</module>
-        <module>third-party/openflowj_netty</module>
     </modules>
 
     <properties>
