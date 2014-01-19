@@ -11,7 +11,7 @@
     <name>Openflow Protocol Library - API</name>
 
     <properties>
-        <yangtools.version>0.5.9-SNAPSHOT</yangtools.version>
+        <yangtools.version>0.6.0-SNAPSHOT</yangtools.version>
         <yangtools.generator.version>0.6.0-SNAPSHOT</yangtools.generator.version>
         <yangtools.binding.version>0.6.0-SNAPSHOT</yangtools.binding.version>
     </properties>
