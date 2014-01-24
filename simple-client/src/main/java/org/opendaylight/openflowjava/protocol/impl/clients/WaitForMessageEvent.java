@@ -41,7 +41,7 @@ public class WaitForMessageEvent implements ClientEvent {
             LOGGER.debug("received msg: " + ByteBufUtils.bytesToHexString(headerReceived));
             return false;
         }
-        LOGGER.info("Headers OK");
+        LOGGER.debug("Headers OK");
         return true;
     }
 

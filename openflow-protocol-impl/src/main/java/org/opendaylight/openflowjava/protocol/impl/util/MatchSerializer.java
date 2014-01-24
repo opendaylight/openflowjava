@@ -145,7 +145,7 @@ public abstract class MatchSerializer {
      */
     public static void encodeMatchEntries(List<MatchEntries> matchEntries, ByteBuf out) {
         if (matchEntries == null) {
-            LOGGER.warn("Match entries are null");
+            LOGGER.debug("Match entries are null");
             return;
         }
         for (MatchEntries entry : matchEntries) {
@@ -161,7 +161,7 @@ public abstract class MatchSerializer {
      */
     public static void encodeMatchIds(List<MatchEntries> matchEntries, ByteBuf out) {
         if (matchEntries == null) {
-            LOGGER.warn("Match entries are null");
+            LOGGER.debug("Match entries are null");
             return;
         }
         for (MatchEntries entry : matchEntries) {

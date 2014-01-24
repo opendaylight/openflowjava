@@ -34,7 +34,7 @@ public class OFVersionDetector extends ByteToMessageDecoder {
      * Constructor of class.
      */
     public OFVersionDetector() {
-        LOGGER.debug("Creating OFVersionDetector");
+        LOGGER.trace("Creating OFVersionDetector");
     }
 
     @Override
@@ -44,9 +44,7 @@ public class OFVersionDetector extends ByteToMessageDecoder {
             bb.release();
             return;
         }
-        LOGGER.debug("RI: " + bb.readerIndex());
         byte version = bb.readByte();
-
         if ((version == OF13_VERSION_ID) || (version == OF10_VERSION_ID)) {
             LOGGER.debug("detected version: " + version);
         } else {

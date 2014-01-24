@@ -28,13 +28,13 @@ public class OFEncoder extends MessageToByteEncoder<OfHeader> {
     
     /** Constructor of class */
     public OFEncoder() {
-        LOGGER.debug("Creating OF13Encoder");
+        LOGGER.trace("Creating OF13Encoder");
     }
     
     @Override
     protected void encode(ChannelHandlerContext ctx, OfHeader msg, ByteBuf out)
             throws Exception {
-        LOGGER.debug("Encoding");
+        LOGGER.trace("Encoding");
         try {
             SerializationFactory.messageToBuffer(msg.getVersion(), out, msg);
         } catch(Exception e) {

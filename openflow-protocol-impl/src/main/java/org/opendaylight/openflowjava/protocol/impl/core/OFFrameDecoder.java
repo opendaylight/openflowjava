@@ -34,7 +34,7 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
      * Constructor of class.
      */
     public OFFrameDecoder() {
-        LOGGER.debug("Creating OFFrameDecoder");
+        LOGGER.trace("Creating OFFrameDecoder");
     }
 
     @Override
@@ -59,14 +59,10 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
                 LOGGER.debug("skipping bb - too few data for msg: " +
                         readableBytes + " < " + length);
                 LOGGER.debug("bb: " + ByteBufUtils.byteBufToHexString(bb));
-                LOGGER.debug("readableBytes: " + readableBytes);
             }
-            
             return;
-        } else {
-            LOGGER.debug("[enough bytes] readableBytes: " + readableBytes);
         }
-        LOGGER.info("OF Protocol message received, type:{}", bb.getByte(bb.readerIndex() + 1));
+        LOGGER.debug("OF Protocol message received, type:{}", bb.getByte(bb.readerIndex() + 1));
         
         ByteBuf messageBuffer = bb.slice(bb.readerIndex(), length);
         list.add(messageBuffer);

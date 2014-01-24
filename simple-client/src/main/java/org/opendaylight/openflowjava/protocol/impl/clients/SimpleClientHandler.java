@@ -45,17 +45,17 @@ public class SimpleClientHandler extends ChannelInboundHandlerAdapter {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("<< " + ByteBufUtils.byteBufToHexString(bb));
         }
-        int length = bb.getUnsignedShort(LENGTH_INDEX_IN_HEADER);
-        LOGGER.info("SimpleClientHandler - start of read");
+        int length = bb.getUnsignedShort(bb.readerIndex() + LENGTH_INDEX_IN_HEADER);
+        LOGGER.trace("SimpleClientHandler - start of read");
         byte[] message = new byte[length];
         bb.readBytes(message);
         scenarioHandler.addOfMsg(message);
-        LOGGER.info("end of read");
+        LOGGER.trace("end of read");
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        LOGGER.info("Client is active");
+        LOGGER.debug("Client is active");
         if (isOnlineFuture != null) {
             isOnlineFuture.set(true);
             isOnlineFuture = null;

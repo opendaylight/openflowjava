@@ -31,7 +31,7 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
      * Constructor of class
      */
     public OFDecoder() {
-        LOGGER.debug("Creating OF 1.3 Decoder");
+        LOGGER.trace("Creating OF 1.3 Decoder");
     }
 
     @Override
@@ -39,7 +39,6 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
             List<Object> out) throws Exception {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("VersionMessageWrapper received");
-            LOGGER.debug("buffer size: " + msg.getMessageBuffer().readableBytes());
             LOGGER.debug("<< " + ByteBufUtils.byteBufToHexString(msg.getMessageBuffer()));
         }
         DataObject dataObject = null;

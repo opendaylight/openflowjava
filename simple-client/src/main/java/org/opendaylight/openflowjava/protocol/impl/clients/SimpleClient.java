@@ -79,10 +79,10 @@ public class SimpleClient extends Thread {
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);
         } finally {
-            LOGGER.info("shutting down");
+            LOGGER.debug("shutting down");
             try {
                 group.shutdownGracefully().get();
-                LOGGER.info("shutdown succesful");
+                LOGGER.debug("shutdown succesful");
             } catch (InterruptedException | ExecutionException e) {
                 LOGGER.error(e.getMessage(), e);
             }

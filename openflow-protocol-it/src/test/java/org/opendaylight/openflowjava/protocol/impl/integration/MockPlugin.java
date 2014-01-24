@@ -58,14 +58,14 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
 
     /** Creates MockPlugin */
     public MockPlugin() {
-        LOGGER.info("Creating MockPlugin");
+        LOGGER.trace("Creating MockPlugin");
         finishedFuture = SettableFuture.create();
-        LOGGER.info("mockPlugin: "+System.identityHashCode(this));
+        LOGGER.debug("mockPlugin: "+System.identityHashCode(this));
     }
     
     @Override
     public void onSwitchConnected(ConnectionAdapter connection) {
-        LOGGER.info("onSwitchConnected: " + connection);
+        LOGGER.debug("onSwitchConnected: " + connection);
         this.adapter = connection;
         connection.setMessageListener(this);
         connection.setSystemListener(this);
@@ -147,7 +147,7 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
             if (rpcResult.isSuccessful()) {
                 byte[] byteArray = rpcResult.getResult().getDatapathId()
                         .toByteArray();
-                LOGGER.info("DatapathId: " + Arrays.toString(byteArray));
+                LOGGER.debug("DatapathId: " + Arrays.toString(byteArray));
             } else {
                 RpcError rpcError = rpcResult.getErrors().iterator().next();
                 LOGGER.warn("rpcResult failed: "
@@ -156,18 +156,18 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             LOGGER.error(e.getMessage(), e);
         }
-        LOGGER.info("After FeaturesReply message");
+        LOGGER.debug("After FeaturesReply message");
     }
 
     protected void shutdown() {
         LOGGER.debug("adapter: "+adapter);
         try {
-            LOGGER.info("mockPlugin: "+System.identityHashCode(this));
+            LOGGER.debug("mockPlugin: "+System.identityHashCode(this));
             Thread.sleep(500);
             if (adapter != null) {
                 Future<Boolean> disconnect = adapter.disconnect();
                 disconnect.get();
-                LOGGER.info("Disconnected");
+                LOGGER.debug("Disconnected");
             } 
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);

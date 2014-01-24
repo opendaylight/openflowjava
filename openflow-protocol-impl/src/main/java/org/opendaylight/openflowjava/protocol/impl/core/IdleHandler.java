@@ -42,7 +42,7 @@ public class IdleHandler extends IdleStateHandler{
     protected void channelIdle(ChannelHandlerContext ctx, IdleStateEvent evt)
             throws Exception {
         if ((evt.state() == IdleState.READER_IDLE) && (evt.isFirst())) {
-            LOGGER.info("Switch idle");
+            LOGGER.debug("Switch idle");
             SwitchIdleEventBuilder builder = new SwitchIdleEventBuilder();
             builder.setInfo("Switch idle");
             ctx.fireChannelRead(builder.build());

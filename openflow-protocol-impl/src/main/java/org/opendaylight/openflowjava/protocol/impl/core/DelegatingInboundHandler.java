@@ -35,20 +35,19 @@ public class DelegatingInboundHandler extends ChannelInboundHandlerAdapter {
      * @param connectionAdapter reference for adapter communicating with upper layers outside library
      */
     public DelegatingInboundHandler(MessageConsumer connectionAdapter) {
-        LOGGER.debug("Creating DelegatingInboundHandler");
+        LOGGER.trace("Creating DelegatingInboundHandler");
         consumer = connectionAdapter;
     }
     
     @Override
     public void channelRead(ChannelHandlerContext ctx, final Object msg)
             throws Exception {
-        LOGGER.debug("Reading");
         consumer.consume((DataObject) msg);
     }
     
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        LOGGER.info("Channel inactive");
+        LOGGER.debug("Channel inactive");
         if (!inactiveMessageSent) {
             DisconnectEventBuilder builder = new DisconnectEventBuilder();
             builder.setInfo("Channel inactive");
@@ -59,7 +58,7 @@ public class DelegatingInboundHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-        LOGGER.info("Channel unregistered");
+        LOGGER.debug("Channel unregistered");
         if (!inactiveMessageSent) {
             DisconnectEventBuilder builder = new DisconnectEventBuilder();
             builder.setInfo("Channel unregistered");

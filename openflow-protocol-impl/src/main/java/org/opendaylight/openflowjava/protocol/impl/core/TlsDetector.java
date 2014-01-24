@@ -43,7 +43,7 @@ public class TlsDetector extends ByteToMessageDecoder {
      * Constructor of class
      */
     public TlsDetector() {
-        LOGGER.debug("Creating TLS Detector");
+        LOGGER.trace("Creating TLS Detector");
         detectSsl = true;
     }
 
@@ -56,7 +56,7 @@ public class TlsDetector extends ByteToMessageDecoder {
 
     private boolean isSsl(ByteBuf bb) {
         if (detectSsl) {
-            LOGGER.info("Testing connection for TLS");
+            LOGGER.trace("Testing connection for TLS");
             return SslHandler.isEncrypted(bb);
         }
         return false;
@@ -64,7 +64,7 @@ public class TlsDetector extends ByteToMessageDecoder {
 
     private static void enableSsl(ChannelHandlerContext ctx) {
         if (ctx.pipeline().get(COMPONENT_NAMES.SSL_HANDLER.name()) == null) {
-            LOGGER.info("Engaging TLS handler");
+            LOGGER.trace("Engaging TLS handler");
             ChannelPipeline p = ctx.channel().pipeline();
             SSLEngine engine = SslContextFactory.getServerContext()
                     .createSSLEngine();
@@ -84,14 +84,14 @@ public class TlsDetector extends ByteToMessageDecoder {
             LOGGER.debug(ByteBufUtils.byteBufToHexString(bb));
         }
         if (isSsl(bb)) {
-            LOGGER.info("Connection is encrypted");
+            LOGGER.debug("Connection is encrypted");
             enableSsl(ctx);
         } else {
-            LOGGER.info("Connection is not encrypted");
+            LOGGER.debug("Connection is not encrypted");
         }
         
         if (connectionFacade != null) {
-            LOGGER.debug("Firing onConnectionReady notification");
+            LOGGER.trace("Firing onConnectionReady notification");
             connectionFacade.fireConnectionReadyNotification();
         }
         

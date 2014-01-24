@@ -34,7 +34,7 @@ public class SimpleClientFramer extends ByteToMessageDecoder {
      * Constructor of class.
      */
     public SimpleClientFramer() {
-        LOGGER.debug("Creating OFFrameDecoder");
+        LOGGER.trace("Creating OFFrameDecoder");
     }
 
     @Override
@@ -56,7 +56,7 @@ public class SimpleClientFramer extends ByteToMessageDecoder {
                     bb.readableBytes() + " < " + length);
             return;
         }
-        LOGGER.info("OF Protocol message received, type:{}", bb.getByte(1));
+        LOGGER.debug("OF Protocol message received, type:{}", bb.getByte(1));
 
         ByteBuf messageBuffer = bb.slice(bb.readerIndex(), length);
         list.add(messageBuffer);

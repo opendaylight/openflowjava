@@ -18,8 +18,6 @@ import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.HelloElementType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.hello.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Translates Hello messages
@@ -34,11 +32,7 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
     /** Size of hello element header (in bytes) */
     public static final byte HELLO_ELEMENT_HEADER_SIZE = 4;
     private static HelloInputMessageFactory instance;
-    
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(HelloInputMessageFactory.class);
-    
-    
+
     private HelloInputMessageFactory() {
         // do nothing, just singleton
     }
@@ -60,7 +54,6 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
         encodeElementsList(message, out);
         int endWriterIndex = out.writerIndex();
         int writtenBytesDiff = computeLength(message) - (endWriterIndex - startWriterIndex);
-        LOGGER.debug("writtenbytes: " + writtenBytesDiff);
         ByteBufUtils.padBuffer(writtenBytesDiff, out);
     }
 
@@ -97,10 +90,7 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
                     short bitmapLength = computeVersionBitmapLength(currElement);
                     output.writeShort(bitmapLength);
                     versionBitmap = ByteBufUtils.fillBitMaskFromList(currElement.getVersionBitmap());
-                    LOGGER.debug("vbs: " + versionBitmap.length);
-                    LOGGER.debug("Version bitmap (below):");
                     for (int i = 0; i < versionBitmap.length; i++) {
-                        LOGGER.debug(Integer.toBinaryString(versionBitmap[i]));
                         output.writeInt(versionBitmap[i]);
                     }
                     int padding = bitmapLength - versionBitmap.length * 4 - HELLO_ELEMENT_HEADER_SIZE;
