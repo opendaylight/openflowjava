@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.openflowjava</groupId>
     <artifactId>openflow-protocol-parent</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <packaging>pom</packaging>
     <modules>
         <module>openflow-protocol-api</module>
@@ -16,7 +15,8 @@
         <connection>scm:git:ssh://git.opendaylight.org:29418/openflowjava.git</connection>
         <developerConnection>scm:git:ssh://git.opendaylight.org:29418/openflowjava.git</developerConnection>
         <url>https://wiki.opendaylight.org/view/Openflow_Protocol_Library:Main</url>
-    </scm>
+      <tag>master-tagforprepareonly-openflowjava-bulk-release-prepare-only-5</tag>
+  </scm>
 
     <properties>
         <sonar.host.url>https://sonar.opendaylight.org/</sonar.host.url>
