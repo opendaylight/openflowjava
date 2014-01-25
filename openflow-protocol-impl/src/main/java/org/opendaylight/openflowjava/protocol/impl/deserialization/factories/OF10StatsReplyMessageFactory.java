@@ -195,7 +195,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         MultipartReplyTableCaseBuilder caseBuilder = new MultipartReplyTableCaseBuilder();
         MultipartReplyTableBuilder builder = new MultipartReplyTableBuilder();
         List<TableStats> tableStatsList = new ArrayList<>();
-        while (input.readableBytes() > 0) {
+        while (input.readableBytes() >= 64) {
             TableStatsBuilder tableStatsBuilder = new TableStatsBuilder();
             tableStatsBuilder.setTableId(input.readUnsignedByte());
             input.skipBytes(PADDING_IN_TABLE_HEADER);
@@ -214,6 +214,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
             tableStatsBuilder.setMatchedCount(new BigInteger(1, matchedCount));
             tableStatsList.add(tableStatsBuilder.build());
         }
+        input.skipBytes(input.readableBytes());
         builder.setTableStats(tableStatsList);
         caseBuilder.setMultipartReplyTable(builder.build());
         return caseBuilder.build();
