@@ -69,6 +69,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
     private static final byte PADDING_IN_PORT_STATS_HEADER = 6;
     private static final byte PADDING_IN_QUEUE_HEADER = 2;
     private static final byte LENGTH_OF_FLOW_STATS = 88;
+    private static final int TABLE_STATS_LENGTH = 64;
     
     private static OF10StatsReplyMessageFactory instance;
     
@@ -195,7 +196,8 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         MultipartReplyTableCaseBuilder caseBuilder = new MultipartReplyTableCaseBuilder();
         MultipartReplyTableBuilder builder = new MultipartReplyTableBuilder();
         List<TableStats> tableStatsList = new ArrayList<>();
-        while (input.readableBytes() > 0) {
+        // TODO - replace ">= TABLE_STATS_LENGTH" with "> 0" after fix in OVS switch
+        while (input.readableBytes() >= TABLE_STATS_LENGTH) {
             TableStatsBuilder tableStatsBuilder = new TableStatsBuilder();
             tableStatsBuilder.setTableId(input.readUnsignedByte());
             input.skipBytes(PADDING_IN_TABLE_HEADER);
@@ -214,6 +216,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
             tableStatsBuilder.setMatchedCount(new BigInteger(1, matchedCount));
             tableStatsList.add(tableStatsBuilder.build());
         }
+        input.skipBytes(input.readableBytes());
         builder.setTableStats(tableStatsList);
         caseBuilder.setMultipartReplyTable(builder.build());
         return caseBuilder.build();
