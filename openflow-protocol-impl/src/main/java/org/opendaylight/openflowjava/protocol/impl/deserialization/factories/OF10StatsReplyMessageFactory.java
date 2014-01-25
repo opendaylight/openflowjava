@@ -59,6 +59,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartReplyMessage> {
 
+    /**
+     * 
+     */
     private static final int DESC_STR_LEN = 256;
     private static final int SERIAL_NUM_LEN = 32;
     private static final byte PADDING_IN_FLOW_STATS_HEADER = 1;
@@ -69,6 +72,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
     private static final byte PADDING_IN_PORT_STATS_HEADER = 6;
     private static final byte PADDING_IN_QUEUE_HEADER = 2;
     private static final byte LENGTH_OF_FLOW_STATS = 88;
+    private static final int TABLE_STATS_LENGTH = 64;
     
     private static OF10StatsReplyMessageFactory instance;
     
@@ -195,7 +199,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         MultipartReplyTableCaseBuilder caseBuilder = new MultipartReplyTableCaseBuilder();
         MultipartReplyTableBuilder builder = new MultipartReplyTableBuilder();
         List<TableStats> tableStatsList = new ArrayList<>();
-        while (input.readableBytes() > 0) {
+        while (input.readableBytes() >= TABLE_STATS_LENGTH) {
             TableStatsBuilder tableStatsBuilder = new TableStatsBuilder();
             tableStatsBuilder.setTableId(input.readUnsignedByte());
             input.skipBytes(PADDING_IN_TABLE_HEADER);
@@ -214,6 +218,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
             tableStatsBuilder.setMatchedCount(new BigInteger(1, matchedCount));
             tableStatsList.add(tableStatsBuilder.build());
         }
+        input.skipBytes(input.readableBytes());
         builder.setTableStats(tableStatsList);
         caseBuilder.setMultipartReplyTable(builder.build());
         return caseBuilder.build();
