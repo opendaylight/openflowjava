@@ -54,7 +54,7 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
             LOGGER.warn("Translated POJO is null");
             return;
         }
-        msg.getMessageBuffer().release();
+        msg.getMessageBuffer().discardReadBytes();
         out.add(dataObject);
     }
 }
