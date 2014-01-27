@@ -3,14 +3,14 @@
     <parent>
         <groupId>org.opendaylight.openflowjava</groupId>
         <artifactId>openflow-protocol-parent</artifactId>
-        <version>0.2</version>
+        <version>0.3-SNAPSHOT</version>
     </parent>
     <artifactId>openflow-protocol-it</artifactId>
     <packaging>bundle</packaging>
     <name>Openflow Protocol Integration Test</name>
     <scm>
         <url>https://wiki.opendaylight.org/view/Openflow_Protocol_Library:Main</url>
-      <tag>openflow-protocol-parent-0.2</tag>
+      <tag>HEAD</tag>
   </scm>
     
     <dependencies>
