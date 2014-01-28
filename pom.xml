@@ -42,17 +42,11 @@
     </properties>
 
     <pluginRepositories>
+        <!-- Opendaylight public group -->
         <pluginRepository>
             <id>odlPublic</id>
             <name>odlPublic</name>
             <url>${nexusproxy}/groups/public/</url>
-            <snapshots>
-              <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-       <pluginRepository>
-            <id>opendaylight-release</id>
-            <url>${nexusproxy}/repositories/opendaylight.release/</url>
             <snapshots>
               <enabled>false</enabled>
             </snapshots>
@@ -74,15 +68,6 @@
             <id>odlPublic</id>
             <name>odlPublic</name>
             <url>${nexusproxy}/groups/public/</url>
-            <snapshots>
-              <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <!-- OpenDayLight Released artifact -->
-        <repository>
-            <id>opendaylight-release</id>
-            <name>opendaylight-release</name>
-            <url>${nexusproxy}/repositories/opendaylight.release/</url>
             <snapshots>
               <enabled>false</enabled>
             </snapshots>
