@@ -11,112 +11,132 @@
     prefix "oft";
 
     revision "2013-07-31" {
-        //description "OpenFlow 1.3 - common types model";
+        description "OpenFlow 1.3 - common types model";
     }
 
     typedef port-number {
+        description "Port numbering. Ports are numbered starting from 1 -
+         supports special / reserved values (in OF v1.3)";
         type uint32;
     }
     
     typedef port-number-values {
+        description "Reserved OpenFlow Port (fake output \"ports\") (OF v1.3).";
         type enumeration {
             enum MAX {
-                value -256; // 0xffffff00 
+                description "Maximum number of physical and logical switch ports.";
+                value -256; // 0xffffff00
             }
             enum IN_PORT {
+                description "Send the packet out the input port. This
+                            reserved port must be explicitly used
+                            in order to send back out of the input
+                            port.";
                 value -8; // 0xfffffff8
             }
             enum TABLE {
+                description "Submit the packet to the first flow table
+                            NB: This destination port can only be
+                            used in packet-out messages.";
                 value -7; // 0xfffffff9 
             }
             enum NORMAL {
+                description "Process with normal L2/L3 switching.";
                 value -6; // 0xfffffffa 
             }
             enum FLOOD {
+                description "All physical ports in VLAN, except input
+                            port and those blocked or link down.";
                 value -5; // 0xfffffffb 
             }
             enum ALL {
+                description "All physical ports except input port.";
                 value -4; // 0xfffffffc 
             }
             enum CONTROLLER {
+                description "Send to controller.";
                 value -3; // 0xfffffffd
             }
             enum LOCAL {
+                description "Local openflow \"port\".";
                 value -2; // 0xfffffffe
             }
             enum ANY {
+                description "Wildcard port used only for flow mod
+                            (delete) and flow stats requests. Selects 
+                            all flows regardless of output port
+                            (including flows with no output port).";
                 value -1; // 0xffffffff
             }
         }
     }
 
     typedef port-features {
-        ////description "Features of ports available in datapath.";
-        //reference "ofp_port_features";
+        description "Features of ports available in datapath.";
         type bits {
             bit _10mb_hd { 
                 position 0;
-                //description "10 Mb half-duplex rate support.";
+                description "10 Mb half-duplex rate support.";
             }
             bit _10mb-fd { 
                 position 1;
-                //description "10 Mb full-duplex rate support.";
+                description "10 Mb full-duplex rate support.";
             }
             bit _100mb-hd { 
                 position 2;
-                //description "100 Mb half-duplex rate support.";
+                description "100 Mb half-duplex rate support.";
             }
             bit _100mb-fd { 
                 position 3;
-                //description "100 Mb full-duplex rate support.";
+                description "100 Mb full-duplex rate support.";
             }
             bit _1gb-hd { 
                 position 4;
-                //description "1 Gb half-duplex rate support.";
+                description "1 Gb half-duplex rate support.";
             }
             bit _1gb-fd { 
                 position 5;
-                //description "1 Gb full-duplex rate support.";
+                description "1 Gb full-duplex rate support.";
             }
             bit _10gb-fd { 
                 position 6;
-                //description "10 Gb full-duplex rate support.";
+                description "10 Gb full-duplex rate support.";
             }
             bit _40gb-fd { 
                 position 7;
-                //description "40 Gb full-duplex rate support.";
+                description "40 Gb full-duplex rate support.";
             }
             bit _100gb-fd { 
                 position 8;
-                //description "100 Gb full-duplex rate support.";
+                description "100 Gb full-duplex rate support.";
             }
             bit _1tb-fd { 
                 position 9;
-                //description "1 Tb full-duplex rate support.";
+                description "1 Tb full-duplex rate support.";
             }
             bit other { 
                 position 10;
-                //description "Other rate, not in the list.";
+                description "Other rate, not in the list.";
             }
             bit copper { 
                 position 11;
-                //description "Copper medium.";
+                description "Copper medium.";
             }
             bit fiber { 
                 position 12;
-                //description "Fiber medium.";
+                description "Fiber medium.";
             }
             bit autoneg { 
                 position 13;
-                //description "Auto-negotiation.";
+                description "Auto-negotiation.";
             }
             bit pause { 
                 position 14;
-                //description "Pause.";
+                description "Pause.";
             }
             bit pause-asym { 
                 position 15;
-                //description "Asymmetric pause.";
+                description "Asymmetric pause.";
             }
         }
     }
@@ -179,9 +199,11 @@
     }
 
     identity instruction {
+        description "Base identity for instruction types";
     }
 
     identity action {
+        description "Base identity for action types";
     }
 
     typedef metadata {
@@ -685,6 +707,7 @@
     }
     
     typedef capabilities {
+        description "Capabilities supported by the datapath.";
         type bits {
             bit OFPC_FLOW_STATS {
                 position 0;
@@ -718,7 +741,7 @@
     }
 
     typedef switch-config-flag {
-        /* Handling of IP fragments. */
+        description " Handling of IP fragments. ";
         type enumeration {
             enum FRAG_NORMAL {
                 value 0; 
@@ -739,7 +762,7 @@
     }
 
     typedef flow-removed-reason {
-        /* flow removed */
+        description "Why was this flow removed?";
         type enumeration {
             enum OFPRR_IDLE_TIMEOUT {
                 value 0;
@@ -761,7 +784,7 @@
     }
 
     typedef port-reason {
-        /* port status */
+        description "What changed about the physical port";
         type enumeration {
             enum OFPPR_ADD {
                 value 0;
@@ -781,9 +804,9 @@
     typedef flow-mod-command {
         /* ofp_flow_mod_command */
         type enumeration {
-            enum OFPFC_ADD {      
-                value 0;      
-                description "New flow.";    
+            enum OFPFC_ADD {
+                value 0;
+                description "New flow.";
             }
             enum OFPFC_MODIFY {
                 value 1;
@@ -809,23 +832,23 @@
         type bits {
             bit OFPFF_SEND_FLOW_REM {
                 position 0;
-                /* Send flow removed message when flow expires or is deleted. */
+                description "Send flow removed message when flow expires or is deleted.";
             }
             bit OFPFF_CHECK_OVERLAP {
                 position 1;
-                /* Check for overlapping entries first. */
+                description "Check for overlapping entries first.";
             }
             bit OFPFF_RESET_COUNTS {
                 position 2;
-                /* Reset flow packet and byte counts. */
+                description "Reset flow packet and byte counts.";
             }
             bit OFPFF_NO_PKT_COUNTS {
                 position 3;
-                /* Don't keep track of packet count. */
+                description "Don't keep track of packet count.";
             }
             bit OFPFF_NO_BYT_COUNTS {
                 position 4;
-                /* Don't keep track of byte count. */
+                description "Don't keep track of byte count.";
             }
         }
     }
@@ -833,9 +856,9 @@
     typedef group-mod-command {
         /* ofp_group_mod_command */
         type enumeration {
-            enum OFPGC_ADD {            
-              value 0;            
-              description "New group.";            
+            enum OFPGC_ADD {
+              value 0;
+              description "New group.";
             }
             enum OFPGC_MODIFY {
               value 1;
@@ -845,16 +868,15 @@
               value 2;
               description "Delete all matching groups.";
             }
-            
         }
     }
 
     typedef group-type {
         /* ofp_group_type */
         type enumeration {
-            enum OFPGT_ALL {            
-              value 0;            
-              description "All (multicast/broadcast) group.";            
+            enum OFPGT_ALL {
+              value 0;
+              description "All (multicast/broadcast) group.";
             }
             enum OFPGT_SELECT {
               value 1;
@@ -870,13 +892,13 @@
             }
         }
     }
-    
+
     typedef table-values {
         /* ofp_table */
         type enumeration {
-            enum OFPTT_MAX {            
-              value 254; // 0xfe             
-              description "Last usable table number.";            
+            enum OFPTT_MAX {
+              value 254; // 0xfe
+              description "Last usable table number.";
             }
             enum OFPTT_ALL {
               value 255; // 0xff
@@ -886,42 +908,37 @@
         }
     }
 
-	typedef group {
-		/* ofp_group - Group numbering. Groups can use any number up to OFPG_MAX.*/
-		type enumeration {
-			enum OFPG_MAX {
-				value -256; //0xffffff00
-				description "Last usable group number";
-			}
-			
-			/* Fake groups. */
-			enum OFPG_ALL {
-				value -4; //0xfffffffc
-				description "Represents all groups for group delete commands";
-			}
-			enum OFPG_ANY {
-				value -1; //0xffffffff
-				description "Wildcard group used only for flow stats requests. 
-								Selects all flows regardless of group (including flows with no group)";
-				
-			}
-		}
-		
-	}
-	
+    typedef group {
+        /* ofp_group - Group numbering. Groups can use any number up to OFPG_MAX.*/
+        type enumeration {
+            enum OFPG_MAX {
+                value -256; //0xffffff00
+                description "Last usable group number";
+            }
+            /* Fake groups. */
+            enum OFPG_ALL {
+                value -4; //0xfffffffc
+                description "Represents all groups for group delete commands";
+            }
+            enum OFPG_ANY {
+                value -1; //0xffffffff
+                description "Wildcard group used only for flow stats requests. 
+                            Selects all flows regardless of group (including flows with no group)";
+            }
+        }
+    }
+
     typedef multipart-request-flags {
-        description
-            "enum ofp_multipart_request_flags ";
+        description "enum ofp_multipart_request_flags ";
         type bits {
             bit OFPMPF_REQ_MORE {
-                //description "More requests to follow.";
+                description "More requests to follow.";
                 position 0;
             }
         }
     }
 
     typedef multipart-type {
-        /* ofp_multipart_type */
         type enumeration {
             enum OFPMP_DESC {
               value 0;
@@ -1224,30 +1241,28 @@
         }
     }
 
-	typedef meter {
-		/* ofp_meter - Meter numbering. Flow meters can use any number up to OFPM_MAX*/
-		type enumeration {
-			enum OFPM_MAX {
-				value -65536; //0xffff0000
-				description "Last usable meter number";
-			}
-			
-			/* Virtual meters. */
-			enum OFPM_SLOWPATH {
-				value -3; //0xfffffffd
-				description "Meter for slow datapath";
-			}
-			enum OFPM_CONTROLLER {
-				value -2; //0xfffffffe
-				description "Meter for controller connection";
-			}
-			enum OFPM_ALL {
-				value -1; //0xffffffff
-				description "Represents all meters for stat requests commands";
-			}
-		}
-		
-	}
+    typedef meter {
+        description "Meter numbering. Flow meters can use any number up to OFPM_MAX";
+        type enumeration {
+            enum OFPM_MAX {
+                value -65536; //0xffff0000
+                description "Last usable meter number";
+            }
+            /* Virtual meters. */
+            enum OFPM_SLOWPATH {
+                value -3; //0xfffffffd
+                description "Meter for slow datapath";
+            }
+            enum OFPM_CONTROLLER {
+                value -2; //0xfffffffe
+                description "Meter for controller connection";
+            }
+            enum OFPM_ALL {
+                value -1; //0xffffffff
+                description "Represents all meters for stat requests commands";
+            }
+        }
+    }
 
     typedef table-config {
         /* ofp_table_config */
@@ -1332,19 +1347,19 @@
         /* ofp_group_type */
         type bits {
             bit OFPGT_ALL {
-                /* All (multicast/broadcast) group. */
+                description "All (multicast/broadcast) group.";
                 position 0;
             }
             bit OFPGT_SELECT {
-                /* Select group. */
+                description "Select group.";
                 position 1;
             }
             bit OFPGT_INDIRECT {
-                /* Indirect group. */
+                description "Indirect group.";
                 position 2;
             }
             bit OFPGT_FF {
-                /* Fast failover group. */
+                description "Fast failover group.";
                 position 3;
             }
         }
@@ -1354,25 +1369,26 @@
         /* ofp_group_capabilities */
         type bits {
             bit OFPGFC_SELECT_WEIGHT {
-                /* Support weight for select groups */
+                description "Support weight for select groups";
                 position 0;
             }
             bit OFPGFC_SELECT_LIVENESS {
-                /* Support liveness for select groups */
+                description "Support liveness for select groups";
                 position 1;
             }
             bit OFPGFC_CHAINING {
-                /* Support chaining groups */
+                description "Support chaining group";
                 position 2;
             }
             bit OFPGFC_CHAINING_CHECKS {
-                /* Check chaining for loops and delete */
+                description "Check chaining for loops and delete";
                 position 3;
             }
         }
     }
     
     typedef ipv6-exthdr-flags {
+        description "Bit definitions for IPv6 Extension Header pseudo-field.";
         type bits {
             bit nonext {
                 description "<No next header> encountered.";
@@ -1572,32 +1588,47 @@
     }
     
     typedef port-number-values-v10 {
+        description "Port numbering. Physical ports are numbered starting from 1.";
         type enumeration {
             enum MAX {
                 value 65280; // 0xff00 
             }
             enum IN_PORT {
+                description "Send the packet out the input port. This
+                            virtual port must be explicitly used
+                            in order to send back out of the input
+                            port.";
                 value 65528; // 0xfff8
             }
             enum TABLE {
+                description "Perform actions in flow table.
+                            NB: This can only be the destination
+                            port for packet-out messages.";
                 value 65529; // 0xfff9 
             }
             enum NORMAL {
+                description "Process with normal L2/L3 switching.";
                 value 65530; // 0xfffa 
             }
             enum FLOOD {
+                description "All physical ports except input port and
+                            those disabled by STP.";
                 value 65531; // 0xfffb 
             }
             enum ALL {
+                description "All physical ports except input port.";
                 value 65532; // 0xfffc 
             }
             enum CONTROLLER {
+                description "Send to controller.";
                 value 65533; // 0xfffd
             }
             enum LOCAL {
+                description "Local openflow \"port\".";
                 value 65534; // 0xfffe
             }
             enum NONE {
+                description "Not associated with a physical port.";
                 value 65535; // 0xffff
             }
         }
@@ -1610,122 +1641,121 @@
             to configure the port's behavior.";
         type bits {
             bit port-down { 
-                //description " Port is administratively down.";
+                description " Port is administratively down.";
                 position 0;
             }
             bit no-stp {
-                //description" Disable 802.1D spanning tree on port.";
+                description" Disable 802.1D spanning tree on port.";
                 position 1;
             }
             bit no-recv { 
-                //description " Drop all packets received by port.";
+                description " Drop all packets received by port.";
                 position 2;
             }
             bit no-recv-stp { 
-                //description " Drop received 802.1D STP packets.";
+                description " Drop received 802.1D STP packets.";
                 position 3;
             }
             bit no-flood { 
-                //description " Do not include this port when flooding.";
+                description " Do not include this port when flooding.";
                 position 4;
             }
             bit no-fwd { 
-                //description " Drop packets forwarded to port.";
+                description " Drop packets forwarded to port.";
                 position 5;
             }
             bit no-packet-in { 
-                //description "Do not send packet-in msgs for port.";
+                description "Do not send packet-in msgs for port.";
                 position 6;
             }
         }
     }
     
     typedef port-state-v10 {
-        description 
-            "Current state of the physical port. These are not configurable from
-            the controller.";
+        description "Current state of the physical port. These are not configurable from
+                    the controller.";
         type bits {
             bit link_down {
-                //description "No physical link present.";
+                description "No physical link present.";
                 position 0;
             }
             bit blocked {
-                //description "Port is blocked";
+                description "Port is blocked";
                 position 1;
             }
             bit live {
-                //description "Live for Fast Failover Group.";
+                description "Live for Fast Failover Group.";
                 position 2;
             }
             bit stp_listen {
-                //description "Not learning or relaying frames.";
+                description "Not learning or relaying frames.";
             }
             bit stp_learn {
-                //description "Learning but not relaying frames.";
+                description "Learning but not relaying frames.";
             }
             bit stp_forward {
-                //description "Learning and relaying frames.";
+                description "Learning and relaying frames.";
             }
             bit stp_block {
-                //description "Not part of spanning tree.";
+                description "Not part of spanning tree.";
             }
             bit stp_mask {
-                //description "Bit mask for OFPPS_STP_* values.";
+                description "Bit mask for OFPPS_STP_* values.";
             }
         }
     }
     
     typedef port-features-v10 {
-        ////description "Features of ports available in datapath.";
-        //reference "ofp_port_features";
+        description "Features of ports available in datapath.";
+        reference "ofp_port_features";
         type bits {
             bit _10mb-hd { 
                 position 0;
-                //description "10 Mb half-duplex rate support.";
+                description "10 Mb half-duplex rate support.";
             }
             bit _10mb-fd { 
                 position 1;
-                //description "10 Mb full-duplex rate support.";
+                description "10 Mb full-duplex rate support.";
             }
             bit _100mb-hd { 
                 position 2;
-                //description "100 Mb half-duplex rate support.";
+                description "100 Mb half-duplex rate support.";
             }
             bit _100mb-fd { 
                 position 3;
-                //description "100 Mb full-duplex rate support.";
+                description "100 Mb full-duplex rate support.";
             }
             bit _1gb-hd { 
                 position 4;
-                //description "1 Gb half-duplex rate support.";
+                description "1 Gb half-duplex rate support.";
             }
             bit _1gb-fd { 
                 position 5;
-                //description "1 Gb full-duplex rate support.";
+                description "1 Gb full-duplex rate support.";
             }
             bit _10gb-fd { 
                 position 6;
-                //description "10 Gb full-duplex rate support.";
+                description "10 Gb full-duplex rate support.";
             }
             bit copper { 
                 position 7;
-                //description "Copper medium.";
+                description "Copper medium.";
             }
             bit fiber { 
                 position 8;
-                //description "Fiber medium.";
+                description "Fiber medium.";
             }
             bit autoneg { 
                 position 9;
-                //description "Auto-negotiation.";
+                description "Auto-negotiation.";
             }
             bit pause { 
                 position 10;
-                //description "Pause.";
+                description "Pause.";
             }
             bit pause-asym { 
                 position 11;
-                //description "Asymmetric pause.";
+                description "Asymmetric pause.";
             }
         }
     }
@@ -1734,35 +1764,35 @@
         type bits {
             bit OFPC_FLOW_STATS {
                 position 0;
-                /* Flow statistics. */
+                description "Flow statistics.";
             } 
             bit OFPC_TABLE_STATS {
                 position 1;
-                /* Table statistics. */
+                description "Table statistics.";
             }
             bit OFPC_PORT_STATS {
                 position 2;
-                /* Port statistics. */
+                description "Port statistics.";
             }
             bit OFPC_STP {
                 position 3;
-                /* 802.1d spanning tree. */
+                description "802.1d spanning tree.";
             }
             bit OFPC_RESERVED {
                 position 4;
-                /* Reserved, must be zero. */
+                description "Reserved, must be zero.";
             }
             bit OFPC_IP_REASM {
                 position 5;
-                /* Can reassemble IP fragments. */
+                description "Can reassemble IP fragments.";
             }
             bit OFPC_QUEUE_STATS {
                 position 6;
-                /* Queue statistics. */
+                description "Queue statistics.";
             }
             bit OFPC_ARP_MATCH_IP {
                 position 8;
-                /* Match IP addresses in ARP pkts. */
+                description "Match IP addresses in ARP pkts.";
             }
         }
     }
@@ -1772,15 +1802,15 @@
         type bits {
             bit OFPFF_SEND_FLOW_REM {
                 position 0;
-                /* Send flow removed message when flow expires or is deleted. */
+                description "Send flow removed message when flow expires or is deleted.";
             }
             bit OFPFF_CHECK_OVERLAP {
                 position 1;
-                /* Check for overlapping entries first. */
+                description "Check for overlapping entries first.";
             }
             bit OFPFF_EMERG {
                 position 2;
-                /* Reset flow packet and byte counts. */
+                description "Reset flow packet and byte counts.";
             }
         }
     }
@@ -1790,90 +1820,101 @@
         type bits {
             bit OFPAT_OUTPUT {
                 position 0;
-                /* Output to switch port. */
+                description "Output to switch port.";
             }
             bit OFPAT_SET_VLAN_VID {
                 position 1;
-                /* Set the 802.1q VLAN id. */
+                description "Set the 802.1q VLAN id.";
             }
             bit OFPAT_SET_VLAN_PCP {
                 position 2;
-                /* Set the 802.1q priority. */
+                description "Set the 802.1q priority.";
             }
             bit OFPAT_STRIP_VLAN {
                 position 3;
-                /* Strip the 802.1q header. */
+                description "Strip the 802.1q header.";
             }
             bit OFPAT_SET_DL_SRC {
                 position 4;
-                /* Ethernet source address. */
+                description "Ethernet source address.";
             }
             bit OFPAT_SET_DL_DST {
                 position 5;
-                /* Ethernet destination address. */
+                description "Ethernet destination address.";
             }
             bit OFPAT_SET_NW_SRC {
                 position 6;
-                /* IP source address. */
+                description "IP source address.";
             }
             bit OFPAT_SET_NW_DST {
                 position 7;
-                /* IP destination address. */
+                description "IP destination address.";
             }
             bit OFPAT_SET_NW_TOS {
                 position 8;
-                /* IP ToS (DSCP field, 6 bits). */
+                description "IP ToS (DSCP field, 6 bits).";
             }
             bit OFPAT_SET_TP_SRC {
                 position 9;
-                /* TCP/UDP source port. */
+                description "TCP/UDP source port.";
             }
             bit OFPAT_SET_TP_DST {
                 position 10;
-                /* TCP/UDP destination port. */
+                description "TCP/UDP destination port.";
             }
             bit OFPAT_ENQUEUE {
                 position 11;
-                /* Output to queue. */
+                description "Output to queue.";
             }
             bit OFPAT_VENDOR {
                 position 12;
-                /* Experimenter in later versions */
+                description "Experimenter in later versions.";
             }
         }
     }
     
     typedef flow-wildcards-v10 {
         /* ofp_flow_wildcards */
+        description "Flow wildcards - NW_SRC_MASK & NW_DST_MASK are handled separately";
         type bits {
             bit IN_PORT {
+                description "Switch input port.";
                 position 0;
             }
             bit DL_VLAN {
+                description "VLAN id.";
                 position 1;
             }
             bit DL_SRC {
+                description "Ethernet source address.";
                 position 2;
             }
             bit DL_DST {
+                description "Ethernet destination address.";
                 position 3;
             }
             bit DL_TYPE {
+                description "Ethernet frame type.";
                 position 4;
             }
             bit NW_PROTO {
+                description "IP protocol.";
                 position 5;
             }
             bit TP_SRC {
+                description "TCP/UDP source port.";
                 position 6;
             }
             bit TP_DST {
+                description "TCP/UDP destination port.";
                 position 7;
             }
             bit DL_VLAN_PCP {
+                description "VLAN priority.";
                 position 20;
             }
             bit NW_TOS {
+                description "IP ToS (DSCP field, 6 bits).";
                 position 21;
             }
         }
