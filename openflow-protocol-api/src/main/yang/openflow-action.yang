@@ -17,7 +17,7 @@
     }
 
     identity output {
-        description " Output to switch port. ";
+        description " Output to switch port. (both OF v1.0 and v1.3)";
         base oft:action;
     }
     identity copy_ttl_out {
@@ -104,47 +104,47 @@
     
     // OF1.0 structures
     identity set_vlan_vid {
-        description "";
+        description "Set the 802.1q VLAN id (OF v1.0).";
         base oft:action;
     }
     identity set_vlan_pcp {
-        description "";
+        description "Set the 802.1q priority (OF v1.0).";
         base oft:action;
     }
     identity strip_vlan {
-        description "";
+        description "Strip the 802.1q header (OF v1.0).";
         base oft:action;
     }
     identity set_dl_src {
-        description "";
+        description "Ethernet source address (OF v1.0).";
         base oft:action;
     }
     identity set_dl_dst {
-        description "";
+        description "Ethernet destination address (OF v1.0).";
         base oft:action;
     }
     identity set_nw_src {
-        description "";
+        description "IP source address (OF v1.0).";
         base oft:action;
     }
     identity set_nw_dst {
-        description "";
+        description "IP destination address (OF v1.0).";
         base oft:action;
     }
     identity set_nw_tos {
-        description "";
+        description "IP ToS (DSCP field, 6 bits) (OF v1.0).";
         base oft:action;
     }
     identity set_tp_src {
-        description "";
+        description "TCP/UDP source port (OF v1.0).";
         base oft:action;
     }
     identity set_tp_dst {
-        description "";
+        description "TCP/UDP destination port (OF v1.0).";
         base oft:action;
     }
     identity enqueue {
-        description "";
+        description "Output to queue (OF v1.0).";
         base oft:action;
     }
 

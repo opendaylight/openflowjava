@@ -13,15 +13,15 @@
     import openflow-types { prefix oft; }
 
     revision "2013-07-31" {
-       // description "OpenFlow 1.3 - instruction model";
+        description "OpenFlow 1.3 - instruction model";
     }
 
     identity goto_table {
-        //description " Setup the next table in the lookup pipeline";
+        description " Setup the next table in the lookup pipeline";
         base oft:instruction;
     }
     identity write_metadata {
-        //description " Setup the metadata field for use later in     pipeline";
+        description " Setup the metadata field for use later in     pipeline";
         base oft:instruction;
     }
     identity write_actions {

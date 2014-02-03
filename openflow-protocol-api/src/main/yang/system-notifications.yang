@@ -11,16 +11,18 @@
     prefix "ofs";
 
     revision "2013-09-27" {
-        //description "Model of system messages used in OpenFlow Protocol Library";
+        description "Model of system messages used in OpenFlow Protocol Library";
     }
 
     notification disconnect-event {
+        description "Disconnect notification";
         leaf info {
             type string;
         }
     }
 
     notification switch-idle-event {
+        description "Switch-idle notification";
         leaf info {
             type string;
         }
