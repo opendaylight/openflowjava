@@ -21,7 +21,10 @@
     import openflow-extensible-match {prefix oxm;}
 
     revision "2013-10-02" {
-        description "OpenFlow 1.3 - augments model";
+        description "OpenFlow 1.3 - augments model. 
+                    Please visit 
+                    https://wiki.opendaylight.org/view/File:OpenFlow_Protocol_Library_-_Project_documentation.pdf
+                     - Augmentation Tables chapter";
     }
 
 // OFP_MATCH AUGMENTS
