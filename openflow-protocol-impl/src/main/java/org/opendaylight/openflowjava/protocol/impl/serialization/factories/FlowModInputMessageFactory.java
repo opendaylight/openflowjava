@@ -61,13 +61,13 @@ public class FlowModInputMessageFactory implements OFSerializer<FlowModInput> {
         out.writeShort(createFlowModFlagsBitmask(message.getFlags()));
         ByteBufUtils.padBuffer(PADDING_IN_FLOW_MOD_MESSAGE, out);
         MatchSerializer.encodeMatch(message.getMatch(), out);
-        InstructionsSerializer.encodeInstructions(message.getInstructions(), out);
+        InstructionsSerializer.encodeInstructions(message.getInstruction(), out);
     }
 
     @Override
     public int computeLength(FlowModInput message) {
         return MESSAGE_LENGTH + MatchSerializer.computeMatchLength(message.getMatch())
-                + InstructionsSerializer.computeInstructionsLength(message.getInstructions());
+                + InstructionsSerializer.computeInstructionsLength(message.getInstruction());
     }
 
     @Override

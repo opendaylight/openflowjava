@@ -36,8 +36,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.Meter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.WriteActions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.WriteMetadata;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.Instructions;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.InstructionsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.InstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableConfig;
@@ -49,16 +49,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.IpPr
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Nxm0Class;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Nxm1Class;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.MatchEntries;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestTableFeaturesCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.table.features._case.MultipartRequestTableFeaturesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.table.features._case.multipart.request.table.features.TableFeatures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.table.features._case.multipart.request.table.features.TableFeaturesBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.TableFeatureProperties;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.TableFeaturePropertiesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.grouping.TableFeatureProperties;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.grouping.TableFeaturePropertiesBuilder;
 
 /**
  * @author michal.polkorab
@@ -111,36 +111,36 @@ public class TableFeaturesTest {
         propBuilder.setType(TableFeaturesPropType.OFPTFPTINSTRUCTIONS);
         InstructionRelatedTableFeaturePropertyBuilder insPropBuilder =
                 new InstructionRelatedTableFeaturePropertyBuilder();
-        List<Instructions> insIds = new ArrayList<>();
-        InstructionsBuilder insBuilder = new InstructionsBuilder();
+        List<Instruction> insIds = new ArrayList<>();
+        InstructionBuilder insBuilder = new InstructionBuilder();
         insBuilder.setType(WriteActions.class);
         insIds.add(insBuilder.build());
-        insBuilder = new InstructionsBuilder();
+        insBuilder = new InstructionBuilder();
         insBuilder.setType(GotoTable.class);
         insIds.add(insBuilder.build());
-        insPropBuilder.setInstructions(insIds);
+        insPropBuilder.setInstruction(insIds);
         propBuilder.addAugmentation(InstructionRelatedTableFeatureProperty.class, insPropBuilder.build());
         properties.add(propBuilder.build());
         propBuilder = new TableFeaturePropertiesBuilder();
         propBuilder.setType(TableFeaturesPropType.OFPTFPTINSTRUCTIONSMISS);
         insPropBuilder = new InstructionRelatedTableFeaturePropertyBuilder();
         insIds = new ArrayList<>();
-        insBuilder = new InstructionsBuilder();
+        insBuilder = new InstructionBuilder();
         insBuilder.setType(WriteMetadata.class);
         insIds.add(insBuilder.build());
-        insBuilder = new InstructionsBuilder();
+        insBuilder = new InstructionBuilder();
         insBuilder.setType(ApplyActions.class);
         insIds.add(insBuilder.build());
-        insBuilder = new InstructionsBuilder();
+        insBuilder = new InstructionBuilder();
         insBuilder.setType(Meter.class);
         insIds.add(insBuilder.build());
-        insBuilder = new InstructionsBuilder();
+        insBuilder = new InstructionBuilder();
         insBuilder.setType(ClearActions.class);
         insIds.add(insBuilder.build());
-        insBuilder = new InstructionsBuilder();
+        insBuilder = new InstructionBuilder();
         insBuilder.setType(GotoTable.class);
         insIds.add(insBuilder.build());
-        insPropBuilder.setInstructions(insIds);
+        insPropBuilder.setInstruction(insIds);
         propBuilder.addAugmentation(InstructionRelatedTableFeatureProperty.class, insPropBuilder.build());
         properties.add(propBuilder.build());
         tableFeaturesBuilder.setTableFeatureProperties(properties);

@@ -38,9 +38,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetMplsTtl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetNwTtl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetQueue;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.ActionsList;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.actions.list.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.MatchEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
 
 /**
  * Serializes ofp_actions (OpenFlow v1.3)
@@ -89,12 +88,11 @@ public abstract class ActionsSerializer {
      * @param actionsList list of actions to be encoded
      * @param outBuffer output ByteBuf
      */
-    public static void encodeActions(List<ActionsList> actionsList, ByteBuf outBuffer) {
+    public static void encodeActions(List<Action> actionsList, ByteBuf outBuffer) {
         if (actionsList == null) {
             return;
         }
-        for (ActionsList list : actionsList) {
-            Action action = list.getAction();
+        for (Action action : actionsList) {
             if (action.getType().isAssignableFrom(Output.class)) {
                 encodeOutputAction(action, outBuffer);
             } else if (action.getType().isAssignableFrom(CopyTtlOut.class)) {
@@ -138,12 +136,11 @@ public abstract class ActionsSerializer {
      * @param actionsList list of actions to be encoded
      * @param outBuffer output ByteBuf
      */
-    public static void encodeActionIds(List<ActionsList> actionsList, ByteBuf outBuffer) {
+    public static void encodeActionIds(List<Action> actionsList, ByteBuf outBuffer) {
         if (actionsList == null) {
             return;
         }
-        for (ActionsList list : actionsList) {
-            Action action = list.getAction();
+        for (Action action : actionsList) {
             if (action.getType().isAssignableFrom(Output.class)) {
                 writeTypeAndLength(outBuffer, OUTPUT_CODE, ACTION_IDS_LENGTH);
             } else if (action.getType().isAssignableFrom(CopyTtlOut.class)) {
@@ -318,11 +315,10 @@ public abstract class ActionsSerializer {
      * @param actionsList list of actions
      * @return actions length
      */
-    public static int computeLengthOfActions(List<ActionsList> actionsList) {
+    public static int computeLengthOfActions(List<Action> actionsList) {
         int lengthOfActions = 0;
         if (actionsList != null) {
-            for (ActionsList list : actionsList) {
-                Action action = list.getAction();
+            for (Action action : actionsList) {
                 if (action.getType().isAssignableFrom(Output.class)) {
                     lengthOfActions += OUTPUT_LENGTH;
                 } else if (action.getType().isAssignableFrom(SetField.class)){

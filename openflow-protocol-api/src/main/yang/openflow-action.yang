@@ -18,85 +18,83 @@
 
     identity output {
         description " Output to switch port. (both OF v1.0 and v1.3)";
-        base oft:action;
+        base oft:action-base;
     }
     identity copy_ttl_out {
         description " Copy TTL \"outwards\" -- from next-to-outermost to outermost ";
-        base oft:action;
+        base oft:action-base;
     }
     identity copy_ttl_in {
         description " Copy TTL \"inwards\" -- from outermost to next-to-outermost ";
-        base oft:action;
+        base oft:action-base;
     }
     identity set_mpls_ttl {
         description " MPLS TTL ";
-        base oft:action;
+        base oft:action-base;
     }
     identity dec_mpls_ttl {
         description " Decrement MPLS TTL ";
-        base oft:action;
+        base oft:action-base;
     }
     identity push_vlan {
         description " Push a new VLAN tag ";
-        base oft:action;
+        base oft:action-base;
     }
     identity pop_vlan {
         description " Pop the outer VLAN tag ";
-        base oft:action;
+        base oft:action-base;
     }
     identity push_mpls {
         description " Push a new MPLS tag ";
-        base oft:action;
+        base oft:action-base;
     }
     identity pop_mpls {
         description " Pop the outer MPLS tag ";
-        base oft:action;
+        base oft:action-base;
     }
     identity set_queue {
         description " Set queue id when outputting to a port ";
-        base oft:action;
+        base oft:action-base;
     }
     identity group {
         description " Apply group. ";
-        base oft:action;
+        base oft:action-base;
     }
     identity set_nw_ttl {
         description " IP TTL. ";
-        base oft:action;
+        base oft:action-base;
     }
     identity dec_nw_ttl {
         description " Decrement IP TTL. ";
-        base oft:action;
+        base oft:action-base;
     }
     identity set_field {
         description " Set a header field using OXM TLV format. ";
-        base oft:action;
+        base oft:action-base;
     }
     identity push_pbb {
         description " Push a new PBB service tag (I-TAG) ";
-        base oft:action;
+        base oft:action-base;
     }
     identity pop_pbb {
         description " Pop the outer PBB service tag (I-TAG) ";
-        base oft:action;
+        base oft:action-base;
     }
     identity experimenter {
         description "";
-        base oft:action;
+        base oft:action-base;
     }
     
     container actions-container {
-        uses actions;
+        uses actions-grouping;
     }
     
-    grouping actions {
-        list actions-list {
-            key "action";
-            container action {
-                leaf type {
-                    type identityref {
-                        base oft:action;
-                    }
+    grouping actions-grouping {
+        list action {
+            key "type";
+            leaf type {
+                type identityref {
+                    base oft:action-base;
                 }
             }
         }
@@ -105,47 +103,47 @@
     // OF1.0 structures
     identity set_vlan_vid {
         description "Set the 802.1q VLAN id (OF v1.0).";
-        base oft:action;
+        base oft:action-base;
     }
     identity set_vlan_pcp {
         description "Set the 802.1q priority (OF v1.0).";
-        base oft:action;
+        base oft:action-base;
     }
     identity strip_vlan {
         description "Strip the 802.1q header (OF v1.0).";
-        base oft:action;
+        base oft:action-base;
     }
     identity set_dl_src {
         description "Ethernet source address (OF v1.0).";
-        base oft:action;
+        base oft:action-base;
     }
     identity set_dl_dst {
         description "Ethernet destination address (OF v1.0).";
-        base oft:action;
+        base oft:action-base;
     }
     identity set_nw_src {
         description "IP source address (OF v1.0).";
-        base oft:action;
+        base oft:action-base;
     }
     identity set_nw_dst {
         description "IP destination address (OF v1.0).";
-        base oft:action;
+        base oft:action-base;
     }
     identity set_nw_tos {
         description "IP ToS (DSCP field, 6 bits) (OF v1.0).";
-        base oft:action;
+        base oft:action-base;
     }
     identity set_tp_src {
         description "TCP/UDP source port (OF v1.0).";
-        base oft:action;
+        base oft:action-base;
     }
     identity set_tp_dst {
         description "TCP/UDP destination port (OF v1.0).";
-        base oft:action;
+        base oft:action-base;
     }
     identity enqueue {
         description "Output to queue (OF v1.0).";
-        base oft:action;
+        base oft:action-base;
     }
 
 }

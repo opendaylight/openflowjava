@@ -46,10 +46,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetVlanPcp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetVlanVid;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.StripVlan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.ActionsList;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.ActionsListBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.actions.list.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.actions.list.ActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 
@@ -74,8 +72,8 @@ public abstract class OF10ActionsDeserializer {
      * @param input input ByteBuf
      * @return ActionsList list of actions
      */
-    public static List<ActionsList> createActionsList(ByteBuf input) {
-        List<ActionsList> actions = new ArrayList<>();
+    public static List<Action> createActionsList(ByteBuf input) {
+        List<Action> actions = new ArrayList<>();
         while (input.readableBytes() > 0) {
             int type = input.readUnsignedShort();
             input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
@@ -91,8 +89,8 @@ public abstract class OF10ActionsDeserializer {
      * @param actionsLength length of actions
      * @return ActionsList list of actions
      */
-    public static List<ActionsList> createActionsList(ByteBuf input, int actionsLength) {
-        List<ActionsList> actions = new ArrayList<>();
+    public static List<Action> createActionsList(ByteBuf input, int actionsLength) {
+        List<Action> actions = new ArrayList<>();
         int currentLength = 0;
         while (currentLength < actionsLength) {
             int type = input.readUnsignedShort();
@@ -102,9 +100,9 @@ public abstract class OF10ActionsDeserializer {
         return actions;
     }
 
-    private static ActionsList decodeAction(ByteBuf input, int type) {
-        ActionsListBuilder actionsBuilder = new ActionsListBuilder();
-        ActionsList actionsList = null;
+    private static Action decodeAction(ByteBuf input, int type) {
+        ActionBuilder actionsBuilder = new ActionBuilder();
+        Action actionsList = null;
         switch(type) {
         case 0:
             actionsList = createOutputAction(input, actionsBuilder);
@@ -156,60 +154,48 @@ public abstract class OF10ActionsDeserializer {
      * @param builder 
      * @return ActionList
      */
-    public static ActionsList createOutputAction(ByteBuf in, ActionsListBuilder builder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
-        actionBuilder.setType(Output.class);
-        createPortAugmentation(in, actionBuilder);
+    public static Action createOutputAction(ByteBuf in, ActionBuilder builder) {
+        builder.setType(Output.class);
+        createPortAugmentation(in, builder);
         MaxLengthActionBuilder maxLen = new MaxLengthActionBuilder();
         maxLen.setMaxLength(in.readUnsignedShort());
-        actionBuilder.addAugmentation(MaxLengthAction.class, maxLen.build());
-        builder.setAction(actionBuilder.build());
+        builder.addAugmentation(MaxLengthAction.class, maxLen.build());
         return builder.build();
     }
 
-    private static ActionsList createSetVlanVidAction(ByteBuf input, ActionsListBuilder builder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
-        actionBuilder.setType(SetVlanVid.class);
+    private static Action createSetVlanVidAction(ByteBuf input, ActionBuilder builder) {
+        builder.setType(SetVlanVid.class);
         VlanVidActionBuilder vlanBuilder = new VlanVidActionBuilder();
         vlanBuilder.setVlanVid(input.readUnsignedShort());
         input.skipBytes(PADDING_IN_SET_VLAN_VID_ACTION);
-        actionBuilder.addAugmentation(VlanVidAction.class, vlanBuilder.build());
-        builder.setAction(actionBuilder.build());
+        builder.addAugmentation(VlanVidAction.class, vlanBuilder.build());
         return builder.build();
     }
 
-    private static ActionsList createVlanPcpAction(ByteBuf input, ActionsListBuilder builder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
-        actionBuilder.setType(SetVlanPcp.class);
+    private static Action createVlanPcpAction(ByteBuf input, ActionBuilder builder) {
+        builder.setType(SetVlanPcp.class);
         VlanPcpActionBuilder vlanBuilder = new VlanPcpActionBuilder();
         vlanBuilder.setVlanPcp(input.readUnsignedByte());
         input.skipBytes(PADDING_IN_SET_VLAN_PCP_ACTION);
-        actionBuilder.addAugmentation(VlanPcpAction.class, vlanBuilder.build());
-        builder.setAction(actionBuilder.build());
+        builder.addAugmentation(VlanPcpAction.class, vlanBuilder.build());
         return builder.build();
     }
 
-    private static ActionsList createStripVlanAction(ByteBuf input, ActionsListBuilder builder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
-        actionBuilder.setType(StripVlan.class);
+    private static Action createStripVlanAction(ByteBuf input, ActionBuilder builder) {
+        builder.setType(StripVlan.class);
         input.skipBytes(PADDING_IN_STRIP_VLAN_ACTION);
-        builder.setAction(actionBuilder.build());
         return builder.build();
     }
 
-    private static ActionsList createSetDlSrcAction(ByteBuf input, ActionsListBuilder builder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
-        actionBuilder.setType(SetDlSrc.class);
-        actionBuilder.addAugmentation(DlAddressAction.class, createDlAugmentationAndPad(input));
-        builder.setAction(actionBuilder.build());
+    private static Action createSetDlSrcAction(ByteBuf input, ActionBuilder builder) {
+        builder.setType(SetDlSrc.class);
+        builder.addAugmentation(DlAddressAction.class, createDlAugmentationAndPad(input));
         return builder.build();
     }
 
-    private static ActionsList createSetDlDstAction(ByteBuf input, ActionsListBuilder builder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
-        actionBuilder.setType(SetDlDst.class);
-        actionBuilder.addAugmentation(DlAddressAction.class, createDlAugmentationAndPad(input));
-        builder.setAction(actionBuilder.build());
+    private static Action createSetDlDstAction(ByteBuf input, ActionBuilder builder) {
+        builder.setType(SetDlDst.class);
+        builder.addAugmentation(DlAddressAction.class, createDlAugmentationAndPad(input));
         return builder.build();
     }
     
@@ -222,19 +208,15 @@ public abstract class OF10ActionsDeserializer {
         return dlBuilder.build();
     }
 
-    private static ActionsList createSetNwSrcAction(ByteBuf input, ActionsListBuilder builder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
-        actionBuilder.setType(SetNwSrc.class);
-        actionBuilder.addAugmentation(IpAddressAction.class, createNwAddressAugmentationAndPad(input));
-        builder.setAction(actionBuilder.build());
+    private static Action createSetNwSrcAction(ByteBuf input, ActionBuilder builder) {
+        builder.setType(SetNwSrc.class);
+        builder.addAugmentation(IpAddressAction.class, createNwAddressAugmentationAndPad(input));
         return builder.build();
     }
 
-    private static ActionsList createSetNwDstAction(ByteBuf input, ActionsListBuilder builder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
-        actionBuilder.setType(SetNwDst.class);
-        actionBuilder.addAugmentation(IpAddressAction.class, createNwAddressAugmentationAndPad(input));
-        builder.setAction(actionBuilder.build());
+    private static Action createSetNwDstAction(ByteBuf input, ActionBuilder builder) {
+        builder.setType(SetNwDst.class);
+        builder.addAugmentation(IpAddressAction.class, createNwAddressAugmentationAndPad(input));
         return builder.build();
     }
     
@@ -249,32 +231,26 @@ public abstract class OF10ActionsDeserializer {
         return ipBuilder.build();
     }
 
-    private static ActionsList createSetNwTosAction(ByteBuf input, ActionsListBuilder builder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
-        actionBuilder.setType(SetNwTos.class);
+    private static Action createSetNwTosAction(ByteBuf input, ActionBuilder builder) {
+        builder.setType(SetNwTos.class);
         NwTosActionBuilder tosBuilder = new NwTosActionBuilder();
         tosBuilder.setNwTos(input.readUnsignedByte());
-        actionBuilder.addAugmentation(NwTosAction.class, tosBuilder.build());
+        builder.addAugmentation(NwTosAction.class, tosBuilder.build());
         input.skipBytes(PADDING_IN_NW_TOS_ACTION);
-        builder.setAction(actionBuilder.build());
         return builder.build();
     }
 
-    private static ActionsList createSetTpSrcAction(ByteBuf input, ActionsListBuilder builder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
-        actionBuilder.setType(SetTpSrc.class);
-        createPortAugmentation(input, actionBuilder);
+    private static Action createSetTpSrcAction(ByteBuf input, ActionBuilder builder) {
+        builder.setType(SetTpSrc.class);
+        createPortAugmentation(input, builder);
         input.skipBytes(PADDING_IN_TP_ACTION);
-        builder.setAction(actionBuilder.build());
         return builder.build();
     }
 
-    private static ActionsList createSetTpDstAction(ByteBuf input, ActionsListBuilder builder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
-        actionBuilder.setType(SetTpDst.class);
-        createPortAugmentation(input, actionBuilder);
+    private static Action createSetTpDstAction(ByteBuf input, ActionBuilder builder) {
+        builder.setType(SetTpDst.class);
+        createPortAugmentation(input, builder);
         input.skipBytes(PADDING_IN_TP_ACTION);
-        builder.setAction(actionBuilder.build());
         return builder.build();
     }
     
@@ -284,27 +260,22 @@ public abstract class OF10ActionsDeserializer {
         actionBuilder.addAugmentation(PortAction.class, portBuilder.build());
     }
 
-    private static ActionsList createEnqueueAction(ByteBuf input, ActionsListBuilder builder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
-        actionBuilder.setType(Enqueue.class);
-        createPortAugmentation(input, actionBuilder);
+    private static Action createEnqueueAction(ByteBuf input, ActionBuilder builder) {
+        builder.setType(Enqueue.class);
+        createPortAugmentation(input, builder);
         input.skipBytes(PADDING_IN_ENQUEUE_ACTION);
         QueueIdActionBuilder queueBuilder = new QueueIdActionBuilder();
         queueBuilder.setQueueId(input.readUnsignedInt());
-        actionBuilder.addAugmentation(QueueIdAction.class, queueBuilder.build());
-        builder.setAction(actionBuilder.build());
+        builder.addAugmentation(QueueIdAction.class, queueBuilder.build());
         return builder.build();
     }
 
-    private static ActionsList createExperimenterAction(ByteBuf input, ActionsListBuilder builder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
-        actionBuilder.setType(Experimenter.class);
+    private static Action createExperimenterAction(ByteBuf input, ActionBuilder builder) {
+        builder.setType(Experimenter.class);
         ExperimenterActionBuilder expBuilder = new ExperimenterActionBuilder();
         expBuilder.setExperimenter(input.readUnsignedInt());
-        actionBuilder.addAugmentation(ExperimenterAction.class, expBuilder.build());
-        builder.setAction(actionBuilder.build());
+        builder.addAugmentation(ExperimenterAction.class, expBuilder.build());
         return builder.build();
     }
-    
-    
+
 }

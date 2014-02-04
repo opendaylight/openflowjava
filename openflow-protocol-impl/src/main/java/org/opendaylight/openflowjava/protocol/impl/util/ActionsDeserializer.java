@@ -48,9 +48,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetMplsTtl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetNwTtl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetQueue;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.ActionsList;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.ActionsListBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.actions.list.ActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.EtherType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
 
@@ -74,71 +74,71 @@ public abstract class ActionsDeserializer {
      * @param actionsLength length of buckets
      * @return ActionsList
      */
-    public static List<ActionsList> createActionsList(ByteBuf input, int actionsLength) {
-        ActionsListBuilder actionsListBuilder = new ActionsListBuilder();
-        List<ActionsList> actionsList = new ArrayList<>();
+    public static List<Action> createActions(ByteBuf input, int actionsLength) {
+        List<Action> actions = new ArrayList<>();
         int length = 0;
         while (length < actionsLength) {
             int type = input.readUnsignedShort();
             int currentActionLength = input.readUnsignedShort();
+            ActionBuilder actionBuilder = new ActionBuilder();
             switch(type) {
             case 0:
-                actionsList.add(createOutputAction(input, actionsListBuilder));
+                actions.add(createOutputAction(input, actionBuilder));
                 break;
             case 11:
-                actionsList.add(createCopyTtlOutAction(input, actionsListBuilder));
+                actions.add(createCopyTtlOutAction(input, actionBuilder));
                 break;
             case 12:
-                actionsList.add(createCopyTtlInAction(input, actionsListBuilder));
+                actions.add(createCopyTtlInAction(input, actionBuilder));
                 break;
             case 15:
-                actionsList.add(createSetMplsTtlAction(input, actionsListBuilder));
+                actions.add(createSetMplsTtlAction(input, actionBuilder));
                 break;
             case 16:
-                actionsList.add(createDecMplsTtlOutAction(input, actionsListBuilder));
+                actions.add(createDecMplsTtlOutAction(input, actionBuilder));
                 break;
             case 17:
-                actionsList.add(createPushVlanAction(input, actionsListBuilder));
+                actions.add(createPushVlanAction(input, actionBuilder));
                 break;
             case 18:
-                actionsList.add(createPopVlanAction(input, actionsListBuilder));
+                actions.add(createPopVlanAction(input, actionBuilder));
                 break;
             case 19:
-                actionsList.add(createPushMplsAction(input, actionsListBuilder));
+                actions.add(createPushMplsAction(input, actionBuilder));
                 break;
             case 20:
-                actionsList.add(createPopMplsAction(input, actionsListBuilder));
+                actions.add(createPopMplsAction(input, actionBuilder));
                 break;
             case 21:
-                actionsList.add(createSetQueueAction(input, actionsListBuilder));
+                actions.add(createSetQueueAction(input, actionBuilder));
                 break;
             case 22:
-                actionsList.add(createGroupAction(input, actionsListBuilder));
+                actions.add(createGroupAction(input, actionBuilder));
                 break;
             case 23:
-                actionsList.add(createSetNwTtlAction(input, actionsListBuilder));
+                actions.add(createSetNwTtlAction(input, actionBuilder));
                 break;
             case 24:
-                actionsList.add(createDecNwTtlAction(input, actionsListBuilder));
+                actions.add(createDecNwTtlAction(input, actionBuilder));
                 break;
             case 25:
-                actionsList.add(createSetFieldAction(input, actionsListBuilder, currentActionLength));
+                actions.add(createSetFieldAction(input, actionBuilder, currentActionLength));
                 break;
             case 26:
-                actionsList.add(createPushPbbAction(input, actionsListBuilder));
+                actions.add(createPushPbbAction(input, actionBuilder));
                 break;
             case 27:
-                actionsList.add(createPopPbbAction(input, actionsListBuilder));
+                actions.add(createPopPbbAction(input, actionBuilder));
                 break;
             case 0xFFFF:
-                actionsList.add(createExperimenterAction(input, actionsListBuilder));
+                actions.add(createExperimenterAction(input, actionBuilder));
                 break;
             default:
                 break;
             }
             length += currentActionLength;
         } 
-        return actionsList;
+        return actions;
     }
 
     /**
@@ -147,16 +147,14 @@ public abstract class ActionsDeserializer {
      * @param actionsLength length of actions
      * @return ActionsList
      */
-    public static List<ActionsList> createActionIds(ByteBuf input, int actionsLength) {
-        List<ActionsList> actionsList = new ArrayList<>();
+    public static List<Action> createActionIds(ByteBuf input, int actionsLength) {
+        List<Action> actionsList = new ArrayList<>();
         int length = 0;
         ActionBuilder builder;
-        ActionsListBuilder listBuilder;
         while (length < actionsLength) {
+            builder = new ActionBuilder();
             int type = input.readUnsignedShort();
             int currentActionLength = input.readUnsignedShort();
-            builder = new ActionBuilder();
-            listBuilder = new ActionsListBuilder();
             switch(type) {
             case 0:
                 builder.setType(Output.class);
@@ -215,49 +213,44 @@ public abstract class ActionsDeserializer {
             default: 
                 break;
             }
-            listBuilder.setAction(builder.build());
-            actionsList.add(listBuilder.build());
+            actionsList.add(builder.build());
             length += currentActionLength;
         } 
         return actionsList;
     }
 
-    private static ActionsList createEmptyHeader(Class<? extends org.opendaylight.yang.gen.v1.
-            urn.opendaylight.openflow.common.types.rev130731.Action> action,
-            ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
+    private static Action createEmptyHeader(Class<? extends ActionBase> action,
+            ByteBuf in, ActionBuilder actionBuilder) {
         actionBuilder.setType(action);
         in.skipBytes(PADDING_IN_ACTIONS_HEADER);
-        actionsListBuilder.setAction(actionBuilder.build());
-        return actionsListBuilder.build();
+        return actionBuilder.build();
     }
     
-    private static ActionsList createCopyTtlInAction(ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        return createEmptyHeader(CopyTtlIn.class, in, actionsListBuilder);
+    private static Action createCopyTtlInAction(ByteBuf in, ActionBuilder actionBuilder) {
+        return createEmptyHeader(CopyTtlIn.class, in, actionBuilder);
     }
 
-    private static ActionsList createCopyTtlOutAction(ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        return createEmptyHeader(CopyTtlOut.class, in, actionsListBuilder);
+    private static Action createCopyTtlOutAction(ByteBuf in, ActionBuilder actionBuilder) {
+        return createEmptyHeader(CopyTtlOut.class, in, actionBuilder);
     }
     
-    private static ActionsList createDecMplsTtlOutAction(ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        return createEmptyHeader(DecMplsTtl.class, in, actionsListBuilder);
+    private static Action createDecMplsTtlOutAction(ByteBuf in, ActionBuilder actionBuilder) {
+        return createEmptyHeader(DecMplsTtl.class, in, actionBuilder);
     }
     
-    private static ActionsList createPopVlanAction(ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        return createEmptyHeader(PopVlan.class, in, actionsListBuilder);
+    private static Action createPopVlanAction(ByteBuf in, ActionBuilder actionBuilder) {
+        return createEmptyHeader(PopVlan.class, in, actionBuilder);
     }
     
-    private static ActionsList createDecNwTtlAction(ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        return createEmptyHeader(DecNwTtl.class, in, actionsListBuilder);
+    private static Action createDecNwTtlAction(ByteBuf in, ActionBuilder actionBuilder) {
+        return createEmptyHeader(DecNwTtl.class, in, actionBuilder);
     }
     
-    private static ActionsList createPopPbbAction(ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        return createEmptyHeader(PopPbb.class, in, actionsListBuilder);
+    private static Action createPopPbbAction(ByteBuf in, ActionBuilder actionBuilder) {
+        return createEmptyHeader(PopPbb.class, in, actionBuilder);
     }
     
-    private static ActionsList createOutputAction(ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
+    private static Action createOutputAction(ByteBuf in, ActionBuilder actionBuilder) {
         actionBuilder.setType(Output.class);
         PortActionBuilder port = new PortActionBuilder();
         port.setPort(new PortNumber(in.readUnsignedInt()));
@@ -265,99 +258,83 @@ public abstract class ActionsDeserializer {
         MaxLengthActionBuilder maxLen = new MaxLengthActionBuilder();
         maxLen.setMaxLength(in.readUnsignedShort());
         actionBuilder.addAugmentation(MaxLengthAction.class, maxLen.build());
-        actionsListBuilder.setAction(actionBuilder.build());
         in.skipBytes(PADDING_IN_OUTPUT_ACTIONS_HEADER);
-        return actionsListBuilder.build();
+        return actionBuilder.build();
     }
     
-    private static ActionsList createSetMplsTtlAction(ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
+    private static Action createSetMplsTtlAction(ByteBuf in, ActionBuilder actionBuilder) {
         actionBuilder.setType(SetMplsTtl.class);
         MplsTtlActionBuilder mplsTtl = new MplsTtlActionBuilder();
         mplsTtl.setMplsTtl(in.readUnsignedByte());
         actionBuilder.addAugmentation(MplsTtlAction.class, mplsTtl.build());
-        actionsListBuilder.setAction(actionBuilder.build());
         in.skipBytes(PADDING_IN_SET_MPLS_TTL_ACTIONS_HEADER);
-        return actionsListBuilder.build();
+        return actionBuilder.build();
     }
     
-    private static ActionsList createPushAction(Class<? extends org.opendaylight.yang.gen.
-            v1.urn.opendaylight.openflow.common.types.rev130731.Action> action,
-            ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
+    private static Action createPushAction(Class<? extends ActionBase> action,
+            ByteBuf in, ActionBuilder actionBuilder) {
         actionBuilder.setType(action);
         EthertypeActionBuilder etherType = new EthertypeActionBuilder();
         etherType.setEthertype(new EtherType(in.readUnsignedShort()));
         actionBuilder.addAugmentation(EthertypeAction.class, etherType.build());
-        actionsListBuilder.setAction(actionBuilder.build());
         in.skipBytes(PADDING_IN_PUSH_VLAN_ACTIONS_HEADER);
-        return actionsListBuilder.build();
+        return actionBuilder.build();
     }
     
-    private static ActionsList createPushVlanAction(ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        return createPushAction(PushVlan.class, in, actionsListBuilder);
+    private static Action createPushVlanAction(ByteBuf in, ActionBuilder actionBuilder) {
+        return createPushAction(PushVlan.class, in, actionBuilder);
     }
     
-    private static ActionsList createPushMplsAction(ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        return createPushAction(PushMpls.class, in, actionsListBuilder);
+    private static Action createPushMplsAction(ByteBuf in, ActionBuilder actionBuilder) {
+        return createPushAction(PushMpls.class, in, actionBuilder);
     }
     
-    private static ActionsList createPopMplsAction(ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        return createPushAction(PopMpls.class, in, actionsListBuilder);
+    private static Action createPopMplsAction(ByteBuf in, ActionBuilder actionBuilder) {
+        return createPushAction(PopMpls.class, in, actionBuilder);
     }
     
-    private static ActionsList createPushPbbAction(ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        return createPushAction(PushPbb.class, in, actionsListBuilder);
+    private static Action createPushPbbAction(ByteBuf in, ActionBuilder actionBuilder) {
+        return createPushAction(PushPbb.class, in, actionBuilder);
     }
     
-    private static ActionsList createSetQueueAction(ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
+    private static Action createSetQueueAction(ByteBuf in, ActionBuilder actionBuilder) {
         actionBuilder.setType(SetQueue.class);
         QueueIdActionBuilder queueId = new QueueIdActionBuilder();
         queueId.setQueueId(in.readUnsignedInt());
         actionBuilder.addAugmentation(QueueIdAction.class, queueId.build());
-        actionsListBuilder.setAction(actionBuilder.build());
-        return actionsListBuilder.build();
+        return actionBuilder.build();
     }
     
-    private static ActionsList createGroupAction(ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
+    private static Action createGroupAction(ByteBuf in, ActionBuilder actionBuilder) {
         actionBuilder.setType(Group.class);
         GroupIdActionBuilder group = new GroupIdActionBuilder();
         group.setGroupId(in.readUnsignedInt());
         actionBuilder.addAugmentation(GroupIdAction.class, group.build());
-        actionsListBuilder.setAction(actionBuilder.build());
-        return actionsListBuilder.build();
+        return actionBuilder.build();
     }
     
-    private static ActionsList createExperimenterAction(ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
+    private static Action createExperimenterAction(ByteBuf in, ActionBuilder actionBuilder) {
         actionBuilder.setType(Experimenter.class);
         ExperimenterActionBuilder experimenter = new ExperimenterActionBuilder();
         experimenter.setExperimenter(in.readUnsignedInt());
         actionBuilder.addAugmentation(ExperimenterAction.class, experimenter.build());
-        actionsListBuilder.setAction(actionBuilder.build());
-        return actionsListBuilder.build();
+        return actionBuilder.build();
     }
     
-    private static ActionsList createSetNwTtlAction(ByteBuf in, ActionsListBuilder actionsListBuilder) {
-        ActionBuilder actionBuilder = new ActionBuilder();
+    private static Action createSetNwTtlAction(ByteBuf in, ActionBuilder actionBuilder) {
         actionBuilder.setType(SetNwTtl.class);
         NwTtlActionBuilder nwTtl = new NwTtlActionBuilder();
         nwTtl.setNwTtl(in.readUnsignedByte());
         actionBuilder.addAugmentation(NwTtlAction.class, nwTtl.build());
-        actionsListBuilder.setAction(actionBuilder.build());
         in.skipBytes(PADDING_IN_NW_TTL_ACTIONS_HEADER);
-        return actionsListBuilder.build();
+        return actionBuilder.build();
     }
     
-    private static ActionsList createSetFieldAction(ByteBuf in, ActionsListBuilder actionsListBuilder, int actionLength) {
-        ActionBuilder actionBuilder = new ActionBuilder();
+    private static Action createSetFieldAction(ByteBuf in, ActionBuilder actionBuilder, int actionLength) {
         actionBuilder.setType(SetField.class);
         OxmFieldsActionBuilder matchEntries = new OxmFieldsActionBuilder();
         matchEntries.setMatchEntries(MatchDeserializer.createMatchEntry(in, actionLength  - ACTION_HEADER_LENGTH));
         actionBuilder.addAugmentation(OxmFieldsAction.class, matchEntries.build());
-        actionsListBuilder.setAction(actionBuilder.build());
-        return actionsListBuilder.build();
+        return actionBuilder.build();
     }
 }

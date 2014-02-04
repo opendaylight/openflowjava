@@ -24,9 +24,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthertypeActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.PopVlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.PushVlan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.ActionsList;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.ActionsListBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.actions.list.ActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.EtherType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketOutInput;
@@ -51,20 +50,17 @@ public class PacketOutInputMessageFactoryTest {
         BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setBufferId(256L);
         builder.setInPort(new PortNumber(256L));
-        List<ActionsList> actions = new ArrayList<>();
-        ActionsListBuilder actionsListBuilder = new ActionsListBuilder();
+        List<Action> actions = new ArrayList<>();
         ActionBuilder actionBuilder = new ActionBuilder();
         actionBuilder.setType(PushVlan.class);
         EthertypeActionBuilder ethertypeBuilder = new EthertypeActionBuilder();
         ethertypeBuilder.setEthertype(new EtherType(25));
         actionBuilder.addAugmentation(EthertypeAction.class, ethertypeBuilder.build());
-        actionsListBuilder.setAction(actionBuilder.build());
-        actions.add(actionsListBuilder.build());
+        actions.add(actionBuilder.build());
         actionBuilder = new ActionBuilder();
         actionBuilder.setType(PopVlan.class);
-        actionsListBuilder.setAction(actionBuilder.build());
-        actions.add(actionsListBuilder.build());
-        builder.setActionsList(actions);
+        actions.add(actionBuilder.build());
+        builder.setAction(actions);
         builder.setData(ByteBufUtils.hexStringToBytes("00 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14"));
         PacketOutInput message = builder.build();
         

@@ -8,6 +8,8 @@
 
 package org.opendaylight.openflowjava.protocol.impl.util;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,10 +30,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.Meter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.WriteActions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.WriteMetadata;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.Instructions;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.InstructionsBuilder;
-
-import io.netty.buffer.ByteBuf;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.InstructionBuilder;
 
 /**
  * Deserializes ofp_instruction (OpenFlow v1.3) structures
@@ -52,12 +52,12 @@ public abstract class InstructionsDeserializer {
      * @param length
      * @return list of ofp_instruction
      */
-    public static List<Instructions> createInstructions(ByteBuf input, int length) {
-        List<Instructions> instructions = new ArrayList<>();
+    public static List<Instruction> createInstructions(ByteBuf input, int length) {
+        List<Instruction> instructions = new ArrayList<>();
         if (input.readableBytes() != 0) {
             int lengthOfInstructions = length;
             while (lengthOfInstructions > 0) {
-                InstructionsBuilder builder = new InstructionsBuilder();
+                InstructionBuilder builder = new InstructionBuilder();
                 int type = input.readUnsignedShort();
                 int instructionLength = input.readUnsignedShort();
                 lengthOfInstructions -= instructionLength;
@@ -113,12 +113,12 @@ public abstract class InstructionsDeserializer {
      * @param length
      * @return list of ofp_instruction without values
      */
-    public static List<Instructions> createInstructionIds(ByteBuf input, int length) {
-        List<Instructions> instructions = new ArrayList<>();
+    public static List<Instruction> createInstructionIds(ByteBuf input, int length) {
+        List<Instruction> instructions = new ArrayList<>();
         if (input.readableBytes() != 0) {
             int lengthOfInstructions = length;
             while (lengthOfInstructions > 0) {
-                InstructionsBuilder builder = new InstructionsBuilder();
+                InstructionBuilder builder = new InstructionBuilder();
                 int type = input.readUnsignedShort();
                 int instructionLength = input.readUnsignedShort();
                 lengthOfInstructions -= instructionLength;
@@ -156,7 +156,7 @@ public abstract class InstructionsDeserializer {
         return instructions;
     }
 
-    private static void createGotoTableInstruction(InstructionsBuilder builder,
+    private static void createGotoTableInstruction(InstructionBuilder builder,
             ByteBuf input) {
         builder.setType(GotoTable.class);
         TableIdInstructionBuilder tableBuilder = new TableIdInstructionBuilder();
@@ -165,7 +165,7 @@ public abstract class InstructionsDeserializer {
         input.skipBytes(GOTO_TABLE_PADDING);
     }
     
-    private static void createMetadataInstruction(InstructionsBuilder builder,
+    private static void createMetadataInstruction(InstructionBuilder builder,
             ByteBuf input) {
         input.skipBytes(WRITE_METADATA_PADDING);
         builder.setType(WriteMetadata.class);
@@ -180,10 +180,10 @@ public abstract class InstructionsDeserializer {
     }
     
     private static void createActionRelatedInstruction(ByteBuf input,
-            InstructionsBuilder builder, int actionsLength) {
+            InstructionBuilder builder, int actionsLength) {
         input.skipBytes(ACTIONS_RELATED_INSTRUCTION_PADDING);
         ActionsInstructionBuilder actionsBuilder = new ActionsInstructionBuilder();
-        actionsBuilder.setActionsList(ActionsDeserializer.createActionsList(input, actionsLength));
+        actionsBuilder.setAction(ActionsDeserializer.createActions(input, actionsLength));
         builder.addAugmentation(ActionsInstruction.class, actionsBuilder.build());
     }
 

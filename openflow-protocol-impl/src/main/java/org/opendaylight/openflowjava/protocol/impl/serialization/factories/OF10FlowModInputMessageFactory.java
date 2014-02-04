@@ -57,12 +57,12 @@ public class OF10FlowModInputMessageFactory implements OFSerializer<FlowModInput
         out.writeInt(message.getBufferId().intValue());
         out.writeShort(message.getOutPort().getValue().intValue());
         out.writeShort(createFlowModFlagsBitmask(message.getFlagsV10()));
-        OF10ActionsSerializer.encodeActionsV10(out, message.getActionsList());
+        OF10ActionsSerializer.encodeActionsV10(out, message.getAction());
     }
 
     @Override
     public int computeLength(FlowModInput message) {
-        return MESSAGE_LENGTH + OF10ActionsSerializer.computeActionsLength(message.getActionsList());
+        return MESSAGE_LENGTH + OF10ActionsSerializer.computeActionsLength(message.getAction());
     }
 
     @Override

@@ -16,7 +16,7 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ActionsSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GroupModInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.buckets.BucketsList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.buckets.grouping.BucketsList;
 
 /**
  * Translates GroupMod messages
@@ -74,7 +74,7 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupModInput> 
                 outBuffer.writeInt(currentBucket.getWatchPort().getValue().intValue());
                 outBuffer.writeInt(currentBucket.getWatchGroup().intValue());
                 ByteBufUtils.padBuffer(PADDING_IN_BUCKET, outBuffer);
-                ActionsSerializer.encodeActions(currentBucket.getActionsList(), outBuffer);
+                ActionsSerializer.encodeActions(currentBucket.getAction(), outBuffer);
             }
         }
     }
@@ -82,7 +82,8 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupModInput> 
     private static int computeLengthOfBucket(BucketsList bucket) {
         int lengthOfBuckets = 0;
         if (bucket != null) {
-            lengthOfBuckets = LENGTH_OF_BUCKET_STRUCTURE + ActionsSerializer.computeLengthOfActions(bucket.getActionsList());
+            lengthOfBuckets = LENGTH_OF_BUCKET_STRUCTURE
+                    + ActionsSerializer.computeLengthOfActions(bucket.getAction());
         }
         return lengthOfBuckets;
     }
@@ -91,7 +92,8 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupModInput> 
         int lengthOfBuckets = 0;
         if (buckets != null) {
             for (BucketsList currentBucket : buckets) {
-                lengthOfBuckets += LENGTH_OF_BUCKET_STRUCTURE + ActionsSerializer.computeLengthOfActions(currentBucket.getActionsList());
+                lengthOfBuckets += LENGTH_OF_BUCKET_STRUCTURE
+                        + ActionsSerializer.computeLengthOfActions(currentBucket.getAction());
             }
         }
         return lengthOfBuckets;

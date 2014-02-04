@@ -177,84 +177,84 @@
      }
 
 // OFP_ACTION AUGMENTS
-     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:action" {
          ext:augment-identifier "port-action";
          leaf port {
              type oft:port-number;
          }
      }
-     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:action" {
          ext:augment-identifier "max-length-action";
          leaf max-length {
              type uint16;
          }
      }
-     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:action" {
          ext:augment-identifier "mpls-ttl-action";
          leaf mpls-ttl {
              type uint8;
          }
      }
-     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:action" {
          ext:augment-identifier "ethertype-action";
          leaf ethertype {
              type oft:ether-type;
          }
      }
-     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:action" {
          ext:augment-identifier "queue-id-action";
          leaf queue-id {
              type uint32;
          }
      }
-     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:action" {
          ext:augment-identifier "group-id-action";
          leaf group-id {
              type uint32;
          }
      }
-     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:action" {
          ext:augment-identifier "nw-ttl-action";
          leaf nw-ttl {
              type uint8;
          }
      }
-     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:action" {
          ext:augment-identifier "oxm-fields-action";
-         uses oxm:oxm-fields;
+         uses oxm:oxm-fields-grouping;
      }
-     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:action" {
          ext:augment-identifier "experimenter-action";
          leaf experimenter {
              type uint32;
          }
      }
      // OF1.0 structures
-     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:action" {
          ext:augment-identifier "vlan-vid-action";
          leaf vlan-vid {
              type uint16;
          }
      }
-     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:action" {
          ext:augment-identifier "vlan-pcp-action";
          leaf vlan-pcp {
              type uint8;
          }
      }
-     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:action" {
          ext:augment-identifier "dl-address-action";
          leaf dl-address {
              type yang:mac-address;
          }
      }
-     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:action" {
          ext:augment-identifier "nw-tos-action";
          leaf nw-tos {
              type uint8;
          }
      }
-     augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
+     augment "/ofaction:actions-container/ofaction:action" {
          ext:augment-identifier "ip-address-action";
          leaf ip-address {
              type inet:ipv4-address;
@@ -264,7 +264,7 @@
 // OFP_TABLE_FEATURES_PROPERTIES AUGMENTS
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          ext:augment-identifier "instruction-related-table-feature-property";
-         uses ofinstruction:instructions;
+         uses ofinstruction:instructions-grouping;
      }
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          ext:augment-identifier "next-table-related-table-feature-property";
@@ -277,11 +277,11 @@
      }
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          ext:augment-identifier "action-related-table-feature-property";
-         uses ofaction:actions;
+         uses ofaction:actions-grouping;
      }
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          ext:augment-identifier "oxm-related-table-feature-property";
-         uses oxm:oxm-fields;
+         uses oxm:oxm-fields-grouping;
      }
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          ext:augment-identifier "experimenter-related-table-feature-property";
@@ -297,13 +297,13 @@
      }
 
 // OFP_INSTRUCTION AUGMENTS
-     augment "/ofinstruction:instruction-container/ofinstruction:instructions" {
+     augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
          ext:augment-identifier "table-id-instruction";
          leaf table-id {
              type uint8;
          }
      }
-     augment "/ofinstruction:instruction-container/ofinstruction:instructions" {
+     augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
          ext:augment-identifier "metadata-instruction";
          leaf metadata {
              type binary;
@@ -312,17 +312,17 @@
              type binary;
          }
      }
-     augment "/ofinstruction:instruction-container/ofinstruction:instructions" {
+     augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
          ext:augment-identifier "actions-instruction";
-         uses ofaction:actions;
+         uses ofaction:actions-grouping;
      }
-     augment "/ofinstruction:instruction-container/ofinstruction:instructions" {
+     augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
          ext:augment-identifier "meter-id-instruction";
          leaf meter-id {
              type uint32;
          }
      }
-     augment "/ofinstruction:instruction-container/ofinstruction:instructions" {
+     augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
          ext:augment-identifier "experimenter-instruction";
          leaf experimenter {
              type uint32;

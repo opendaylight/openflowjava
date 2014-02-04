@@ -216,10 +216,10 @@
         }
 
         container oxm-container {
-            uses oxm-fields;
+            uses oxm-fields-grouping;
         }
         
-        grouping oxm-fields {
+        grouping oxm-fields-grouping {
             list match-entries {
                 description "OXM TLV-structures (Type Length Value)";
                 key "oxm-class oxm-match-field has-mask";
@@ -238,7 +238,19 @@
                 } 
             }
         }
-        
+
+        grouping match-grouping {
+            container match {
+                description "Match structure (OF v1.3)";
+                leaf type {
+                    type identityref {
+                        base oft:match-type-base;
+                    }
+                }
+                uses oxm-fields-grouping;
+            }
+        }
+
         // OF1.0 structures
         grouping match-v10-grouping {
             container match-v10 {

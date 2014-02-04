@@ -26,9 +26,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Output;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.StripVlan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.ActionsList;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.ActionsListBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.actions.list.ActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketOutInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketOutInputBuilder;
@@ -49,8 +48,7 @@ public class OF10PacketOutInputMessageFactoryTest {
         BufferHelper.setupHeader(builder, EncodeConstants.OF10_VERSION_ID);
         builder.setBufferId(256L);
         builder.setInPort(new PortNumber(257L));
-        List<ActionsList> actions = new ArrayList<>();
-        ActionsListBuilder actionsListBuilder = new ActionsListBuilder();
+        List<Action> actions = new ArrayList<>();
         ActionBuilder actionBuilder = new ActionBuilder();
         actionBuilder.setType(Output.class);
         PortActionBuilder portBuilder = new PortActionBuilder();
@@ -59,15 +57,12 @@ public class OF10PacketOutInputMessageFactoryTest {
         MaxLengthActionBuilder maxLen = new MaxLengthActionBuilder();
         maxLen.setMaxLength(50);
         actionBuilder.addAugmentation(MaxLengthAction.class, maxLen.build());
-        actionsListBuilder.setAction(actionBuilder.build());
-        actions.add(actionsListBuilder.build());
-        actionsListBuilder = new ActionsListBuilder();
+        actions.add(actionBuilder.build());
         actionBuilder = new ActionBuilder();
         actionBuilder.setType(StripVlan.class);
-        actionsListBuilder.setAction(actionBuilder.build());
-        builder.setActionsList(actions);
-        actions.add(actionsListBuilder.build());
-        builder.setActionsList(actions);
+        builder.setAction(actions);
+        actions.add(actionBuilder.build());
+        builder.setAction(actions);
         builder.setData(ByteBufUtils.hexStringToBytes("00 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14"));
         PacketOutInput message = builder.build();
         
