@@ -17,7 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MetadataInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MeterIdInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.TableIdInstruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.ActionsList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.ApplyActions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.ClearActions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.Experimenter;
@@ -25,8 +25,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.Meter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.WriteActions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.WriteMetadata;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.Instructions;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.Instruction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.InstructionBase;
 
 /**
  * Serializes ofp_instruction (OpenFlow v 1.3) structure
@@ -58,10 +58,10 @@ public abstract class InstructionsSerializer {
      * @param instructions List of instructions
      * @param out output buffer
      */
-    public static void encodeInstructions(List<Instructions> instructions, ByteBuf out) {
+    public static void encodeInstructions(List<Instruction> instructions, ByteBuf out) {
         if (instructions != null) {
-            for (Instructions instruction : instructions) {
-                Class<? extends Instruction> type = instruction.getType();
+            for (Instruction instruction : instructions) {
+                Class<? extends InstructionBase> type = instruction.getType();
                 if (type.isAssignableFrom(GotoTable.class)) {
                     writeTypeAndLength(out, GOTO_TABLE_TYPE, GOTO_TABLE_LENGTH);
                     out.writeByte(instruction.getAugmentation(TableIdInstruction.class).getTableId());
@@ -99,10 +99,10 @@ public abstract class InstructionsSerializer {
      * @param instructions List of instruction identifiers (without values)
      * @param out output buffer
      */
-    public static void encodeInstructionIds(List<Instructions> instructions, ByteBuf out) {
+    public static void encodeInstructionIds(List<Instruction> instructions, ByteBuf out) {
         if (instructions != null) {
-            for (Instructions instruction : instructions) {
-                Class<? extends Instruction> type = instruction.getType();
+            for (Instruction instruction : instructions) {
+                Class<? extends InstructionBase> type = instruction.getType();
                 if (type.isAssignableFrom(GotoTable.class)) {
                     writeTypeAndLength(out, GOTO_TABLE_TYPE, INSTRUCTION_IDS_LENGTH);
                 } else if (type.isAssignableFrom(WriteMetadata.class)) {
@@ -130,10 +130,10 @@ public abstract class InstructionsSerializer {
     }
 
     private static void writeActionsInstruction(ByteBuf out,
-            Instructions instruction, int type) {
+            Instruction instruction, int type) {
         out.writeShort(type);
         if (instruction.getAugmentation(ActionsInstruction.class) != null) {
-            List<ActionsList> actions = instruction.getAugmentation(ActionsInstruction.class).getActionsList();
+            List<Action> actions = instruction.getAugmentation(ActionsInstruction.class).getAction();
             out.writeShort(ACTIONS_INSTRUCTION_LENGTH + ActionsSerializer.computeLengthOfActions(actions));
             ByteBufUtils.padBuffer(PADDING_IN_ACTIONS_INSTRUCTION, out);
             ActionsSerializer.encodeActions(actions, out);
@@ -148,11 +148,11 @@ public abstract class InstructionsSerializer {
      * @param instructions List of instructions
      * @return length of instructions (in bytes)
      */
-    public static int computeInstructionsLength(List<Instructions> instructions) {
+    public static int computeInstructionsLength(List<Instruction> instructions) {
         int length = 0;
         if (instructions != null) {
-            for (Instructions instruction : instructions) {
-                Class<? extends Instruction> type = instruction.getType();
+            for (Instruction instruction : instructions) {
+                Class<? extends InstructionBase> type = instruction.getType();
                 if (type.isAssignableFrom(GotoTable.class)) {
                     length += GOTO_TABLE_LENGTH;
                 } else if (type.isAssignableFrom(WriteMetadata.class)) {
@@ -161,13 +161,13 @@ public abstract class InstructionsSerializer {
                     length += ACTIONS_INSTRUCTION_LENGTH;
                     if (instruction.getAugmentation(ActionsInstruction.class) != null) {
                         length += ActionsSerializer.computeLengthOfActions(
-                            instruction.getAugmentation(ActionsInstruction.class).getActionsList());
+                            instruction.getAugmentation(ActionsInstruction.class).getAction());
                     }
                 } else if (type.isAssignableFrom(ApplyActions.class)) {
                     length += ACTIONS_INSTRUCTION_LENGTH;
                     if (instruction.getAugmentation(ActionsInstruction.class) != null) {
                         length += ActionsSerializer.computeLengthOfActions(
-                                instruction.getAugmentation(ActionsInstruction.class).getActionsList());
+                                instruction.getAugmentation(ActionsInstruction.class).getAction());
                     }
                 } else if (type.isAssignableFrom(ClearActions.class)) {
                     length += ACTIONS_INSTRUCTION_LENGTH;

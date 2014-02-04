@@ -18,43 +18,43 @@
 
     identity goto_table {
         description " Setup the next table in the lookup pipeline";
-        base oft:instruction;
+        base oft:instruction-base;
     }
     identity write_metadata {
         description " Setup the metadata field for use later in     pipeline";
-        base oft:instruction;
+        base oft:instruction-base;
     }
     identity write_actions {
         description " Write the action(s) onto the datapath action set";
-        base oft:instruction;
+        base oft:instruction-base;
     }
     identity apply_actions {
         description " Applies the action(s) immediately";
-        base oft:instruction;
+        base oft:instruction-base;
     }
     identity clear_actions {
         description " Clears all actions from the datapath action set";
-        base oft:instruction;
+        base oft:instruction-base;
     }
     identity meter {
         description " Apply meter (rate limiter)";
-        base oft:instruction;
+        base oft:instruction-base;
     }
     identity experimenter {
         description "Experimenter instruction";
-        base oft:instruction;
+        base oft:instruction-base;
     }
 
     container instruction-container {
-        uses instructions;
+        uses instructions-grouping;
     }
 
-    grouping instructions {
-        list instructions {
+    grouping instructions-grouping {
+        list instruction {
             key "type";
             leaf type {
                 type identityref {
-                    base oft:instruction;
+                    base oft:instruction-base;
                 }
             }
         }

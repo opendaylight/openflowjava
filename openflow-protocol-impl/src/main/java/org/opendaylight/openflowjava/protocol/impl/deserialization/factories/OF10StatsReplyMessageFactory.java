@@ -168,7 +168,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
             byte[] byteCount = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
             input.readBytes(byteCount);
             flowStatsBuilder.setByteCount(new BigInteger(1, byteCount));
-            flowStatsBuilder.setActionsList(OF10ActionsDeserializer
+            flowStatsBuilder.setAction(OF10ActionsDeserializer
                     .createActionsList(input, length - LENGTH_OF_FLOW_STATS));
             flowStatsList.add(flowStatsBuilder.build());
         }

@@ -34,8 +34,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetVlanPcp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetVlanVid;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.StripVlan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.ActionsList;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.actions.list.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 
 /**
  * Serializes ofp_action (OpenFlow v1.0) structures
@@ -78,14 +77,13 @@ public abstract class OF10ActionsSerializer {
     /**
      * Encodes ofp_action (OpenFlow v1.0) structures
      * @param out output ByteBuf that actions will be written into
-     * @param actionsList actions to be encoded
+     * @param actions actions to be encoded
      */
-    public static void encodeActionsV10(ByteBuf out, List<ActionsList> actionsList) {
-        if (actionsList == null) {
+    public static void encodeActionsV10(ByteBuf out, List<Action> actions) {
+        if (actions == null) {
             return;
         }
-        for (ActionsList list : actionsList) {
-            Action action = list.getAction();
+        for (Action action : actions) {
             if (action.getType().equals(Output.class)) {
                 encodeOutputAction(action, out);
             } else if (action.getType().equals(SetVlanVid.class)) {
@@ -197,14 +195,13 @@ public abstract class OF10ActionsSerializer {
     
     /**
      * Computes length of actions
-     * @param actionsList
+     * @param actions
      * @return length of actions (OpenFlow v1.0)
      */
-    public static int computeActionsLength(List<ActionsList> actionsList) {
+    public static int computeActionsLength(List<Action> actions) {
         int length = 0;
-        if (actionsList != null) {
-            for (ActionsList list : actionsList) {
-                Action action = list.getAction();
+        if (actions != null) {
+            for (Action action : actions) {
                 if (action.getType().equals(Output.class)) {
                     length += 8;
                 } else if (action.getType().equals(SetVlanVid.class)) {

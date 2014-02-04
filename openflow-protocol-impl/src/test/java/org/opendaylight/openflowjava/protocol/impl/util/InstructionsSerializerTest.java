@@ -13,9 +13,6 @@ import io.netty.buffer.UnpooledByteBufAllocator;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionsInstruction;
@@ -38,17 +35,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.PopPbb;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.PushVlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetNwTtl;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.ActionsList;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.ActionsListBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.actions.list.ActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.ApplyActions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.ClearActions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.GotoTable;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.Meter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.WriteActions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.WriteMetadata;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.Instructions;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.InstructionsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.InstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.EtherType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
 
@@ -63,15 +59,15 @@ public class InstructionsSerializerTest {
      */
     @Test
     public void test() {
-        List<Instructions> instructions = new ArrayList<>();
+        List<Instruction> instructions = new ArrayList<>();
         // Goto_table instruction
-        InstructionsBuilder builder = new InstructionsBuilder();
+        InstructionBuilder builder = new InstructionBuilder();
         builder.setType(GotoTable.class);
         TableIdInstructionBuilder tableIdBuilder = new TableIdInstructionBuilder();
         tableIdBuilder.setTableId((short) 5);
         builder.addAugmentation(TableIdInstruction.class, tableIdBuilder.build());
         instructions.add(builder.build());
-        builder = new InstructionsBuilder();
+        builder = new InstructionBuilder();
         // Write_metadata instruction
         builder.setType(WriteMetadata.class);
         MetadataInstructionBuilder metaBuilder = new MetadataInstructionBuilder();
@@ -80,62 +76,54 @@ public class InstructionsSerializerTest {
         builder.addAugmentation(MetadataInstruction.class, metaBuilder.build());
         instructions.add(builder.build());
         // Clear_actions instruction
-        builder = new InstructionsBuilder();
+        builder = new InstructionBuilder();
         builder.setType(ClearActions.class);
         instructions.add(builder.build());
         // Meter instruction
-        builder = new InstructionsBuilder();
+        builder = new InstructionBuilder();
         builder.setType(Meter.class);
         MeterIdInstructionBuilder meterBuilder = new MeterIdInstructionBuilder();
         meterBuilder.setMeterId(42L);
         builder.addAugmentation(MeterIdInstruction.class, meterBuilder.build());
         instructions.add(builder.build());
         // Write_actions instruction
-        builder = new InstructionsBuilder();
+        builder = new InstructionBuilder();
         builder.setType(WriteActions.class);
         ActionsInstructionBuilder actionsBuilder = new ActionsInstructionBuilder();
-        List<ActionsList> actions = new ArrayList<>();
-        ActionsListBuilder listBuilder = new ActionsListBuilder();
-        ActionBuilder actBuilder = new ActionBuilder();
-        actBuilder.setType(Output.class);
+        List<Action> actions = new ArrayList<>();
+        ActionBuilder actionBuilder = new ActionBuilder();
+        actionBuilder.setType(Output.class);
         PortActionBuilder portBuilder = new PortActionBuilder();
         portBuilder.setPort(new PortNumber(45L));
-        actBuilder.addAugmentation(PortAction.class, portBuilder.build());
+        actionBuilder.addAugmentation(PortAction.class, portBuilder.build());
         MaxLengthActionBuilder maxBuilder = new MaxLengthActionBuilder();
         maxBuilder.setMaxLength(55);
-        actBuilder.addAugmentation(MaxLengthAction.class, maxBuilder.build());
-        listBuilder.setAction(actBuilder.build());
-        actions.add(listBuilder.build());
-        listBuilder = new ActionsListBuilder();
-        actBuilder = new ActionBuilder();
-        actBuilder.setType(SetNwTtl.class);
+        actionBuilder.addAugmentation(MaxLengthAction.class, maxBuilder.build());
+        actions.add(actionBuilder.build());
+        actionBuilder = new ActionBuilder();
+        actionBuilder.setType(SetNwTtl.class);
         NwTtlActionBuilder nwTtl = new NwTtlActionBuilder();
         nwTtl.setNwTtl((short) 64);
-        actBuilder.addAugmentation(NwTtlAction.class, nwTtl.build());
-        listBuilder.setAction(actBuilder.build());
-        actions.add(listBuilder.build());
-        actionsBuilder.setActionsList(actions);
+        actionBuilder.addAugmentation(NwTtlAction.class, nwTtl.build());
+        actions.add(actionBuilder.build());
+        actionsBuilder.setAction(actions);
         builder.addAugmentation(ActionsInstruction.class, actionsBuilder.build());
         instructions.add(builder.build());
         // Apply_actions instruction
-        builder = new InstructionsBuilder();
+        builder = new InstructionBuilder();
         builder.setType(ApplyActions.class);
         actionsBuilder = new ActionsInstructionBuilder();
         actions = new ArrayList<>();
-        listBuilder = new ActionsListBuilder();
-        actBuilder = new ActionBuilder();
-        actBuilder.setType(PushVlan.class);
+        actionBuilder = new ActionBuilder();
+        actionBuilder.setType(PushVlan.class);
         EthertypeActionBuilder ethertypeBuilder = new EthertypeActionBuilder();
         ethertypeBuilder.setEthertype(new EtherType(14));
-        actBuilder.addAugmentation(EthertypeAction.class, ethertypeBuilder.build());
-        listBuilder.setAction(actBuilder.build());
-        actions.add(listBuilder.build());
-        listBuilder = new ActionsListBuilder();
-        actBuilder = new ActionBuilder();
-        actBuilder.setType(PopPbb.class);
-        listBuilder.setAction(actBuilder.build());
-        actions.add(listBuilder.build());
-        actionsBuilder.setActionsList(actions);
+        actionBuilder.addAugmentation(EthertypeAction.class, ethertypeBuilder.build());
+        actions.add(actionBuilder.build());
+        actionBuilder = new ActionBuilder();
+        actionBuilder.setType(PopPbb.class);
+        actions.add(actionBuilder.build());
+        actionsBuilder.setAction(actions);
         builder.addAugmentation(ActionsInstruction.class, actionsBuilder.build());
         instructions.add(builder.build());
         

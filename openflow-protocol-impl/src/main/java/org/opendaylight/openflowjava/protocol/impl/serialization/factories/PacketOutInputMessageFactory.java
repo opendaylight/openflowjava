@@ -48,9 +48,9 @@ public class PacketOutInputMessageFactory implements OFSerializer<PacketOutInput
         ByteBufUtils.writeOFHeader(instance, message, out);
         out.writeInt(message.getBufferId().intValue());
         out.writeInt(message.getInPort().getValue().intValue());
-        out.writeShort(ActionsSerializer.computeLengthOfActions(message.getActionsList()));
+        out.writeShort(ActionsSerializer.computeLengthOfActions(message.getAction()));
         ByteBufUtils.padBuffer(PADDING_IN_PACKET_OUT_MESSAGE, out);
-        ActionsSerializer.encodeActions(message.getActionsList(), out);
+        ActionsSerializer.encodeActions(message.getAction(), out);
         byte[] data = message.getData();
         if (data != null) {
             out.writeBytes(data);
@@ -60,7 +60,7 @@ public class PacketOutInputMessageFactory implements OFSerializer<PacketOutInput
     @Override
     public int computeLength(PacketOutInput message) {
         int length = MESSAGE_LENGTH;
-        length += ActionsSerializer.computeLengthOfActions(message.getActionsList());
+        length += ActionsSerializer.computeLengthOfActions(message.getAction());
         byte[] data = message.getData();
         if (data != null) {
             length += data.length;

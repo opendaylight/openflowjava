@@ -198,11 +198,11 @@
         base oft:match-type-base;
     }
 
-    identity instruction {
+    identity instruction-base {
         description "Base identity for instruction types";
     }
 
-    identity action {
+    identity action-base {
         description "Base identity for action types";
     }
 

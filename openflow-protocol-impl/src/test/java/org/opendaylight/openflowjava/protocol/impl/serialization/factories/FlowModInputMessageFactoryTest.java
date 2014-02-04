@@ -31,8 +31,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.ApplyActions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.GotoTable;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.WriteMetadata;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.Instructions;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.InstructionsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.InstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowModCommand;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowModFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
@@ -42,11 +42,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.IpEc
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Nxm0Class;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmMatchType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.MatchEntries;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.MatchBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.match.grouping.MatchBuilder;
 
 /**
  * @author timotej.kubas
@@ -96,8 +96,8 @@ public class FlowModInputMessageFactoryTest {
         entries.add(entriesBuilder.build());
         matchBuilder.setMatchEntries(entries);
         builder.setMatch(matchBuilder.build());
-        List<Instructions> instructions = new ArrayList<>();
-        InstructionsBuilder insBuilder = new InstructionsBuilder();
+        List<Instruction> instructions = new ArrayList<>();
+        InstructionBuilder insBuilder = new InstructionBuilder();
         insBuilder.setType(GotoTable.class);
         TableIdInstructionBuilder idBuilder = new TableIdInstructionBuilder();
         idBuilder.setTableId((short) 43);
@@ -109,11 +109,11 @@ public class FlowModInputMessageFactoryTest {
         metaBuilder.setMetadataMask(cookieMask);
         insBuilder.addAugmentation(MetadataInstruction.class, metaBuilder.build());
         instructions.add(insBuilder.build());
-        insBuilder = new InstructionsBuilder();
+        insBuilder = new InstructionBuilder();
         insBuilder.setType(ApplyActions.class);
         insBuilder.addAugmentation(MetadataInstruction.class, metaBuilder.build());
         instructions.add(insBuilder.build());
-        builder.setInstructions(instructions);
+        builder.setInstruction(instructions);
         FlowModInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();

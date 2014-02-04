@@ -965,26 +965,26 @@ public class MultipartReplyMessageFactoryTest {
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWatchGroup().intValue());
         
         Assert.assertEquals("Wrong outputType", Output.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
-                getAction().getType());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(0)
+                .getType());
         
         Assert.assertEquals("Wrong outputPort", 4351, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
-                getAction().getAugmentation(PortAction.class).
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(0)
+                .getAugmentation(PortAction.class).
                 getPort().getValue().intValue());
         
         Assert.assertEquals("Wrong outputMaxLen", 65535, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
-                getAction().getAugmentation(MaxLengthAction.class).
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(0)
+                .getAugmentation(MaxLengthAction.class).
                 getMaxLength().intValue());
         
         Assert.assertEquals("Wrong copyTtlOutType", CopyTtlOut.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
-                getAction().getType());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(1)
+                .getType());
         
         Assert.assertEquals("Wrong copyTtlInType", CopyTtlIn.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
-                getAction().getType());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(2)
+                .getType());
     }
     
     /**
@@ -1042,35 +1042,35 @@ public class MultipartReplyMessageFactoryTest {
         Assert.assertEquals("Wrong bucketWatchGroup", 4, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWatchGroup().intValue());
         Assert.assertEquals("Wrong setMplsTtlType", SetMplsTtl.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
-                getAction().getType());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(0)
+                .getType());
         Assert.assertEquals("Wrong setMplsTtlMPLS_TTL", 9, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
-                getAction().getAugmentation(MplsTtlAction.class).
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(0)
+                .getAugmentation(MplsTtlAction.class).
                 getMplsTtl().intValue());
         Assert.assertEquals("Wrong decMplsTtlType", DecMplsTtl.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
-                getAction().getType());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(1)
+                .getType());
         Assert.assertEquals("Wrong pushVlanType", PushVlan.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
-                getAction().getType());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(2)
+                .getType());
         Assert.assertEquals("Wrong pushVlanEthertype", 32, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
-                getAction().getAugmentation(EthertypeAction.class).
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(2)
+                .getAugmentation(EthertypeAction.class).
                 getEthertype().getValue().intValue());
         Assert.assertEquals("Wrong pushMplsType", PushMpls.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(3).
-                getAction().getType());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(3)
+                .getType());
         Assert.assertEquals("Wrong pushMplsEthertype", 255, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(3).
-                getAction().getAugmentation(EthertypeAction.class).
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(3).
+                getAugmentation(EthertypeAction.class).
                 getEthertype().getValue().intValue());
         Assert.assertEquals("Wrong pushPbbType", PushPbb.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(4).
-                getAction().getType());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(4)
+                .getType());
         Assert.assertEquals("Wrong pushPbbEthertype", 4095, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(4).
-                getAction().getAugmentation(EthertypeAction.class).
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(4)
+                .getAugmentation(EthertypeAction.class).
                 getEthertype().getValue().intValue());
     }
     
@@ -1127,35 +1127,35 @@ public class MultipartReplyMessageFactoryTest {
         Assert.assertEquals("Wrong bucketWatchGroup", 4, 
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWatchGroup().intValue());
         Assert.assertEquals("Wrong popVlanType", PopVlan.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
-                getAction().getType());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(0)
+                .getType());
         Assert.assertEquals("Wrong popPbbType", PopPbb.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
-                getAction().getType());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(1)
+                .getType());
         Assert.assertEquals("Wrong popMplsType", PopMpls.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
-                getAction().getType());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(2)
+                .getType());
         Assert.assertEquals("Wrong popMplsEthertype", 207, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(2).
-                getAction().getAugmentation(EthertypeAction.class).
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(2)
+                .getAugmentation(EthertypeAction.class).
                 getEthertype().getValue().intValue());
         Assert.assertEquals("Wrong setQueueType", SetQueue.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(3).
-                getAction().getType());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(3)
+                .getType());
         Assert.assertEquals("Wrong setQueueQueueId", 13565952, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(3).
-                getAction().getAugmentation(QueueIdAction.class).
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(3)
+                .getAugmentation(QueueIdAction.class).
                 getQueueId().intValue());
         Assert.assertEquals("Wrong groupType", Group.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(4).
-                getAction().getType());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(4)
+                .getType());
         Assert.assertEquals("Wrong groupGroupId", 13565952, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(4).
-                getAction().getAugmentation(GroupIdAction.class).
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(4)
+                .getAugmentation(GroupIdAction.class).
                 getGroupId().intValue());
         Assert.assertEquals("Wrong decNwTtlType", DecNwTtl.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(5).
-                getAction().getType());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(5)
+                .getType());
     }
     
     /**
@@ -1207,28 +1207,28 @@ public class MultipartReplyMessageFactoryTest {
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWatchGroup().intValue());
         
         Assert.assertEquals("Wrong nwTTlType", SetNwTtl.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
-                getAction().getType());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(0)
+                .getType());
         
         Assert.assertEquals("Wrong nwTTlnwTTL", 14, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(0).
-                getAction().getAugmentation(NwTtlAction.class).getNwTtl().intValue());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(0)
+                .getAugmentation(NwTtlAction.class).getNwTtl().intValue());
         
         Assert.assertEquals("Wrong setFieldType", SetField.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
-                getAction().getType());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(1)
+                .getType());
         
         Assert.assertEquals("Wrong setFieldOXMClass", OpenflowBasicClass.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
-                getAction().getAugmentation(OxmFieldsAction.class).getMatchEntries().get(0).getOxmClass());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(1)
+                .getAugmentation(OxmFieldsAction.class).getMatchEntries().get(0).getOxmClass());
         
         Assert.assertEquals("Wrong setFieldOXMField", InPort.class, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
-                getAction().getAugmentation(OxmFieldsAction.class).getMatchEntries().get(0).getOxmMatchField());
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(1)
+                .getAugmentation(OxmFieldsAction.class).getMatchEntries().get(0).getOxmMatchField());
         
         Assert.assertEquals("Wrong setFieldOXMValue", 255, 
-                message.getGroupDesc().get(0).getBucketsList().get(0).getActionsList().get(1).
-                getAction().getAugmentation(OxmFieldsAction.class).getMatchEntries().get(0).
+                message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(1)
+                .getAugmentation(OxmFieldsAction.class).getMatchEntries().get(0).
                 getAugmentation(PortNumberMatchEntry.class).getPortNumber().getValue().intValue());
     }
 }

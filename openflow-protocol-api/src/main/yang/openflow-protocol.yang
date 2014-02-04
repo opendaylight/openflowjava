@@ -22,7 +22,7 @@
     }
 
     // Generic Structures
-        grouping port {
+        grouping port-grouping {
             reference "ofp_port";
             leaf port-no {
                 type uint32;
@@ -93,25 +93,13 @@
             }
         }
 
-        grouping match-grouping {
-            container match {
-                description "Match structure (OF v1.3)";
-                leaf type {
-                    type identityref {
-                        base oft:match-type-base;
-                    }
-                }
-                uses oxm:oxm-fields;
-            }
-        }
-
-        grouping buckets {
+        grouping buckets-grouping {
                 list buckets-list {
-                    uses bucket;
+                    uses bucket-grouping;
                 }
             }
 
-            grouping bucket {
+            grouping bucket-grouping {
                 description "Bucket for use in groups.";
                 leaf weight {
                     description "Relative weight of bucket. Only
@@ -131,14 +119,14 @@
                     type uint32;
                 }
 
-                uses ofaction:actions;
+                uses ofaction:actions-grouping;
             }
             
         container table-features-properties-container {
-            uses table-features-properties;
+            uses table-features-properties-grouping;
         }
 
-        grouping table-features-properties {
+        grouping table-features-properties-grouping {
             list table-feature-properties {
                 key "type";
                 leaf type {
@@ -271,7 +259,7 @@
                     type oft:action-type-v10;
                 }
                 list phy-port {
-                    uses port;
+                    uses port-grouping;
                 }
             }
             grouping get-config-request {
@@ -331,7 +319,7 @@
                     // Cookie of the flow entry that was looked up.
                     type uint64;
                 }
-                uses match-grouping;
+                uses oxm:match-grouping;
 
                 leaf data {
                     type binary;
@@ -377,7 +365,7 @@
                 leaf byte-count {
                     type uint64;
                 }
-                uses match-grouping;
+                uses oxm:match-grouping;
                 
                 // OF1.0 structures
                 uses oxm:match-v10-grouping;
@@ -387,7 +375,7 @@
                 
                 uses ofHeader;
                 
-                uses port;
+                uses port-grouping;
                 
                 leaf reason {
                     type oft:port-reason;
@@ -400,7 +388,7 @@
                 
                 uses ofHeader;
                 
-                uses ofaction:actions;
+                uses ofaction:actions-grouping;
                 
                 leaf data {
                     type binary;
@@ -451,16 +439,16 @@
                 leaf flags {
                     type oft:flow-mod-flags;
                 }
-                uses match-grouping;
+                uses oxm:match-grouping;
                 
-                uses ofinstruction:instructions;
+                uses ofinstruction:instructions-grouping;
                 
                 // OF1.0 structures
                 leaf flags-v10 {
                     type oft:flow-mod-flags-v10;
                 }
                 uses oxm:match-v10-grouping;
-                uses ofaction:actions;
+                uses ofaction:actions-grouping;
             } 
             grouping group-mod {
                 reference "OFPT_GROUP_MOD message in Openflow Switch 1.3 Spec";
@@ -478,7 +466,7 @@
                     type oft:group-id;
                 }
                 
-                uses buckets;
+                uses buckets-grouping;
             }
             
             grouping port-mod {
@@ -565,7 +553,7 @@
                             leaf cookie-mask {
                                 type uint64;
                             }
-                            uses match-grouping;
+                            uses oxm:match-grouping;
                             
                             // OF1.0 structures
                             uses oxm:match-v10-grouping;
@@ -588,7 +576,7 @@
                             leaf cookie-mask {
                                 type uint64;
                             }
-                            uses match-grouping;
+                            uses oxm:match-grouping;
                             
                             // OF1.0 structures
                             uses oxm:match-v10-grouping;
@@ -681,7 +669,7 @@
                                 leaf max-entries {
                                     type uint32;
                                 }
-                                uses table-features-properties;
+                                uses table-features-properties-grouping;
                             }
                         }
                     }
@@ -772,13 +760,13 @@
                                 leaf byte-count {
                                     type uint64;
                                 }
-                                uses match-grouping;
+                                uses oxm:match-grouping;
                                 
-                                uses ofinstruction:instructions;
+                                uses ofinstruction:instructions-grouping;
                                 
                                 // OF1.0 structures
                                 uses oxm:match-v10-grouping;
-                                uses ofaction:actions;
+                                uses ofaction:actions-grouping;
                             }
                         }
                     }
@@ -949,7 +937,7 @@
                                 leaf group-id {
                                     type oft:group-id;
                                 }
-                                uses buckets;
+                                uses buckets-grouping;
                             }
                         }
                     }
@@ -1056,14 +1044,14 @@
                                 leaf max-entries {
                                     type uint32;
                                 }
-                                uses table-features-properties;
+                                uses table-features-properties-grouping;
                             }
                         }
                     }
                     case multipart-reply-port-desc-case {
                         container multipart-reply-port-desc {
                             list ports {
-                                uses port;
+                                uses port-grouping;
                             }
                         }
                     }
@@ -1169,7 +1157,7 @@
                 reference "OFPT_GET_ASYNC_REQUEST message in Openflow Switch 1.3 Spec";
                 /* Controller/switch message */
 
-                uses ofHeader;                
+                uses ofHeader;
             } 
             grouping get-async-reply {
                 reference "OFPT_GET_ASYNC_REPLY message in Openflow Switch 1.3 Spec";
