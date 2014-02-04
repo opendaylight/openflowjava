@@ -221,7 +221,7 @@
      }
      augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
          ext:augment-identifier "oxm-fields-action";
-         uses oxm:oxm-fields;
+         uses oxm:oxm-fields-grouping;
      }
      augment "/ofaction:actions-container/ofaction:actions-list/ofaction:action" {
          ext:augment-identifier "experimenter-action";
@@ -264,7 +264,7 @@
 // OFP_TABLE_FEATURES_PROPERTIES AUGMENTS
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          ext:augment-identifier "instruction-related-table-feature-property";
-         uses ofinstruction:instructions;
+         uses ofinstruction:instructions-grouping;
      }
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          ext:augment-identifier "next-table-related-table-feature-property";
@@ -277,11 +277,11 @@
      }
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          ext:augment-identifier "action-related-table-feature-property";
-         uses ofaction:actions;
+         uses ofaction:actions-grouping;
      }
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          ext:augment-identifier "oxm-related-table-feature-property";
-         uses oxm:oxm-fields;
+         uses oxm:oxm-fields-grouping;
      }
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          ext:augment-identifier "experimenter-related-table-feature-property";
@@ -314,7 +314,7 @@
      }
      augment "/ofinstruction:instruction-container/ofinstruction:instructions" {
          ext:augment-identifier "actions-instruction";
-         uses ofaction:actions;
+         uses ofaction:actions-grouping;
      }
      augment "/ofinstruction:instruction-container/ofinstruction:instructions" {
          ext:augment-identifier "meter-id-instruction";

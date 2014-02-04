@@ -86,10 +86,10 @@
     }
     
     container actions-container {
-        uses actions;
+        uses actions-grouping;
     }
     
-    grouping actions {
+    grouping actions-grouping {
         list actions-list {
             key "action";
             container action {

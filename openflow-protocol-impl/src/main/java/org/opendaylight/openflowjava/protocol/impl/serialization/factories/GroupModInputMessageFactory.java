@@ -16,7 +16,7 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ActionsSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GroupModInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.buckets.BucketsList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.buckets.grouping.BucketsList;
 
 /**
  * Translates GroupMod messages

@@ -46,10 +46,10 @@
     }
 
     container instruction-container {
-        uses instructions;
+        uses instructions-grouping;
     }
 
-    grouping instructions {
+    grouping instructions-grouping {
         list instructions {
             key "type";
             leaf type {
