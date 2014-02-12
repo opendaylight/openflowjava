@@ -91,7 +91,7 @@
     
     grouping actions {
         list actions-list {
-            key "action";
+            config false;
             container action {
                 leaf type {
                     type identityref {
