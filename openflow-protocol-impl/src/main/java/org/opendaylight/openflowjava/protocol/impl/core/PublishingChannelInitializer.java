@@ -12,6 +12,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
 import java.net.InetAddress;
 import java.util.Iterator;
@@ -71,7 +72,9 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
                 tlsDetector.setConnectionFacade(connectionFacade);
                 ch.pipeline().addLast(COMPONENT_NAMES.TLS_DETECTOR.name(), tlsDetector);
             }
-            ch.pipeline().addLast(COMPONENT_NAMES.OF_FRAME_DECODER.name(), new OFFrameDecoder());
+//            ch.pipeline().addLast(COMPONENT_NAMES.OF_FRAME_DECODER.name(), new OFFrameDecoder());
+            ch.pipeline().addLast(COMPONENT_NAMES.OF_FRAME_DECODER.name(),
+                    new LengthFieldBasedFrameDecoder(65535, 2, 2, -4, 0));
             ch.pipeline().addLast(COMPONENT_NAMES.OF_VERSION_DETECTOR.name(), new OFVersionDetector());
             ch.pipeline().addLast(COMPONENT_NAMES.OF_DECODER.name(), new OFDecoder());
             ch.pipeline().addLast(COMPONENT_NAMES.OF_ENCODER.name(), new OFEncoder());
