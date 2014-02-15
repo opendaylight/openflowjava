@@ -71,7 +71,9 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
                 tlsDetector.setConnectionFacade(connectionFacade);
                 ch.pipeline().addLast(COMPONENT_NAMES.TLS_DETECTOR.name(), tlsDetector);
             }
-            ch.pipeline().addLast(COMPONENT_NAMES.OF_FRAME_DECODER.name(), new OFFrameDecoder());
+            OFFrameDecoder ofFrameDecoder = new OFFrameDecoder();
+            ofFrameDecoder.setSingleDecode(true);
+            ch.pipeline().addLast(COMPONENT_NAMES.OF_FRAME_DECODER.name(), ofFrameDecoder);
             ch.pipeline().addLast(COMPONENT_NAMES.OF_VERSION_DETECTOR.name(), new OFVersionDetector());
             ch.pipeline().addLast(COMPONENT_NAMES.OF_DECODER.name(), new OFDecoder());
             ch.pipeline().addLast(COMPONENT_NAMES.OF_ENCODER.name(), new OFEncoder());
