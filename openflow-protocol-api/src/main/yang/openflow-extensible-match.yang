@@ -222,7 +222,7 @@
         grouping oxm-fields-grouping {
             list match-entries {
                 description "OXM TLV-structures (Type Length Value)";
-                key "oxm-class oxm-match-field has-mask";
+                config false;
                 leaf oxm-class {
                     type identityref {
                         base clazz;

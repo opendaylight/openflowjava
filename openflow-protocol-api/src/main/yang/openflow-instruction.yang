@@ -51,7 +51,7 @@
 
     grouping instructions-grouping {
         list instruction {
-            key "type";
+            config false;
             leaf type {
                 type identityref {
                     base oft:instruction-base;
