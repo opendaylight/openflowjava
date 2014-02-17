@@ -128,7 +128,7 @@
 
         grouping table-features-properties-grouping {
             list table-feature-properties {
-                key "type";
+                config false;
                 leaf type {
                     type oft:table-features-prop-type;
                 }
@@ -1119,7 +1119,7 @@
             }
             grouping queue-property-header {
                 list queue-property {
-                    key "property";
+                    config false;
                     leaf property {
                         type oft:queue-properties;
                     }
