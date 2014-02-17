@@ -91,7 +91,7 @@
     
     grouping actions-grouping {
         list action {
-            key "type";
+            config false;
             leaf type {
                 type identityref {
                     base oft:action-base;
