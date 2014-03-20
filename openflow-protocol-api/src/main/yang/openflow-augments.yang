@@ -228,6 +228,9 @@
          leaf experimenter {
              type uint32;
          }
+         leaf data {
+             type binary;
+         }
      }
      // OF1.0 structures
      augment "/ofaction:actions-container/ofaction:action" {
