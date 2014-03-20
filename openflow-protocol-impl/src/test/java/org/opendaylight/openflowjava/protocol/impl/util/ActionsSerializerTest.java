@@ -167,6 +167,7 @@ public class ActionsSerializerTest {
         actionBuilder.setType(Experimenter.class);
         ExperimenterActionBuilder experimenter = new ExperimenterActionBuilder();
         experimenter.setExperimenter(4L);
+        experimenter.setData(new byte[]{0, 1, 2, 3, 4, 5, 6, 7});
         actionBuilder.addAugmentation(ExperimenterAction.class, experimenter.build());
         actions.add(actionBuilder.build());
         
@@ -234,8 +235,12 @@ public class ActionsSerializerTest {
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         out.skipBytes(4);
         Assert.assertEquals("Wrong action type", 65535, out.readUnsignedShort());
-        Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
-        Assert.assertEquals("Wrong action experimenter", 4, out.readUnsignedInt());
+        Assert.assertEquals("Wrong action length", 16, out.readUnsignedShort());
+        Assert.assertEquals("Wrong experimenter", 4, out.readUnsignedInt());
+        byte[] data = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
+        out.readBytes(data);
+        Assert.assertArrayEquals("Wrong data", new byte[]{0, 1, 2, 3, 4, 5, 6, 7}, data);
+        Assert.assertTrue("Unread data", out.readableBytes() == 0);
     }
 
 }

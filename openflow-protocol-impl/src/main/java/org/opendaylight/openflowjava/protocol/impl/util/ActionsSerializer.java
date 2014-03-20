@@ -70,7 +70,7 @@ public abstract class ActionsSerializer {
     private static final byte SET_QUEUE_LENGTH = 8;
     private static final byte GROUP_LENGTH = 8;
     private static final byte SET_NW_TTL_LENGTH = 8;
-    private static final byte EXPERIMENTER_LENGTH = 8;
+    private static final byte EXPERIMENTER_ACTION_HEADER_LENGTH = 8;
     private static final byte ACTION_HEADER_LENGTH = 8;
     private static final byte LENGTH_OF_ETHERTYPE_ACTION = 8;
     private static final byte LENGTH_OF_OTHER_ACTIONS = 8;
@@ -293,9 +293,15 @@ public abstract class ActionsSerializer {
 
     private static void encodeExperimenterAction(Action action, ByteBuf outBuffer) {
         outBuffer.writeShort(EXPERIMENTER_CODE);
-        outBuffer.writeShort(EXPERIMENTER_LENGTH);
         ExperimenterAction experimenter = action.getAugmentation(ExperimenterAction.class);
-        outBuffer.writeInt(experimenter.getExperimenter().intValue());
+        if (experimenter.getData() != null) {
+            outBuffer.writeShort(EXPERIMENTER_ACTION_HEADER_LENGTH + experimenter.getData().length);
+            outBuffer.writeInt(experimenter.getExperimenter().intValue());
+            outBuffer.writeBytes(experimenter.getData());
+        } else {
+            outBuffer.writeShort(EXPERIMENTER_ACTION_HEADER_LENGTH);
+            outBuffer.writeInt(experimenter.getExperimenter().intValue());
+        }
     }
     
     private static void encodeRestOfActionHeader(ByteBuf outBuffer) {

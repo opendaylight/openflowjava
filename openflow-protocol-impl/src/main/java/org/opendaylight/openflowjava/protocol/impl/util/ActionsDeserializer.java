@@ -67,6 +67,7 @@ public abstract class ActionsDeserializer {
     private static final byte PADDING_IN_SET_MPLS_TTL_ACTIONS_HEADER = 3;
     private static final byte PADDING_IN_PUSH_VLAN_ACTIONS_HEADER = 2;
     private static final byte PADDING_IN_NW_TTL_ACTIONS_HEADER = 3;
+    private static final byte EXPERIMENTER_ACTION_HEADER_LENGTH = 8;
     
     /**
      * Creates list of actions (OpenFlow v1.3)
@@ -131,7 +132,7 @@ public abstract class ActionsDeserializer {
                 actions.add(createPopPbbAction(input, actionBuilder));
                 break;
             case 0xFFFF:
-                actions.add(createExperimenterAction(input, actionBuilder));
+                actions.add(createExperimenterAction(input, actionBuilder, currentActionLength));
                 break;
             default:
                 break;
@@ -313,10 +314,16 @@ public abstract class ActionsDeserializer {
         return actionBuilder.build();
     }
     
-    private static Action createExperimenterAction(ByteBuf in, ActionBuilder actionBuilder) {
+    private static Action createExperimenterAction(ByteBuf in, ActionBuilder actionBuilder, int actionLength) {
         actionBuilder.setType(Experimenter.class);
         ExperimenterActionBuilder experimenter = new ExperimenterActionBuilder();
         experimenter.setExperimenter(in.readUnsignedInt());
+        int dataLength = actionLength - EXPERIMENTER_ACTION_HEADER_LENGTH;
+        if (dataLength > 0) {
+            byte[] data = new byte[dataLength];
+            in.readBytes(data);
+            experimenter.setData(data);
+        }
         actionBuilder.addAugmentation(ExperimenterAction.class, experimenter.build());
         return actionBuilder.build();
     }
