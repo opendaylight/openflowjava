@@ -335,6 +335,10 @@ public abstract class ActionsSerializer {
                     if ((paddingRemainder) != 0) {
                         lengthOfActions += EncodeConstants.PADDING - paddingRemainder;
                     }
+                } else if (action.getType().isAssignableFrom(Experimenter.class)) {
+                    ExperimenterAction experimenterAction = action.getAugmentation(ExperimenterAction.class);
+                    lengthOfActions += experimenterAction.getData().length;
+                    lengthOfActions += EncodeConstants.SIZE_OF_LONG_IN_BYTES;
                 } else {
                     lengthOfActions += LENGTH_OF_OTHER_ACTIONS;
                 }
