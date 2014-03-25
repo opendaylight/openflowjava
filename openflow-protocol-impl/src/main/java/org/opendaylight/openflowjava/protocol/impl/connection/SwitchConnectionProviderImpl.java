@@ -19,6 +19,10 @@ import java.util.concurrent.Future;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration.FEATURE_SUPPORT;
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OpenflowDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OpenflowSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerKey;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
 import org.slf4j.Logger;
@@ -125,6 +129,20 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
      */
     public Set<ServerFacade> getServerLot() {
         return serverLot;
+    }
+
+    @Override
+    public void registerCustomDeserializer(int version, DeserializerKey key,
+            OpenflowDeserializer deserializer) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void registerCustomSerializer(int version, SerializerKey key,
+            OpenflowSerializer serializer) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
