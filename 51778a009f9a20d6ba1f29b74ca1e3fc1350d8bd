@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a5c5d37_c4d7afec",
+        "filename": "openflow-protocol-api/src/main/java/org/opendaylight/openflowjava/protocol/api/extensibility/OpenflowDeserializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2014-03-26T16:49:44Z",
+      "side": 1,
+      "message": "we probably know, this argument would be a sliced bytebuff, don\u0027t we?",
+      "revId": "51778a009f9a20d6ba1f29b74ca1e3fc1350d8bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5c5d37_a404bb7e",
+        "filename": "openflow-protocol-api/src/main/java/org/opendaylight/openflowjava/protocol/api/extensibility/OpenflowSerializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2014-03-26T16:49:44Z",
+      "side": 1,
+      "message": "We need bytebuff as argument too.\nPlease add comments.\nWhat is the return value used for?",
+      "revId": "51778a009f9a20d6ba1f29b74ca1e3fc1350d8bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5c5d37_04cee75a",
+        "filename": "openflow-protocol-spi/src/main/java/org/opendaylight/openflowjava/protocol/spi/connection/SwitchConnectionProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2014-03-26T16:49:44Z",
+      "side": 1,
+      "message": "why version as parameter? it is already inside of key",
+      "revId": "51778a009f9a20d6ba1f29b74ca1e3fc1350d8bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5c5d37_e4dab316",
+        "filename": "openflow-protocol-spi/src/main/java/org/opendaylight/openflowjava/protocol/spi/connection/SwitchConnectionProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2014-03-26T16:49:44Z",
+      "side": 1,
+      "message": "again - why version as paramater?",
+      "revId": "51778a009f9a20d6ba1f29b74ca1e3fc1350d8bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
