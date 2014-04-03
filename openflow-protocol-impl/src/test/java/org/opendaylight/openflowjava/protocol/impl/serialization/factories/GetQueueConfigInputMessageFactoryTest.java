@@ -12,8 +12,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
@@ -27,7 +31,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class GetQueueConfigInputMessageFactoryTest {
     private static final byte GET_QUEUE_CONFIG_INPUT_MESSAGE_CODE_TYPE = 22;
     private static final byte PADDING_IN_QUEUE_CONFIG_INPUT_MESSAGE = 4;
-    
+    private SerializerRegistry registry;
+    private OFSerializer<GetQueueConfigInput> getQueueFactory;
+
+    /**
+     * Initializes serializer registry and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        registry = new SerializerRegistryImpl();
+        registry.init();
+        getQueueFactory = registry.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, GetQueueConfigInput.class));
+    }
+
     /**
      * Testing of {@link GetQueueConfigInputMessageFactory} for correct translation from POJO
      * @throws Exception 
@@ -40,9 +57,8 @@ public class GetQueueConfigInputMessageFactoryTest {
         GetQueueConfigInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        GetQueueConfigInputMessageFactory factory = GetQueueConfigInputMessageFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
-        
+        getQueueFactory.serialize(message, out);
+
         BufferHelper.checkHeaderV13(out, GET_QUEUE_CONFIG_INPUT_MESSAGE_CODE_TYPE, 16);
         Assert.assertEquals("Wrong port", 0x00010203, out.readUnsignedInt());
         out.skipBytes(PADDING_IN_QUEUE_CONFIG_INPUT_MESSAGE);

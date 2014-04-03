@@ -14,8 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowRemovedReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PacketInReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortReason;
@@ -31,44 +32,17 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class SetAsyncInputMessageFactory implements OFSerializer<SetAsyncInput> {
     private static final byte MESSAGE_TYPE = 28;
-    private static final int MESSAGE_LENGTH = 32; 
-    private static SetAsyncInputMessageFactory instance;
-    
-
-    private SetAsyncInputMessageFactory() {
-        // singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized SetAsyncInputMessageFactory getInstance() {
-        if (instance == null) {
-            instance = new SetAsyncInputMessageFactory();
-        }
-        return instance;
-    }
-    
-    @Override
-    public void messageToBuffer(short version, ByteBuf out,
-            SetAsyncInput message) {
-        ByteBufUtils.writeOFHeader(instance, message, out);
-        encodePacketInMask(message.getPacketInMask(), out);
-        encodePortStatusMask(message.getPortStatusMask(), out);
-        encodeFlowRemovedMask(message.getFlowRemovedMask(), out);
-    }
 
     @Override
-    public int computeLength(SetAsyncInput message) {
-        return MESSAGE_LENGTH;
+    public void serialize(SetAsyncInput message, ByteBuf outBuffer) {
+        ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
+        serializePacketInMask(message.getPacketInMask(), outBuffer);
+        serializePortStatusMask(message.getPortStatusMask(), outBuffer);
+        serializerFlowRemovedMask(message.getFlowRemovedMask(), outBuffer);
+        ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
-    @Override
-    public byte getMessageType() {
-        return MESSAGE_TYPE;
-    }
-    
-    private static void encodePacketInMask(List<PacketInMask> packetInMask, ByteBuf outBuffer) {
+    private static void serializePacketInMask(List<PacketInMask> packetInMask, ByteBuf outBuffer) {
         if (packetInMask != null) {
             for (PacketInMask currentPacketMask : packetInMask) {
                 List<PacketInReason> mask = currentPacketMask.getMask();
@@ -89,7 +63,7 @@ public class SetAsyncInputMessageFactory implements OFSerializer<SetAsyncInput> 
         }
     }
     
-    private static void encodePortStatusMask(List<PortStatusMask> portStatusMask, ByteBuf outBuffer) {
+    private static void serializePortStatusMask(List<PortStatusMask> portStatusMask, ByteBuf outBuffer) {
         if (portStatusMask != null) {
             for (PortStatusMask currentPortStatusMask : portStatusMask) {
                 List<PortReason> mask = currentPortStatusMask.getMask();
@@ -110,7 +84,7 @@ public class SetAsyncInputMessageFactory implements OFSerializer<SetAsyncInput> 
         }
     }
     
-    private static void encodeFlowRemovedMask(List<FlowRemovedMask> flowRemovedMask, ByteBuf outBuffer) {
+    private static void serializerFlowRemovedMask(List<FlowRemovedMask> flowRemovedMask, ByteBuf outBuffer) {
         if (flowRemovedMask != null) {
             for (FlowRemovedMask currentFlowRemovedMask : flowRemovedMask) {
                 List<FlowRemovedReason> mask = currentFlowRemovedMask.getMask();
@@ -132,5 +106,5 @@ public class SetAsyncInputMessageFactory implements OFSerializer<SetAsyncInput> 
             }
         }
     }
-    
+
 }
