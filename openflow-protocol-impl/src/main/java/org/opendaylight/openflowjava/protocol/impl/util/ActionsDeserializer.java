@@ -59,7 +59,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
  * @author timotej.kubas
  * @author michal.polkorab
  */
-public abstract class ActionsDeserializer {
+public class ActionsDeserializer {
     
     private static final byte ACTION_HEADER_LENGTH = 4;
     private static final byte PADDING_IN_ACTIONS_HEADER = 4;

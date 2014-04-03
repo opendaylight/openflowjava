@@ -11,7 +11,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
@@ -40,6 +45,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class OF10StatsRequestInputFactoryTest {
 
+    private SerializerRegistry registry;
+    private OFSerializer<MultipartRequestInput> multipartFactory;
+
+    /**
+     * Initializes serializer registry and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        registry = new SerializerRegistryImpl();
+        registry.init();
+        multipartFactory = registry.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, MultipartRequestInput.class));
+    }
+
     /**
      * Testing OF10StatsRequestInputFactory (Desc) for correct serialization
      * @throws Exception
@@ -57,10 +76,9 @@ public class OF10StatsRequestInputFactoryTest {
         MultipartRequestInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        OF10StatsRequestInputFactory factory = OF10StatsRequestInputFactory.getInstance();
-        factory.messageToBuffer(EncodeConstants.OF10_VERSION_ID, out, message);
+        multipartFactory.serialize(message, out);
         
-        BufferHelper.checkHeaderV10(out, factory.getMessageType(), 12);
+        BufferHelper.checkHeaderV10(out, (byte) 16, 12);
         Assert.assertEquals("Wrong type", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", 0, out.readUnsignedShort());
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
@@ -103,10 +121,9 @@ public class OF10StatsRequestInputFactoryTest {
         MultipartRequestInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        OF10StatsRequestInputFactory factory = OF10StatsRequestInputFactory.getInstance();
-        factory.messageToBuffer(EncodeConstants.OF10_VERSION_ID, out, message);
+        multipartFactory.serialize(message, out);
         
-        BufferHelper.checkHeaderV10(out, factory.getMessageType(), 56);
+        BufferHelper.checkHeaderV10(out, (byte) 16, 56);
         Assert.assertEquals("Wrong type", 1, out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong wildcards", 3414271, out.readUnsignedInt());
@@ -128,7 +145,7 @@ public class OF10StatsRequestInputFactoryTest {
         Assert.assertEquals("Wrong nw-dst", 167772162, out.readUnsignedInt());
         Assert.assertEquals("Wrong tp-src", 57, out.readUnsignedShort());
         Assert.assertEquals("Wrong tp-dst", 58, out.readUnsignedShort());
-        Assert.assertEquals("Wrong table-id", 1, out.readUnsignedByte());
+        Assert.assertEquals("Wrong registry-id", 1, out.readUnsignedByte());
         out.skipBytes(1);
         Assert.assertEquals("Wrong out-port", 42, out.readUnsignedShort());
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
@@ -171,10 +188,9 @@ public class OF10StatsRequestInputFactoryTest {
         MultipartRequestInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        OF10StatsRequestInputFactory factory = OF10StatsRequestInputFactory.getInstance();
-        factory.messageToBuffer(EncodeConstants.OF10_VERSION_ID, out, message);
+        multipartFactory.serialize(message, out);
         
-        BufferHelper.checkHeaderV10(out, factory.getMessageType(), 56);
+        BufferHelper.checkHeaderV10(out, (byte) 16, 56);
         Assert.assertEquals("Wrong type", 2, out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong wildcards", 0, out.readUnsignedInt());
@@ -196,7 +212,7 @@ public class OF10StatsRequestInputFactoryTest {
         Assert.assertEquals("Wrong nw-dst", 167772162, out.readUnsignedInt());
         Assert.assertEquals("Wrong tp-src", 57, out.readUnsignedShort());
         Assert.assertEquals("Wrong tp-dst", 58, out.readUnsignedShort());
-        Assert.assertEquals("Wrong table-id", 42, out.readUnsignedByte());
+        Assert.assertEquals("Wrong registry-id", 42, out.readUnsignedByte());
         out.skipBytes(1);
         Assert.assertEquals("Wrong out-port", 6653, out.readUnsignedShort());
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
@@ -219,10 +235,9 @@ public class OF10StatsRequestInputFactoryTest {
         MultipartRequestInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        OF10StatsRequestInputFactory factory = OF10StatsRequestInputFactory.getInstance();
-        factory.messageToBuffer(EncodeConstants.OF10_VERSION_ID, out, message);
+        multipartFactory.serialize(message, out);
         
-        BufferHelper.checkHeaderV10(out, factory.getMessageType(), 12);
+        BufferHelper.checkHeaderV10(out, (byte) 16, 12);
         Assert.assertEquals("Wrong type", 3, out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", 0, out.readUnsignedShort());
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
@@ -246,10 +261,9 @@ public class OF10StatsRequestInputFactoryTest {
         MultipartRequestInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        OF10StatsRequestInputFactory factory = OF10StatsRequestInputFactory.getInstance();
-        factory.messageToBuffer(EncodeConstants.OF10_VERSION_ID, out, message);
+        multipartFactory.serialize(message, out);
         
-        BufferHelper.checkHeaderV10(out, factory.getMessageType(), 20);
+        BufferHelper.checkHeaderV10(out, (byte) 16, 20);
         Assert.assertEquals("Wrong type", 4, out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong port-no", 15, out.readUnsignedShort());
@@ -276,10 +290,9 @@ public class OF10StatsRequestInputFactoryTest {
         MultipartRequestInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        OF10StatsRequestInputFactory factory = OF10StatsRequestInputFactory.getInstance();
-        factory.messageToBuffer(EncodeConstants.OF10_VERSION_ID, out, message);
+        multipartFactory.serialize(message, out);
         
-        BufferHelper.checkHeaderV10(out, factory.getMessageType(), 20);
+        BufferHelper.checkHeaderV10(out, (byte) 16, 20);
         Assert.assertEquals("Wrong type", 5, out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong port-no", 15, out.readUnsignedShort());
