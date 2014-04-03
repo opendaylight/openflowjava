@@ -9,13 +9,9 @@
 
 package org.opendaylight.openflowjava.protocol.impl.connection;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Future;
-
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration.FEATURE_SUPPORT;
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
@@ -24,9 +20,8 @@ import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionPro
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
+import java.util.*;
+import java.util.concurrent.Future;
 
 /**
  * Exposed class for server handling
@@ -127,4 +122,8 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
         return serverLot;
     }
 
+  @Override
+  public void close() throws Exception {
+       shutdown();
+  }
 }

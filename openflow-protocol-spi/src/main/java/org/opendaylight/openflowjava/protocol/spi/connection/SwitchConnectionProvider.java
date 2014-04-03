@@ -9,19 +9,19 @@
 
 package org.opendaylight.openflowjava.protocol.spi.connection;
 
+import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
+import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Future;
-
-import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
-import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
 
 /**
  * @author mirehak
  * @author michal.polkorab
  *
  */
-public interface SwitchConnectionProvider {
+public interface SwitchConnectionProvider extends AutoCloseable {
 
     /**
      * @param configurations list of [protocol, port, address and supported features]
