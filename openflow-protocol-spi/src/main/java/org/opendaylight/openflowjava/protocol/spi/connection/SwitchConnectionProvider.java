@@ -11,6 +11,9 @@ package org.opendaylight.openflowjava.protocol.spi.connection;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
@@ -43,5 +46,12 @@ public interface SwitchConnectionProvider extends AutoCloseable {
      * @param switchConHandler instance being informed when new switch connects
      */
     void setSwitchConnectionHandler(SwitchConnectionHandler switchConHandler);
-    
+
+    /**
+     * Registers custom serializer
+     * @param key used for serializer lookup
+     * @param serializer serializer implementation
+     */
+    public  <E extends DataObject> void registerCustomSerializer(MessageTypeKey<E> key,
+            OFSerializer<E> serializer);
 }

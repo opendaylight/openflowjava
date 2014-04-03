@@ -8,13 +8,12 @@
 
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.impl.serialization.factories.HelloInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.HelloElementType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloMessage;
@@ -30,7 +29,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class HelloMessageFactory implements OFDeserializer<HelloMessage> {
 
     private static HelloMessageFactory instance;
-    
+    private static final byte HELLO_ELEMENT_HEADER_SIZE = 4;
+
     private HelloMessageFactory() {
         // do nothing, just singleton
     }
@@ -64,7 +64,7 @@ public class HelloMessageFactory implements OFDeserializer<HelloMessage> {
             int elementLength = input.readUnsignedShort();
             if (type == HelloElementType.VERSIONBITMAP.getIntValue()) {
                 elementsBuilder.setType(HelloElementType.forValue(type));
-                int[] versionBitmap = new int[(elementLength - HelloInputMessageFactory.HELLO_ELEMENT_HEADER_SIZE) / 4];
+                int[] versionBitmap = new int[(elementLength - HELLO_ELEMENT_HEADER_SIZE) / 4];
                 for (int i = 0; i < versionBitmap.length; i++) {
                     versionBitmap[i] = (int) input.readUnsignedInt();
                 }

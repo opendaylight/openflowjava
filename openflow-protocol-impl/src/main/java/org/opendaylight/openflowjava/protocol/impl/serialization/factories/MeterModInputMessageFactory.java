@@ -14,8 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterBandCommons;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterModInput;
@@ -35,48 +36,18 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class MeterModInputMessageFactory implements OFSerializer<MeterModInput> {
     private static final byte MESSAGE_TYPE = 29;
-    private static final int MESSAGE_LENGTH = 16;
     private static final short LENGTH_OF_METER_BANDS = 16;
     private static final short PADDING_IN_METER_BAND_DROP = 4;
     private static final short PADDING_IN_METER_BAND_DSCP_REMARK = 3;
-    private static MeterModInputMessageFactory instance;
-    
-    private MeterModInputMessageFactory() {
-        // singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized MeterModInputMessageFactory getInstance() {
-        if (instance == null) {
-            instance = new MeterModInputMessageFactory();
-        }
-        return instance;
-    }
-    
-    @Override
-    public void messageToBuffer(short version, ByteBuf out,
-            MeterModInput message) {
-        ByteBufUtils.writeOFHeader(instance, message, out);
-        out.writeShort(message.getCommand().getIntValue());
-        out.writeShort(createMeterFlagsBitmask(message.getFlags()));
-        out.writeInt(message.getMeterId().getValue().intValue());
-        encodeBands(message.getBands(), out);
-    }
 
     @Override
-    public int computeLength(MeterModInput message) {
-        int length = MESSAGE_LENGTH;
-        if (message.getBands() != null) {
-            length += message.getBands().size() * LENGTH_OF_METER_BANDS;
-        }
-        return length;
-    }
-
-    @Override
-    public byte getMessageType() {
-        return MESSAGE_TYPE;
+    public void serialize(MeterModInput message, ByteBuf outBuffer) {
+        ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
+        outBuffer.writeShort(message.getCommand().getIntValue());
+        outBuffer.writeShort(createMeterFlagsBitmask(message.getFlags()));
+        outBuffer.writeInt(message.getMeterId().getValue().intValue());
+        serializeBands(message.getBands(), outBuffer);
+        ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
     private static int createMeterFlagsBitmask(MeterFlags flags) {
@@ -91,7 +62,7 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput> 
         return meterFlagBitmask;
     }
     
-    private static void encodeBands(List<Bands> bands, ByteBuf outBuffer) {
+    private static void serializeBands(List<Bands> bands, ByteBuf outBuffer) {
         if (bands != null) {
             for (Bands currentBand : bands) {
                 MeterBand meterBand = currentBand.getMeterBand();
@@ -122,5 +93,5 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput> 
         outBuffer.writeInt(meterBand.getRate().intValue());
         outBuffer.writeInt(meterBand.getBurstSize().intValue());
     }
-    
+
 }

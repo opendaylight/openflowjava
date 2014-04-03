@@ -8,11 +8,16 @@
 
 package org.opendaylight.openflowjava.protocol.impl.util;
 
-import junit.framework.Assert;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
+import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowWildcardsV10;
@@ -24,6 +29,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.matc
  *
  */
 public class OF10MatchSerializerTest {
+
+    private SerializerRegistry registry;
+    private OFSerializer<MatchV10> matchSerializer;
+
+    /**
+     * Initializes serializer table and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        registry = new SerializerRegistryImpl();
+        registry.init();
+        matchSerializer = registry.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, MatchV10.class));
+    }
 
     /**
      * Testing correct serialization of ofp_match
@@ -49,7 +68,7 @@ public class OF10MatchSerializerTest {
         builder.setTpSrc(2048);
         builder.setTpDst(4096);
         MatchV10 match = builder.build();
-        OF10MatchSerializer.encodeMatchV10(out, match);
+        matchSerializer.serialize(match, out);
         
         Assert.assertEquals("Wrong wildcards", 2361553, out.readUnsignedInt());
         Assert.assertEquals("Wrong in-port", 6653, out.readUnsignedShort());
@@ -96,7 +115,7 @@ public class OF10MatchSerializerTest {
         builder.setTpSrc(2048);
         builder.setTpDst(4096);
         MatchV10 match = builder.build();
-        OF10MatchSerializer.encodeMatchV10(out, match);
+        matchSerializer.serialize(match, out);
         
         Assert.assertEquals("Wrong wildcards", 3678463, out.readUnsignedInt());
         Assert.assertEquals("Wrong in-port", 6653, out.readUnsignedShort());

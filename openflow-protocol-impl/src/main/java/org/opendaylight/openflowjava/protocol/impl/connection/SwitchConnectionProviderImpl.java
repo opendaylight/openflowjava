@@ -9,13 +9,17 @@
 
 package org.opendaylight.openflowjava.protocol.impl.connection;
 
-import java.util.concurrent.Future;
-
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration.FEATURE_SUPPORT;
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,12 +32,22 @@ import com.google.common.util.concurrent.SettableFuture;
  * @author michal.polkorab
  */
 public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
-    
+
     private static final Logger LOGGER = LoggerFactory
             .getLogger(SwitchConnectionProviderImpl.class);
     private SwitchConnectionHandler switchConnectionHandler;
     private ServerFacade serverFacade;
     private ConnectionConfiguration connConfig;
+    private SerializationFactory serializationFactory;
+    private SerializerRegistry serializerRegistry;
+
+    /** Constructor */
+    public SwitchConnectionProviderImpl() {
+        serializerRegistry = new SerializerRegistryImpl();
+        serializerRegistry.init();
+        serializationFactory = new SerializationFactory();
+        serializationFactory.setSerializerTable(serializerRegistry);
+    }
 
     @Override
     public void setConfiguration(ConnectionConfiguration connConfig) {
@@ -91,7 +105,7 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
         server.setSwitchIdleTimeout(connConfig.getSwitchIdleTimeout());
         boolean tlsSupported = FEATURE_SUPPORT.REQUIRED.equals(connConfig.getTlsSupport());
         server.setEncryption(tlsSupported);
-        
+        server.setSerializationFactory(serializationFactory);
         return server;
     }
 
@@ -100,6 +114,12 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
      */
     public ServerFacade getServerFacade() {
         return serverFacade;
+    }
+
+    @Override
+    public <E extends DataObject> void registerCustomSerializer(MessageTypeKey<E> key,
+            OFSerializer<E> serializer) {
+        serializerRegistry.registerSerializer(key, serializer);
     }
 
     @Override
