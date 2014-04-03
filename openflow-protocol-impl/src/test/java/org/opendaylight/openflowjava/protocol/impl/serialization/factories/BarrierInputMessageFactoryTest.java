@@ -11,8 +11,12 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerTableImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
@@ -25,7 +29,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class BarrierInputMessageFactoryTest {
 
     private static final byte BARRIER_REQUEST_MESSAGE_CODE_TYPE = BarrierInputMessageFactory.MESSAGE_TYPE;
-    
+    private SerializerTable table;
+    private OFSerializer<BarrierInput> barrierFactory;
+
+    /**
+     * Initializes serializer table and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        table = new SerializerTableImpl();
+        table.init();
+        barrierFactory = table.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, BarrierInput.class));
+    }
+
     /**
      * Testing of {@link BarrierInputMessageFactory} for correct translation from POJO
      * @throws Exception 
@@ -37,8 +54,7 @@ public class BarrierInputMessageFactoryTest {
         BarrierInput bi = bib.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        BarrierInputMessageFactory bimf = BarrierInputMessageFactory.getInstance();
-        bimf.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, bi);
+        barrierFactory.serialize(bi, out);
         
         BufferHelper.checkHeaderV13(out, BARRIER_REQUEST_MESSAGE_CODE_TYPE, 8);
     }

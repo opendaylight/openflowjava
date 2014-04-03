@@ -13,8 +13,10 @@ import io.netty.buffer.ByteBuf;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInput;
 
@@ -26,41 +28,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class TableModInputMessageFactory implements OFSerializer<TableModInput> {
     private static final byte MESSAGE_TYPE = 17;
     private static final byte PADDING_IN_TABLE_MOD_MESSAGE = 3;
-    private static final int MESSAGE_LENGTH = 16;
-    private static TableModInputMessageFactory instance;
-    
-    private TableModInputMessageFactory() {
-        // just singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized TableModInputMessageFactory getInstance() {
-        if(instance == null){
-            instance = new TableModInputMessageFactory();
-        }
-        return instance;
-    }
-    
-    @Override
-    public void messageToBuffer(short version, ByteBuf out, TableModInput message) {
-        ByteBufUtils.writeOFHeader(instance, message, out);
-        out.writeByte(message.getTableId().getValue().byteValue());
-        ByteBufUtils.padBuffer(PADDING_IN_TABLE_MOD_MESSAGE, out);
-        out.writeInt(createConfigBitmask(message.getConfig()));
-    }
 
     @Override
-    public int computeLength(TableModInput message) {
-        return MESSAGE_LENGTH;
+    public void serialize(TableModInput object, ByteBuf outBuffer) {
+        ByteBufUtils.writeOFHeader(MESSAGE_TYPE, object, outBuffer, EncodeConstants.EMPTY_LENGTH);
+        outBuffer.writeByte(object.getTableId().getValue().byteValue());
+        ByteBufUtils.padBuffer(PADDING_IN_TABLE_MOD_MESSAGE, outBuffer);
+        outBuffer.writeInt(createConfigBitmask(object.getConfig()));
+        ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
-    @Override
-    public byte getMessageType() {
-        return MESSAGE_TYPE;
-    }
-    
     /**
      * @param tableConfig
      * @return port config bitmask 
@@ -70,5 +47,10 @@ public class TableModInputMessageFactory implements OFSerializer<TableModInput> 
         portConfigMap.put(3, tableConfig.isOFPTCDEPRECATEDMASK());
         int configBitmask = ByteBufUtils.fillBitMaskFromMap(portConfigMap);
         return configBitmask;
+    }
+
+    @Override
+    public void injectSerializerTable(SerializerTable table) {
+        // do nothing - no need for table in this factory
     }
 }

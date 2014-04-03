@@ -13,8 +13,10 @@ import io.netty.buffer.ByteBuf;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeatures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortModInput;
@@ -29,47 +31,21 @@ public class PortModInputMessageFactory implements OFSerializer<PortModInput> {
     private static final byte PADDING_IN_PORT_MOD_MESSAGE_01 = 4;
     private static final byte PADDING_IN_PORT_MOD_MESSAGE_02 = 2;
     private static final byte PADDING_IN_PORT_MOD_MESSAGE_03 = 4;
-    private static final int MESSAGE_LENGTH = 40;
-    private static PortModInputMessageFactory instance;
-    
-    private PortModInputMessageFactory() {
-        // singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized PortModInputMessageFactory getInstance() {
-        if (instance == null) {
-            instance = new PortModInputMessageFactory();
-        }
-        return instance;
-    }
-    
-    @Override
-    public void messageToBuffer(short version, ByteBuf out, PortModInput message) {
-        ByteBufUtils.writeOFHeader(instance, message, out);
-        out.writeInt(message.getPortNo().getValue().intValue());
-        ByteBufUtils.padBuffer(PADDING_IN_PORT_MOD_MESSAGE_01, out);
-        out.writeBytes(ByteBufUtils.macAddressToBytes(message.getHwAddress().getValue()));
-        ByteBufUtils.padBuffer(PADDING_IN_PORT_MOD_MESSAGE_02, out);
-        out.writeInt(createPortConfigBitmask(message.getConfig()));
-        out.writeInt(createPortConfigBitmask(message.getMask()));
-        out.writeInt(createPortFeaturesBitmask(message.getAdvertise()));
-        ByteBufUtils.padBuffer(PADDING_IN_PORT_MOD_MESSAGE_03, out);
-    }
 
     @Override
-    public int computeLength(PortModInput message) {
-        return MESSAGE_LENGTH;
+    public void serialize(PortModInput object, ByteBuf outBuffer) {
+        ByteBufUtils.writeOFHeader(MESSAGE_TYPE, object, outBuffer, EncodeConstants.EMPTY_LENGTH);
+        outBuffer.writeInt(object.getPortNo().getValue().intValue());
+        ByteBufUtils.padBuffer(PADDING_IN_PORT_MOD_MESSAGE_01, outBuffer);
+        outBuffer.writeBytes(ByteBufUtils.macAddressToBytes(object.getHwAddress().getValue()));
+        ByteBufUtils.padBuffer(PADDING_IN_PORT_MOD_MESSAGE_02, outBuffer);
+        outBuffer.writeInt(createPortConfigBitmask(object.getConfig()));
+        outBuffer.writeInt(createPortConfigBitmask(object.getMask()));
+        outBuffer.writeInt(createPortFeaturesBitmask(object.getAdvertise()));
+        ByteBufUtils.padBuffer(PADDING_IN_PORT_MOD_MESSAGE_03, outBuffer);
+        ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
-    @Override
-    public byte getMessageType() {
-        return MESSAGE_TYPE;
-    }
-   
-    
     /**
      * @param config
      * @return port config bitmask 
@@ -108,5 +84,10 @@ public class PortModInputMessageFactory implements OFSerializer<PortModInput> {
         
         configBitmask = ByteBufUtils.fillBitMaskFromMap(portFeaturesMap);
         return configBitmask;
+    }
+
+    @Override
+    public void injectSerializerTable(SerializerTable table) {
+        // do nothing - no need for table in this factory
     }
 }

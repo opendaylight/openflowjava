@@ -15,8 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerTableImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
@@ -35,7 +39,20 @@ import org.slf4j.LoggerFactory;
 public class HelloInputMessageFactoryTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HelloInputMessageFactoryTest.class);
-    
+    private SerializerTable table;
+    private OFSerializer<HelloInput> helloFactory;
+
+    /**
+     * Initializes serializer table and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        table = new SerializerTableImpl();
+        table.init();
+        helloFactory = table.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, HelloInput.class));
+    }
+
     /**
      * Testing of {@link HelloInputMessageFactory} for correct translation from POJO
      * @throws Exception 
@@ -47,10 +64,9 @@ public class HelloInputMessageFactoryTest {
         HelloInput hi = hib.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        HelloInputMessageFactory himf = HelloInputMessageFactory.getInstance();
-        himf.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, hi);
+        helloFactory.serialize(hi, out);
         
-        BufferHelper.checkHeaderV13(out, himf.getMessageType(), himf.computeLength(hi));
+        BufferHelper.checkHeaderV13(out,(byte) 0, EncodeConstants.OFHEADER_SIZE);
     }
     
     /**
@@ -67,11 +83,10 @@ public class HelloInputMessageFactoryTest {
         HelloInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        HelloInputMessageFactory factory = HelloInputMessageFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
+        helloFactory.serialize(message, out);
         LOGGER.debug("bytebuf: " + ByteBufUtils.byteBufToHexString(out));
         
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
+        BufferHelper.checkHeaderV13(out, (byte) 0, 16);
         Elements element = readElement(out).get(0);
         Assert.assertEquals("Wrong element type", expectedElement.get(0).getType(), element.getType());
         Elements comparation = createComparationElement(lengthOfBitmap).get(0);
@@ -92,11 +107,10 @@ public class HelloInputMessageFactoryTest {
         HelloInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        HelloInputMessageFactory factory = HelloInputMessageFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
+        helloFactory.serialize(message, out);
         LOGGER.debug("bytebuf: " + ByteBufUtils.byteBufToHexString(out));
         
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
+        BufferHelper.checkHeaderV13(out, (byte) 0, 24);
         Elements element = readElement(out).get(0);
         Assert.assertEquals("Wrong element type", expectedElement.get(0).getType(), element.getType());
         Elements comparation = createComparationElement(lengthOfBitmap).get(0);
@@ -143,7 +157,7 @@ public class HelloInputMessageFactoryTest {
             int elementLength = input.readUnsignedShort();
             if (type == HelloElementType.VERSIONBITMAP.getIntValue()) {
                 elementsBuilder.setType(HelloElementType.forValue(type));
-                int[] versionBitmap = new int[(elementLength - HelloInputMessageFactory.HELLO_ELEMENT_HEADER_SIZE) / 4];
+                int[] versionBitmap = new int[(elementLength - 4) / 4];
                 for (int i = 0; i < versionBitmap.length; i++) {
                     versionBitmap[i] = (int) input.readUnsignedInt();
                 }

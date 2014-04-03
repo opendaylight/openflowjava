@@ -10,8 +10,8 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.List;
-
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.DlAddressAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IpAddressAction;
@@ -40,7 +40,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
  * Serializes ofp_action (OpenFlow v1.0) structures
  * @author michal.polkorab
  */
-public abstract class OF10ActionsSerializer {
+public class OF10ActionsSerializer implements OFSerializer<Action> {
     
     private static final byte OUTPUT_CODE = 0;
     private static final byte SET_VLAN_VID_CODE = 1;
@@ -72,54 +72,50 @@ public abstract class OF10ActionsSerializer {
     private static final byte ENQUEUE_LENGTH = 16;
     private static final byte PADDING_IN_ENQUEUE_ACTION = 6;
     private static final byte EXPERIMENTER_LENGTH = 8;
+    private SerializerTable serializerTable;
 
-    
-    /**
-     * Encodes ofp_action (OpenFlow v1.0) structures
-     * @param out output ByteBuf that actions will be written into
-     * @param actions actions to be encoded
-     */
-    public static void encodeActionsV10(ByteBuf out, List<Action> actions) {
-        if (actions == null) {
-            return;
-        }
-        for (Action action : actions) {
-            if (action.getType().equals(Output.class)) {
-                encodeOutputAction(action, out);
-            } else if (action.getType().equals(SetVlanVid.class)) {
-                encodeSetVlanVidAction(action, out);
-            } else if (action.getType().equals(SetVlanPcp.class)) {
-                encodeSetVlanPcpAction(action, out);
-            } else if (action.getType().equals(StripVlan.class)) {
-                encodeGenericAction(STRIP_VLAN_CODE, out);
-            } else if (action.getType().equals(SetDlSrc.class)) {
-                encodeDlAddressAction(action, out, SET_DL_SRC_CODE);
-            } else if (action.getType().equals(SetDlDst.class)) {
-                encodeDlAddressAction(action, out, SET_DL_DST_CODE);
-            } else if (action.getType().equals(SetNwSrc.class)) {
-                encodeIpAddressAction(action, out, SET_NW_SRC_CODE);
-            } else if (action.getType().equals(SetNwDst.class)) {
-                encodeIpAddressAction(action, out, SET_NW_DST_CODE);
-            } else if (action.getType().equals(SetNwTos.class)) {
-                encodeNwTosAction(action, out);
-            } else if (action.getType().equals(SetTpSrc.class)) {
-                encodeTpPortAction(action, out, SET_TP_SRC_CODE);
-            } else if (action.getType().equals(SetTpDst.class)) {
-                encodeTpPortAction(action, out, SET_TP_DST_CODE);
-            } else if (action.getType().equals(Enqueue.class)) {
-                encodeEnqueueAction(action, out);
-            } else if (action.getType().equals(Experimenter.class)) {
-                encodeExperimenterAction(action, out);
-            }
+    @Override
+    public void serialize(Action object, ByteBuf outBuffer) {
+        if (object.getType().equals(Output.class)) {
+            encodeOutputAction(object, outBuffer);
+        } else if (object.getType().equals(SetVlanVid.class)) {
+            encodeSetVlanVidAction(object, outBuffer);
+        } else if (object.getType().equals(SetVlanPcp.class)) {
+            encodeSetVlanPcpAction(object, outBuffer);
+        } else if (object.getType().equals(StripVlan.class)) {
+            encodeGenericAction(STRIP_VLAN_CODE, outBuffer);
+        } else if (object.getType().equals(SetDlSrc.class)) {
+            encodeDlAddressAction(object, outBuffer, SET_DL_SRC_CODE);
+        } else if (object.getType().equals(SetDlDst.class)) {
+            encodeDlAddressAction(object, outBuffer, SET_DL_DST_CODE);
+        } else if (object.getType().equals(SetNwSrc.class)) {
+            encodeIpAddressAction(object, outBuffer, SET_NW_SRC_CODE);
+        } else if (object.getType().equals(SetNwDst.class)) {
+            encodeIpAddressAction(object, outBuffer, SET_NW_DST_CODE);
+        } else if (object.getType().equals(SetNwTos.class)) {
+            encodeNwTosAction(object, outBuffer);
+        } else if (object.getType().equals(SetTpSrc.class)) {
+            encodeTpPortAction(object, outBuffer, SET_TP_SRC_CODE);
+        } else if (object.getType().equals(SetTpDst.class)) {
+            encodeTpPortAction(object, outBuffer, SET_TP_DST_CODE);
+        } else if (object.getType().equals(Enqueue.class)) {
+            encodeEnqueueAction(object, outBuffer);
+        } else if (object.getType().equals(Experimenter.class)) {
+            encodeExperimenterAction(object, outBuffer);
         }
     }
-    
+
+    @Override
+    public void injectSerializerTable(SerializerTable table) {
+        this.serializerTable = table;
+    }
+
     private static void encodeGenericAction(byte code, ByteBuf out) {
         out.writeShort(code);
         out.writeShort(GENERIC_ACTION_LENGTH);
         ByteBufUtils.padBuffer(PADDING_IN_GENERIC_ACTION, out);
     }
-    
+
     private static void encodeOutputAction(Action action, ByteBuf out) {
         out.writeShort(OUTPUT_CODE);
         out.writeShort(OUTPUT_LENGTH);
@@ -185,53 +181,12 @@ public abstract class OF10ActionsSerializer {
         QueueIdAction queueId = action.getAugmentation(QueueIdAction.class);
         out.writeInt(queueId.getQueueId().intValue());
     }
-    
+
     private static void encodeExperimenterAction(Action action, ByteBuf outBuffer) {
         outBuffer.writeShort(EXPERIMENTER_CODE);
         outBuffer.writeShort(EXPERIMENTER_LENGTH);
         ExperimenterAction experimenter = action.getAugmentation(ExperimenterAction.class);
         outBuffer.writeInt(experimenter.getExperimenter().intValue());
-    }
-    
-    /**
-     * Computes length of actions
-     * @param actions
-     * @return length of actions (OpenFlow v1.0)
-     */
-    public static int computeActionsLength(List<Action> actions) {
-        int length = 0;
-        if (actions != null) {
-            for (Action action : actions) {
-                if (action.getType().equals(Output.class)) {
-                    length += 8;
-                } else if (action.getType().equals(SetVlanVid.class)) {
-                    length += 8;
-                } else if (action.getType().equals(SetVlanPcp.class)) {
-                    length += 8;
-                } else if (action.getType().equals(StripVlan.class)) {
-                    length += 8;
-                } else if (action.getType().equals(SetDlSrc.class)) {
-                    length += 16;
-                } else if (action.getType().equals(SetDlDst.class)) {
-                    length += 16;
-                } else if (action.getType().equals(SetNwSrc.class)) {
-                    length += 8;
-                } else if (action.getType().equals(SetNwDst.class)) {
-                    length += 8;
-                } else if (action.getType().equals(SetNwTos.class)) {
-                    length += 8;
-                } else if (action.getType().equals(SetTpSrc.class)) {
-                    length += 8;
-                } else if (action.getType().equals(SetTpDst.class)) {
-                    length += 8;
-                } else if (action.getType().equals(Enqueue.class)) {
-                    length += 16;
-                } else if (action.getType().equals(Experimenter.class)) {
-                    length += 8;
-                }
-            }
-        }
-        return length;
     }
 
 }

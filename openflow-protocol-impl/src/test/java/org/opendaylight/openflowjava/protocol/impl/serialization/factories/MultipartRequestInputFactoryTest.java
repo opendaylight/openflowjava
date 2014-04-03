@@ -14,8 +14,12 @@ import io.netty.buffer.UnpooledByteBufAllocator;
 import java.math.BigInteger;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerTableImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupId;
@@ -28,8 +32,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestAggregateCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestAggregateCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestDescCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenterCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenterCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestFlowCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestFlowCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestGroupCase;
@@ -44,7 +46,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestQueueCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.aggregate._case.MultipartRequestAggregateBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.desc._case.MultipartRequestDescBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.experimenter._case.MultipartRequestExperimenterBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.flow._case.MultipartRequestFlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.group._case.MultipartRequestGroupBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.meter._case.MultipartRequestMeterBuilder;
@@ -59,13 +60,26 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class MultipartRequestInputFactoryTest {
     /** padding in MultipartRequest message */
     public static final byte PADDING_IN_MULTIPART_REQUEST_MESSAGE = 4;
+    private SerializerTable table;
+    private OFSerializer<MultipartRequestInput> multipartFactory;
+
+    /**
+     * Initializes serializer table and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        table = new SerializerTableImpl();
+        table.init();
+        multipartFactory = table.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, MultipartRequestInput.class));
+    }
 
     /**
      * @throws Exception
      * Testing of {@link MultipartRequestInputFactory} for correct translation from POJO
      */
     @Test
-    public void testMultipartRequestInputFactory() throws Exception {
+    public void testMultipartRequestFlowInputFactory() throws Exception {
         MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
         BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setType(MultipartType.forValue(1));
@@ -74,10 +88,9 @@ public class MultipartRequestInputFactoryTest {
         MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        MultipartRequestInputFactory factory = MultipartRequestInputFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
+        multipartFactory.serialize(message, out);
 
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
+        BufferHelper.checkHeaderV13(out, (byte) 18, 48);
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -133,10 +146,9 @@ public class MultipartRequestInputFactoryTest {
         MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        MultipartRequestInputFactory factory = MultipartRequestInputFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
+        multipartFactory.serialize(message, out);
 
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
+        BufferHelper.checkHeaderV13(out, (byte) 18, 48);
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -198,10 +210,9 @@ public class MultipartRequestInputFactoryTest {
         MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        MultipartRequestInputFactory factory = MultipartRequestInputFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
+        multipartFactory.serialize(message, out);
 
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
+        BufferHelper.checkHeaderV13(out, (byte) 18, 16);
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -221,10 +232,9 @@ public class MultipartRequestInputFactoryTest {
         MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        MultipartRequestInputFactory factory = MultipartRequestInputFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
+        multipartFactory.serialize(message, out);
 
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
+        BufferHelper.checkHeaderV13(out, (byte) 18, 24);
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -263,10 +273,9 @@ public class MultipartRequestInputFactoryTest {
         MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        MultipartRequestInputFactory factory = MultipartRequestInputFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
+        multipartFactory.serialize(message, out);
 
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
+        BufferHelper.checkHeaderV13(out, (byte) 18, 24);
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -305,10 +314,9 @@ public class MultipartRequestInputFactoryTest {
         MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        MultipartRequestInputFactory factory = MultipartRequestInputFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
+        multipartFactory.serialize(message, out);
 
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
+        BufferHelper.checkHeaderV13(out, (byte) 18, 24);
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -347,10 +355,9 @@ public class MultipartRequestInputFactoryTest {
         MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        MultipartRequestInputFactory factory = MultipartRequestInputFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
+        multipartFactory.serialize(message, out);
 
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
+        BufferHelper.checkHeaderV13(out, (byte) 18, 24);
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -389,10 +396,9 @@ public class MultipartRequestInputFactoryTest {
         MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        MultipartRequestInputFactory factory = MultipartRequestInputFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
+        multipartFactory.serialize(message, out);
 
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
+        BufferHelper.checkHeaderV13(out, (byte) 18, 24);
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -422,48 +428,6 @@ public class MultipartRequestInputFactoryTest {
      * Testing of {@link MultipartRequestInputFactory} for correct translation from POJO
      */
     @Test
-    public void testMultipartRequestExperimenterMessageFactory() throws Exception {
-        MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
-        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
-        builder.setType(MultipartType.forValue(0xffff));
-        builder.setFlags(new MultipartRequestFlags(true));
-        builder.setMultipartRequestBody(createRequestExperimenter());
-        MultipartRequestInput message = builder.build();
-
-        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        MultipartRequestInputFactory factory = MultipartRequestInputFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
-
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
-        Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readUnsignedShort());
-        Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
-        out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
-        Assert.assertEquals("Wrong experimenterBody", message.getMultipartRequestBody(), decodeRequestExperimenter(out));
-    }
-
-    private static MultipartRequestExperimenterCase createRequestExperimenter() {
-        MultipartRequestExperimenterCaseBuilder caseBuilder = new MultipartRequestExperimenterCaseBuilder();
-        MultipartRequestExperimenterBuilder builder = new MultipartRequestExperimenterBuilder();
-        builder.setExperimenter(1133L);
-        builder.setExpType(1135L);
-        caseBuilder.setMultipartRequestExperimenter(builder.build());
-        return caseBuilder.build();
-    }
-
-    private static MultipartRequestExperimenterCase decodeRequestExperimenter(ByteBuf output) {
-        MultipartRequestExperimenterCaseBuilder caseBuilder = new MultipartRequestExperimenterCaseBuilder();
-        MultipartRequestExperimenterBuilder builder = new MultipartRequestExperimenterBuilder();
-        builder.setExperimenter(output.readUnsignedInt());
-        builder.setExpType(output.readUnsignedInt());
-        caseBuilder.setMultipartRequestExperimenter(builder.build());
-        return caseBuilder.build();
-    }
-
-    /**
-     * @throws Exception
-     * Testing of {@link MultipartRequestInputFactory} for correct translation from POJO
-     */
-    @Test
     public void testMultipartRequestDescMessageFactory() throws Exception {
         MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
         BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
@@ -473,10 +437,9 @@ public class MultipartRequestInputFactoryTest {
         MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        MultipartRequestInputFactory factory = MultipartRequestInputFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
+        multipartFactory.serialize(message, out);
 
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
+        BufferHelper.checkHeaderV13(out, (byte) 18, 16);
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", message.getFlags(), decodeMultipartRequestFlags(out.readShort()));
     }

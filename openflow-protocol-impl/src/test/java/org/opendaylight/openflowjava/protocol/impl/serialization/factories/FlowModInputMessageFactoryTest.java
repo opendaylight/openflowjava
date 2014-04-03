@@ -16,18 +16,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerTableImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionsInstruction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionsInstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EcnMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EcnMatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MetadataInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MetadataInstructionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortNumberMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortNumberMatchEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.TableIdInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.TableIdInstructionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Output;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.ApplyActions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.GotoTable;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.WriteMetadata;
@@ -39,7 +52,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.InPhyPort;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.IpEcn;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Nxm0Class;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmMatchType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.MatchBuilder;
@@ -54,7 +66,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class FlowModInputMessageFactoryTest {
     private static final byte PADDING_IN_FLOW_MOD_MESSAGE = 2;
-    
+    private SerializerTable table;
+    private OFSerializer<FlowModInput> flowModFactory;
+
+    /**
+     * Initializes serializer table and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        table = new SerializerTableImpl();
+        table.init();
+        flowModFactory = table.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, FlowModInput.class));
+    }
+
     /**
      * @throws Exception 
      * Testing of {@link FlowModInputMessageFactory} for correct translation from POJO
@@ -87,7 +112,7 @@ public class FlowModInputMessageFactoryTest {
         portNumberBuilder.setPortNumber(new PortNumber(42L));
         entriesBuilder.addAugmentation(PortNumberMatchEntry.class, portNumberBuilder.build());
         entries.add(entriesBuilder.build());
-        entriesBuilder.setOxmClass(Nxm0Class.class);
+        entriesBuilder.setOxmClass(OpenflowBasicClass.class);
         entriesBuilder.setOxmMatchField(IpEcn.class);
         entriesBuilder.setHasMask(false);
         EcnMatchEntryBuilder ecnBuilder = new EcnMatchEntryBuilder();
@@ -111,16 +136,27 @@ public class FlowModInputMessageFactoryTest {
         instructions.add(insBuilder.build());
         insBuilder = new InstructionBuilder();
         insBuilder.setType(ApplyActions.class);
-        insBuilder.addAugmentation(MetadataInstruction.class, metaBuilder.build());
+        List<Action> actions = new ArrayList<>();
+        ActionBuilder actionBuilder = new ActionBuilder();
+        actionBuilder.setType(Output.class);
+        PortActionBuilder port = new PortActionBuilder();
+        port.setPort(new PortNumber(42L));
+        actionBuilder.addAugmentation(PortAction.class, port.build());
+        MaxLengthActionBuilder maxLen = new MaxLengthActionBuilder();
+        maxLen.setMaxLength(52);
+        actionBuilder.addAugmentation(MaxLengthAction.class, maxLen.build());
+        actions.add(actionBuilder.build());
+        ActionsInstructionBuilder actionInstructionBuilder = new ActionsInstructionBuilder();
+        actionInstructionBuilder.setAction(actions);
+        insBuilder.addAugmentation(ActionsInstruction.class, actionInstructionBuilder.build());
         instructions.add(insBuilder.build());
         builder.setInstruction(instructions);
         FlowModInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        FlowModInputMessageFactory factory = FlowModInputMessageFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
-        
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
+        flowModFactory.serialize(message, out);
+
+        BufferHelper.checkHeaderV13(out,(byte) 14, 128);
         cookie = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         out.readBytes(cookie);
         Assert.assertEquals("Wrong cookie", message.getCookie(), new BigInteger(1, cookie));
@@ -145,7 +181,7 @@ public class FlowModInputMessageFactoryTest {
         Assert.assertEquals("Wrong oxm field", 1, fieldAndMask >> 1);
         out.skipBytes(EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
         Assert.assertEquals("Wrong oxm value", 42, out.readUnsignedInt());
-        Assert.assertEquals("Wrong oxm class", 0, out.readUnsignedShort());
+        Assert.assertEquals("Wrong oxm class", 0x8000, out.readUnsignedShort());
         fieldAndMask = out.readUnsignedByte();
         Assert.assertEquals("Wrong oxm hasMask", 0, fieldAndMask & 1);
         Assert.assertEquals("Wrong oxm field", 9, fieldAndMask >> 1);
@@ -166,8 +202,13 @@ public class FlowModInputMessageFactoryTest {
         Assert.assertArrayEquals("Wrong metadata", cookie, cookieRead);
         Assert.assertArrayEquals("Wrong metadata mask", cookieMask, cookieMaskRead);
         Assert.assertEquals("Wrong instruction type", 4, out.readUnsignedShort());
-        Assert.assertEquals("Wrong instruction length", 8, out.readUnsignedShort());
+        Assert.assertEquals("Wrong instruction length", 24, out.readUnsignedShort());
         out.skipBytes(4);
+        Assert.assertEquals("Wrong action type", 0, out.readUnsignedShort());
+        Assert.assertEquals("Wrong action length", 16, out.readUnsignedShort());
+        Assert.assertEquals("Wrong port", 42, out.readUnsignedInt());
+        Assert.assertEquals("Wrong max-length", 52, out.readUnsignedShort());
+        out.skipBytes(6);
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
     }
     

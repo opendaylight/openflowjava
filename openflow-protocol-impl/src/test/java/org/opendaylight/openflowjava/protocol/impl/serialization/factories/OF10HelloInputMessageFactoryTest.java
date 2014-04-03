@@ -11,7 +11,12 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerTableImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloInput;
@@ -22,6 +27,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  *
  */
 public class OF10HelloInputMessageFactoryTest {
+
+    private SerializerTable table;
+    private OFSerializer<HelloInput> helloFactory;
+
+    /**
+     * Initializes serializer table and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        table = new SerializerTableImpl();
+        table.init();
+        helloFactory = table.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, HelloInput.class));
+    }
 
     /**
      * Testing of {@link OF10HelloInputMessageFactory} for correct translation from POJO
@@ -34,8 +53,7 @@ public class OF10HelloInputMessageFactoryTest {
         HelloInput hi = hib.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        OF10HelloInputMessageFactory himf = OF10HelloInputMessageFactory.getInstance();
-        himf.messageToBuffer(EncodeConstants.OF10_VERSION_ID, out, hi);
+        helloFactory.serialize(hi, out);
         
         BufferHelper.checkHeaderV10(out, (byte) 0, 8);
     }

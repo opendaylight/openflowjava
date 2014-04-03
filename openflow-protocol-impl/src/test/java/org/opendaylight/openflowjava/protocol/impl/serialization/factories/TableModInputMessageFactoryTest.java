@@ -12,8 +12,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerTableImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableConfig;
@@ -28,7 +32,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class TableModInputMessageFactoryTest {
     private static final byte MESSAGE_TYPE = 17;
     private static final byte PADDING_IN_TABLE_MOD_MESSAGE = 3;
-    
+    private SerializerTable table;
+    private OFSerializer<TableModInput> tableModFactory;
+
+    /**
+     * Initializes serializer table and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        table = new SerializerTableImpl();
+        table.init();
+        tableModFactory = table.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, TableModInput.class));
+    }
+
     /**
      * Testing of {@link TableModInputMessageFactory} for correct translation from POJO
      * @throws Exception 
@@ -42,8 +59,7 @@ public class TableModInputMessageFactoryTest {
         TableModInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        TableModInputMessageFactory factory = TableModInputMessageFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
+        tableModFactory.serialize(message, out);
         
         BufferHelper.checkHeaderV13(out, MESSAGE_TYPE, 16);
         Assert.assertEquals("Wrong TableID", message.getTableId().getValue().intValue(), out.readUnsignedByte());

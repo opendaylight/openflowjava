@@ -13,11 +13,14 @@ import io.netty.buffer.ByteBuf;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
-import org.opendaylight.openflowjava.protocol.impl.util.OF10MatchSerializer;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.v10.grouping.MatchV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.MultipartRequestBody;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestAggregateCase;
@@ -40,7 +43,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class OF10StatsRequestInputFactory implements OFSerializer<MultipartRequestInput> {
 
     private static final byte MESSAGE_TYPE = 16;
-    private static final int MESSAGE_LENGTH = 12;
     private static final byte FLOW_BODY_LENGTH = 44;
     private static final byte AGGREGATE_BODY_LENGTH = 44;
     private static final byte PORT_STATS_BODY_LENGTH = 8;
@@ -51,54 +53,31 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
     private static final byte PADDING_IN_MULTIPART_REQUEST_PORT_BODY = 6;
     private static final byte PADING_IN_QUEUE_BODY = 2;
 
-    private static OF10StatsRequestInputFactory instance; 
-    
-    private OF10StatsRequestInputFactory() {
-        // singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized OF10StatsRequestInputFactory getInstance() {
-        if (instance == null) {
-            instance = new OF10StatsRequestInputFactory();
+    private SerializerTable serializerTable;
+
+    @Override
+    public void serialize(MultipartRequestInput object, ByteBuf outBuffer) {
+        ByteBufUtils.writeOFHeader(MESSAGE_TYPE, object, outBuffer, EncodeConstants.OFHEADER_SIZE);
+        outBuffer.writeShort(object.getType().getIntValue());
+        outBuffer.writeShort(createMultipartRequestFlagsBitmask(object.getFlags()));
+        if (object.getMultipartRequestBody() instanceof MultipartRequestDescCase) {
+            encodeDescBody(object.getMultipartRequestBody(), outBuffer);
+        } else if (object.getMultipartRequestBody() instanceof MultipartRequestFlowCase) {
+            encodeFlowBody(object.getMultipartRequestBody(), outBuffer);
+        } else if (object.getMultipartRequestBody() instanceof MultipartRequestAggregateCase) {
+            encodeAggregateBody(object.getMultipartRequestBody(), outBuffer);
+        } else if (object.getMultipartRequestBody() instanceof MultipartRequestTableCase) {
+            encodeTableBody(object.getMultipartRequestBody(), outBuffer);
+        } else if (object.getMultipartRequestBody() instanceof MultipartRequestPortStatsCase) {
+            encodePortBody(object.getMultipartRequestBody(), outBuffer);
+        } else if (object.getMultipartRequestBody() instanceof MultipartRequestQueueCase) {
+            encodeQueueBody(object.getMultipartRequestBody(), outBuffer);
+        } else if (object.getMultipartRequestBody() instanceof MultipartRequestExperimenterCase) {
+            encodeExperimenterBody(object.getMultipartRequestBody(), outBuffer);
         }
-        return instance;
+        ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
-    
-    @Override
-    public void messageToBuffer(short version, ByteBuf out,
-            MultipartRequestInput message) {
-        ByteBufUtils.writeOFHeader(instance, message, out);
-        out.writeShort(message.getType().getIntValue());
-        out.writeShort(createMultipartRequestFlagsBitmask(message.getFlags()));
-        if (message.getMultipartRequestBody() instanceof MultipartRequestDescCase) {
-            encodeDescBody(message.getMultipartRequestBody(), out);
-        } else if (message.getMultipartRequestBody() instanceof MultipartRequestFlowCase) {
-            encodeFlowBody(message.getMultipartRequestBody(), out);
-        } else if (message.getMultipartRequestBody() instanceof MultipartRequestAggregateCase) {
-            encodeAggregateBody(message.getMultipartRequestBody(), out);
-        } else if (message.getMultipartRequestBody() instanceof MultipartRequestTableCase) {
-            encodeTableBody(message.getMultipartRequestBody(), out);
-        } else if (message.getMultipartRequestBody() instanceof MultipartRequestPortStatsCase) {
-            encodePortBody(message.getMultipartRequestBody(), out);
-        } else if (message.getMultipartRequestBody() instanceof MultipartRequestQueueCase) {
-            encodeQueueBody(message.getMultipartRequestBody(), out);
-        } else if (message.getMultipartRequestBody() instanceof MultipartRequestExperimenterCase) {
-            encodeExperimenterBody(message.getMultipartRequestBody(), out);
-        }
-    }
-    
-    @Override
-    public int computeLength(MultipartRequestInput message) {
-        return MESSAGE_LENGTH + computeBodyLength(message);
-    }
-    @Override
-    public byte getMessageType() {
-        return MESSAGE_TYPE;
-    }
-    
+
     /**
      * 
      * @param message
@@ -152,19 +131,21 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
      // The body of MultiPartTable is empty
     }
     
-    private static void encodeFlowBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
+    private void encodeFlowBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         MultipartRequestFlowCase flowCase = (MultipartRequestFlowCase) multipartRequestBody;
         MultipartRequestFlow flow = flowCase.getMultipartRequestFlow();
-        OF10MatchSerializer.encodeMatchV10(output, flow.getMatchV10());
+        serializerTable.getSerializer(new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, MatchV10.class))
+            .serialize(flow.getMatchV10(), output);
         output.writeByte(flow.getTableId().shortValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_FLOW_BODY, output);
         output.writeShort(flow.getOutPort().intValue());
     }
     
-    private static void encodeAggregateBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
+    private void encodeAggregateBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         MultipartRequestAggregateCase aggregateCase = (MultipartRequestAggregateCase) multipartRequestBody;
         MultipartRequestAggregate aggregate = aggregateCase.getMultipartRequestAggregate();
-        OF10MatchSerializer.encodeMatchV10(output, aggregate.getMatchV10());
+        serializerTable.getSerializer(new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, MatchV10.class))
+            .serialize(aggregate.getMatchV10(), output);
         output.writeByte(aggregate.getTableId().shortValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_AGGREGATE_BODY, output);
         output.writeShort(aggregate.getOutPort().intValue());
@@ -190,6 +171,11 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
         MultipartRequestExperimenter experimenter = experimenterCase.getMultipartRequestExperimenter();
         output.writeInt(experimenter.getExperimenter().intValue());
         output.writeBytes(experimenter.getData());
+    }
+
+    @Override
+    public void injectSerializerTable(SerializerTable table) {
+        this.serializerTable = table;
     }
     
 }

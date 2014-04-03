@@ -10,8 +10,10 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
 
-import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetQueueConfigInput;
 
 /**
@@ -23,40 +25,17 @@ public class GetQueueConfigInputMessageFactory implements OFSerializer<GetQueueC
 
     private static final byte MESSAGE_TYPE = 22;
     private static final byte PADDING_IN_GET_QUEUE_CONFIG_MESSAGE = 4;
-    private static final int MESSAGE_LENGTH = 16;
-    
-    private static GetQueueConfigInputMessageFactory instance;
-    
- 
-    private GetQueueConfigInputMessageFactory() {
-        // singleton
-    }
-    
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized GetQueueConfigInputMessageFactory getInstance(){
-        if(instance == null){
-            instance = new GetQueueConfigInputMessageFactory();
-        }
-        return instance;
-    }
-    
+
     @Override
-    public void messageToBuffer(short version, ByteBuf out, GetQueueConfigInput message){
-        ByteBufUtils.writeOFHeader(instance, message, out);
-        out.writeInt(message.getPort().getValue().intValue());
-        ByteBufUtils.padBuffer(PADDING_IN_GET_QUEUE_CONFIG_MESSAGE, out);
+    public void serialize(GetQueueConfigInput object, ByteBuf outBuffer) {
+        ByteBufUtils.writeOFHeader(MESSAGE_TYPE, object, outBuffer, EncodeConstants.EMPTY_LENGTH);
+        outBuffer.writeInt(object.getPort().getValue().intValue());
+        ByteBufUtils.padBuffer(PADDING_IN_GET_QUEUE_CONFIG_MESSAGE, outBuffer);
+        ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
     @Override
-    public int computeLength(GetQueueConfigInput message){
-        return MESSAGE_LENGTH;
-    }
-
-    @Override
-    public byte getMessageType() {
-        return MESSAGE_TYPE;
+    public void injectSerializerTable(SerializerTable table) {
+        // do nothing - no need for table in this factory
     }
 }

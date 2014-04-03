@@ -6,20 +6,20 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.impl.serialization;
+package org.opendaylight.openflowjava.protocol.api.extensibility;
 
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
- * Class used as a key in {@link EncoderTable}
+ * Class used as a key in {@link SerializerTable}
  * @author michal.polkorab
  * @author timotej.kubas
  * @param <E> message type (class)
  */
 public class MessageTypeKey<E extends DataObject> {
 
-    private final Class<E> msgType;
-    private final short msgVersion;
+    protected final Class<E> msgType;
+    protected final short msgVersion;
     
     /**
      * @param msgVersion protocol version

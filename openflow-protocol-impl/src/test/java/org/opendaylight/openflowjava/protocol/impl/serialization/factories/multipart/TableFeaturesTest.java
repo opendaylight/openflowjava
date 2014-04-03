@@ -15,8 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerTableImpl;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.MultipartRequestInputFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.MultipartRequestInputFactoryTest;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
@@ -46,8 +50,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.InPh
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.InPort;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.IpEcn;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.IpProto;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Nxm0Class;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Nxm1Class;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
@@ -67,6 +69,19 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class TableFeaturesTest {
     private static final byte PADDING_IN_MULTIPART_REQUEST_MESSAGE =
             MultipartRequestInputFactoryTest.PADDING_IN_MULTIPART_REQUEST_MESSAGE;
+    private SerializerTable table;
+    private OFSerializer<MultipartRequestInput> multipartFactory;
+
+    /**
+     * Initializes serializer table and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        table = new SerializerTableImpl();
+        table.init();
+        multipartFactory = table.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, MultipartRequestInput.class));
+    }
 
     /**
      * @throws Exception
@@ -163,7 +178,7 @@ public class TableFeaturesTest {
         entriesBuilder.setHasMask(false);
         entries.add(entriesBuilder.build());
         entriesBuilder = new MatchEntriesBuilder();
-        entriesBuilder.setOxmClass(Nxm0Class.class);
+        entriesBuilder.setOxmClass(OpenflowBasicClass.class);
         entriesBuilder.setOxmMatchField(InPort.class);
         entriesBuilder.setHasMask(false);
         entries.add(entriesBuilder.build());
@@ -180,7 +195,7 @@ public class TableFeaturesTest {
         entriesBuilder.setHasMask(false);
         entries.add(entriesBuilder.build());
         entriesBuilder = new MatchEntriesBuilder();
-        entriesBuilder.setOxmClass(Nxm1Class.class);
+        entriesBuilder.setOxmClass(OpenflowBasicClass.class);
         entriesBuilder.setOxmMatchField(IpEcn.class);
         entriesBuilder.setHasMask(false);
         entries.add(entriesBuilder.build());
@@ -195,10 +210,9 @@ public class TableFeaturesTest {
         MultipartRequestInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        MultipartRequestInputFactory factory = MultipartRequestInputFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
+        multipartFactory.serialize(message, out);
 
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
+        BufferHelper.checkHeaderV13(out, (byte) 18, 232);
         Assert.assertEquals("Wrong type", 12, out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", 1, out.readUnsignedShort());
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -265,7 +279,7 @@ public class TableFeaturesTest {
         Assert.assertEquals("Wrong match class", 0x8000, out.readUnsignedShort());
         Assert.assertEquals("Wrong match field&mask", 2, out.readUnsignedByte());
         Assert.assertEquals("Wrong match length", 4, out.readUnsignedByte());
-        Assert.assertEquals("Wrong match class", 0, out.readUnsignedShort());
+        Assert.assertEquals("Wrong match class", 0x8000, out.readUnsignedShort());
         Assert.assertEquals("Wrong match field&mask", 0, out.readUnsignedByte());
         Assert.assertEquals("Wrong match length", 4, out.readUnsignedByte());
         out.skipBytes(4);
@@ -274,7 +288,7 @@ public class TableFeaturesTest {
         Assert.assertEquals("Wrong match class", 0x8000, out.readUnsignedShort());
         Assert.assertEquals("Wrong match field&mask", 20, out.readUnsignedByte());
         Assert.assertEquals("Wrong match length", 1, out.readUnsignedByte());
-        Assert.assertEquals("Wrong match class", 1, out.readUnsignedShort());
+        Assert.assertEquals("Wrong match class", 0x8000, out.readUnsignedShort());
         Assert.assertEquals("Wrong match field&mask", 18, out.readUnsignedByte());
         Assert.assertEquals("Wrong match length", 1, out.readUnsignedByte());
         out.skipBytes(4);

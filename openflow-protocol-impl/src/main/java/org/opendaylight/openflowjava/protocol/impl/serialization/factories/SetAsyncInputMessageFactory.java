@@ -14,8 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowRemovedReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PacketInReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortReason;
@@ -31,43 +33,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class SetAsyncInputMessageFactory implements OFSerializer<SetAsyncInput> {
     private static final byte MESSAGE_TYPE = 28;
-    private static final int MESSAGE_LENGTH = 32; 
-    private static SetAsyncInputMessageFactory instance;
-    
-
-    private SetAsyncInputMessageFactory() {
-        // singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized SetAsyncInputMessageFactory getInstance() {
-        if (instance == null) {
-            instance = new SetAsyncInputMessageFactory();
-        }
-        return instance;
-    }
-    
-    @Override
-    public void messageToBuffer(short version, ByteBuf out,
-            SetAsyncInput message) {
-        ByteBufUtils.writeOFHeader(instance, message, out);
-        encodePacketInMask(message.getPacketInMask(), out);
-        encodePortStatusMask(message.getPortStatusMask(), out);
-        encodeFlowRemovedMask(message.getFlowRemovedMask(), out);
-    }
 
     @Override
-    public int computeLength(SetAsyncInput message) {
-        return MESSAGE_LENGTH;
+    public void serialize(SetAsyncInput object, ByteBuf outBuffer) {
+        ByteBufUtils.writeOFHeader(MESSAGE_TYPE, object, outBuffer, EncodeConstants.EMPTY_LENGTH);
+        encodePacketInMask(object.getPacketInMask(), outBuffer);
+        encodePortStatusMask(object.getPortStatusMask(), outBuffer);
+        encodeFlowRemovedMask(object.getFlowRemovedMask(), outBuffer);
+        ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
-    @Override
-    public byte getMessageType() {
-        return MESSAGE_TYPE;
-    }
-    
     private static void encodePacketInMask(List<PacketInMask> packetInMask, ByteBuf outBuffer) {
         if (packetInMask != null) {
             for (PacketInMask currentPacketMask : packetInMask) {
@@ -132,5 +107,10 @@ public class SetAsyncInputMessageFactory implements OFSerializer<SetAsyncInput> 
             }
         }
     }
-    
+
+    @Override
+    public void injectSerializerTable(SerializerTable table) {
+       // do nothing - no need for table in this factory
+    }
+
 }

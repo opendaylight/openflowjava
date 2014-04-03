@@ -10,8 +10,10 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
 
-import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetAsyncInput;
 
 /**
@@ -21,37 +23,15 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class GetAsyncRequestMessageFactory implements OFSerializer<GetAsyncInput> {
     private static final byte MESSAGE_TYPE = 26;
-    private static final int MESSAGE_LENGTH = 8;
-    private static GetAsyncRequestMessageFactory instance;
-    
-    private GetAsyncRequestMessageFactory() {
-        // singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized GetAsyncRequestMessageFactory getInstance() {
-        if (instance == null) {
-            instance = new GetAsyncRequestMessageFactory();
-        }
-        return instance;
-    }
-    
+
     @Override
-    public void messageToBuffer(short version, ByteBuf out,
-            GetAsyncInput message) {
-        ByteBufUtils.writeOFHeader(instance, message, out);
+    public void serialize(GetAsyncInput object, ByteBuf outBuffer) {
+        ByteBufUtils.writeOFHeader(MESSAGE_TYPE, object, outBuffer, EncodeConstants.OFHEADER_SIZE);
     }
-    
+
     @Override
-    public int computeLength(GetAsyncInput message) {
-        return MESSAGE_LENGTH;
-    }
-    
-    @Override
-    public byte getMessageType() {
-        return MESSAGE_TYPE;
+    public void injectSerializerTable(SerializerTable table) {
+        // do nothing - no need for table in this factory
     }
 
 }

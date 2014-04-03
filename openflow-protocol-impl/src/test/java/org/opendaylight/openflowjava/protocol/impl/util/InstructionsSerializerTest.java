@@ -14,7 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerTableImpl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionsInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionsInstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthertypeAction;
@@ -53,6 +58,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
  *
  */
 public class InstructionsSerializerTest {
+
+    private SerializerTable table;
+    private OFSerializer<Instruction> instructionSerializer;
+
+    /**
+     * Initializes serializer table and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        table = new SerializerTableImpl();
+        table.init();
+        instructionSerializer = table.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, Instruction.class));
+    }
 
     /**
      * Testing instructions translation
@@ -128,7 +147,7 @@ public class InstructionsSerializerTest {
         instructions.add(builder.build());
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        InstructionsSerializer.encodeInstructions(instructions, out);
+        CodingUtils.serializeList(instructions, instructionSerializer, out);
         
         Assert.assertEquals("Wrong instruction type", 1, out.readUnsignedShort());
         Assert.assertEquals("Wrong instruction length", 8, out.readUnsignedShort());

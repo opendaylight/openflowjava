@@ -14,7 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerTableImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Dscp;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6Address;
@@ -79,7 +84,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpT
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.EthDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.EthSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.EthType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ExperimenterClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Icmpv4Code;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Icmpv4Type;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Icmpv6Code;
@@ -102,8 +106,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Meta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MplsBos;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MplsLabel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MplsTc;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Nxm0Class;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Nxm1Class;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmMatchType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.PbbIsid;
@@ -127,6 +129,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
  */
 public class MatchSerializerTest2 {
 
+    private SerializerTable table;
+    private OFSerializer<Match> matchSerializer;
+
+    /**
+     * Initializes serializer table and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        table = new SerializerTableImpl();
+        table.init();
+        matchSerializer = table.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, Match.class));
+    }
+
     /**
      * Testing serialization of match
      */
@@ -137,7 +153,7 @@ public class MatchSerializerTest2 {
         Match match = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        MatchSerializer.encodeMatch(match, out);
+        matchSerializer.serialize(match, out);
         
         Assert.assertEquals("Wrong match type", 1, out.readUnsignedShort());
         Assert.assertEquals("Wrong match length", 4, out.readUnsignedShort());
@@ -153,7 +169,7 @@ public class MatchSerializerTest2 {
         builder.setType(OxmMatchType.class);
         List<MatchEntries> entries = new ArrayList<>();
         MatchEntriesBuilder entryBuilder = new MatchEntriesBuilder();
-        entryBuilder.setOxmClass(Nxm0Class.class);
+        entryBuilder.setOxmClass(OpenflowBasicClass.class);
         entryBuilder.setOxmMatchField(InPort.class);
         entryBuilder.setHasMask(false);
         PortNumberMatchEntryBuilder portNumberBuilder = new PortNumberMatchEntryBuilder();
@@ -161,7 +177,7 @@ public class MatchSerializerTest2 {
         entryBuilder.addAugmentation(PortNumberMatchEntry.class, portNumberBuilder.build());
         entries.add(entryBuilder.build());
         entryBuilder = new MatchEntriesBuilder();
-        entryBuilder.setOxmClass(Nxm1Class.class);
+        entryBuilder.setOxmClass(OpenflowBasicClass.class);
         entryBuilder.setOxmMatchField(InPhyPort.class);
         entryBuilder.setHasMask(false);
         portNumberBuilder = new PortNumberMatchEntryBuilder();
@@ -180,7 +196,7 @@ public class MatchSerializerTest2 {
         entryBuilder.addAugmentation(MaskMatchEntry.class, maskBuilder.build());
         entries.add(entryBuilder.build());
         entryBuilder = new MatchEntriesBuilder();
-        entryBuilder.setOxmClass(ExperimenterClass.class);
+        entryBuilder.setOxmClass(OpenflowBasicClass.class);
         entryBuilder.setOxmMatchField(EthDst.class);
         entryBuilder.setHasMask(true);
         MacAddressMatchEntryBuilder macBuilder = new MacAddressMatchEntryBuilder();
@@ -224,7 +240,7 @@ public class MatchSerializerTest2 {
         entryBuilder = new MatchEntriesBuilder();
         entryBuilder.setOxmClass(OpenflowBasicClass.class);
         entryBuilder.setOxmMatchField(VlanPcp.class);
-        entryBuilder.setHasMask(true);
+        entryBuilder.setHasMask(false);
         VlanPcpMatchEntryBuilder pcpBuilder = new VlanPcpMatchEntryBuilder();
         pcpBuilder.setVlanPcp((short) 14);
         entryBuilder.addAugmentation(VlanPcpMatchEntry.class, pcpBuilder.build());
@@ -454,7 +470,7 @@ public class MatchSerializerTest2 {
         entryBuilder.addAugmentation(Ipv6AddressMatchEntry.class, ipv6Builder.build());
         entries.add(entryBuilder.build());
         entryBuilder = new MatchEntriesBuilder();
-        entryBuilder.setOxmClass(ExperimenterClass.class);
+        entryBuilder.setOxmClass(OpenflowBasicClass.class);
         entryBuilder.setOxmMatchField(Ipv6NdSll.class);
         entryBuilder.setHasMask(false);
         macBuilder = new MacAddressMatchEntryBuilder();
@@ -536,15 +552,15 @@ public class MatchSerializerTest2 {
         Match match = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        MatchSerializer.encodeMatch(match, out);
+        matchSerializer.serialize(match, out);
         
         Assert.assertEquals("Wrong match type", 1, out.readUnsignedShort());
         Assert.assertEquals("Wrong match length", 428, out.readUnsignedShort());
-        Assert.assertEquals("Wrong match entry class", 0, out.readUnsignedShort());
+        Assert.assertEquals("Wrong match entry class", 0x8000, out.readUnsignedShort());
         Assert.assertEquals("Wrong match entry field & hasMask", 0, out.readUnsignedByte());
         Assert.assertEquals("Wrong match entry length", 4, out.readUnsignedByte());
         Assert.assertEquals("Wrong match entry value", 42, out.readUnsignedInt());
-        Assert.assertEquals("Wrong match entry class", 1, out.readUnsignedShort());
+        Assert.assertEquals("Wrong match entry class", 0x8000, out.readUnsignedShort());
         Assert.assertEquals("Wrong match entry field & hasMask", 2, out.readUnsignedByte());
         Assert.assertEquals("Wrong match entry length", 4, out.readUnsignedByte());
         Assert.assertEquals("Wrong match entry value", 43, out.readUnsignedInt());
@@ -553,7 +569,7 @@ public class MatchSerializerTest2 {
         Assert.assertEquals("Wrong match entry length", 16, out.readUnsignedByte());
         Assert.assertEquals("Wrong match entry value", 1L, out.readLong());
         Assert.assertEquals("Wrong match entry mask", 2L, out.readLong());
-        Assert.assertEquals("Wrong match entry class", 0xFFFF, out.readUnsignedShort());
+        Assert.assertEquals("Wrong match entry class", 0x8000, out.readUnsignedShort());
         Assert.assertEquals("Wrong match entry field & hasMask", 7, out.readUnsignedByte());
         Assert.assertEquals("Wrong match entry length", 12, out.readUnsignedByte());
         byte[] array = new byte[6];
@@ -727,7 +743,7 @@ public class MatchSerializerTest2 {
         array = new byte[16];
         out.readBytes(array);
         Assert.assertArrayEquals("Wrong match entry value", new byte[]{0,15,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, array);
-        Assert.assertEquals("Wrong match entry class", 0xFFFF, out.readUnsignedShort());
+        Assert.assertEquals("Wrong match entry class", 0x8000, out.readUnsignedShort());
         Assert.assertEquals("Wrong match entry field & hasMask", 64, out.readUnsignedByte());
         Assert.assertEquals("Wrong match entry length", 6, out.readUnsignedByte());
         array = new byte[6];

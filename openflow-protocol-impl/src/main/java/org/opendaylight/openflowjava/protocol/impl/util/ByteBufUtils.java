@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 
@@ -102,18 +101,27 @@ public abstract class ByteBufUtils {
         }
     }
     
+    
     /**
      * Create standard OF header
-     * @param factory serialization factory 
+     * @param msgType message code
      * @param message POJO
      * @param out writing buffer
+     * @param length TODO
      */
-    public static <E extends OfHeader> void writeOFHeader(OFSerializer<E> factory, E message, ByteBuf out) { 
+    public static <E extends OfHeader> void writeOFHeader(byte msgType, E message, ByteBuf out, int length) { 
         out.writeByte(message.getVersion());
-        out.writeByte(factory.getMessageType());
-        out.writeShort(factory.computeLength(message));
+        out.writeByte(msgType);
+        out.writeShort(length);
         out.writeInt(message.getXid().intValue());
-
+    }
+    
+    /**
+     * Write length standard OF header
+     * @param out writing buffer
+     */
+    public static void updateOFHeaderLength(ByteBuf out) { 
+        out.setShort(EncodeConstants.OFHEADER_LENGTH_INDEX, out.readableBytes());
     }
 
     /**

@@ -16,8 +16,6 @@ import java.lang.reflect.Method;
 
 import org.junit.Assert;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
-import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
@@ -151,19 +149,5 @@ public abstract class BufferHelper {
     private static <E extends DataObject> E bufferToMessage(OFDeserializer<E> decoder, short version, ByteBuf bb) {
         return decoder.bufferToMessage(bb, version);
     }
-    
-    /**
-     * Use OF-protocol version 1.3
-     * @param encoder serialize factory
-     * @param out buffer the result will be written into
-     * @param pojo input message
-     */
-    public static <E extends DataObject> void encodeV13(OFSerializer<E> encoder, ByteBuf out, E pojo) {
-        messageToBuffer(encoder, out, pojo, HelloMessageFactoryTest.VERSION_YET_SUPPORTED);
-    }
-    
-    private static <E extends DataObject> void messageToBuffer(
-            OFSerializer<E> encoder, ByteBuf out, E pojo, Short version) {
-        encoder.messageToBuffer(version, out, pojo);
-    }
+
 }

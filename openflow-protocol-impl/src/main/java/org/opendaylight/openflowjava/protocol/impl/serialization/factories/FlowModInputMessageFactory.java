@@ -13,11 +13,15 @@ import io.netty.buffer.ByteBuf;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
-import org.opendaylight.openflowjava.protocol.impl.util.InstructionsSerializer;
-import org.opendaylight.openflowjava.protocol.impl.util.MatchSerializer;
+import org.opendaylight.openflowjava.protocol.impl.util.CodingUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowModFlags;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInput;
 
 /**
@@ -28,51 +32,34 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class FlowModInputMessageFactory implements OFSerializer<FlowModInput> {
     private static final byte MESSAGE_TYPE = 14;
     private static final byte PADDING_IN_FLOW_MOD_MESSAGE = 2;
-    private static final int MESSAGE_LENGTH = 48;
-    private static FlowModInputMessageFactory instance;
-   
-    private FlowModInputMessageFactory() {
-        // singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized FlowModInputMessageFactory getInstance() {
-        if(instance == null) {
-            instance = new FlowModInputMessageFactory();
-        }
-        return instance;
-    }
-    
+    private SerializerTable serializerTable;
+
     @Override
-    public void messageToBuffer(short version, ByteBuf out, FlowModInput message) {
-        ByteBufUtils.writeOFHeader(instance, message, out);
-        out.writeLong(message.getCookie().longValue());
-        out.writeLong(message.getCookieMask().longValue());
-        out.writeByte(message.getTableId().getValue().byteValue());
-        out.writeByte(message.getCommand().getIntValue());
-        out.writeShort(message.getIdleTimeout().intValue());
-        out.writeShort(message.getHardTimeout().intValue());
-        out.writeShort(message.getPriority());
-        out.writeInt(message.getBufferId().intValue());
-        out.writeInt(message.getOutPort().getValue().intValue());
-        out.writeInt(message.getOutGroup().intValue());
-        out.writeShort(createFlowModFlagsBitmask(message.getFlags()));
-        ByteBufUtils.padBuffer(PADDING_IN_FLOW_MOD_MESSAGE, out);
-        MatchSerializer.encodeMatch(message.getMatch(), out);
-        InstructionsSerializer.encodeInstructions(message.getInstruction(), out);
+    public void serialize(FlowModInput object, ByteBuf outBuffer) {
+        ByteBufUtils.writeOFHeader(MESSAGE_TYPE, object, outBuffer, EncodeConstants.EMPTY_LENGTH);
+        outBuffer.writeLong(object.getCookie().longValue());
+        outBuffer.writeLong(object.getCookieMask().longValue());
+        outBuffer.writeByte(object.getTableId().getValue().byteValue());
+        outBuffer.writeByte(object.getCommand().getIntValue());
+        outBuffer.writeShort(object.getIdleTimeout().intValue());
+        outBuffer.writeShort(object.getHardTimeout().intValue());
+        outBuffer.writeShort(object.getPriority());
+        outBuffer.writeInt(object.getBufferId().intValue());
+        outBuffer.writeInt(object.getOutPort().getValue().intValue());
+        outBuffer.writeInt(object.getOutGroup().intValue());
+        outBuffer.writeShort(createFlowModFlagsBitmask(object.getFlags()));
+        ByteBufUtils.padBuffer(PADDING_IN_FLOW_MOD_MESSAGE, outBuffer);
+        serializerTable.getSerializer(new MessageTypeKey<>(object.getVersion(), Match.class))
+            .serialize(object.getMatch(), outBuffer);
+        OFSerializer<Instruction> instructionSerializer =
+                serializerTable.getSerializer(new MessageTypeKey<>(object.getVersion(), Instruction.class));
+        CodingUtils.serializeList(object.getInstruction(), instructionSerializer, outBuffer);
+        ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
     @Override
-    public int computeLength(FlowModInput message) {
-        return MESSAGE_LENGTH + MatchSerializer.computeMatchLength(message.getMatch())
-                + InstructionsSerializer.computeInstructionsLength(message.getInstruction());
-    }
-
-    @Override
-    public byte getMessageType() {
-        return MESSAGE_TYPE;
+    public void injectSerializerTable(SerializerTable table) {
+        this.serializerTable = table;
     }
 
     private static int createFlowModFlagsBitmask(FlowModFlags flags) {
@@ -87,6 +74,5 @@ public class FlowModInputMessageFactory implements OFSerializer<FlowModInput> {
         flowModFlagBitmask = ByteBufUtils.fillBitMaskFromMap(flowModFlagsMap);
         return flowModFlagBitmask;
     }
-    
-    
+
 }

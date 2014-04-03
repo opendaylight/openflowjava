@@ -12,7 +12,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerTableImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
@@ -28,6 +33,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  *
  */
 public class OF10PortModInputMessageFactoryTest {
+
+    private SerializerTable table;
+    private OFSerializer<PortModInput> portModFactory;
+
+    /**
+     * Initializes serializer table and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        table = new SerializerTableImpl();
+        table.init();
+        portModFactory = table.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, PortModInput.class));
+    }
 
     /**
      * Testing of {@link OF10PortModInputMessageFactory} for correct translation from POJO
@@ -46,8 +65,7 @@ public class OF10PortModInputMessageFactoryTest {
         PortModInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        OF10PortModInputMessageFactory factory = OF10PortModInputMessageFactory.getInstance();
-        factory.messageToBuffer(EncodeConstants.OF10_VERSION_ID, out, message);
+        portModFactory.serialize(message, out);
         
         BufferHelper.checkHeaderV10(out, (byte) 15, 32);
         Assert.assertEquals("Wrong PortNo", message.getPortNo().getValue().longValue(), out.readUnsignedShort());

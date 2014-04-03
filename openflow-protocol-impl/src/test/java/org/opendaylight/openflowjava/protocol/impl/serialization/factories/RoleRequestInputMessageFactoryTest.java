@@ -15,8 +15,12 @@ import java.math.BigInteger;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerTableImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ControllerRole;
@@ -31,7 +35,20 @@ public class RoleRequestInputMessageFactoryTest {
     private static final byte MESSAGE_TYPE = 24;
     private static final int MESSAGE_LENGTH = 24;
     private static final byte PADDING_IN_ROLE_REQUEST_MESSAGE = 4;
-    
+    private SerializerTable table;
+    private OFSerializer<RoleRequestInput> roleFactory;
+
+    /**
+     * Initializes serializer table and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        table = new SerializerTableImpl();
+        table.init();
+        roleFactory = table.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, RoleRequestInput.class));
+    }
+
     /**
      * Testing of {@link RoleRequestInputMessageFactory} for correct translation from POJO
      * @throws Exception 
@@ -46,8 +63,7 @@ public class RoleRequestInputMessageFactoryTest {
         RoleRequestInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        RoleRequestInputMessageFactory factory = RoleRequestInputMessageFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
+        roleFactory.serialize(message, out);
         
         BufferHelper.checkHeaderV13(out, MESSAGE_TYPE, MESSAGE_LENGTH);
         Assert.assertEquals("Wrong role", message.getRole().getIntValue(), ControllerRole.forValue((int) out.readUnsignedInt()).getIntValue());

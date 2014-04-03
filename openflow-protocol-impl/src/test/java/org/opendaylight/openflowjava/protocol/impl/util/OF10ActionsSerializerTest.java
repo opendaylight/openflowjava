@@ -14,7 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerTableImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.DlAddressAction;
@@ -57,6 +62,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
  *
  */
 public class OF10ActionsSerializerTest {
+
+    private SerializerTable table;
+    private OFSerializer<Action> actionSerializer;
+
+    /**
+     * Initializes serializer table and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        table = new SerializerTableImpl();
+        table.init();
+        actionSerializer = table.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, Action.class));
+    }
 
     /**
      * Testing correct serialization of actions (OF v1.0) 
@@ -147,7 +166,7 @@ public class OF10ActionsSerializerTest {
         actions.add(actionBuilder.build());
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        OF10ActionsSerializer.encodeActionsV10(out, actions);
+        CodingUtils.serializeList(actions, actionSerializer, out);
         
         Assert.assertEquals("Wrong action type", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());

@@ -10,9 +10,13 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
 
-import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
-import org.opendaylight.openflowjava.protocol.impl.util.ActionsSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.CodingUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketOutInput;
 
 /**
@@ -24,53 +28,32 @@ public class PacketOutInputMessageFactory implements OFSerializer<PacketOutInput
 
     /** Code type of PacketOut message */
     public static final byte MESSAGE_TYPE = 13;
-    private static final int MESSAGE_LENGTH = 24;
     private static final byte PADDING_IN_PACKET_OUT_MESSAGE = 6;
-    private static PacketOutInputMessageFactory instance;
-    
-    private PacketOutInputMessageFactory() {
-        // do nothing, just singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized PacketOutInputMessageFactory getInstance() {
-        if (instance == null) {
-            instance = new PacketOutInputMessageFactory();
-        }
-        return instance;
-    }
-    
+    private SerializerTable serializerTable;
+
     @Override
-    public void messageToBuffer(short version, ByteBuf out,
-            PacketOutInput message) {
-        ByteBufUtils.writeOFHeader(instance, message, out);
-        out.writeInt(message.getBufferId().intValue());
-        out.writeInt(message.getInPort().getValue().intValue());
-        out.writeShort(ActionsSerializer.computeLengthOfActions(message.getAction()));
-        ByteBufUtils.padBuffer(PADDING_IN_PACKET_OUT_MESSAGE, out);
-        ActionsSerializer.encodeActions(message.getAction(), out);
-        byte[] data = message.getData();
+    public void serialize(PacketOutInput object, ByteBuf outBuffer) {
+        ByteBufUtils.writeOFHeader(MESSAGE_TYPE, object, outBuffer, EncodeConstants.EMPTY_LENGTH);
+        outBuffer.writeInt(object.getBufferId().intValue());
+        outBuffer.writeInt(object.getInPort().getValue().intValue());
+        int actionsLengthIndex = outBuffer.writerIndex();
+        outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
+        ByteBufUtils.padBuffer(PADDING_IN_PACKET_OUT_MESSAGE, outBuffer);
+        int actionsStartIndex = outBuffer.writerIndex();
+        OFSerializer<Action> actionSerializer = serializerTable.getSerializer(
+                new MessageTypeKey<>(object.getVersion(), Action.class));
+        CodingUtils.serializeList(object.getAction(), actionSerializer, outBuffer);
+        outBuffer.setShort(actionsLengthIndex, outBuffer.writerIndex() - actionsStartIndex);
+        byte[] data = object.getData();
         if (data != null) {
-            out.writeBytes(data);
+            outBuffer.writeBytes(data);
         }
+        ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
     @Override
-    public int computeLength(PacketOutInput message) {
-        int length = MESSAGE_LENGTH;
-        length += ActionsSerializer.computeLengthOfActions(message.getAction());
-        byte[] data = message.getData();
-        if (data != null) {
-            length += data.length;
-        }
-        return length;
-    }
-
-    @Override
-    public byte getMessageType() {
-        return MESSAGE_TYPE;
+    public void injectSerializerTable(SerializerTable table) {
+        this.serializerTable = table;
     }
 
 }

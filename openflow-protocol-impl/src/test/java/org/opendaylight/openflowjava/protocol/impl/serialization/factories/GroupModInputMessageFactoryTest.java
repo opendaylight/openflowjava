@@ -15,8 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerTableImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupId;
@@ -33,8 +37,22 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  *
  */
 public class GroupModInputMessageFactoryTest {
+    private static final byte MESSAGE_TYPE = 15;
     private static final byte PADDING_IN_GROUP_MOD_MESSAGE = 1;
-    
+    private SerializerTable table;
+    private OFSerializer<GroupModInput> groupModFactory;
+
+    /**
+     * Initializes serializer table and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        table = new SerializerTableImpl();
+        table.init();
+        groupModFactory = table.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, GroupModInput.class));
+    }
+
     /**
      * @throws Exception
      * Testing of {@link GroupModInputMessageFactory} for correct translation from POJO
@@ -51,10 +69,9 @@ public class GroupModInputMessageFactoryTest {
         GroupModInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        GroupModInputMessageFactory factory = GroupModInputMessageFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
-        
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
+        groupModFactory.serialize(message, out);
+
+        BufferHelper.checkHeaderV13(out, MESSAGE_TYPE, 32);
         Assert.assertEquals("Wrong command", message.getCommand().getIntValue(), out.readUnsignedShort());
         Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readUnsignedByte());
         out.skipBytes(PADDING_IN_GROUP_MOD_MESSAGE);

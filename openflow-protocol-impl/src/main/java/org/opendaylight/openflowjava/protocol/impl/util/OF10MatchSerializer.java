@@ -8,11 +8,13 @@
 
 package org.opendaylight.openflowjava.protocol.impl.util;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import io.netty.buffer.ByteBuf;
-
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerTable;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowWildcardsV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.v10.grouping.MatchV10;
 
@@ -20,42 +22,49 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.matc
  * Serializes ofp_match (OpenFlow v1.0) structure
  * @author michal.polkorab
  */
-public abstract class OF10MatchSerializer {
+public class OF10MatchSerializer implements OFSerializer<MatchV10> {
 
     private static final byte PADDING_IN_MATCH = 1;
     private static final byte PADDING_IN_MATCH_2 = 2;
     private static final byte NW_SRC_SHIFT = 8;
     private static final byte NW_DST_SHIFT = 14;
-    
+
     /**
-     * Encodes ofp_match (OpenFlow v1.0)
-     * @param out output ByteBuf that match will be written into
-     * @param match match to be encoded
+     * Serializes ofp_match (OpenFlow v1.0)
+     * @param outBuffer output ByteBuf
+     * @param object match to be serialized
      */
-    public static void encodeMatchV10(ByteBuf out, MatchV10 match) {
-        out.writeInt(encodeWildcards(match.getWildcards(), match.getNwSrcMask(), match.getNwDstMask()));
-        out.writeShort(match.getInPort());
-        out.writeBytes(ByteBufUtils.macAddressToBytes(match.getDlSrc().getValue()));
-        out.writeBytes(ByteBufUtils.macAddressToBytes(match.getDlDst().getValue()));
-        out.writeShort(match.getDlVlan());
-        out.writeByte(match.getDlVlanPcp());
-        ByteBufUtils.padBuffer(PADDING_IN_MATCH, out);
-        out.writeShort(match.getDlType());
-        out.writeByte(match.getNwTos());
-        out.writeByte(match.getNwProto());
-        ByteBufUtils.padBuffer(PADDING_IN_MATCH_2, out);
-        String[] srcGroups = match.getNwSrc().getValue().split("\\.");
+    @Override
+    public void serialize(MatchV10 object, ByteBuf outBuffer) {
+        outBuffer.writeInt(encodeWildcards(object.getWildcards(), object.getNwSrcMask(), object.getNwDstMask()));
+        outBuffer.writeShort(object.getInPort());
+        outBuffer.writeBytes(ByteBufUtils.macAddressToBytes(object.getDlSrc().getValue()));
+        outBuffer.writeBytes(ByteBufUtils.macAddressToBytes(object.getDlDst().getValue()));
+        outBuffer.writeShort(object.getDlVlan());
+        outBuffer.writeByte(object.getDlVlanPcp());
+        ByteBufUtils.padBuffer(PADDING_IN_MATCH, outBuffer);
+        outBuffer.writeShort(object.getDlType());
+        outBuffer.writeByte(object.getNwTos());
+        outBuffer.writeByte(object.getNwProto());
+        ByteBufUtils.padBuffer(PADDING_IN_MATCH_2, outBuffer);
+        String[] srcGroups = object.getNwSrc().getValue().split("\\.");
         for (int i = 0; i < srcGroups.length; i++) {
-            out.writeByte(Integer.parseInt(srcGroups[i]));
+            outBuffer.writeByte(Integer.parseInt(srcGroups[i]));
         }
-        String[] dstGroups = match.getNwDst().getValue().split("\\.");
+        String[] dstGroups = object.getNwDst().getValue().split("\\.");
         for (int i = 0; i < dstGroups.length; i++) {
-            out.writeByte(Integer.parseInt(dstGroups[i]));
+            outBuffer.writeByte(Integer.parseInt(dstGroups[i]));
         }
-        out.writeShort(match.getTpSrc());
-        out.writeShort(match.getTpDst());
+        outBuffer.writeShort(object.getTpSrc());
+        outBuffer.writeShort(object.getTpDst());
     }
-    
+
+    @Override
+    public void injectSerializerTable(SerializerTable table) {
+        // TODO Auto-generated method stub
+        
+    }
+
     private static int encodeWildcards(FlowWildcardsV10 wildcards, short srcMask, short dstMask) {
         int bitmask = 0;
         Map<Integer, Boolean> wildcardsMap = new HashMap<>();
@@ -74,5 +83,5 @@ public abstract class OF10MatchSerializer {
         bitmask |= ((32 - dstMask) << NW_DST_SHIFT);
         return bitmask;
     }
-    
+
 }
