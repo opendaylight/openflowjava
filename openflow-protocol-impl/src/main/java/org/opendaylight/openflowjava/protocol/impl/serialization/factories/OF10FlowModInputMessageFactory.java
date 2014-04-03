@@ -13,61 +13,45 @@ import io.netty.buffer.ByteBuf;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.RegistryInjector;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
-import org.opendaylight.openflowjava.protocol.impl.util.OF10ActionsSerializer;
-import org.opendaylight.openflowjava.protocol.impl.util.OF10MatchSerializer;
+import org.opendaylight.openflowjava.protocol.impl.util.CodingUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowModFlagsV10;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.v10.grouping.MatchV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInput;
 
 /**
  * Translates FlowMod messages
  * @author michal.polkorab
  */
-public class OF10FlowModInputMessageFactory implements OFSerializer<FlowModInput> {
+public class OF10FlowModInputMessageFactory implements OFSerializer<FlowModInput>, RegistryInjector {
 
     private static final byte MESSAGE_TYPE = 14;
-    private static final int MESSAGE_LENGTH = 72;
-    
-    private static OF10FlowModInputMessageFactory instance;
-   
-    private OF10FlowModInputMessageFactory() {
-        // singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized OF10FlowModInputMessageFactory getInstance() {
-        if(instance == null) {
-            instance = new OF10FlowModInputMessageFactory();
-        }
-        return instance;
-    }
-    
-    @Override
-    public void messageToBuffer(short version, ByteBuf out, FlowModInput message) {
-        ByteBufUtils.writeOFHeader(instance, message, out);
-        OF10MatchSerializer.encodeMatchV10(out, message.getMatchV10());
-        out.writeLong(message.getCookie().longValue());
-        out.writeShort(message.getCommand().getIntValue());
-        out.writeShort(message.getIdleTimeout().intValue());
-        out.writeShort(message.getHardTimeout().intValue());
-        out.writeShort(message.getPriority());
-        out.writeInt(message.getBufferId().intValue());
-        out.writeShort(message.getOutPort().getValue().intValue());
-        out.writeShort(createFlowModFlagsBitmask(message.getFlagsV10()));
-        OF10ActionsSerializer.encodeActionsV10(out, message.getAction());
-    }
+    private SerializerRegistry registry;
 
     @Override
-    public int computeLength(FlowModInput message) {
-        return MESSAGE_LENGTH + OF10ActionsSerializer.computeActionsLength(message.getAction());
-    }
-
-    @Override
-    public byte getMessageType() {
-        return MESSAGE_TYPE;
+    public void serialize(FlowModInput message, ByteBuf outBuffer) {
+        ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
+        OFSerializer<MatchV10> matchSerializer = registry.getSerializer(new MessageTypeKey<>(
+                message.getVersion(), MatchV10.class));
+        matchSerializer.serialize(message.getMatchV10(), outBuffer);
+        outBuffer.writeLong(message.getCookie().longValue());
+        outBuffer.writeShort(message.getCommand().getIntValue());
+        outBuffer.writeShort(message.getIdleTimeout().intValue());
+        outBuffer.writeShort(message.getHardTimeout().intValue());
+        outBuffer.writeShort(message.getPriority());
+        outBuffer.writeInt(message.getBufferId().intValue());
+        outBuffer.writeShort(message.getOutPort().getValue().intValue());
+        outBuffer.writeShort(createFlowModFlagsBitmask(message.getFlagsV10()));
+        OFSerializer<Action> actionSerializer = registry.getSerializer(
+                new MessageTypeKey<>(message.getVersion(), Action.class));
+        CodingUtils.serializeList(message.getAction(), actionSerializer, outBuffer);
+        ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
     private static int createFlowModFlagsBitmask(FlowModFlagsV10 flags) {
@@ -78,5 +62,10 @@ public class OF10FlowModInputMessageFactory implements OFSerializer<FlowModInput
         flowModFlagsMap.put(2, flags.isOFPFFEMERG());
         flowModFlagBitmask = ByteBufUtils.fillBitMaskFromMap(flowModFlagsMap);
         return flowModFlagBitmask;
+    }
+
+    @Override
+    public void injectSerializerRegistry(SerializerRegistry serializerRegistry) {
+        this.registry = serializerRegistry;
     }
 }

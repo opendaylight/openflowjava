@@ -21,6 +21,7 @@ import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHan
 import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionAdapterFactory;
 import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionFacade;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler.COMPONENT_NAMES;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +37,8 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
     private SwitchConnectionHandler switchConnectionHandler;
     private long switchIdleTimeout;
     private boolean encryption;
-    
+    private SerializationFactory serializationFactory;
+
     /**
      * default ctor
      */
@@ -74,7 +76,9 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
             ch.pipeline().addLast(COMPONENT_NAMES.OF_FRAME_DECODER.name(), new OFFrameDecoder());
             ch.pipeline().addLast(COMPONENT_NAMES.OF_VERSION_DETECTOR.name(), new OFVersionDetector());
             ch.pipeline().addLast(COMPONENT_NAMES.OF_DECODER.name(), new OFDecoder());
-            ch.pipeline().addLast(COMPONENT_NAMES.OF_ENCODER.name(), new OFEncoder());
+            OFEncoder ofEncoder = new OFEncoder();
+            ofEncoder.setSerializationFactory(serializationFactory);
+            ch.pipeline().addLast(COMPONENT_NAMES.OF_ENCODER.name(), ofEncoder);
             ch.pipeline().addLast(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name(), new DelegatingInboundHandler(connectionFacade));
             if (!encryption) {
                 connectionFacade.fireConnectionReadyNotification();
@@ -119,5 +123,11 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
     public void setEncryption(boolean tlsSupported) {
         encryption = tlsSupported;
     }
-    
+
+    /**
+     * @param serializationFactory
+     */
+    public void setSerializationFactory(SerializationFactory serializationFactory) {
+        this.serializationFactory = serializationFactory;
+    }
 }

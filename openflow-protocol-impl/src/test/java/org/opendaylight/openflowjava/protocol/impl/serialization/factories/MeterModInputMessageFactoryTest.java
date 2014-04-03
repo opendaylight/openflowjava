@@ -16,8 +16,12 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterBandType;
@@ -41,6 +45,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class MeterModInputMessageFactoryTest {
 
+    private SerializerRegistry registry;
+    private OFSerializer<MeterModInput> meterModFactory;
+
+    /**
+     * Initializes serializer registry and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        registry = new SerializerRegistryImpl();
+        registry.init();
+        meterModFactory = registry.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, MeterModInput.class));
+    }
+
     /**
      * @throws Exception 
      * Testing of {@link MeterModInputMessageFactory} for correct translation from POJO
@@ -56,10 +74,9 @@ public class MeterModInputMessageFactoryTest {
         MeterModInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        MeterModInputMessageFactory factory = MeterModInputMessageFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
+        meterModFactory.serialize(message, out);
         
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), 64);
+        BufferHelper.checkHeaderV13(out, (byte) 29, 64);
         Assert.assertEquals("Wrong meterModCommand", message.getCommand().getIntValue(), out.readUnsignedShort());
         Assert.assertEquals("Wrong meterFlags", message.getFlags(), decodeMeterModFlags(out.readShort()));
         Assert.assertEquals("Wrong meterId", message.getMeterId().getValue().intValue(), out.readUnsignedInt());

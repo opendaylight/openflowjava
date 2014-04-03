@@ -14,13 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.DlAddressAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.DlAddressActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IpAddressAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IpAddressActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthAction;
@@ -36,7 +39,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Enqueue;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Output;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetDlDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetDlSrc;
@@ -57,6 +59,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
  *
  */
 public class OF10ActionsSerializerTest {
+
+    private SerializerRegistry registry;
+    private OFSerializer<Action> actionSerializer;
+
+    /**
+     * Initializes serializer table and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        registry = new SerializerRegistryImpl();
+        registry.init();
+        actionSerializer = registry.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, Action.class));
+    }
 
     /**
      * Testing correct serialization of actions (OF v1.0) 
@@ -139,15 +155,9 @@ public class OF10ActionsSerializerTest {
         queueBuilder.setQueueId(400L);
         actionBuilder.addAugmentation(QueueIdAction.class, queueBuilder.build());
         actions.add(actionBuilder.build());
-        actionBuilder = new ActionBuilder();
-        actionBuilder.setType(Experimenter.class);
-        ExperimenterActionBuilder expBuilder = new ExperimenterActionBuilder();
-        expBuilder.setExperimenter(500L);
-        actionBuilder.addAugmentation(ExperimenterAction.class, expBuilder.build());
-        actions.add(actionBuilder.build());
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        OF10ActionsSerializer.encodeActionsV10(out, actions);
+        CodingUtils.serializeList(actions, actionSerializer, out);
         
         Assert.assertEquals("Wrong action type", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
@@ -205,9 +215,6 @@ public class OF10ActionsSerializerTest {
         Assert.assertEquals("Wrong port", 6613, out.readUnsignedShort());
         out.skipBytes(6);
         Assert.assertEquals("Wrong queue-id", 400, out.readUnsignedInt());
-        Assert.assertEquals("Wrong action type", 65535, out.readUnsignedShort());
-        Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
-        Assert.assertEquals("Wrong vendor-id", 500, out.readUnsignedInt());
         Assert.assertTrue("Written more bytes than needed", out.readableBytes() == 0);
     }
     

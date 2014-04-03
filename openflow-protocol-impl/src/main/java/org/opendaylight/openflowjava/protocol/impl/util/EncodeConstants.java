@@ -15,12 +15,18 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 public abstract class EncodeConstants {
 
     /** Default OF padding (in bytes) */
-    public static final byte PADDING = EncodeConstants.SIZE_OF_LONG_IN_BYTES;
+    public static final byte PADDING = 8;
     /** OpenFlow v1.0 wire protocol number */
     public static final byte OF10_VERSION_ID = 0x01;
     /** OpenFlow v1.0 wire protocol number */
     public static final byte OF13_VERSION_ID = 0x04;
-
+    /** Index of length in Openflow header */
+    public static final int OFHEADER_LENGTH_INDEX = 2;
+    /** Size of Openflow header */
+    public static final int OFHEADER_SIZE = 8;
+    /** Zero length - used when the length is updated later */
+    public static final int EMPTY_LENGTH = 0;
+    
     /** Length of mac address */
     public static final byte MAC_ADDRESS_LENGTH = 6;
     /** Number of groups in ipv4 address */
@@ -46,4 +52,5 @@ public abstract class EncodeConstants {
     public static final byte MAX_PORT_NAME_LENGTH = 16;
     /** OF v1.3 lenght of experimenter_ids - see Multipart TableFeatures (properties) message */
     public static final byte EXPERIMENTER_IDS_LENGTH = 8;
+
 }

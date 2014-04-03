@@ -25,18 +25,19 @@ import org.slf4j.LoggerFactory;
 public class OFEncoder extends MessageToByteEncoder<OfHeader> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OFEncoder.class);
-    
+    private SerializationFactory serializationFactory;
+
     /** Constructor of class */
     public OFEncoder() {
         LOGGER.trace("Creating OF13Encoder");
     }
-    
+
     @Override
     protected void encode(ChannelHandlerContext ctx, OfHeader msg, ByteBuf out)
             throws Exception {
         LOGGER.trace("Encoding");
         try {
-            SerializationFactory.messageToBuffer(msg.getVersion(), out, msg);
+            serializationFactory.messageToBuffer(msg.getVersion(), out, msg);
         } catch(Exception e) {
             LOGGER.error("Message serialization failed");
             LOGGER.error(e.getMessage(), e);
@@ -49,6 +50,13 @@ public class OFEncoder extends MessageToByteEncoder<OfHeader> {
         } else {
             LOGGER.warn("Translated buffer is empty");
         }
+    }
+
+    /**
+     * @param serializationFactory
+     */
+    public void setSerializationFactory(SerializationFactory serializationFactory) {
+        this.serializationFactory = serializationFactory;
     }
 
 }

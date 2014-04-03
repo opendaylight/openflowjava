@@ -13,8 +13,9 @@ import io.netty.buffer.ByteBuf;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfigV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeaturesV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortModInput;
@@ -27,46 +28,19 @@ public class OF10PortModInputMessageFactory implements OFSerializer<PortModInput
 
     private static final byte MESSAGE_TYPE = 15;
     private static final byte PADDING_IN_PORT_MOD_MESSAGE = 4;
-    private static final int MESSAGE_LENGTH = 32;
-    
-    private static OF10PortModInputMessageFactory instance;
-    
-    private OF10PortModInputMessageFactory() {
-        // singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized OF10PortModInputMessageFactory getInstance() {
-        if (instance == null) {
-            instance = new OF10PortModInputMessageFactory();
-        }
-        return instance;
-    }
-    
-    @Override
-    public void messageToBuffer(short version, ByteBuf out, PortModInput message) {
-        ByteBufUtils.writeOFHeader(instance, message, out);
-        out.writeShort(message.getPortNo().getValue().intValue());
-        out.writeBytes(ByteBufUtils.macAddressToBytes(message.getHwAddress().getValue()));
-        out.writeInt(createPortConfigBitmask(message.getConfigV10()));
-        out.writeInt(createPortConfigBitmask(message.getMaskV10()));
-        out.writeInt(createPortFeaturesBitmask(message.getAdvertiseV10()));
-        ByteBufUtils.padBuffer(PADDING_IN_PORT_MOD_MESSAGE, out);
-    }
 
     @Override
-    public int computeLength(PortModInput message) {
-        return MESSAGE_LENGTH;
+    public void serialize(PortModInput message, ByteBuf outBuffer) {
+        ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
+        outBuffer.writeShort(message.getPortNo().getValue().intValue());
+        outBuffer.writeBytes(ByteBufUtils.macAddressToBytes(message.getHwAddress().getValue()));
+        outBuffer.writeInt(createPortConfigBitmask(message.getConfigV10()));
+        outBuffer.writeInt(createPortConfigBitmask(message.getMaskV10()));
+        outBuffer.writeInt(createPortFeaturesBitmask(message.getAdvertiseV10()));
+        ByteBufUtils.padBuffer(PADDING_IN_PORT_MOD_MESSAGE, outBuffer);
+        ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
-    @Override
-    public byte getMessageType() {
-        return MESSAGE_TYPE;
-    }
-   
-    
     /**
      * @param config
      * @return port config bitmask 
@@ -104,4 +78,5 @@ public class OF10PortModInputMessageFactory implements OFSerializer<PortModInput
         configBitmask = ByteBufUtils.fillBitMaskFromMap(portFeaturesMap);
         return configBitmask;
     }
+
 }
