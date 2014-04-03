@@ -15,8 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
@@ -41,6 +45,20 @@ import org.slf4j.LoggerFactory;
 public class SetAsyncInputMessageFactoryTest {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(SetAsyncInputMessageFactoryTest.class);
+    private SerializerRegistry registry;
+    private OFSerializer<SetAsyncInput> setAsyncFactory;
+
+    /**
+     * Initializes serializer registry and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        registry = new SerializerRegistryImpl();
+        registry.init();
+        setAsyncFactory = registry.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, SetAsyncInput.class));
+    }
+
     /**
      * @throws Exception 
      * Testing of {@link SetAsyncInputMessageFactory} for correct translation from POJO
@@ -55,10 +73,9 @@ public class SetAsyncInputMessageFactoryTest {
         SetAsyncInput message = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        SetAsyncInputMessageFactory factory = SetAsyncInputMessageFactory.getInstance();
-        factory.messageToBuffer(HelloMessageFactoryTest.VERSION_YET_SUPPORTED, out, message);
+        setAsyncFactory.serialize(message, out);
         LOGGER.debug("<< " + ByteBufUtils.byteBufToHexString(out));
-        BufferHelper.checkHeaderV13(out, factory.getMessageType(), factory.computeLength(message));
+        BufferHelper.checkHeaderV13(out,(byte) 28, 32);
         Assert.assertEquals("Wrong packetInMask", 5, out.readUnsignedInt());
         Assert.assertEquals("Wrong packetInMask", 7, out.readUnsignedInt());
         Assert.assertEquals("Wrong portStatusMask", 6, out.readUnsignedInt());

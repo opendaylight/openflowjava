@@ -22,6 +22,7 @@ import java.net.InetSocketAddress;
 
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
 import org.opendaylight.openflowjava.protocol.impl.connection.ServerFacade;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -224,4 +225,10 @@ public class TcpHandler implements ServerFacade {
         channelInitializer.setEncryption(tlsSupported);
     }
     
+    /**
+     * @param sf serialization factory
+     */
+    public void setSerializationFactory(SerializationFactory sf) {
+        channelInitializer.setSerializationFactory(sf);
+    }
 }

@@ -14,11 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthertypeAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthertypeActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.GroupIdAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.GroupIdActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthAction;
@@ -39,7 +42,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.CopyTtlOut;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.DecMplsTtl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.DecNwTtl;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Group;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Output;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.PopMpls;
@@ -65,7 +67,21 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
  * @author michal.polkorab
  * 
  */
-public class ActionsSerializerTest {
+public class OF13ActionsSerializerTest {
+
+    private SerializerRegistry registry;
+    private OFSerializer<Action> actionSerializer;
+
+    /**
+     * Initializes serializer table and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        registry = new SerializerRegistryImpl();
+        registry.init();
+        actionSerializer = registry.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, Action.class));
+    }
 
     /**
      * Testing correct serialization of actions
@@ -163,16 +179,9 @@ public class ActionsSerializerTest {
         actionBuilder = new ActionBuilder();
         actionBuilder.setType(PopPbb.class);
         actions.add(actionBuilder.build());
-        actionBuilder = new ActionBuilder();
-        actionBuilder.setType(Experimenter.class);
-        ExperimenterActionBuilder experimenter = new ExperimenterActionBuilder();
-        experimenter.setExperimenter(4L);
-        experimenter.setData(new byte[]{0, 1, 2, 3, 4, 5, 6, 7});
-        actionBuilder.addAugmentation(ExperimenterAction.class, experimenter.build());
-        actions.add(actionBuilder.build());
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        ActionsSerializer.encodeActions(actions, out);
+        CodingUtils.serializeList(actions, actionSerializer, out);
         
         Assert.assertEquals("Wrong action type", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 16, out.readUnsignedShort());
@@ -234,12 +243,6 @@ public class ActionsSerializerTest {
         Assert.assertEquals("Wrong action type", 27, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         out.skipBytes(4);
-        Assert.assertEquals("Wrong action type", 65535, out.readUnsignedShort());
-        Assert.assertEquals("Wrong action length", 16, out.readUnsignedShort());
-        Assert.assertEquals("Wrong experimenter", 4, out.readUnsignedInt());
-        byte[] data = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
-        out.readBytes(data);
-        Assert.assertArrayEquals("Wrong data", new byte[]{0, 1, 2, 3, 4, 5, 6, 7}, data);
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
     }
 

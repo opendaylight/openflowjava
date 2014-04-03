@@ -15,6 +15,9 @@ import java.util.concurrent.Future;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
  * @author mirehak
@@ -45,5 +48,12 @@ public interface SwitchConnectionProvider {
      * @param switchConHandler instance being informed when new switch connects
      */
     public void setSwitchConnectionHandler(SwitchConnectionHandler switchConHandler);
-    
+
+    /**
+     * Registers custom serializer
+     * @param key used for serializer lookup
+     * @param serializer serializer implementation
+     */
+    public  <E extends DataObject> void registerCustomSerializer(MessageTypeKey<E> key,
+            OFSerializer<E> serializer);
 }

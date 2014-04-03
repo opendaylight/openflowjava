@@ -10,8 +10,12 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.List;
-
+import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.RegistryInjector;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.EnhancedMessageTypeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthertypeAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.GroupIdAction;
@@ -46,7 +50,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
  * @author michal.polkorab
  * @author timotej.kubas
  */
-public abstract class ActionsSerializer {
+public class OF13ActionsSerializer implements OFSerializer<Action>,
+        HeaderSerializer<Action>, RegistryInjector {
 
     private static final byte OUTPUT_CODE = 0;
     private static final byte COPY_TTL_OUT_CODE = 11;
@@ -70,117 +75,55 @@ public abstract class ActionsSerializer {
     private static final byte SET_QUEUE_LENGTH = 8;
     private static final byte GROUP_LENGTH = 8;
     private static final byte SET_NW_TTL_LENGTH = 8;
-    private static final byte EXPERIMENTER_ACTION_HEADER_LENGTH = 8;
     private static final byte ACTION_HEADER_LENGTH = 8;
     private static final byte LENGTH_OF_ETHERTYPE_ACTION = 8;
-    private static final byte LENGTH_OF_OTHER_ACTIONS = 8;
-    private static final byte SET_FIELD_HEADER_LENGTH = 4; // only type and length
     private static final byte OUTPUT_PADDING = 6;
     private static final byte SET_MPLS_TTL_PADDING = 3;
     private static final byte SET_NW_TTL_PADDING = 3;
     private static final byte PADDING_IN_ACTION_HEADER = 4;
     private static final byte ETHERTYPE_ACTION_PADDING = 2;
     private static final byte ACTION_IDS_LENGTH = 4;
+    private SerializerRegistry registry;
 
-
-    /**
-     * Encodes actions to ByteBuf
-     * @param actionsList list of actions to be encoded
-     * @param outBuffer output ByteBuf
-     */
-    public static void encodeActions(List<Action> actionsList, ByteBuf outBuffer) {
-        if (actionsList == null) {
-            return;
-        }
-        for (Action action : actionsList) {
-            if (action.getType().isAssignableFrom(Output.class)) {
-                encodeOutputAction(action, outBuffer);
-            } else if (action.getType().isAssignableFrom(CopyTtlOut.class)) {
-                encodeCopyTtlOutAction(outBuffer);
-            } else if (action.getType().isAssignableFrom(CopyTtlIn.class)) {
-                encodeCopyTtlInAction(outBuffer);
-            } else if (action.getType().isAssignableFrom(SetMplsTtl.class)) {
-                encodeSetMplsTtltAction(action, outBuffer);
-            } else if (action.getType().isAssignableFrom(DecMplsTtl.class)) {
-                encodeDecMplsTtlAction(outBuffer);
-            } else if (action.getType().isAssignableFrom(PushVlan.class)) {
-                encodePushVlanAction(action, outBuffer);
-            } else if (action.getType().isAssignableFrom(PopVlan.class)) {
-                encodePopVlanAction(outBuffer);
-            } else if (action.getType().isAssignableFrom(PushMpls.class)) {
-                encodePushMplsAction(action, outBuffer);
-            } else if (action.getType().isAssignableFrom(PopMpls.class)) {
-                encodePopMplsAction(action, outBuffer);
-            } else if (action.getType().isAssignableFrom(SetQueue.class)) {
-                encodeSetQueueAction(action, outBuffer);
-            } else if (action.getType().isAssignableFrom(Group.class)) {
-                encodeGroupAction(action, outBuffer);
-            } else if (action.getType().isAssignableFrom(SetNwTtl.class)) {
-                encodeSetNwTtlAction(action, outBuffer);
-            } else if (action.getType().isAssignableFrom(DecNwTtl.class)) {
-                encodeDecNwTtlAction(outBuffer);
-            } else if (action.getType().isAssignableFrom(SetField.class)) {
-                encodeSetFieldAction(action, outBuffer);
-            } else if (action.getType().isAssignableFrom(PushPbb.class)) {
-                encodePushPbbAction(action, outBuffer);
-            } else if (action.getType().isAssignableFrom(PopPbb.class)) {
-                encodePopPbbAction(outBuffer);
-            } else if (action.getType().isAssignableFrom(Experimenter.class)) {
-                encodeExperimenterAction(action, outBuffer);
-            } 
+    @Override
+    public void serialize(Action action, ByteBuf outBuffer) {
+        if (action.getType().isAssignableFrom(Output.class)) {
+            encodeOutputAction(action, outBuffer);
+        } else if (action.getType().isAssignableFrom(CopyTtlOut.class)) {
+            encodeCopyTtlOutAction(outBuffer);
+        } else if (action.getType().isAssignableFrom(CopyTtlIn.class)) {
+            encodeCopyTtlInAction(outBuffer);
+        } else if (action.getType().isAssignableFrom(SetMplsTtl.class)) {
+            encodeSetMplsTtltAction(action, outBuffer);
+        } else if (action.getType().isAssignableFrom(DecMplsTtl.class)) {
+            encodeDecMplsTtlAction(outBuffer);
+        } else if (action.getType().isAssignableFrom(PushVlan.class)) {
+            encodePushVlanAction(action, outBuffer);
+        } else if (action.getType().isAssignableFrom(PopVlan.class)) {
+            encodePopVlanAction(outBuffer);
+        } else if (action.getType().isAssignableFrom(PushMpls.class)) {
+            encodePushMplsAction(action, outBuffer);
+        } else if (action.getType().isAssignableFrom(PopMpls.class)) {
+            encodePopMplsAction(action, outBuffer);
+        } else if (action.getType().isAssignableFrom(SetQueue.class)) {
+            encodeSetQueueAction(action, outBuffer);
+        } else if (action.getType().isAssignableFrom(Group.class)) {
+            encodeGroupAction(action, outBuffer);
+        } else if (action.getType().isAssignableFrom(SetNwTtl.class)) {
+            encodeSetNwTtlAction(action, outBuffer);
+        } else if (action.getType().isAssignableFrom(DecNwTtl.class)) {
+            encodeDecNwTtlAction(outBuffer);
+        } else if (action.getType().isAssignableFrom(SetField.class)) {
+            encodeSetFieldAction(action, outBuffer);
+        } else if (action.getType().isAssignableFrom(PushPbb.class)) {
+            encodePushPbbAction(action, outBuffer);
+        } else if (action.getType().isAssignableFrom(PopPbb.class)) {
+            encodePopPbbAction(outBuffer);
+        } else if (action.getType().isAssignableFrom(Experimenter.class)) {
+            encodeExperimenterAction(action, outBuffer);
         }
     }
-    
-    /**
-     * Encodes action ids to ByteBuf (for Multipart - TableFeatures messages)
-     * @param actionsList list of actions to be encoded
-     * @param outBuffer output ByteBuf
-     */
-    public static void encodeActionIds(List<Action> actionsList, ByteBuf outBuffer) {
-        if (actionsList == null) {
-            return;
-        }
-        for (Action action : actionsList) {
-            if (action.getType().isAssignableFrom(Output.class)) {
-                writeTypeAndLength(outBuffer, OUTPUT_CODE, ACTION_IDS_LENGTH);
-            } else if (action.getType().isAssignableFrom(CopyTtlOut.class)) {
-                writeTypeAndLength(outBuffer, COPY_TTL_OUT_CODE, ACTION_IDS_LENGTH);
-            } else if (action.getType().isAssignableFrom(CopyTtlIn.class)) {
-                writeTypeAndLength(outBuffer, COPY_TTL_IN_CODE, ACTION_IDS_LENGTH);
-            } else if (action.getType().isAssignableFrom(SetMplsTtl.class)) {
-                writeTypeAndLength(outBuffer, SET_MPLS_TTL_CODE, ACTION_IDS_LENGTH);
-            } else if (action.getType().isAssignableFrom(DecMplsTtl.class)) {
-                writeTypeAndLength(outBuffer, DEC_MPLS_TTL_CODE, ACTION_IDS_LENGTH);
-            } else if (action.getType().isAssignableFrom(PushVlan.class)) {
-                writeTypeAndLength(outBuffer, PUSH_VLAN_CODE, ACTION_IDS_LENGTH);
-            } else if (action.getType().isAssignableFrom(PopVlan.class)) {
-                writeTypeAndLength(outBuffer, POP_VLAN_CODE, ACTION_IDS_LENGTH);
-            } else if (action.getType().isAssignableFrom(PushMpls.class)) {
-                writeTypeAndLength(outBuffer, PUSH_MPLS_CODE, ACTION_IDS_LENGTH);
-            } else if (action.getType().isAssignableFrom(PopMpls.class)) {
-                writeTypeAndLength(outBuffer, POP_MPLS_CODE, ACTION_IDS_LENGTH);
-            } else if (action.getType().isAssignableFrom(SetQueue.class)) {
-                writeTypeAndLength(outBuffer, SET_QUEUE_CODE, ACTION_IDS_LENGTH);
-            } else if (action.getType().isAssignableFrom(Group.class)) {
-                writeTypeAndLength(outBuffer, GROUP_CODE, ACTION_IDS_LENGTH);
-            } else if (action.getType().isAssignableFrom(SetNwTtl.class)) {
-                writeTypeAndLength(outBuffer, SET_NW_TTL_CODE, ACTION_IDS_LENGTH);
-            } else if (action.getType().isAssignableFrom(DecNwTtl.class)) {
-                writeTypeAndLength(outBuffer, DEC_NW_TTL_CODE, ACTION_IDS_LENGTH);
-            } else if (action.getType().isAssignableFrom(SetField.class)) {
-                writeTypeAndLength(outBuffer, SET_FIELD_CODE, ACTION_IDS_LENGTH);
-            } else if (action.getType().isAssignableFrom(PushPbb.class)) {
-                writeTypeAndLength(outBuffer, PUSH_PBB_CODE, ACTION_IDS_LENGTH);
-            } else if (action.getType().isAssignableFrom(PopPbb.class)) {
-                writeTypeAndLength(outBuffer, POP_PBB_CODE, ACTION_IDS_LENGTH);
-            } else if (action.getType().isAssignableFrom(Experimenter.class)) {
-                writeTypeAndLength(outBuffer, EXPERIMENTER_CODE, EncodeConstants.EXPERIMENTER_IDS_LENGTH);
-                ExperimenterAction experimenter = action.getAugmentation(ExperimenterAction.class);
-                outBuffer.writeInt(experimenter.getExperimenter().intValue());
-            } 
-        }
-    }
-    
+
     private static void writeTypeAndLength(ByteBuf out, int type, int length) {
         out.writeShort(type);
         out.writeShort(length);
@@ -265,20 +208,23 @@ public abstract class ActionsSerializer {
         outBuffer.writeShort(DEC_NW_TTL_CODE);
         encodeRestOfActionHeader(outBuffer);
     }
-    
-    private static void encodeSetFieldAction(Action action, ByteBuf outBuffer) {
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private void encodeSetFieldAction(Action action, ByteBuf outBuffer) {
         OxmFieldsAction oxmField = action.getAugmentation(OxmFieldsAction.class);
-        int length = MatchSerializer.computeMatchEntriesLength(oxmField.getMatchEntries()) + SET_FIELD_HEADER_LENGTH;
+        int setFieldStartIndex = outBuffer.writerIndex();
         outBuffer.writeShort(SET_FIELD_CODE);
-        int paddingRemainder = length % EncodeConstants.PADDING;
-        if (paddingRemainder != 0) {
-            length += EncodeConstants.PADDING - paddingRemainder;
-        }
-        outBuffer.writeShort(length);
-        MatchSerializer.encodeMatchEntries(oxmField.getMatchEntries(), outBuffer);
+        int setFieldLengthIndex = outBuffer.writerIndex();
+        outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
+        MatchEntries entry = oxmField.getMatchEntries().get(0);
+        OFSerializer serializer = registry.getSerializer(new EnhancedMessageTypeKey(
+                EncodeConstants.OF13_VERSION_ID, entry.getOxmClass(), entry.getOxmMatchField()));
+        serializer.serialize(entry, outBuffer);
+        int paddingRemainder = (outBuffer.writerIndex() - setFieldStartIndex) % EncodeConstants.PADDING;
         if (paddingRemainder != 0) {
             ByteBufUtils.padBuffer(EncodeConstants.PADDING - paddingRemainder, outBuffer);
         }
+        outBuffer.setShort(setFieldLengthIndex, outBuffer.writerIndex() - setFieldStartIndex);
     }
     
     private static void encodePushPbbAction(Action action, ByteBuf outBuffer) {
@@ -291,17 +237,10 @@ public abstract class ActionsSerializer {
         encodeRestOfActionHeader(outBuffer);
     }
 
-    private static void encodeExperimenterAction(Action action, ByteBuf outBuffer) {
-        outBuffer.writeShort(EXPERIMENTER_CODE);
-        ExperimenterAction experimenter = action.getAugmentation(ExperimenterAction.class);
-        if (experimenter.getData() != null) {
-            outBuffer.writeShort(EXPERIMENTER_ACTION_HEADER_LENGTH + experimenter.getData().length);
-            outBuffer.writeInt(experimenter.getExperimenter().intValue());
-            outBuffer.writeBytes(experimenter.getData());
-        } else {
-            outBuffer.writeShort(EXPERIMENTER_ACTION_HEADER_LENGTH);
-            outBuffer.writeInt(experimenter.getExperimenter().intValue());
-        }
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private void encodeExperimenterAction(Action action, ByteBuf outBuffer) {
+        registry.getSerializer(new MessageTypeKey(EncodeConstants.OF13_VERSION_ID,
+                Experimenter.class)).serialize(action, outBuffer);
     }
     
     private static void encodeRestOfActionHeader(ByteBuf outBuffer) {
@@ -315,35 +254,51 @@ public abstract class ActionsSerializer {
         outBuffer.writeShort(ethertype.getEthertype().getValue());
         ByteBufUtils.padBuffer(ETHERTYPE_ACTION_PADDING, outBuffer);
     }
-    
-    /**
-     * Computes length of actions
-     * @param actionsList list of actions
-     * @return actions length
-     */
-    public static int computeLengthOfActions(List<Action> actionsList) {
-        int lengthOfActions = 0;
-        if (actionsList != null) {
-            for (Action action : actionsList) {
-                if (action.getType().isAssignableFrom(Output.class)) {
-                    lengthOfActions += OUTPUT_LENGTH;
-                } else if (action.getType().isAssignableFrom(SetField.class)){
-                    List<MatchEntries> entries = action.getAugmentation(OxmFieldsAction.class).getMatchEntries();
-                    int actionLength = (2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES) + MatchSerializer.computeMatchEntriesLength(entries);
-                    lengthOfActions += actionLength;
-                    int paddingRemainder = actionLength % EncodeConstants.PADDING;
-                    if ((paddingRemainder) != 0) {
-                        lengthOfActions += EncodeConstants.PADDING - paddingRemainder;
-                    }
-                } else if (action.getType().isAssignableFrom(Experimenter.class)) {
-                    ExperimenterAction experimenterAction = action.getAugmentation(ExperimenterAction.class);
-                    lengthOfActions += experimenterAction.getData().length;
-                    lengthOfActions += EncodeConstants.SIZE_OF_LONG_IN_BYTES;
-                } else {
-                    lengthOfActions += LENGTH_OF_OTHER_ACTIONS;
-                }
-            }
-        }
-        return lengthOfActions;
+
+    @Override
+    public void injectSerializerRegistry(SerializerRegistry serializerRegistry) {
+        this.registry = serializerRegistry;
     }
+
+    @Override
+    public void serializeHeader(Action action, ByteBuf outBuffer) {
+        if (action.getType().isAssignableFrom(Output.class)) {
+            writeTypeAndLength(outBuffer, OUTPUT_CODE, ACTION_IDS_LENGTH);
+        } else if (action.getType().isAssignableFrom(CopyTtlOut.class)) {
+            writeTypeAndLength(outBuffer, COPY_TTL_OUT_CODE, ACTION_IDS_LENGTH);
+        } else if (action.getType().isAssignableFrom(CopyTtlIn.class)) {
+            writeTypeAndLength(outBuffer, COPY_TTL_IN_CODE, ACTION_IDS_LENGTH);
+        } else if (action.getType().isAssignableFrom(SetMplsTtl.class)) {
+            writeTypeAndLength(outBuffer, SET_MPLS_TTL_CODE, ACTION_IDS_LENGTH);
+        } else if (action.getType().isAssignableFrom(DecMplsTtl.class)) {
+            writeTypeAndLength(outBuffer, DEC_MPLS_TTL_CODE, ACTION_IDS_LENGTH);
+        } else if (action.getType().isAssignableFrom(PushVlan.class)) {
+            writeTypeAndLength(outBuffer, PUSH_VLAN_CODE, ACTION_IDS_LENGTH);
+        } else if (action.getType().isAssignableFrom(PopVlan.class)) {
+            writeTypeAndLength(outBuffer, POP_VLAN_CODE, ACTION_IDS_LENGTH);
+        } else if (action.getType().isAssignableFrom(PushMpls.class)) {
+            writeTypeAndLength(outBuffer, PUSH_MPLS_CODE, ACTION_IDS_LENGTH);
+        } else if (action.getType().isAssignableFrom(PopMpls.class)) {
+            writeTypeAndLength(outBuffer, POP_MPLS_CODE, ACTION_IDS_LENGTH);
+        } else if (action.getType().isAssignableFrom(SetQueue.class)) {
+            writeTypeAndLength(outBuffer, SET_QUEUE_CODE, ACTION_IDS_LENGTH);
+        } else if (action.getType().isAssignableFrom(Group.class)) {
+            writeTypeAndLength(outBuffer, GROUP_CODE, ACTION_IDS_LENGTH);
+        } else if (action.getType().isAssignableFrom(SetNwTtl.class)) {
+            writeTypeAndLength(outBuffer, SET_NW_TTL_CODE, ACTION_IDS_LENGTH);
+        } else if (action.getType().isAssignableFrom(DecNwTtl.class)) {
+            writeTypeAndLength(outBuffer, DEC_NW_TTL_CODE, ACTION_IDS_LENGTH);
+        } else if (action.getType().isAssignableFrom(SetField.class)) {
+            writeTypeAndLength(outBuffer, SET_FIELD_CODE, ACTION_IDS_LENGTH);
+        } else if (action.getType().isAssignableFrom(PushPbb.class)) {
+            writeTypeAndLength(outBuffer, PUSH_PBB_CODE, ACTION_IDS_LENGTH);
+        } else if (action.getType().isAssignableFrom(PopPbb.class)) {
+            writeTypeAndLength(outBuffer, POP_PBB_CODE, ACTION_IDS_LENGTH);
+        } else if (action.getType().isAssignableFrom(Experimenter.class)) {
+            writeTypeAndLength(outBuffer, EXPERIMENTER_CODE, EncodeConstants.EXPERIMENTER_IDS_LENGTH);
+            ExperimenterAction experimenter = action.getAugmentation(ExperimenterAction.class);
+            outBuffer.writeInt(experimenter.getExperimenter().intValue());
+        }
+    }
+
 }

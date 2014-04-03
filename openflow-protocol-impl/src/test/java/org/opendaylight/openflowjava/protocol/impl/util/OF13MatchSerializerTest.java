@@ -15,7 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6FlowLabel;
@@ -32,8 +37,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6Flabel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6NdTarget;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6Src;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Nxm0Class;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Nxm1Class;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmMatchType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
@@ -47,10 +50,23 @@ import org.slf4j.LoggerFactory;
  * @author michal.polkorab
  *
  */
-public class MatchSerializerTest {
-    
+public class OF13MatchSerializerTest {
+
     private static final Logger LOG = LoggerFactory
-            .getLogger(MatchSerializerTest.class);
+            .getLogger(OF13MatchSerializerTest.class);
+    private SerializerRegistry registry;
+    private OFSerializer<Match> matchSerializer;
+
+    /**
+     * Initializes serializer table and stores correct factory in field
+     */
+    @Before
+    public void startUp() {
+        registry = new SerializerRegistryImpl();
+        registry.init();
+        matchSerializer = registry.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, Match.class));
+    }
 
     /**
      * Test for correct serialization of Ipv4Address match entry
@@ -72,7 +88,7 @@ public class MatchSerializerTest {
         Match match = builder.build();
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        MatchSerializer.encodeMatch(match, out);
+        matchSerializer.serialize(match, out);
         
         Assert.assertEquals("Wrong type", 1, out.readUnsignedShort());
         out.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
@@ -113,7 +129,7 @@ public class MatchSerializerTest {
         entries.add(entriesBuilder.build());
         // ipv6 match entry with abbreviated Ipv6 address
         entriesBuilder = new MatchEntriesBuilder();
-        entriesBuilder.setOxmClass(Nxm1Class.class);
+        entriesBuilder.setOxmClass(OpenflowBasicClass.class);
         entriesBuilder.setOxmMatchField(Ipv6Dst.class);
         entriesBuilder.setHasMask(false);
         addressBuilder = new Ipv6AddressMatchEntryBuilder();
@@ -122,7 +138,7 @@ public class MatchSerializerTest {
         entries.add(entriesBuilder.build());
         // ipv6 match entry with abbreviated Ipv6 address
         entriesBuilder = new MatchEntriesBuilder();
-        entriesBuilder.setOxmClass(Nxm1Class.class);
+        entriesBuilder.setOxmClass(OpenflowBasicClass.class);
         entriesBuilder.setOxmMatchField(Ipv6Dst.class);
         entriesBuilder.setHasMask(false);
         addressBuilder = new Ipv6AddressMatchEntryBuilder();
@@ -131,7 +147,7 @@ public class MatchSerializerTest {
         entries.add(entriesBuilder.build());
         // ipv6 match entry with abbreviated Ipv6 address
         entriesBuilder = new MatchEntriesBuilder();
-        entriesBuilder.setOxmClass(Nxm0Class.class);
+        entriesBuilder.setOxmClass(OpenflowBasicClass.class);
         entriesBuilder.setOxmMatchField(Ipv6Dst.class);
         entriesBuilder.setHasMask(false);
         addressBuilder = new Ipv6AddressMatchEntryBuilder();
@@ -150,7 +166,7 @@ public class MatchSerializerTest {
         builder.setMatchEntries(entries);
         Match match = builder.build();
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        MatchSerializer.encodeMatch(match, out);
+        matchSerializer.serialize(match, out);
         
         Assert.assertEquals("Wrong type", 1, out.readUnsignedShort());
         out.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
@@ -176,7 +192,7 @@ public class MatchSerializerTest {
         Assert.assertEquals("Wrong ipv6 address", 6, out.readUnsignedShort());
         Assert.assertEquals("Wrong ipv6 address", 7, out.readUnsignedShort());
         Assert.assertEquals("Wrong ipv6 address", 8, out.readUnsignedShort());
-        Assert.assertEquals("Wrong class", 0x0001, out.readUnsignedShort());
+        Assert.assertEquals("Wrong class", 0x8000, out.readUnsignedShort());
         Assert.assertEquals("Wrong field and mask", 54, out.readUnsignedByte());
         Assert.assertEquals("Wrong entry length", 16, out.readUnsignedByte());
         Assert.assertEquals("Wrong ipv6 address", 1, out.readUnsignedShort());
@@ -187,7 +203,7 @@ public class MatchSerializerTest {
         Assert.assertEquals("Wrong ipv6 address", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong ipv6 address", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong ipv6 address", 8, out.readUnsignedShort());
-        Assert.assertEquals("Wrong class", 0x0001, out.readUnsignedShort());
+        Assert.assertEquals("Wrong class", 0x8000, out.readUnsignedShort());
         Assert.assertEquals("Wrong field and mask", 54, out.readUnsignedByte());
         Assert.assertEquals("Wrong entry length", 16, out.readUnsignedByte());
         Assert.assertEquals("Wrong ipv6 address", 0, out.readUnsignedShort());
@@ -198,7 +214,7 @@ public class MatchSerializerTest {
         Assert.assertEquals("Wrong ipv6 address", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong ipv6 address", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong ipv6 address", 1, out.readUnsignedShort());
-        Assert.assertEquals("Wrong class", 0x0000, out.readUnsignedShort());
+        Assert.assertEquals("Wrong class", 0x8000, out.readUnsignedShort());
         Assert.assertEquals("Wrong field and mask", 54, out.readUnsignedByte());
         Assert.assertEquals("Wrong entry length", 16, out.readUnsignedByte());
         Assert.assertEquals("Wrong ipv6 address", 0, out.readUnsignedShort());
@@ -230,7 +246,7 @@ public class MatchSerializerTest {
         Match match = buildIpv6FLabelMatch(0x0f9e8dL, false, null);
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        MatchSerializer.encodeMatch(match, out);
+        matchSerializer.serialize(match, out);
         
         Assert.assertEquals("Wrong type", 1, out.readUnsignedShort());
         out.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
@@ -252,7 +268,7 @@ public class MatchSerializerTest {
         Match match = buildIpv6FLabelMatch(0x0f9e8dL, true, new byte[]{0, 0x0c, 0x7b, 0x6a});
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        MatchSerializer.encodeMatch(match, out);
+        matchSerializer.serialize(match, out);
         
         Assert.assertEquals("Wrong type", 1, out.readUnsignedShort());
         out.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
@@ -276,7 +292,7 @@ public class MatchSerializerTest {
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         
         try {
-            MatchSerializer.encodeMatch(match, out);
+            matchSerializer.serialize(match, out);
             Assert.fail("incorrect length of mask ignored");
         } catch (IllegalArgumentException e) {
             //expected
