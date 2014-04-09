@@ -142,7 +142,7 @@ public class ByteBufUtilsTest {
     }
     
     /**
-     * Test of {@link ByteBufUtils#fillBitMaskFromList(java.util.Map)}
+     * Test of {@link ByteBufUtils#fillBitMaskFromList(List)}
      */
     @Test
     public void testFillBitmaskByEmptyList() {
@@ -162,7 +162,7 @@ public class ByteBufUtilsTest {
     }
     
     /**
-     * Test of {@link ByteBufUtils#fillBitMaskFromList(java.util.Map)}
+     * Test of {@link ByteBufUtils#fillBitMaskFromList(List)}
      */
     @Test
     public void testFillBitmaskByFullList() {
@@ -177,7 +177,7 @@ public class ByteBufUtilsTest {
     }
     
     /**
-     * Test of {@link ByteBufUtils#fillBitMaskFromList(java.util.Map)}
+     * Test of {@link ByteBufUtils#fillBitMaskFromList(List)}
      */
     @Test
     public void testFillBitmaskByZeroList() {
@@ -192,7 +192,7 @@ public class ByteBufUtilsTest {
     }
     
     /**
-     * Test of {@link ByteBufUtils#fillBitMaskFromList(java.util.Map)}
+     * Test of {@link ByteBufUtils#fillBitMaskFromList(List)}
      */
     @Test
     public void testFillBitmaskFromRandomList() {

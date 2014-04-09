@@ -22,7 +22,7 @@ public abstract class OxmMatchConstants {
     public static final int OPENFLOW_BASIC_CLASS = 0x8000;
     /** Experimenter class */
     public static final int EXPERIMENTER_CLASS = 0xFFFF;
-    
+
     /** Switch input port */
     public static final int IN_PORT = 0;
     /** Switch physical input port */

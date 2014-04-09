@@ -13,6 +13,8 @@ import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfigura
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -54,4 +56,12 @@ public interface SwitchConnectionProvider extends AutoCloseable {
      */
     public  <E extends DataObject> void registerCustomSerializer(MessageTypeKey<E> key,
             OFSerializer<E> serializer);
+            
+    /**
+     * Registers custom deserializer
+     * @param key used for deserializer lookup
+     * @param deserializer deserializer instance
+     */
+    public void registerDeserializer(MessageCodeKey key, OFGeneralDeserializer deserializer);
+
 }

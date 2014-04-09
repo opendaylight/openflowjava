@@ -12,7 +12,13 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.EnhancedMessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
@@ -49,7 +55,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpT
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.EthDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.EthSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.EthType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ExperimenterClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Icmpv4Code;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Icmpv4Type;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Icmpv6Code;
@@ -72,8 +77,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Meta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MplsBos;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MplsLabel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MplsTc;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Nxm0Class;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Nxm1Class;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmMatchType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.PbbIsid;
@@ -94,16 +97,32 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
  *
  */
 public class MatchDeserializerTest {
-    
+
+    private OFDeserializer<Match> matchDeserializer;
+    private DeserializerRegistry registry;
+
+    /**
+     * Initializes deserializer registry and lookups correct deserializer
+     */
+    @Before
+    public void startUp() {
+        registry = new DeserializerRegistryImpl();
+        registry.init();
+        matchDeserializer = registry.getDeserializer(
+                new MessageCodeKey(EncodeConstants.OF13_VERSION_ID,
+                        EncodeConstants.EMPTY_VALUE, Match.class));
+    }
+
     /**
      * Testing Ipv4 address deserialization
      */
     @Test
     public void testIpv4Address() {
         ByteBuf buffer = ByteBufUtils.hexStringToByteBuf("80 00 18 04 00 01 02 03");
-        
-        List<MatchEntries> list = MatchDeserializer.createMatchEntry(buffer, 8);
-        MatchEntries entry = list.get(0);
+
+        OFDeserializer<MatchEntries> entryDeserializer = registry.getDeserializer(
+                new EnhancedMessageCodeKey(EncodeConstants.OF13_VERSION_ID, 0x8000, 12, MatchEntries.class));
+        MatchEntries entry = entryDeserializer.deserialize(buffer);
         Assert.assertEquals("Wrong Ipv4 address format", new Ipv4Address("0.1.2.3"),
                 entry.getAugmentation(Ipv4AddressMatchEntry.class).getIpv4Address());
     }
@@ -115,8 +134,9 @@ public class MatchDeserializerTest {
     public void testIpv6Address() {
         ByteBuf buffer = ByteBufUtils.hexStringToByteBuf("80 00 34 10 00 00 00 01 00 02 00 03 00 04 00 05 00 06 0F 07");
         
-        List<MatchEntries> list = MatchDeserializer.createMatchEntry(buffer, 20);
-        MatchEntries entry = list.get(0);
+        OFDeserializer<MatchEntries> entryDeserializer = registry.getDeserializer(
+                new EnhancedMessageCodeKey(EncodeConstants.OF13_VERSION_ID, 0x8000, 26, MatchEntries.class));
+        MatchEntries entry = entryDeserializer.deserialize(buffer);
         Assert.assertEquals("Wrong Ipv6 address format", new Ipv6Address("0000:0001:0002:0003:0004:0005:0006:0F07"),
                 entry.getAugmentation(Ipv6AddressMatchEntry.class).getIpv6Address());
     }
@@ -128,9 +148,9 @@ public class MatchDeserializerTest {
     public void testMatch() {
         ByteBuf buffer = ByteBufUtils.hexStringToByteBuf("00 01 01 AC "
                 + "80 00 00 04 00 00 00 01 "
-                + "00 00 02 04 00 00 00 02 "
-                + "00 01 05 10 00 00 00 00 00 00 00 03 00 00 00 00 00 00 00 04 "
-                + "FF FF 07 0C 00 00 00 00 00 05 00 00 00 00 00 06 "
+                + "80 00 02 04 00 00 00 02 "
+                + "80 00 05 10 00 00 00 00 00 00 00 03 00 00 00 00 00 00 00 04 "
+                + "80 00 07 0C 00 00 00 00 00 05 00 00 00 00 00 06 "
                 + "80 00 09 0C 00 00 00 00 00 07 00 00 00 00 00 08 "
                 + "80 00 0A 02 00 09 "
                 + "80 00 0D 04 00 0A 00 0B "
@@ -171,7 +191,7 @@ public class MatchDeserializerTest {
                 + "80 00 4F 04 01 66 03 04 "
                 + "00 00 00 00");
 
-        Match match = MatchDeserializer.createMatch(buffer);
+        Match match = matchDeserializer.deserialize(buffer);
         Assert.assertEquals("Wrong match type", OxmMatchType.class, match.getType());
         Assert.assertEquals("Wrong match entries size", 40, match.getMatchEntries().size());
         List<MatchEntries> entries = match.getMatchEntries();
@@ -182,13 +202,13 @@ public class MatchDeserializerTest {
         Assert.assertEquals("Wrong entry value", 1,
                 entry0.getAugmentation(PortNumberMatchEntry.class).getPortNumber().getValue().intValue());
         MatchEntries entry1 = entries.get(1);
-        Assert.assertEquals("Wrong entry class", Nxm0Class.class, entry1.getOxmClass());
+        Assert.assertEquals("Wrong entry class", OpenflowBasicClass.class, entry1.getOxmClass());
         Assert.assertEquals("Wrong entry field", InPhyPort.class, entry1.getOxmMatchField());
         Assert.assertEquals("Wrong entry hasMask", false, entry1.isHasMask());
         Assert.assertEquals("Wrong entry value", 2,
                 entry1.getAugmentation(PortNumberMatchEntry.class).getPortNumber().getValue().intValue());
         MatchEntries entry2 = entries.get(2);
-        Assert.assertEquals("Wrong entry class", Nxm1Class.class, entry2.getOxmClass());
+        Assert.assertEquals("Wrong entry class", OpenflowBasicClass.class, entry2.getOxmClass());
         Assert.assertEquals("Wrong entry field", Metadata.class, entry2.getOxmMatchField());
         Assert.assertEquals("Wrong entry hasMask", true, entry2.isHasMask());
         Assert.assertArrayEquals("Wrong entry value", ByteBufUtils.hexStringToBytes("00 00 00 00 00 00 00 03"), 
@@ -196,7 +216,7 @@ public class MatchDeserializerTest {
         Assert.assertArrayEquals("Wrong entry mask", ByteBufUtils.hexStringToBytes("00 00 00 00 00 00 00 04"), 
                 entry2.getAugmentation(MaskMatchEntry.class).getMask());
         MatchEntries entry3 = entries.get(3);
-        Assert.assertEquals("Wrong entry class", ExperimenterClass.class, entry3.getOxmClass());
+        Assert.assertEquals("Wrong entry class", OpenflowBasicClass.class, entry3.getOxmClass());
         Assert.assertEquals("Wrong entry field", EthDst.class, entry3.getOxmMatchField());
         Assert.assertEquals("Wrong entry hasMask", true, entry3.isHasMask());
         Assert.assertEquals("Wrong entry value", new MacAddress("00:00:00:00:00:05"), 

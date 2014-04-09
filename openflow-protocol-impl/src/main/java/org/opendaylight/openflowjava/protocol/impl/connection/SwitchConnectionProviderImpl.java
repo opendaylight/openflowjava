@@ -15,9 +15,14 @@ import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHan
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.slf4j.Logger;
@@ -40,6 +45,8 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     private ConnectionConfiguration connConfig;
     private SerializationFactory serializationFactory;
     private SerializerRegistry serializerRegistry;
+    private DeserializerRegistry deserializerRegistry;
+    private DeserializationFactory deserializationFactory;
 
     /** Constructor */
     public SwitchConnectionProviderImpl() {
@@ -47,6 +54,10 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
         serializerRegistry.init();
         serializationFactory = new SerializationFactory();
         serializationFactory.setSerializerTable(serializerRegistry);
+        deserializerRegistry = new DeserializerRegistryImpl();
+        deserializerRegistry.init();
+        deserializationFactory = new DeserializationFactory();
+        deserializationFactory.setRegistry(deserializerRegistry);
     }
 
     @Override
@@ -106,6 +117,7 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
         boolean tlsSupported = FEATURE_SUPPORT.REQUIRED.equals(connConfig.getTlsSupport());
         server.setEncryption(tlsSupported);
         server.setSerializationFactory(serializationFactory);
+        server.setDeserializationFactory(deserializationFactory);
         return server;
     }
 
@@ -120,6 +132,12 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     public <E extends DataObject> void registerCustomSerializer(MessageTypeKey<E> key,
             OFSerializer<E> serializer) {
         serializerRegistry.registerSerializer(key, serializer);
+    }
+
+    @Override
+    public void registerDeserializer(MessageCodeKey key,
+            OFGeneralDeserializer deserializer) {
+        deserializerRegistry.registerDeserializer(key, deserializer);
     }
 
     @Override

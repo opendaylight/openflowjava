@@ -6,11 +6,11 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.impl.deserialization;
-
-import org.opendaylight.yangtools.yang.binding.DataObject;
+package org.opendaylight.openflowjava.protocol.api.extensibility;
 
 import io.netty.buffer.ByteBuf;
+
+import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
  * Uniform interface for deserializing factories
@@ -18,16 +18,13 @@ import io.netty.buffer.ByteBuf;
  * @author timotej.kubas
  * @param <E> message code type
  */
-public interface OFDeserializer<E extends DataObject> {
+public interface OFDeserializer<E extends DataObject> extends OFGeneralDeserializer {
 
     /**
      * Transforms byte message into POJO/DTO (of type E).
-     * Assumes that input ByteBuf's readerIndex is pointing on length in OpenFlow header
      * 
-     * @param rawMessage message as bytes in ByteBuf
-     * @param version version of used OF Protocol
-     * @return HelloMessage as DataObject
+     * @param message message as bytes in ByteBuf
+     * @return POJO/DTO
      */
-    public abstract E bufferToMessage(ByteBuf rawMessage, short version);
-
+    public E deserialize(ByteBuf message);
 }

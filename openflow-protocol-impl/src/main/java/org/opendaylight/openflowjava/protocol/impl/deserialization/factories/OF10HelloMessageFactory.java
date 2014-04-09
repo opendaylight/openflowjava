@@ -10,7 +10,8 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
 
-import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloMessageBuilder;
 
@@ -19,27 +20,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  */
 public class OF10HelloMessageFactory implements OFDeserializer<HelloMessage> {
-    
-private static OF10HelloMessageFactory instance;
-    
-    private OF10HelloMessageFactory() {
-        // do nothing, just singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized OF10HelloMessageFactory getInstance() {
-        if (instance == null) {
-            instance = new OF10HelloMessageFactory();
-        }
-        return instance;
-    }
-    
+
     @Override
-    public HelloMessage bufferToMessage(ByteBuf rawMessage, short version) {
+    public HelloMessage deserialize(ByteBuf rawMessage) {
         HelloMessageBuilder builder = new HelloMessageBuilder();
-        builder.setVersion(version);
+        builder.setVersion((short) EncodeConstants.OF10_VERSION_ID);
         builder.setXid(rawMessage.readUnsignedInt());
         if (rawMessage.readableBytes() > 0) {
             rawMessage.skipBytes(rawMessage.readableBytes());

@@ -13,9 +13,15 @@ import io.netty.buffer.ByteBuf;
 import java.math.BigInteger;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthertypeAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.GroupIdAction;
@@ -94,6 +100,19 @@ import org.slf4j.LoggerFactory;
  */
 public class MultipartReplyMessageFactoryTest {
 
+    private OFDeserializer<MultipartReplyMessage> multipartFactory;
+
+    /**
+     * Initializes deserializer registry and lookups correct deserializer
+     */
+    @Before
+    public void startUp() {
+        DeserializerRegistry registry = new DeserializerRegistryImpl();
+        registry.init();
+        multipartFactory = registry.getDeserializer(
+                new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, 19, MultipartReplyMessage.class));
+    }
+
     private static final Logger LOGGER = LoggerFactory
             .getLogger(MultipartReplyMessageFactoryTest.class);
     
@@ -136,7 +155,7 @@ public class MultipartReplyMessageFactoryTest {
         bb.writeBytes(dpDescBytes);
         ByteBufUtils.padBuffer((DESC_STR_LEN - dpDescBytes.length), bb);
         
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x00, builtByFactory.getType().getIntValue());
@@ -189,7 +208,7 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 01 00 08 06 00 00 00 "+
                                               "00 01 00 08 06 00 00 00");
         
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x01, builtByFactory.getType().getIntValue());
@@ -229,7 +248,7 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 00"//pad
                                               );
         
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x02, builtByFactory.getType().getIntValue());
@@ -260,7 +279,7 @@ public class MultipartReplyMessageFactoryTest {
                                               "AF 01 01 01 01 01 01 01"//matchedCount
                                               );
         
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x03, builtByFactory.getType().getIntValue());
@@ -302,7 +321,7 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 04"//durationNsec
                                               );
         
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x04, builtByFactory.getType().getIntValue());
@@ -365,7 +384,7 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 04"//durationNsec
                                               );
         
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x05, builtByFactory.getType().getIntValue());
@@ -421,7 +440,7 @@ public class MultipartReplyMessageFactoryTest {
                                               "FF 02 02 02 02 02 02 02"//byteCountBucket_2.2
                                               );
         
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x06, builtByFactory.getType().getIntValue());
@@ -489,7 +508,7 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00"//pad
                                               );
         
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 11, builtByFactory.getType().getIntValue());
@@ -526,7 +545,7 @@ public class MultipartReplyMessageFactoryTest {
                                               "FF 03 03 03 03 03 03 03"//byteBandCount_03
                                               );
         
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 9, builtByFactory.getType().getIntValue());
@@ -603,7 +622,7 @@ public class MultipartReplyMessageFactoryTest {
                                               "FF 03 03 03 03 03 03 03"//byteBandCount_13
                                               );
         
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 9, builtByFactory.getType().getIntValue());
@@ -704,7 +723,7 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 04"//meterBandExperimenter.experimenter
                                               );
         
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 10, builtByFactory.getType().getIntValue());
@@ -774,7 +793,7 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00"//meterBandDscp01.pad
                                               );
         
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 10, builtByFactory.getType().getIntValue());
@@ -832,7 +851,7 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 01 01 00 00 01 01"
                                               );
         
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0xFFFF, builtByFactory.getType().getIntValue());
@@ -874,7 +893,7 @@ public class MultipartReplyMessageFactoryTest {
                                                 );
         bb.writeBytes(bb2.copy(4, bb2.readableBytes()-4));//excluding version and xid
         
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 13, builtByFactory.getType().getIntValue());
@@ -945,7 +964,7 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 08 "+//copyTTLIntLen
                                               "00 00 00 00"//copyTTLInPad
                                               );
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());
@@ -1024,7 +1043,7 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00"//pushPbbPad
                                               );
         
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());
@@ -1111,7 +1130,7 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 00"//decNwTtlPad
                                               );
         
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());
@@ -1187,7 +1206,7 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 00"
                 );
         
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV13(MultipartReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());

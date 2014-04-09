@@ -14,8 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.RateQueueProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.RateQueuePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
@@ -33,13 +39,26 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class QueueGetConfigReplyMessageFactoryTest {
 
+    private OFDeserializer<GetQueueConfigOutput> queueFactory;
+
+    /**
+     * Initializes deserializer registry and lookups correct deserializer
+     */
+    @Before
+    public void startUp() {
+        DeserializerRegistry registry = new DeserializerRegistryImpl();
+        registry.init();
+        queueFactory = registry.getDeserializer(
+                new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, 23, GetQueueConfigOutput.class));
+    }
+
     /**
      * Testing {@link QueueGetConfigReplyMessageFactory} for correct translation into POJO
      */
     @Test
     public void test(){
         ByteBuf bb = BufferHelper.buildBuffer("00 00 00 03 00 00 00 00 00 00 00 01 00 00 00 03 00 20 00 00 00 00 00 00 00 02 00 10 00 00 00 00 00 05 00 00 00 00 00 00");
-        GetQueueConfigOutput builtByFactory = BufferHelper.decodeV13(QueueGetConfigReplyMessageFactory.getInstance(), bb);
+        GetQueueConfigOutput builtByFactory = BufferHelper.deserialize(queueFactory, bb);
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong port", 3L, builtByFactory.getPort().getValue().longValue());
         Assert.assertEquals("Wrong queues", builtByFactory.getQueues(), createQueuesList());

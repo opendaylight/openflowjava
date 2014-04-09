@@ -14,13 +14,18 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.DecodingUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.impl.util.OF10ActionsDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.OF10MatchDeserializer;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.v10.grouping.MatchV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessageBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyAggregateCase;
@@ -57,7 +62,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * Translates StatsReply messages (OpenFlow v1.0)
  * @author michal.polkorab
  */
-public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartReplyMessage> {
+public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartReplyMessage>,
+        DeserializerRegistryInjector {
 
     private static final int DESC_STR_LEN = 256;
     private static final int SERIAL_NUM_LEN = 32;
@@ -70,27 +76,12 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
     private static final byte PADDING_IN_QUEUE_HEADER = 2;
     private static final byte LENGTH_OF_FLOW_STATS = 88;
     private static final int TABLE_STATS_LENGTH = 64;
-    
-    private static OF10StatsReplyMessageFactory instance;
-    
-    private OF10StatsReplyMessageFactory() {
-        // singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized OF10StatsReplyMessageFactory getInstance() {
-        if (instance == null){
-            instance = new OF10StatsReplyMessageFactory();
-        }
-        return instance;
-    }
+    private DeserializerRegistry registry;
 
     @Override
-    public MultipartReplyMessage bufferToMessage(ByteBuf rawMessage, short version) {
+    public MultipartReplyMessage deserialize(ByteBuf rawMessage) {
         MultipartReplyMessageBuilder builder = new MultipartReplyMessageBuilder();
-        builder.setVersion(version);
+        builder.setVersion((short) EncodeConstants.OF10_VERSION_ID);
         builder.setXid(rawMessage.readUnsignedInt());
         int type = rawMessage.readUnsignedShort();
         builder.setType(MultipartType.forValue(type));
@@ -143,7 +134,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         return caseBuilder.build();
     }
     
-    private static MultipartReplyFlowCase setFlow(ByteBuf input) {
+    private MultipartReplyFlowCase setFlow(ByteBuf input) {
         MultipartReplyFlowCaseBuilder caseBuilder = new MultipartReplyFlowCaseBuilder();
         MultipartReplyFlowBuilder flowBuilder = new MultipartReplyFlowBuilder();
         List<FlowStats> flowStatsList = new ArrayList<>();
@@ -152,7 +143,9 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
             int length = input.readUnsignedShort();
             flowStatsBuilder.setTableId(input.readUnsignedByte());
             input.skipBytes(PADDING_IN_FLOW_STATS_HEADER);
-            flowStatsBuilder.setMatchV10(OF10MatchDeserializer.createMatchV10(input));
+            OFDeserializer<MatchV10> matchDeserializer = registry.getDeserializer(
+                    new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, EncodeConstants.EMPTY_VALUE, MatchV10.class));
+            flowStatsBuilder.setMatchV10(matchDeserializer.deserialize(input));
             flowStatsBuilder.setDurationSec(input.readUnsignedInt());
             flowStatsBuilder.setDurationNsec(input.readUnsignedInt());
             flowStatsBuilder.setPriority(input.readUnsignedShort());
@@ -168,8 +161,11 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
             byte[] byteCount = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
             input.readBytes(byteCount);
             flowStatsBuilder.setByteCount(new BigInteger(1, byteCount));
-            flowStatsBuilder.setAction(OF10ActionsDeserializer
-                    .createActionsList(input, length - LENGTH_OF_FLOW_STATS));
+            OFDeserializer<Action> deserializer = registry.getDeserializer(new MessageCodeKey(
+                    EncodeConstants.OF10_VERSION_ID, EncodeConstants.EMPTY_VALUE, Action.class));
+            List<Action> actions = DecodingUtils.deserializeList(length - LENGTH_OF_FLOW_STATS,
+                    input, deserializer);
+            flowStatsBuilder.setAction(actions);
             flowStatsList.add(flowStatsBuilder.build());
         }
         flowBuilder.setFlowStats(flowStatsList);
@@ -307,5 +303,10 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         builder.setData(data);
         caseBuilder.setMultipartReplyExperimenter(builder.build());
         return caseBuilder.build();
+    }
+
+    @Override
+    public void injectDeserializerRegistry(DeserializerRegistry deserializerRegistry) {
+        registry = deserializerRegistry;
     }
 }

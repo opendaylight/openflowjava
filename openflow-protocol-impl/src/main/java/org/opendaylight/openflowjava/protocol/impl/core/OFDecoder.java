@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OFDecoder.class);
+    private DeserializationFactory deserializationFactory;
 
     /**
      * Constructor of class
@@ -43,7 +44,7 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
         }
         DataObject dataObject = null;
         try {
-            dataObject = DeserializationFactory.bufferToMessage(msg.getMessageBuffer(),
+            dataObject = deserializationFactory.deserialize(msg.getMessageBuffer(),
                     msg.getVersion());
         } catch(Exception e) {
             LOGGER.error("Message deserialization failed");
@@ -57,4 +58,12 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
         msg.getMessageBuffer().release();
         out.add(dataObject);
     }
+
+    /**
+     * @param deserializationFactory
+     */
+    public void setDeserializationFactory(DeserializationFactory deserializationFactory) {
+        this.deserializationFactory = deserializationFactory;
+    }
+
 }
