@@ -14,7 +14,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
@@ -35,27 +35,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class OF10FeaturesReplyMessageFactory implements OFDeserializer<GetFeaturesOutput> {
     
     private static final byte PADDING_IN_FEATURES_REPLY_HEADER = 3;
-    
-    private static OF10FeaturesReplyMessageFactory instance;
 
-    private OF10FeaturesReplyMessageFactory() {
-        // do nothing, just singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized OF10FeaturesReplyMessageFactory getInstance() {
-        if (instance == null) {
-            instance = new OF10FeaturesReplyMessageFactory();
-        }
-        return instance;
-    }
-    
     @Override
-    public GetFeaturesOutput bufferToMessage(ByteBuf rawMessage, short version) {
+    public GetFeaturesOutput deserialize(ByteBuf rawMessage) {
         GetFeaturesOutputBuilder builder = new GetFeaturesOutputBuilder();
-        builder.setVersion(version);
+        builder.setVersion((short) EncodeConstants.OF10_VERSION_ID);
         builder.setXid(rawMessage.readUnsignedInt());
         byte[] datapathId = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         rawMessage.readBytes(datapathId);

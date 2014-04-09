@@ -10,7 +10,8 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
 
-import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.BadActionCodeV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.BadRequestCodeV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ErrorTypeV10;
@@ -27,29 +28,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class OF10ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
 
-	private static final String UNKNOWN_TYPE = "UNKNOWN_TYPE";
+    private static final String UNKNOWN_TYPE = "UNKNOWN_TYPE";
     private static final String UNKNOWN_CODE = "UNKNOWN_CODE";
-    
-    private static OF10ErrorMessageFactory instance;
-    
-    private OF10ErrorMessageFactory() {
-        // do nothing, just singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized OF10ErrorMessageFactory getInstance() {
-        if (instance == null) {
-            instance = new OF10ErrorMessageFactory();
-        }
-        return instance;
-    }
-    
+
     @Override
-    public ErrorMessage bufferToMessage(ByteBuf rawMessage, short version) {
+    public ErrorMessage deserialize(ByteBuf rawMessage) {
         ErrorMessageBuilder builder = new ErrorMessageBuilder();
-        builder.setVersion(version);
+        builder.setVersion((short) EncodeConstants.OF10_VERSION_ID);
         builder.setXid(rawMessage.readUnsignedInt());
         int type = rawMessage.readUnsignedShort();
         ErrorTypeV10 errorType = ErrorTypeV10.forValue(type);

@@ -11,7 +11,12 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 import io.netty.buffer.ByteBuf;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowWildcardsV10;
@@ -23,6 +28,19 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.matc
  */
 public class OF10MatchDeserializerTest {
 
+    private OFDeserializer<MatchV10> matchDeserializer;
+
+    /**
+     * Initializes deserializer registry and lookups correct deserializer
+     */
+    @Before
+    public void startUp() {
+        DeserializerRegistry registry = new DeserializerRegistryImpl();
+        registry.init();
+        matchDeserializer = registry.getDeserializer(
+                new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, EncodeConstants.EMPTY_VALUE, MatchV10.class));
+    }
+
     /**
      * Testing correct deserialization of ofp_match
      */
@@ -32,7 +50,7 @@ public class OF10MatchDeserializerTest {
                 + "AA BB CC DD EE FF 00 05 10 00 00 08 07 06 00 00 10 11 12 13 01 02 03 04 "
                 + "50 50 20 20");
         message.skipBytes(4); // skip XID
-        MatchV10 match = OF10MatchDeserializer.createMatchV10(message);
+        MatchV10 match = matchDeserializer.deserialize(message);
         Assert.assertEquals("Wrong wildcards", new FlowWildcardsV10(false, false, true, false,
                 false, true, false, true, true, false), match.getWildcards());
         Assert.assertEquals("Wrong srcMask", 24, match.getNwSrcMask().shortValue());
@@ -60,7 +78,7 @@ public class OF10MatchDeserializerTest {
                 + "AA BB CC DD EE FF 00 05 10 00 00 08 07 06 00 00 10 11 12 13 01 02 03 04 "
                 + "50 50 20 20");
         message.skipBytes(4); // skip XID
-        MatchV10 match = OF10MatchDeserializer.createMatchV10(message);
+        MatchV10 match = matchDeserializer.deserialize(message);
         Assert.assertEquals("Wrong wildcards", new FlowWildcardsV10(true, true, true, true,
                 true, true, true, true, true, true), match.getWildcards());
         Assert.assertEquals("Wrong srcMask", 0, match.getNwSrcMask().shortValue());

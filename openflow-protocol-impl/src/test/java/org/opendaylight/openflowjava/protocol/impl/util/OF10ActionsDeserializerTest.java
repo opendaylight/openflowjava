@@ -12,10 +12,14 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.DlAddressAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IpAddressAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.NwTosAction;
@@ -30,6 +34,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
  *
  */
 public class OF10ActionsDeserializerTest {
+
+    private OFDeserializer<Action> actionsDeserializer;
+
+    /**
+     * Initializes deserializer registry and lookups correct deserializer
+     */
+    @Before
+    public void startUp() {
+        DeserializerRegistry registry = new DeserializerRegistryImpl();
+        registry.init();
+        actionsDeserializer = registry.getDeserializer(
+                new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, EncodeConstants.EMPTY_VALUE,
+                        Action.class));
+    }
 
     /**
      * Testing correct deserialization of actions (OF v1.0)
@@ -47,12 +65,12 @@ public class OF10ActionsDeserializerTest {
                 + "00 08 00 08 01 00 00 00 "
                 + "00 09 00 08 00 02 00 00 "
                 + "00 0A 00 08 00 03 00 00 "
-                + "00 0B 00 10 00 04 00 00 00 00 00 00 00 00 00 30 "
-                + "FF FF 00 08 00 00 12 34");
+                + "00 0B 00 10 00 04 00 00 00 00 00 00 00 00 00 30");
         
         message.skipBytes(4); // skip XID
-        List<Action> actions = OF10ActionsDeserializer.createActionsList(message);
-        Assert.assertEquals("Wrong number of actions", 13, actions.size());
+        List<Action> actions = DecodingUtils.deserializeActions(message.readableBytes(),
+                message, actionsDeserializer, false);
+        Assert.assertEquals("Wrong number of actions", 12, actions.size());
         Action action1 = actions.get(0);
         Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight"
                 + ".openflow.common.action.rev130731.Output", action1.getType().getName());
@@ -114,11 +132,6 @@ public class OF10ActionsDeserializerTest {
                 .getPort().getValue().intValue());
         Assert.assertEquals("Wrong queue-id", 48,
                 action12.getAugmentation(QueueIdAction.class).getQueueId().intValue());
-        Action action13 = actions.get(12);
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight"
-                + ".openflow.common.action.rev130731.Experimenter", action13.getType().getName());
-        Assert.assertEquals("Wrong port", 4660, action13.getAugmentation(ExperimenterAction.class)
-                .getExperimenter().intValue());
     }
 
 }

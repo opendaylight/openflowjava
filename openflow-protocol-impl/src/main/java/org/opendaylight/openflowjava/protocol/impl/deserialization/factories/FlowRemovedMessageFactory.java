@@ -12,11 +12,14 @@ import io.netty.buffer.ByteBuf;
 
 import java.math.BigInteger;
 
-import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.impl.util.MatchDeserializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowRemovedReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowRemovedMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowRemovedMessageBuilder;
 
@@ -25,28 +28,15 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  * @author timotej.kubas
  */
-public class FlowRemovedMessageFactory implements OFDeserializer<FlowRemovedMessage> {
-    
-    private static FlowRemovedMessageFactory instance;
-    
-    private FlowRemovedMessageFactory() {
-        // singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized FlowRemovedMessageFactory getInstance(){
-        if(instance == null){
-            instance = new FlowRemovedMessageFactory();
-        }
-        return instance;
-    }
+public class FlowRemovedMessageFactory implements OFDeserializer<FlowRemovedMessage>,
+        DeserializerRegistryInjector {
+
+    private DeserializerRegistry registry;
 
     @Override
-    public FlowRemovedMessage bufferToMessage(ByteBuf rawMessage, short version) {
+    public FlowRemovedMessage deserialize(ByteBuf rawMessage) {
         FlowRemovedMessageBuilder builder = new FlowRemovedMessageBuilder();
-        builder.setVersion(version);
+        builder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
         builder.setXid(rawMessage.readUnsignedInt());
         byte[] cookie = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         rawMessage.readBytes(cookie);
@@ -64,7 +54,14 @@ public class FlowRemovedMessageFactory implements OFDeserializer<FlowRemovedMess
         byte[] byte_count = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         rawMessage.readBytes(byte_count);
         builder.setByteCount(new BigInteger(1, byte_count));
-        builder.setMatch(MatchDeserializer.createMatch(rawMessage));
+        OFDeserializer<Match> matchDeserializer = registry.getDeserializer(new MessageCodeKey(
+                EncodeConstants.OF13_VERSION_ID, EncodeConstants.EMPTY_VALUE, Match.class));
+        builder.setMatch(matchDeserializer.deserialize(rawMessage));
         return builder.build();
+    }
+
+    @Override
+    public void injectDeserializerRegistry(DeserializerRegistry deserializerRegistry) {
+        registry = deserializerRegistry;
     }
 }
