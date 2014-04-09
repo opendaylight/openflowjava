@@ -13,7 +13,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterQueuePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.RateQueueProperty;
@@ -42,28 +42,10 @@ public class QueueGetConfigReplyMessageFactory implements OFDeserializer<GetQueu
     private static final int PADDING_IN_EXPERIMENTER_QUEUE_PROPERTY = 4;
     private static final byte PACKET_QUEUE_LENGTH = 16;
 
-    private static QueueGetConfigReplyMessageFactory instance;
-    
-    private QueueGetConfigReplyMessageFactory() {
-        // singleton
-    }
-    
-    /**
-     * 
-     * @return singleton factory
-     */
-    public static synchronized QueueGetConfigReplyMessageFactory getInstance(){
-        
-        if(instance == null){
-            instance = new QueueGetConfigReplyMessageFactory();
-        }
-        return instance;
-    }
-    
     @Override
-    public GetQueueConfigOutput bufferToMessage(ByteBuf rawMessage, short version) {
+    public GetQueueConfigOutput deserialize(ByteBuf rawMessage) {
         GetQueueConfigOutputBuilder builder = new GetQueueConfigOutputBuilder();
-        builder.setVersion(version);
+        builder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
         builder.setXid((rawMessage.readUnsignedInt()));
         builder.setPort(new PortNumber(rawMessage.readUnsignedInt()));
         rawMessage.skipBytes(PADDING_IN_QUEUE_GET_CONFIG_REPLY_HEADER);

@@ -21,6 +21,7 @@ import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHan
 import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionAdapterFactory;
 import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionFacade;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler.COMPONENT_NAMES;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +37,7 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
     private SwitchConnectionHandler switchConnectionHandler;
     private long switchIdleTimeout;
     private boolean encryption;
+    private DeserializationFactory deserializationFactory;
     
     /**
      * default ctor
@@ -73,7 +75,9 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
             }
             ch.pipeline().addLast(COMPONENT_NAMES.OF_FRAME_DECODER.name(), new OFFrameDecoder());
             ch.pipeline().addLast(COMPONENT_NAMES.OF_VERSION_DETECTOR.name(), new OFVersionDetector());
-            ch.pipeline().addLast(COMPONENT_NAMES.OF_DECODER.name(), new OFDecoder());
+            OFDecoder ofDecoder = new OFDecoder();
+            ofDecoder.setDeserializationFactory(deserializationFactory);
+            ch.pipeline().addLast(COMPONENT_NAMES.OF_DECODER.name(), ofDecoder);
             ch.pipeline().addLast(COMPONENT_NAMES.OF_ENCODER.name(), new OFEncoder());
             ch.pipeline().addLast(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name(), new DelegatingInboundHandler(connectionFacade));
             if (!encryption) {
@@ -119,5 +123,12 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
     public void setEncryption(boolean tlsSupported) {
         encryption = tlsSupported;
     }
-    
+
+    /**
+     * @param deserializationFactory
+     */
+    public void setDeserializationFactory(DeserializationFactory deserializationFactory) {
+        this.deserializationFactory = deserializationFactory;
+    }
+
 }

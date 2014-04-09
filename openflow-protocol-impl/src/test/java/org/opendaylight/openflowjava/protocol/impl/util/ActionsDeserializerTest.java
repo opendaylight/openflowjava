@@ -12,9 +12,13 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthertypeAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.GroupIdAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MplsTtlAction;
@@ -36,6 +40,20 @@ public class ActionsDeserializerTest {
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(ActionsDeserializerTest.class);
+    private OFDeserializer<Action> actionDeserializer;
+
+    /**
+     * Initializes deserializer registry and lookups correct deserializer
+     */
+    @Before
+    public void startUp() {
+        DeserializerRegistry registry = new DeserializerRegistryImpl();
+        registry.init();
+        actionDeserializer = registry.getDeserializer(
+                new MessageCodeKey(EncodeConstants.OF13_VERSION_ID,
+                        EncodeConstants.EMPTY_VALUE, Action.class));
+    }
+
     /**
      * Testing actions deserialization
      */
@@ -56,12 +74,14 @@ public class ActionsDeserializerTest {
                 + "00 18 00 08 00 00 00 00 "
                 + "00 19 00 10 80 00 02 04 00 00 00 0B 00 00 00 00 "
                 + "00 1A 00 08 00 0A 00 00 "
-                + "00 1B 00 08 00 00 00 00 "
-                + "FF FF 00 10 00 00 00 08 00 01 02 03 04 05 06 07");
+                + "00 1B 00 08 00 00 00 00");
         
         message.skipBytes(4); // skip XID
         LOGGER.info("bytes: " + message.readableBytes());
-        List<Action> actions = ActionsDeserializer.createActions(message, message.readableBytes());
+        
+        
+        List<Action> actions = DecodingUtils.deserializeList(message.readableBytes(),
+                message, actionDeserializer);
         Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
                 + "openflow.common.action.rev130731.Output", actions.get(0).getType().getName());
         Assert.assertEquals("Wrong action port", 1,
@@ -123,12 +143,6 @@ public class ActionsDeserializerTest {
                 actions.get(14).getAugmentation(EthertypeAction.class).getEthertype().getValue().intValue());
         Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
                 + "openflow.common.action.rev130731.PopPbb", actions.get(15).getType().getName());
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
-                + "openflow.common.action.rev130731.Experimenter", actions.get(16).getType().getName());
-        Assert.assertEquals("Wrong experimenter", 8, actions.get(16).getAugmentation(ExperimenterAction.class)
-                .getExperimenter().intValue());
-        Assert.assertArrayEquals("Wrong data", new byte[]{0, 1, 2, 3, 4, 5, 6, 7}, actions.get(16)
-                .getAugmentation(ExperimenterAction.class).getData());
         Assert.assertTrue("Unread data in message", message.readableBytes() == 0);
     }
 

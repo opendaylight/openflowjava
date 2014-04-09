@@ -10,8 +10,14 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 import io.netty.buffer.ByteBuf;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowRemovedMessage;
 
 /**
@@ -19,7 +25,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class OF10FlowRemovedMessageFactoryTest {
 
-	/**
+    private OFDeserializer<FlowRemovedMessage> flowFactory;
+
+    /**
+     * Initializes deserializer registry and lookups correct deserializer
+     */
+    @Before
+    public void startUp() {
+        DeserializerRegistry registry = new DeserializerRegistryImpl();
+        registry.init();
+        flowFactory = registry.getDeserializer(
+                new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, 11, FlowRemovedMessage.class));
+    }
+
+    /**
      * Testing {@link OF10FlowRemovedMessageFactory} for correct translation into POJO
      */
     @Test
@@ -29,7 +48,7 @@ public class OF10FlowRemovedMessageFactoryTest {
                 + "50 50 20 20 "// match
                 + "00 01 02 03 04 05 06 07 00 03 01 00 00 00 00 02 "
                 + "00 00 00 05 00 08 00 00 00 01 02 03 04 05 06 07 00 01 02 03 04 05 06 07");//41
-        FlowRemovedMessage builtByFactory = BufferHelper.decodeV10(OF10FlowRemovedMessageFactory.getInstance(), bb);
+        FlowRemovedMessage builtByFactory = BufferHelper.deserialize(flowFactory, bb);
 
         BufferHelper.checkHeaderV10(builtByFactory);
         Assert.assertEquals("Wrong cookie", 0x0001020304050607L, builtByFactory.getCookie().longValue());

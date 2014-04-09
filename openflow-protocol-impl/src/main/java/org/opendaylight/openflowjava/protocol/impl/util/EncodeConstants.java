@@ -41,6 +41,9 @@ public abstract class EncodeConstants {
     /** Length of 3 bytes */
     public static final byte SIZE_OF_3_BYTES = 3;
 
+    /** Empty (zero) int value */
+    public static final int EMPTY_VALUE = 0;
+
 
     /** OF v1.0 maximal port name length */
     public static final byte MAX_PORT_NAME_LENGTH = 16;
