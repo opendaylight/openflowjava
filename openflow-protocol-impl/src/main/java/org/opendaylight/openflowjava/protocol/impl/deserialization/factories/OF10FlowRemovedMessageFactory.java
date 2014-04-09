@@ -12,7 +12,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.math.BigInteger;
 
-import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.OF10MatchDeserializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowRemovedReason;
@@ -27,26 +27,9 @@ public class OF10FlowRemovedMessageFactory implements OFDeserializer<FlowRemoved
 
     private static final byte PADDING_IN_FLOW_REMOVED_MESSAGE = 1;
     private static final byte PADDING_IN_FLOW_REMOVED_MESSAGE_2 = 2;
-    
-    
-    private static OF10FlowRemovedMessageFactory instance;
-    
-    private OF10FlowRemovedMessageFactory() {
-        // singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized OF10FlowRemovedMessageFactory getInstance(){
-        if(instance == null){
-            instance = new OF10FlowRemovedMessageFactory();
-        }
-        return instance;
-    }
 
     @Override
-    public FlowRemovedMessage bufferToMessage(ByteBuf rawMessage, short version) {
+    public FlowRemovedMessage deserialize(ByteBuf rawMessage, short version) {
         FlowRemovedMessageBuilder builder = new FlowRemovedMessageBuilder();
         builder.setVersion(version);
         builder.setXid(rawMessage.readUnsignedInt());
@@ -69,6 +52,4 @@ public class OF10FlowRemovedMessageFactory implements OFDeserializer<FlowRemoved
         builder.setByteCount(new BigInteger(1, byte_count));
         return builder.build();
     }
-
-    
 }

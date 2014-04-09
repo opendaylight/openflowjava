@@ -10,19 +10,32 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization;
 
 import io.netty.buffer.ByteBuf;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.TypeToClassMapInitializer;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author michal.polkorab
  * @author timotej.kubas
  */
-public abstract class DeserializationFactory {
-    
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(DeserializationFactory.class);
+public class DeserializationFactory {
+
+    private DeserializerRegistry registry;
+    private Map<TypeToClassKey, Class<?>> messageClassMap;
+
+    /**
+     * Constructor
+     */
+    public DeserializationFactory() {
+        messageClassMap = new HashMap<>();
+        initTypeToClassMapping();
+    }
 
     /**
      * Transforms ByteBuf into correct POJO message
@@ -30,18 +43,27 @@ public abstract class DeserializationFactory {
      * @param version version decoded from OpenFlow protocol message
      * @return correct POJO as DataObject
      */
-    public static DataObject bufferToMessage(ByteBuf rawMessage, short version) {
+    public DataObject deserialize(ByteBuf rawMessage, short version) {
         DataObject dataObject = null;
         short type = rawMessage.readUnsignedByte();
         rawMessage.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
 
-        MessageTypeCodeKey msgTypeCodeKey = new MessageTypeCodeKey(version, type);
-        OFDeserializer<?> decoder = DecoderTable.getInstance().getDecoder(msgTypeCodeKey);
-        if (decoder != null) {
-            dataObject = decoder.bufferToMessage(rawMessage, version);
-        } else {
-            LOGGER.warn("No correct decoder found in DecoderTable for arguments: " + msgTypeCodeKey.toString());
+        OFDeserializer<DataObject> deserializer = registry.getDeserializer(
+                new MessageCodeKey(version, type, messageClassMap.get(new TypeToClassKey(version, type))));
+        if (deserializer != null) {
+            dataObject = deserializer.deserialize(rawMessage, version);
         }
         return dataObject;
+    }
+
+    /**
+     * @param registry
+     */
+    public void setRegistry(DeserializerRegistry registry) {
+        this.registry = registry;
+    }
+
+    private void initTypeToClassMapping() {
+        TypeToClassMapInitializer.initializeTypeToClassMap(messageClassMap);
     }
 }

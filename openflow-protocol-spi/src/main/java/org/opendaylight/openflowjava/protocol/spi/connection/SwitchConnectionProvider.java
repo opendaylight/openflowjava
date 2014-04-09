@@ -15,6 +15,8 @@ import java.util.concurrent.Future;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
 
 /**
  * @author mirehak
@@ -45,5 +47,11 @@ public interface SwitchConnectionProvider {
      * @param switchConHandler instance being informed when new switch connects
      */
     public void setSwitchConnectionHandler(SwitchConnectionHandler switchConHandler);
-    
+
+    /**
+     * Registers custom deserializer
+     * @param key used for deserializer lookup
+     * @param deserializer deserializer instance
+     */
+    public void registerDeserializer(MessageCodeKey key, OFGeneralDeserializer deserializer);
 }

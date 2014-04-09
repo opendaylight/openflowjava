@@ -10,7 +10,7 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
 
-import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterError;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterErrorBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.BadActionCode;
@@ -40,25 +40,9 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
 
     private static final String UNKNOWN_CODE = "UNKNOWN_CODE";
     private static final String UNKNOWN_TYPE = "UNKNOWN_TYPE";
-    
-    private static ErrorMessageFactory instance;
-    
-    private ErrorMessageFactory() {
-        // do nothing, just singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized ErrorMessageFactory getInstance() {
-        if (instance == null) {
-            instance = new ErrorMessageFactory();
-        }
-        return instance;
-    }
-    
+
     @Override
-    public ErrorMessage bufferToMessage(ByteBuf rawMessage, short version) {
+    public ErrorMessage deserialize(ByteBuf rawMessage, short version) {
         ErrorMessageBuilder builder = new ErrorMessageBuilder();
         builder.setVersion(version);
         builder.setXid(rawMessage.readUnsignedInt());

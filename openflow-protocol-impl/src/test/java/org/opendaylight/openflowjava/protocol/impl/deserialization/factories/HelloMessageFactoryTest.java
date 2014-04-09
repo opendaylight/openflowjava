@@ -8,14 +8,20 @@
 
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import io.netty.buffer.ByteBuf;
-
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.HelloElementType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.hello.Elements;
@@ -29,6 +35,18 @@ public class HelloMessageFactoryTest {
 
     /** Number of currently supported version / codec */
     public static final Short VERSION_YET_SUPPORTED = 0x04;
+    private OFDeserializer<HelloMessage> helloFactory;
+
+    /**
+     * Initializes deserializer registry and lookups correct deserializer
+     */
+    @Before
+    public void startUp() {
+        DeserializerRegistry registry = new DeserializerRegistryImpl();
+        registry.init();
+        helloFactory = registry.getDeserializer(
+                new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, 0, HelloMessage.class));
+    }
 
     /**
      * Testing {@link HelloMessageFactory} for correct translation into POJO
@@ -41,8 +59,7 @@ public class HelloMessageFactoryTest {
                                             + "00 00 00 00 " // bitmap 2
                                             + "00 00 00 00"  // padding
                 );
-        HelloMessage builtByFactory = BufferHelper.decodeV13(
-                HelloMessageFactory.getInstance(), bb);
+        HelloMessage builtByFactory = BufferHelper.decodeV13(helloFactory, bb);
 
         BufferHelper.checkHeaderV13(builtByFactory);
         List<Elements> element = createElement();

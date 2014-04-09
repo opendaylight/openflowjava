@@ -12,8 +12,14 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 import io.netty.buffer.ByteBuf;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeatures;
@@ -25,6 +31,19 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  */
 public class PortStatusMessageFactoryTest {
+
+    private OFDeserializer<PortStatusMessage> statusFactory;
+
+    /**
+     * Initializes deserializer registry and lookups correct deserializer
+     */
+    @Before
+    public void startUp() {
+        DeserializerRegistry registry = new DeserializerRegistryImpl();
+        registry.init();
+        statusFactory = registry.getDeserializer(
+                new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, 12, PortStatusMessage.class));
+    }
 
     /**
      * Testing {@link PortStatusMessageFactory} for correct translation into POJO
@@ -48,7 +67,7 @@ public class PortStatusMessageFactoryTest {
                                               "00 00 00 80" //max speed
                                               );
         
-        PortStatusMessage builtByFactory = BufferHelper.decodeV13(PortStatusMessageFactory.getInstance(), bb);
+        PortStatusMessage builtByFactory = BufferHelper.decodeV13(statusFactory, bb);
         
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong reason", 0x01, builtByFactory.getReason().getIntValue());

@@ -11,8 +11,14 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 import io.netty.buffer.ByteBuf;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.Capabilities;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesOutput;
 
@@ -22,6 +28,19 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class FeaturesReplyMessageFactoryTest {
 
+    private OFDeserializer<GetFeaturesOutput> featuresFactory;
+
+    /**
+     * Initializes deserializer registry and lookups correct deserializer
+     */
+    @Before
+    public void startUp() {
+        DeserializerRegistry registry = new DeserializerRegistryImpl();
+        registry.init();
+        featuresFactory = registry.getDeserializer(
+                new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, 6, GetFeaturesOutput.class));
+    }
+
     /**
      * Testing {@link FeaturesReplyMessageFactory} for correct translation into POJO
      */
@@ -29,8 +48,7 @@ public class FeaturesReplyMessageFactoryTest {
     public void test() {
         ByteBuf bb = BufferHelper.buildBuffer("00 01 02 03 04 05 06 07 00 01 02 03 01 01 00 00 00"
                 + " 00 01 41 00 01 02 03");
-        GetFeaturesOutput builtByFactory = BufferHelper.decodeV13(
-                FeaturesReplyMessageFactory.getInstance(), bb);
+        GetFeaturesOutput builtByFactory = BufferHelper.decodeV13(featuresFactory, bb);
 
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong datapathId", 0x0001020304050607L, builtByFactory.getDatapathId().longValue());

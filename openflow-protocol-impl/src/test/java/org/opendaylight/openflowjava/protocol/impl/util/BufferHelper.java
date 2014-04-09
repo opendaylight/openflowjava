@@ -15,7 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.junit.Assert;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.HelloMessageFactoryTest;
 import org.opendaylight.openflowjava.protocol.impl.serialization.OFSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
@@ -135,7 +135,7 @@ public abstract class BufferHelper {
      * @return message decoded pojo
      */
     public static <E extends DataObject> E decodeV13(OFDeserializer<E> decoder, ByteBuf bb) {
-        return bufferToMessage(decoder, EncodeConstants.OF13_VERSION_ID, bb);
+        return deserialize(decoder, EncodeConstants.OF13_VERSION_ID, bb);
     }
     
     /**
@@ -145,11 +145,11 @@ public abstract class BufferHelper {
      * @return message decoded pojo
      */
     public static <E extends DataObject> E decodeV10(OFDeserializer<E> decoder, ByteBuf bb) {
-        return bufferToMessage(decoder, EncodeConstants.OF10_VERSION_ID, bb);
+        return deserialize(decoder, EncodeConstants.OF10_VERSION_ID, bb);
     }
     
-    private static <E extends DataObject> E bufferToMessage(OFDeserializer<E> decoder, short version, ByteBuf bb) {
-        return decoder.bufferToMessage(bb, version);
+    private static <E extends DataObject> E deserialize(OFDeserializer<E> decoder, short version, ByteBuf bb) {
+        return decoder.deserialize(bb, version);
     }
     
     /**

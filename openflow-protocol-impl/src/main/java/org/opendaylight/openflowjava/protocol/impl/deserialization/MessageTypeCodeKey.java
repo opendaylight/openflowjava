@@ -10,7 +10,7 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization;
 
 
 /**
- * Class used as a key in {@link DecoderTable}
+ * Class used as a key in {@link DeserializerRegistryImpl}
  * @author michal.polkorab
  * @author timotej.kubas
  */

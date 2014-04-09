@@ -19,7 +19,12 @@ import java.util.concurrent.Future;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration.FEATURE_SUPPORT;
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +44,17 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
             .getLogger(SwitchConnectionProviderImpl.class);
     private SwitchConnectionHandler switchConnectionHandler;
     private Set<ServerFacade> serverLot;
+    private DeserializerRegistry deserializerRegistry;
+    private DeserializationFactory deserializationFactory;
+
+
+    /** Constructor - Initializes registers */
+    public SwitchConnectionProviderImpl() {
+        deserializerRegistry = new DeserializerRegistryImpl();
+        deserializerRegistry.init();
+        deserializationFactory = new DeserializationFactory();
+        deserializationFactory.setRegistry(deserializerRegistry);
+    }
 
     @Override
     public void configure(Collection<ConnectionConfiguration> connConfigs) {
@@ -52,6 +68,7 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
             server.setSwitchIdleTimeout(connConfig.getSwitchIdleTimeout());
             boolean tlsSupported = FEATURE_SUPPORT.REQUIRED.equals(connConfig.getTlsSupport());
             server.setEncryption(tlsSupported);
+            server.setDeserializationFactory(deserializationFactory);
             serverLot.add(server);
         }
     }
@@ -125,6 +142,12 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
      */
     public Set<ServerFacade> getServerLot() {
         return serverLot;
+    }
+
+    @Override
+    public void registerDeserializer(MessageCodeKey key,
+            OFGeneralDeserializer deserializer) {
+        deserializerRegistry.registerDeserializer(key, deserializer);
     }
 
 }

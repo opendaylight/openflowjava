@@ -14,7 +14,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ActionsDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
@@ -174,25 +174,8 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     private static final byte GROUP_DESC_HEADER_LENGTH = 8;
     private static final byte BUCKETS_HEADER_LENGTH = 16;
 
-    
-    private static MultipartReplyMessageFactory instance;
-
-    private MultipartReplyMessageFactory() {
-        // singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized MultipartReplyMessageFactory getInstance() {
-        if (instance == null){
-            instance = new MultipartReplyMessageFactory();
-        }
-        return instance;
-    }
-
     @Override
-    public MultipartReplyMessage bufferToMessage(ByteBuf rawMessage, short version) {
+    public MultipartReplyMessage deserialize(ByteBuf rawMessage, short version) {
         MultipartReplyMessageBuilder builder = new MultipartReplyMessageBuilder();
         builder.setVersion(version);
         builder.setXid(rawMessage.readUnsignedInt());

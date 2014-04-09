@@ -14,8 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowRemovedReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PacketInReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortReason;
@@ -32,7 +38,19 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  *
  */
 public class GetAsyncReplyMessageFactoryTest {
-    
+
+    private OFDeserializer<GetAsyncOutput> asyncFactory;
+
+    /**
+     * Initializes deserializer registry and lookups correct deserializer
+     */
+    @Before
+    public void startUp() {
+        DeserializerRegistry registry = new DeserializerRegistryImpl();
+        registry.init();
+        asyncFactory = registry.getDeserializer(
+                new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, 27, GetAsyncOutput.class));
+    }
 
     /**
      * Testing {@link GetAsyncReplyMessageFactory} for correct translation into POJO
@@ -45,7 +63,7 @@ public class GetAsyncReplyMessageFactoryTest {
                                               "00 00 00 00 "+
                                               "00 00 00 03 "+
                                               "00 00 00 0A");
-        GetAsyncOutput builtByFactory = BufferHelper.decodeV13(GetAsyncReplyMessageFactory.getInstance(), bb);
+        GetAsyncOutput builtByFactory = BufferHelper.decodeV13(asyncFactory, bb);
 
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong packetInMask",createPacketInMask(), 

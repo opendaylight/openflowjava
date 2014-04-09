@@ -13,7 +13,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowRemovedReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PacketInReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortReason;
@@ -32,26 +32,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  */
 public class GetAsyncReplyMessageFactory implements OFDeserializer<GetAsyncOutput> {
-    
-    private static GetAsyncReplyMessageFactory instance;
-    private static final byte SEPARATE_ROLES = 2;
-    
-    private GetAsyncReplyMessageFactory() {
-        // singleton
-    }
 
-    /**
-     * @return singleton factory
-     */
-    public static synchronized GetAsyncReplyMessageFactory getInstance() {
-        if (instance == null) {
-            instance = new GetAsyncReplyMessageFactory();
-        }
-        return instance;
-    }
-    
+    private static final byte SEPARATE_ROLES = 2;
+
     @Override
-    public GetAsyncOutput bufferToMessage(ByteBuf rawMessage, short version) {
+    public GetAsyncOutput deserialize(ByteBuf rawMessage, short version) {
         GetAsyncOutputBuilder builder = new GetAsyncOutputBuilder();
         builder.setVersion(version);
         builder.setXid(rawMessage.readUnsignedInt());

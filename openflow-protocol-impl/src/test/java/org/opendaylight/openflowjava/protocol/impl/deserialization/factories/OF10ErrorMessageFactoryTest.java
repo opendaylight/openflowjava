@@ -11,23 +11,40 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 import io.netty.buffer.ByteBuf;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ErrorMessage;
 
 /**
  * @author michal.polkorab
  */
 public class OF10ErrorMessageFactoryTest {
+    private OFDeserializer<ErrorMessage> errorFactory;
 
-	/**
+    /**
+     * Initializes deserializer registry and lookups correct deserializer
+     */
+    @Before
+    public void startUp() {
+        DeserializerRegistry registry = new DeserializerRegistryImpl();
+        registry.init();
+        errorFactory = registry.getDeserializer(
+                new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, 1, ErrorMessage.class));
+    }
+
+    /**
      * Test of {@link OF10ErrorMessageFactory} for correct translation into POJO
      */
 	@Test
 	public void testWithoutData() {
 		ByteBuf bb = BufferHelper.buildBuffer("00 01 00 02");
-		ErrorMessage builtByFactory = BufferHelper.decodeV10(
-				OF10ErrorMessageFactory.getInstance(), bb);
+		ErrorMessage builtByFactory = BufferHelper.decodeV10(errorFactory, bb);
 
 		BufferHelper.checkHeaderV10(builtByFactory);
 		Assert.assertEquals("Wrong type", 1, builtByFactory.getType().intValue());
@@ -43,8 +60,7 @@ public class OF10ErrorMessageFactoryTest {
 	@Test
 	public void testWithData() {
 		ByteBuf bb = BufferHelper.buildBuffer("00 00 00 01 00 01 02 03");
-		ErrorMessage builtByFactory = BufferHelper.decodeV10(
-				OF10ErrorMessageFactory.getInstance(), bb);
+		ErrorMessage builtByFactory = BufferHelper.decodeV10(errorFactory, bb);
 
 		BufferHelper.checkHeaderV10(builtByFactory);
 		Assert.assertEquals("Wrong type", 0, builtByFactory.getType().intValue());
@@ -60,8 +76,7 @@ public class OF10ErrorMessageFactoryTest {
 	@Test
 	public void testWithIncorrectTypeEnum() {
 		ByteBuf bb = BufferHelper.buildBuffer("00 0A 00 05 00 01 02 03");
-		ErrorMessage builtByFactory = BufferHelper.decodeV10(
-				OF10ErrorMessageFactory.getInstance(), bb);
+		ErrorMessage builtByFactory = BufferHelper.decodeV10(errorFactory, bb);
 
 		BufferHelper.checkHeaderV10(builtByFactory);
 		Assert.assertEquals("Wrong type", 10, builtByFactory.getType().intValue());
@@ -77,8 +92,7 @@ public class OF10ErrorMessageFactoryTest {
 	@Test
 	public void testWithIncorrectCodeEnum() {
 		ByteBuf bb = BufferHelper.buildBuffer("00 03 00 06 00 01 02 03");
-		ErrorMessage builtByFactory = BufferHelper.decodeV10(
-				OF10ErrorMessageFactory.getInstance(), bb);
+		ErrorMessage builtByFactory = BufferHelper.decodeV10(errorFactory, bb);
 
 		BufferHelper.checkHeaderV10(builtByFactory);
 		Assert.assertEquals("Wrong type", 3, builtByFactory.getType().intValue());
