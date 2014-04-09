@@ -13,10 +13,15 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
+import org.opendaylight.openflowjava.protocol.api.extensibility.EnhancedMessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthertypeAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthertypeActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.GroupIdAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.GroupIdActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthAction;
@@ -53,176 +58,161 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.EtherType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
 
 /**
  * Deserializes ofp_actions (OpenFlow v1.3)
  * @author timotej.kubas
  * @author michal.polkorab
  */
-public abstract class ActionsDeserializer {
+public class ActionsDeserializer implements OFDeserializer<Action>,
+        HeaderDeserializer<Action>, DeserializerRegistryInjector {
     
-    private static final byte ACTION_HEADER_LENGTH = 4;
     private static final byte PADDING_IN_ACTIONS_HEADER = 4;
     private static final byte PADDING_IN_OUTPUT_ACTIONS_HEADER = 6;
     private static final byte PADDING_IN_SET_MPLS_TTL_ACTIONS_HEADER = 3;
     private static final byte PADDING_IN_PUSH_VLAN_ACTIONS_HEADER = 2;
     private static final byte PADDING_IN_NW_TTL_ACTIONS_HEADER = 3;
-    private static final byte EXPERIMENTER_ACTION_HEADER_LENGTH = 8;
-    
-    /**
-     * Creates list of actions (OpenFlow v1.3)
-     * @param input input ByteBuf
-     * @param actionsLength length of buckets
-     * @return ActionsList
-     */
-    public static List<Action> createActions(ByteBuf input, int actionsLength) {
-        List<Action> actions = new ArrayList<>();
-        int length = 0;
-        while (length < actionsLength) {
-            int type = input.readUnsignedShort();
-            int currentActionLength = input.readUnsignedShort();
-            ActionBuilder actionBuilder = new ActionBuilder();
-            switch(type) {
-            case 0:
-                actions.add(createOutputAction(input, actionBuilder));
-                break;
-            case 11:
-                actions.add(createCopyTtlOutAction(input, actionBuilder));
-                break;
-            case 12:
-                actions.add(createCopyTtlInAction(input, actionBuilder));
-                break;
-            case 15:
-                actions.add(createSetMplsTtlAction(input, actionBuilder));
-                break;
-            case 16:
-                actions.add(createDecMplsTtlOutAction(input, actionBuilder));
-                break;
-            case 17:
-                actions.add(createPushVlanAction(input, actionBuilder));
-                break;
-            case 18:
-                actions.add(createPopVlanAction(input, actionBuilder));
-                break;
-            case 19:
-                actions.add(createPushMplsAction(input, actionBuilder));
-                break;
-            case 20:
-                actions.add(createPopMplsAction(input, actionBuilder));
-                break;
-            case 21:
-                actions.add(createSetQueueAction(input, actionBuilder));
-                break;
-            case 22:
-                actions.add(createGroupAction(input, actionBuilder));
-                break;
-            case 23:
-                actions.add(createSetNwTtlAction(input, actionBuilder));
-                break;
-            case 24:
-                actions.add(createDecNwTtlAction(input, actionBuilder));
-                break;
-            case 25:
-                actions.add(createSetFieldAction(input, actionBuilder, currentActionLength));
-                break;
-            case 26:
-                actions.add(createPushPbbAction(input, actionBuilder));
-                break;
-            case 27:
-                actions.add(createPopPbbAction(input, actionBuilder));
-                break;
-            case 0xFFFF:
-                actions.add(createExperimenterAction(input, actionBuilder, currentActionLength));
-                break;
-            default:
-                break;
-            }
-            length += currentActionLength;
-        } 
-        return actions;
+    private DeserializerRegistry registry;
+
+    @Override
+    public Action deserialize(ByteBuf input) {
+        Action action = null;
+        ActionBuilder actionBuilder = new ActionBuilder();
+        int type = input.getUnsignedShort(input.readerIndex());
+        switch(type) {
+        case 0:
+            action = createOutputAction(input, actionBuilder);
+            break;
+        case 11:
+            action = createCopyTtlOutAction(input, actionBuilder);
+            break;
+        case 12:
+            action = createCopyTtlInAction(input, actionBuilder);
+            break;
+        case 15:
+            action = createSetMplsTtlAction(input, actionBuilder);
+            break;
+        case 16:
+            action = createDecMplsTtlOutAction(input, actionBuilder);
+            break;
+        case 17:
+            action = createPushVlanAction(input, actionBuilder);
+            break;
+        case 18:
+            action = createPopVlanAction(input, actionBuilder);
+            break;
+        case 19:
+            action = createPushMplsAction(input, actionBuilder);
+            break;
+        case 20:
+            action = createPopMplsAction(input, actionBuilder);
+            break;
+        case 21:
+            action = createSetQueueAction(input, actionBuilder);
+            break;
+        case 22:
+            action = createGroupAction(input, actionBuilder);
+            break;
+        case 23:
+            action = createSetNwTtlAction(input, actionBuilder);
+            break;
+        case 24:
+            action = createDecNwTtlAction(input, actionBuilder);
+            break;
+        case 25:
+            action = createSetFieldAction(input, actionBuilder);
+            break;
+        case 26:
+            action = createPushPbbAction(input, actionBuilder);
+            break;
+        case 27:
+            action = createPopPbbAction(input, actionBuilder);
+            break;
+        case 0xFFFF:
+            OFDeserializer<ExperimenterAction> expDeserializer = registry.getDeserializer(
+                    new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, 0xFFFF, ExperimenterAction.class));
+            ExperimenterAction expAction = expDeserializer.deserialize(input);
+            actionBuilder.addAugmentation(ExperimenterAction.class, expAction);
+            break;
+        default:
+            break;
+        }
+        return action;
     }
 
-    /**
-     * Creates action ids - actions without values (OpenFlow v1.3)
-     * @param input input ByteBuf
-     * @param actionsLength length of actions
-     * @return ActionsList
-     */
-    public static List<Action> createActionIds(ByteBuf input, int actionsLength) {
-        List<Action> actionsList = new ArrayList<>();
-        int length = 0;
+    @Override
+    public Action deserializeHeader(ByteBuf input) {
         ActionBuilder builder;
-        while (length < actionsLength) {
-            builder = new ActionBuilder();
-            int type = input.readUnsignedShort();
-            int currentActionLength = input.readUnsignedShort();
-            switch(type) {
-            case 0:
-                builder.setType(Output.class);
-                break;
-            case 11:
-                builder.setType(CopyTtlOut.class);
-                break;
-            case 12:
-                builder.setType(CopyTtlIn.class);
-                break;
-            case 15:
-                builder.setType(SetMplsTtl.class);
-                break;
-            case 16:
-                builder.setType(DecMplsTtl.class);
-                break;
-            case 17:
-                builder.setType(PushVlan.class);
-                break;
-            case 18:
-                builder.setType(PopVlan.class);
-                break;
-            case 19:
-                builder.setType(PushMpls.class);
-                break;
-            case 20:
-                builder.setType(PopMpls.class);
-                break;
-            case 21:
-                builder.setType(SetQueue.class);
-                break;
-            case 22:
-                builder.setType(Group.class);
-                break;
-            case 23:
-                builder.setType(SetNwTtl.class);
-                break;
-            case 24:
-                builder.setType(DecNwTtl.class);
-                break;
-            case 25:
-                builder.setType(SetField.class);
-                break; 
-            case 26:
-                builder.setType(PushPbb.class);
-                break;
-            case 27:
-                builder.setType(PopPbb.class);
-                break;
-            case 0xFFFF:
-                builder.setType(Experimenter.class);
-                ExperimenterActionBuilder experimenter = new ExperimenterActionBuilder();
-                experimenter.setExperimenter(input.readUnsignedInt());
-                builder.addAugmentation(ExperimenterAction.class, experimenter.build());
-                break;
-            default: 
-                break;
-            }
-            actionsList.add(builder.build());
-            length += currentActionLength;
-        } 
-        return actionsList;
+        builder = new ActionBuilder();
+        int type = input.readUnsignedShort();
+        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+        switch(type) {
+        case 0:
+            builder.setType(Output.class);
+            break;
+        case 11:
+            builder.setType(CopyTtlOut.class);
+            break;
+        case 12:
+            builder.setType(CopyTtlIn.class);
+            break;
+        case 15:
+            builder.setType(SetMplsTtl.class);
+            break;
+        case 16:
+            builder.setType(DecMplsTtl.class);
+            break;
+        case 17:
+            builder.setType(PushVlan.class);
+            break;
+        case 18:
+            builder.setType(PopVlan.class);
+            break;
+        case 19:
+            builder.setType(PushMpls.class);
+            break;
+        case 20:
+            builder.setType(PopMpls.class);
+            break;
+        case 21:
+            builder.setType(SetQueue.class);
+            break;
+        case 22:
+            builder.setType(Group.class);
+            break;
+        case 23:
+            builder.setType(SetNwTtl.class);
+            break;
+        case 24:
+            builder.setType(DecNwTtl.class);
+            break;
+        case 25:
+            builder.setType(SetField.class);
+            break; 
+        case 26:
+            builder.setType(PushPbb.class);
+            break;
+        case 27:
+            builder.setType(PopPbb.class);
+            break;
+        case 0xFFFF:
+            HeaderDeserializer<ExperimenterAction> expDeserializer = registry.getDeserializer(
+                    new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, 0xFFFF, ExperimenterAction.class));
+            ExperimenterAction expAction = expDeserializer.deserializeHeader(input);
+            builder.setType(Experimenter.class);
+            builder.addAugmentation(ExperimenterAction.class, expAction);
+            break;
+        default: 
+            break;
+        }
+        return builder.build();
     }
 
     private static Action createEmptyHeader(Class<? extends ActionBase> action,
             ByteBuf in, ActionBuilder actionBuilder) {
         actionBuilder.setType(action);
+        in.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         in.skipBytes(PADDING_IN_ACTIONS_HEADER);
         return actionBuilder.build();
     }
@@ -253,6 +243,7 @@ public abstract class ActionsDeserializer {
     
     private static Action createOutputAction(ByteBuf in, ActionBuilder actionBuilder) {
         actionBuilder.setType(Output.class);
+        in.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         PortActionBuilder port = new PortActionBuilder();
         port.setPort(new PortNumber(in.readUnsignedInt()));
         actionBuilder.addAugmentation(PortAction.class, port.build());
@@ -265,6 +256,7 @@ public abstract class ActionsDeserializer {
     
     private static Action createSetMplsTtlAction(ByteBuf in, ActionBuilder actionBuilder) {
         actionBuilder.setType(SetMplsTtl.class);
+        in.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         MplsTtlActionBuilder mplsTtl = new MplsTtlActionBuilder();
         mplsTtl.setMplsTtl(in.readUnsignedByte());
         actionBuilder.addAugmentation(MplsTtlAction.class, mplsTtl.build());
@@ -275,6 +267,7 @@ public abstract class ActionsDeserializer {
     private static Action createPushAction(Class<? extends ActionBase> action,
             ByteBuf in, ActionBuilder actionBuilder) {
         actionBuilder.setType(action);
+        in.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         EthertypeActionBuilder etherType = new EthertypeActionBuilder();
         etherType.setEthertype(new EtherType(in.readUnsignedShort()));
         actionBuilder.addAugmentation(EthertypeAction.class, etherType.build());
@@ -300,6 +293,7 @@ public abstract class ActionsDeserializer {
     
     private static Action createSetQueueAction(ByteBuf in, ActionBuilder actionBuilder) {
         actionBuilder.setType(SetQueue.class);
+        in.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         QueueIdActionBuilder queueId = new QueueIdActionBuilder();
         queueId.setQueueId(in.readUnsignedInt());
         actionBuilder.addAugmentation(QueueIdAction.class, queueId.build());
@@ -308,28 +302,16 @@ public abstract class ActionsDeserializer {
     
     private static Action createGroupAction(ByteBuf in, ActionBuilder actionBuilder) {
         actionBuilder.setType(Group.class);
+        in.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         GroupIdActionBuilder group = new GroupIdActionBuilder();
         group.setGroupId(in.readUnsignedInt());
         actionBuilder.addAugmentation(GroupIdAction.class, group.build());
         return actionBuilder.build();
     }
-    
-    private static Action createExperimenterAction(ByteBuf in, ActionBuilder actionBuilder, int actionLength) {
-        actionBuilder.setType(Experimenter.class);
-        ExperimenterActionBuilder experimenter = new ExperimenterActionBuilder();
-        experimenter.setExperimenter(in.readUnsignedInt());
-        int dataLength = actionLength - EXPERIMENTER_ACTION_HEADER_LENGTH;
-        if (dataLength > 0) {
-            byte[] data = new byte[dataLength];
-            in.readBytes(data);
-            experimenter.setData(data);
-        }
-        actionBuilder.addAugmentation(ExperimenterAction.class, experimenter.build());
-        return actionBuilder.build();
-    }
-    
+
     private static Action createSetNwTtlAction(ByteBuf in, ActionBuilder actionBuilder) {
         actionBuilder.setType(SetNwTtl.class);
+        in.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         NwTtlActionBuilder nwTtl = new NwTtlActionBuilder();
         nwTtl.setNwTtl(in.readUnsignedByte());
         actionBuilder.addAugmentation(NwTtlAction.class, nwTtl.build());
@@ -337,11 +319,31 @@ public abstract class ActionsDeserializer {
         return actionBuilder.build();
     }
     
-    private static Action createSetFieldAction(ByteBuf in, ActionBuilder actionBuilder, int actionLength) {
+    private Action createSetFieldAction(ByteBuf in, ActionBuilder actionBuilder) {
         actionBuilder.setType(SetField.class);
+        int startIndex = in.readerIndex();
+        in.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         OxmFieldsActionBuilder matchEntries = new OxmFieldsActionBuilder();
-        matchEntries.setMatchEntries(MatchDeserializer.createMatchEntry(in, actionLength  - ACTION_HEADER_LENGTH));
+        int oxmClass = in.getUnsignedShort(in.readerIndex());
+        // get oxm_field & hasMask byte and extract the field value
+        int oxmField = in.getUnsignedByte(in.readerIndex()
+                + EncodeConstants.SIZE_OF_SHORT_IN_BYTES) >>> 1;
+        OFDeserializer<MatchEntries> matchDeserializer = registry.getDeserializer(
+                new EnhancedMessageCodeKey(EncodeConstants.OF13_VERSION_ID, oxmClass,
+                        oxmField, MatchEntries.class));
+        List<MatchEntries> entry = new ArrayList<>();
+        entry.add(matchDeserializer.deserialize(in));
+        matchEntries.setMatchEntries(entry);
         actionBuilder.addAugmentation(OxmFieldsAction.class, matchEntries.build());
+        int paddingRemainder = (in.readerIndex() - startIndex) % EncodeConstants.PADDING;
+        if (paddingRemainder != 0) {
+            in.skipBytes(EncodeConstants.PADDING - paddingRemainder);
+        }
         return actionBuilder.build();
+    }
+
+    @Override
+    public void injectDeserializerRegistry(DeserializerRegistry deserializerRegistry) {
+        registry = deserializerRegistry;
     }
 }

@@ -11,8 +11,14 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 import io.netty.buffer.ByteBuf;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfigV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeaturesV10;
@@ -26,6 +32,19 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class OF10PortStatusMessageFactoryTest {
 
+    private OFDeserializer<PortStatusMessage> statusFactory;
+
+    /**
+     * Initializes deserializer registry and lookups correct deserializer
+     */
+    @Before
+    public void startUp() {
+        DeserializerRegistry registry = new DeserializerRegistryImpl();
+        registry.init();
+        statusFactory = registry.getDeserializer(
+                new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, 12, PortStatusMessage.class));
+    }
+
     /**
      * Testing {@link OF10PortStatusMessageFactory} for correct translation into POJO
      */
@@ -34,7 +53,7 @@ public class OF10PortStatusMessageFactoryTest {
         ByteBuf bb = BufferHelper.buildBuffer("00 00 00 00 00 00 00 00 "
                 + "00 10 01 01 05 01 04 02 41 4C 4F 48 41 00 00 00 00 00 00 00 00 00 00 "
                 + "00 00 00 00 15 00 00 01 01 00 00 00 31 00 00 04 42 00 00 03 0C 00 00 08 88");
-        PortStatusMessage builtByFactory = BufferHelper.decodeV10(OF10PortStatusMessageFactory.getInstance(), bb);
+        PortStatusMessage builtByFactory = BufferHelper.deserialize(statusFactory, bb);
         
         BufferHelper.checkHeaderV10(builtByFactory);
         Assert.assertEquals("Wrong reason", PortReason.OFPPRADD, builtByFactory.getReason());
