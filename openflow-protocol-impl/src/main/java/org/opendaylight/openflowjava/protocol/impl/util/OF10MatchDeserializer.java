@@ -13,6 +13,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowWildcardsV10;
@@ -25,8 +26,8 @@ import com.google.common.base.Joiner;
  * Deserializes ofp_match (OpenFlow v1.0) structure
  * @author michal.polkorab
  */
-public abstract class OF10MatchDeserializer {
-    
+public class OF10MatchDeserializer implements OFDeserializer<MatchV10> {
+
     private static final byte PADDING_IN_MATCH = 1;
     private static final byte PADDING_IN_MATCH_2 = 2;
     private static final byte NW_SRC_BITS = 6;
@@ -36,48 +37,44 @@ public abstract class OF10MatchDeserializer {
     private static final byte NW_DST_SHIFT = 14;
     private static final int NW_DST_MASK = ((1 << NW_DST_BITS) - 1) << NW_DST_SHIFT;
 
-    /**
-     * Creates ofp_match (OpenFlow v1.0) structure
-     * @param rawMessage ByteBuf with input data
-     * @return ofp_match (OpenFlow v1.0)
-     */
-    public static MatchV10 createMatchV10(ByteBuf rawMessage) {
+    @Override
+    public MatchV10 deserialize(ByteBuf input) {
         MatchV10Builder builder = new MatchV10Builder();
-        long wildcards = rawMessage.readUnsignedInt();
+        long wildcards = input.readUnsignedInt();
         builder.setWildcards(createWildcards(wildcards));
         builder.setNwSrcMask(decodeNwSrcMask(wildcards));
         builder.setNwDstMask(decodeNwDstMask(wildcards));
-        builder.setInPort(rawMessage.readUnsignedShort());
+        builder.setInPort(input.readUnsignedShort());
         byte[] dlSrc = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
-        rawMessage.readBytes(dlSrc);
+        input.readBytes(dlSrc);
         builder.setDlSrc(new MacAddress(ByteBufUtils.macAddressToString(dlSrc)));
         byte[] dlDst = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
-        rawMessage.readBytes(dlDst);
+        input.readBytes(dlDst);
         builder.setDlDst(new MacAddress(ByteBufUtils.macAddressToString(dlDst)));
 
-        builder.setDlVlan(rawMessage.readUnsignedShort());
-        builder.setDlVlanPcp(rawMessage.readUnsignedByte());
-        rawMessage.skipBytes(PADDING_IN_MATCH);
-        builder.setDlType(rawMessage.readUnsignedShort());
-        builder.setNwTos(rawMessage.readUnsignedByte());
-        builder.setNwProto(rawMessage.readUnsignedByte());
-        rawMessage.skipBytes(PADDING_IN_MATCH_2);
+        builder.setDlVlan(input.readUnsignedShort());
+        builder.setDlVlanPcp(input.readUnsignedByte());
+        input.skipBytes(PADDING_IN_MATCH);
+        builder.setDlType(input.readUnsignedShort());
+        builder.setNwTos(input.readUnsignedByte());
+        builder.setNwProto(input.readUnsignedByte());
+        input.skipBytes(PADDING_IN_MATCH_2);
         List<String> srcGroups = new ArrayList<>();
         for (int i = 0; i < EncodeConstants.GROUPS_IN_IPV4_ADDRESS; i++) {
-            srcGroups.add(Short.toString(rawMessage.readUnsignedByte()));
+            srcGroups.add(Short.toString(input.readUnsignedByte()));
         }
         Joiner joiner = Joiner.on(".");
         builder.setNwSrc(new Ipv4Address(joiner.join(srcGroups)));
         List<String> dstGroups = new ArrayList<>();
         for (int i = 0; i < EncodeConstants.GROUPS_IN_IPV4_ADDRESS; i++) {
-            dstGroups.add(Short.toString(rawMessage.readUnsignedByte()));
+            dstGroups.add(Short.toString(input.readUnsignedByte()));
         }
         builder.setNwDst(new Ipv4Address(joiner.join(dstGroups)));
-        builder.setTpSrc(rawMessage.readUnsignedShort());
-        builder.setTpDst(rawMessage.readUnsignedShort());
+        builder.setTpSrc(input.readUnsignedShort());
+        builder.setTpDst(input.readUnsignedShort());
         return builder.build();
     }
-    
+
     /**
      * Decodes FlowWildcards
      * @param input input ByteBuf
@@ -115,5 +112,4 @@ public abstract class OF10MatchDeserializer {
     public static short decodeNwDstMask(long input) {
         return (short) Math.max(32 - ((input & NW_DST_MASK) >> NW_DST_SHIFT), 0);
     }
-    
 }

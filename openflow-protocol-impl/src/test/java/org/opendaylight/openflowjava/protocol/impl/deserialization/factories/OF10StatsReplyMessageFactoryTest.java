@@ -12,9 +12,15 @@ import io.netty.buffer.ByteBuf;
 import java.math.BigInteger;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidAction;
@@ -41,6 +47,19 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  *
  */
 public class OF10StatsReplyMessageFactoryTest {
+
+    private OFDeserializer<MultipartReplyMessage> statsFactory;
+
+    /**
+     * Initializes deserializer registry and lookups correct deserializer
+     */
+    @Before
+    public void startUp() {
+        DeserializerRegistry registry = new DeserializerRegistryImpl();
+        registry.init();
+        statsFactory = registry.getDeserializer(
+                new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, 17, MultipartReplyMessage.class));
+    }
 
     /**
      * Testing OF10StatsReplyMessageFactory (Desc) for correct deserialization
@@ -81,7 +100,7 @@ public class OF10StatsReplyMessageFactoryTest {
         bb.writeBytes(dpDescBytes);
         ByteBufUtils.padBuffer((DESC_STR_LEN - dpDescBytes.length), bb);
         
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV10(OF10StatsReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(statsFactory, bb);
         
         BufferHelper.checkHeaderV10(builtByFactory);
         Assert.assertEquals("Wrong type", 0, builtByFactory.getType().getIntValue());
@@ -108,8 +127,7 @@ public class OF10StatsReplyMessageFactoryTest {
                 + "FF 01 02 03 04 05 06 07 FF 01 02 03 04 05 06 07 FF 00 00 00 00 00 00 20 "
                 + "00 00 00 08 00 01 00 02 00 01 00 08 00 03 00 00");
         
-        MultipartReplyMessage builtByFactory = 
-                BufferHelper.decodeV10(OF10StatsReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(statsFactory, bb);
 
         BufferHelper.checkHeaderV10(builtByFactory);
         Assert.assertEquals("Wrong type", 0x01, builtByFactory.getType().getIntValue());
@@ -152,8 +170,7 @@ public class OF10StatsReplyMessageFactoryTest {
         ByteBuf bb = BufferHelper.buildBuffer("00 02 00 01 "
                 + "FF 01 02 03 04 05 06 07 FF 00 00 00 00 00 00 20 00 00 00 30 00 00 00 00");
         
-        MultipartReplyMessage builtByFactory = 
-                BufferHelper.decodeV10(OF10StatsReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(statsFactory, bb);
 
         BufferHelper.checkHeaderV10(builtByFactory);
         Assert.assertEquals("Wrong type", 0x02, builtByFactory.getType().getIntValue());
@@ -180,7 +197,7 @@ public class OF10StatsReplyMessageFactoryTest {
                 + "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
                 + "00 00 00 30 00 00 00 10 FF 01 01 01 01 01 01 01 FF 01 01 01 01 01 01 00");
 
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV10(OF10StatsReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(statsFactory, bb);
 
         BufferHelper.checkHeaderV10(builtByFactory);
         Assert.assertEquals("Wrong type", 0x03, builtByFactory.getType().getIntValue());
@@ -219,7 +236,7 @@ public class OF10StatsReplyMessageFactoryTest {
                 + "FF 02 03 02 03 02 03 02 FF 02 03 02 03 02 03 02 FF 02 03 02 03 02 03 02 "
                 + "FF 02 03 02 03 02 03 02 ");
 
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV10(OF10StatsReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(statsFactory, bb);
 
         BufferHelper.checkHeaderV10(builtByFactory);
         Assert.assertEquals("Wrong type", 0x04, builtByFactory.getType().getIntValue());
@@ -277,7 +294,7 @@ public class OF10StatsReplyMessageFactoryTest {
                 + "FF 02 02 02 02 02 02 02 "
                 + "FF 02 03 02 03 02 03 02 ");
 
-        MultipartReplyMessage builtByFactory = BufferHelper.decodeV10(OF10StatsReplyMessageFactory.getInstance(), bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(statsFactory, bb);
 
         BufferHelper.checkHeaderV10(builtByFactory);
         Assert.assertEquals("Wrong type", 0x05, builtByFactory.getType().getIntValue());

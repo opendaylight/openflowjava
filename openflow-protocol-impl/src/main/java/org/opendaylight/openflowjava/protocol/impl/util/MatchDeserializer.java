@@ -13,6 +13,9 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Dscp;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6Address;
@@ -127,7 +130,10 @@ import com.google.common.base.Joiner;
  * @author timotej.kubas
  * @author michal.polkorab
  */
-public abstract class MatchDeserializer {
+public class MatchDeserializer implements OFDeserializer<Match>,
+        DeserializerRegistryInjector {
+
+    private DeserializerRegistry deserializerRegistry;
 
     /**
      * Creates match
@@ -546,5 +552,36 @@ public abstract class MatchDeserializer {
         portBuilder.setPort(new org.opendaylight.yang.gen.v1.urn.ietf.params.
                 xml.ns.yang.ietf.inet.types.rev100924.PortNumber(in.readUnsignedShort()));
         builder.addAugmentation(PortMatchEntry.class, portBuilder.build());
+    }
+
+    @Override
+    public Match deserialize(ByteBuf input) {
+        if (input.readableBytes() > 0) {
+            MatchBuilder builder = new MatchBuilder();
+            int type = input.readUnsignedShort();
+            int length = input.readUnsignedShort();
+            switch (type) {
+            case 0:
+                builder.setType(StandardMatchType.class);
+                break;
+            case 1:
+                builder.setType(OxmMatchType.class);
+                break;
+            default:
+                break;
+            }
+            builder.setMatchEntries(createMatchEntries(input, length - 2 * (EncodeConstants.SIZE_OF_SHORT_IN_BYTES)));
+            int paddingRemainder = length % EncodeConstants.PADDING;
+            if (paddingRemainder != 0) {
+                input.skipBytes(EncodeConstants.PADDING - paddingRemainder);
+            }
+            return builder.build();
+        }
+        return null;
+    }
+
+    @Override
+    public void injectDeserializerRegistry(DeserializerRegistry registry) {
+        this.deserializerRegistry = registry;
     }
 }

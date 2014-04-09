@@ -12,7 +12,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.math.BigInteger;
 
-import org.opendaylight.openflowjava.protocol.impl.deserialization.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.Capabilities;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesOutput;
@@ -24,29 +24,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author timotej.kubas
  */
 public class FeaturesReplyMessageFactory implements OFDeserializer<GetFeaturesOutput>{
-    
-    private static final byte PADDING_IN_FEATURES_REPLY_HEADER = 2;
-    
-    private static FeaturesReplyMessageFactory instance;
 
-    private FeaturesReplyMessageFactory() {
-        // do nothing, just singleton
-    }
-    
-    /**
-     * @return singleton factory
-     */
-    public static synchronized FeaturesReplyMessageFactory getInstance() {
-        if (instance == null) {
-            instance = new FeaturesReplyMessageFactory();
-        }
-        return instance;
-    }
-    
+    private static final byte PADDING_IN_FEATURES_REPLY_HEADER = 2;
+
     @Override
-    public GetFeaturesOutput bufferToMessage(ByteBuf rawMessage, short version) {
+    public GetFeaturesOutput deserialize(ByteBuf rawMessage) {
         GetFeaturesOutputBuilder builder = new GetFeaturesOutputBuilder();
-        builder.setVersion(version);
+        builder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
         builder.setXid(rawMessage.readUnsignedInt());
         byte[] datapathId = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         rawMessage.readBytes(datapathId);
