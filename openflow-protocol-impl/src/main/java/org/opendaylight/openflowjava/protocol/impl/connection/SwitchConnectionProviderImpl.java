@@ -9,11 +9,6 @@
 
 package org.opendaylight.openflowjava.protocol.impl.connection;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Future;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
@@ -24,7 +19,6 @@ import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionPro
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
@@ -38,22 +32,12 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(SwitchConnectionProviderImpl.class);
     private SwitchConnectionHandler switchConnectionHandler;
-    private Set<ServerFacade> serverLot;
+    private ServerFacade serverFacade;
+    private ConnectionConfiguration connConfig;
 
     @Override
-    public void configure(Collection<ConnectionConfiguration> connConfigs) {
-        LOGGER.debug("Configuring ..");
-
-        //TODO - configure servers according to configuration
-        serverLot = new HashSet<>();
-        for (ConnectionConfiguration connConfig : connConfigs) {
-            TcpHandler server = new TcpHandler(connConfig.getAddress(), connConfig.getPort());
-            server.setSwitchConnectionHandler(switchConnectionHandler);
-            server.setSwitchIdleTimeout(connConfig.getSwitchIdleTimeout());
-            boolean tlsSupported = FEATURE_SUPPORT.REQUIRED.equals(connConfig.getTlsSupport());
-            server.setEncryption(tlsSupported);
-            serverLot.add(server);
-        }
+    public void setConfiguration(ConnectionConfiguration connConfig) {
+        this.connConfig = connConfig;
     }
 
     @Override
@@ -63,68 +47,63 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     }
 
     @Override
-    public Future<List<Boolean>> shutdown() {
+    public ListenableFuture<Boolean> shutdown() {
         LOGGER.debug("Shutdown summoned");
-        ListenableFuture<List<Boolean>> result = SettableFuture.create();
-        try {
-            List<ListenableFuture<Boolean>> shutdownChain = new ArrayList<>();
-            for (ServerFacade server : serverLot) {
-                ListenableFuture<Boolean> shutdownFuture = server.shutdown();
-                shutdownChain.add(shutdownFuture);
-            }
-            if (!shutdownChain.isEmpty()) {
-                result = Futures.allAsList(shutdownChain);
-            } else {
-                throw new IllegalStateException("No servers configured");
-            }
-        } catch (Exception e) {
-            SettableFuture<List<Boolean>> exFuture = SettableFuture.create();
-            exFuture.setException(e);
-            result = exFuture;
-        }
+        //TODO: provide exception in case of: not started, not configured (already stopped)
+        ListenableFuture<Boolean> result = serverFacade.shutdown();
         return result;
     }
 
     @Override
-    public Future<List<Boolean>> startup() {
-        LOGGER.debug("startup summoned");
-        ListenableFuture<List<Boolean>> result = SettableFuture.create();
+    public ListenableFuture<Boolean> startup() {
+        LOGGER.debug("Startup summoned");
+        serverFacade = createAndConfigureServer();
+        
+        LOGGER.debug("Starting ..");
+        ListenableFuture<Boolean> result = null;
         try {
-            if (serverLot.isEmpty()) {
-                throw new IllegalStateException("No servers configured");
+            if (serverFacade == null) {
+                throw new IllegalStateException("No server configured");
             }
-            for (ServerFacade server : serverLot) {
-                if (server.getIsOnlineFuture().isDone()) {
-                    throw new IllegalStateException("Servers already running");
-                }
+            if (serverFacade.getIsOnlineFuture().isDone()) {
+                throw new IllegalStateException("Server already running");
             }
             if (switchConnectionHandler == null) {
                 throw new IllegalStateException("switchConnectionHandler is not set");
             }
-            List<ListenableFuture<Boolean>> starterChain = new ArrayList<>();
-            for (ServerFacade server : serverLot) {
-                new Thread(server).start();
-                ListenableFuture<Boolean> isOnlineFuture = server.getIsOnlineFuture();
-                starterChain.add(isOnlineFuture);
-            }
-            if (!starterChain.isEmpty()) {
-                result = Futures.allAsList(starterChain);
-            } else {
-                throw new IllegalStateException("No servers configured");
-            }
+            new Thread(serverFacade).start();
+            result = serverFacade.getIsOnlineFuture();
         } catch (Exception e) {
-            SettableFuture<List<Boolean>> exFuture = SettableFuture.create();
-            exFuture.setException(e);
-            result = exFuture;
+            SettableFuture<Boolean> exResult = SettableFuture.create();
+            exResult.setException(e);
+            result = exResult;
         }
         return result;
     }
 
     /**
-     * @return servers
+     * @return
      */
-    public Set<ServerFacade> getServerLot() {
-        return serverLot;
+    private TcpHandler createAndConfigureServer() {
+        LOGGER.debug("Configuring ..");
+        TcpHandler server = new TcpHandler(connConfig.getAddress(), connConfig.getPort());
+        server.setSwitchConnectionHandler(switchConnectionHandler);
+        server.setSwitchIdleTimeout(connConfig.getSwitchIdleTimeout());
+        boolean tlsSupported = FEATURE_SUPPORT.REQUIRED.equals(connConfig.getTlsSupport());
+        server.setEncryption(tlsSupported);
+        
+        return server;
     }
 
+    /**
+     * @return servers
+     */
+    public ServerFacade getServerFacade() {
+        return serverFacade;
+    }
+
+    @Override
+    public void close() throws Exception {
+        shutdown();
+    }
 }
