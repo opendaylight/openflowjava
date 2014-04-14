@@ -48,7 +48,7 @@ public class IntegrationTest {
     private InetAddress startupAddress;
     private MockPlugin mockPlugin;
     private SwitchConnectionProviderImpl scpimpl;
-    private List<ConnectionConfiguration> configs;
+    private TestingConnConfigImpl configs;
 
     /**
      * @throws Exception
@@ -60,11 +60,10 @@ public class IntegrationTest {
         mockPlugin = new MockPlugin();
         scpimpl = new SwitchConnectionProviderImpl();
         scpimpl.setSwitchConnectionHandler(mockPlugin);
-        configs = new ArrayList<>();
-        configs.add(new TestingConnConfigImpl(startupAddress, 0, DEFAULT_TLS_SUPPORT, SWITCH_IDLE_TIMEOUT));
-        scpimpl.configure(configs);
+        configs = new TestingConnConfigImpl(startupAddress, 0, DEFAULT_TLS_SUPPORT, SWITCH_IDLE_TIMEOUT);
+        scpimpl.setConfiguration(configs);
         scpimpl.startup().get(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
-        TcpHandler server = (TcpHandler) scpimpl.getServerLot().iterator().next();
+        TcpHandler server = (TcpHandler) scpimpl.getServerFacade();
         port = server.getPort();
     }
 

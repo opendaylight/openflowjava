@@ -1,0 +1,50 @@
+module openflow-switch-connection-provider-impl {
+	yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:openflow:switch:connection:provider:impl";
+    prefix "openflow-switch-connection-provider-impl";
+
+    import config {prefix config; revision-date 2013-04-05; }
+    import openflow-switch-connection-provider {prefix openflow-switch-connection-provider;}
+    import ietf-inet-types {prefix ietf-inet; revision-date 2010-09-24; }
+
+    description
+        "openflow-switch-connection-provider";
+
+    revision "2014-03-28" {
+        description
+            "Initial revision";
+    }
+
+    identity openflow-switch-connection-provider-impl {
+        base "config:module-type";
+        config:provided-service openflow-switch-connection-provider:openflow-switch-connection-provider;
+        config:java-name-prefix SwitchConnectionProvider;
+    }
+
+
+    augment "/config:modules/config:module/config:configuration" {
+        case openflow-switch-connection-provider-impl {
+            when "/config:modules/config:module/config:type = 'openflow-switch-connection-provider-impl'";
+
+            leaf port {
+                description "local listening port";
+                type uint16;
+                mandatory true;
+            }
+            leaf address {
+                description "address of local listening interface";
+                type ietf-inet:ip-address;
+            }
+            leaf switch-idle-timeout {
+                description "idle timeout in [ms]";
+                type uint32;
+                mandatory true;
+            }
+            leaf tls-support {
+                description "tls support enabled (requires SSL-context / keystore)";
+                type boolean;
+                default false;
+            }
+        }
+    }
+}
