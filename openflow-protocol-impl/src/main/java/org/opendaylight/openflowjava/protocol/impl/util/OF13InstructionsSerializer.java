@@ -15,7 +15,7 @@ import java.util.List;
 import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.RegistryInjector;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionsInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterInstruction;
@@ -39,7 +39,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
  * @author timotej.kubas
  */
 public class OF13InstructionsSerializer implements OFSerializer<Instruction>,
-        HeaderSerializer<Instruction>, RegistryInjector {
+        HeaderSerializer<Instruction>, SerializerRegistryInjector {
 
     private static final byte GOTO_TABLE_TYPE = 1;
     private static final byte WRITE_METADATA_TYPE = 2;

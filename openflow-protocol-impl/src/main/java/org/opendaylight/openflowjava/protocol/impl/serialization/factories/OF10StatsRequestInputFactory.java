@@ -15,7 +15,7 @@ import java.util.Map;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.RegistryInjector;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
@@ -41,7 +41,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * Translates StatsRequest messages
  * @author michal.polkorab
  */
-public class OF10StatsRequestInputFactory implements OFSerializer<MultipartRequestInput>, RegistryInjector {
+public class OF10StatsRequestInputFactory implements OFSerializer<MultipartRequestInput>, SerializerRegistryInjector {
 
     private static final byte MESSAGE_TYPE = 16;
     private static final byte FLOW_BODY_LENGTH = 44;

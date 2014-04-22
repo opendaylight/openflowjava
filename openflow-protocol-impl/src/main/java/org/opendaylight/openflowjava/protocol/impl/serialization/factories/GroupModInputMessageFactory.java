@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.RegistryInjector;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.CodingUtils;
@@ -28,7 +28,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author timotej.kubas
  * @author michal.polkorab
  */
-public class GroupModInputMessageFactory implements OFSerializer<GroupModInput>, RegistryInjector {
+public class GroupModInputMessageFactory implements OFSerializer<GroupModInput>, SerializerRegistryInjector {
     private static final byte MESSAGE_TYPE = 15;
     private static final byte PADDING_IN_GROUP_MOD_MESSAGE = 1;
     private static final byte PADDING_IN_BUCKET = 4;

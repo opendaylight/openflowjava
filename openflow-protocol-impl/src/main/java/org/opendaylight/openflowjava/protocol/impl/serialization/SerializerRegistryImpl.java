@@ -13,9 +13,8 @@ import java.util.Map;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralSerializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.RegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.EnhancedMessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.OF10ActionsSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.OF10MatchSerializer;
@@ -66,11 +65,6 @@ public class SerializerRegistryImpl implements SerializerRegistry {
             MessageTypeKey<KEY_TYPE> msgTypeKey) {
         OFGeneralSerializer serializer = registry.get(msgTypeKey);
         if (serializer == null) {
-            if (msgTypeKey instanceof EnhancedMessageTypeKey) {
-                EnhancedMessageTypeKey<KEY_TYPE, ?> key =  (EnhancedMessageTypeKey<KEY_TYPE, ?>) msgTypeKey;
-                throw new NullPointerException("Serializer for key: " + key.toString()
-                        + " was not found");
-            }
             throw new NullPointerException("Serializer for key: " + msgTypeKey.toString()
                     + " was not found");
         }
@@ -83,8 +77,8 @@ public class SerializerRegistryImpl implements SerializerRegistry {
         if ((msgTypeKey == null) || (serializer == null)) {
             throw new NullPointerException("MessageTypeKey or Serializer is null");
         }
-        if (serializer instanceof RegistryInjector) {
-            ((RegistryInjector) serializer).injectSerializerRegistry(this);
+        if (serializer instanceof SerializerRegistryInjector) {
+            ((SerializerRegistryInjector) serializer).injectSerializerRegistry(this);
         }
         registry.put(msgTypeKey, serializer);
     }

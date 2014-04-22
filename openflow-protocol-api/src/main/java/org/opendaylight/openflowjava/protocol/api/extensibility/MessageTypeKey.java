@@ -30,20 +30,6 @@ public class MessageTypeKey<E> {
         this.msgVersion = msgVersion;
     }
     
-    /**
-     * @return msgVersion
-     */
-    public short getMsgVersion() {
-        return msgVersion;
-    }
-
-    /**
-     * @return the msgType
-     */
-    public Class<E> getMsgType() {
-        return msgType;
-    }
-
     @Override
     public String toString() {
         return "msgVersion: " + msgVersion + " msgType: " + msgType.getName();
@@ -53,7 +39,7 @@ public class MessageTypeKey<E> {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + msgVersion;
+        result = prime * result + ((msgType == null) ? 0 : msgType.getName().hashCode());
         return result;
     }
 
@@ -69,7 +55,7 @@ public class MessageTypeKey<E> {
         if (msgType == null) {
             if (other.msgType != null)
                 return false;
-        } else if (!other.msgType.isAssignableFrom(msgType))
+        } else if (!other.msgType.getName().equals(msgType.getName()))
             return false;
         if (msgVersion != other.msgVersion)
             return false;

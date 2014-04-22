@@ -31,7 +31,7 @@ public class SerializationFactory {
      */
     public void messageToBuffer(short version, ByteBuf out, DataObject message) {
         OFSerializer<DataObject> serializer = registry.getSerializer(
-                new MessageTypeKey<>(version, message.getClass()));
+                new MessageTypeKey<>(version, message.getImplementedInterface()));
         if (serializer != null) {
             serializer.serialize(message, out);
         }

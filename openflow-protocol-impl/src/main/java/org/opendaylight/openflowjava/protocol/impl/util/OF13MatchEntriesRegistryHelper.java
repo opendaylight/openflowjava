@@ -7,9 +7,9 @@
  */
 package org.opendaylight.openflowjava.protocol.impl.util;
 
+import org.opendaylight.openflowjava.protocol.api.extensibility.EnhancedMessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.EnhancedMessageTypeKey;
 
 /**
  * @author michal.polkorab

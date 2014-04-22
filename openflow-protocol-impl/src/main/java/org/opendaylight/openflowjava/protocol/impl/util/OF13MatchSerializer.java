@@ -12,10 +12,10 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.List;
 
+import org.opendaylight.openflowjava.protocol.api.extensibility.EnhancedMessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.RegistryInjector;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.EnhancedMessageTypeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.StandardMatchType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmMatchType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * @author michal.polkorab
  * @author timotej.kubas
  */
-public class OF13MatchSerializer implements OFSerializer<Match>, RegistryInjector {
+public class OF13MatchSerializer implements OFSerializer<Match>, SerializerRegistryInjector {
     private static final Logger LOGGER = LoggerFactory.getLogger(OF13MatchSerializer.class);
     private static final byte STANDARD_MATCH_TYPE_CODE = 0;
     private static final byte OXM_MATCH_TYPE_CODE = 1;

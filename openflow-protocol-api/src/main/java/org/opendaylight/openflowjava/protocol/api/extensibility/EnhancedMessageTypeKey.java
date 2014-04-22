@@ -5,10 +5,8 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.openflowjava.protocol.impl.deserialization;
+package org.opendaylight.openflowjava.protocol.api.extensibility;
 
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
-import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 
 /**
  * More specific key for {@link SerializerRegistry}
@@ -30,13 +28,6 @@ public class EnhancedMessageTypeKey<E, F> extends MessageTypeKey<E> {
         this.msgType2 = msgType2;
     }
 
-    /**
-     * @return more specific type
-     */
-    public Class<F> getMsgType2() {
-        return msgType2;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -50,7 +41,7 @@ public class EnhancedMessageTypeKey<E, F> extends MessageTypeKey<E> {
         if (msgType2 == null) {
             if (other.msgType2 != null)
                 return false;
-        } else if (!msgType2.equals(other.msgType2))
+        } else if (!msgType2.getName().equals(other.msgType2.getName()))
             return false;
         return true;
     }

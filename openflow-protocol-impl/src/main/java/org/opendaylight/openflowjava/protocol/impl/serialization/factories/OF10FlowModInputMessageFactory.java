@@ -15,7 +15,7 @@ import java.util.Map;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.RegistryInjector;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.CodingUtils;
@@ -29,7 +29,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * Translates FlowMod messages
  * @author michal.polkorab
  */
-public class OF10FlowModInputMessageFactory implements OFSerializer<FlowModInput>, RegistryInjector {
+public class OF10FlowModInputMessageFactory implements OFSerializer<FlowModInput>, SerializerRegistryInjector {
 
     private static final byte MESSAGE_TYPE = 14;
     private SerializerRegistry registry;

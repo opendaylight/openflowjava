@@ -12,7 +12,7 @@ import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.RegistryInjector;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.DlAddressAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterAction;
@@ -42,7 +42,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
  * Serializes ofp_action (OpenFlow v1.0) structures
  * @author michal.polkorab
  */
-public class OF10ActionsSerializer implements OFSerializer<Action>, RegistryInjector {
+public class OF10ActionsSerializer implements OFSerializer<Action>, SerializerRegistryInjector {
     
     private static final byte OUTPUT_CODE = 0;
     private static final byte SET_VLAN_VID_CODE = 1;

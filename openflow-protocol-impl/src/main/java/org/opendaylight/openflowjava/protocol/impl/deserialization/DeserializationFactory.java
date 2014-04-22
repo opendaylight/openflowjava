@@ -33,7 +33,7 @@ public class DeserializationFactory {
      */
     public DeserializationFactory() {
         messageClassMap = new HashMap<>();
-        initTypeToClassMapping();
+        TypeToClassMapInitializer.initializeTypeToClassMap(messageClassMap);
     }
 
     /**
@@ -62,7 +62,4 @@ public class DeserializationFactory {
         this.registry = registry;
     }
 
-    private void initTypeToClassMapping() {
-        TypeToClassMapInitializer.initializeTypeToClassMap(messageClassMap);
-    }
 }
