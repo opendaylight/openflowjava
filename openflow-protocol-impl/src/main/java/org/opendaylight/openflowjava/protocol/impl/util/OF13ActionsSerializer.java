@@ -14,8 +14,8 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.EnhancedMessageT
 import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthertypeAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.GroupIdAction;
@@ -236,9 +236,16 @@ public class OF13ActionsSerializer implements OFSerializer<Action>,
     }
 
     private void encodeExperimenterAction(Action action, ByteBuf outBuffer) {
+    	int actionStartIndex = outBuffer.writerIndex();
+    	outBuffer.writeShort(EncodeConstants.EXPERIMENTER_VALUE);
+    	int actionLengthIndex = outBuffer.writerIndex();
+    	outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
+    	ExperimenterAction expAction = action.getAugmentation(ExperimenterAction.class);
+    	outBuffer.writeInt(expAction.getExperimenter().intValue());
         OFSerializer<ExperimenterAction> serializer = registry.getSerializer(
-                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, Experimenter.class));
-        serializer.serialize((ExperimenterAction) action, outBuffer);
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, ExperimenterAction.class));
+        serializer.serialize(expAction, outBuffer);
+        outBuffer.setShort(actionLengthIndex, outBuffer.writerIndex() - actionStartIndex);
     }
     
     private static void encodeRestOfActionHeader(ByteBuf outBuffer) {
@@ -293,9 +300,10 @@ public class OF13ActionsSerializer implements OFSerializer<Action>,
         } else if (action.getType().isAssignableFrom(PopPbb.class)) {
             writeTypeAndLength(outBuffer, POP_PBB_CODE, ACTION_IDS_LENGTH);
         } else if (action.getType().isAssignableFrom(Experimenter.class)) {
-            HeaderSerializer<ExperimenterAction> serializer = registry.getSerializer(
-                    new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, Experimenter.class));
-            serializer.serializeHeader((ExperimenterAction) action, outBuffer);
+        	writeTypeAndLength(outBuffer, EncodeConstants.EXPERIMENTER_VALUE,
+        			EncodeConstants.EXPERIMENTER_IDS_LENGTH);
+        	ExperimenterAction experimenter = action.getAugmentation(ExperimenterAction.class);
+        	outBuffer.writeInt(experimenter.getExperimenter().intValue());
         }
     }
 

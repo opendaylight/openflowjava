@@ -18,13 +18,12 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.EnhancedMessageT
 import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.CodingUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeatureProperty;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.NextTableRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OxmRelatedTableFeatureProperty;
@@ -41,6 +40,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.MultipartRequestBody;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestAggregateCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestDescCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenterCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestFlowCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestGroupCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestGroupDescCase;
@@ -54,6 +54,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestTableCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestTableFeaturesCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.aggregate._case.MultipartRequestAggregate;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.experimenter._case.MultipartRequestExperimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.flow._case.MultipartRequestFlow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.group._case.MultipartRequestGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.meter._case.MultipartRequestMeter;
@@ -87,8 +88,6 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
     private static final byte WRITE_SETFIELD_MISS_CODE = 13;
     private static final byte APPLY_SETFIELD_CODE = 14;
     private static final byte APPLY_SETFIELD_MISS_CODE = 15;
-    private static final int EXPERIMENTER_CODE = 65534; // 0xFFFE
-    private static final int EXPERIMENTER_MISS_CODE = 65535; // 0xFFFF
     private static final byte STRUCTURE_HEADER_LENGTH = 4;
     private static final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_01 = 3;
     private static final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_02 = 4;
@@ -136,9 +135,21 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
             serializeTableFeaturesBody(message.getMultipartRequestBody(), outBuffer);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestPortDescCase) {
             serializePortDescBody(message.getMultipartRequestBody(), outBuffer);
+        } else if (message.getMultipartRequestBody() instanceof MultipartRequestExperimenterCase) {
+        	serializeExperimenterBody(message, outBuffer);
         }
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
+
+	private void serializeExperimenterBody(MultipartRequestInput message,
+			ByteBuf outBuffer) {
+		MultipartRequestExperimenterCase expCase =
+				(MultipartRequestExperimenterCase) message.getMultipartRequestBody();
+		MultipartRequestExperimenter experimenter = expCase.getMultipartRequestExperimenter();
+		OFSerializer<MultipartRequestExperimenter> serializer = registry.getSerializer(
+				new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, MultipartRequestExperimenter.class));
+		serializer.serialize(experimenter, outBuffer);
+	}
 
     private static int createMultipartRequestFlagsBitmask(MultipartRequestFlags flags) {
         int multipartRequestFlagsBitmask = 0;
@@ -324,9 +335,9 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTAPPLYSETFIELDMISS)) {
                     writeOxmRelatedTableProperty(output, property, APPLY_SETFIELD_MISS_CODE);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTEXPERIMENTER)) {
-                    writeExperimenterRelatedTableProperty(output, property, EXPERIMENTER_CODE);
+                    writeExperimenterRelatedTableProperty(output, property);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTEXPERIMENTERMISS)) {
-                    writeExperimenterRelatedTableProperty(output, property, EXPERIMENTER_MISS_CODE);
+                    writeExperimenterRelatedTableProperty(output, property);
                 }
             }
         }
@@ -443,27 +454,11 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         ByteBufUtils.padBuffer(padding, output);
     }
 
-    private static void writeExperimenterRelatedTableProperty(ByteBuf output,
-            TableFeatureProperties property, int code) {
-        output.writeShort(code);
-        ExperimenterRelatedTableFeatureProperty exp = property.
-                getAugmentation(ExperimenterRelatedTableFeatureProperty.class);
-        byte[] data = exp.getData();
-        int length = TABLE_FEAT_HEADER_LENGTH + 2 * (EncodeConstants.SIZE_OF_INT_IN_BYTES);
-        int padding = 0;
-        if (data != null) {
-            output.writeShort(length + data.length);
-            padding = paddingNeeded(length + data.length);
-            output.writeInt(exp.getExperimenter().intValue());
-            output.writeInt(exp.getExpType().intValue());
-            output.writeBytes(data);
-        } else {
-            output.writeShort(length);
-            padding = paddingNeeded(length);
-            output.writeInt(exp.getExperimenter().intValue());
-            output.writeInt(exp.getExpType().intValue());
-        }
-        ByteBufUtils.padBuffer(padding, output);
+    private void writeExperimenterRelatedTableProperty(ByteBuf output,
+            TableFeatureProperties property) {
+    	OFSerializer<TableFeatureProperties> serializer = registry.getSerializer(
+    			new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, TableFeatureProperties.class));
+    	serializer.serialize(property, output);
     }
 
     private static int createTableConfigBitmask(TableConfig tableConfig) {

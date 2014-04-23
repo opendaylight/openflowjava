@@ -29,11 +29,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.matc
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestDescCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenterCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestFlowCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestPortStatsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestQueueCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestTableCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.desc._case.MultipartRequestDescBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.experimenter._case.MultipartRequestExperimenterBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.flow._case.MultipartRequestFlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.port.stats._case.MultipartRequestPortStatsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.queue._case.MultipartRequestQueueBuilder;
@@ -145,7 +147,7 @@ public class OF10StatsRequestInputFactoryTest {
         Assert.assertEquals("Wrong nw-dst", 167772162, out.readUnsignedInt());
         Assert.assertEquals("Wrong tp-src", 57, out.readUnsignedShort());
         Assert.assertEquals("Wrong tp-dst", 58, out.readUnsignedShort());
-        Assert.assertEquals("Wrong registry-id", 1, out.readUnsignedByte());
+        Assert.assertEquals("Wrong table-id", 1, out.readUnsignedByte());
         out.skipBytes(1);
         Assert.assertEquals("Wrong out-port", 42, out.readUnsignedShort());
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
@@ -212,7 +214,7 @@ public class OF10StatsRequestInputFactoryTest {
         Assert.assertEquals("Wrong nw-dst", 167772162, out.readUnsignedInt());
         Assert.assertEquals("Wrong tp-src", 57, out.readUnsignedShort());
         Assert.assertEquals("Wrong tp-dst", 58, out.readUnsignedShort());
-        Assert.assertEquals("Wrong registry-id", 42, out.readUnsignedByte());
+        Assert.assertEquals("Wrong table-id", 42, out.readUnsignedByte());
         out.skipBytes(1);
         Assert.assertEquals("Wrong out-port", 6653, out.readUnsignedShort());
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
@@ -298,6 +300,65 @@ public class OF10StatsRequestInputFactoryTest {
         Assert.assertEquals("Wrong port-no", 15, out.readUnsignedShort());
         out.skipBytes(2);
         Assert.assertEquals("Wrong queue-id", 16, out.readUnsignedInt());
+        Assert.assertTrue("Unread data", out.readableBytes() == 0);
+    }
+    
+    /**
+     * Testing OF10StatsRequestInputFactory (Vendor) for correct serialization
+     * @throws Exception
+     */
+    @Test
+    public void testExperimenter() throws Exception {
+        MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
+        BufferHelper.setupHeader(builder, EncodeConstants.OF10_VERSION_ID);
+        builder.setType(MultipartType.OFPMPEXPERIMENTER);
+        builder.setFlags(new MultipartRequestFlags(false));
+        MultipartRequestExperimenterCaseBuilder caseBuilder = new MultipartRequestExperimenterCaseBuilder();
+        MultipartRequestExperimenterBuilder expBuilder = new MultipartRequestExperimenterBuilder();
+        expBuilder.setExperimenter(56L);
+        byte[] expData = new byte[]{0, 1, 2, 3, 4, 5, 6, 7};
+        expBuilder.setData(expData);
+        caseBuilder.setMultipartRequestExperimenter(expBuilder.build());
+        builder.setMultipartRequestBody(caseBuilder.build());
+        MultipartRequestInput message = builder.build();
+        
+        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+        multipartFactory.serialize(message, out);
+        
+        BufferHelper.checkHeaderV10(out, (byte) 16, 24);
+        Assert.assertEquals("Wrong type", 0xFFFF, out.readUnsignedShort());
+        Assert.assertEquals("Wrong flags", 0, out.readUnsignedShort());
+        Assert.assertEquals("Wrong experimenter", 56, out.readUnsignedInt());
+        byte[] temp = new byte[8];
+        out.readBytes(temp);
+        Assert.assertArrayEquals("Wrong data", expData, temp);
+        Assert.assertTrue("Unread data", out.readableBytes() == 0);
+    }
+
+    /**
+     * Testing OF10StatsRequestInputFactory (Vendor) for correct serialization
+     * @throws Exception
+     */
+    @Test
+    public void testExperimenterWithoutData() throws Exception {
+        MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
+        BufferHelper.setupHeader(builder, EncodeConstants.OF10_VERSION_ID);
+        builder.setType(MultipartType.OFPMPEXPERIMENTER);
+        builder.setFlags(new MultipartRequestFlags(false));
+        MultipartRequestExperimenterCaseBuilder caseBuilder = new MultipartRequestExperimenterCaseBuilder();
+        MultipartRequestExperimenterBuilder expBuilder = new MultipartRequestExperimenterBuilder();
+        expBuilder.setExperimenter(56L);
+        caseBuilder.setMultipartRequestExperimenter(expBuilder.build());
+        builder.setMultipartRequestBody(caseBuilder.build());
+        MultipartRequestInput message = builder.build();
+        
+        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+        multipartFactory.serialize(message, out);
+        
+        BufferHelper.checkHeaderV10(out, (byte) 16, 16);
+        Assert.assertEquals("Wrong type", 0xFFFF, out.readUnsignedShort());
+        Assert.assertEquals("Wrong flags", 0, out.readUnsignedShort());
+        Assert.assertEquals("Wrong experimenter", 56, out.readUnsignedInt());
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
     }
 }

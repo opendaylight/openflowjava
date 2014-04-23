@@ -49,6 +49,8 @@ public abstract class EncodeConstants {
 
     /** Empty (zero) int value */
     public static final int EMPTY_VALUE = 0;
+    /** Common experimenter value */
+    public static final int EXPERIMENTER_VALUE = 0xFFFF;
 
 
     /** OF v1.0 maximal port name length */

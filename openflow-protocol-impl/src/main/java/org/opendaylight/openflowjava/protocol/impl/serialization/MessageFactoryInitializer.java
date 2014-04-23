@@ -80,7 +80,7 @@ public class MessageFactoryInitializer {
         registryHelper.registerSerializer(PacketOutInput.class, new OF10PacketOutInputMessageFactory());
         registryHelper.registerSerializer(PortModInput.class, new OF10PortModInputMessageFactory());
         registryHelper.registerSerializer(SetConfigInput.class, new SetConfigMessageFactory());
-        // register OF v1.0 message serializers
+        // register OF v1.3 message serializers
         version = EncodeConstants.OF13_VERSION_ID;
         registryHelper = new CommonMessageRegistryHelper(version, serializerRegistry);
         registryHelper.registerSerializer(BarrierInput.class, new BarrierInputMessageFactory());
