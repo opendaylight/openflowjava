@@ -107,9 +107,17 @@ public class OF13InstructionsSerializer implements OFSerializer<Instruction>,
             writeTypeAndLength(outBuffer, METER_TYPE, METER_LENGTH);
             outBuffer.writeInt(instruction.getAugmentation(MeterIdInstruction.class).getMeterId().intValue());
         } else if (type.isAssignableFrom(Experimenter.class)) {
+        	int startIndex = outBuffer.writerIndex();
+        	outBuffer.writeShort(EncodeConstants.EXPERIMENTER_VALUE);
+        	int lengthIndex = outBuffer.writerIndex();
+        	outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
+        	ExperimenterInstruction expInstruction =
+        			instruction.getAugmentation(ExperimenterInstruction.class);
+        	outBuffer.writeInt(expInstruction.getExperimenter().intValue());
             OFSerializer<ExperimenterInstruction> serializer = registry.getSerializer(new MessageTypeKey<>(
-                    EncodeConstants.OF13_VERSION_ID, Experimenter.class));
-            serializer.serialize((ExperimenterInstruction) instruction, outBuffer);
+                    EncodeConstants.OF13_VERSION_ID, ExperimenterInstruction.class));
+            serializer.serialize(expInstruction, outBuffer);
+            outBuffer.setShort(lengthIndex, outBuffer.writerIndex() - startIndex);
         }
     }
 
@@ -134,9 +142,11 @@ public class OF13InstructionsSerializer implements OFSerializer<Instruction>,
         } else if (type.isAssignableFrom(Meter.class)) {
             writeTypeAndLength(outBuffer, METER_TYPE, INSTRUCTION_IDS_LENGTH);
         } else if (type.isAssignableFrom(Experimenter.class)) {
-            HeaderSerializer<ExperimenterInstruction> serializer = registry.getSerializer(new MessageTypeKey<>(
-                    EncodeConstants.OF13_VERSION_ID, Experimenter.class));
-            serializer.serializeHeader((ExperimenterInstruction) instruction, outBuffer);
+        	writeTypeAndLength(outBuffer, EncodeConstants.EXPERIMENTER_VALUE,
+        			EncodeConstants.EXPERIMENTER_IDS_LENGTH);
+        	ExperimenterInstruction experimenter = 
+        			instruction.getAugmentation(ExperimenterInstruction.class);
+        	outBuffer.writeInt(experimenter.getExperimenter().intValue());
         }
     }
 

@@ -183,9 +183,16 @@ public class OF10ActionsSerializer implements OFSerializer<Action>, SerializerRe
     }
 
     private void encodeExperimenterAction(Action action, ByteBuf outBuffer) {
+    	int actionStartIndex = outBuffer.writerIndex();
+    	outBuffer.writeShort(EncodeConstants.EXPERIMENTER_VALUE);
+    	int actionLengthIndex = outBuffer.writerIndex();
+        outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
+        ExperimenterAction expAction = action.getAugmentation(ExperimenterAction.class);
+        outBuffer.writeInt(expAction.getExperimenter().intValue());
         OFSerializer<ExperimenterAction> serializer = registry.getSerializer(
-                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, Experimenter.class));
-        serializer.serialize((ExperimenterAction) action, outBuffer);
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, ExperimenterAction.class));
+        serializer.serialize(expAction, outBuffer);
+        outBuffer.setShort(actionLengthIndex, outBuffer.writerIndex() - actionStartIndex);
     }
 
 }

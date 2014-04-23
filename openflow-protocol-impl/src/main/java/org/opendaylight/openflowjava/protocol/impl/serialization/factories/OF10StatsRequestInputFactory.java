@@ -15,12 +15,11 @@ import java.util.Map;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.v10.grouping.MatchV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.MultipartRequestBody;
@@ -44,11 +43,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class OF10StatsRequestInputFactory implements OFSerializer<MultipartRequestInput>, SerializerRegistryInjector {
 
     private static final byte MESSAGE_TYPE = 16;
-    private static final byte FLOW_BODY_LENGTH = 44;
-    private static final byte AGGREGATE_BODY_LENGTH = 44;
-    private static final byte PORT_STATS_BODY_LENGTH = 8;
-    private static final byte QUEUE_BODY_LENGTH = 8;
-    private static final byte EXPERIMENTER_BODY_LENGTH = 4;
     private static final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY = 1;
     private static final byte PADDING_IN_MULTIPART_REQUEST_AGGREGATE_BODY = 1;
     private static final byte PADDING_IN_MULTIPART_REQUEST_PORT_BODY = 6;
@@ -79,33 +73,6 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
-    /**
-     * 
-     * @param message
-     * @return length of MultipartRequestMessage
-     */
-    public int computeBodyLength(MultipartRequestInput message) {
-        int length = 0;
-        MultipartType type = message.getType();
-        if (type.equals(MultipartType.OFPMPFLOW)) {
-            length += FLOW_BODY_LENGTH;
-        } else if (type.equals(MultipartType.OFPMPAGGREGATE)) {
-            length += AGGREGATE_BODY_LENGTH;
-        } else if (type.equals(MultipartType.OFPMPPORTSTATS)) {
-            length += PORT_STATS_BODY_LENGTH;
-        } else if (type.equals(MultipartType.OFPMPQUEUE)) {
-            length += QUEUE_BODY_LENGTH;
-        } else if (type.equals(MultipartType.OFPMPEXPERIMENTER)) {
-            MultipartRequestExperimenterCase bodyCase = (MultipartRequestExperimenterCase) message.getMultipartRequestBody();
-            MultipartRequestExperimenter body = bodyCase.getMultipartRequestExperimenter();
-            length += EXPERIMENTER_BODY_LENGTH;
-            if (body.getData() != null) {
-                length += body.getData().length;
-            }
-        }
-        return length;
-    }
-    
     private static int createMultipartRequestFlagsBitmask(MultipartRequestFlags flags) {
         int multipartRequestFlagsBitmask = 0;
         Map<Integer, Boolean> multipartRequestFlagsMap = new HashMap<>();
@@ -169,11 +136,12 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
         output.writeInt(queue.getQueueId().intValue());
     }
     
-    private static void serializeExperimenterBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
+    private void serializeExperimenterBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
         MultipartRequestExperimenterCase experimenterCase = (MultipartRequestExperimenterCase) multipartRequestBody;
         MultipartRequestExperimenter experimenter = experimenterCase.getMultipartRequestExperimenter();
-        output.writeInt(experimenter.getExperimenter().intValue());
-        output.writeBytes(experimenter.getData());
+        OFSerializer<MultipartRequestExperimenter> expSerializer = registry.getSerializer(
+        		new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, MultipartRequestExperimenter.class));
+        expSerializer.serialize(experimenter, output);
     }
 
     @Override

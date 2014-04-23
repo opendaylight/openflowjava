@@ -14,7 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterFlags;
@@ -34,11 +37,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author timotej.kubas
  * @author michal.polkorab
  */
-public class MeterModInputMessageFactory implements OFSerializer<MeterModInput> {
+public class MeterModInputMessageFactory implements OFSerializer<MeterModInput>,
+		SerializerRegistryInjector {
+	
     private static final byte MESSAGE_TYPE = 29;
     private static final short LENGTH_OF_METER_BANDS = 16;
     private static final short PADDING_IN_METER_BAND_DROP = 4;
     private static final short PADDING_IN_METER_BAND_DSCP_REMARK = 3;
+	private SerializerRegistry registry;
 
     @Override
     public void serialize(MeterModInput message, ByteBuf outBuffer) {
@@ -62,7 +68,7 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput> 
         return meterFlagBitmask;
     }
     
-    private static void serializeBands(List<Bands> bands, ByteBuf outBuffer) {
+    private void serializeBands(List<Bands> bands, ByteBuf outBuffer) {
         if (bands != null) {
             for (Bands currentBand : bands) {
                 MeterBand meterBand = currentBand.getMeterBand();
@@ -78,10 +84,11 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput> 
                     outBuffer.writeByte(dscpRemarkBand.getPrecLevel());
                     ByteBufUtils.padBuffer(PADDING_IN_METER_BAND_DSCP_REMARK, outBuffer);
                 } else if (meterBand instanceof MeterBandExperimenterCase) {
+                	OFSerializer<MeterBandExperimenter> serializer = registry.getSerializer(
+                			new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, MeterBandExperimenter.class));
                     MeterBandExperimenterCase experimenterBandCase = (MeterBandExperimenterCase) meterBand;
                     MeterBandExperimenter experimenterBand = experimenterBandCase.getMeterBandExperimenter();
-                    writeBandCommonFields(experimenterBand, outBuffer);
-                    outBuffer.writeInt(experimenterBand.getExperimenter().intValue());
+                    serializer.serialize(experimenterBand, outBuffer);
                 }
             }
         }
@@ -93,5 +100,10 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput> 
         outBuffer.writeInt(meterBand.getRate().intValue());
         outBuffer.writeInt(meterBand.getBurstSize().intValue());
     }
+
+	@Override
+	public void injectSerializerRegistry(SerializerRegistry serializerRegistry) {
+		registry = serializerRegistry;
+	}
 
 }

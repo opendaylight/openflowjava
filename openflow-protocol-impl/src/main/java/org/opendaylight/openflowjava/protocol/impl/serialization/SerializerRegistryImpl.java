@@ -53,6 +53,9 @@ public class SerializerRegistryImpl implements SerializerRegistry {
 
         // match entry serializers
         MatchEntriesInitializer.registerMatchEntrySerializers(this);
+        
+        // default vendor / experimenter serializers
+        DefaultExperimenterInitializer.registerDefaultExperimenterSerializers(this);
     }
 
     /**
