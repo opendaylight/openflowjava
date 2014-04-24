@@ -49,7 +49,7 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmUdpSrc
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmVlanPcpSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmVlanVidSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.impl.util.OF13MatchEntriesRegistryHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.EnhancedKeyRegistryHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpOp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpSha;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpSpa;
@@ -105,8 +105,8 @@ public class MatchEntriesInitializer {
     public static void registerMatchEntrySerializers(SerializerRegistry serializerRegistry) {
         // register OF v1.3 OpenflowBasicClass match entry serializers
         Class<OpenflowBasicClass> oxmClass = OpenflowBasicClass.class;
-        OF13MatchEntriesRegistryHelper<OpenflowBasicClass> registryHelper =
-                new OF13MatchEntriesRegistryHelper<>(EncodeConstants.OF13_VERSION_ID, oxmClass, serializerRegistry);
+        EnhancedKeyRegistryHelper<OpenflowBasicClass> registryHelper =
+                new EnhancedKeyRegistryHelper<>(EncodeConstants.OF13_VERSION_ID, oxmClass, serializerRegistry);
         registryHelper.registerSerializer(InPort.class, new OxmInPortSerializer());
         registryHelper.registerSerializer(InPhyPort.class, new OxmInPhyPortSerializer());
         registryHelper.registerSerializer(Metadata.class, new OxmMetadataSerializer());
