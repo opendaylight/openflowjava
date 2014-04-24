@@ -16,8 +16,6 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
-import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
@@ -64,7 +62,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 public class OF10ActionsSerializerTest {
 
     private SerializerRegistry registry;
-    private OFSerializer<Action> actionSerializer;
 
     /**
      * Initializes serializer table and stores correct factory in field
@@ -73,8 +70,6 @@ public class OF10ActionsSerializerTest {
     public void startUp() {
         registry = new SerializerRegistryImpl();
         registry.init();
-        actionSerializer = registry.getSerializer(
-                new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, Action.class));
     }
 
     /**
@@ -174,7 +169,7 @@ public class OF10ActionsSerializerTest {
         actions.add(actionBuilder.build());
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        CodingUtils.serializeList(actions, actionSerializer, out);
+        CodingUtils.serializeActions(actions, registry, out, EncodeConstants.OF10_VERSION_ID);
         
         Assert.assertEquals("Wrong action type", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());

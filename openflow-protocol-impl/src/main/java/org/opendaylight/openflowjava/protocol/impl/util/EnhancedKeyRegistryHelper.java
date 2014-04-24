@@ -15,30 +15,31 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegist
  * @author michal.polkorab
  * @param <T> OXM class
  */
-public class OF13MatchEntriesRegistryHelper<T> {
+public class EnhancedKeyRegistryHelper<T> {
 
     private short version;
-    private Class<T> oxmClass;
+    private Class<T> generalClass;
     private SerializerRegistry serializerRegistry;
 
     /**
      * @param version Openflow wire version
-     * @param oxmClass
+     * @param generalClass
      * @param serializerRegistry
      */
-    public OF13MatchEntriesRegistryHelper(short version, Class<T> oxmClass, SerializerRegistry serializerRegistry) {
+    public EnhancedKeyRegistryHelper(short version, Class<T> generalClass,
+            SerializerRegistry serializerRegistry) {
         this.version = version;
-        this.oxmClass = oxmClass;
+        this.generalClass = generalClass;
         this.serializerRegistry = serializerRegistry;
     }
 
     /**
      * Registers given serializer
-     * @param oxmField
+     * @param specificClass
      * @param serializer
      */
-    public void registerSerializer(Class<?> oxmField, OFGeneralSerializer serializer) {
-        serializerRegistry.registerSerializer(new EnhancedMessageTypeKey<>(version, oxmClass, oxmField),
-            serializer);
+    public void registerSerializer(Class<?> specificClass, OFGeneralSerializer serializer) {
+        serializerRegistry.registerSerializer(new EnhancedMessageTypeKey<>(version,
+                generalClass, specificClass), serializer);
     }
 }

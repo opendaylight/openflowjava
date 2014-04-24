@@ -12,14 +12,12 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.List;
 
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.CodingUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GroupModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.buckets.grouping.BucketsList;
 
@@ -54,9 +52,8 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupModInput>,
                 outBuffer.writeInt(currentBucket.getWatchPort().getValue().intValue());
                 outBuffer.writeInt(currentBucket.getWatchGroup().intValue());
                 ByteBufUtils.padBuffer(PADDING_IN_BUCKET, outBuffer);
-                OFSerializer<Action> actionSerializer = registry.getSerializer(
-                        new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, Action.class));
-                CodingUtils.serializeList(currentBucket.getAction(), actionSerializer, outBuffer);
+                CodingUtils.serializeActions(currentBucket.getAction(), registry,
+                        outBuffer, EncodeConstants.OF13_VERSION_ID);
                 outBuffer.setShort(bucketLengthIndex, outBuffer.writerIndex() - bucketLengthIndex);
             }
         }

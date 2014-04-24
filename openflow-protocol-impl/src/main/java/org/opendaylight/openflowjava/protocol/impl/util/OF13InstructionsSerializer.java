@@ -72,9 +72,8 @@ public class OF13InstructionsSerializer implements OFSerializer<Instruction>,
             int instructionLengthIndex = out.writerIndex();
             out.writeShort(EncodeConstants.EMPTY_LENGTH);
             ByteBufUtils.padBuffer(PADDING_IN_ACTIONS_INSTRUCTION, out);
-            OFSerializer<Action> serializer = registry.getSerializer(
-                    new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, Action.class));
-            CodingUtils.serializeList(actions, serializer, out);
+            CodingUtils.serializeActions(actions, registry,
+                    out, EncodeConstants.OF13_VERSION_ID);
             int instructionLength = out.writerIndex() - instructionStartIndex;
             out.setShort(instructionLengthIndex, instructionLength);
         } else {

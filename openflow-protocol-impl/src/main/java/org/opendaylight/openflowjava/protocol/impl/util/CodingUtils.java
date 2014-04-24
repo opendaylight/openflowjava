@@ -11,8 +11,11 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.List;
 
+import org.opendaylight.openflowjava.protocol.api.extensibility.EnhancedMessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
@@ -31,6 +34,25 @@ public abstract class CodingUtils {
         if (list != null) {
             for (T item : list) {
                 serializer.serialize(item, outBuffer);
+            }
+        }
+    }
+
+    /**
+     * Serializes action list
+     * @param list actions to be serialized
+     * @param outBuffer output buffer
+     * @param version Openflow wire version
+     * @param serializer serializer that can serialize 
+     */
+    public static void serializeActions(List<Action> list,
+            SerializerRegistry registry, ByteBuf outBuffer, short version){
+        if (list != null) {
+            for (Action action : list) {
+                OFSerializer<Action> serializer = registry.getSerializer(
+                        new EnhancedMessageTypeKey<>(version,
+                                Action.class, action.getType()));
+                serializer.serialize(action, outBuffer);
             }
         }
     }

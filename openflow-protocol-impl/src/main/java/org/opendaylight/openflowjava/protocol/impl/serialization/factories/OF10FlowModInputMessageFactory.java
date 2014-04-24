@@ -15,12 +15,11 @@ import java.util.Map;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.CodingUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowModFlagsV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.v10.grouping.MatchV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInput;
@@ -48,9 +47,7 @@ public class OF10FlowModInputMessageFactory implements OFSerializer<FlowModInput
         outBuffer.writeInt(message.getBufferId().intValue());
         outBuffer.writeShort(message.getOutPort().getValue().intValue());
         outBuffer.writeShort(createFlowModFlagsBitmask(message.getFlagsV10()));
-        OFSerializer<Action> actionSerializer = registry.getSerializer(
-                new MessageTypeKey<>(message.getVersion(), Action.class));
-        CodingUtils.serializeList(message.getAction(), actionSerializer, outBuffer);
+        CodingUtils.serializeActions(message.getAction(), registry, outBuffer, EncodeConstants.OF10_VERSION_ID);
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
