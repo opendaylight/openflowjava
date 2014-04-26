@@ -13,9 +13,13 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpS
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpSpaDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpThaDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpTpaDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmBarDstDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmBarSrcDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmEthDstDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmEthSrcDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmEthTypeDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmFooDeserializer;
+//import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmFoobarIdDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmIcmpv4CodeDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmIcmpv4TypeDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmIcmpv6CodeDeserializer;
@@ -47,6 +51,7 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmTunn
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmUdpDstDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmUdpSrcDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmVlanPcpDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmFooDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmVlanVidDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.MatchEntryDeserializerRegistryHelper;
@@ -105,7 +110,11 @@ public class MatchEntryDeserializerInitializer {
         helper.register(OxmMatchConstants.MPLS_TC, new OxmMplsTcDeserializer());
         helper.register(OxmMatchConstants.MPLS_BOS, new OxmMplsBosDeserializer());
         helper.register(OxmMatchConstants.PBB_ISID, new OxmPbbIsidDeserializer());
-        helper.register(OxmMatchConstants.TUNNEL_ID, new OxmTunnelIdDeserializer());
         helper.register(OxmMatchConstants.IPV6_EXTHDR, new OxmIpv6ExtHdrDeserializer());
+        helper.register(OxmMatchConstants.TUNNEL_ID, new OxmTunnelIdDeserializer());
+        helper.register(OxmMatchConstants.FOO, new OxmFooDeserializer());
+        helper.register(OxmMatchConstants.BAR_DST, new OxmBarDstDeserializer());
+        helper.register(OxmMatchConstants.BAR_SRC, new OxmBarSrcDeserializer());
+//        helper.register(OxmMatchConstants.FOOBAR_ID, new OxmFoobarIdDeserializer());
     }
 }

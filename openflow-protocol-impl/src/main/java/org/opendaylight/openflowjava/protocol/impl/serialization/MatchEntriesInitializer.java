@@ -13,9 +13,13 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpSha
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpSpaSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpThaSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpTpaSerializer;
+import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmBarDstSerializer;
+import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmBarSrcSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmEthDstSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmEthSrcSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmEthTypeSerializer;
+import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmFooSerializer;
+//import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmFoobarIdSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmIcmpv4CodeSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmIcmpv4TypeSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmIcmpv6CodeSerializer;
@@ -55,9 +59,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpS
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpSpa;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpTha;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpTpa;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.BarDst;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.BarSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.EthDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.EthSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.EthType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Foo;
+//import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.FoobarId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Icmpv4Code;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Icmpv4Type;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Icmpv6Code;
@@ -147,5 +155,9 @@ public class MatchEntriesInitializer {
         registryHelper.registerSerializer(PbbIsid.class, new OxmPbbIsidSerializer());
         registryHelper.registerSerializer(TunnelId.class, new OxmTunnelIdSerializer());
         registryHelper.registerSerializer(Ipv6Exthdr.class, new OxmIpv6ExtHdrSerializer());
+        registryHelper.registerSerializer(Foo.class, new OxmFooSerializer());
+        registryHelper.registerSerializer(BarDst.class, new OxmBarDstSerializer());
+        registryHelper.registerSerializer(BarSrc.class, new OxmBarSrcSerializer());
+//        registryHelper.registerSerializer(FoobarId.class, new OxmFoobarIdSerializer());
     }
 }

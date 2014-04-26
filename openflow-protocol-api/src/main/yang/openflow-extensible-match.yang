@@ -215,6 +215,33 @@
             description "OXM field for IPv6 Extension Header pseudo-field";
         }
 
+
+
+
+
+
+
+
+        identity foo {
+            base match-field;
+            description "OXM field for Foo";
+        }
+        identity bar-dst {
+            base match-field;
+            description "OXM field for Foo";
+        }
+        identity bar-src {
+            base match-field;
+            description "OXM field for Foo";
+        }
+
+
+
+
+
+
+
+
         container oxm-container {
             uses oxm-fields-grouping;
         }

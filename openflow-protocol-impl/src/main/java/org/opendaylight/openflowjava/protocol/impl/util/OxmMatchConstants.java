@@ -103,4 +103,12 @@ public abstract class OxmMatchConstants {
     public static final int TUNNEL_ID = 38;
     /** IPv6 Extension Header pseudo-field */
     public static final int IPV6_EXTHDR = 39;
+    /** NXM */
+    public static final int FOO = 40;
+    /** NXM */
+    public static final int FOOBAR_ID = 41;
+    /** NXM */
+    public static final int BAR_DST = 42;
+    /** NXM */
+    public static final int BAR_SRC = 43;
 }
