@@ -36,8 +36,6 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF13SetF
 import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF13SetMplsTtlActionSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF13SetNwTtlActionSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF13SetQueueActionSerializer;
-import org.opendaylight.openflowjava.protocol.impl.serialization.experimenters.OF10VendorActionSerializer;
-import org.opendaylight.openflowjava.protocol.impl.serialization.experimenters.OF13ExperimenterActionSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.EnhancedKeyRegistryHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.CopyTtlIn;
@@ -45,7 +43,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.DecMplsTtl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.DecNwTtl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Enqueue;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Group;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Output;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.PopMpls;
@@ -97,7 +94,6 @@ public class ActionsInitializer {
         helper.registerSerializer(SetTpSrc.class, new OF10SetTpSrcActionSerializer());
         helper.registerSerializer(SetTpDst.class, new OF10SetTpDstActionSerializer());
         helper.registerSerializer(Enqueue.class, new OF10EnqueueActionSerializer());
-        helper.registerSerializer(Experimenter.class, new OF10VendorActionSerializer());
         // register OF v1.0 action serializers
         helper = new EnhancedKeyRegistryHelper<>(
                 EncodeConstants.OF13_VERSION_ID, actionClass, serializerRegistry);
@@ -117,6 +113,5 @@ public class ActionsInitializer {
         helper.registerSerializer(SetField.class, new OF13SetFieldActionSerializer());
         helper.registerSerializer(PushPbb.class, new OF13PushPbbActionSerializer());
         helper.registerSerializer(PopPbb.class, new OF13PopPbbActionSerializer());
-        helper.registerSerializer(Experimenter.class, new OF13ExperimenterActionSerializer());
     }
 }

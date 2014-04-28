@@ -76,8 +76,8 @@ public class FlowModInputMessageFactoryTest {
     public void startUp() {
         registry = new SerializerRegistryImpl();
         registry.init();
-        flowModFactory = registry.getSerializer(
-                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, FlowModInput.class));
+        flowModFactory = registry.getSerializer(new MessageTypeKey<>(
+                EncodeConstants.OF13_VERSION_ID, FlowModInput.class));
     }
 
     /**

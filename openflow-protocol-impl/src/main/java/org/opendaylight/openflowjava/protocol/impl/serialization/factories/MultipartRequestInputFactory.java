@@ -21,8 +21,10 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
-import org.opendaylight.openflowjava.protocol.impl.util.CodingUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMaker;
+import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMakerFactory;
+import org.opendaylight.openflowjava.protocol.impl.util.ListSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.NextTableRelatedTableFeatureProperty;
@@ -141,15 +143,15 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
-	private void serializeExperimenterBody(MultipartRequestInput message,
-			ByteBuf outBuffer) {
-		MultipartRequestExperimenterCase expCase =
-				(MultipartRequestExperimenterCase) message.getMultipartRequestBody();
-		MultipartRequestExperimenter experimenter = expCase.getMultipartRequestExperimenter();
-		OFSerializer<MultipartRequestExperimenter> serializer = registry.getSerializer(
-				new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, MultipartRequestExperimenter.class));
-		serializer.serialize(experimenter, outBuffer);
-	}
+    private void serializeExperimenterBody(MultipartRequestInput message,
+            ByteBuf outBuffer) {
+        MultipartRequestExperimenterCase expCase =
+                (MultipartRequestExperimenterCase) message.getMultipartRequestBody();
+        MultipartRequestExperimenter experimenter = expCase.getMultipartRequestExperimenter();
+        OFSerializer<MultipartRequestExperimenter> serializer = registry.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, MultipartRequestExperimenter.class));
+        serializer.serialize(experimenter, outBuffer);
+    }
 
     private static int createMultipartRequestFlagsBitmask(MultipartRequestFlags flags) {
         int multipartRequestFlagsBitmask = 0;
@@ -360,9 +362,9 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
             }
             padding = paddingNeeded(length);
             output.writeShort(length);
-            HeaderSerializer<Instruction> instructionSerializer = registry.getSerializer(
-                    new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, Instruction.class));
-            CodingUtils.serializeHeaders(instructions, instructionSerializer, output);
+            EnhancedTypeKeyMaker<Instruction> keyMaker = EnhancedTypeKeyMakerFactory
+                    .createInstructionKeyBuilder(EncodeConstants.OF13_VERSION_ID);
+            ListSerializer.serializeHeaderList(instructions, keyMaker, registry, output);
         } else {
             padding = paddingNeeded(length);
             output.writeShort(length);
@@ -418,9 +420,9 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
             length += actions.size() * STRUCTURE_HEADER_LENGTH;
             padding += paddingNeeded(length);
             output.writeShort(length);
-            HeaderSerializer<Action> actionSerializer = registry.getSerializer(
-                    new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, Action.class));
-            CodingUtils.serializeHeaders(actions, actionSerializer, output);
+            EnhancedTypeKeyMaker<Action> keyMaker = EnhancedTypeKeyMakerFactory
+                    .createActionKeyBuilder(EncodeConstants.OF13_VERSION_ID);
+            ListSerializer.serializeHeaderList(actions, keyMaker, registry, output);
         } else {
             padding = paddingNeeded(length);
             output.writeShort(length);

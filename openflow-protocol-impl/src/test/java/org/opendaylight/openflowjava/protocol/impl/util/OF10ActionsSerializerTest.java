@@ -169,7 +169,8 @@ public class OF10ActionsSerializerTest {
         actions.add(actionBuilder.build());
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        CodingUtils.serializeActions(actions, registry, out, EncodeConstants.OF10_VERSION_ID);
+        ListSerializer.serializeList(actions, EnhancedTypeKeyMakerFactory
+                .createActionKeyBuilder(EncodeConstants.OF10_VERSION_ID), registry, out);
         
         Assert.assertEquals("Wrong action type", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
