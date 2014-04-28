@@ -18,8 +18,9 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
-import org.opendaylight.openflowjava.protocol.impl.util.CodingUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMakerFactory;
+import org.opendaylight.openflowjava.protocol.impl.util.ListSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowModFlagsV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.v10.grouping.MatchV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInput;
@@ -47,7 +48,8 @@ public class OF10FlowModInputMessageFactory implements OFSerializer<FlowModInput
         outBuffer.writeInt(message.getBufferId().intValue());
         outBuffer.writeShort(message.getOutPort().getValue().intValue());
         outBuffer.writeShort(createFlowModFlagsBitmask(message.getFlagsV10()));
-        CodingUtils.serializeActions(message.getAction(), registry, outBuffer, EncodeConstants.OF10_VERSION_ID);
+        ListSerializer.serializeList(message.getAction(), EnhancedTypeKeyMakerFactory
+                .createActionKeyBuilder(EncodeConstants.OF10_VERSION_ID), registry, outBuffer);
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 

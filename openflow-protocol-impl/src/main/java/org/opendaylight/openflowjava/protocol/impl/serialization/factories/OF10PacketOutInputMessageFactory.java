@@ -14,8 +14,9 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
-import org.opendaylight.openflowjava.protocol.impl.util.CodingUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMakerFactory;
+import org.opendaylight.openflowjava.protocol.impl.util.ListSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketOutInput;
 
 /**
@@ -35,7 +36,8 @@ public class OF10PacketOutInputMessageFactory implements OFSerializer<PacketOutI
         int actionsLengthIndex = outBuffer.writerIndex();
         outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
         int actionsStartIndex = outBuffer.writerIndex();
-        CodingUtils.serializeActions(message.getAction(), registry, outBuffer, EncodeConstants.OF10_VERSION_ID);
+        ListSerializer.serializeList(message.getAction(), EnhancedTypeKeyMakerFactory
+                .createActionKeyBuilder(EncodeConstants.OF10_VERSION_ID), registry, outBuffer);
         outBuffer.setShort(actionsLengthIndex, outBuffer.writerIndex() - actionsStartIndex);
         byte[] data = message.getData();
         if (data != null) {

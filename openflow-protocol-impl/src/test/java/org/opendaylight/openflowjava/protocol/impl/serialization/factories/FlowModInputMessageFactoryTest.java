@@ -19,7 +19,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
-import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
@@ -67,7 +66,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class FlowModInputMessageFactoryTest {
     private static final byte PADDING_IN_FLOW_MOD_MESSAGE = 2;
     private SerializerRegistry registry;
-    private OFSerializer<FlowModInput> flowModFactory;
+    private FlowModInputMessageFactory flowModFactory;
 
     /**
      * Initializes serializer registry and stores correct factory in field
@@ -76,8 +75,8 @@ public class FlowModInputMessageFactoryTest {
     public void startUp() {
         registry = new SerializerRegistryImpl();
         registry.init();
-        flowModFactory = registry.getSerializer(
-                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, FlowModInput.class));
+        flowModFactory = registry.getSerializer(new MessageTypeKey<>(
+                EncodeConstants.OF13_VERSION_ID, FlowModInput.class));
     }
 
     /**

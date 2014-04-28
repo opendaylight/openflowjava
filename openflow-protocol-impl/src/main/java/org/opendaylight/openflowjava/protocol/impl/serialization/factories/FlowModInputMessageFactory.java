@@ -15,12 +15,12 @@ import java.util.Map;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
-import org.opendaylight.openflowjava.protocol.impl.util.CodingUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
+import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMakerFactory;
+import org.opendaylight.openflowjava.protocol.impl.util.ListSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowModFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInput;
@@ -52,9 +52,8 @@ public class FlowModInputMessageFactory implements OFSerializer<FlowModInput>, S
         ByteBufUtils.padBuffer(PADDING_IN_FLOW_MOD_MESSAGE, outBuffer);
         registry.<Match, OFSerializer<Match>>getSerializer(new MessageTypeKey<>(message.getVersion(), Match.class))
             .serialize(message.getMatch(), outBuffer);
-        OFSerializer<Instruction> instructionSerializer =
-                registry.getSerializer(new MessageTypeKey<>(message.getVersion(), Instruction.class));
-        CodingUtils.serializeList(message.getInstruction(), instructionSerializer, outBuffer);
+        ListSerializer.serializeList(message.getInstruction(), EnhancedTypeKeyMakerFactory
+                .createInstructionKeyBuilder(EncodeConstants.OF13_VERSION_ID), registry, outBuffer);
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 

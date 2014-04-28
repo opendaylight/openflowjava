@@ -16,8 +16,9 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
-import org.opendaylight.openflowjava.protocol.impl.util.CodingUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMakerFactory;
+import org.opendaylight.openflowjava.protocol.impl.util.ListSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GroupModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.buckets.grouping.BucketsList;
 
@@ -52,8 +53,8 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupModInput>,
                 outBuffer.writeInt(currentBucket.getWatchPort().getValue().intValue());
                 outBuffer.writeInt(currentBucket.getWatchGroup().intValue());
                 ByteBufUtils.padBuffer(PADDING_IN_BUCKET, outBuffer);
-                CodingUtils.serializeActions(currentBucket.getAction(), registry,
-                        outBuffer, EncodeConstants.OF13_VERSION_ID);
+                ListSerializer.serializeList(currentBucket.getAction(), EnhancedTypeKeyMakerFactory
+                        .createActionKeyBuilder(EncodeConstants.OF13_VERSION_ID), registry, outBuffer);
                 outBuffer.setShort(bucketLengthIndex, outBuffer.writerIndex() - bucketLengthIndex);
             }
         }

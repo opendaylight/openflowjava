@@ -21,7 +21,6 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
-import org.opendaylight.openflowjava.protocol.impl.util.CodingUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeatureProperty;
@@ -360,9 +359,12 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
             }
             padding = paddingNeeded(length);
             output.writeShort(length);
-            HeaderSerializer<Instruction> instructionSerializer = registry.getSerializer(
-                    new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, Instruction.class));
-            CodingUtils.serializeHeaders(instructions, instructionSerializer, output);
+            for (Instruction instruction : instructions) {
+                HeaderSerializer<Instruction> entrySerializer = registry.getSerializer(
+                        new EnhancedMessageTypeKey<>(EncodeConstants.OF13_VERSION_ID,
+                                Instruction.class, instruction.getType()));
+                entrySerializer.serializeHeader(instruction, output);
+            }
         } else {
             padding = paddingNeeded(length);
             output.writeShort(length);
@@ -418,9 +420,12 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
             length += actions.size() * STRUCTURE_HEADER_LENGTH;
             padding += paddingNeeded(length);
             output.writeShort(length);
-            HeaderSerializer<Action> actionSerializer = registry.getSerializer(
-                    new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, Action.class));
-            CodingUtils.serializeHeaders(actions, actionSerializer, output);
+            for (Action action : actions) {
+                HeaderSerializer<Action> entrySerializer = registry.getSerializer(
+                        new EnhancedMessageTypeKey<>(EncodeConstants.OF13_VERSION_ID,
+                                Action.class, action.getType()));
+                entrySerializer.serializeHeader(action, output);
+            }
         } else {
             padding = paddingNeeded(length);
             output.writeShort(length);
