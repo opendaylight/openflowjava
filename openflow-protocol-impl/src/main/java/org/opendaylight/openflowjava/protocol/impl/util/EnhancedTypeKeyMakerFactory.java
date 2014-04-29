@@ -24,7 +24,7 @@ public abstract class EnhancedTypeKeyMakerFactory {
      *  in lookup key
      * @return lookup key
      */
-    public static EnhancedTypeKeyMaker<MatchEntries> createMatchEntriesKeyBuilder(short version) {
+    public static EnhancedTypeKeyMaker<MatchEntries> createMatchEntriesKeyMaker(short version) {
         return new AbstractEnhancedTypeKeyMaker<MatchEntries>(version) {
             @Override
             public EnhancedMessageTypeKey<?, ?> make(MatchEntries entry) {
@@ -39,7 +39,7 @@ public abstract class EnhancedTypeKeyMakerFactory {
      *  in lookup key
      * @return lookup key
      */
-    public static EnhancedTypeKeyMaker<Action> createActionKeyBuilder(short version) {
+    public static EnhancedTypeKeyMaker<Action> createActionKeyMaker(short version) {
         return new AbstractEnhancedTypeKeyMaker<Action>(version) {
             @Override
             public EnhancedMessageTypeKey<?, ?> make(Action entry) {
@@ -53,7 +53,7 @@ public abstract class EnhancedTypeKeyMakerFactory {
      *  in lookup key
      * @return lookup key
      */
-    public static EnhancedTypeKeyMaker<Instruction> createInstructionKeyBuilder(short version) {
+    public static EnhancedTypeKeyMaker<Instruction> createInstructionKeyMaker(short version) {
         return new AbstractEnhancedTypeKeyMaker<Instruction>(version) {
             @Override
             public EnhancedMessageTypeKey<?, ?> make(Instruction entry) {

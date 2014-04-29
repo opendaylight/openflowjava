@@ -54,7 +54,7 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupModInput>,
                 outBuffer.writeInt(currentBucket.getWatchGroup().intValue());
                 ByteBufUtils.padBuffer(PADDING_IN_BUCKET, outBuffer);
                 ListSerializer.serializeList(currentBucket.getAction(), EnhancedTypeKeyMakerFactory
-                        .createActionKeyBuilder(EncodeConstants.OF13_VERSION_ID), registry, outBuffer);
+                        .createActionKeyMaker(EncodeConstants.OF13_VERSION_ID), registry, outBuffer);
                 outBuffer.setShort(bucketLengthIndex, outBuffer.writerIndex() - bucketLengthIndex);
             }
         }

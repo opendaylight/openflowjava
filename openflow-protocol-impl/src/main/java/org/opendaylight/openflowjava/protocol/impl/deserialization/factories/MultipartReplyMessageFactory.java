@@ -20,8 +20,11 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderDeserializ
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.CodeKeyMaker;
+import org.opendaylight.openflowjava.protocol.impl.util.CodeKeyMakerFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.DecodingUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.ListDeserializer;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeaturePropertyBuilder;
@@ -284,10 +287,10 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             OFDeserializer<Match> matchDeserializer = registry.getDeserializer(new MessageCodeKey(
                     EncodeConstants.OF13_VERSION_ID, EncodeConstants.EMPTY_VALUE, Match.class));
             flowStatsBuilder.setMatch(matchDeserializer.deserialize(subInput));
-            OFDeserializer<Instruction> insDeserializer = registry.getDeserializer(new MessageCodeKey(
-                    EncodeConstants.OF13_VERSION_ID, EncodeConstants.EMPTY_VALUE, Instruction.class));
-            List<Instruction> instructions = DecodingUtils.deserializeList(
-                    subInput.readableBytes(), subInput, insDeserializer);
+            CodeKeyMaker keyMaker = CodeKeyMakerFactory
+                    .createInstructionsKeyMaker(EncodeConstants.OF13_VERSION_ID);
+            List<Instruction> instructions = ListDeserializer.deserializeList(
+                    EncodeConstants.OF13_VERSION_ID, subInput.readableBytes(), subInput, keyMaker, registry);
             flowStatsBuilder.setInstruction(instructions);
             flowStatsList.add(flowStatsBuilder.build());
         }
