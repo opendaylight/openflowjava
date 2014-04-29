@@ -15,8 +15,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
-import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthertypeAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.GroupIdAction;
@@ -40,18 +38,15 @@ public class ActionsDeserializerTest {
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(ActionsDeserializerTest.class);
-    private OFDeserializer<Action> actionDeserializer;
+    private DeserializerRegistry registry;
 
     /**
      * Initializes deserializer registry and lookups correct deserializer
      */
     @Before
     public void startUp() {
-        DeserializerRegistry registry = new DeserializerRegistryImpl();
+        registry = new DeserializerRegistryImpl();
         registry.init();
-        actionDeserializer = registry.getDeserializer(
-                new MessageCodeKey(EncodeConstants.OF13_VERSION_ID,
-                        EncodeConstants.EMPTY_VALUE, Action.class));
     }
 
     /**
@@ -79,9 +74,9 @@ public class ActionsDeserializerTest {
         message.skipBytes(4); // skip XID
         LOGGER.info("bytes: " + message.readableBytes());
         
-        
-        List<Action> actions = DecodingUtils.deserializeList(message.readableBytes(),
-                message, actionDeserializer);
+        CodeKeyMaker keyMaker = CodeKeyMakerFactory.createActionsKeyMaker(EncodeConstants.OF13_VERSION_ID);
+        List<Action> actions = ListDeserializer.deserializeList(EncodeConstants.OF13_VERSION_ID,
+                message.readableBytes(), message, keyMaker, registry);
         Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
                 + "openflow.common.action.rev130731.Output", actions.get(0).getType().getName());
         Assert.assertEquals("Wrong action port", 1,

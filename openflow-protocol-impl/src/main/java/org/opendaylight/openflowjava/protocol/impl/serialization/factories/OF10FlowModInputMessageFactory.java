@@ -49,7 +49,7 @@ public class OF10FlowModInputMessageFactory implements OFSerializer<FlowModInput
         outBuffer.writeShort(message.getOutPort().getValue().intValue());
         outBuffer.writeShort(createFlowModFlagsBitmask(message.getFlagsV10()));
         ListSerializer.serializeList(message.getAction(), EnhancedTypeKeyMakerFactory
-                .createActionKeyBuilder(EncodeConstants.OF10_VERSION_ID), registry, outBuffer);
+                .createActionKeyMaker(EncodeConstants.OF10_VERSION_ID), registry, outBuffer);
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 

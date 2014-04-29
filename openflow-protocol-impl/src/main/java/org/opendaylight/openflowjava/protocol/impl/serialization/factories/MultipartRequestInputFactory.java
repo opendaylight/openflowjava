@@ -363,7 +363,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
             padding = paddingNeeded(length);
             output.writeShort(length);
             EnhancedTypeKeyMaker<Instruction> keyMaker = EnhancedTypeKeyMakerFactory
-                    .createInstructionKeyBuilder(EncodeConstants.OF13_VERSION_ID);
+                    .createInstructionKeyMaker(EncodeConstants.OF13_VERSION_ID);
             ListSerializer.serializeHeaderList(instructions, keyMaker, registry, output);
         } else {
             padding = paddingNeeded(length);
@@ -421,7 +421,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
             padding += paddingNeeded(length);
             output.writeShort(length);
             EnhancedTypeKeyMaker<Action> keyMaker = EnhancedTypeKeyMakerFactory
-                    .createActionKeyBuilder(EncodeConstants.OF13_VERSION_ID);
+                    .createActionKeyMaker(EncodeConstants.OF13_VERSION_ID);
             ListSerializer.serializeHeaderList(actions, keyMaker, registry, output);
         } else {
             padding = paddingNeeded(length);

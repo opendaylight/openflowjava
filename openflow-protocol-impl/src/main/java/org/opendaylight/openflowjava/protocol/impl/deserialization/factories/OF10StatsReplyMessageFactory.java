@@ -19,8 +19,10 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegi
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
-import org.opendaylight.openflowjava.protocol.impl.util.DecodingUtils;
+import org.opendaylight.openflowjava.protocol.impl.util.CodeKeyMaker;
+import org.opendaylight.openflowjava.protocol.impl.util.CodeKeyMakerFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.ListDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.OF10MatchDeserializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
@@ -161,10 +163,9 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
             byte[] byteCount = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
             input.readBytes(byteCount);
             flowStatsBuilder.setByteCount(new BigInteger(1, byteCount));
-            OFDeserializer<Action> deserializer = registry.getDeserializer(new MessageCodeKey(
-                    EncodeConstants.OF10_VERSION_ID, EncodeConstants.EMPTY_VALUE, Action.class));
-            List<Action> actions = DecodingUtils.deserializeList(length - LENGTH_OF_FLOW_STATS,
-                    input, deserializer);
+            CodeKeyMaker keyMaker = CodeKeyMakerFactory.createActionsKeyMaker(EncodeConstants.OF10_VERSION_ID);
+            List<Action> actions = ListDeserializer.deserializeList(EncodeConstants.OF10_VERSION_ID,
+                    length - LENGTH_OF_FLOW_STATS, input, keyMaker, registry);
             flowStatsBuilder.setAction(actions);
             flowStatsList.add(flowStatsBuilder.build());
         }

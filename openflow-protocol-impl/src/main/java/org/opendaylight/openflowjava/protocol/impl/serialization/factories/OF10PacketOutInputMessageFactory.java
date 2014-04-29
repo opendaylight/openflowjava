@@ -37,7 +37,7 @@ public class OF10PacketOutInputMessageFactory implements OFSerializer<PacketOutI
         outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
         int actionsStartIndex = outBuffer.writerIndex();
         ListSerializer.serializeList(message.getAction(), EnhancedTypeKeyMakerFactory
-                .createActionKeyBuilder(EncodeConstants.OF10_VERSION_ID), registry, outBuffer);
+                .createActionKeyMaker(EncodeConstants.OF10_VERSION_ID), registry, outBuffer);
         outBuffer.setShort(actionsLengthIndex, outBuffer.writerIndex() - actionsStartIndex);
         byte[] data = message.getData();
         if (data != null) {

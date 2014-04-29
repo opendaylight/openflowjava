@@ -10,6 +10,8 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 
 import io.netty.buffer.ByteBuf;
 
+import java.util.List;
+
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
@@ -17,6 +19,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmMatchType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.MatchBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
 
 /**
  * Deserializes ofp_match (OpenFlow v1.3) and its oxm_fields structures
@@ -44,8 +47,11 @@ public class MatchDeserializer implements OFDeserializer<Match>,
             default:
                 break;
             }
-            builder.setMatchEntries(DecodingUtils.deserializeMatchEntries(
-                    length - 2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES, input, registry));
+            CodeKeyMaker keyMaker = CodeKeyMakerFactory
+                    .createMatchEntriesKeyMaker(EncodeConstants.OF13_VERSION_ID);
+            List<MatchEntries> entries = ListDeserializer.deserializeList(EncodeConstants.OF13_VERSION_ID,
+                    length - 2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES, input, keyMaker, registry);
+            builder.setMatchEntries(entries);
             int paddingRemainder = length % EncodeConstants.PADDING;
             if (paddingRemainder != 0) {
                 input.skipBytes(EncodeConstants.PADDING - paddingRemainder);

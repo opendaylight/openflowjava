@@ -15,8 +15,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
-import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionsInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.GroupIdAction;
@@ -36,18 +34,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction
  */
 public class InstructionsDeserializerTest {
 
-    private OFDeserializer<Instruction> insDeserializer;
+
+    private DeserializerRegistry registry;
 
     /**
      * Initializes deserializer registry and lookups correct deserializer
      */
     @Before
     public void startUp() {
-        DeserializerRegistry registry = new DeserializerRegistryImpl();
+        registry = new DeserializerRegistryImpl();
         registry.init();
-        insDeserializer = registry.getDeserializer(
-                new MessageCodeKey(EncodeConstants.OF13_VERSION_ID,
-                        EncodeConstants.EMPTY_VALUE, Instruction.class));
     }
 
     /**
@@ -62,8 +58,9 @@ public class InstructionsDeserializerTest {
         
         message.skipBytes(4); // skip XID
         
-        List<Instruction> instructions = DecodingUtils.deserializeList(
-                message.readableBytes(), message, insDeserializer);
+        CodeKeyMaker keyMaker = CodeKeyMakerFactory.createInstructionsKeyMaker(EncodeConstants.OF13_VERSION_ID);
+        List<Instruction> instructions = ListDeserializer.deserializeList(EncodeConstants.OF13_VERSION_ID,
+                message.readableBytes(), message, keyMaker, registry);
         Instruction i1 = instructions.get(0);
         Assert.assertEquals("Wrong type - i1", "org.opendaylight.yang.gen.v1.urn."
                 + "opendaylight.openflow.common.instruction.rev130731.GotoTable", i1.getType().getName());

@@ -15,8 +15,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
-import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.DlAddressAction;
@@ -35,18 +33,15 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
  */
 public class OF10ActionsDeserializerTest {
 
-    private OFDeserializer<Action> actionsDeserializer;
+    private DeserializerRegistry registry;
 
     /**
      * Initializes deserializer registry and lookups correct deserializer
      */
     @Before
     public void startUp() {
-        DeserializerRegistry registry = new DeserializerRegistryImpl();
+        registry = new DeserializerRegistryImpl();
         registry.init();
-        actionsDeserializer = registry.getDeserializer(
-                new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, EncodeConstants.EMPTY_VALUE,
-                        Action.class));
     }
 
     /**
@@ -68,8 +63,9 @@ public class OF10ActionsDeserializerTest {
                 + "00 0B 00 10 00 04 00 00 00 00 00 00 00 00 00 30");
         
         message.skipBytes(4); // skip XID
-        List<Action> actions = DecodingUtils.deserializeList(message.readableBytes(),
-                message, actionsDeserializer);
+        CodeKeyMaker keyMaker = CodeKeyMakerFactory.createActionsKeyMaker(EncodeConstants.OF10_VERSION_ID);
+        List<Action> actions = ListDeserializer.deserializeList(EncodeConstants.OF10_VERSION_ID,
+                message.readableBytes(), message, keyMaker, registry);
         Assert.assertEquals("Wrong number of actions", 12, actions.size());
         Action action1 = actions.get(0);
         Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight"

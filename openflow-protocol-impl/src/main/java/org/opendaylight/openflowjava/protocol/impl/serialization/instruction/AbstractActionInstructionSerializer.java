@@ -42,7 +42,7 @@ public abstract class AbstractActionInstructionSerializer extends AbstractInstru
             outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
             ByteBufUtils.padBuffer(InstructionConstants.PADDING_IN_ACTIONS_INSTRUCTION, outBuffer);
             ListSerializer.serializeList(actions, EnhancedTypeKeyMakerFactory
-                    .createActionKeyBuilder(EncodeConstants.OF13_VERSION_ID), getRegistry(), outBuffer);
+                    .createActionKeyMaker(EncodeConstants.OF13_VERSION_ID), getRegistry(), outBuffer);
             int instructionLength = outBuffer.writerIndex() - startIndex;
             outBuffer.setShort(lengthIndex, instructionLength);
         } else {

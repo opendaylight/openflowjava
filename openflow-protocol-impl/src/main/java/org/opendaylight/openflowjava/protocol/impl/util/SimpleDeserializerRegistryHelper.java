@@ -15,7 +15,7 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeseria
  * @author michal.polkorab
  *
  */
-public class MessageDeserializerRegistryHelper {
+public class SimpleDeserializerRegistryHelper {
 
     private short version;
     private DeserializerRegistry registry;
@@ -24,7 +24,7 @@ public class MessageDeserializerRegistryHelper {
      * @param version wire protocol version
      * @param deserializerRegistry registry to be filled with message deserializers
      */
-    public MessageDeserializerRegistryHelper(short version, DeserializerRegistry deserializerRegistry) {
+    public SimpleDeserializerRegistryHelper(short version, DeserializerRegistry deserializerRegistry) {
         this.version = version;
         this.registry = deserializerRegistry;
     }
@@ -35,7 +35,7 @@ public class MessageDeserializerRegistryHelper {
      *  by given deserializer
      * @param deserializer deserializer instance
      */
-    public void registerMessageDeserializer(int code,
+    public void registerDeserializer(int code,
             Class<?> deserializedObjectClass, OFGeneralDeserializer deserializer) {
         registry.registerDeserializer(new MessageCodeKey(version, code,
                 deserializedObjectClass), deserializer);

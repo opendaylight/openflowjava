@@ -53,7 +53,7 @@ public class FlowModInputMessageFactory implements OFSerializer<FlowModInput>, S
         registry.<Match, OFSerializer<Match>>getSerializer(new MessageTypeKey<>(message.getVersion(), Match.class))
             .serialize(message.getMatch(), outBuffer);
         ListSerializer.serializeList(message.getInstruction(), EnhancedTypeKeyMakerFactory
-                .createInstructionKeyBuilder(EncodeConstants.OF13_VERSION_ID), registry, outBuffer);
+                .createInstructionKeyMaker(EncodeConstants.OF13_VERSION_ID), registry, outBuffer);
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
