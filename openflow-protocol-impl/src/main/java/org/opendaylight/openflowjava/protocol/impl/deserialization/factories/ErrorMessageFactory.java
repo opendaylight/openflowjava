@@ -10,10 +10,12 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
 
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterError;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterErrorBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.BadActionCode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.BadInstructionCode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.BadMatchCode;
@@ -37,10 +39,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  * @author timotej.kubas
  */
-public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
+public class ErrorMessageFactory implements OFDeserializer<ErrorMessage>,
+        DeserializerRegistryInjector {
 
     private static final String UNKNOWN_CODE = "UNKNOWN_CODE";
     private static final String UNKNOWN_TYPE = "UNKNOWN_TYPE";
+    private DeserializerRegistry registry;
 
     @Override
     public ErrorMessage deserialize(ByteBuf rawMessage) {
@@ -49,10 +53,18 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
         builder.setXid(rawMessage.readUnsignedInt());
         int type = rawMessage.readUnsignedShort();
         ErrorType errorType = ErrorType.forValue(type);
-        decodeType(builder, errorType, type);
-        decodeCode(rawMessage, builder, errorType);
-        if (rawMessage.readableBytes() > 0) {
-            builder.setData(rawMessage.readBytes(rawMessage.readableBytes()).array());
+        if (ErrorType.EXPERIMENTER.equals(errorType)) {
+            builder.setType(errorType.getIntValue());
+            OFDeserializer<ExperimenterError> deserializer = registry.getDeserializer(new MessageCodeKey(
+                    EncodeConstants.OF13_VERSION_ID, EncodeConstants.EXPERIMENTER_VALUE, ErrorMessage.class));
+            ExperimenterError error = deserializer.deserialize(rawMessage);
+            builder.addAugmentation(ExperimenterError.class, error);
+        } else {
+            decodeType(builder, errorType, type);
+            decodeCode(rawMessage, builder, errorType);
+            if (rawMessage.readableBytes() > 0) {
+                builder.setData(rawMessage.readBytes(rawMessage.readableBytes()).array());
+            }
         }
         return builder.build();
     }
@@ -212,12 +224,6 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
                 }
                 break;
             }
-            case EXPERIMENTER:
-                ExperimenterErrorBuilder expBuilder = new ExperimenterErrorBuilder();
-                expBuilder.setExpType(code);
-                expBuilder.setExperimenter(rawMessage.readUnsignedInt());
-                builder.addAugmentation(ExperimenterError.class, expBuilder.build());
-                break;
             default:
                 setUnknownCode(builder, code);
                 break;
@@ -235,6 +241,11 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
     private static void setCode(ErrorMessageBuilder builder, int code, String codeString) {
         builder.setCode(code);
         builder.setCodeString(codeString);
+    }
+
+    @Override
+    public void injectDeserializerRegistry(DeserializerRegistry deserializerRegistry) {
+        this.registry = deserializerRegistry;
     }
 
 }

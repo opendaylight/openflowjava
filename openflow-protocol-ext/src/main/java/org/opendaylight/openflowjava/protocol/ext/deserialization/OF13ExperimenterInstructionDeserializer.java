@@ -6,13 +6,13 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.impl.deserialization.experimenters;
+package org.opendaylight.openflowjava.protocol.ext.deserialization;
 
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderDeserializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.ext.util.ExtConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterInstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.Experimenter;
@@ -29,20 +29,21 @@ public class OF13ExperimenterInstructionDeserializer implements OFDeserializer<I
     @Override
     public Instruction deserializeHeader(ByteBuf input) {
         InstructionBuilder builder = new InstructionBuilder();
-        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+        input.skipBytes(ExtConstants.SIZE_OF_SHORT_IN_BYTES);
         builder.setType(Experimenter.class);
-        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+        input.skipBytes(ExtConstants.SIZE_OF_SHORT_IN_BYTES);
         ExperimenterInstructionBuilder expBuilder = new ExperimenterInstructionBuilder();
         expBuilder.setExperimenter(input.readUnsignedInt());
+        builder.addAugmentation(ExperimenterInstruction.class, expBuilder.build());
         return builder.build();
     }
 
     @Override
     public Instruction deserialize(ByteBuf input) {
         InstructionBuilder builder = new InstructionBuilder();
-        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+        input.skipBytes(ExtConstants.SIZE_OF_SHORT_IN_BYTES);
         builder.setType(Experimenter.class);
-        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+        input.skipBytes(ExtConstants.SIZE_OF_SHORT_IN_BYTES);
         ExperimenterInstructionBuilder expBuilder = new ExperimenterInstructionBuilder();
         expBuilder.setExperimenter(input.readUnsignedInt());
         if (input.readableBytes() > 0) {

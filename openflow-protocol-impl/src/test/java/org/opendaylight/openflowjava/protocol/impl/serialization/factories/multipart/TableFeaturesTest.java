@@ -26,8 +26,6 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.factories.Multi
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterRelatedTableFeatureProperty;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterRelatedTableFeaturePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeaturePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.NextTableRelatedTableFeatureProperty;
@@ -204,27 +202,6 @@ public class TableFeaturesTest {
         oxmBuilder.setMatchEntries(entries);
         propBuilder.addAugmentation(OxmRelatedTableFeatureProperty.class, oxmBuilder.build());
         properties.add(propBuilder.build());
-        propBuilder = new TableFeaturePropertiesBuilder();
-        propBuilder.setType(TableFeaturesPropType.OFPTFPTEXPERIMENTER);
-        ExperimenterRelatedTableFeaturePropertyBuilder expBuilder =
-        		new ExperimenterRelatedTableFeaturePropertyBuilder();
-        expBuilder.setExperimenter(1024L);
-        expBuilder.setExpType(2048L);
-        byte[] expData = new byte[]{0, 1, 2};
-        expBuilder.setData(expData);
-        propBuilder.addAugmentation(
-        		ExperimenterRelatedTableFeatureProperty.class, expBuilder.build());
-        properties.add(propBuilder.build());
-        propBuilder = new TableFeaturePropertiesBuilder();
-        propBuilder.setType(TableFeaturesPropType.OFPTFPTEXPERIMENTERMISS);
-        expBuilder = new ExperimenterRelatedTableFeaturePropertyBuilder();
-        expBuilder.setExperimenter(4098L);
-        expBuilder.setExpType(8152L);
-        byte[] expData2 = new byte[]{3, 4, 6, 7, 8, 9};
-        expBuilder.setData(expData2);
-        propBuilder.addAugmentation(
-        		ExperimenterRelatedTableFeatureProperty.class, expBuilder.build());
-        properties.add(propBuilder.build());
         tableFeaturesBuilder.setTableFeatureProperties(properties);
         tableFeaturesList.add(tableFeaturesBuilder.build());
         featuresBuilder.setTableFeatures(tableFeaturesList);
@@ -235,7 +212,7 @@ public class TableFeaturesTest {
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         multipartFactory.serialize(message, out);
 
-        BufferHelper.checkHeaderV13(out, (byte) 18, 272);
+        BufferHelper.checkHeaderV13(out, (byte) 18, 232);
         Assert.assertEquals("Wrong type", 12, out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", 1, out.readUnsignedShort());
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -282,7 +259,7 @@ public class TableFeaturesTest {
         Assert.assertEquals("Wrong instruction length", 4, out.readUnsignedShort());
         Assert.assertEquals("Wrong instruction type", 1, out.readUnsignedShort());
         Assert.assertEquals("Wrong instruction length", 4, out.readUnsignedShort());
-        Assert.assertEquals("Wrong length", 136, out.readUnsignedShort());
+        Assert.assertEquals("Wrong length", 96, out.readUnsignedShort());
         Assert.assertEquals("Wrong registry-id", 8, out.readUnsignedByte());
         out.skipBytes(5);
         Assert.assertEquals("Wrong name", "AAAABBBBCCCCDDDDEEEEFFFFGGGG",
@@ -315,22 +292,6 @@ public class TableFeaturesTest {
         Assert.assertEquals("Wrong match field&mask", 18, out.readUnsignedByte());
         Assert.assertEquals("Wrong match length", 1, out.readUnsignedByte());
         out.skipBytes(4);
-        Assert.assertEquals("Wrong property type", 0xFFFE, out.readUnsignedShort());
-        Assert.assertEquals("Wrong property length", 16, out.readUnsignedShort());
-        Assert.assertEquals("Wrong experimenter", 1024, out.readUnsignedInt());
-        Assert.assertEquals("Wrong exp-type", 2048, out.readUnsignedInt());
-        byte[] tmp = new byte[3];
-        out.readBytes(tmp);
-        Assert.assertArrayEquals("Wrong experimenter data", expData, tmp);
-        out.skipBytes(1);
-        Assert.assertEquals("Wrong property type", 0xFFFF, out.readUnsignedShort());
-        Assert.assertEquals("Wrong property length", 24, out.readUnsignedShort());
-        Assert.assertEquals("Wrong experimenter", 4098, out.readUnsignedInt());
-        Assert.assertEquals("Wrong exp-type", 8152, out.readUnsignedInt());
-        byte[] tmp2 = new byte[6];
-        out.readBytes(tmp2);
-        Assert.assertArrayEquals("Wrong experimenter data", expData2, tmp2);
-        out.skipBytes(6);
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
     }
 

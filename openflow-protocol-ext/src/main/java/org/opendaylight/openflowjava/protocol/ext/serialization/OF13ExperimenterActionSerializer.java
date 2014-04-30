@@ -6,25 +6,29 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.impl.serialization.experimenters;
+package org.opendaylight.openflowjava.protocol.ext.serialization;
 
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.ext.util.ExtConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 
+/**
+ * @author michal.polkorab
+ *
+ */
 public class OF13ExperimenterActionSerializer implements OFSerializer<Action>,
         HeaderSerializer<Action> {
 
     @Override
     public void serialize(Action action, ByteBuf outBuffer) {
         int actionStartIndex = outBuffer.writerIndex();
-        outBuffer.writeShort(EncodeConstants.EXPERIMENTER_VALUE);
+        outBuffer.writeShort(ExtConstants.EXPERIMENTER_VALUE);
         int actionLengthIndex = outBuffer.writerIndex();
-        outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
+        outBuffer.writeShort(ExtConstants.EMPTY_LENGTH);
         ExperimenterAction expAction = action.getAugmentation(ExperimenterAction.class);
         outBuffer.writeInt(expAction.getExperimenter().intValue());
         if (expAction.getData() != null) {
@@ -35,8 +39,8 @@ public class OF13ExperimenterActionSerializer implements OFSerializer<Action>,
 
     @Override
     public void serializeHeader(Action action, ByteBuf outBuffer) {
-        outBuffer.writeShort(EncodeConstants.EXPERIMENTER_VALUE);
-        outBuffer.writeShort(EncodeConstants.EXPERIMENTER_IDS_LENGTH);
+        outBuffer.writeShort(ExtConstants.EXPERIMENTER_VALUE);
+        outBuffer.writeShort(ExtConstants.EXPERIMENTER_IDS_LENGTH);
         ExperimenterAction expAction = action.getAugmentation(ExperimenterAction.class);
         outBuffer.writeInt(expAction.getExperimenter().intValue());
     }
