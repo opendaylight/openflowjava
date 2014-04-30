@@ -32,7 +32,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestAggregateCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestAggregateCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestDescCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenterCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestFlowCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestFlowCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestGroupCase;
@@ -47,7 +46,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestQueueCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.aggregate._case.MultipartRequestAggregateBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.desc._case.MultipartRequestDescBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.experimenter._case.MultipartRequestExperimenterBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.flow._case.MultipartRequestFlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.group._case.MultipartRequestGroupBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.meter._case.MultipartRequestMeterBuilder;
@@ -451,71 +449,6 @@ public class MultipartRequestInputFactoryTest {
         MultipartRequestDescBuilder builder = new MultipartRequestDescBuilder();
         caseBuilder.setMultipartRequestDesc(builder.build());
         return caseBuilder.build();
-    }
-
-    /**
-     * Testing OF10StatsRequestInputFactory (Vendor) for correct serialization
-     * @throws Exception
-     */
-    @Test
-    public void testExperimenter() throws Exception {
-        MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
-        BufferHelper.setupHeader(builder, EncodeConstants.OF10_VERSION_ID);
-        builder.setType(MultipartType.OFPMPEXPERIMENTER);
-        builder.setFlags(new MultipartRequestFlags(false));
-        MultipartRequestExperimenterCaseBuilder caseBuilder = new MultipartRequestExperimenterCaseBuilder();
-        MultipartRequestExperimenterBuilder expBuilder = new MultipartRequestExperimenterBuilder();
-        expBuilder.setExperimenter(56L);
-        expBuilder.setExpType(148L);
-        byte[] expData = new byte[]{0, 1, 2, 3, 4, 5, 6, 7};
-        expBuilder.setData(expData);
-        caseBuilder.setMultipartRequestExperimenter(expBuilder.build());
-        builder.setMultipartRequestBody(caseBuilder.build());
-        MultipartRequestInput message = builder.build();
-        
-        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        multipartFactory.serialize(message, out);
-        
-        BufferHelper.checkHeaderV10(out, (byte) 18, 32);
-        Assert.assertEquals("Wrong type", 0xFFFF, out.readUnsignedShort());
-        Assert.assertEquals("Wrong flags", 0, out.readUnsignedShort());
-        out.skipBytes(EncodeConstants.SIZE_OF_INT_IN_BYTES);
-        Assert.assertEquals("Wrong experimenter", 56, out.readUnsignedInt());
-        Assert.assertEquals("Wrong exp-type", 148, out.readUnsignedInt());
-        byte[] temp = new byte[8];
-        out.readBytes(temp);
-        Assert.assertArrayEquals("Wrong data", expData, temp);
-        Assert.assertTrue("Unread data", out.readableBytes() == 0);
-    }
-
-    /**
-     * Testing OF10StatsRequestInputFactory (Vendor) for correct serialization
-     * @throws Exception
-     */
-    @Test
-    public void testExperimenterWithoutData() throws Exception {
-        MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
-        BufferHelper.setupHeader(builder, EncodeConstants.OF10_VERSION_ID);
-        builder.setType(MultipartType.OFPMPEXPERIMENTER);
-        builder.setFlags(new MultipartRequestFlags(false));
-        MultipartRequestExperimenterCaseBuilder caseBuilder = new MultipartRequestExperimenterCaseBuilder();
-        MultipartRequestExperimenterBuilder expBuilder = new MultipartRequestExperimenterBuilder();
-        expBuilder.setExperimenter(56L);
-        expBuilder.setExpType(152L);
-        caseBuilder.setMultipartRequestExperimenter(expBuilder.build());
-        builder.setMultipartRequestBody(caseBuilder.build());
-        MultipartRequestInput message = builder.build();
-        
-        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        multipartFactory.serialize(message, out);
-        
-        BufferHelper.checkHeaderV10(out, (byte) 18, 24);
-        Assert.assertEquals("Wrong type", 0xFFFF, out.readUnsignedShort());
-        Assert.assertEquals("Wrong flags", 0, out.readUnsignedShort());
-        out.skipBytes(EncodeConstants.SIZE_OF_INT_IN_BYTES);
-        Assert.assertEquals("Wrong experimenter", 56, out.readUnsignedInt());
-        Assert.assertEquals("Wrong exp-type", 152, out.readUnsignedInt());
-        Assert.assertTrue("Unread data", out.readableBytes() == 0);
     }
 
 }

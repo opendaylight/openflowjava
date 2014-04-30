@@ -26,8 +26,6 @@ import org.opendaylight.openflowjava.protocol.impl.util.ListDeserializer;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeaturePropertyBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterRelatedTableFeatureProperty;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterRelatedTableFeaturePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeaturePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.NextTableRelatedTableFeatureProperty;
@@ -432,14 +430,15 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                 builder.addAugmentation(OxmRelatedTableFeatureProperty.class, oxmBuilder.build());
             } else if (type.equals(TableFeaturesPropType.OFPTFPTEXPERIMENTER)
                     || type.equals(TableFeaturesPropType.OFPTFPTEXPERIMENTERMISS)) {
-                ExperimenterRelatedTableFeaturePropertyBuilder expBuilder = new ExperimenterRelatedTableFeaturePropertyBuilder();
-                expBuilder.setExperimenter(input.readUnsignedInt());
-                expBuilder.setExpType(input.readUnsignedInt());
-                OFDeserializer<ExperimenterRelatedTableFeatureProperty> propDeserializer = registry.getDeserializer(
+                // return index to property start, so that the experimenter properties are deserialized
+                // correctly - as whole ofp_table_feature_prop_experimenter property
+                input.readerIndex(input.readerIndex() - 2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+                OFDeserializer<TableFeatureProperties> propDeserializer = registry.getDeserializer(
                         new MessageCodeKey(EncodeConstants.OF13_VERSION_ID,
-                                type.getIntValue(), ExperimenterRelatedTableFeatureProperty.class));
-                ExperimenterRelatedTableFeatureProperty expProp = propDeserializer.deserialize(input);
-                builder.addAugmentation(ExperimenterRelatedTableFeatureProperty.class, expProp);
+                                type.getIntValue(), TableFeatureProperties.class));
+                TableFeatureProperties expProp = propDeserializer.deserialize(input);
+                properties.add(expProp);
+                continue;
             }
             if (paddingRemainder != 0) {
                 input.skipBytes(EncodeConstants.PADDING - paddingRemainder);

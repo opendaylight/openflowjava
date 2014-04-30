@@ -12,6 +12,7 @@
         <module>openflow-protocol-it</module>
         <module>feature</module>
         <module>simple-client</module>
+        <module>openflow-protocol-ext</module>
     </modules>
     <scm>
         <connection>scm:git:ssh://git.opendaylight.org:29418/openflowjava.git</connection>
