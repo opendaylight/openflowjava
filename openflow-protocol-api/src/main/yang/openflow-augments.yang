@@ -361,6 +361,9 @@
          leaf experimenter {
              type uint32;
          }
+         leaf data {
+             type binary; 
+         }
      }
 
 }
