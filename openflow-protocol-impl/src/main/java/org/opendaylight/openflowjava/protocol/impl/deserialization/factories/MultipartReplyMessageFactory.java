@@ -27,7 +27,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeaturePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterRelatedTableFeatureProperty;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterRelatedTableFeaturePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeaturePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.NextTableRelatedTableFeatureProperty;
@@ -432,9 +431,6 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                 builder.addAugmentation(OxmRelatedTableFeatureProperty.class, oxmBuilder.build());
             } else if (type.equals(TableFeaturesPropType.OFPTFPTEXPERIMENTER)
                     || type.equals(TableFeaturesPropType.OFPTFPTEXPERIMENTERMISS)) {
-                ExperimenterRelatedTableFeaturePropertyBuilder expBuilder = new ExperimenterRelatedTableFeaturePropertyBuilder();
-                expBuilder.setExperimenter(input.readUnsignedInt());
-                expBuilder.setExpType(input.readUnsignedInt());
                 OFDeserializer<ExperimenterRelatedTableFeatureProperty> propDeserializer = registry.getDeserializer(
                         new MessageCodeKey(EncodeConstants.OF13_VERSION_ID,
                                 type.getIntValue(), ExperimenterRelatedTableFeatureProperty.class));

@@ -50,8 +50,6 @@ public class SerializerRegistryImpl implements SerializerRegistry {
         ActionsInitializer.registerActionSerializers(this);
         // instruction serializers
         InstructionsInitializer.registerInstructionSerializers(this);
-        // default vendor / experimenter serializers
-        DefaultExperimenterInitializer.registerDefaultExperimenterSerializers(this);
     }
 
     /**

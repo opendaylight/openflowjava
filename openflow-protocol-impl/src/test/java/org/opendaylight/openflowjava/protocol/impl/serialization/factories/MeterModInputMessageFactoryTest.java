@@ -32,10 +32,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterModInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDropCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDscpRemarkCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.drop._case.MeterBandDropBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.dscp.remark._case.MeterBandDscpRemarkBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.experimenter._case.MeterBandExperimenterBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.mod.Bands;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.mod.BandsBuilder;
 
@@ -76,7 +74,7 @@ public class MeterModInputMessageFactoryTest {
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         meterModFactory.serialize(message, out);
         
-        BufferHelper.checkHeaderV13(out, (byte) 29, 64);
+        BufferHelper.checkHeaderV13(out, (byte) 29, 48);
         Assert.assertEquals("Wrong meterModCommand", message.getCommand().getIntValue(), out.readUnsignedShort());
         Assert.assertEquals("Wrong meterFlags", message.getFlags(), decodeMeterModFlags(out.readShort()));
         Assert.assertEquals("Wrong meterId", message.getMeterId().getValue().intValue(), out.readUnsignedInt());
@@ -109,14 +107,6 @@ public class MeterModInputMessageFactoryTest {
         dscpRemarkBand.setPrecLevel((short) 3);
         dscpCaseBuilder.setMeterBandDscpRemark(dscpRemarkBand.build());
         bandsList.add(bandsBuilder.setMeterBand(dscpCaseBuilder.build()).build());
-        MeterBandExperimenterCaseBuilder expCaseBuilder = new MeterBandExperimenterCaseBuilder();
-        MeterBandExperimenterBuilder experimenterBand = new MeterBandExperimenterBuilder();
-        experimenterBand.setType(MeterBandType.OFPMBTEXPERIMENTER);
-        experimenterBand.setRate(1L);
-        experimenterBand.setBurstSize(2L);
-        experimenterBand.setExperimenter(4L);
-        expCaseBuilder.setMeterBandExperimenter(experimenterBand.build());
-        bandsList.add(bandsBuilder.setMeterBand(expCaseBuilder.build()).build());
         return bandsList;
     }
     
@@ -142,15 +132,6 @@ public class MeterModInputMessageFactoryTest {
         input.skipBytes(3);
         dscpCaseBuilder.setMeterBandDscpRemark(dscpRemarkBand.build());
         bandsList.add(bandsBuilder.setMeterBand(dscpCaseBuilder.build()).build());
-        MeterBandExperimenterCaseBuilder expCaseBuilder = new MeterBandExperimenterCaseBuilder();
-        MeterBandExperimenterBuilder experimenterBand = new MeterBandExperimenterBuilder();
-        experimenterBand.setType(MeterBandType.forValue(input.readUnsignedShort()));
-        input.skipBytes(Short.SIZE/Byte.SIZE);
-        experimenterBand.setRate(input.readUnsignedInt());
-        experimenterBand.setBurstSize(input.readUnsignedInt());
-        experimenterBand.setExperimenter(input.readUnsignedInt());
-        expCaseBuilder.setMeterBandExperimenter(experimenterBand.build());
-        bandsList.add(bandsBuilder.setMeterBand(expCaseBuilder.build()).build());
         return bandsList;
     }
     

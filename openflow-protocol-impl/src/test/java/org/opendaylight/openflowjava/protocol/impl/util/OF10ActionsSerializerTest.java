@@ -22,8 +22,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.DlAddressAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.DlAddressActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IpAddressAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IpAddressActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthAction;
@@ -39,7 +37,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Enqueue;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Output;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetDlDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetDlSrc;
@@ -153,20 +150,6 @@ public class OF10ActionsSerializerTest {
         queueBuilder.setQueueId(400L);
         actionBuilder.addAugmentation(QueueIdAction.class, queueBuilder.build());
         actions.add(actionBuilder.build());
-        actionBuilder = new ActionBuilder();
-        actionBuilder.setType(Experimenter.class);
-        ExperimenterActionBuilder expBuilder = new ExperimenterActionBuilder();
-        expBuilder.setExperimenter(82L);
-        byte[] expData = new byte[]{0, 0, 0, 0, 0, 0, 0, 1};
-        expBuilder.setData(expData);
-        actionBuilder.addAugmentation(ExperimenterAction.class, expBuilder.build());
-        actions.add(actionBuilder.build());
-        actionBuilder = new ActionBuilder();
-        actionBuilder.setType(Experimenter.class);
-        expBuilder = new ExperimenterActionBuilder();
-        expBuilder.setExperimenter(102L);
-        actionBuilder.addAugmentation(ExperimenterAction.class, expBuilder.build());
-        actions.add(actionBuilder.build());
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         ListSerializer.serializeList(actions, EnhancedTypeKeyMakerFactory
@@ -228,15 +211,6 @@ public class OF10ActionsSerializerTest {
         Assert.assertEquals("Wrong port", 6613, out.readUnsignedShort());
         out.skipBytes(6);
         Assert.assertEquals("Wrong queue-id", 400, out.readUnsignedInt());
-        Assert.assertEquals("Wrong action type", 65535, out.readUnsignedShort());
-        Assert.assertEquals("Wrong action length", 16, out.readUnsignedShort());
-        Assert.assertEquals("Wrong experimenter", 82, out.readUnsignedInt());
-        byte[] tmp = new byte[8];
-        out.readBytes(tmp);
-        Assert.assertArrayEquals("Wrong data", expData, tmp);
-        Assert.assertEquals("Wrong action type", 65535, out.readUnsignedShort());
-        Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
-        Assert.assertEquals("Wrong experimenter", 102, out.readUnsignedInt());
         Assert.assertTrue("Written more bytes than needed", out.readableBytes() == 0);
     }
     
