@@ -50,8 +50,6 @@ public class DeserializerRegistryImpl implements DeserializerRegistry {
         ActionDeserializerInitializer.registerDeserializers(this);
         // register instruction deserializers
         InstructionDeserializerInitializer.registerDeserializers(this);
-        // register default experimenter deserializers
-        DefaultExperimenterDeserializerInitializer.registerDeserializers(this);
     }
 
     @Override
