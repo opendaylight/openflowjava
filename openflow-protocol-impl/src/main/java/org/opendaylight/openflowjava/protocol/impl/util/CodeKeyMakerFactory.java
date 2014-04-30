@@ -47,11 +47,8 @@ public abstract class CodeKeyMakerFactory {
         return new AbstractCodeKeyMaker(version) {
             @Override
             public MessageCodeKey make(ByteBuf input) {
-                // EncodeConstants.EMPTY_VALUE used as temporary value
-                // until action deserializers are split
-//                int type = input.getUnsignedShort(input.readerIndex());
-//                return new MessageCodeKey(getVersion(), type, Action.class);
-                return new MessageCodeKey(getVersion(), EncodeConstants.EMPTY_VALUE, Action.class);
+                int type = input.getUnsignedShort(input.readerIndex());
+                return new MessageCodeKey(getVersion(), type, Action.class);
             }
         };
     }

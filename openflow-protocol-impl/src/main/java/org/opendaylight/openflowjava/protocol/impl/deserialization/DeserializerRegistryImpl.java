@@ -15,12 +15,9 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegi
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
-import org.opendaylight.openflowjava.protocol.impl.util.ActionsDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.MatchDeserializer;
-import org.opendaylight.openflowjava.protocol.impl.util.OF10ActionsDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.OF10MatchDeserializer;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.v10.grouping.MatchV10;
 
@@ -44,16 +41,14 @@ public class DeserializerRegistryImpl implements DeserializerRegistry {
         // register common structure deserializers
         registerDeserializer(new MessageCodeKey(EncodeConstants.OF10_VERSION_ID,
                 EncodeConstants.EMPTY_VALUE, MatchV10.class), new OF10MatchDeserializer());
-        registerDeserializer(new MessageCodeKey(EncodeConstants.OF10_VERSION_ID,
-                EncodeConstants.EMPTY_VALUE, Action.class), new OF10ActionsDeserializer());
         registerDeserializer(new MessageCodeKey(EncodeConstants.OF13_VERSION_ID,
                 EncodeConstants.EMPTY_VALUE, Match.class), new MatchDeserializer());
-        registerDeserializer(new MessageCodeKey(EncodeConstants.OF13_VERSION_ID,
-                EncodeConstants.EMPTY_VALUE, Action.class), new ActionsDeserializer());
 
         // register match entry deserializers
         MatchEntryDeserializerInitializer.registerMatchEntryDeserializers(this);
-        //register instruction deserializers
+        // register action deserializers
+        ActionDeserializerInitializer.registerDeserializers(this);
+        // register instruction deserializers
         InstructionDeserializerInitializer.registerDeserializers(this);
         // register default experimenter deserializers
         DefaultExperimenterDeserializerInitializer.registerDeserializers(this);
