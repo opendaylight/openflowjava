@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<features name="config-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.2.0 http://karaf.apache.org/xmlns/features/v1.2.0">
+    <feature name='config-all' version='${project.version}'>
+        <feature version='${project.version}'>config-subsystem</feature>
+    </feature>
+
+    <feature name='odl-openflowjava' version='${project.version}'>
+        <feature version='${yangtools.version}'>yangtools-concepts</feature>
+        <feature version='${yangtools.version}'>yangtools-binding</feature>
+        <feature version='${yangtools.version}'>yangtools-binding-generator</feature>
+        <feature version='${yangtools.version}'>yangtools-models</feature>
+        <feature version='${config.version}'>odl-config-subsystem</feature>
+        <bundle>wrap:mvn:io.netty/netty-buffer/${netty.version}</bundle>
+        <bundle>wrap:mvn:io.netty/netty-common/${netty.version}</bundle>
+        <bundle>wrap:mvn:io.netty/netty-transport/${netty.version}</bundle>
+        <bundle>wrap:mvn:io.netty/netty-codec/${netty.version}</bundle>
+        <bundle>wrap:mvn:io.netty/netty-handler/${netty.version}</bundle>
+        <bundle>wrap:mvn:org.opendaylight.openflowjava/openflow-protocol-api/${project.version}</bundle>
+        <bundle>wrap:mvn:org.opendaylight.openflowjava/openflow-protocol-spi/${project.version}</bundle>
+        <bundle>wrap:mvn:org.opendaylight.openflowjava/openflow-protocol-impl/${project.version}</bundle>
+    </feature>
+</features>

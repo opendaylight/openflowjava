@@ -9,6 +9,7 @@
         <module>openflow-protocol-spi</module>
         <module>openflow-protocol-impl</module>
         <module>openflow-protocol-it</module>
+        <module>feature</module>
         <module>simple-client</module>
     </modules>
     <scm>
