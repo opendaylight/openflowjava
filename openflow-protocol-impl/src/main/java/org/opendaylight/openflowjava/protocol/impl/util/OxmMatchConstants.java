@@ -104,11 +104,10 @@ public abstract class OxmMatchConstants {
     /** IPv6 Extension Header pseudo-field */
     public static final int IPV6_EXTHDR = 39;
     /** NXM */
-    public static final int FOO = 40;
+    public static final int NXM_NX_TUN_IPV4_SRC = 31;
     /** NXM */
-    public static final int FOOBAR_ID = 41;
+    public static final int NXM_NX_TUN_IPV4_DST = 32;
     /** NXM */
-    public static final int BAR_DST = 42;
-    /** NXM */
-    public static final int BAR_SRC = 43;
+    public static final int NXM_NX_TCP_FLAG = 34;
+
 }

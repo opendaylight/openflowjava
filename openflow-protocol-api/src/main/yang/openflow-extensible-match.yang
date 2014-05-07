@@ -214,32 +214,18 @@
             base match-field;
             description "OXM field for IPv6 Extension Header pseudo-field";
         }
-
-
-
-
-
-
-
-
-        identity foo {
+        identity tunnel_ipv4_dst {
             base match-field;
-            description "OXM field for Foo";
+            description "NXM field for NXM_NX_TUN_IPV4_DST";
         }
-        identity bar-dst {
+        identity tunnel_ipv4_src {
             base match-field;
-            description "OXM field for Foo";
+            description "NXM field for NXM_NX_TUN_IPV4_SRC";
         }
-        identity bar-src {
+        identity tcp_flag {
             base match-field;
-            description "OXM field for Foo";
+            description "NXM field for NXM_NX_TUN_IPV4_SRC";
         }
-
-
-
-
-
-
 
 
         container oxm-container {

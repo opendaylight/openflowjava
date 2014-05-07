@@ -8,18 +8,15 @@
 package org.opendaylight.openflowjava.protocol.impl.serialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.impl.serialization.match.NxmTcpFlagSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpOpSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpShaSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpSpaSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpThaSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpTpaSerializer;
-import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmBarDstSerializer;
-import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmBarSrcSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmEthDstSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmEthSrcSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmEthTypeSerializer;
-import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmFooSerializer;
-//import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmFoobarIdSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmIcmpv4CodeSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmIcmpv4TypeSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmIcmpv6CodeSerializer;
@@ -48,6 +45,8 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmSctpSr
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmTcpDstSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmTcpSrcSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmTunnelIdSerializer;
+import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmTunnelIpv4DstSerializer;
+import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmTunnelIpv4SrcSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmUdpDstSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmUdpSrcSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmVlanPcpSerializer;
@@ -59,13 +58,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpS
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpSpa;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpTha;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpTpa;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.BarDst;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.BarSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.EthDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.EthSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.EthType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Foo;
-//import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.FoobarId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Icmpv4Code;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Icmpv4Type;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Icmpv6Code;
@@ -88,13 +83,17 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Meta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MplsBos;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MplsLabel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MplsTc;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Nxm1Class;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.PbbIsid;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.SctpDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.SctpSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.TcpDst;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.TcpFlag;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.TcpSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.TunnelId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.TunnelIpv4Dst;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.TunnelIpv4Src;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.UdpDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.UdpSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.VlanPcp;
@@ -155,9 +154,14 @@ public class MatchEntriesInitializer {
         registryHelper.registerSerializer(PbbIsid.class, new OxmPbbIsidSerializer());
         registryHelper.registerSerializer(TunnelId.class, new OxmTunnelIdSerializer());
         registryHelper.registerSerializer(Ipv6Exthdr.class, new OxmIpv6ExtHdrSerializer());
-        registryHelper.registerSerializer(Foo.class, new OxmFooSerializer());
-        registryHelper.registerSerializer(BarDst.class, new OxmBarDstSerializer());
-        registryHelper.registerSerializer(BarSrc.class, new OxmBarSrcSerializer());
-//        registryHelper.registerSerializer(FoobarId.class, new OxmFoobarIdSerializer());
+
+        // register OF v1.3 NXM1Class match entry serializer
+        Class<Nxm1Class> nxmClass = Nxm1Class.class;
+        OF13MatchEntriesRegistryHelper<Nxm1Class> nxmRegistryHelper =
+            new OF13MatchEntriesRegistryHelper<>(EncodeConstants.OF13_VERSION_ID, nxmClass, serializerRegistry);
+        nxmRegistryHelper.registerSerializer(TunnelIpv4Src.class, new OxmTunnelIpv4SrcSerializer());
+        nxmRegistryHelper.registerSerializer(TunnelIpv4Dst.class, new OxmTunnelIpv4DstSerializer());
+        nxmRegistryHelper.registerSerializer(TcpFlag.class, new NxmTcpFlagSerializer());
+
     }
 }

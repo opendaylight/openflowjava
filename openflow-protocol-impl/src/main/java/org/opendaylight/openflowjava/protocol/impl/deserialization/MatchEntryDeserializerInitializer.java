@@ -8,18 +8,15 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.match.NxmTcpFlagDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpOpDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpShaDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpSpaDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpThaDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpTpaDeserializer;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmBarDstDeserializer;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmBarSrcDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmEthDstDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmEthSrcDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmEthTypeDeserializer;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmFooDeserializer;
-//import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmFoobarIdDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmIcmpv4CodeDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmIcmpv4TypeDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmIcmpv6CodeDeserializer;
@@ -48,10 +45,11 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmSctp
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmTcpDstDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmTcpSrcDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmTunnelIdDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmTunnelIpv4DstDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmTunnelIpv4SrcDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmUdpDstDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmUdpSrcDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmVlanPcpDeserializer;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmFooDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmVlanVidDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.MatchEntryDeserializerRegistryHelper;
@@ -112,9 +110,14 @@ public class MatchEntryDeserializerInitializer {
         helper.register(OxmMatchConstants.PBB_ISID, new OxmPbbIsidDeserializer());
         helper.register(OxmMatchConstants.IPV6_EXTHDR, new OxmIpv6ExtHdrDeserializer());
         helper.register(OxmMatchConstants.TUNNEL_ID, new OxmTunnelIdDeserializer());
-        helper.register(OxmMatchConstants.FOO, new OxmFooDeserializer());
-        helper.register(OxmMatchConstants.BAR_DST, new OxmBarDstDeserializer());
-        helper.register(OxmMatchConstants.BAR_SRC, new OxmBarSrcDeserializer());
-//        helper.register(OxmMatchConstants.FOOBAR_ID, new OxmFoobarIdDeserializer());
+
+        // register NXM1Class match entry deserializers
+        MatchEntryDeserializerRegistryHelper nxmhelper =
+            new MatchEntryDeserializerRegistryHelper(EncodeConstants.OF13_VERSION_ID,
+                OxmMatchConstants.NXM_1_CLASS, registry);
+        nxmhelper.register(OxmMatchConstants.NXM_NX_TUN_IPV4_SRC, new OxmTunnelIpv4SrcDeserializer());
+        nxmhelper.register(OxmMatchConstants.NXM_NX_TUN_IPV4_DST, new OxmTunnelIpv4DstDeserializer());
+        nxmhelper.register(OxmMatchConstants.NXM_NX_TCP_FLAG, new NxmTcpFlagDeserializer());
+
     }
 }

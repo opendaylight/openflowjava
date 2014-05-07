@@ -10,6 +10,8 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 import org.opendaylight.openflowjava.protocol.api.extensibility.EnhancedMessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author michal.polkorab
@@ -17,6 +19,7 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegist
  */
 public class OF13MatchEntriesRegistryHelper<T> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(OF13MatchEntriesRegistryHelper.class);
     private short version;
     private Class<T> oxmClass;
     private SerializerRegistry serializerRegistry;
@@ -27,6 +30,10 @@ public class OF13MatchEntriesRegistryHelper<T> {
      * @param serializerRegistry
      */
     public OF13MatchEntriesRegistryHelper(short version, Class<T> oxmClass, SerializerRegistry serializerRegistry) {
+
+        LOGGER.info(" **NXM** OF13InstructionsSerializer(2nd ApplyActions.class) => {} => {}",
+            oxmClass, version, serializerRegistry);
+
         this.version = version;
         this.oxmClass = oxmClass;
         this.serializerRegistry = serializerRegistry;
@@ -38,6 +45,8 @@ public class OF13MatchEntriesRegistryHelper<T> {
      * @param serializer
      */
     public void registerSerializer(Class<?> oxmField, OFGeneralSerializer serializer) {
+        LOGGER.info(" **NXM** OF13InstructionsSerializer(2nd ApplyActions.class) => {} => {}", oxmField, serializer);
+
         serializerRegistry.registerSerializer(new EnhancedMessageTypeKey<>(version, oxmClass, oxmField),
             serializer);
     }
