@@ -49,6 +49,7 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
         } catch(Exception e) {
             LOGGER.error("Message deserialization failed");
             LOGGER.error(e.getMessage(), e);
+            LOGGER.error("HEX dump " + ByteBufUtils.byteBufToHexString(msg.getMessageBuffer()));
             return;
         }
         if (dataObject == null) {
