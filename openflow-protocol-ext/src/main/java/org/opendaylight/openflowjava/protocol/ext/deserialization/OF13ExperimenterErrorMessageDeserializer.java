@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Pantheon Technologies s.r.o. and others. All rights reserved.
+ * Copyright (c) 2014 Pantheon Technologies s.r.o. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -28,7 +28,7 @@ public class OF13ExperimenterErrorMessageDeserializer implements OFDeserializer<
         if (message.readableBytes() > 0) {
             byte[] data = new byte[message.readableBytes()];
             message.readBytes(data);
-            expBuilder.setData(data);
+            expBuilder.setExpData(data);
         }
         return expBuilder.build();
     }
