@@ -26,7 +26,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.matc
  * @author michal.polkorab
  */
 public class DeserializerRegistryImpl implements DeserializerRegistry {
-    
+
     private Map<MessageCodeKey, OFGeneralDeserializer> registry;
 
     /**

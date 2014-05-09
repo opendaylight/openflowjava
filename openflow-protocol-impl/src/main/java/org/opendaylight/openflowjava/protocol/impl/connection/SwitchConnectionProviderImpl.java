@@ -15,7 +15,7 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegi
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.impl.core.PublishingChannelInitializerFactory;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler;
@@ -130,8 +130,8 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     }
 
     @Override
-    public <KEY_TYPE, E extends DataObject> void registerCustomSerializer(MessageTypeKey<KEY_TYPE> key,
-            OFSerializer<E> serializer) {
+    public <E extends DataObject> void registerSerializer(MessageTypeKey<E> key,
+            OFGeneralSerializer serializer) {
         serializerRegistry.registerSerializer(key, serializer);
     }
 
