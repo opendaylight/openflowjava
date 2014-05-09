@@ -28,7 +28,7 @@ public class OF13ExperimenterErrorMessageDeserializer implements OFDeserializer<
         if (message.readableBytes() > 0) {
             byte[] data = new byte[message.readableBytes()];
             message.readBytes(data);
-            expBuilder.setData(data);
+            expBuilder.setExpData(data);
         }
         return expBuilder.build();
     }

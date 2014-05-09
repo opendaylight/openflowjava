@@ -39,7 +39,7 @@ public class OF13ExperimenterErrorMessageDeserializerTest {
 
         Assert.assertEquals("Wrong exp-type", 35000, message.getExpType().intValue());
         Assert.assertEquals("Wrong experimenter", 70000, message.getExperimenter().intValue());
-        Assert.assertArrayEquals("Wrong data", data, message.getData());
+        Assert.assertArrayEquals("Wrong data", data, message.getExpData());
     }
 
     /**
@@ -58,6 +58,6 @@ public class OF13ExperimenterErrorMessageDeserializerTest {
 
         Assert.assertEquals("Wrong exp-type", 35000, message.getExpType().intValue());
         Assert.assertEquals("Wrong experimenter", 70000, message.getExperimenter().intValue());
-        Assert.assertNull("Unexpected data", message.getData());
+        Assert.assertNull("Unexpected data", message.getExpData());
     }
 }

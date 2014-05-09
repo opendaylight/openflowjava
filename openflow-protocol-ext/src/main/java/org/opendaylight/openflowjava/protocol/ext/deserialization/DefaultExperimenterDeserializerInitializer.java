@@ -8,10 +8,9 @@
 
 package org.opendaylight.openflowjava.protocol.ext.deserialization;
 
-import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.ext.util.ExtConstants;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 
@@ -23,19 +22,19 @@ public class DefaultExperimenterDeserializerInitializer {
 
     /**
      * Registers default experimenter deserializers
-     * @param registry registry to be filled with deserializers
+     * @param provider provider to be filled with deserializers
      */
-    public static void registerDeserializers(DeserializerRegistry registry) {
+    public static void registerDeserializers(SwitchConnectionProvider provider) {
         // register OF v1.0 default experimenter deserializers
         // - default action deserializer
-        registry.registerDeserializer(new MessageCodeKey(ExtConstants.OF10_VERSION_ID,
+        provider.registerDeserializer(new MessageCodeKey(ExtConstants.OF10_VERSION_ID,
                 ExtConstants.EXPERIMENTER_VALUE, Action.class), new OF13ExperimenterActionDeserializer());
         // register OF v1.3 default experimenter deserializers
         // - default action deserializer
-        registry.registerDeserializer(new MessageCodeKey(ExtConstants.OF13_VERSION_ID,
+        provider.registerDeserializer(new MessageCodeKey(ExtConstants.OF13_VERSION_ID,
                 ExtConstants.EXPERIMENTER_VALUE, Action.class), new OF13ExperimenterActionDeserializer());
         // - default instruction deserializer
-        registry.registerDeserializer(new MessageCodeKey(ExtConstants.OF13_VERSION_ID,
+        provider.registerDeserializer(new MessageCodeKey(ExtConstants.OF13_VERSION_ID,
                 ExtConstants.EXPERIMENTER_VALUE, Instruction.class), new OF13ExperimenterInstructionDeserializer());
     }
 }
