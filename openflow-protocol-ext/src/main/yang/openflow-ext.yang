@@ -1,0 +1,37 @@
+module openflow-ext {
+	yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:openflow:ext";
+    prefix "openflow-ext";
+
+    import config {prefix config; revision-date 2013-04-05;}
+    import openflow-switch-connection-provider {prefix openflow-switch-connection-provider;revision-date 2014-03-28;}
+
+
+    description
+        "openflow library default extension package";
+
+    revision "2014-05-09" {
+        description
+            "Initial revision";
+    }
+
+    identity openflow-ext {
+        base config:module-type;
+        config:java-name-prefix ExtensionRegistrator;
+    }
+
+    augment "/config:modules/config:module/config:configuration" {
+        case openflow-ext {
+            when "/config:modules/config:module/config:type = 'openflow-ext'";
+
+            list openflow-switch-connection-provider {
+                uses config:service-ref {
+                    refine type {
+                        mandatory true;
+                        config:required-identity openflow-switch-connection-provider:openflow-switch-connection-provider;
+                    }
+                }
+            }
+        }
+    }
+}
