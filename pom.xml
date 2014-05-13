@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.openflowjava</groupId>
@@ -11,7 +12,8 @@
         <module>openflow-protocol-it</module>
         <module>feature</module>
         <module>simple-client</module>
-    </modules>
+        <module>openflow-protocol-config</module>
+  </modules>
     <scm>
         <connection>scm:git:ssh://git.opendaylight.org:29418/openflowjava.git</connection>
         <developerConnection>scm:git:ssh://git.opendaylight.org:29418/openflowjava.git</developerConnection>
@@ -148,6 +150,11 @@
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.core</artifactId>
                 <version>5.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.controller</groupId>
+                <artifactId>config-api</artifactId>
+                <version>0.2.5-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
