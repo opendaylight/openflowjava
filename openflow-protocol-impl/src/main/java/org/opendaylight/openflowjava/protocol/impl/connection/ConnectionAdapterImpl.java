@@ -104,20 +104,15 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
 
     /**
      * default ctor
+     * @param channel channel being served by this ConnectionAdapter
      */
-    public ConnectionAdapterImpl() {
+    public ConnectionAdapterImpl(Channel channel) {
         responseCache = CacheBuilder.newBuilder()
                 .concurrencyLevel(1)
                 .expireAfterWrite(RPC_RESPONSE_EXPIRATION, TimeUnit.MINUTES)
                 .removalListener(new ResponseRemovalListener()).build();
-        LOG.debug("ConnectionAdapter created");
-    }
-
-    /**
-     * @param channel the channel to be set - used for communication
-     */
-    public void setChannel(Channel channel) {
         this.channel = channel;
+        LOG.debug("ConnectionAdapter created");
     }
 
     @Override
