@@ -13,14 +13,10 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.util.concurrent.GenericFutureListener;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.opendaylight.controller.sal.common.util.RpcErrors;
-import org.opendaylight.controller.sal.common.util.Rpcs;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionReadyListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierOutput;
@@ -75,7 +71,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
-import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
 /**
@@ -96,7 +92,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     private Channel channel;
     private OpenflowProtocolListener messageListener;
     /** expiring cache for future rpcResponses */
-    protected Cache<RpcResponseKey, SettableFuture<?>> responseCache;
+    protected Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> responseCache;
     private SystemNotificationsListener systemListener;
     private boolean disconnectOccured = false;
 
@@ -116,112 +112,112 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     /**
      * @param channel the channel to be set - used for communication
      */
-    public void setChannel(Channel channel) {
+    public void setChannel(final Channel channel) {
         this.channel = channel;
     }
 
     @Override
-    public Future<RpcResult<BarrierOutput>> barrier(BarrierInput input) {
+    public Future<RpcResult<BarrierOutput>> barrier(final BarrierInput input) {
         return sendToSwitchExpectRpcResultFuture(
                 input, BarrierOutput.class, "barrier-input sending failed");
     }
 
     @Override
-    public Future<RpcResult<EchoOutput>> echo(EchoInput input) {
+    public Future<RpcResult<EchoOutput>> echo(final EchoInput input) {
         return sendToSwitchExpectRpcResultFuture(
                 input, EchoOutput.class, "echo-input sending failed");
     }
 
     @Override
-    public Future<RpcResult<Void>> echoReply(EchoReplyInput input) {
+    public Future<RpcResult<Void>> echoReply(final EchoReplyInput input) {
         return sendToSwitchFuture(input, "echo-reply sending failed");
     }
 
     @Override
-    public Future<RpcResult<Void>> experimenter(ExperimenterInput input) {
+    public Future<RpcResult<Void>> experimenter(final ExperimenterInput input) {
         return sendToSwitchFuture(input, "experimenter sending failed");
     }
 
     @Override
-    public Future<RpcResult<Void>> flowMod(FlowModInput input) {
+    public Future<RpcResult<Void>> flowMod(final FlowModInput input) {
         return sendToSwitchFuture(input, "flow-mod sending failed");
     }
 
     @Override
-    public Future<RpcResult<GetConfigOutput>> getConfig(GetConfigInput input) {
+    public Future<RpcResult<GetConfigOutput>> getConfig(final GetConfigInput input) {
         return sendToSwitchExpectRpcResultFuture(
                 input, GetConfigOutput.class, "get-config-input sending failed");
     }
 
     @Override
     public Future<RpcResult<GetFeaturesOutput>> getFeatures(
-            GetFeaturesInput input) {
+            final GetFeaturesInput input) {
         return sendToSwitchExpectRpcResultFuture(
                 input, GetFeaturesOutput.class, "get-features-input sending failed");
     }
 
     @Override
     public Future<RpcResult<GetQueueConfigOutput>> getQueueConfig(
-            GetQueueConfigInput input) {
+            final GetQueueConfigInput input) {
         return sendToSwitchExpectRpcResultFuture(
                 input, GetQueueConfigOutput.class, "get-queue-config-input sending failed");
     }
 
     @Override
-    public Future<RpcResult<Void>> groupMod(GroupModInput input) {
+    public Future<RpcResult<Void>> groupMod(final GroupModInput input) {
         return sendToSwitchFuture(input, "group-mod-input sending failed");
     }
 
     @Override
-    public Future<RpcResult<Void>> hello(HelloInput input) {
+    public Future<RpcResult<Void>> hello(final HelloInput input) {
         return sendToSwitchFuture(input, "hello-input sending failed");
     }
 
     @Override
-    public Future<RpcResult<Void>> meterMod(MeterModInput input) {
+    public Future<RpcResult<Void>> meterMod(final MeterModInput input) {
         return sendToSwitchFuture(input, "meter-mod-input sending failed");
     }
 
     @Override
-    public Future<RpcResult<Void>> packetOut(PacketOutInput input) {
+    public Future<RpcResult<Void>> packetOut(final PacketOutInput input) {
         return sendToSwitchFuture(input, "packet-out-input sending failed");
     }
 
     @Override
-    public Future<RpcResult<Void>> multipartRequest(MultipartRequestInput input) {
+    public Future<RpcResult<Void>> multipartRequest(final MultipartRequestInput input) {
         return sendToSwitchFuture(input, "multi-part-request sending failed");
     }
 
     @Override
-    public Future<RpcResult<Void>> portMod(PortModInput input) {
+    public Future<RpcResult<Void>> portMod(final PortModInput input) {
         return sendToSwitchFuture(input, "port-mod-input sending failed");
     }
 
     @Override
     public Future<RpcResult<RoleRequestOutput>> roleRequest(
-            RoleRequestInput input) {
+            final RoleRequestInput input) {
         return sendToSwitchExpectRpcResultFuture(
                 input, RoleRequestOutput.class, "role-request-config-input sending failed");
     }
 
     @Override
-    public Future<RpcResult<Void>> setConfig(SetConfigInput input) {
+    public Future<RpcResult<Void>> setConfig(final SetConfigInput input) {
         return sendToSwitchFuture(input, "set-config-input sending failed");
     }
 
     @Override
-    public Future<RpcResult<Void>> tableMod(TableModInput input) {
+    public Future<RpcResult<Void>> tableMod(final TableModInput input) {
         return sendToSwitchFuture(input, "table-mod-input sending failed");
     }
 
     @Override
-    public Future<RpcResult<GetAsyncOutput>> getAsync(GetAsyncInput input) {
+    public Future<RpcResult<GetAsyncOutput>> getAsync(final GetAsyncInput input) {
         return sendToSwitchExpectRpcResultFuture(
                 input, GetAsyncOutput.class, "get-async-input sending failed");
     }
 
     @Override
-    public Future<RpcResult<Void>> setAsync(SetAsyncInput input) {
+    public Future<RpcResult<Void>> setAsync(final SetAsyncInput input) {
         return sendToSwitchFuture(input, "set-async-input sending failed");
     }
 
@@ -243,12 +239,12 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     }
 
     @Override
-    public void setMessageListener(OpenflowProtocolListener messageListener) {
+    public void setMessageListener(final OpenflowProtocolListener messageListener) {
         this.messageListener = messageListener;
     }
 
     @Override
-    public void consume(DataObject message) {
+    public void consume(final DataObject message) {
         LOG.debug("ConsumeIntern msg");
         if (disconnectOccured ) {
             return;
@@ -281,25 +277,23 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
             } else if (message instanceof PortStatusMessage) {
                 messageListener.onPortStatusMessage((PortStatusMessage) message);
             } else {
-                LOG.warn("message listening not supported for type: "+message.getClass());
+                LOG.warn("message listening not supported for type: {}", message.getClass());
             }
         } else {
             if (message instanceof OfHeader) {
                 LOG.debug("OFheader msg received");
                 RpcResponseKey key = createRpcResponseKey((OfHeader) message);
-                final SettableFuture<RpcResult<?>> rpcFuture = findRpcResponse(key);
-                if (rpcFuture != null) {
+                final ResponseExpectedRpcListener<?> listener = findRpcResponse(key);
+                if (listener != null) {
                     LOG.debug("corresponding rpcFuture found");
-                    List<RpcError> errors = Collections.emptyList();
-                    LOG.debug("before setting rpcFuture");
-                    rpcFuture.set(Rpcs.getRpcResult(true, message, errors));
+                    listener.completed((OfHeader)message);
                     LOG.debug("after setting rpcFuture");
                     responseCache.invalidate(key);
                 } else {
-                    LOG.warn("received unexpected rpc response: "+key);
+                    LOG.warn("received unexpected rpc response: {}", key);
                 }
             } else {
-                LOG.warn("message listening not supported for type: "+message.getClass());
+                LOG.warn("message listening not supported for type: {}", message.getClass());
             }
         }
     }
@@ -314,15 +308,15 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
      *  <li>else {@link RpcResult} will contain errors and failed status</li>
      *  </ul>
      */
-    private SettableFuture<RpcResult<Void>> sendToSwitchFuture(
-            DataObject input, final String failureInfo) {
+    private ListenableFuture<RpcResult<Void>> sendToSwitchFuture(
+            final DataObject input, final String failureInfo) {
+        final SimpleRpcListener listener = new SimpleRpcListener(failureInfo);
+
         LOG.debug("going to flush");
-        ChannelFuture resultFuture = channel.writeAndFlush(input);
+        channel.writeAndFlush(input).addListener(listener);
         LOG.debug("flushed");
 
-        ErrorSeverity errorSeverity = ErrorSeverity.ERROR;
-        String errorMessage = "check switch connection";
-        return handleRpcChannelFuture(resultFuture, failureInfo, errorSeverity, errorMessage);
+        return listener.getResult();
     }
 
     /**
@@ -340,104 +334,17 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
      *  </li>
      *  </ul>
      */
-    private <IN extends OfHeader, OUT extends OfHeader> SettableFuture<RpcResult<OUT>> sendToSwitchExpectRpcResultFuture(
-            IN input, Class<OUT> responseClazz, final String failureInfo) {
+    private <IN extends OfHeader, OUT extends OfHeader> ListenableFuture<RpcResult<OUT>> sendToSwitchExpectRpcResultFuture(
+            final IN input, final Class<OUT> responseClazz, final String failureInfo) {
+        final RpcResponseKey key = new RpcResponseKey(input.getXid(), responseClazz.getName());
+        final ResponseExpectedRpcListener<OUT> listener =
+                new ResponseExpectedRpcListener<>(failureInfo, responseCache, key);
+
         LOG.debug("going to flush");
-        SettableFuture<RpcResult<OUT>> rpcResult = SettableFuture.create();
-        RpcResponseKey key = new RpcResponseKey(input.getXid(), responseClazz.getName());
-        responseCache.put(key, rpcResult);
-        ChannelFuture resultFuture = channel.writeAndFlush(input);
+        channel.writeAndFlush(input).addListener(listener);
         LOG.debug("flushed");
 
-        ErrorSeverity errorSeverity = ErrorSeverity.ERROR;
-        String errorMessage = "check switch connection";
-
-        return handleRpcChannelFutureWithResponse(resultFuture, failureInfo, errorSeverity,
-                errorMessage, input, responseClazz, rpcResult, key);
-    }
-
-    /**
-     * @param resultFuture
-     * @param failureInfo
-     * @return
-     */
-    private SettableFuture<RpcResult<Void>> handleRpcChannelFuture(
-            ChannelFuture resultFuture, final String failureInfo,
-            final ErrorSeverity errorSeverity, final String errorMessage) {
-
-        final SettableFuture<RpcResult<Void>> rpcResult = SettableFuture.create();
-        LOG.debug("handlerpcchannelfuture");
-        resultFuture.addListener(new GenericFutureListener<io.netty.util.concurrent.Future<? super Void>>() {
-
-            @Override
-            public void operationComplete(
-                    io.netty.util.concurrent.Future<? super Void> future)
-                    throws Exception {
-                LOG.debug("operation complete");
-                Collection<RpcError> errors = Collections.emptyList();
-
-                if (future.cause() != null) {
-                    LOG.debug("future.cause != null");
-                    RpcError rpcError = buildRpcError(failureInfo,
-                            errorSeverity, errorMessage, future.cause());
-                    errors = Lists.newArrayList(rpcError);
-                }
-
-                rpcResult.set(Rpcs.getRpcResult(
-                        future.isSuccess(),
-                        (Void) null,
-                        errors)
-                );
-            }
-        });
-        return rpcResult;
-    }
-
-    /**
-     * @param resultFuture
-     * @param failureInfo
-     * @param errorSeverity
-     * @param errorMessage
-     * @param input
-     * @param responseClazz
-     * @param key of rpcResponse
-     * @return
-     */
-    private <IN extends OfHeader, OUT extends OfHeader> SettableFuture<RpcResult<OUT>> handleRpcChannelFutureWithResponse(
-            ChannelFuture resultFuture, final String failureInfo,
-            final ErrorSeverity errorSeverity, final String errorMessage,
-            final IN input, Class<OUT> responseClazz, final SettableFuture<RpcResult<OUT>> rpcResult, final RpcResponseKey key) {
-        LOG.debug("handleRpcchanfuture with response");
-
-        resultFuture.addListener(new GenericFutureListener<io.netty.util.concurrent.Future<? super Void>>() {
-
-            @Override
-            public void operationComplete(
-                    io.netty.util.concurrent.Future<? super Void> future)
-                    throws Exception {
-
-                LOG.debug("operation complete");
-                Collection<RpcError> errors = Collections.emptyList();
-                if (future.cause() != null) {
-                    LOG.debug("ChannelFuture.cause != null");
-                    RpcError rpcError = buildRpcError(failureInfo,
-                            errorSeverity, errorMessage, future.cause());
-                    errors = Lists.newArrayList(rpcError);
-                    rpcResult.set(Rpcs.getRpcResult(
-                            future.isSuccess(),
-                            (OUT) null,
-                            errors)
-                            );
-                    responseCache.invalidate(key);
-                } else {
-                    LOG.debug("ChannelFuture.cause == null");
-                    if (responseCache.getIfPresent(key) == null) {
-                    	LOG.debug("responcache: key wasn't present");
-                    }
-                }
-            }
-        });
-        return rpcResult;
+        return listener.getResult();
     }
 
     /**
@@ -448,7 +355,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
      * @return
      */
     private static SettableFuture<Boolean> handleTransportChannelFuture(
-            ChannelFuture resultFuture, final String failureInfo,
+            final ChannelFuture resultFuture, final String failureInfo,
             final ErrorSeverity errorSeverity, final String message) {
 
         final SettableFuture<Boolean> transportResult = SettableFuture.create();
@@ -457,7 +364,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
 
             @Override
             public void operationComplete(
-                    io.netty.util.concurrent.Future<? super Void> future)
+                    final io.netty.util.concurrent.Future<? super Void> future)
                     throws Exception {
                 transportResult.set(future.isSuccess());
                 if (!future.isSuccess()) {
@@ -472,8 +379,8 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
      * @param cause
      * @return
      */
-    protected RpcError buildRpcError(String info, ErrorSeverity severity, String message,
-            Throwable cause) {
+    static RpcError buildRpcError(final String info, final ErrorSeverity severity, final String message,
+            final Throwable cause) {
         RpcError error = RpcErrors.getRpcError(APPLICATION_TAG, TAG, info, severity, message,
                 ErrorType.RPC, cause);
         return error;
@@ -483,8 +390,8 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
      * @param cause
      * @return
      */
-    protected RpcError buildTransportError(String info, ErrorSeverity severity, String message,
-            Throwable cause) {
+    protected static RpcError buildTransportError(final String info, final ErrorSeverity severity, final String message,
+            final Throwable cause) {
         RpcError error = RpcErrors.getRpcError(APPLICATION_TAG, TAG, info, severity, message,
                 ErrorType.TRANSPORT, cause);
         return error;
@@ -494,20 +401,19 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
      * @param message
      * @return
      */
-    private static RpcResponseKey createRpcResponseKey(OfHeader message) {
+    private static RpcResponseKey createRpcResponseKey(final OfHeader message) {
         return new RpcResponseKey(message.getXid(), message.getImplementedInterface().getName());
     }
 
     /**
      * @return
      */
-    @SuppressWarnings("unchecked")
-    private SettableFuture<RpcResult<?>> findRpcResponse(RpcResponseKey key) {
-        return (SettableFuture<RpcResult<?>>) responseCache.getIfPresent(key);
+    private ResponseExpectedRpcListener<?> findRpcResponse(final RpcResponseKey key) {
+        return responseCache.getIfPresent(key);
     }
 
     @Override
-    public void setSystemListener(SystemNotificationsListener systemListener) {
+    public void setSystemListener(final SystemNotificationsListener systemListener) {
         this.systemListener = systemListener;
     }
 
@@ -529,15 +435,11 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
         }
     }
 
-    static class ResponseRemovalListener implements RemovalListener<RpcResponseKey, SettableFuture<?>> {
+    static class ResponseRemovalListener implements RemovalListener<RpcResponseKey, ResponseExpectedRpcListener<?>> {
         @Override
         public void onRemoval(
-                RemovalNotification<RpcResponseKey, SettableFuture<?>> notification) {
-            SettableFuture<?> future = notification.getValue();
-            if (!future.isDone()) {
-                LOG.warn("rpc response discarded: " + notification.getKey());
-                future.cancel(true);
-            }
+                final RemovalNotification<RpcResponseKey, ResponseExpectedRpcListener<?>> notification) {
+            notification.getValue().discard();
         }
     }
 
@@ -565,7 +467,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
 
     @Override
     public void setConnectionReadyListener(
-            ConnectionReadyListener connectionReadyListener) {
+            final ConnectionReadyListener connectionReadyListener) {
         this.connectionReadyListener = connectionReadyListener;
     }
 
