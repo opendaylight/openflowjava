@@ -21,9 +21,9 @@ final class ResponseExpectedRpcListener<T extends OfHeader> extends AbstractRpcL
     private final Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> cache;
     private final RpcResponseKey key;
 
-    ResponseExpectedRpcListener(final String failureInfo,
+    ResponseExpectedRpcListener(final Object message, final String failureInfo,
             final Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> cache, final RpcResponseKey key) {
-        super(failureInfo);
+        super(message, failureInfo);
         this.cache = Preconditions.checkNotNull(cache);
         this.key = Preconditions.checkNotNull(key);
     }
