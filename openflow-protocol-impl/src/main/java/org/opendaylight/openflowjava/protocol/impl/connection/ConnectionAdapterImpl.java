@@ -89,11 +89,19 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
 
     private static final String APPLICATION_TAG = "OPENFLOW_LIBRARY";
     private static final String TAG = "OPENFLOW";
-
-    private final Channel channel;
+    private static final RemovalListener<RpcResponseKey, ExpectedFailureRpcChannelPromise<?>> REMOVAL_LISTENER =
+            new RemovalListener<RpcResponseKey, ExpectedFailureRpcChannelPromise<?>>() {
+        @Override
+        public void onRemoval(
+                RemovalNotification<RpcResponseKey, ExpectedFailureRpcChannelPromise<?>> notification) {
+            notification.getValue().discard();
+        }
+    };
 
     /** expiring cache for future rpcResponses */
     private final Cache<RpcResponseKey, ExpectedFailureRpcChannelPromise<?>> responseCache;
+
+    private final Channel channel;
 
     private ConnectionReadyListener connectionReadyListener;
     private OpenflowProtocolListener messageListener;
@@ -108,7 +116,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
         responseCache = CacheBuilder.newBuilder()
                 .concurrencyLevel(1)
                 .expireAfterWrite(RPC_RESPONSE_EXPIRATION, TimeUnit.MINUTES)
-                .removalListener(new ResponseRemovalListener()).build();
+                .removalListener(REMOVAL_LISTENER).build();
         this.channel = Preconditions.checkNotNull(channel);
         LOG.debug("ConnectionAdapter created");
     }
@@ -432,14 +440,6 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
         }
     }
 
-    static class ResponseRemovalListener implements RemovalListener<RpcResponseKey, ExpectedFailureRpcChannelPromise<?>> {
-        @Override
-        public void onRemoval(
-                RemovalNotification<RpcResponseKey, ExpectedFailureRpcChannelPromise<?>> notification) {
-            notification.getValue().discard();
-        }
-    }
-
     @Override
     public void fireConnectionReadyNotification() {
         new Thread(new Runnable() {
@@ -450,11 +450,9 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
         }).start();
     }
 
-
     @Override
     public void setConnectionReadyListener(
             ConnectionReadyListener connectionReadyListener) {
         this.connectionReadyListener = connectionReadyListener;
     }
-
 }
