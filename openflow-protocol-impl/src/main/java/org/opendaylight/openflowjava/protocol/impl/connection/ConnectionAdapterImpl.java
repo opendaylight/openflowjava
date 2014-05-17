@@ -58,7 +58,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.DisconnectEvent;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SwitchIdleEvent;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SystemNotificationsListener;
-import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.common.RpcError;
@@ -437,17 +436,6 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
         public void onRemoval(
                 final RemovalNotification<RpcResponseKey, ResponseExpectedRpcListener<?>> notification) {
             notification.getValue().discard();
-        }
-    }
-
-    /**
-     * Class is used ONLY for exiting msgQueue processing thread
-     * @author michal.polkorab
-     */
-    static class ExitingDataObject implements DataObject {
-        @Override
-        public Class<? extends DataContainer> getImplementedInterface() {
-            return null;
         }
     }
 
