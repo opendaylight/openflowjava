@@ -424,7 +424,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
 
     @Override
     public void checkListeners() {
-        StringBuffer buffer =  new StringBuffer();
+        final StringBuilder buffer =  new StringBuilder();
         if (systemListener == null) {
             buffer.append("SystemListener ");
         }
@@ -435,9 +435,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
             buffer.append("ConnectionReadyListener ");
         }
 
-        if (buffer.length() > 0) {
-            throw new IllegalStateException("Missing listeners: " + buffer.toString());
-        }
+        Preconditions.checkState(buffer.length() == 0, "Missing listeners: %s", buffer.toString());
     }
 
     @Override
