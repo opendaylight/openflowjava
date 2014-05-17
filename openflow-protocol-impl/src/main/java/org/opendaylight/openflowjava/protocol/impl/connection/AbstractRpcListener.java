@@ -19,16 +19,24 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
-abstract class AbstractRpcListener<T> implements GenericFutureListener<Future<? super Void>> {
+/**
+ * This class holds all the context we need for sending a single message down the tube.
+ * A MessageHolder (used in queue) and the actual listener. It is not a thing of beauty,
+ * but it keeps us from allocating unnecessary objects in the egress path.
+ */
+abstract class AbstractRpcListener<T> implements GenericFutureListener<Future<Void>>, ChannelOutboundQueue.MessageHolder<Object> {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRpcListener.class);
     private final SettableFuture<RpcResult<T>> result = SettableFuture.create();
     private final String failureInfo;
+    private Object message;
 
-    AbstractRpcListener(final String failureInfo) {
-        this.failureInfo = failureInfo;
+    AbstractRpcListener(final Object message, final String failureInfo) {
+        this.failureInfo = Preconditions.checkNotNull(failureInfo);
+        this.message = Preconditions.checkNotNull(message);
     }
 
     public final ListenableFuture<RpcResult<T>> getResult() {
@@ -36,7 +44,7 @@ abstract class AbstractRpcListener<T> implements GenericFutureListener<Future<? 
     }
 
     @Override
-    public final void operationComplete(final Future<? super Void> future) {
+    public final void operationComplete(final Future<Void> future) {
         if (!future.isSuccess()) {
             LOG.debug("operation failed");
             failedRpc(future.cause());
@@ -46,12 +54,24 @@ abstract class AbstractRpcListener<T> implements GenericFutureListener<Future<? 
         }
     }
 
+    @Override
+    public final Object takeMessage() {
+        final Object ret = message;
+        Preconditions.checkState(ret != null, "Message has already been taken");
+        message = null;
+        return ret;
+    }
+
+    @Override
+    public final GenericFutureListener<Future<Void>> takeListener() {
+        return this;
+    }
+
     abstract protected void operationSuccessful();
 
     protected final void failedRpc(final Throwable cause) {
         final RpcError rpcError = ConnectionAdapterImpl.buildRpcError(
                 failureInfo, ErrorSeverity.ERROR, "check switch connection", cause);
-
         result.set(Rpcs.getRpcResult(
                 false,
                 (T)null,
@@ -59,11 +79,9 @@ abstract class AbstractRpcListener<T> implements GenericFutureListener<Future<? 
     }
 
     protected final void successfulRpc(final T value) {
-
         result.set(Rpcs.getRpcResult(
                 true,
                 value,
                 Collections.<RpcError>emptyList()));
     }
-
 }

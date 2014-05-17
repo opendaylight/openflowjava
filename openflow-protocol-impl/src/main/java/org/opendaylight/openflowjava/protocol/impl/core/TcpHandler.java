@@ -22,8 +22,8 @@ import java.net.InetSocketAddress;
 
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
 import org.opendaylight.openflowjava.protocol.impl.connection.ServerFacade;
-import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,17 +36,27 @@ import com.google.common.util.concurrent.SettableFuture;
  * @author michal.polkorab
  */
 public class TcpHandler implements ServerFacade {
+    /*
+     * High/low write watermarks, in KiB.
+     */
+    private static final int DEFAULT_WRITE_HIGH_WATERMARK = 64;
+    private static final int DEFAULT_WRITE_LOW_WATERMARK = 32;
+    /*
+     * Write spin count. This tells netty to immediately retry a non-blocking
+     * write this many times before moving on to selecting.
+     */
+    private static final int DEFAULT_WRITE_SPIN_COUNT = 16;
 
-    private int port;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TcpHandler.class);
+
+    private final int port;
     private String address;
-    private InetAddress startupAddress;
+    private final InetAddress startupAddress;
     private NioEventLoopGroup workerGroup;
     private NioEventLoopGroup bossGroup;
-    private static final Logger LOGGER = LoggerFactory.getLogger(TcpHandler.class);
-    private SettableFuture<Boolean> isOnlineFuture;
-    
-    
-    private PublishingChannelInitializer channelInitializer;
+    private final SettableFuture<Boolean> isOnlineFuture;
+
+    private final PublishingChannelInitializer channelInitializer;
 
     /**
      * Enum used for storing names of used components (in pipeline).
@@ -86,23 +96,23 @@ public class TcpHandler implements ServerFacade {
          */
         DELEGATING_INBOUND_HANDLER,
     }
-    
+
 
     /**
      * Constructor of TCPHandler that listens on selected port.
      *
      * @param port listening port of TCPHandler server
      */
-    public TcpHandler(int port) {
+    public TcpHandler(final int port) {
         this(null, port);
     }
-    
+
     /**
      * Constructor of TCPHandler that listens on selected address and port.
      * @param address listening address of TCPHandler server
      * @param port listening port of TCPHandler server
      */
-    public TcpHandler(InetAddress address, int port) {
+    public TcpHandler(final InetAddress address, final int port) {
         this.port = port;
         this.startupAddress = address;
         channelInitializer = new PublishingChannelInitializer();
@@ -116,6 +126,18 @@ public class TcpHandler implements ServerFacade {
     public void run() {
         bossGroup = new NioEventLoopGroup();
         workerGroup = new NioEventLoopGroup();
+
+        /*
+         * We generally do not perform IO-unrelated tasks, so we want to have
+         * all outstanding tasks completed before the executing thread goes
+         * back into select.
+         *
+         * Any other setting means netty will measure the time it spent selecting
+         * and spend roughly proportional time executing tasks.
+         */
+        workerGroup.setIoRatio(100);
+
+        final ChannelFuture f;
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
@@ -124,24 +146,30 @@ public class TcpHandler implements ServerFacade {
                     .childHandler(channelInitializer)
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .option(ChannelOption.SO_REUSEADDR, true)
-                    .childOption(ChannelOption.SO_KEEPALIVE, true);
+                    .childOption(ChannelOption.SO_KEEPALIVE, true)
+                    .childOption(ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK, DEFAULT_WRITE_HIGH_WATERMARK * 1024)
+                    .childOption(ChannelOption.WRITE_BUFFER_LOW_WATER_MARK, DEFAULT_WRITE_LOW_WATERMARK * 1024)
+                    .childOption(ChannelOption.WRITE_SPIN_COUNT, DEFAULT_WRITE_SPIN_COUNT);
 
-            ChannelFuture f;
             if (startupAddress != null) {
                 f = b.bind(startupAddress.getHostAddress(), port).sync();
             } else {
                 f = b.bind(port).sync();
             }
-            
+        } catch (InterruptedException e) {
+            LOGGER.error("Interrupted while binding port {}", port, e);
+            return;
+        }
+
+        try {
             InetSocketAddress isa = (InetSocketAddress) f.channel().localAddress();
             address = isa.getHostString();
-            LOGGER.debug("address from tcphandler: " + address);
-            port = isa.getPort();
+            LOGGER.debug("address from tcphandler: {}", address);
             isOnlineFuture.set(true);
-            LOGGER.info("Switch listener started and ready to accept incoming connections on port: " + port);
+            LOGGER.info("Switch listener started and ready to accept incoming connections on port: {}", isa.getPort());
             f.channel().closeFuture().sync();
-        } catch (InterruptedException ex) {
-            LOGGER.error(ex.getMessage(), ex);
+        } catch (InterruptedException e) {
+            LOGGER.error("Interrupted while waiting for port {} shutdown", port, e);
         } finally {
             shutdown();
         }
@@ -159,44 +187,44 @@ public class TcpHandler implements ServerFacade {
 
             @Override
             public void operationComplete(
-                    io.netty.util.concurrent.Future<Object> downResult) throws Exception {
+                    final io.netty.util.concurrent.Future<Object> downResult) throws Exception {
                 result.set(downResult.isSuccess());
                 if (downResult.cause() != null) {
                     result.setException(downResult.cause());
                 }
             }
-            
+
         });
         return result;
     }
-    
+
     /**
-     * 
+     *
      * @return number of connected clients / channels
      */
     public int getNumberOfConnections() {
         return channelInitializer.size();
     }
-    
+
     /**
      * @return channelInitializer providing channels
      */
     public PublishingChannelInitializer getChannelInitializer() {
         return channelInitializer;
     }
-    
+
     @Override
     public ListenableFuture<Boolean> getIsOnlineFuture() {
         return isOnlineFuture;
     }
-    
+
     /**
      * @return the port
      */
     public int getPort() {
         return port;
     }
-    
+
     /**
      * @return the address
      */
@@ -208,35 +236,35 @@ public class TcpHandler implements ServerFacade {
      * @param switchConnectionHandler
      */
     public void setSwitchConnectionHandler(
-            SwitchConnectionHandler switchConnectionHandler) {
+            final SwitchConnectionHandler switchConnectionHandler) {
         channelInitializer.setSwitchConnectionHandler(switchConnectionHandler);
     }
-    
+
     /**
      * @param switchIdleTimeout in milliseconds
      */
-    public void setSwitchIdleTimeout(long switchIdleTimeout) {
+    public void setSwitchIdleTimeout(final long switchIdleTimeout) {
         channelInitializer.setSwitchIdleTimeout(switchIdleTimeout);
     }
 
     /**
      * @param tlsSupported
      */
-    public void setEncryption(boolean tlsSupported) {
+    public void setEncryption(final boolean tlsSupported) {
         channelInitializer.setEncryption(tlsSupported);
     }
 
     /**
      * @param sf serialization factory
      */
-    public void setSerializationFactory(SerializationFactory sf) {
+    public void setSerializationFactory(final SerializationFactory sf) {
         channelInitializer.setSerializationFactory(sf);
     }
 
     /**
      * @param factory
      */
-    public void setDeserializationFactory(DeserializationFactory factory) {
+    public void setDeserializationFactory(final DeserializationFactory factory) {
         channelInitializer.setDeserializationFactory(factory);
     }
 

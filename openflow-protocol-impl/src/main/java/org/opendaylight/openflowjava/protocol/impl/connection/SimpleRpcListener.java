@@ -8,8 +8,8 @@
 package org.opendaylight.openflowjava.protocol.impl.connection;
 
 final class SimpleRpcListener extends AbstractRpcListener<Void> {
-    public SimpleRpcListener(final String failureInfo) {
-        super(failureInfo);
+    public SimpleRpcListener(final Object message, final String failureInfo) {
+        super(message, failureInfo);
     }
 
     @Override
