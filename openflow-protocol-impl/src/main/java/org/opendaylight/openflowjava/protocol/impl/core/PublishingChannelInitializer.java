@@ -21,8 +21,8 @@ import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHan
 import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionAdapterFactory;
 import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionFacade;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler.COMPONENT_NAMES;
-import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,7 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(PublishingChannelInitializer.class);
-    private DefaultChannelGroup allChannels;
+    private final DefaultChannelGroup allChannels;
     private SwitchConnectionHandler switchConnectionHandler;
     private long switchIdleTimeout;
     private boolean encryption;
@@ -47,9 +47,9 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
     public PublishingChannelInitializer() {
         allChannels = new DefaultChannelGroup("netty-receiver", null);
     }
-    
+
     @Override
-    protected void initChannel(SocketChannel ch) {
+    protected void initChannel(final SocketChannel ch) {
         InetAddress switchAddress = ch.remoteAddress().getAddress();
         int port = ch.localAddress().getPort();
         int remotePort = ch.remoteAddress().getPort();
@@ -88,11 +88,11 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
                 connectionFacade.fireConnectionReadyNotification();
             }
         } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.error("Failed to initialize channel", e);
             ch.close();
         }
     }
-    
+
     /**
      * @return iterator through active connections
      */
@@ -106,39 +106,39 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
     public int size() {
         return allChannels.size();
     }
-    
+
     /**
      * @param switchConnectionHandler the switchConnectionHandler to set
      */
-    public void setSwitchConnectionHandler(SwitchConnectionHandler switchConnectionHandler) {
+    public void setSwitchConnectionHandler(final SwitchConnectionHandler switchConnectionHandler) {
         this.switchConnectionHandler = switchConnectionHandler;
     }
 
     /**
      * @param switchIdleTimeout the switchIdleTimeout to set
      */
-    public void setSwitchIdleTimeout(long switchIdleTimeout) {
+    public void setSwitchIdleTimeout(final long switchIdleTimeout) {
         this.switchIdleTimeout = switchIdleTimeout;
     }
 
     /**
      * @param tlsSupported
      */
-    public void setEncryption(boolean tlsSupported) {
+    public void setEncryption(final boolean tlsSupported) {
         encryption = tlsSupported;
     }
 
     /**
      * @param serializationFactory
      */
-    public void setSerializationFactory(SerializationFactory serializationFactory) {
+    public void setSerializationFactory(final SerializationFactory serializationFactory) {
         this.serializationFactory = serializationFactory;
     }
-    
+
     /**
      * @param deserializationFactory
      */
-    public void setDeserializationFactory(DeserializationFactory deserializationFactory) {
+    public void setDeserializationFactory(final DeserializationFactory deserializationFactory) {
         this.deserializationFactory = deserializationFactory;
     }
 
