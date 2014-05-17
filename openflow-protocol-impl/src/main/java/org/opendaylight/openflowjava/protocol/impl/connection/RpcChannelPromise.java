@@ -11,8 +11,8 @@ import io.netty.channel.Channel;
 
 class RpcChannelPromise extends AbstractRpcChannelPromise<Void> {
 
-    public RpcChannelPromise(String failureInfo, Channel channel) {
-        super(failureInfo, channel);
+    public RpcChannelPromise(final Channel channel, final Object message, final String failureInfo) {
+        super(channel, message, failureInfo);
     }
 
     @Override
@@ -22,7 +22,7 @@ class RpcChannelPromise extends AbstractRpcChannelPromise<Void> {
     }
 
     @Override
-    public RpcChannelPromise setFailure(Throwable cause) {
+    public RpcChannelPromise setFailure(final Throwable cause) {
         failedRpc(cause);
         return this;
     }
