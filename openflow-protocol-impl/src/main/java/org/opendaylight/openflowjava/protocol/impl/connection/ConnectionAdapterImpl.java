@@ -15,6 +15,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.GenericFutureListener;
 
 import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.opendaylight.controller.sal.common.util.RpcErrors;
@@ -84,8 +85,16 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     /** after this time, RPC future response objects will be thrown away (in minutes) */
     public static final int RPC_RESPONSE_EXPIRATION = 1;
 
+    /**
+     * Default depth of write queue, e.g. we allow these many messages
+     * to be queued up before blocking producers.
+     */
+    public static final int DEFAULT_QUEUE_DEPTH = 1024;
+
     private static final Logger LOG = LoggerFactory
             .getLogger(ConnectionAdapterImpl.class);
+    private static final Exception QUEUE_FULL_EXCEPTION =
+            new RejectedExecutionException("Output queue is full");
 
     private static final String APPLICATION_TAG = "OPENFLOW_LIBRARY";
     private static final String TAG = "OPENFLOW";
@@ -93,7 +102,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
             new RemovalListener<RpcResponseKey, ResponseExpectedRpcListener<?>>() {
         @Override
         public void onRemoval(
-                RemovalNotification<RpcResponseKey, ResponseExpectedRpcListener<?>> notification) {
+                final RemovalNotification<RpcResponseKey, ResponseExpectedRpcListener<?>> notification) {
             notification.getValue().discard();
         }
     };
@@ -101,6 +110,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     /** expiring cache for future rpcResponses */
     private final Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> responseCache;
 
+    private final ChannelOutboundQueue output;
     private final Channel channel;
 
     private ConnectionReadyListener connectionReadyListener;
@@ -118,6 +128,8 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 .expireAfterWrite(RPC_RESPONSE_EXPIRATION, TimeUnit.MINUTES)
                 .removalListener(REMOVAL_LISTENER).build();
         this.channel = Preconditions.checkNotNull(channel);
+        this.output = new ChannelOutboundQueue(channel, DEFAULT_QUEUE_DEPTH);
+        channel.pipeline().addLast(output);
         LOG.debug("ConnectionAdapter created");
     }
 
@@ -303,6 +315,19 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
         }
     }
 
+    private <T> ListenableFuture<RpcResult<T>> enqueueMessage(final AbstractRpcListener<T> promise) {
+        LOG.debug("Submitting promise {}", promise);
+
+        if (!output.enqueue(promise)) {
+            LOG.debug("Message queue is full, rejecting execution");
+            promise.failedRpc(QUEUE_FULL_EXCEPTION);
+        } else {
+            LOG.debug("Promise enqueued successfully");
+        }
+
+        return promise.getResult();
+    }
+
     /**
      * sends given message to switch, sending result will be reported via return value
      * @param input message to send
@@ -315,13 +340,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
      */
     private ListenableFuture<RpcResult<Void>> sendToSwitchFuture(
             final DataObject input, final String failureInfo) {
-        final SimpleRpcListener listener = new SimpleRpcListener(failureInfo);
-
-        LOG.debug("going to flush");
-        channel.writeAndFlush(input).addListener(listener);
-        LOG.debug("flushed");
-
-        return listener.getResult();
+        return enqueueMessage(new SimpleRpcListener(input, failureInfo));
     }
 
     /**
@@ -343,13 +362,8 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
             final IN input, final Class<OUT> responseClazz, final String failureInfo) {
         final RpcResponseKey key = new RpcResponseKey(input.getXid(), responseClazz.getName());
         final ResponseExpectedRpcListener<OUT> listener =
-                new ResponseExpectedRpcListener<>(failureInfo, responseCache, key);
-
-        LOG.debug("going to flush");
-        channel.writeAndFlush(input).addListener(listener);
-        LOG.debug("flushed");
-
-        return listener.getResult();
+                new ResponseExpectedRpcListener<>(input, failureInfo, responseCache, key);
+        return enqueueMessage(listener);
     }
 
     /**
