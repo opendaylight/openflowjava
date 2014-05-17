@@ -11,6 +11,7 @@ package org.opendaylight.openflowjava.protocol.impl.connection;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.GenericFutureListener;
 
 import java.util.concurrent.Future;
@@ -67,6 +68,7 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
@@ -84,36 +86,32 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     /** after this time, rpc future response objects will be thrown away (in minutes) */
     public static final int RPC_RESPONSE_EXPIRATION = 1;
 
-    protected static final Logger LOG = LoggerFactory
+    private static final Logger LOG = LoggerFactory
             .getLogger(ConnectionAdapterImpl.class);
 
     private static final String APPLICATION_TAG = "OPENFLOW_LIBRARY";
     private static final String TAG = "OPENFLOW";
-    private Channel channel;
-    private OpenflowProtocolListener messageListener;
+    private final Channel channel;
+
     /** expiring cache for future rpcResponses */
-    protected Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> responseCache;
+    protected final Cache<RpcResponseKey, ExpectedFailureRpcChannelPromise<?>> responseCache;
+
+    protected ConnectionReadyListener connectionReadyListener;
+    private OpenflowProtocolListener messageListener;
     private SystemNotificationsListener systemListener;
     private boolean disconnectOccured = false;
 
-    protected ConnectionReadyListener connectionReadyListener;
-
     /**
      * default ctor
+     * @param channel the channel to be set - used for communication
      */
-    public ConnectionAdapterImpl() {
+    public ConnectionAdapterImpl(final SocketChannel channel) {
         responseCache = CacheBuilder.newBuilder()
                 .concurrencyLevel(1)
                 .expireAfterWrite(RPC_RESPONSE_EXPIRATION, TimeUnit.MINUTES)
                 .removalListener(new ResponseRemovalListener()).build();
+        this.channel = Preconditions.checkNotNull(channel);
         LOG.debug("ConnectionAdapter created");
-    }
-
-    /**
-     * @param channel the channel to be set - used for communication
-     */
-    public void setChannel(final Channel channel) {
-        this.channel = channel;
     }
 
     @Override
