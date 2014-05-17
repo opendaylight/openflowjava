@@ -82,8 +82,7 @@ import com.google.common.util.concurrent.SettableFuture;
  * @author michal.polkorab
  */
 public class ConnectionAdapterImpl implements ConnectionFacade {
-
-    /** after this time, rpc future response objects will be thrown away (in minutes) */
+    /** after this time, RPC future response objects will be thrown away (in minutes) */
     public static final int RPC_RESPONSE_EXPIRATION = 1;
 
     private static final Logger LOG = LoggerFactory
@@ -94,9 +93,9 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     private final Channel channel;
 
     /** expiring cache for future rpcResponses */
-    protected final Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> responseCache;
+    private final Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> responseCache;
 
-    protected ConnectionReadyListener connectionReadyListener;
+    private ConnectionReadyListener connectionReadyListener;
     private OpenflowProtocolListener messageListener;
     private SystemNotificationsListener systemListener;
     private boolean disconnectOccured = false;
