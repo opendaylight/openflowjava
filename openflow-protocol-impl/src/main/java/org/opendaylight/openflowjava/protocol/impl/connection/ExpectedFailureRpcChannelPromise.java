@@ -23,9 +23,9 @@ class ExpectedFailureRpcChannelPromise<T extends OfHeader> extends AbstractRpcCh
     private final Cache<RpcResponseKey, ExpectedFailureRpcChannelPromise<?>> cache;
     private final RpcResponseKey key;
 
-    ExpectedFailureRpcChannelPromise(Cache<RpcResponseKey, ExpectedFailureRpcChannelPromise<?>> cache,
-            RpcResponseKey key, String failureInfo,  Channel channel) {
-        super(failureInfo, channel);
+    ExpectedFailureRpcChannelPromise(final Channel channel, final Object message, final String failureInfo,
+            final Cache<RpcResponseKey, ExpectedFailureRpcChannelPromise<?>> cache, final RpcResponseKey key) {
+        super(channel, message, failureInfo);
         this.cache = Preconditions.checkNotNull(cache);
         this.key = Preconditions.checkNotNull(key);
     }
@@ -38,7 +38,7 @@ class ExpectedFailureRpcChannelPromise<T extends OfHeader> extends AbstractRpcCh
     }
 
     @Override
-    public ExpectedFailureRpcChannelPromise<?> setFailure(Throwable cause) {
+    public ExpectedFailureRpcChannelPromise<?> setFailure(final Throwable cause) {
         LOG.debug("Request for {} failed", key, cause);
         failedRpc(cause);
         return this;
@@ -50,7 +50,7 @@ class ExpectedFailureRpcChannelPromise<T extends OfHeader> extends AbstractRpcCh
     }
 
     @SuppressWarnings("unchecked")
-    public void completed(OfHeader message) {
+    public void completed(final OfHeader message) {
         successfulRpc((T)message);
     }
 }
