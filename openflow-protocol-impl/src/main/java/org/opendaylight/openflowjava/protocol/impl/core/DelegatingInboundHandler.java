@@ -18,6 +18,8 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
+
 /**
  * Holds reference to {@link ConnectionAdapterImpl} and passes messages for further processing.
  * Also informs on switch disconnection.
@@ -26,27 +28,26 @@ import org.slf4j.LoggerFactory;
 public class DelegatingInboundHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DelegatingInboundHandler.class);
-    
-    protected MessageConsumer consumer;
+
+    private final MessageConsumer consumer;
     private boolean inactiveMessageSent = false;
-    
-    /** 
+
+    /**
      * Constructs class + creates and sets MessageConsumer
      * @param connectionAdapter reference for adapter communicating with upper layers outside library
      */
-    public DelegatingInboundHandler(MessageConsumer connectionAdapter) {
+    public DelegatingInboundHandler(final MessageConsumer connectionAdapter) {
         LOGGER.trace("Creating DelegatingInboundHandler");
-        consumer = connectionAdapter;
+        consumer = Preconditions.checkNotNull(connectionAdapter);
     }
-    
+
     @Override
-    public void channelRead(ChannelHandlerContext ctx, final Object msg)
-            throws Exception {
+    public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
         consumer.consume((DataObject) msg);
     }
-    
+
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    public void channelInactive(final ChannelHandlerContext ctx) {
         LOGGER.debug("Channel inactive");
         if (!inactiveMessageSent) {
             DisconnectEventBuilder builder = new DisconnectEventBuilder();
@@ -57,7 +58,7 @@ public class DelegatingInboundHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+    public void channelUnregistered(final ChannelHandlerContext ctx) {
         LOGGER.debug("Channel unregistered");
         if (!inactiveMessageSent) {
             DisconnectEventBuilder builder = new DisconnectEventBuilder();
@@ -66,5 +67,5 @@ public class DelegatingInboundHandler extends ChannelInboundHandlerAdapter {
             inactiveMessageSent = true;
         }
     }
-    
+
 }
