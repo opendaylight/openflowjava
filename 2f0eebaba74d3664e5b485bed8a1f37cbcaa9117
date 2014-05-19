@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa82b9bf_a42a632a",
+        "filename": "openflow-protocol-api/src/main/yang/openflow-augments.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 491
+      },
+      "writtenOn": "2014-05-19T10:53:39Z",
+      "side": 1,
+      "message": "Don\u0027t we need augments for the tunnel src/dst?  Or is that still work in progress?",
+      "revId": "2f0eebaba74d3664e5b485bed8a1f37cbcaa9117",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa82b9bf_24ff33ac",
+        "filename": "openflow-protocol-api/src/main/yang/openflow-extensible-match.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 491
+      },
+      "writtenOn": "2014-05-19T10:53:39Z",
+      "side": 1,
+      "message": "I would create a new file called nicira-extensible-match.yang to keep the standard fields separate from the vendor extensions.",
+      "revId": "2f0eebaba74d3664e5b485bed8a1f37cbcaa9117",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa82b9bf_44e837e2",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/deserialization/match/OxmTunnelIpv4DstDeserializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 491
+      },
+      "writtenOn": "2014-05-19T10:53:39Z",
+      "side": 1,
+      "message": "Rename to NxmTunnelIpv4DstDeserializer.java ?",
+      "revId": "2f0eebaba74d3664e5b485bed8a1f37cbcaa9117",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa82b9bf_64e3fb05",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/deserialization/match/OxmTunnelIpv4SrcDeserializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 491
+      },
+      "writtenOn": "2014-05-19T10:53:39Z",
+      "side": 1,
+      "message": "Rename to OxmTunnelIpv4SrcDeserializer.java ?",
+      "revId": "2f0eebaba74d3664e5b485bed8a1f37cbcaa9117",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa82b9bf_04c9cf77",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/util/OxmMatchConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 491
+      },
+      "writtenOn": "2014-05-19T10:53:39Z",
+      "side": 1,
+      "message": "As with the YANG file, I would put this into a separate file NxmMatchConstants.java",
+      "revId": "2f0eebaba74d3664e5b485bed8a1f37cbcaa9117",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
