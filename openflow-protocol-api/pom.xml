@@ -14,7 +14,7 @@
   </scm>
 
     <properties>
-        <yangtools.binding.version>0.6.2-SNAPSHOT</yangtools.binding.version>
+        <yangtools.binding.version>0.6.1-1-SNAPSHOT</yangtools.binding.version>
     </properties>
 
     <build>
@@ -135,8 +135,8 @@
             <artifactId>ietf-yang-types</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.controller.model</groupId>
-            <artifactId>model-flow-service</artifactId>
+            <groupId>org.opendaylight.yangtools.model</groupId>
+            <artifactId>yang-ext</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
