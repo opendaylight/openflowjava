@@ -14,7 +14,7 @@
   </scm>
 
     <properties>
-        <yangtools.binding.version>0.6.2-SNAPSHOT</yangtools.binding.version>
+        <yangtools.binding.version>0.6.1-1-SNAPSHOT</yangtools.binding.version>
     </properties>
 
     <build>
