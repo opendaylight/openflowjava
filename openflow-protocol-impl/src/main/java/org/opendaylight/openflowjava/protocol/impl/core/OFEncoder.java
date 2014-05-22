@@ -44,12 +44,6 @@ public class OFEncoder extends MessageToByteEncoder<OfHeader> {
             out.clear();
             return;
         }
-        if (out.readableBytes() > 0) {
-            out.retain();
-            ctx.writeAndFlush(out);
-        } else {
-            LOGGER.warn("Translated buffer is empty");
-        }
     }
 
     /**
