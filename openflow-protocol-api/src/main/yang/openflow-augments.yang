@@ -263,6 +263,15 @@
              type inet:ipv4-address;
          }
      }
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         ext:augment-identifier "tcp-flag-match-entry";
+         leaf tcp-flag {
+             type uint16;
+         }
+         leaf tcp-flag-mask {
+             type uint16;
+         }
+      }
 
 // OFP_TABLE_FEATURES_PROPERTIES AUGMENTS
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {

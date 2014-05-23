@@ -103,4 +103,15 @@ public abstract class OxmMatchConstants {
     public static final int TUNNEL_ID = 38;
     /** IPv6 Extension Header pseudo-field */
     public static final int IPV6_EXTHDR = 39;
+
+    /**
+     * NXM_1_Class Constants
+     */
+
+    /** NXM IPv4 Tunnel Source */
+    public static final int NXM_NX_TUN_IPV4_SRC = 31;
+    /** NXM IPv4 Tunnel Destination */
+    public static final int NXM_NX_TUN_IPV4_DST = 32;
+    /** NXM TCP_Flag reads */
+    public static final int NXM_NX_TCP_FLAG = 34;
 }

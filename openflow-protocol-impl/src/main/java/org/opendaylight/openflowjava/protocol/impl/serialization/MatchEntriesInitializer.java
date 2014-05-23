@@ -8,6 +8,7 @@
 package org.opendaylight.openflowjava.protocol.impl.serialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.impl.serialization.match.NxmTcpFlagSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpOpSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpShaSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpSpaSerializer;
@@ -80,11 +81,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Meta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MplsBos;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MplsLabel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MplsTc;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Nxm1Class;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.PbbIsid;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.SctpDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.SctpSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.TcpDst;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.TcpFlag;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.TcpSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.TunnelId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.UdpDst;
@@ -147,5 +150,11 @@ public class MatchEntriesInitializer {
         registryHelper.registerSerializer(PbbIsid.class, new OxmPbbIsidSerializer());
         registryHelper.registerSerializer(TunnelId.class, new OxmTunnelIdSerializer());
         registryHelper.registerSerializer(Ipv6Exthdr.class, new OxmIpv6ExtHdrSerializer());
+
+        // register OpenFlow NXM1Class match entry serializer
+        Class<Nxm1Class> nxm1Class = Nxm1Class.class;
+        EnhancedKeyRegistryHelper<Nxm1Class> nxm1RegistryHelper =
+                new EnhancedKeyRegistryHelper<>(EncodeConstants.OF13_VERSION_ID, nxm1Class, serializerRegistry);
+        nxm1RegistryHelper.registerSerializer(TcpFlag.class, new NxmTcpFlagSerializer());
     }
 }
