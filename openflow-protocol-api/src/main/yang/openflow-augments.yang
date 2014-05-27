@@ -175,6 +175,12 @@
              type oft:ipv6-exthdr-flags;
          }
      }
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         ext:augment-identifier "tcp-flag-match-entry";
+         leaf tcp-flag {
+             type uint16;
+         }
+     }
 
 // OFP_ACTION AUGMENTS
      augment "/ofaction:actions-container/ofaction:action" {

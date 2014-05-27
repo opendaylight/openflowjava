@@ -214,7 +214,10 @@
             base match-field;
             description "OXM field for IPv6 Extension Header pseudo-field";
         }
-
+        identity tcp_flag {
+            base match-field;
+            description "NXM field for NXM_NX_TCP_FLAGS";
+        }
         container oxm-container {
             uses oxm-fields-grouping;
         }
