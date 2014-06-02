@@ -32,10 +32,12 @@ public class PacketInMessageFactory implements OFDeserializer<PacketInMessage>,
         DeserializerRegistryInjector {
 
     private static final byte PADDING_IN_PACKET_IN_HEADER = 2;
+    private static final MessageCodeKey MATCH_KEY = new MessageCodeKey(
+            EncodeConstants.OF13_VERSION_ID, EncodeConstants.EMPTY_VALUE, Match.class);
     private DeserializerRegistry registry;
 
     @Override
-    public PacketInMessage deserialize(ByteBuf rawMessage) {
+    public PacketInMessage deserialize(final ByteBuf rawMessage) {
         PacketInMessageBuilder builder = new PacketInMessageBuilder();
         builder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
         builder.setXid(rawMessage.readUnsignedInt());
@@ -46,8 +48,7 @@ public class PacketInMessageFactory implements OFDeserializer<PacketInMessage>,
         byte[] cookie = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         rawMessage.readBytes(cookie);
         builder.setCookie(new BigInteger(1, cookie));
-        OFDeserializer<Match> matchDeserializer = registry.getDeserializer(new MessageCodeKey(
-                EncodeConstants.OF13_VERSION_ID, EncodeConstants.EMPTY_VALUE, Match.class));
+        OFDeserializer<Match> matchDeserializer = registry.getDeserializer(MATCH_KEY);
         builder.setMatch(matchDeserializer.deserialize(rawMessage));
         rawMessage.skipBytes(PADDING_IN_PACKET_IN_HEADER);
         builder.setData(rawMessage.readBytes(rawMessage.readableBytes()).array());
@@ -55,7 +56,7 @@ public class PacketInMessageFactory implements OFDeserializer<PacketInMessage>,
     }
 
     @Override
-    public void injectDeserializerRegistry(DeserializerRegistry deserializerRegistry) {
+    public void injectDeserializerRegistry(final DeserializerRegistry deserializerRegistry) {
         registry = deserializerRegistry;
     }
 }
