@@ -21,6 +21,8 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 
 /** Class for common operations on ByteBuf
  * @author michal.polkorab
@@ -49,7 +51,7 @@ public abstract class ByteBufUtils {
     public static byte[] hexStringToBytes(String hexSrc) {
         return hexStringToBytes(hexSrc, true);
     }
-    
+
     /**
      * Converts String into byte[]
      * @param hexSrc input String
@@ -61,15 +63,18 @@ public abstract class ByteBufUtils {
         if (!withSpaces) {
             splitPattern = "(?<=\\G.{2})";
         }
-        
-        String[] byteChips = hexSrc.split(splitPattern);
-        byte[] result = new byte[byteChips.length];
-        for (int i = 0; i < byteChips.length; i++) {
-            result[i] = (byte) Short.parseShort(byteChips[i], 16);
+        Iterable<String> tmp = Splitter.onPattern(splitPattern)
+                .omitEmptyStrings().split(hexSrc);
+        ArrayList<String> byteChips = Lists.newArrayList(tmp);
+        byte[] result = new byte[byteChips.size()];
+        int i = 0;
+        for (String chip : byteChips) {
+            result[i] = (byte) Short.parseShort(chip, 16);
+            i++;
         }
         return result;
     }
-    
+
     /**
      * Creates ByteBuf filled with specified data
      * @param hexSrc input String of bytes in hex format
@@ -183,12 +188,13 @@ public abstract class ByteBufUtils {
      * @return byte representation of mac address
      * @see {@link MacAddress}
      */
-    @SuppressWarnings("javadoc")
     public static byte[] macAddressToBytes(String macAddress) {
-        String[] sequences = macAddress.split(":");
+        Iterable<String> addressGroups = Splitter.on(":").split(macAddress);
         byte[] result = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
-        for (int i = 0; i < sequences.length; i++) {
-             result[i] = (byte) Short.parseShort(sequences[i], 16);
+        int i = 0;
+        for (String group : addressGroups) {
+            result[i] = (byte) Short.parseShort(group, 16);
+            i++;
         }
         return result;
     }
@@ -199,7 +205,6 @@ public abstract class ByteBufUtils {
      * @return String representation of mac address
      * @see {@link MacAddress}
      */
-    @SuppressWarnings("javadoc")
     public static String macAddressToString(byte[] address) {
         List<String> groups = new ArrayList<>();
         for(int i=0; i < EncodeConstants.MAC_ADDRESS_LENGTH; i++){

@@ -234,7 +234,7 @@ public class OF10StatsReplyMessageFactoryTest {
                 + "FF 02 03 02 03 02 03 02 FF 02 03 02 03 02 03 02 "
                 + "FF 02 03 02 03 02 03 02 FF 02 03 02 03 02 03 02 "
                 + "FF 02 03 02 03 02 03 02 FF 02 03 02 03 02 03 02 FF 02 03 02 03 02 03 02 "
-                + "FF 02 03 02 03 02 03 02 ");
+                + "FF 02 03 02 03 02 03 02");
 
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(statsFactory, bb);
 
@@ -292,7 +292,7 @@ public class OF10StatsReplyMessageFactoryTest {
                 + "00 FF 00 00 00 00 00 10 "
                 + "FF 02 03 02 03 02 03 02 "
                 + "FF 02 02 02 02 02 02 02 "
-                + "FF 02 03 02 03 02 03 02 ");
+                + "FF 02 03 02 03 02 03 02");
 
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(statsFactory, bb);
 

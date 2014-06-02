@@ -77,7 +77,7 @@ public class QueueGetConfigReplyMessageFactoryMultiTest {
                 "00 10 " + // length
                 "00 00 00 00 " + // pad
                 "00 05 " + // rate
-                "00 00 00 00 00 00 " // pad
+                "00 00 00 00 00 00" // pad
         );
 
         GetQueueConfigOutput builtByFactory = BufferHelper.deserialize(

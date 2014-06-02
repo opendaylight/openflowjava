@@ -94,7 +94,7 @@ public class OF10FeaturesReplyMessageFactoryTest {
                 + "00 10 01 01 05 01 04 02 41 4C 4F 48 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 15 00 00 01 01 "
                 + "00 00 00 31 00 00 04 42 00 00 03 0C 00 00 08 88 "
                 + "00 10 01 01 05 01 04 02 41 4C 4F 48 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 15 00 00 01 01 "
-                + "00 00 00 31 00 00 04 42 00 00 03 0C 00 00 08 88 ");
+                + "00 00 00 31 00 00 04 42 00 00 03 0C 00 00 08 88");
         GetFeaturesOutput builtByFactory = BufferHelper.deserialize(featuresFactory, bb);
 
         BufferHelper.checkHeaderV10(builtByFactory);

@@ -17,6 +17,8 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowWildcardsV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.v10.grouping.MatchV10;
 
+import com.google.common.base.Splitter;
+
 /**
  * Serializes ofp_match (OpenFlow v1.0) structure
  * @author michal.polkorab
@@ -46,13 +48,13 @@ public class OF10MatchSerializer implements OFSerializer<MatchV10> {
         outBuffer.writeByte(match.getNwTos());
         outBuffer.writeByte(match.getNwProto());
         ByteBufUtils.padBuffer(PADDING_IN_MATCH_2, outBuffer);
-        String[] srcGroups = match.getNwSrc().getValue().split("\\.");
-        for (int i = 0; i < srcGroups.length; i++) {
-            outBuffer.writeByte(Integer.parseInt(srcGroups[i]));
+        Iterable<String> srcGroups = Splitter.on(".").split(match.getNwSrc().getValue());
+        for (String group : srcGroups) {
+            outBuffer.writeByte(Short.parseShort(group));
         }
-        String[] dstGroups = match.getNwDst().getValue().split("\\.");
-        for (int i = 0; i < dstGroups.length; i++) {
-            outBuffer.writeByte(Integer.parseInt(dstGroups[i]));
+        Iterable<String> dstGroups = Splitter.on(".").split(match.getNwDst().getValue());
+        for (String group : dstGroups) {
+            outBuffer.writeByte(Short.parseShort(group));
         }
         outBuffer.writeShort(match.getTpSrc());
         outBuffer.writeShort(match.getTpDst());

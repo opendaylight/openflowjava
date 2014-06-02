@@ -36,7 +36,7 @@ public class ByteBufUtilsTest {
 
         Assert.assertArrayEquals(expected, data);
     }
-    
+
     /**
      * Test of {@link ByteBufUtils#hexStringToBytes(String, boolean)}
      */
@@ -46,7 +46,7 @@ public class ByteBufUtilsTest {
 
         Assert.assertArrayEquals(expected, data);
     }
-    
+
     /**
      * Test of {@link ByteBufUtils#hexStringToByteBuf(String)}
      */

@@ -874,7 +874,7 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 01 02 03 "+ //portNo
                                               "00 00 00 00 "+ //padding01
                                               "08 00 27 00 B0 EB " + //mac address
-                                              "00 00 "); //padding02
+                                              "00 00"); //padding02
         //port name
         String portName = "SampleText";
         byte[] portNameBytes = new byte[MAX_PORT_NAME_LEN];
