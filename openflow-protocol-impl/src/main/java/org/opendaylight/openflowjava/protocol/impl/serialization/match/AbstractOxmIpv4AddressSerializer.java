@@ -12,6 +12,8 @@ import io.netty.buffer.ByteBuf;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv4AddressMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
 
+import com.google.common.base.Splitter;
+
 /**
  * Parent for Ipv4 address based match entry serializers
  * @author michal.polkorab
@@ -26,10 +28,10 @@ public abstract class AbstractOxmIpv4AddressSerializer extends AbstractOxmMatchE
     }
 
     private static void writeIpv4Address(MatchEntries entry, ByteBuf out) {
-        String[] addressGroups = entry.getAugmentation(Ipv4AddressMatchEntry.class)
-                .getIpv4Address().getValue().split("\\.");
-        for (int i = 0; i < addressGroups.length; i++) {
-            out.writeByte(Integer.parseInt(addressGroups[i]));
+        Iterable<String> addressGroups = Splitter.on(".")
+                .split(entry.getAugmentation(Ipv4AddressMatchEntry.class).getIpv4Address().getValue());
+        for (String group : addressGroups) {
+            out.writeByte(Short.parseShort(group));
         }
     }
 

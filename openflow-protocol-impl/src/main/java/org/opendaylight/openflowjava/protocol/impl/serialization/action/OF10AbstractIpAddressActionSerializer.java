@@ -13,6 +13,8 @@ import io.netty.buffer.ByteBuf;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IpAddressAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 
+import com.google.common.base.Splitter;
+
 /**
  * @author michal.polkorab
  *
@@ -22,10 +24,10 @@ public abstract class OF10AbstractIpAddressActionSerializer extends AbstractActi
     @Override
     public void serialize(Action action, ByteBuf outBuffer) {
         super.serialize(action, outBuffer);
-        String[] addressGroups = action.getAugmentation(IpAddressAction.class)
-                .getIpAddress().getValue().split("\\.");
-        for (int i = 0; i < addressGroups.length; i++) {
-            outBuffer.writeByte(Integer.parseInt(addressGroups[i]));
+        Iterable<String> addressGroups = Splitter.on(".")
+                .split(action.getAugmentation(IpAddressAction.class).getIpAddress().getValue());
+        for (String group : addressGroups) {
+            outBuffer.writeByte(Short.parseShort(group));
         }
     }
 }

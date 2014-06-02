@@ -9,11 +9,16 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.match;
 
 import io.netty.buffer.ByteBuf;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv6AddressMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 
 /**
  * Parent for Ipv6 address based match entry serializers
@@ -25,49 +30,49 @@ public abstract class AbstractOxmIpv6AddressSerializer extends AbstractOxmMatchE
     public void serialize(MatchEntries entry, ByteBuf outBuffer) {
         super.serialize(entry, outBuffer);
         String textAddress = entry.getAugmentation(Ipv6AddressMatchEntry.class).getIpv6Address().getValue();
-        String[] address;
+        List<String> address;
         if (textAddress.equals("::")) {
-            address = new String[EncodeConstants.GROUPS_IN_IPV6_ADDRESS];
-            Arrays.fill(address, "0");
+            String[] tmp = new String[EncodeConstants.GROUPS_IN_IPV6_ADDRESS];
+            Arrays.fill(tmp, "0");
+            address = Arrays.asList(tmp);
         } else {
-            address = parseIpv6Address(textAddress.split(":"));
+            address = parseIpv6Address(Lists.newArrayList(Splitter.on(":").split(textAddress)));
         }
-        for (int i = 0; i < address.length; i++) {
-            outBuffer.writeShort(Integer.parseInt(address[i], 16));
+        for (String group : address) {
+            outBuffer.writeShort(Integer.parseInt(group, 16));
         }
         writeMask(entry, outBuffer, getValueLength());
     }
 
-    private static String[] parseIpv6Address(String[] addressGroups) {
+    private static List<String> parseIpv6Address(ArrayList<String> addressGroups) {
         int countEmpty = 0;
-        for (int i = 0; i < addressGroups.length; i++) {
-            if (addressGroups[i].equals("")){
+        for (String group : addressGroups) {
+            if (group.equals("")) {
                 countEmpty++;
             }
         }
-        String[] ready = new String[EncodeConstants.GROUPS_IN_IPV6_ADDRESS];
+        List<String> ready = new ArrayList<>(EncodeConstants.GROUPS_IN_IPV6_ADDRESS);
         switch (countEmpty) {
         case 0:
             ready = addressGroups;
             break;
         case 1:
-            int zerosToBePushed = EncodeConstants.GROUPS_IN_IPV6_ADDRESS - addressGroups.length + 1;
-            int index = 0;
-            for (int i = 0; i < addressGroups.length; i++) {
-                if (addressGroups[i].equals("")) {
+            int zerosToBePushed = EncodeConstants.GROUPS_IN_IPV6_ADDRESS - addressGroups.size() + 1;
+            for (String group : addressGroups) {
+                if (group.equals("")) {
                     for (int j = 0; j < zerosToBePushed; j++) {
-                        ready[index] = "0";
-                        index++;
+                        ready.add("0");
                     }
                 } else {
-                    ready[index] = addressGroups[i];
-                    index++;
+                    ready.add(group);
                 }
             }
             break;
         case 2:
-            Arrays.fill(ready, "0");
-            ready[ready.length - 1] = addressGroups[addressGroups.length - 1];
+            String[] tmp = new String[EncodeConstants.GROUPS_IN_IPV6_ADDRESS];
+            Arrays.fill(tmp, "0");
+            tmp[7] = addressGroups.get(addressGroups.size() - 1);
+            ready = Arrays.asList(tmp);
             break;
         default:
             throw new IllegalStateException("Incorrect ipv6 address");
