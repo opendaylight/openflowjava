@@ -17,8 +17,6 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowWildcardsV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.v10.grouping.MatchV10;
 
-import com.google.common.base.Splitter;
-
 /**
  * Serializes ofp_match (OpenFlow v1.0) structure
  * @author michal.polkorab
@@ -36,7 +34,7 @@ public class OF10MatchSerializer implements OFSerializer<MatchV10> {
      * @param match match to be serialized
      */
     @Override
-    public void serialize(MatchV10 match, ByteBuf outBuffer) {
+    public void serialize(final MatchV10 match, final ByteBuf outBuffer) {
         outBuffer.writeInt(encodeWildcards(match.getWildcards(), match.getNwSrcMask(), match.getNwDstMask()));
         outBuffer.writeShort(match.getInPort());
         outBuffer.writeBytes(ByteBufUtils.macAddressToBytes(match.getDlSrc().getValue()));
@@ -48,11 +46,11 @@ public class OF10MatchSerializer implements OFSerializer<MatchV10> {
         outBuffer.writeByte(match.getNwTos());
         outBuffer.writeByte(match.getNwProto());
         ByteBufUtils.padBuffer(PADDING_IN_MATCH_2, outBuffer);
-        Iterable<String> srcGroups = Splitter.on(".").split(match.getNwSrc().getValue());
+        Iterable<String> srcGroups = ByteBufUtils.DOT_SPLITTER.split(match.getNwSrc().getValue());
         for (String group : srcGroups) {
             outBuffer.writeByte(Short.parseShort(group));
         }
-        Iterable<String> dstGroups = Splitter.on(".").split(match.getNwDst().getValue());
+        Iterable<String> dstGroups = ByteBufUtils.DOT_SPLITTER.split(match.getNwDst().getValue());
         for (String group : dstGroups) {
             outBuffer.writeByte(Short.parseShort(group));
         }
@@ -60,7 +58,7 @@ public class OF10MatchSerializer implements OFSerializer<MatchV10> {
         outBuffer.writeShort(match.getTpDst());
     }
 
-    private static int encodeWildcards(FlowWildcardsV10 wildcards, short srcMask, short dstMask) {
+    private static int encodeWildcards(final FlowWildcardsV10 wildcards, final short srcMask, final short dstMask) {
         int bitmask = 0;
         Map<Integer, Boolean> wildcardsMap = new HashMap<>();
         wildcardsMap.put(0, wildcards.isINPORT());

@@ -20,8 +20,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.v10.grouping.MatchV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.v10.grouping.MatchV10Builder;
 
-import com.google.common.base.Joiner;
-
 /**
  * Deserializes ofp_match (OpenFlow v1.0) structure
  * @author michal.polkorab
@@ -38,7 +36,7 @@ public class OF10MatchDeserializer implements OFDeserializer<MatchV10> {
     private static final int NW_DST_MASK = ((1 << NW_DST_BITS) - 1) << NW_DST_SHIFT;
 
     @Override
-    public MatchV10 deserialize(ByteBuf input) {
+    public MatchV10 deserialize(final ByteBuf input) {
         MatchV10Builder builder = new MatchV10Builder();
         long wildcards = input.readUnsignedInt();
         builder.setWildcards(createWildcards(wildcards));
@@ -63,13 +61,12 @@ public class OF10MatchDeserializer implements OFDeserializer<MatchV10> {
         for (int i = 0; i < EncodeConstants.GROUPS_IN_IPV4_ADDRESS; i++) {
             srcGroups.add(Short.toString(input.readUnsignedByte()));
         }
-        Joiner joiner = Joiner.on(".");
-        builder.setNwSrc(new Ipv4Address(joiner.join(srcGroups)));
+        builder.setNwSrc(new Ipv4Address(ByteBufUtils.DOT_JOINER.join(srcGroups)));
         List<String> dstGroups = new ArrayList<>();
         for (int i = 0; i < EncodeConstants.GROUPS_IN_IPV4_ADDRESS; i++) {
             dstGroups.add(Short.toString(input.readUnsignedByte()));
         }
-        builder.setNwDst(new Ipv4Address(joiner.join(dstGroups)));
+        builder.setNwDst(new Ipv4Address(ByteBufUtils.DOT_JOINER.join(dstGroups)));
         builder.setTpSrc(input.readUnsignedShort());
         builder.setTpDst(input.readUnsignedShort());
         return builder.build();
@@ -80,7 +77,7 @@ public class OF10MatchDeserializer implements OFDeserializer<MatchV10> {
      * @param input input ByteBuf
      * @return decoded FlowWildcardsV10
      */
-    public static FlowWildcardsV10 createWildcards(long input) {
+    public static FlowWildcardsV10 createWildcards(final long input) {
         boolean _iNPORT = (input & (1 << 0)) != 0;
         boolean _dLVLAN = (input & (1 << 1)) != 0;
         boolean _dLSRC = (input & (1 << 2)) != 0;
@@ -94,22 +91,22 @@ public class OF10MatchDeserializer implements OFDeserializer<MatchV10> {
         return new FlowWildcardsV10(_dLDST, _dLSRC, _dLTYPE, _dLVLAN,
                 _dLVLANPCP, _iNPORT, _nWPROTO, _nWTOS, _tPDST, _tPSRC);
     }
-    
+
     /**
      * Decodes NwSrcMask from FlowWildcards (represented as uint32)
      * @param input binary FlowWildcards
      * @return decoded NwSrcMask
      */
-    public static short decodeNwSrcMask(long input) {
+    public static short decodeNwSrcMask(final long input) {
         return (short) Math.max(32 - ((input & NW_SRC_MASK) >> NW_SRC_SHIFT), 0);
     }
-    
+
     /**
      * Decodes NwDstMask from FlowWildcards (represented as uint32)
      * @param input binary FlowWildcards
      * @return decoded NwDstMask
      */
-    public static short decodeNwDstMask(long input) {
+    public static short decodeNwDstMask(final long input) {
         return (short) Math.max(32 - ((input & NW_DST_MASK) >> NW_DST_SHIFT), 0);
     }
 }

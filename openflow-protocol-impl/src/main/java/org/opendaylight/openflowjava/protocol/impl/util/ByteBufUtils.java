@@ -29,36 +29,40 @@ import com.google.common.collect.Lists;
  * @author timotej.kubas
  */
 public abstract class ByteBufUtils {
+    public static final Splitter DOT_SPLITTER = Splitter.on('.');
+    public static final Joiner DOT_JOINER = Joiner.on(".");
+    public static final Splitter COLON_SPLITTER = Splitter.on(':');
+    public static final Joiner COLON_JOINER = Joiner.on(":");
 
     /**
      * Converts ByteBuf into String
      * @param bb input ByteBuf
      * @return String
      */
-    public static String byteBufToHexString(ByteBuf bb) {
+    public static String byteBufToHexString(final ByteBuf bb) {
         StringBuffer sb = new StringBuffer();
         for (int i = bb.readerIndex(); i < (bb.readerIndex() + bb.readableBytes()); i++) {
             sb.append(String.format(" %02x", bb.getUnsignedByte(i)));
         }
         return sb.toString().trim();
     }
-    
+
     /**
      * Converts String into byte[]
      * @param hexSrc input String
      * @return byte[] filled with input data
      */
-    public static byte[] hexStringToBytes(String hexSrc) {
+    public static byte[] hexStringToBytes(final String hexSrc) {
         return hexStringToBytes(hexSrc, true);
     }
 
     /**
      * Converts String into byte[]
      * @param hexSrc input String
-     * @param withSpaces if there are spaces in string 
+     * @param withSpaces if there are spaces in string
      * @return byte[] filled with input data
      */
-    public static byte[] hexStringToBytes(String hexSrc, boolean withSpaces ) {
+    public static byte[] hexStringToBytes(final String hexSrc, final boolean withSpaces ) {
         String splitPattern = "\\s+";
         if (!withSpaces) {
             splitPattern = "(?<=\\G.{2})";
@@ -80,33 +84,33 @@ public abstract class ByteBufUtils {
      * @param hexSrc input String of bytes in hex format
      * @return ByteBuf with specified hexString converted
      */
-    public static ByteBuf hexStringToByteBuf(String hexSrc) {
+    public static ByteBuf hexStringToByteBuf(final String hexSrc) {
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         hexStringToByteBuf(hexSrc, out);
         return out;
     }
-    
+
     /**
      * Creates ByteBuf filled with specified data
      * @param hexSrc input String of bytes in hex format
      * @param out ByteBuf with specified hexString converted
      */
-    public static void hexStringToByteBuf(String hexSrc, ByteBuf out) {
+    public static void hexStringToByteBuf(final String hexSrc, final ByteBuf out) {
         out.writeBytes(hexStringToBytes(hexSrc));
     }
-    
+
     /**
      * Fills specified ByteBuf with 0 (zeros) of desired length, used for padding
      * @param length
      * @param out ByteBuf to be padded
      */
-    public static void padBuffer(int length, ByteBuf out) {
+    public static void padBuffer(final int length, final ByteBuf out) {
         for (int i = 0; i < length; i++) {
             out.writeByte(0);
         }
     }
-    
-    
+
+
     /**
      * Create standard OF header
      * @param msgType message code
@@ -114,18 +118,18 @@ public abstract class ByteBufUtils {
      * @param out writing buffer
      * @param length ofheader length
      */
-    public static <E extends OfHeader> void writeOFHeader(byte msgType, E message, ByteBuf out, int length) { 
+    public static <E extends OfHeader> void writeOFHeader(final byte msgType, final E message, final ByteBuf out, final int length) {
         out.writeByte(message.getVersion());
         out.writeByte(msgType);
         out.writeShort(length);
         out.writeInt(message.getXid().intValue());
     }
-    
+
     /**
      * Write length standard OF header
      * @param out writing buffer
      */
-    public static void updateOFHeaderLength(ByteBuf out) { 
+    public static void updateOFHeaderLength(final ByteBuf out) {
         out.setShort(EncodeConstants.OFHEADER_LENGTH_INDEX, out.readableBytes());
     }
 
@@ -134,9 +138,9 @@ public abstract class ByteBufUtils {
      * @param booleanMap bit to boolean mapping
      * @return bit mask
      */
-    public static int fillBitMaskFromMap(Map<Integer, Boolean> booleanMap) {
+    public static int fillBitMaskFromMap(final Map<Integer, Boolean> booleanMap) {
         int bitmask = 0;
-        
+
         for (Entry<Integer, Boolean> iterator : booleanMap.entrySet()) {
             if (iterator.getValue() != null && iterator.getValue().booleanValue()) {
                 bitmask |= 1 << iterator.getKey();
@@ -144,13 +148,13 @@ public abstract class ByteBufUtils {
         }
         return bitmask;
     }
-    
+
     /**
      * Fills the bitmask from boolean list where key is bit position
      * @param booleanList bit to boolean mapping
      * @return bit mask
      */
-    public static int[] fillBitMaskFromList(List<Boolean> booleanList) {
+    public static int[] fillBitMaskFromList(final List<Boolean> booleanList) {
         int[] bitmask;
         int index = 0;
         int arrayIndex = 0;
@@ -174,22 +178,22 @@ public abstract class ByteBufUtils {
      * @param array input byte array
      * @return String
      */
-    public static String bytesToHexString(byte[] array) {
+    public static String bytesToHexString(final byte[] array) {
         StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < array.length; i++) {
-            sb.append(String.format(" %02x", array[i]));
+        for (byte element : array) {
+            sb.append(String.format(" %02x", element));
         }
         return sb.toString().trim();
     }
-    
+
     /**
      * Converts macAddress to byte array
      * @param macAddress
      * @return byte representation of mac address
      * @see {@link MacAddress}
      */
-    public static byte[] macAddressToBytes(String macAddress) {
-        Iterable<String> addressGroups = Splitter.on(":").split(macAddress);
+    public static byte[] macAddressToBytes(final String macAddress) {
+        Iterable<String> addressGroups = COLON_SPLITTER.split(macAddress);
         byte[] result = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
         int i = 0;
         for (String group : addressGroups) {
@@ -198,32 +202,31 @@ public abstract class ByteBufUtils {
         }
         return result;
     }
-    
+
     /**
      * Converts mac address represented in bytes to String
      * @param address
      * @return String representation of mac address
      * @see {@link MacAddress}
      */
-    public static String macAddressToString(byte[] address) {
+    public static String macAddressToString(final byte[] address) {
         List<String> groups = new ArrayList<>();
         for(int i=0; i < EncodeConstants.MAC_ADDRESS_LENGTH; i++){
             groups.add(String.format("%02X", address[i]));
         }
-        Joiner joiner = Joiner.on(":");
-        return joiner.join(groups); 
+        return COLON_JOINER.join(groups);
     }
-    
+
     /**
      * Reads and parses null-terminated string from ByteBuf
      * @param rawMessage
      * @param length maximal length of String
      * @return String with name of port
      */
-    public static String decodeNullTerminatedString(ByteBuf rawMessage, int length) {
+    public static String decodeNullTerminatedString(final ByteBuf rawMessage, final int length) {
         byte[] name = new byte[length];
         rawMessage.readBytes(name);
         return new String(name).trim();
     }
-    
+
 }

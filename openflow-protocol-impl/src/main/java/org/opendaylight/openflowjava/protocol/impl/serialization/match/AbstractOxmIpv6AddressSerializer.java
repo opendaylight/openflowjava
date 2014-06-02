@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv6AddressMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
 
-import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
 /**
@@ -27,7 +27,7 @@ import com.google.common.collect.Lists;
 public abstract class AbstractOxmIpv6AddressSerializer extends AbstractOxmMatchEntrySerializer {
 
     @Override
-    public void serialize(MatchEntries entry, ByteBuf outBuffer) {
+    public void serialize(final MatchEntries entry, final ByteBuf outBuffer) {
         super.serialize(entry, outBuffer);
         String textAddress = entry.getAugmentation(Ipv6AddressMatchEntry.class).getIpv6Address().getValue();
         List<String> address;
@@ -36,7 +36,7 @@ public abstract class AbstractOxmIpv6AddressSerializer extends AbstractOxmMatchE
             Arrays.fill(tmp, "0");
             address = Arrays.asList(tmp);
         } else {
-            address = parseIpv6Address(Lists.newArrayList(Splitter.on(":").split(textAddress)));
+            address = parseIpv6Address(Lists.newArrayList(ByteBufUtils.COLON_SPLITTER.split(textAddress)));
         }
         for (String group : address) {
             outBuffer.writeShort(Integer.parseInt(group, 16));
@@ -44,7 +44,7 @@ public abstract class AbstractOxmIpv6AddressSerializer extends AbstractOxmMatchE
         writeMask(entry, outBuffer, getValueLength());
     }
 
-    private static List<String> parseIpv6Address(ArrayList<String> addressGroups) {
+    private static List<String> parseIpv6Address(final ArrayList<String> addressGroups) {
         int countEmpty = 0;
         for (String group : addressGroups) {
             if (group.equals("")) {

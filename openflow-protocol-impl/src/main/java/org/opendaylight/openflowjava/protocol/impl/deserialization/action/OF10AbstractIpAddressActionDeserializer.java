@@ -13,6 +13,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IpAddressAction;
@@ -21,8 +22,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 
-import com.google.common.base.Joiner;
-
 /**
  * @author michal.polkorab
  *
@@ -30,7 +29,7 @@ import com.google.common.base.Joiner;
 public abstract class OF10AbstractIpAddressActionDeserializer extends AbstractActionDeserializer {
 
     @Override
-    public Action deserialize(ByteBuf input) {
+    public Action deserialize(final ByteBuf input) {
         ActionBuilder builder = new ActionBuilder();
         input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         builder.setType(getType());
@@ -40,14 +39,13 @@ public abstract class OF10AbstractIpAddressActionDeserializer extends AbstractAc
         return builder.build();
     }
 
-    private static Augmentation<Action> createNwAddressAugmentationAndPad(ByteBuf input) {
+    private static Augmentation<Action> createNwAddressAugmentationAndPad(final ByteBuf input) {
         IpAddressActionBuilder ipBuilder = new IpAddressActionBuilder();
         List<String> groups = new ArrayList<>();
         for (int i = 0; i < EncodeConstants.GROUPS_IN_IPV4_ADDRESS; i++) {
             groups.add(Short.toString(input.readUnsignedByte()));
         }
-        Joiner joiner = Joiner.on(".");
-        ipBuilder.setIpAddress(new Ipv4Address(joiner.join(groups)));
+        ipBuilder.setIpAddress(new Ipv4Address(ByteBufUtils.DOT_JOINER.join(groups)));
         return ipBuilder.build();
     }
 

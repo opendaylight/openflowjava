@@ -10,10 +10,9 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.action;
 
 import io.netty.buffer.ByteBuf;
 
+import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IpAddressAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
-
-import com.google.common.base.Splitter;
 
 /**
  * @author michal.polkorab
@@ -22,9 +21,9 @@ import com.google.common.base.Splitter;
 public abstract class OF10AbstractIpAddressActionSerializer extends AbstractActionSerializer {
 
     @Override
-    public void serialize(Action action, ByteBuf outBuffer) {
+    public void serialize(final Action action, final ByteBuf outBuffer) {
         super.serialize(action, outBuffer);
-        Iterable<String> addressGroups = Splitter.on(".")
+        Iterable<String> addressGroups = ByteBufUtils.DOT_SPLITTER
                 .split(action.getAugmentation(IpAddressAction.class).getIpAddress().getValue());
         for (String group : addressGroups) {
             outBuffer.writeByte(Short.parseShort(group));
