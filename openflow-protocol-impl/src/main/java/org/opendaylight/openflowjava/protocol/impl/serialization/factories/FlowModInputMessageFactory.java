@@ -19,8 +19,10 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegist
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMaker;
 import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMakerFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.ListSerializer;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowModFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInput;
@@ -33,10 +35,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class FlowModInputMessageFactory implements OFSerializer<FlowModInput>, SerializerRegistryInjector {
     private static final byte MESSAGE_TYPE = 14;
     private static final byte PADDING_IN_FLOW_MOD_MESSAGE = 2;
+    private static final EnhancedTypeKeyMaker<Instruction> INSTRUCTION_KEY_MAKER =
+            EnhancedTypeKeyMakerFactory.createInstructionKeyMaker(EncodeConstants.OF13_VERSION_ID);
     private SerializerRegistry registry;
 
     @Override
-    public void serialize(FlowModInput message, ByteBuf outBuffer) {
+    public void serialize(final FlowModInput message, final ByteBuf outBuffer) {
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeLong(message.getCookie().longValue());
         outBuffer.writeLong(message.getCookieMask().longValue());
@@ -52,17 +56,16 @@ public class FlowModInputMessageFactory implements OFSerializer<FlowModInput>, S
         ByteBufUtils.padBuffer(PADDING_IN_FLOW_MOD_MESSAGE, outBuffer);
         registry.<Match, OFSerializer<Match>>getSerializer(new MessageTypeKey<>(message.getVersion(), Match.class))
             .serialize(message.getMatch(), outBuffer);
-        ListSerializer.serializeList(message.getInstruction(), EnhancedTypeKeyMakerFactory
-                .createInstructionKeyMaker(EncodeConstants.OF13_VERSION_ID), registry, outBuffer);
+        ListSerializer.serializeList(message.getInstruction(), INSTRUCTION_KEY_MAKER, registry, outBuffer);
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
     @Override
-    public void injectSerializerRegistry(SerializerRegistry serializerRegistry) {
+    public void injectSerializerRegistry(final SerializerRegistry serializerRegistry) {
         this.registry = serializerRegistry;
     }
 
-    private static int createFlowModFlagsBitmask(FlowModFlags flags) {
+    private static int createFlowModFlagsBitmask(final FlowModFlags flags) {
         int flowModFlagBitmask = 0;
         Map<Integer, Boolean> flowModFlagsMap = new HashMap<>();
         flowModFlagsMap.put(0, flags.isOFPFFSENDFLOWREM());
@@ -70,7 +73,7 @@ public class FlowModInputMessageFactory implements OFSerializer<FlowModInput>, S
         flowModFlagsMap.put(2, flags.isOFPFFRESETCOUNTS());
         flowModFlagsMap.put(3, flags.isOFPFFNOPKTCOUNTS());
         flowModFlagsMap.put(4, flags.isOFPFFNOBYTCOUNTS());
-        
+
         flowModFlagBitmask = ByteBufUtils.fillBitMaskFromMap(flowModFlagsMap);
         return flowModFlagBitmask;
     }

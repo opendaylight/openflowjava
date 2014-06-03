@@ -16,6 +16,7 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegist
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMaker;
 import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMakerFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.InstructionConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.ListSerializer;
@@ -30,10 +31,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction
 public abstract class AbstractActionInstructionSerializer extends AbstractInstructionSerializer
         implements SerializerRegistryInjector {
 
+    private static final EnhancedTypeKeyMaker<Action> ACTION_KEY_MAKER =
+            EnhancedTypeKeyMakerFactory.createActionKeyMaker(EncodeConstants.OF13_VERSION_ID);
+
     private SerializerRegistry registry;
 
     @Override
-    public void serialize(Instruction instruction, ByteBuf outBuffer) {
+    public void serialize(final Instruction instruction, final ByteBuf outBuffer) {
         int startIndex = outBuffer.writerIndex();
         outBuffer.writeShort(getType());
         if (instruction.getAugmentation(ActionsInstruction.class) != null) {
@@ -41,8 +45,7 @@ public abstract class AbstractActionInstructionSerializer extends AbstractInstru
             int lengthIndex = outBuffer.writerIndex();
             outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
             ByteBufUtils.padBuffer(InstructionConstants.PADDING_IN_ACTIONS_INSTRUCTION, outBuffer);
-            ListSerializer.serializeList(actions, EnhancedTypeKeyMakerFactory
-                    .createActionKeyMaker(EncodeConstants.OF13_VERSION_ID), getRegistry(), outBuffer);
+            ListSerializer.serializeList(actions, ACTION_KEY_MAKER, getRegistry(), outBuffer);
             int instructionLength = outBuffer.writerIndex() - startIndex;
             outBuffer.setShort(lengthIndex, instructionLength);
         } else {
@@ -56,7 +59,7 @@ public abstract class AbstractActionInstructionSerializer extends AbstractInstru
     }
 
     @Override
-    public void injectSerializerRegistry(SerializerRegistry serializerRegistry) {
+    public void injectSerializerRegistry(final SerializerRegistry serializerRegistry) {
         registry = serializerRegistry;
     }
 }
