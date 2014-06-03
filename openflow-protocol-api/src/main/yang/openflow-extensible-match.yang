@@ -218,6 +218,14 @@
             base match-field;
             description "NXM field for NXM_NX_TCP_FLAGS";
         }
+        identity tunnel_ipv4_dst {
+            base match-field;
+            description "NXM field for NXM_NX_TUN_IPV4_DST";
+        }
+        identity tunnel_ipv4_src {
+            base match-field;
+            description "NXM field for NXM_NX_TUN_IPV4_SRC";
+        }
         container oxm-container {
             uses oxm-fields-grouping;
         }

@@ -181,6 +181,18 @@
              type uint16;
          }
      }
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         ext:augment-identifier "tunnel-ipv4-dst-match-entry";
+         leaf tunnel-ipv4-dst {
+             type inet:ipv4-address;
+         }
+     }
+     augment "/oxm:oxm-container/oxm:match-entries" {
+         ext:augment-identifier "tunnel-ipv4-src-match-entry";
+         leaf tunnel-ipv4-src {
+             type inet:ipv4-address;
+         }
+     }
 
 // OFP_ACTION AUGMENTS
      augment "/ofaction:actions-container/ofaction:action" {
