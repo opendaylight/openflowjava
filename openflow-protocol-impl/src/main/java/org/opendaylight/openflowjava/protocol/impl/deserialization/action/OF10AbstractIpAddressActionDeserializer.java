@@ -10,9 +10,6 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.action;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
@@ -41,11 +38,7 @@ public abstract class OF10AbstractIpAddressActionDeserializer extends AbstractAc
 
     private static Augmentation<Action> createNwAddressAugmentationAndPad(final ByteBuf input) {
         IpAddressActionBuilder ipBuilder = new IpAddressActionBuilder();
-        List<String> groups = new ArrayList<>();
-        for (int i = 0; i < EncodeConstants.GROUPS_IN_IPV4_ADDRESS; i++) {
-            groups.add(Short.toString(input.readUnsignedByte()));
-        }
-        ipBuilder.setIpAddress(new Ipv4Address(ByteBufUtils.DOT_JOINER.join(groups)));
+        ipBuilder.setIpAddress(new Ipv4Address(ByteBufUtils.readIpv4Address(input)));
         return ipBuilder.build();
     }
 

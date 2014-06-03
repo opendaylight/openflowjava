@@ -20,7 +20,6 @@ import java.util.Map.Entry;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
@@ -32,9 +31,7 @@ import com.google.common.primitives.UnsignedBytes;
  */
 public abstract class ByteBufUtils {
     public static final Splitter DOT_SPLITTER = Splitter.on('.');
-    public static final Joiner DOT_JOINER = Joiner.on(".");
     public static final Splitter COLON_SPLITTER = Splitter.on(':');
-    public static final Joiner COLON_JOINER = Joiner.on(":");
     private static final char[] HEX_CHARS = "0123456789ABCDEF".toCharArray();
 
     /**
@@ -249,10 +246,17 @@ public abstract class ByteBufUtils {
         return result;
     }
 
-    private static final void appendByte(final StringBuilder sb, final byte b) {
+    private static final void appendHexByte(final StringBuilder sb, final byte b) {
         final int v = UnsignedBytes.toInt(b);
         sb.append(HEX_CHARS[v >> 4]);
         sb.append(HEX_CHARS[v & 15]);
+    }
+
+    private static void appendHexUnsignedShort(final StringBuilder sb, final int val) {
+        sb.append(ByteBufUtils.HEX_CHARS[(val >> 12) & 15]);
+        sb.append(ByteBufUtils.HEX_CHARS[(val >>  8) & 15]);
+        sb.append(ByteBufUtils.HEX_CHARS[(val >>  4) & 15]);
+        sb.append(ByteBufUtils.HEX_CHARS[ val        & 15]);
     }
 
     /**
@@ -266,10 +270,10 @@ public abstract class ByteBufUtils {
 
         final StringBuilder sb = new StringBuilder(17);
 
-        appendByte(sb, address[0]);
+        appendHexByte(sb, address[0]);
         for (int i = 1; i < EncodeConstants.MAC_ADDRESS_LENGTH; i++) {
             sb.append(':');
-            appendByte(sb, address[i]);
+            appendHexByte(sb, address[i]);
         }
 
         return sb.toString();
@@ -287,4 +291,40 @@ public abstract class ByteBufUtils {
         return new String(name).trim();
     }
 
+    /**
+     * Read an IPv4 address from a buffer and format it into dotted-quad string.
+     *
+     * @param buf Input buffer
+     * @return Dotted-quad string
+     */
+    public static String readIpv4Address(final ByteBuf buf) {
+        final StringBuilder sb = new StringBuilder(EncodeConstants.GROUPS_IN_IPV4_ADDRESS * 4 - 1);
+
+        sb.append(buf.readUnsignedByte());
+        for (int i = 1; i < EncodeConstants.GROUPS_IN_IPV4_ADDRESS; i++) {
+            sb.append('.');
+            sb.append(buf.readUnsignedByte());
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Read an IPv6 address from a buffer and format it into a string of eight groups of four
+     * hexadecimal digits separated by colons.
+     *
+     * @param buf Input buffer
+     * @return IPv6 address in string format
+     */
+    public static String readIpv6Address(final ByteBuf buf) {
+        final StringBuilder sb = new StringBuilder(EncodeConstants.GROUPS_IN_IPV6_ADDRESS * 5 - 1);
+
+        appendHexUnsignedShort(sb, buf.readUnsignedShort());
+        for (int i = 1; i < EncodeConstants.GROUPS_IN_IPV6_ADDRESS; i++) {
+            sb.append(':');
+            appendHexUnsignedShort(sb, buf.readUnsignedShort());
+        }
+
+        return sb.toString();
+    }
 }
