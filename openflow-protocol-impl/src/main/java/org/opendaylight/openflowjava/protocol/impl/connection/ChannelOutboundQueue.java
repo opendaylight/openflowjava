@@ -18,6 +18,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
@@ -239,6 +240,26 @@ final class ChannelOutboundQueue extends ChannelInboundHandlerAdapter {
     public void channelWritabilityChanged(final ChannelHandlerContext ctx) throws Exception {
         super.channelWritabilityChanged(ctx);
         conditionalFlush(ctx);
+    }
+
+    @Override
+    public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
+        super.channelInactive(ctx);
+
+        long entries = 0;
+        LOG.debug("Channel shutdown, flushing queue...");
+        final Future<Void> result = ctx.newFailedFuture(new RejectedExecutionException("Channel disconnected"));
+        while (true) {
+            final MessageHolder<?> e = queue.poll();
+            if (e == null) {
+                break;
+            }
+
+            e.takeListener().operationComplete(result);
+            entries++;
+        }
+
+        LOG.debug("Flushed {} queue entries", entries);
     }
 
     @Override
