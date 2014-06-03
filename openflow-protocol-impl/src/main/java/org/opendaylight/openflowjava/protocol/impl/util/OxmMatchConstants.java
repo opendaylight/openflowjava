@@ -108,6 +108,10 @@ public abstract class OxmMatchConstants {
      * OFPXMC_NXM_1 class Constants
      */
 
+    /** NXM IPv4 Tunnel Endpoint Source */
+    public static final int NXM_NX_TUN_IPV4_SRC = 31;
+    /** NXM IPv4 Tunnel Endpoint Destination */
+    public static final int NXM_NX_TUN_IPV4_DST = 32;
     /** NXM TCP_Flag value */
     public static final int NXM_NX_TCP_FLAG = 34;
 }
