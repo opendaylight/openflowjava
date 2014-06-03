@@ -9,9 +9,6 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.match;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
@@ -39,13 +36,24 @@ public abstract class AbstractOxmIpv6AddressDeserializer extends AbstractOxmMatc
         return builder.build();
     }
 
+    private static void appendHexShort(final StringBuilder sb, final int val) {
+        sb.append(ByteBufUtils.HEX_CHARS[val >> 12]);
+        sb.append(ByteBufUtils.HEX_CHARS[val >>  8]);
+        sb.append(ByteBufUtils.HEX_CHARS[val >>  4]);
+        sb.append(ByteBufUtils.HEX_CHARS[val &  15]);
+    }
+
     private static void addIpv6AddressAugmentation(final MatchEntriesBuilder builder, final ByteBuf input) {
-        Ipv6AddressMatchEntryBuilder ipv6AddressBuilder = new Ipv6AddressMatchEntryBuilder();
-        List<String> groups = new ArrayList<>();
-        for (int i = 0; i < EncodeConstants.GROUPS_IN_IPV6_ADDRESS; i++) {
-            groups.add(String.format("%04X", input.readUnsignedShort()));
+        final StringBuilder sb = new StringBuilder(EncodeConstants.GROUPS_IN_IPV6_ADDRESS * 5 - 1);
+
+        appendHexShort(sb, input.readUnsignedShort());
+        for (int i = 1; i < EncodeConstants.GROUPS_IN_IPV6_ADDRESS; i++) {
+            sb.append(':');
+            appendHexShort(sb, input.readUnsignedShort());
         }
-        ipv6AddressBuilder.setIpv6Address(new Ipv6Address(ByteBufUtils.COLON_JOINER.join(groups)));
+
+        Ipv6AddressMatchEntryBuilder ipv6AddressBuilder = new Ipv6AddressMatchEntryBuilder();
+        ipv6AddressBuilder.setIpv6Address(new Ipv6Address(sb.toString()));
         builder.addAugmentation(Ipv6AddressMatchEntry.class, ipv6AddressBuilder.build());
     }
 }

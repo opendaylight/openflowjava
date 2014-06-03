@@ -10,9 +10,6 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
@@ -57,16 +54,8 @@ public class OF10MatchDeserializer implements OFDeserializer<MatchV10> {
         builder.setNwTos(input.readUnsignedByte());
         builder.setNwProto(input.readUnsignedByte());
         input.skipBytes(PADDING_IN_MATCH_2);
-        List<String> srcGroups = new ArrayList<>();
-        for (int i = 0; i < EncodeConstants.GROUPS_IN_IPV4_ADDRESS; i++) {
-            srcGroups.add(Short.toString(input.readUnsignedByte()));
-        }
-        builder.setNwSrc(new Ipv4Address(ByteBufUtils.DOT_JOINER.join(srcGroups)));
-        List<String> dstGroups = new ArrayList<>();
-        for (int i = 0; i < EncodeConstants.GROUPS_IN_IPV4_ADDRESS; i++) {
-            dstGroups.add(Short.toString(input.readUnsignedByte()));
-        }
-        builder.setNwDst(new Ipv4Address(ByteBufUtils.DOT_JOINER.join(dstGroups)));
+        builder.setNwSrc(new Ipv4Address(ByteBufUtils.readIpv4Address(input)));
+        builder.setNwDst(new Ipv4Address(ByteBufUtils.readIpv4Address(input)));
         builder.setTpSrc(input.readUnsignedShort());
         builder.setTpDst(input.readUnsignedShort());
         return builder.build();
