@@ -1,0 +1,8 @@
+Verified+1: jenkins-openflowjava <jenkins-openflowjava@opendaylight.org>
+Code-Review+2: Adam Brcek <adam.brcek@pantheon.sk>
+Code-Review+1: Michal Polkorab <michal.polkorab@pantheon.sk>
+Submitted-by: Adam Brcek <adam.brcek@pantheon.sk>
+Submitted-at: Tue, 03 Jun 2014 13:15:57 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/7637
+Project: openflowjava
+Branch: refs/heads/master
