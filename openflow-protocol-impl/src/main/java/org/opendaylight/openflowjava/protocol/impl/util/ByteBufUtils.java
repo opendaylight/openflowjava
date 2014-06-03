@@ -209,20 +209,43 @@ public abstract class ByteBufUtils {
         return sb.toString().trim();
     }
 
+    private static int hexValue(final char c) {
+        if (c >= '0' && c <= '9') {
+            return c - '0';
+        }
+        if (c >= 'a' && c <= 'f') {
+            return c - 'a' + 10;
+        }
+        if (c >= 'A' && c <= 'F') {
+            return c - 'A' + 10;
+        }
+
+        throw new IllegalArgumentException(String.format("Invalid character '%s' encountered", c));
+    }
+
     /**
      * Converts macAddress to byte array
      * @param macAddress
      * @return byte representation of mac address
      * @see {@link MacAddress}
+     *
+     * FIXME: this method does not support shortened values, e.g.
+     *        "0:1:2:3:4:5", only "00:11:22:33:44:55".
      */
     public static byte[] macAddressToBytes(final String macAddress) {
-        Iterable<String> addressGroups = COLON_SPLITTER.split(macAddress);
-        byte[] result = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
-        int i = 0;
-        for (String group : addressGroups) {
-            result[i] = (byte) Short.parseShort(group, 16);
-            i++;
+        final byte[] result = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
+        final char[] mac = macAddress.toCharArray();
+
+        int offset = 0;
+        for (int i = 0; i < EncodeConstants.MAC_ADDRESS_LENGTH - 1; ++i) {
+            result[i] = UnsignedBytes.checkedCast(
+                    (hexValue(mac[offset++]) << 4) | hexValue(mac[offset++]));
+            Preconditions.checkArgument(mac[offset] == ':', "Invalid value: %s", macAddress);
+            offset++;
         }
+
+        result[EncodeConstants.MAC_ADDRESS_LENGTH - 1] =
+                UnsignedBytes.checkedCast(hexValue(mac[offset++]) << 4 | hexValue(mac[offset]));
         return result;
     }
 
