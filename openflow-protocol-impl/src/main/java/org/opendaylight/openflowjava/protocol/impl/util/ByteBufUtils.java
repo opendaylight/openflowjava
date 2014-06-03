@@ -21,8 +21,10 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+import com.google.common.primitives.UnsignedBytes;
 
 /** Class for common operations on ByteBuf
  * @author michal.polkorab
@@ -33,6 +35,7 @@ public abstract class ByteBufUtils {
     public static final Joiner DOT_JOINER = Joiner.on(".");
     public static final Splitter COLON_SPLITTER = Splitter.on(':');
     public static final Joiner COLON_JOINER = Joiner.on(":");
+    private static final char[] HEX_CHARS = "0123456789ABCDEF".toCharArray();
 
     /**
      * Converts ByteBuf into String
@@ -103,13 +106,12 @@ public abstract class ByteBufUtils {
      * Fills specified ByteBuf with 0 (zeros) of desired length, used for padding
      * @param length
      * @param out ByteBuf to be padded
+     * @deprecated Use {@link ByteBuf#writeZero(int)} directly.
      */
+    @Deprecated
     public static void padBuffer(final int length, final ByteBuf out) {
-        for (int i = 0; i < length; i++) {
-            out.writeByte(0);
-        }
+        out.writeZero(length);
     }
-
 
     /**
      * Create standard OF header
@@ -203,18 +205,30 @@ public abstract class ByteBufUtils {
         return result;
     }
 
+    private static final void appendByte(final StringBuilder sb, final byte b) {
+        final int v = UnsignedBytes.toInt(b);
+        sb.append(HEX_CHARS[v >> 4]);
+        sb.append(HEX_CHARS[v & 15]);
+    }
+
     /**
-     * Converts mac address represented in bytes to String
+     * Converts a MAC address represented in bytes to String
      * @param address
-     * @return String representation of mac address
+     * @return String representation of a MAC address
      * @see {@link MacAddress}
      */
     public static String macAddressToString(final byte[] address) {
-        List<String> groups = new ArrayList<>();
-        for(int i=0; i < EncodeConstants.MAC_ADDRESS_LENGTH; i++){
-            groups.add(String.format("%02X", address[i]));
+        Preconditions.checkArgument(address.length == EncodeConstants.MAC_ADDRESS_LENGTH);
+
+        final StringBuilder sb = new StringBuilder(17);
+
+        appendByte(sb, address[0]);
+        for (int i = 1; i < EncodeConstants.MAC_ADDRESS_LENGTH; i++) {
+            sb.append(':');
+            appendByte(sb, address[i]);
         }
-        return COLON_JOINER.join(groups);
+
+        return sb.toString();
     }
 
     /**
