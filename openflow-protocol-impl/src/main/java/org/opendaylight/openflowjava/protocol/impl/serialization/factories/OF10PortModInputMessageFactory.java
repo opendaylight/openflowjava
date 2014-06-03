@@ -10,9 +10,6 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
@@ -30,7 +27,7 @@ public class OF10PortModInputMessageFactory implements OFSerializer<PortModInput
     private static final byte PADDING_IN_PORT_MOD_MESSAGE = 4;
 
     @Override
-    public void serialize(PortModInput message, ByteBuf outBuffer) {
+    public void serialize(final PortModInput message, final ByteBuf outBuffer) {
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeShort(message.getPortNo().getValue().intValue());
         outBuffer.writeBytes(ByteBufUtils.macAddressToBytes(message.getHwAddress().getValue()));
@@ -43,40 +40,33 @@ public class OF10PortModInputMessageFactory implements OFSerializer<PortModInput
 
     /**
      * @param config
-     * @return port config bitmask 
+     * @return port config bitmask
      */
-    private static int createPortConfigBitmask(PortConfigV10 config) {
-        int configBitmask = 0;
-        Map<Integer, Boolean> portConfigMap = new HashMap<>();
-        portConfigMap.put(0, config.isPortDown());
-        portConfigMap.put(1, config.isNoStp());
-        portConfigMap.put(2, config.isNoRecv());
-        portConfigMap.put(3, config.isNoRecvStp());
-        portConfigMap.put(4, config.isNoFlood());
-        portConfigMap.put(5, config.isNoFwd());
-        portConfigMap.put(6, config.isNoPacketIn());
-        
-        configBitmask = ByteBufUtils.fillBitMaskFromMap(portConfigMap);
-        return configBitmask;
+    private static int createPortConfigBitmask(final PortConfigV10 config) {
+        return ByteBufUtils.fillBitMask(0,
+                config.isPortDown(),
+                config.isNoStp(),
+                config.isNoRecv(),
+                config.isNoRecvStp(),
+                config.isNoFlood(),
+                config.isNoFwd(),
+                config.isNoPacketIn());
     }
-    
-    private static int createPortFeaturesBitmask(PortFeaturesV10 feature) {
-        int configBitmask = 0;
-        Map<Integer, Boolean> portFeaturesMap = new HashMap<>();
-        portFeaturesMap.put(0, feature.is_10mbHd());
-        portFeaturesMap.put(1, feature.is_10mbFd());
-        portFeaturesMap.put(2, feature.is_100mbHd());
-        portFeaturesMap.put(3, feature.is_100mbFd());
-        portFeaturesMap.put(4, feature.is_1gbHd());
-        portFeaturesMap.put(5, feature.is_1gbFd());
-        portFeaturesMap.put(6, feature.is_10gbFd());
-        portFeaturesMap.put(7, feature.isCopper());
-        portFeaturesMap.put(8, feature.isFiber());
-        portFeaturesMap.put(9, feature.isAutoneg());
-        portFeaturesMap.put(10, feature.isPause());
-        portFeaturesMap.put(11, feature.isPauseAsym());
-        configBitmask = ByteBufUtils.fillBitMaskFromMap(portFeaturesMap);
-        return configBitmask;
+
+    private static int createPortFeaturesBitmask(final PortFeaturesV10 feature) {
+        return ByteBufUtils.fillBitMask(0,
+                feature.is_10mbHd(),
+                feature.is_10mbFd(),
+                feature.is_100mbHd(),
+                feature.is_100mbFd(),
+                feature.is_1gbHd(),
+                feature.is_1gbFd(),
+                feature.is_10gbFd(),
+                feature.isCopper(),
+                feature.isFiber(),
+                feature.isAutoneg(),
+                feature.isPause(),
+                feature.isPauseAsym());
     }
 
 }

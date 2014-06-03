@@ -10,9 +10,7 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.EnhancedMessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderSerializer;
@@ -103,7 +101,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
     private SerializerRegistry registry;
 
     @Override
-    public void serialize(MultipartRequestInput message, ByteBuf outBuffer) {
+    public void serialize(final MultipartRequestInput message, final ByteBuf outBuffer) {
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeShort(message.getType().getIntValue());
         outBuffer.writeShort(createMultipartRequestFlagsBitmask(message.getFlags()));
@@ -143,8 +141,8 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
-    private void serializeExperimenterBody(MultipartRequestInput message,
-            ByteBuf outBuffer) {
+    private void serializeExperimenterBody(final MultipartRequestInput message,
+            final ByteBuf outBuffer) {
         MultipartRequestExperimenterCase expCase =
                 (MultipartRequestExperimenterCase) message.getMultipartRequestBody();
         MultipartRequestExperimenter experimenter = expCase.getMultipartRequestExperimenter();
@@ -153,21 +151,16 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         serializer.serialize(experimenter, outBuffer);
     }
 
-    private static int createMultipartRequestFlagsBitmask(MultipartRequestFlags flags) {
-        int multipartRequestFlagsBitmask = 0;
-        Map<Integer, Boolean> multipartRequestFlagsMap = new HashMap<>();
-        multipartRequestFlagsMap.put(0, flags.isOFPMPFREQMORE());
-
-        multipartRequestFlagsBitmask = ByteBufUtils.fillBitMaskFromMap(multipartRequestFlagsMap);
-        return multipartRequestFlagsBitmask;
+    private static int createMultipartRequestFlagsBitmask(final MultipartRequestFlags flags) {
+        return ByteBufUtils.fillBitMask(0, flags.isOFPMPFREQMORE());
     }
 
     /**
      * @param multipartRequestBody
      * @param output
      */
-    private void serializeDescBody(MultipartRequestBody multipartRequestBody,
-            ByteBuf output) {
+    private void serializeDescBody(final MultipartRequestBody multipartRequestBody,
+            final ByteBuf output) {
         // The body of MultiPartRequestDesc is empty
     }
 
@@ -175,8 +168,8 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
      * @param multipartRequestBody
      * @param out
      */
-    private void serializeTableBody(MultipartRequestBody multipartRequestBody,
-            ByteBuf out) {
+    private void serializeTableBody(final MultipartRequestBody multipartRequestBody,
+            final ByteBuf out) {
      // The body of MultiPartTable is empty
     }
 
@@ -184,8 +177,8 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
      * @param multipartRequestBody
      * @param out
      */
-    private void serializeGroupDescBody(MultipartRequestBody multipartRequestBody,
-            ByteBuf out) {
+    private void serializeGroupDescBody(final MultipartRequestBody multipartRequestBody,
+            final ByteBuf out) {
      // The body of MultiPartRequestGroupDesc is empty
     }
 
@@ -194,7 +187,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
      * @param out
      */
     private void serializeGroupFeaturesBody(
-            MultipartRequestBody multipartRequestBody, ByteBuf out) {
+            final MultipartRequestBody multipartRequestBody, final ByteBuf out) {
      // The body of MultiPartRequestGroupFeatures is empty
     }
 
@@ -203,7 +196,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
      * @param out
      */
     private void serializeMeterFeaturesBody(
-            MultipartRequestBody multipartRequestBody, ByteBuf out) {
+            final MultipartRequestBody multipartRequestBody, final ByteBuf out) {
      // The body of MultiPartMeterFeatures is empty
     }
 
@@ -211,12 +204,12 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
      * @param multipartRequestBody
      * @param out
      */
-    private void serializePortDescBody(MultipartRequestBody multipartRequestBody,
-            ByteBuf out) {
+    private void serializePortDescBody(final MultipartRequestBody multipartRequestBody,
+            final ByteBuf out) {
      // The body of MultiPartPortDesc is empty
     }
 
-    private void serializeFlowBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
+    private void serializeFlowBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output) {
         MultipartRequestFlowCase flowCase = (MultipartRequestFlowCase) multipartRequestBody;
         MultipartRequestFlow flow = flowCase.getMultipartRequestFlow();
         output.writeByte(flow.getTableId().byteValue());
@@ -231,7 +224,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         serializer.serialize(flow.getMatch(), output);
     }
 
-    private void serializeAggregateBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
+    private void serializeAggregateBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output) {
         MultipartRequestAggregateCase aggregateCase = (MultipartRequestAggregateCase) multipartRequestBody;
         MultipartRequestAggregate aggregate = aggregateCase.getMultipartRequestAggregate();
         output.writeByte(aggregate.getTableId().byteValue());
@@ -246,42 +239,42 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         serializer.serialize(aggregate.getMatch(), output);
     }
 
-    private static void serializePortStatsBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
+    private static void serializePortStatsBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output) {
         MultipartRequestPortStatsCase portstatsCase = (MultipartRequestPortStatsCase) multipartRequestBody;
         MultipartRequestPortStats portstats = portstatsCase.getMultipartRequestPortStats();
         output.writeInt(portstats.getPortNo().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_PORTSTATS_BODY, output);
     }
 
-    private static void serializeQueueBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
+    private static void serializeQueueBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output) {
         MultipartRequestQueueCase queueCase = (MultipartRequestQueueCase) multipartRequestBody;
         MultipartRequestQueue queue = queueCase.getMultipartRequestQueue();
         output.writeInt(queue.getPortNo().intValue());
         output.writeInt(queue.getQueueId().intValue());
     }
 
-    private static void serializeeGroupStatsBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
+    private static void serializeeGroupStatsBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output) {
         MultipartRequestGroupCase groupStatsCase = (MultipartRequestGroupCase) multipartRequestBody;
         MultipartRequestGroup groupStats = groupStatsCase.getMultipartRequestGroup();
         output.writeInt(groupStats.getGroupId().getValue().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_GROUP_BODY, output);
     }
 
-    private static void serializeMeterBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
+    private static void serializeMeterBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output) {
         MultipartRequestMeterCase meterCase = (MultipartRequestMeterCase) multipartRequestBody;
         MultipartRequestMeter meter = meterCase.getMultipartRequestMeter();
         output.writeInt(meter.getMeterId().getValue().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_METER_BODY, output);
     }
 
-    private static void serializeMeterConfigBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
+    private static void serializeMeterConfigBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output) {
         MultipartRequestMeterConfigCase meterConfigCase = (MultipartRequestMeterConfigCase) multipartRequestBody;
         MultipartRequestMeterConfig meterConfig = meterConfigCase.getMultipartRequestMeterConfig();
         output.writeInt(meterConfig.getMeterId().getValue().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_METER_CONFIG_BODY, output);
     }
 
-    private void serializeTableFeaturesBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
+    private void serializeTableFeaturesBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output) {
         if (multipartRequestBody != null) {
             MultipartRequestTableFeaturesCase tableFeaturesCase = (MultipartRequestTableFeaturesCase) multipartRequestBody;
             MultipartRequestTableFeatures tableFeatures = tableFeaturesCase.getMultipartRequestTableFeatures();
@@ -304,7 +297,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         }
     }
 
-    private void writeTableFeatureProperties(ByteBuf output, List<TableFeatureProperties> props) {
+    private void writeTableFeatureProperties(final ByteBuf output, final List<TableFeatureProperties> props) {
         if (props != null) {
             for (TableFeatureProperties property : props) {
                 TableFeaturesPropType type = property.getType();
@@ -345,8 +338,8 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         }
     }
 
-    private void writeInstructionRelatedTableProperty(ByteBuf output,
-            TableFeatureProperties property, byte code) {
+    private void writeInstructionRelatedTableProperty(final ByteBuf output,
+            final TableFeatureProperties property, final byte code) {
         output.writeShort(code);
         List<Instruction> instructions = property.
                 getAugmentation(InstructionRelatedTableFeatureProperty.class).getInstruction();
@@ -372,8 +365,8 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         ByteBufUtils.padBuffer(padding, output);
     }
 
-    private static void writeNextTableRelatedTableProperty(ByteBuf output,
-            TableFeatureProperties property, byte code) {
+    private static void writeNextTableRelatedTableProperty(final ByteBuf output,
+            final TableFeatureProperties property, final byte code) {
         output.writeShort(code);
         List<NextTableIds> nextTableIds = property.
                 getAugmentation(NextTableRelatedTableFeatureProperty.class).getNextTableIds();
@@ -387,13 +380,13 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
                 output.writeByte(next.getTableId());
             }
         } else {
-            padding = paddingNeeded(length); 
+            padding = paddingNeeded(length);
             output.writeShort(length + padding);
         }
         ByteBufUtils.padBuffer(padding, output);
     }
 
-    private static int paddingNeeded(int length) {
+    private static int paddingNeeded(final int length) {
         int paddingRemainder = length % EncodeConstants.PADDING;
         int result = 0;
         if (paddingRemainder != 0) {
@@ -402,8 +395,8 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         return result;
     }
 
-    private void writeActionsRelatedTableProperty(ByteBuf output,
-            TableFeatureProperties property, byte code) {
+    private void writeActionsRelatedTableProperty(final ByteBuf output,
+            final TableFeatureProperties property, final byte code) {
         output.writeShort(code);
         List<Action> actions = property.
                 getAugmentation(ActionRelatedTableFeatureProperty.class).getAction();
@@ -430,8 +423,8 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         ByteBufUtils.padBuffer(padding, output);
     }
 
-    private void writeOxmRelatedTableProperty(ByteBuf output,
-            TableFeatureProperties property, byte code) {
+    private void writeOxmRelatedTableProperty(final ByteBuf output,
+            final TableFeatureProperties property, final byte code) {
         output.writeShort(code);
         List<MatchEntries> entries = property.
                 getAugmentation(OxmRelatedTableFeatureProperty.class).getMatchEntries();
@@ -442,7 +435,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
             length += entries.size() * STRUCTURE_HEADER_LENGTH;
             padding = paddingNeeded(length);
             output.writeShort(length);
-            
+
             for (MatchEntries entry : entries) {
                 HeaderSerializer<MatchEntries> entrySerializer = registry.getSerializer(
                         new EnhancedMessageTypeKey<>(EncodeConstants.OF13_VERSION_ID,
@@ -456,24 +449,19 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         ByteBufUtils.padBuffer(padding, output);
     }
 
-    private void writeExperimenterRelatedTableProperty(ByteBuf output,
-            TableFeatureProperties property) {
+    private void writeExperimenterRelatedTableProperty(final ByteBuf output,
+            final TableFeatureProperties property) {
     	OFSerializer<TableFeatureProperties> serializer = registry.getSerializer(
     			new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, TableFeatureProperties.class));
     	serializer.serialize(property, output);
     }
 
-    private static int createTableConfigBitmask(TableConfig tableConfig) {
-        int tableConfigBitmask = 0;
-        Map<Integer, Boolean> tableConfigMap = new HashMap<>();
-        tableConfigMap.put(3, tableConfig.isOFPTCDEPRECATEDMASK());
-
-        tableConfigBitmask = ByteBufUtils.fillBitMaskFromMap(tableConfigMap);
-        return tableConfigBitmask;
+    private static int createTableConfigBitmask(final TableConfig tableConfig) {
+        return ByteBufUtils.fillBitMask(3, tableConfig.isOFPTCDEPRECATEDMASK());
     }
 
     @Override
-    public void injectSerializerRegistry(SerializerRegistry serializerRegistry) {
+    public void injectSerializerRegistry(final SerializerRegistry serializerRegistry) {
         this.registry = serializerRegistry;
     }
 }

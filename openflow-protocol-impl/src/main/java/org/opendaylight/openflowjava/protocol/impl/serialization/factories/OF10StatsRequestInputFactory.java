@@ -10,9 +10,6 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
@@ -51,7 +48,7 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
     private SerializerRegistry registry;
 
     @Override
-    public void serialize(MultipartRequestInput message, ByteBuf outBuffer) {
+    public void serialize(final MultipartRequestInput message, final ByteBuf outBuffer) {
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.OFHEADER_SIZE);
         outBuffer.writeShort(message.getType().getIntValue());
         outBuffer.writeShort(createMultipartRequestFlagsBitmask(message.getFlags()));
@@ -73,20 +70,16 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
-    private static int createMultipartRequestFlagsBitmask(MultipartRequestFlags flags) {
-        int multipartRequestFlagsBitmask = 0;
-        Map<Integer, Boolean> multipartRequestFlagsMap = new HashMap<>();
-        multipartRequestFlagsMap.put(0, flags.isOFPMPFREQMORE());
-        multipartRequestFlagsBitmask = ByteBufUtils.fillBitMaskFromMap(multipartRequestFlagsMap);
-        return multipartRequestFlagsBitmask;
+    private static int createMultipartRequestFlagsBitmask(final MultipartRequestFlags flags) {
+        return ByteBufUtils.fillBitMask(0, flags.isOFPMPFREQMORE());
     }
-    
+
     /**
-     * @param multipartRequestBody  
-     * @param output 
+     * @param multipartRequestBody
+     * @param output
      */
-    private void serializeDescBody(MultipartRequestBody multipartRequestBody,
-            ByteBuf output) {
+    private void serializeDescBody(final MultipartRequestBody multipartRequestBody,
+            final ByteBuf output) {
         // The body of MultiPartRequestDesc is empty
     }
 
@@ -94,12 +87,12 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
      * @param multipartRequestBody
      * @param out
      */
-    private void serializeTableBody(MultipartRequestBody multipartRequestBody,
-            ByteBuf out) {
+    private void serializeTableBody(final MultipartRequestBody multipartRequestBody,
+            final ByteBuf out) {
      // The body of MultiPartTable is empty
     }
-    
-    private void serializeFlowBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
+
+    private void serializeFlowBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output) {
         MultipartRequestFlowCase flowCase = (MultipartRequestFlowCase) multipartRequestBody;
         MultipartRequestFlow flow = flowCase.getMultipartRequestFlow();
         OFSerializer<MatchV10> matchSerializer = registry.getSerializer(new MessageTypeKey<>(
@@ -109,8 +102,8 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_FLOW_BODY, output);
         output.writeShort(flow.getOutPort().intValue());
     }
-    
-    private void serializeAggregateBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
+
+    private void serializeAggregateBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output) {
         MultipartRequestAggregateCase aggregateCase = (MultipartRequestAggregateCase) multipartRequestBody;
         MultipartRequestAggregate aggregate = aggregateCase.getMultipartRequestAggregate();
         OFSerializer<MatchV10> matchSerializer = registry.getSerializer(new MessageTypeKey<>(
@@ -121,22 +114,22 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
         output.writeShort(aggregate.getOutPort().intValue());
     }
 
-    private static void serializePortBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
+    private static void serializePortBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output) {
         MultipartRequestPortStatsCase portstatsCase = (MultipartRequestPortStatsCase) multipartRequestBody;
         MultipartRequestPortStats portstats = portstatsCase.getMultipartRequestPortStats();
         output.writeShort(portstats.getPortNo().intValue());
         ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_PORT_BODY, output);
     }
-    
-    private static void serializeQueueBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
+
+    private static void serializeQueueBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output) {
         MultipartRequestQueueCase queueCase = (MultipartRequestQueueCase) multipartRequestBody;
         MultipartRequestQueue queue = queueCase.getMultipartRequestQueue();
         output.writeShort(queue.getPortNo().intValue());
         ByteBufUtils.padBuffer(PADING_IN_QUEUE_BODY, output);
         output.writeInt(queue.getQueueId().intValue());
     }
-    
-    private void serializeExperimenterBody(MultipartRequestBody multipartRequestBody, ByteBuf output) {
+
+    private void serializeExperimenterBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output) {
         MultipartRequestExperimenterCase experimenterCase = (MultipartRequestExperimenterCase) multipartRequestBody;
         MultipartRequestExperimenter experimenter = experimenterCase.getMultipartRequestExperimenter();
         OFSerializer<MultipartRequestExperimenter> expSerializer = registry.getSerializer(
@@ -145,8 +138,8 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
     }
 
     @Override
-    public void injectSerializerRegistry(SerializerRegistry serializerRegistry) {
+    public void injectSerializerRegistry(final SerializerRegistry serializerRegistry) {
         this.registry = serializerRegistry;
     }
-    
+
 }

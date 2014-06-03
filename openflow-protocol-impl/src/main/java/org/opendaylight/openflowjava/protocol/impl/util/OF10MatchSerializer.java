@@ -10,9 +10,6 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowWildcardsV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.v10.grouping.MatchV10;
@@ -59,19 +56,18 @@ public class OF10MatchSerializer implements OFSerializer<MatchV10> {
     }
 
     private static int encodeWildcards(final FlowWildcardsV10 wildcards, final short srcMask, final short dstMask) {
-        int bitmask = 0;
-        Map<Integer, Boolean> wildcardsMap = new HashMap<>();
-        wildcardsMap.put(0, wildcards.isINPORT());
-        wildcardsMap.put(1, wildcards.isDLVLAN());
-        wildcardsMap.put(2, wildcards.isDLSRC());
-        wildcardsMap.put(3, wildcards.isDLDST());
-        wildcardsMap.put(4, wildcards.isDLTYPE());
-        wildcardsMap.put(5, wildcards.isNWPROTO());
-        wildcardsMap.put(6, wildcards.isTPSRC());
-        wildcardsMap.put(7, wildcards.isTPDST());
-        wildcardsMap.put(20, wildcards.isDLVLANPCP());
-        wildcardsMap.put(21, wildcards.isNWTOS());
-        bitmask = ByteBufUtils.fillBitMaskFromMap(wildcardsMap);
+        int bitmask = ByteBufUtils.fillBitMask(0,
+                wildcards.isINPORT(),
+                wildcards.isDLVLAN(),
+                wildcards.isDLSRC(),
+                wildcards.isDLDST(),
+                wildcards.isDLTYPE(),
+                wildcards.isNWPROTO(),
+                wildcards.isTPSRC(),
+                wildcards.isTPDST());
+        bitmask |= ByteBufUtils.fillBitMask(20,
+                wildcards.isDLVLANPCP(),
+                wildcards.isNWTOS());
         bitmask |= ((32 - srcMask) << NW_SRC_SHIFT);
         bitmask |= ((32 - dstMask) << NW_DST_SHIFT);
         return bitmask;

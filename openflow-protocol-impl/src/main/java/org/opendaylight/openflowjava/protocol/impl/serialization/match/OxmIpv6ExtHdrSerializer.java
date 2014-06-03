@@ -9,9 +9,6 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.match;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.OxmMatchConstants;
@@ -26,20 +23,19 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
 public class OxmIpv6ExtHdrSerializer extends AbstractOxmMatchEntrySerializer {
 
     @Override
-    public void serialize(MatchEntries entry, ByteBuf outBuffer) {
+    public void serialize(final MatchEntries entry, final ByteBuf outBuffer) {
         super.serialize(entry, outBuffer);
         Ipv6ExthdrFlags pseudoField = entry.getAugmentation(PseudoFieldMatchEntry.class).getPseudoField();
-        Map<Integer, Boolean> map = new HashMap<>();
-        map.put(0, pseudoField.isNonext());
-        map.put(1, pseudoField.isEsp());
-        map.put(2, pseudoField.isAuth());
-        map.put(3, pseudoField.isDest());
-        map.put(4, pseudoField.isFrag());
-        map.put(5, pseudoField.isRouter());
-        map.put(6, pseudoField.isHop());
-        map.put(7, pseudoField.isUnrep());
-        map.put(8, pseudoField.isUnseq());
-        int bitmap = ByteBufUtils.fillBitMaskFromMap(map);
+        int bitmap = ByteBufUtils.fillBitMask(0,
+                pseudoField.isNonext(),
+                pseudoField.isEsp(),
+                pseudoField.isAuth(),
+                pseudoField.isDest(),
+                pseudoField.isFrag(),
+                pseudoField.isRouter(),
+                pseudoField.isHop(),
+                pseudoField.isUnrep(),
+                pseudoField.isUnseq());
         outBuffer.writeShort(bitmap);
         writeMask(entry, outBuffer, getValueLength());
     }

@@ -10,9 +10,6 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
@@ -29,7 +26,7 @@ public class TableModInputMessageFactory implements OFSerializer<TableModInput> 
     private static final byte PADDING_IN_TABLE_MOD_MESSAGE = 3;
 
     @Override
-    public void serialize(TableModInput message, ByteBuf outBuffer) {
+    public void serialize(final TableModInput message, final ByteBuf outBuffer) {
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeByte(message.getTableId().getValue().byteValue());
         ByteBufUtils.padBuffer(PADDING_IN_TABLE_MOD_MESSAGE, outBuffer);
@@ -39,13 +36,10 @@ public class TableModInputMessageFactory implements OFSerializer<TableModInput> 
 
     /**
      * @param tableConfig
-     * @return port config bitmask 
+     * @return port config bitmask
      */
-    private static int createConfigBitmask(TableConfig tableConfig) {
-        Map<Integer, Boolean> portConfigMap = new HashMap<>();
-        portConfigMap.put(3, tableConfig.isOFPTCDEPRECATEDMASK());
-        int configBitmask = ByteBufUtils.fillBitMaskFromMap(portConfigMap);
-        return configBitmask;
+    private static int createConfigBitmask(final TableConfig tableConfig) {
+        return ByteBufUtils.fillBitMask(3, tableConfig.isOFPTCDEPRECATEDMASK());
     }
 
 }

@@ -152,6 +152,27 @@ public abstract class ByteBufUtils {
     }
 
     /**
+     * Fills the bitmask from a set of bit values, starting at specified offset.
+     *
+     * @param offset Bit offset to start at
+     * @param values boolean bit values to fill
+     * @return Filled-in bitmask
+     */
+    public static int fillBitMask(final int offset, final boolean... values) {
+        int bitmask = 0;
+
+        int i = offset;
+        for (boolean v : values) {
+            if (v) {
+                bitmask |= 1 << i;
+            }
+            ++i;
+        }
+
+        return bitmask;
+    }
+
+    /**
      * Fills the bitmask from boolean list where key is bit position
      * @param booleanList bit to boolean mapping
      * @return bit mask

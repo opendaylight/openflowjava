@@ -10,9 +10,6 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
@@ -57,13 +54,10 @@ public class OF10FlowModInputMessageFactory implements OFSerializer<FlowModInput
     }
 
     private static int createFlowModFlagsBitmask(final FlowModFlagsV10 flags) {
-        int flowModFlagBitmask = 0;
-        Map<Integer, Boolean> flowModFlagsMap = new HashMap<>();
-        flowModFlagsMap.put(0, flags.isOFPFFSENDFLOWREM());
-        flowModFlagsMap.put(1, flags.isOFPFFCHECKOVERLAP());
-        flowModFlagsMap.put(2, flags.isOFPFFEMERG());
-        flowModFlagBitmask = ByteBufUtils.fillBitMaskFromMap(flowModFlagsMap);
-        return flowModFlagBitmask;
+        return ByteBufUtils.fillBitMask(0,
+                flags.isOFPFFSENDFLOWREM(),
+                flags.isOFPFFCHECKOVERLAP(),
+                flags.isOFPFFEMERG());
     }
 
     @Override

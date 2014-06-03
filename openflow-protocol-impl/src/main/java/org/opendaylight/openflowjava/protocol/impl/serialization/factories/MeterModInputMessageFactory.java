@@ -10,9 +10,7 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
@@ -38,16 +36,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  */
 public class MeterModInputMessageFactory implements OFSerializer<MeterModInput>,
-		SerializerRegistryInjector {
-	
+        SerializerRegistryInjector {
+
     private static final byte MESSAGE_TYPE = 29;
     private static final short LENGTH_OF_METER_BANDS = 16;
     private static final short PADDING_IN_METER_BAND_DROP = 4;
     private static final short PADDING_IN_METER_BAND_DSCP_REMARK = 3;
-	private SerializerRegistry registry;
+    private SerializerRegistry registry;
 
     @Override
-    public void serialize(MeterModInput message, ByteBuf outBuffer) {
+    public void serialize(final MeterModInput message, final ByteBuf outBuffer) {
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeShort(message.getCommand().getIntValue());
         outBuffer.writeShort(createMeterFlagsBitmask(message.getFlags()));
@@ -56,19 +54,15 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput>,
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
-    private static int createMeterFlagsBitmask(MeterFlags flags) {
-        int meterFlagBitmask = 0;
-        Map<Integer, Boolean> meterModFlagsMap = new HashMap<>();
-        meterModFlagsMap.put(0, flags.isOFPMFKBPS());
-        meterModFlagsMap.put(1, flags.isOFPMFPKTPS());
-        meterModFlagsMap.put(2, flags.isOFPMFBURST());
-        meterModFlagsMap.put(3, flags.isOFPMFSTATS());
-        
-        meterFlagBitmask = ByteBufUtils.fillBitMaskFromMap(meterModFlagsMap);
-        return meterFlagBitmask;
+    private static int createMeterFlagsBitmask(final MeterFlags flags) {
+        return ByteBufUtils.fillBitMask(0,
+                flags.isOFPMFKBPS(),
+                flags.isOFPMFPKTPS(),
+                flags.isOFPMFBURST(),
+                flags.isOFPMFSTATS());
     }
-    
-    private void serializeBands(List<Bands> bands, ByteBuf outBuffer) {
+
+    private void serializeBands(final List<Bands> bands, final ByteBuf outBuffer) {
         if (bands != null) {
             for (Bands currentBand : bands) {
                 MeterBand meterBand = currentBand.getMeterBand();
@@ -84,8 +78,8 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput>,
                     outBuffer.writeByte(dscpRemarkBand.getPrecLevel());
                     ByteBufUtils.padBuffer(PADDING_IN_METER_BAND_DSCP_REMARK, outBuffer);
                 } else if (meterBand instanceof MeterBandExperimenterCase) {
-                	OFSerializer<MeterBandExperimenter> serializer = registry.getSerializer(
-                			new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, MeterBandExperimenter.class));
+                    OFSerializer<MeterBandExperimenter> serializer = registry.getSerializer(
+                            new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, MeterBandExperimenter.class));
                     MeterBandExperimenterCase experimenterBandCase = (MeterBandExperimenterCase) meterBand;
                     MeterBandExperimenter experimenterBand = experimenterBandCase.getMeterBandExperimenter();
                     serializer.serialize(experimenterBand, outBuffer);
@@ -93,17 +87,17 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput>,
             }
         }
     }
-    
-    private static void writeBandCommonFields(MeterBandCommons meterBand, ByteBuf outBuffer) {
+
+    private static void writeBandCommonFields(final MeterBandCommons meterBand, final ByteBuf outBuffer) {
         outBuffer.writeShort(meterBand.getType().getIntValue());
         outBuffer.writeShort(LENGTH_OF_METER_BANDS);
         outBuffer.writeInt(meterBand.getRate().intValue());
         outBuffer.writeInt(meterBand.getBurstSize().intValue());
     }
 
-	@Override
-	public void injectSerializerRegistry(SerializerRegistry serializerRegistry) {
-		registry = serializerRegistry;
-	}
+    @Override
+    public void injectSerializerRegistry(final SerializerRegistry serializerRegistry) {
+        registry = serializerRegistry;
+    }
 
 }
