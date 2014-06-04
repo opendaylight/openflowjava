@@ -248,15 +248,15 @@ public abstract class ByteBufUtils {
 
     private static final void appendHexByte(final StringBuilder sb, final byte b) {
         final int v = UnsignedBytes.toInt(b);
-        sb.append(HEX_CHARS[v >> 4]);
-        sb.append(HEX_CHARS[v & 15]);
+        sb.append(HEX_CHARS[v >>> 4]);
+        sb.append(HEX_CHARS[v &  15]);
     }
 
     private static void appendHexUnsignedShort(final StringBuilder sb, final int val) {
-        sb.append(ByteBufUtils.HEX_CHARS[(val >> 12) & 15]);
-        sb.append(ByteBufUtils.HEX_CHARS[(val >>  8) & 15]);
-        sb.append(ByteBufUtils.HEX_CHARS[(val >>  4) & 15]);
-        sb.append(ByteBufUtils.HEX_CHARS[ val        & 15]);
+        sb.append(ByteBufUtils.HEX_CHARS[(val >>> 12) & 15]);
+        sb.append(ByteBufUtils.HEX_CHARS[(val >>>  8) & 15]);
+        sb.append(ByteBufUtils.HEX_CHARS[(val >>>  4) & 15]);
+        sb.append(ByteBufUtils.HEX_CHARS[ val         & 15]);
     }
 
     /**
