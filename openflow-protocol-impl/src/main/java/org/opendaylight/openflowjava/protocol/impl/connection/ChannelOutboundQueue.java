@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Stopwatch;
 
 /**
  * Channel handler which bypasses wraps on top of normal Netty pipeline, allowing
@@ -108,7 +107,7 @@ final class ChannelOutboundQueue extends ChannelInboundHandlerAdapter {
          */
         this.queue = new LinkedBlockingQueue<>(queueDepth);
         this.channel = Preconditions.checkNotNull(channel);
-        this.maxWorkTime = DEFAULT_WORKTIME_MICROS;
+        this.maxWorkTime = TimeUnit.MICROSECONDS.toNanos(DEFAULT_WORKTIME_MICROS);
     }
 
     /**
@@ -163,7 +162,8 @@ final class ChannelOutboundQueue extends ChannelInboundHandlerAdapter {
      * uncontended.
      */
     private synchronized void flush() {
-        final Stopwatch w = new Stopwatch().start();
+        final long start = System.nanoTime();
+        final long deadline = start + maxWorkTime;
 
         LOG.debug("Dequeuing messages to channel {}", channel);
 
@@ -193,10 +193,12 @@ final class ChannelOutboundQueue extends ChannelInboundHandlerAdapter {
              *      should be able to perform dynamic adjustments here.
              *      is that additional complexity needed, though?
              */
-            if ((messages % WORKTIME_RECHECK_MSGS) == 0 &&
-                    w.elapsed(TimeUnit.MICROSECONDS) >= maxWorkTime) {
-                LOG.trace("Exceeded allotted work time {}us", maxWorkTime);
-                break;
+            if ((messages % WORKTIME_RECHECK_MSGS) == 0) {
+                if (System.nanoTime() >= deadline) {
+                    LOG.trace("Exceeded allotted work time {}us",
+                            TimeUnit.NANOSECONDS.toMicros(maxWorkTime));
+                    break;
+                }
             }
         }
 
@@ -205,9 +207,9 @@ final class ChannelOutboundQueue extends ChannelInboundHandlerAdapter {
             channel.flush();
         }
 
-        w.stop();
+        final long stop = System.nanoTime();
         LOG.debug("Flushed {} messages in {}us to channel {}",
-                messages, w.elapsed(TimeUnit.MICROSECONDS), channel);
+                messages, TimeUnit.NANOSECONDS.toMicros(stop - start), channel);
 
         /*
          * We are almost ready to terminate. This is a bit tricky, because
