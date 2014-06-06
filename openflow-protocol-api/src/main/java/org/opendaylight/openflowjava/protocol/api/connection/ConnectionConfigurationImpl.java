@@ -6,35 +6,36 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.impl.integration;
+package org.opendaylight.openflowjava.protocol.api.connection;
 
 import java.net.InetAddress;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
+import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
 
 /**
  * @author michal.polkorab
  *
  */
-public class TestingConnConfigImpl implements ConnectionConfiguration {
+public class ConnectionConfigurationImpl implements ConnectionConfiguration {
 
     private InetAddress address;
     private int port;
     private Object transferProtocol;
-    private FEATURE_SUPPORT tlsSupport;
+    private TlsConfiguration tlsConfig;
     private long switchIdleTimeout;
 
     /**
-     * Creates {@link TestingConnConfigImpl}
+     * Creates {@link ConnectionConfigurationImpl}
      * @param address 
      * @param port
      * @param tlsSupport
      * @param switchIdleTimeout
      */
-    public TestingConnConfigImpl(InetAddress address, int port, FEATURE_SUPPORT tlsSupport, long switchIdleTimeout) {
+    public ConnectionConfigurationImpl(InetAddress address, int port, TlsConfiguration tlsConfig, long switchIdleTimeout) {
         this.address = address;
         this.port = port;
-        this.tlsSupport = tlsSupport;
+        this.tlsConfig = tlsConfig;
         this.switchIdleTimeout = switchIdleTimeout;
     }
 
@@ -54,11 +55,6 @@ public class TestingConnConfigImpl implements ConnectionConfiguration {
     }
 
     @Override
-    public FEATURE_SUPPORT getTlsSupport() {
-        return tlsSupport;
-    }
-
-    @Override
     public long getSwitchIdleTimeout() {
         return switchIdleTimeout;
     }
@@ -67,6 +63,11 @@ public class TestingConnConfigImpl implements ConnectionConfiguration {
     public Object getSslContext() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public TlsConfiguration getTlsConfiguration() {
+        return tlsConfig;
     }
 
 }

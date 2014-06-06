@@ -19,8 +19,11 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
 import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
+<<<<<<< HEAD
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+=======
+>>>>>>> 5480b01... DO NOT MERGE: TLS support - initial code drop
 
 /**
  * Class for setting up TLS connection.
@@ -36,6 +39,7 @@ public class SslContextFactory {
     private String keystoreType;
     private String truststore;
     private String truststoreType;
+<<<<<<< HEAD
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SslContextFactory.class);
 
@@ -51,6 +55,21 @@ public class SslContextFactory {
     }
 
     /**
+=======
+
+    /**
+     * @param tlsConfig TLS configuration object, contains keystore locations
+     *  + keystore types
+     */
+    public SslContextFactory(TlsConfiguration tlsConfig) {
+        keystore = tlsConfig.getTlsKeystore();
+        keystoreType = tlsConfig.getTlsKeystoreType();
+        truststore = tlsConfig.getTlsTruststore();
+        truststoreType = tlsConfig.getTlsTruststoreType();
+    }
+
+    /**
+>>>>>>> 5480b01... DO NOT MERGE: TLS support - initial code drop
      * @return servercontext
      */
     public SSLContext getServerContext() {
@@ -74,6 +93,7 @@ public class SslContextFactory {
 
             serverContext = SSLContext.getInstance(PROTOCOL);
             serverContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+<<<<<<< HEAD
         }
         catch ( IOException e ) {
         	LOGGER.debug("IOException - ", e);
@@ -99,6 +119,15 @@ public class SslContextFactory {
             throw new Error(
                     "Exception. Failed to initialize the server-side SSLContext", e);
         }
+=======
+        } catch (RuntimeException e) {
+            throw new Error(
+                    "Failed to initialize the server-side SSLContext", e);
+        } catch (Exception e) {
+            throw new Error(
+                    "Failed to initialize the server-side SSLContext", e);
+        }
+>>>>>>> 5480b01... DO NOT MERGE: TLS support - initial code drop
         return serverContext;
     }
 }
