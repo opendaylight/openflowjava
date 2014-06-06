@@ -6,9 +6,8 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.impl.core;
+package org.opendaylight.openflowjava.protocol.impl.clients;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 
 /**
@@ -16,16 +15,18 @@ import java.io.InputStream;
  *
  * @author michal.polkorab
  */
-public final class SslKeyStore {
+public final class ClientSslTrustStore {
+
+    private static final String filename = "/selfSignedController";
+//    private static final String filename = "/key.bin";
 
     /**
      * InputStream instance of key
-     * @param filename keystore location
      *
      * @return key as InputStream
      */
-    public static InputStream asInputStream(String filename) {
-        InputStream in = SslKeyStore.class.getResourceAsStream(filename);
+    public static InputStream asInputStream() {
+        InputStream in = ClientSslTrustStore.class.getResourceAsStream(filename);
         if (in == null) {
             throw new IllegalStateException("KeyStore file not found: " + filename);
         }
@@ -37,6 +38,7 @@ public final class SslKeyStore {
      */
     public static char[] getCertificatePassword() {
         return "opendaylight".toCharArray();
+//        return "secret".toCharArray();
     }
 
     /**
@@ -44,5 +46,6 @@ public final class SslKeyStore {
      */
     public static char[] getKeyStorePassword() {
         return "opendaylight".toCharArray();
+//        return "secret".toCharArray();
     }
 }

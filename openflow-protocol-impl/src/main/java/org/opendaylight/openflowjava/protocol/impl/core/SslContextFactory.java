@@ -13,39 +13,60 @@ import java.security.Security;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+
+import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
 
 /**
  * Class for setting up TLS connection.
  *
  * @author michal.polkorab
  */
-public final class SslContextFactory {
+public class SslContextFactory {
 
-    
     // "TLS" - supports some version of TLS
     // Use "TLSv1", "TLSv1.1", "TLSv1.2" for specific TLS version
     private static final String PROTOCOL = "TLS";
-    private static final SSLContext SERVER_CONTEXT;
-    private static final SSLContext CLIENT_CONTEXT;
+    private String keystore;
+    private String keystoreType;
+    private String truststore;
+    private String truststoreType;
 
-    static {
+    /**
+     * @param tlsConfig TLS configuration object, contains keystore locations
+     *  + keystore types
+     */
+    public SslContextFactory(TlsConfiguration tlsConfig) {
+        keystore = tlsConfig.getTlsKeystore();
+        keystoreType = tlsConfig.getTlsKeystoreType();
+        truststore = tlsConfig.getTlsTruststore();
+        truststoreType = tlsConfig.getTlsTruststoreType();
+    }
+
+    /**
+     * @return servercontext
+     */
+    public SSLContext getServerContext() {
         String algorithm = Security.getProperty("ssl.KeyManagerFactory.algorithm");
         if (algorithm == null) {
             algorithm = "SunX509";
         }
-
         SSLContext serverContext;
-        SSLContext clientContext;
         try {
-            KeyStore ks = KeyStore.getInstance("JKS");
-            ks.load(SslKeyStore.asInputStream(),
+            KeyStore ks = KeyStore.getInstance(keystoreType);
+            ks.load(SslKeyStore.asInputStream(keystore),
                     SslKeyStore.getKeyStorePassword());
-
             KeyManagerFactory kmf = KeyManagerFactory.getInstance(algorithm);
             kmf.init(ks, SslKeyStore.getCertificatePassword());
 
+            KeyStore ts = KeyStore.getInstance(truststoreType);
+            ts.load(SslKeyStore.asInputStream(truststore),
+                    SslKeyStore.getKeyStorePassword());
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(algorithm);
+            tmf.init(ts);
+
             serverContext = SSLContext.getInstance(PROTOCOL);
-            serverContext.init(kmf.getKeyManagers(), null, null);
+            serverContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
         } catch (RuntimeException e) {
             throw new Error(
                     "Failed to initialize the server-side SSLContext", e);
@@ -53,29 +74,6 @@ public final class SslContextFactory {
             throw new Error(
                     "Failed to initialize the server-side SSLContext", e);
         }
-        try {
-            clientContext = SSLContext.getInstance(PROTOCOL);
-            clientContext.init(null, SslTrustManagerFactory.getTrustManagers(), null);
-        } catch (Exception e) {
-            throw new Error(
-                    "Failed to initialize the client-side SSLContext", e);
-        }
-
-        SERVER_CONTEXT = serverContext;
-        CLIENT_CONTEXT = clientContext;
-    }
-
-    /**
-     * @return servercontext
-     */
-    public static SSLContext getServerContext() {
-        return SERVER_CONTEXT;
-    }
-
-    /**
-     * @return cliencontext
-     */
-    public static SSLContext getClientContext() {
-        return CLIENT_CONTEXT;
+        return serverContext;
     }
 }

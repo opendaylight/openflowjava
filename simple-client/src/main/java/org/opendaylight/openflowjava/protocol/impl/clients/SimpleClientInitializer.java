@@ -16,8 +16,6 @@ import io.netty.handler.ssl.SslHandler;
 
 import javax.net.ssl.SSLEngine;
 
-import org.opendaylight.openflowjava.protocol.impl.core.SslContextFactory;
-
 import com.google.common.util.concurrent.SettableFuture;
 
 /** Initializes secured {@link SimpleClient} pipeline
@@ -43,7 +41,7 @@ public class SimpleClientInitializer extends ChannelInitializer<SocketChannel> {
     public void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
         if (secured) {
-            SSLEngine engine = SslContextFactory.getClientContext()
+            SSLEngine engine = ClientSslContextFactory.getClientContext()
                     .createSSLEngine();
             engine.setUseClientMode(true);
             pipeline.addLast("ssl", new SslHandler(engine));

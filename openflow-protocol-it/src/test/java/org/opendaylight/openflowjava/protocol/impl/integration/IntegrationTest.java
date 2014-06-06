@@ -41,7 +41,7 @@ public class IntegrationTest {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(IntegrationTest.class);
     private static int port;
-    private static final FEATURE_SUPPORT DEFAULT_TLS_SUPPORT = FEATURE_SUPPORT.NOT_SUPPORTED;
+    private static final FEATURE_SUPPORT DEFAULT_TLS_SUPPORT = FEATURE_SUPPORT.REQUIRED;
     private static final int SWITCH_IDLE_TIMEOUT = 2000;
     private static final long CONNECTION_TIMEOUT = 2000;
     private InetAddress startupAddress;
@@ -59,7 +59,7 @@ public class IntegrationTest {
         mockPlugin = new MockPlugin();
         scpimpl = new SwitchConnectionProviderImpl();
         scpimpl.setSwitchConnectionHandler(mockPlugin);
-        configs = new TestingConnConfigImpl(startupAddress, 0, DEFAULT_TLS_SUPPORT, SWITCH_IDLE_TIMEOUT);
+        configs = new TestingConnConfigImpl(startupAddress, 6633, DEFAULT_TLS_SUPPORT, SWITCH_IDLE_TIMEOUT);
         scpimpl.setConfiguration(configs);
         scpimpl.startup().get(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
         TcpHandler server = (TcpHandler) scpimpl.getServerFacade();
@@ -129,8 +129,8 @@ public class IntegrationTest {
         List<SimpleClient> clientsHorde = new ArrayList<>();
         for (int i = 0; i < amountOfCLients; i++) {
             LOGGER.debug("startup address in createclient: " + startupAddress.getHostAddress());
-            SimpleClient sc = new SimpleClient(startupAddress.getHostAddress(), port);
-            sc.setSecuredClient(false);
+            SimpleClient sc = new SimpleClient("192.168.56.102", 6633);//startupAddress.getHostAddress(), port);
+            sc.setSecuredClient(true);
             sc.setScenarioHandler(scenarioHandler);
             clientsHorde.add(sc);
             sc.start();

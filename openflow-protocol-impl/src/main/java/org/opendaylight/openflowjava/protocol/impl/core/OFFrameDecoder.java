@@ -15,6 +15,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
 
+import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionFacade;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,12 +30,16 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
     public static final byte LENGTH_OF_HEADER = 8;
     private static final byte LENGTH_INDEX_IN_HEADER = 2;
     private static final Logger LOGGER = LoggerFactory.getLogger(OFFrameDecoder.class);
+    private ConnectionFacade connectionFacade;
+    private boolean started = false;
 
     /**
      * Constructor of class.
+     * @param connectionFacade 
      */
-    public OFFrameDecoder() {
+    public OFFrameDecoder(ConnectionFacade connectionFacade) {
         LOGGER.trace("Creating OFFrameDecoder");
+        this.connectionFacade = connectionFacade;
     }
 
     @Override
@@ -45,6 +50,10 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext chc, ByteBuf bb, List<Object> list) throws Exception {
+        if (!started) {
+            connectionFacade.fireConnectionReadyNotification();
+            started = true;
+        }
         int readableBytes = bb.readableBytes();
         if (readableBytes < LENGTH_OF_HEADER) {
             LOGGER.debug("skipping bb - too few data for header: " + readableBytes);

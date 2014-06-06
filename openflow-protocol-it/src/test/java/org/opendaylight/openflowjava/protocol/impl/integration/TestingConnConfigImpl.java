@@ -11,6 +11,7 @@ package org.opendaylight.openflowjava.protocol.impl.integration;
 import java.net.InetAddress;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
+import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
 
 /**
  * @author michal.polkorab
@@ -21,7 +22,7 @@ public class TestingConnConfigImpl implements ConnectionConfiguration {
     private InetAddress address;
     private int port;
     private Object transferProtocol;
-    private FEATURE_SUPPORT tlsSupport;
+    private TlsConfiguration tlsSupport;
     private long switchIdleTimeout;
 
     /**
@@ -31,7 +32,7 @@ public class TestingConnConfigImpl implements ConnectionConfiguration {
      * @param tlsSupport
      * @param switchIdleTimeout
      */
-    public TestingConnConfigImpl(InetAddress address, int port, FEATURE_SUPPORT tlsSupport, long switchIdleTimeout) {
+    public TestingConnConfigImpl(InetAddress address, int port, boolean tlsSupport, long switchIdleTimeout) {
         this.address = address;
         this.port = port;
         this.tlsSupport = tlsSupport;
@@ -54,17 +55,18 @@ public class TestingConnConfigImpl implements ConnectionConfiguration {
     }
 
     @Override
-    public FEATURE_SUPPORT getTlsSupport() {
-        return tlsSupport;
-    }
-
-    @Override
     public long getSwitchIdleTimeout() {
         return switchIdleTimeout;
     }
 
     @Override
     public Object getSslContext() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TlsConfiguration getTlsConfiguration() {
         // TODO Auto-generated method stub
         return null;
     }

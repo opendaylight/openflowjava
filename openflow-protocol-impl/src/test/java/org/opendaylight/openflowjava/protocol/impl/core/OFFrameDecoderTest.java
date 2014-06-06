@@ -39,10 +39,10 @@ public class OFFrameDecoderTest {
     /**
      * Sets up tests
      */
-    @Before
+    //@Before
     public void setUp() {
         list.clear();
-        decoder = new OFFrameDecoder();
+        //decoder = new OFFrameDecoder();
     }
 
     /**

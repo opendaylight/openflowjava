@@ -12,12 +12,16 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.ssl.SslHandler;
 
 import java.net.InetAddress;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.SSLEngine;
+
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
+import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
 import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionAdapterFactory;
 import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionFacade;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler.COMPONENT_NAMES;
@@ -37,9 +41,9 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
     private final DefaultChannelGroup allChannels;
     private SwitchConnectionHandler switchConnectionHandler;
     private long switchIdleTimeout;
-    private boolean encryption;
     private SerializationFactory serializationFactory;
     private DeserializationFactory deserializationFactory;
+    private TlsConfiguration tlsConfig;
 
     /**
      * default ctor
@@ -68,14 +72,14 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
             LOGGER.debug("calling plugin: "+switchConnectionHandler);
             switchConnectionHandler.onSwitchConnected(connectionFacade);
             connectionFacade.checkListeners();
-            TlsDetector tlsDetector;
             ch.pipeline().addLast(COMPONENT_NAMES.IDLE_HANDLER.name(), new IdleHandler(switchIdleTimeout, TimeUnit.MILLISECONDS));
-            if (encryption) {
-                tlsDetector =  new TlsDetector();
-                tlsDetector.setConnectionFacade(connectionFacade);
-                ch.pipeline().addLast(COMPONENT_NAMES.TLS_DETECTOR.name(), tlsDetector);
+            if (tlsConfig.isTlsSupported()) {
+                SslContextFactory sslFactory = new SslContextFactory(tlsConfig);
+                SSLEngine engine = sslFactory.getServerContext().createSSLEngine();
+                engine.setUseClientMode(false);
+                ch.pipeline().addLast(COMPONENT_NAMES.SSL_HANDLER.name(), new SslHandler(engine));
             }
-            ch.pipeline().addLast(COMPONENT_NAMES.OF_FRAME_DECODER.name(), new OFFrameDecoder());
+            ch.pipeline().addLast(COMPONENT_NAMES.OF_FRAME_DECODER.name(), new OFFrameDecoder(connectionFacade));
             ch.pipeline().addLast(COMPONENT_NAMES.OF_VERSION_DETECTOR.name(), new OFVersionDetector());
             OFDecoder ofDecoder = new OFDecoder();
             ofDecoder.setDeserializationFactory(deserializationFactory);
@@ -84,7 +88,7 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
             ofEncoder.setSerializationFactory(serializationFactory);
             ch.pipeline().addLast(COMPONENT_NAMES.OF_ENCODER.name(), ofEncoder);
             ch.pipeline().addLast(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name(), new DelegatingInboundHandler(connectionFacade));
-            if (!encryption) {
+            if (!tlsConfig.isTlsSupported()) {
                 connectionFacade.fireConnectionReadyNotification();
             }
         } catch (Exception e) {
@@ -122,13 +126,6 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
     }
 
     /**
-     * @param tlsSupported
-     */
-    public void setEncryption(final boolean tlsSupported) {
-        encryption = tlsSupported;
-    }
-
-    /**
      * @param serializationFactory
      */
     public void setSerializationFactory(final SerializationFactory serializationFactory) {
@@ -140,6 +137,13 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
      */
     public void setDeserializationFactory(final DeserializationFactory deserializationFactory) {
         this.deserializationFactory = deserializationFactory;
+    }
+
+    /**
+     * @param tlsConfig
+     */
+    public void setTlsConfiguration(TlsConfiguration tlsConfig) {
+        this.tlsConfig = tlsConfig;
     }
 
 }
