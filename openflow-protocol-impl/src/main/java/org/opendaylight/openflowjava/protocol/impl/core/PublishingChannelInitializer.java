@@ -69,7 +69,7 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
             switchConnectionHandler.onSwitchConnected(connectionFacade);
             connectionFacade.checkListeners();
             TlsDetector tlsDetector;
-            ch.pipeline().addLast(COMPONENT_NAMES.IDLE_HANDLER.name(), new IdleHandler(switchIdleTimeout, 0, 0, TimeUnit.MILLISECONDS));
+            ch.pipeline().addLast(COMPONENT_NAMES.IDLE_HANDLER.name(), new IdleHandler(switchIdleTimeout, TimeUnit.MILLISECONDS));
             if (encryption) {
                 tlsDetector =  new TlsDetector();
                 tlsDetector.setConnectionFacade(connectionFacade);
