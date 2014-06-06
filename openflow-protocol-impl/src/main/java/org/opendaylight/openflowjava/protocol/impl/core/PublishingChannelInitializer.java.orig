@@ -82,8 +82,14 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
     private long switchIdleTimeout;
     private SerializationFactory serializationFactory;
     private DeserializationFactory deserializationFactory;
+<<<<<<< HEAD
     private ConnectionAdapterFactory connectionAdapterFactory;
     private TlsConfiguration tlsConfiguration ;
+    
+
+=======
+    private TlsConfiguration tlsConfig;
+>>>>>>> 5480b01... DO NOT MERGE: TLS support - initial code drop
 
     /**
      * default ctor
@@ -122,6 +128,7 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
             switchConnectionHandler.onSwitchConnected(connectionFacade);
             connectionFacade.checkListeners();
             ch.pipeline().addLast(COMPONENT_NAMES.IDLE_HANDLER.name(), new IdleHandler(switchIdleTimeout, TimeUnit.MILLISECONDS));
+<<<<<<< HEAD
             
             // If this channel is configured to support SSL it will only support SSL
             if (tlsConfiguration != null && tlsConfiguration.isTlsSupported() ) {
@@ -131,6 +138,12 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
     			engine.setNeedClientAuth(true);
     			engine.setUseClientMode(false);
 
+=======
+            if (tlsConfig.isTlsSupported()) {
+                SslContextFactory sslFactory = new SslContextFactory(tlsConfig);
+                SSLEngine engine = sslFactory.getServerContext().createSSLEngine();
+                engine.setUseClientMode(false);
+>>>>>>> 5480b01... DO NOT MERGE: TLS support - initial code drop
                 ch.pipeline().addLast(COMPONENT_NAMES.SSL_HANDLER.name(), new SslHandler(engine));
             }
             ch.pipeline().addLast(COMPONENT_NAMES.OF_FRAME_DECODER.name(), new OFFrameDecoder(connectionFacade));
@@ -142,7 +155,11 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
             ofEncoder.setSerializationFactory(serializationFactory);
             ch.pipeline().addLast(COMPONENT_NAMES.OF_ENCODER.name(), ofEncoder);
             ch.pipeline().addLast(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name(), new DelegatingInboundHandler(connectionFacade));
+<<<<<<< HEAD
             if (tlsConfiguration != null && tlsConfiguration.isTlsSupported() ) {
+=======
+            if (!tlsConfig.isTlsSupported()) {
+>>>>>>> 5480b01... DO NOT MERGE: TLS support - initial code drop
                 connectionFacade.fireConnectionReadyNotification();
             }
         } catch (Exception e) {
@@ -193,8 +210,21 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
         this.deserializationFactory = deserializationFactory;
     }
 
+<<<<<<< HEAD
+//    public void setSslEngine( SSLEngine engine ) {
+//        sslEngine = engine ;
+//    }
+    
     public void setTlsConfiguration(TlsConfiguration tlsConfiguration) {
 		this.tlsConfiguration = tlsConfiguration;
 	}
+=======
+    /**
+     * @param tlsConfig
+     */
+    public void setTlsConfiguration(TlsConfiguration tlsConfig) {
+        this.tlsConfig = tlsConfig;
+    }
 
+>>>>>>> 5480b01... DO NOT MERGE: TLS support - initial code drop
 }

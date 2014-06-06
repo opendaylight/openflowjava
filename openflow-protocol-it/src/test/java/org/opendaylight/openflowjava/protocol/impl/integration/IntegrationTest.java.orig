@@ -43,9 +43,14 @@ public class IntegrationTest {
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(IntegrationTest.class);
+<<<<<<< HEAD
     
     private static int port = 6633;
     private TlsConfiguration tlsConfiguration ;
+=======
+    private static int port;
+    private static final FEATURE_SUPPORT DEFAULT_TLS_SUPPORT = FEATURE_SUPPORT.REQUIRED;
+>>>>>>> 5480b01... DO NOT MERGE: TLS support - initial code drop
     private static final int SWITCH_IDLE_TIMEOUT = 2000;
     private static final long CONNECTION_TIMEOUT = 2000;
     private InetAddress startupAddress;
@@ -64,11 +69,21 @@ public class IntegrationTest {
     	tlsConfiguration = new TlsConfigurationImpl("JKS", "/selfSignedSwitch", true, "JKS", "/selfSignedController" ) ;
         connConfig = new ConnectionConfigurationImpl(startupAddress, port, tlsConfiguration, SWITCH_IDLE_TIMEOUT);
         mockPlugin = new MockPlugin();
+<<<<<<< HEAD
         
         switchConnectionProvider = new SwitchConnectionProviderImpl();
         switchConnectionProvider.setSwitchConnectionHandler(mockPlugin);
         switchConnectionProvider.setConfiguration(connConfig);
         switchConnectionProvider.startup().get(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);        
+=======
+        scpimpl = new SwitchConnectionProviderImpl();
+        scpimpl.setSwitchConnectionHandler(mockPlugin);
+        configs = new TestingConnConfigImpl(startupAddress, 6633, DEFAULT_TLS_SUPPORT, SWITCH_IDLE_TIMEOUT);
+        scpimpl.setConfiguration(configs);
+        scpimpl.startup().get(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
+        TcpHandler server = (TcpHandler) scpimpl.getServerFacade();
+        port = server.getPort();
+>>>>>>> 5480b01... DO NOT MERGE: TLS support - initial code drop
     }
 
     /**
@@ -131,7 +146,11 @@ public class IntegrationTest {
         List<SimpleClient> clientsHorde = new ArrayList<>();
         for (int i = 0; i < amountOfCLients; i++) {
             LOGGER.debug("startup address in createclient: " + startupAddress.getHostAddress());
+<<<<<<< HEAD
             SimpleClient sc = new SimpleClient(startupAddress.getHostAddress(), port);//startupAddress.getHostAddress(), port);
+=======
+            SimpleClient sc = new SimpleClient("192.168.56.102", 6633);//startupAddress.getHostAddress(), port);
+>>>>>>> 5480b01... DO NOT MERGE: TLS support - initial code drop
             sc.setSecuredClient(true);
             sc.setScenarioHandler(scenarioHandler);
             clientsHorde.add(sc);

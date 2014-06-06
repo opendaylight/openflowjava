@@ -15,12 +15,15 @@ import io.netty.channel.socket.SocketChannel;
  * @author mirehak
  * @author michal.polkorab
  */
-public interface ConnectionAdapterFactory {
+public class ConnectionAdapterFactoryImpl implements ConnectionAdapterFactory {
 
     /**
      * @param ch
      * @return connection adapter tcp-implementation
      */
-    public ConnectionFacade createConnectionFacade(SocketChannel ch) ;
+	@Override
+    public ConnectionFacade createConnectionFacade(SocketChannel ch) {
+        return new ConnectionAdapterImpl(ch);
+    }
 
 }
