@@ -1,0 +1,8 @@
+Verified+1: jenkins-openflowjava <jenkins-openflowjava@opendaylight.org>
+Code-Review+1: Robert Varga <rovarga@cisco.com>
+Code-Review+2: Michal Polkorab <michal.polkorab@pantheon.sk>
+Submitted-by: Michal Polkorab <michal.polkorab@pantheon.sk>
+Submitted-at: Tue, 10 Jun 2014 07:16:24 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/7260
+Project: openflowjava
+Branch: refs/heads/stable/hydrogen
