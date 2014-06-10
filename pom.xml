@@ -148,6 +148,11 @@
                 <version>${yang.ext.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.opendaylight.yangtools</groupId>
+                <artifactId>features-file</artifactId>
+                <version>${yangtools.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.core</artifactId>
                 <version>5.0.0</version>
