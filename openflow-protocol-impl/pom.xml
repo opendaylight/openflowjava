@@ -13,12 +13,6 @@
       <tag>HEAD</tag>
   </scm>
 
-    <properties>
-        <yangtools.version>0.6.2-SNAPSHOT</yangtools.version>
-        <yangtools.generator.version>0.6.2-SNAPSHOT</yangtools.generator.version>
-        <yangtools.binding.version>0.6.2-SNAPSHOT</yangtools.binding.version>
-    </properties>
-    
     <build>
         <plugins>
             <plugin>
