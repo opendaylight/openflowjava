@@ -15,7 +15,12 @@
     <features.file>features.xml</features.file>
   </properties>
 
-  <dependencies></dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>org.opendaylight.yangtools</groupId>
+      <artifactId>features-file</artifactId>
+    </dependency>
+  </dependencies>
 
   <build>
     <resources>
