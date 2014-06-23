@@ -10,19 +10,19 @@
 package org.opendaylight.openflowjava.protocol.impl.connection;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
-import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration.FEATURE_SUPPORT;
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
-import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.impl.core.PublishingChannelInitializerFactory;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler;
-import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
-import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.slf4j.Logger;
@@ -112,12 +112,13 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     private TcpHandler createAndConfigureServer() {
         LOGGER.debug("Configuring ..");
         TcpHandler server = new TcpHandler(connConfig.getAddress(), connConfig.getPort());
-        server.setSwitchConnectionHandler(switchConnectionHandler);
-        server.setSwitchIdleTimeout(connConfig.getSwitchIdleTimeout());
-        boolean tlsSupported = FEATURE_SUPPORT.REQUIRED.equals(connConfig.getTlsSupport());
-        server.setEncryption(tlsSupported);
-        server.setSerializationFactory(serializationFactory);
-        server.setDeserializationFactory(deserializationFactory);
+        PublishingChannelInitializerFactory factory = new PublishingChannelInitializerFactory();
+        factory.setSwitchConnectionHandler(switchConnectionHandler);
+        factory.setSwitchIdleTimeout(connConfig.getSwitchIdleTimeout());
+        factory.setTlsConfig(connConfig.getTlsConfiguration());
+        factory.setSerializationFactory(serializationFactory);
+        factory.setDeserializationFactory(deserializationFactory);
+        server.setChannelInitializer(factory.createPublishingChannelInitializer());
         return server;
     }
 

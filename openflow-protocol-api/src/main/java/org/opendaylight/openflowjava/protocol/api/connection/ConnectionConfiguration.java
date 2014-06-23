@@ -20,19 +20,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.S
  *
  */
 public interface ConnectionConfiguration {
-    
-    /**
-     * connection functionality support types
-     */
-    public enum FEATURE_SUPPORT {
-        /** feature is not supported at all */
-        NOT_SUPPORTED,
-        /** feature is supported */
-        SUPPORTED,
-        /** feature is supported and has to be used by clients */
-        REQUIRED
-    }
-    
+
     /**
      * @return address to bind, if null, all available interfaces will be used
      */
@@ -49,9 +37,9 @@ public interface ConnectionConfiguration {
     public Object getTransferProtocol();
     
     /**
-     * @return encryption feature support
+     * @return TLS configuration object
      */
-    public FEATURE_SUPPORT getTlsSupport();
+    public TlsConfiguration getTlsConfiguration();
     
     /**
      * @return silence time (in milliseconds) - after this time {@link SwitchIdleEvent} message is sent upstream 
