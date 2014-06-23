@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.impl.integration;
+package org.opendaylight.openflowjava.protocol.it.integration;
 
 import java.net.InetAddress;
 import java.util.Arrays;
@@ -52,7 +52,7 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
         SystemNotificationsListener, ConnectionReadyListener {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(MockPlugin.class);
-    protected ConnectionAdapter adapter;
+    protected volatile ConnectionAdapter adapter;
     private SettableFuture<Void> finishedFuture;
     private int idleCounter = 0;
 
@@ -74,22 +74,25 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
 
     @Override
     public boolean accept(InetAddress switchAddress) {
+        LOGGER.debug("MockPlugin.accept(): " + switchAddress.toString());
+
         return true;
     }
 
     @Override
     public void onEchoRequestMessage(final EchoRequestMessage notification) {
+        LOGGER.debug("MockPlugin.onEchoRequestMessage() adapter: "+adapter);
         new Thread(new Runnable() {
             @Override
             public void run() {
-                LOGGER.debug("EchoRequest message received");
+                LOGGER.debug("MockPlugin.onEchoRequestMessage().run() started adapter: "+adapter);
                 EchoReplyInputBuilder replyBuilder = new EchoReplyInputBuilder();
                 replyBuilder.setVersion((short) 4);
                 replyBuilder.setXid(notification.getXid());
                 EchoReplyInput echoReplyInput = replyBuilder.build();
                 adapter.echoReply(echoReplyInput);
-                LOGGER.debug("EchoReplyInput sent");
-                LOGGER.debug("adapter: "+adapter);
+                LOGGER.debug("adapter.EchoReply(Input) sent : ", echoReplyInput.toString());
+                LOGGER.debug("MockPlugin.onEchoRequestMessage().run() finished adapter: "+adapter);
             }
         }).start();
     }
@@ -117,7 +120,7 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
         new Thread(new Runnable() {
             @Override
             public void run() {
-                LOGGER.debug("Hello message received");
+                LOGGER.debug("MockPlugin.onHelloMessage().run() Hello message received");
                 HelloInputBuilder hib = new HelloInputBuilder();
                 hib.setVersion((short) 4);
                 hib.setXid(2L);
@@ -127,21 +130,21 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        sendFeaturesReply();
+                        getSwitchFeatures();
                     }
                 }).start();
-                LOGGER.debug("adapter: "+adapter);
             }
         }).start();
+
     }
     
-    protected void sendFeaturesReply() {
+    protected void getSwitchFeatures() {
         GetFeaturesInputBuilder featuresBuilder = new GetFeaturesInputBuilder();
         featuresBuilder.setVersion((short) 4);
         featuresBuilder.setXid(3L);
         GetFeaturesInput featuresInput = featuresBuilder.build();
         try {
-            LOGGER.debug("Going to send featuresRequest");
+            LOGGER.debug("Requesting features ");
             RpcResult<GetFeaturesOutput> rpcResult = adapter.getFeatures(
                     featuresInput).get(2500, TimeUnit.MILLISECONDS);
             if (rpcResult.isSuccessful()) {
@@ -154,23 +157,21 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
                         + rpcError.getCause().getMessage(), rpcError.getCause());
             }
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.error("getSwitchFeatures() exception caught: ", e.getMessage(), e);
         }
-        LOGGER.debug("After FeaturesReply message");
     }
 
     protected void shutdown() {
-        LOGGER.debug("adapter: "+adapter);
         try {
-            LOGGER.debug("mockPlugin: "+System.identityHashCode(this));
+            LOGGER.debug("MockPlugin.shutdown() sleeping 5... : "+System.identityHashCode(this));
             Thread.sleep(500);
             if (adapter != null) {
                 Future<Boolean> disconnect = adapter.disconnect();
                 disconnect.get();
-                LOGGER.debug("Disconnected");
+                LOGGER.debug("MockPlugin.shutdown() Disconnected");
             } 
         } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.error("MockPlugin.shutdown() exception caught: ", e.getMessage(), e);
         }
         finishedFuture.set(null);
     }
@@ -196,14 +197,13 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
 
     @Override
     public void onPortStatusMessage(PortStatusMessage notification) {
-        LOGGER.debug("PortStatus message received");
+        LOGGER.debug("MockPlugin.onPortStatusMessage() message received");
         
     }
 
     @Override
     public void onDisconnectEvent(DisconnectEvent notification) {
-        LOGGER.debug("disconnection ocured: "+notification.getInfo());
-        LOGGER.debug("adapter: "+adapter);
+        LOGGER.debug("disconnection occured: "+notification.getInfo());
     }
 
     /**
@@ -215,7 +215,7 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
 
     @Override
     public void onSwitchIdleEvent(SwitchIdleEvent notification) {
-        LOGGER.debug("switch status: "+notification.getInfo());
+        LOGGER.debug("MockPlugin.onSwitchIdleEvent() switch status: "+notification.getInfo());
         idleCounter ++;
     }
 
@@ -228,7 +228,7 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
     
     @Override
     public void onConnectionReady() {
-        LOGGER.debug("connection ready notification arrived");
+        LOGGER.trace("MockPlugin().onConnectionReady()");
     }
 
 

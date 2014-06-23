@@ -13,10 +13,14 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
+import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
 import org.opendaylight.openflowjava.protocol.impl.connection.SwitchConnectionProviderImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.KeystoreType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Objects;
 
 /**
 *
@@ -65,13 +69,14 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
     }
 
     /**
-     * @return
+     * @return instance configuration object
      * @throws UnknownHostException 
      */
     private ConnectionConfiguration createConnectionConfiguration() throws UnknownHostException {
         final InetAddress address = extractIpAddressBin(getAddress());
         final Integer port = getPort();
         final long switchIdleTimeout = getSwitchIdleTimeout();
+        final Tls tlsConfig = getTls();
         
         return new ConnectionConfiguration() {
             @Override
@@ -88,9 +93,33 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
                 return null;
             }
             @Override
-            public FEATURE_SUPPORT getTlsSupport() {
-                // TODO Auto-generated method stub
-                return null;
+            public TlsConfiguration getTlsConfiguration() {
+                return new TlsConfiguration() {
+                    @Override
+                    public KeystoreType getTlsTruststoreType() {
+                        return Objects.firstNonNull(tlsConfig.getTruststoreType(), null);
+                    }
+                    @Override
+                    public String getTlsTruststore() {
+                        return Objects.firstNonNull(tlsConfig.getTruststore(), null);
+                    }
+                    @Override
+                    public KeystoreType getTlsKeystoreType() {
+                        return Objects.firstNonNull(tlsConfig.getKeystoreType(), null);
+                    }
+                    @Override
+                    public String getTlsKeystore() {
+                        return Objects.firstNonNull(tlsConfig.getKeystore(), null);
+                    }
+                    @Override
+                    public org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.PathType getTlsKeystorePathType() {
+                        return Objects.firstNonNull(tlsConfig.getKeystorePathType(), null);
+                    }
+                    @Override
+                    public org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.PathType getTlsTruststorePathType() {
+                        return Objects.firstNonNull(tlsConfig.getTruststorePathType(), null);
+                    }
+                };
             }
             @Override
             public long getSwitchIdleTimeout() {
