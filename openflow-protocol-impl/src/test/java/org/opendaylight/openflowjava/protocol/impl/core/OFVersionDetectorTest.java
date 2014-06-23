@@ -8,12 +8,14 @@
 
 package org.opendaylight.openflowjava.protocol.impl.core;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,6 +62,27 @@ public class OFVersionDetectorTest {
                 .getMessageBuffer().readableBytes());
     }
 
+    @Test
+    public void testDecode10ProtocolMessage() throws Exception {
+        detector.decode(channelHandlerContext,
+                ByteBufUtils.hexStringToByteBuf("01 00 00 08 00 00 00 01"),
+                list);
+
+        Assert.assertEquals(7, ((VersionMessageWrapper) list.get(0))
+                .getMessageBuffer().readableBytes());
+    }
+    
+    @Test
+    public void testDecodeEmptyProtocolMessage() throws Exception {
+        ByteBuf byteBuffer = ByteBufUtils.hexStringToByteBuf("01 00 00 08 00 00 00 01").skipBytes(8);
+		detector.decode(channelHandlerContext,
+                byteBuffer,
+                list);
+
+		assertEquals( 0, byteBuffer.refCnt() ) ;
+		
+    }
+    
     /**
      * Test of decode
      * {@link OFVersionDetector#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)

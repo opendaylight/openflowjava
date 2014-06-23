@@ -94,6 +94,7 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
                 return new TlsConfiguration() {
                     @Override
                     public String getTlsTruststoreType() {
+<<<<<<< HEAD
                         return tlsConfig != null ? tlsConfig.getTruststoreType() : null;
                     }
                     @Override
@@ -111,6 +112,25 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
                     @Override
                     public String getTlsKeystore() {
                         return tlsConfig != null ? tlsConfig.getKeystore() : null ;
+=======
+                        return tlsConfig.getTruststoreType();
+                    }
+                    @Override
+                    public String getTlsTruststore() {
+                        return tlsConfig.getTruststore();
+                    }
+                    @Override
+                    public boolean isTlsSupported() {
+                        return tlsConfig.getSupported();
+                    }
+                    @Override
+                    public String getTlsKeystoreType() {
+                        return tlsConfig.getKeystoreType();
+                    }
+                    @Override
+                    public String getTlsKeystore() {
+                        return tlsConfig.getKeystore();
+>>>>>>> 5480b01... DO NOT MERGE: TLS support - initial code drop
                     }
                 };
             }
