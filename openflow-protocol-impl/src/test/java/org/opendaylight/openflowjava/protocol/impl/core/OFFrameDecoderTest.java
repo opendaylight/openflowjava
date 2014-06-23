@@ -8,6 +8,7 @@
 
 package org.opendaylight.openflowjava.protocol.impl.core;
 
+import static org.junit.Assert.assertEquals;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -19,7 +20,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionFacade;
 import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
 
 /**
@@ -33,6 +36,8 @@ public class OFFrameDecoderTest {
     @Mock
     ChannelHandlerContext channelHandlerContext;
 
+    @Mock
+    ConnectionFacade connectionFacade;
     private OFFrameDecoder decoder;
     private List<Object> list = new ArrayList<>();
 
@@ -41,69 +46,104 @@ public class OFFrameDecoderTest {
      */
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        decoder = new OFFrameDecoder(connectionFacade);
         list.clear();
-        decoder = new OFFrameDecoder();
+
     }
 
     /**
      * Test of decoding
      * {@link OFFrameDecoder#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)}
-     * 
-     * @throws Exception
      */
     @Test
-    public void testDecode8BMessage() throws Exception {
-        decoder.decode(channelHandlerContext,
-                ByteBufUtils.hexStringToByteBuf("04 00 00 08 00 00 00 01"),
-                list);
+    public void testDecode8BMessage() {
+        try {
+            decoder.decode(channelHandlerContext,
+                    ByteBufUtils.hexStringToByteBuf("04 00 00 08 00 00 00 01"),
+                    list);
+        } catch (Exception e) {
+            Assert.fail();
+        }
 
-        Assert.assertEquals(8, ((ByteBuf) list.get(0)).readableBytes());
+        assertEquals(8, ((ByteBuf) list.get(0)).readableBytes());
     }
 
     /**
      * Test of decoding
      * {@link OFFrameDecoder#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)}
-     * 
-     * @throws Exception
      */
     @Test
-    public void testDecode16BMessage() throws Exception {
-        decoder.decode(channelHandlerContext,
-                ByteBufUtils.hexStringToByteBuf("04 00 00 10 00 00 00 00 00 00 00 00 00 00 00 42"),
-                list);
+    public void testDecode16BMessage() {
+        ByteBuf byteBuffer = ByteBufUtils
+                .hexStringToByteBuf("04 00 00 10 00 00 00 00 00 00 00 00 00 00 00 42");
+        try {
+            decoder.decode(channelHandlerContext, byteBuffer, list);
+        } catch (Exception e) {
+            Assert.fail();
+        }
 
-        Assert.assertEquals(16, ((ByteBuf) list.get(0)).readableBytes());
+        assertEquals(16, ((ByteBuf) list.get(0)).readableBytes());
+        assertEquals(0, byteBuffer.readableBytes());
     }
 
     /**
      * Test of decoding
      * {@link OFFrameDecoder#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)}
-     * 
-     * @throws Exception
      */
     @Test
-    public void testDecodeIncompleteMessage() throws Exception {
-        decoder.decode(channelHandlerContext,
-                ByteBufUtils.hexStringToByteBuf("04 00 00 08 00"),
-                list);
+    public void testDecode5BIncompleteMessage() {
+        ByteBuf byteBuffer = ByteBufUtils.hexStringToByteBuf("04 00 00 08 00");
+        try {
+            decoder.decode(channelHandlerContext, byteBuffer, list);
+        } catch (Exception e) {
+            Assert.fail();
+        }
 
         Assert.assertEquals("List is not empty", 0, list.size());
+        assertEquals(5, byteBuffer.readableBytes());
     }
 
     /**
      * Test of decoding
      * {@link OFFrameDecoder#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)}
-     * 
-     * @throws Exception
      */
     @Test
-    public void testDecodeCompleteAndPartialMessage() throws Exception {
-        decoder.decode(channelHandlerContext,
-                ByteBufUtils.hexStringToByteBuf("04 00 00 08 00 00 00 01 04 00 00 08 00"),
-                list);
+    public void testDecode16BIncompleteMessage() {
+        ByteBuf byteBuffer = ByteBufUtils
+                .hexStringToByteBuf("04 00 00 11 00 00 00 00 00 00 00 00 00 00 00 42");
+        try {
+            decoder.decode(channelHandlerContext, byteBuffer, list);
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        Assert.assertEquals("List is not empty", 0, list.size());
+        assertEquals(16, byteBuffer.readableBytes());
+    }
+
+    /**
+     * Test of decoding
+     * {@link OFFrameDecoder#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)}
+     */
+    @Test
+    public void testDecodeCompleteAndPartialMessage() {
+        ByteBuf byteBuffer = ByteBufUtils
+                .hexStringToByteBuf("04 00 00 08 00 00 00 01 04 00 00 08 00");
+        try {
+            decoder.decode(channelHandlerContext, byteBuffer, list);
+        } catch (Exception e) {
+            Assert.fail();
+        }
 
         Assert.assertEquals(8, ((ByteBuf) list.get(0)).readableBytes());
         Assert.assertEquals(1, list.size());
+        assertEquals(5, byteBuffer.readableBytes());
+
     }
-    
+
+    @Test
+    public void testExceptionCaught() throws Exception {
+        decoder.exceptionCaught(channelHandlerContext, new Throwable());
+    }
 }

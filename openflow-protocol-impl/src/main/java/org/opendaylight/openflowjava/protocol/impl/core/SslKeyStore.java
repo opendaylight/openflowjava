@@ -8,7 +8,13 @@
 
 package org.opendaylight.openflowjava.protocol.impl.core;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class for storing keys
@@ -17,17 +23,37 @@ import java.io.InputStream;
  */
 public final class SslKeyStore {
 
-    private static final String filename = "/key.bin";
+    private static final Logger LOGGER = LoggerFactory.getLogger(SslKeyStore.class);
 
     /**
-     * InputStream instance of key
+     * InputStream instance of key - key location is on classpath
+     * @param filename keystore location
+     * @param pathType keystore location type - "classpath" or "path"
      *
      * @return key as InputStream
      */
-    public static InputStream asInputStream() {
-        InputStream in = SslKeyStore.class.getResourceAsStream(filename);
-        if (in == null) {
-            throw new IllegalStateException("KeyStore file not found: " + filename);
+    public static InputStream asInputStream(String filename, String pathType) {
+        InputStream in;
+        if (pathType.equals("classpath")) {
+            in = SslKeyStore.class.getResourceAsStream(filename);
+            if (in == null) {
+                throw new IllegalStateException("KeyStore file not found: "
+                        + filename);
+            }
+        } else {
+            if (pathType.equals("path")) {
+                LOGGER.debug("Current dir using System:" + System.getProperty("user.dir"));
+                File keystorefile = new File(filename);
+                try {
+                    in = new FileInputStream(keystorefile);
+                } catch (FileNotFoundException e) {
+                    throw new IllegalStateException("KeyStore file not found: "
+                            + filename);
+                }
+            } else {
+                throw new IllegalArgumentException("Unknown path type: "
+                        + pathType);
+            }
         }
         return in;
     }
@@ -36,13 +62,13 @@ public final class SslKeyStore {
      * @return certificate password as char[]
      */
     public static char[] getCertificatePassword() {
-        return "secret".toCharArray();
+        return "opendaylight".toCharArray();
     }
 
     /**
      * @return KeyStore password as char[]
      */
     public static char[] getKeyStorePassword() {
-        return "secret".toCharArray();
+        return "opendaylight".toCharArray();
     }
 }
