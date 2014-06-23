@@ -12,15 +12,19 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.ssl.SslHandler;
 
 import java.net.InetAddress;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.SSLEngine;
+
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
+import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
 import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionAdapterFactory;
+import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionAdapterFactoryImpl;
 import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionFacade;
-import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler.COMPONENT_NAMES;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.slf4j.Logger;
@@ -32,22 +36,71 @@ import org.slf4j.LoggerFactory;
  */
 public class PublishingChannelInitializer extends ChannelInitializer<SocketChannel> {
 
+    /**
+     * Enum used for storing names of used components (in pipeline).
+     */
+    public static enum COMPONENT_NAMES {
+
+        /**
+         * Detects switch idle state
+         */
+        IDLE_HANDLER,
+        /**
+         * Detects TLS connections
+         */
+        TLS_DETECTOR,
+        /**
+         * Component for handling TLS frames
+         */
+        SSL_HANDLER,
+        /**
+         * Decodes incoming messages into message frames
+         */
+        OF_FRAME_DECODER,
+        /**
+         * Detects version of incoming OpenFlow Protocol message
+         */
+        OF_VERSION_DETECTOR,
+        /**
+         * Transforms OpenFlow Protocol byte messages into POJOs
+         */
+        OF_DECODER,
+        /**
+         * Transforms POJOs into OpenFlow Protocol byte messages
+         */
+        OF_ENCODER,
+        /**
+         * Delegates translated POJOs into MessageConsumer
+         */
+        DELEGATING_INBOUND_HANDLER,
+    }
+
     private static final Logger LOGGER = LoggerFactory
             .getLogger(PublishingChannelInitializer.class);
     private final DefaultChannelGroup allChannels;
     private SwitchConnectionHandler switchConnectionHandler;
     private long switchIdleTimeout;
-    private boolean encryption;
     private SerializationFactory serializationFactory;
     private DeserializationFactory deserializationFactory;
+    private ConnectionAdapterFactory connectionAdapterFactory;
+    private TlsConfiguration tlsConfiguration ;
 
     /**
      * default ctor
      */
     public PublishingChannelInitializer() {
-        allChannels = new DefaultChannelGroup("netty-receiver", null);
+        this( new DefaultChannelGroup("netty-receiver", null), new ConnectionAdapterFactoryImpl() );
     }
 
+    /**
+     * Testing Constructor
+     * 
+     */
+    protected PublishingChannelInitializer( DefaultChannelGroup channelGroup, ConnectionAdapterFactory connAdaptorFactory ) {
+    	allChannels = channelGroup ;
+    	connectionAdapterFactory = connAdaptorFactory ;
+    }
+    
     @Override
     protected void initChannel(final SocketChannel ch) {
         InetAddress switchAddress = ch.remoteAddress().getAddress();
@@ -63,19 +116,22 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
         LOGGER.info("Incoming connection accepted - building pipeline");
         allChannels.add(ch);
         ConnectionFacade connectionFacade = null;
-        connectionFacade = ConnectionAdapterFactory.createConnectionFacade(ch);
+        connectionFacade = connectionAdapterFactory.createConnectionFacade(ch);
         try {
-            LOGGER.debug("calling plugin: "+switchConnectionHandler);
+            LOGGER.debug("calling plugin: " + switchConnectionHandler);
             switchConnectionHandler.onSwitchConnected(connectionFacade);
             connectionFacade.checkListeners();
-            TlsDetector tlsDetector;
             ch.pipeline().addLast(COMPONENT_NAMES.IDLE_HANDLER.name(), new IdleHandler(switchIdleTimeout, TimeUnit.MILLISECONDS));
-            if (encryption) {
-                tlsDetector =  new TlsDetector();
-                tlsDetector.setConnectionFacade(connectionFacade);
-                ch.pipeline().addLast(COMPONENT_NAMES.TLS_DETECTOR.name(), tlsDetector);
+            
+            // If this channel is configured to support SSL it will only support SSL
+            if (tlsConfiguration != null) {
+                SslContextFactory sslFactory = new SslContextFactory(tlsConfiguration);
+                SSLEngine engine = sslFactory.getServerContext().createSSLEngine();
+                engine.setNeedClientAuth(true);
+                engine.setUseClientMode(false);
+                ch.pipeline().addLast(COMPONENT_NAMES.SSL_HANDLER.name(), new SslHandler(engine));
             }
-            ch.pipeline().addLast(COMPONENT_NAMES.OF_FRAME_DECODER.name(), new OFFrameDecoder());
+            ch.pipeline().addLast(COMPONENT_NAMES.OF_FRAME_DECODER.name(), new OFFrameDecoder(connectionFacade));
             ch.pipeline().addLast(COMPONENT_NAMES.OF_VERSION_DETECTOR.name(), new OFVersionDetector());
             OFDecoder ofDecoder = new OFDecoder();
             ofDecoder.setDeserializationFactory(deserializationFactory);
@@ -84,7 +140,7 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
             ofEncoder.setSerializationFactory(serializationFactory);
             ch.pipeline().addLast(COMPONENT_NAMES.OF_ENCODER.name(), ofEncoder);
             ch.pipeline().addLast(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name(), new DelegatingInboundHandler(connectionFacade));
-            if (!encryption) {
+            if (tlsConfiguration == null) {
                 connectionFacade.fireConnectionReadyNotification();
             }
         } catch (Exception e) {
@@ -122,13 +178,6 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
     }
 
     /**
-     * @param tlsSupported
-     */
-    public void setEncryption(final boolean tlsSupported) {
-        encryption = tlsSupported;
-    }
-
-    /**
      * @param serializationFactory
      */
     public void setSerializationFactory(final SerializationFactory serializationFactory) {
@@ -142,4 +191,10 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
         this.deserializationFactory = deserializationFactory;
     }
 
+    /**
+     * @param tlsConfiguration
+     */
+    public void setTlsConfiguration(TlsConfiguration tlsConfiguration) {
+        this.tlsConfiguration = tlsConfiguration;
+    }
 }

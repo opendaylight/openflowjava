@@ -21,10 +21,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
-import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
 import org.opendaylight.openflowjava.protocol.impl.connection.ServerFacade;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
-import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,47 +54,7 @@ public class TcpHandler implements ServerFacade {
     private NioEventLoopGroup bossGroup;
     private final SettableFuture<Boolean> isOnlineFuture;
 
-    private final PublishingChannelInitializer channelInitializer;
-
-    /**
-     * Enum used for storing names of used components (in pipeline).
-     */
-    public static enum COMPONENT_NAMES {
-
-        /**
-         * Detects switch idle state
-         */
-        IDLE_HANDLER,
-        /**
-         * Detects TLS connections
-         */
-        TLS_DETECTOR,
-        /**
-         * Component for handling TLS frames
-         */
-        SSL_HANDLER,
-        /**
-         * Decodes incoming messages into message frames
-         */
-        OF_FRAME_DECODER,
-        /**
-         * Detects version of incoming OpenFlow Protocol message
-         */
-        OF_VERSION_DETECTOR,
-        /**
-         * Transforms OpenFlow Protocol byte messages into POJOs
-         */
-        OF_DECODER,
-        /**
-         * Transforms POJOs into OpenFlow Protocol byte messages
-         */
-        OF_ENCODER,
-        /**
-         * Delegates translated POJOs into MessageConsumer
-         */
-        DELEGATING_INBOUND_HANDLER,
-    }
-
+    private PublishingChannelInitializer channelInitializer;
 
     /**
      * Constructor of TCPHandler that listens on selected port.
@@ -116,7 +73,6 @@ public class TcpHandler implements ServerFacade {
     public TcpHandler(final InetAddress address, final int port) {
         this.port = port;
         this.startupAddress = address;
-        channelInitializer = new PublishingChannelInitializer();
         isOnlineFuture = SettableFuture.create();
     }
 
@@ -212,13 +168,6 @@ public class TcpHandler implements ServerFacade {
         return channelInitializer.size();
     }
 
-    /**
-     * @return channelInitializer providing channels
-     */
-    public PublishingChannelInitializer getChannelInitializer() {
-        return channelInitializer;
-    }
-
     @Override
     public ListenableFuture<Boolean> getIsOnlineFuture() {
         return isOnlineFuture;
@@ -239,39 +188,10 @@ public class TcpHandler implements ServerFacade {
     }
 
     /**
-     * @param switchConnectionHandler
+     * @param channelInitializer
      */
-    public void setSwitchConnectionHandler(
-            final SwitchConnectionHandler switchConnectionHandler) {
-        channelInitializer.setSwitchConnectionHandler(switchConnectionHandler);
-    }
-
-    /**
-     * @param switchIdleTimeout in milliseconds
-     */
-    public void setSwitchIdleTimeout(final long switchIdleTimeout) {
-        channelInitializer.setSwitchIdleTimeout(switchIdleTimeout);
-    }
-
-    /**
-     * @param tlsSupported
-     */
-    public void setEncryption(final boolean tlsSupported) {
-        channelInitializer.setEncryption(tlsSupported);
-    }
-
-    /**
-     * @param sf serialization factory
-     */
-    public void setSerializationFactory(final SerializationFactory sf) {
-        channelInitializer.setSerializationFactory(sf);
-    }
-
-    /**
-     * @param factory
-     */
-    public void setDeserializationFactory(final DeserializationFactory factory) {
-        channelInitializer.setDeserializationFactory(factory);
+    public void setChannelInitializer(PublishingChannelInitializer channelInitializer) {
+        this.channelInitializer = channelInitializer;
     }
 
 }

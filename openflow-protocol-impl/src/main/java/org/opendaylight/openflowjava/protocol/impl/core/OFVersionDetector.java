@@ -47,15 +47,12 @@ public class OFVersionDetector extends ByteToMessageDecoder {
         byte version = bb.readByte();
         if ((version == OF13_VERSION_ID) || (version == OF10_VERSION_ID)) {
             LOGGER.debug("detected version: " + version);
+            ByteBuf messageBuffer = bb.slice();
+            list.add(new VersionMessageWrapper(version, messageBuffer));
+            messageBuffer.retain();
         } else {
             LOGGER.warn("detected version: " + version + " - currently not supported");
-            bb.skipBytes(bb.readableBytes());
-            return;
         }
-
-        ByteBuf messageBuffer = bb.slice();
-        list.add(new VersionMessageWrapper(version, messageBuffer));
-        messageBuffer.retain();
         bb.skipBytes(bb.readableBytes());
     }
 

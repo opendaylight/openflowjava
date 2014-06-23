@@ -6,6 +6,7 @@ module openflow-switch-connection-provider-impl {
     import config {prefix config; revision-date 2013-04-05; }
     import openflow-switch-connection-provider {prefix openflow-switch-connection-provider; revision-date 2014-03-28; }
     import ietf-inet-types {prefix ietf-inet; revision-date 2010-09-24; }
+    import openflow-configuration {prefix of-config; revision-date 2014-06-30; }
 
     description
         "openflow-switch-connection-provider";
@@ -40,10 +41,36 @@ module openflow-switch-connection-provider-impl {
                 type uint32;
                 mandatory true;
             }
-            leaf tls-support {
-                description "tls support enabled (requires SSL-context / keystore)";
-                type boolean;
-                default false;
+            container tls {
+                leaf supported {
+                    description "tls support enabled (keystore)";
+                    type boolean;
+                    default false;
+                }
+                leaf keystore {
+                    description "keystore location";
+                    type string;
+                }
+                leaf keystore-type {
+                    description "keystore type (JKS or PKCS12)";
+                    type of-config:keystore-type;
+                }
+                leaf keystore-path-type {
+                    description "keystore path type (classpath or path)";
+                    type of-config:path-type;
+                }
+                leaf truststore {
+                    description "truststore location";
+                    type string;
+                }
+                leaf truststore-type {
+                    description "truststore type (JKS or PKCS12)";
+                    type of-config:keystore-type;
+                }
+                leaf truststore-path-type {
+                    description "truststore path type (classpath or path)";
+                    type of-config:path-type;
+                }
             }
         }
     }
