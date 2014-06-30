@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa82b9bf_a36775e8",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/PublishingChannelInitializer.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2014-06-30T14:00:10Z",
+      "side": 1,
+      "message": "this is not equivalent condition for \"!encryption\"",
+      "revId": "ec2a98f6d5156080db81dbdf4461634de799738f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
