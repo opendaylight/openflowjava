@@ -59,18 +59,4 @@ public final class SslKeyStore {
         }
         return in;
     }
-
-    /**
-     * @return certificate password as char[]
-     */
-    public static char[] getCertificatePassword() {
-        return "opendaylight".toCharArray();
-    }
-
-    /**
-     * @return KeyStore password as char[]
-     */
-    public static char[] getKeyStorePassword() {
-        return "opendaylight".toCharArray();
-    }
 }

@@ -51,8 +51,16 @@ module openflow-switch-connection-provider-impl {
                     type of-config:keystore-type;
                 }
                 leaf keystore-path-type {
-                    description "keystore path type (classpath or path)";
+                    description "keystore path type (CLASSPATH or PATH)";
                     type of-config:path-type;
+                }
+                leaf keystore-password {
+                    description "password protecting keystore";
+                    type string;
+                }
+                leaf certificate-password {
+                    description "password protecting certificate";
+                    type string;
                 }
                 leaf truststore {
                     description "truststore location";
@@ -63,8 +71,12 @@ module openflow-switch-connection-provider-impl {
                     type of-config:keystore-type;
                 }
                 leaf truststore-path-type {
-                    description "truststore path type (classpath or path)";
+                    description "truststore path type (CLASSPATH or PATH)";
                     type of-config:path-type;
+                }
+                leaf truststore-password {
+                    description "password protecting truststore";
+                    type string;
                 }
             }
         }
