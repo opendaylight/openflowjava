@@ -94,6 +94,9 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
             }
             @Override
             public TlsConfiguration getTlsConfiguration() {
+                if (tlsConfig == null) {
+                    return null;
+                }
                 return new TlsConfiguration() {
                     @Override
                     public KeystoreType getTlsTruststoreType() {
