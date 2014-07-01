@@ -50,13 +50,13 @@ public class SimpleClientFramer extends ByteToMessageDecoder {
             return;
         }
 
-        int length = bb.getUnsignedShort(LENGTH_INDEX_IN_HEADER);
+        int length = bb.getUnsignedShort(bb.readerIndex() + LENGTH_INDEX_IN_HEADER);
         if (bb.readableBytes() < length) {
             LOGGER.debug("skipping bb - too few data for msg: " +
                     bb.readableBytes() + " < " + length);
             return;
         }
-        LOGGER.debug("OF Protocol message received, type:{}", bb.getByte(1));
+        LOGGER.debug("OF Protocol message received, type:{}", bb.getByte(bb.readerIndex() + 1));
 
         ByteBuf messageBuffer = bb.slice(bb.readerIndex(), length);
         list.add(messageBuffer);
