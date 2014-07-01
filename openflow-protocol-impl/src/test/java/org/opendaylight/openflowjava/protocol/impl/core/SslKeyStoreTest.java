@@ -9,7 +9,6 @@
 package org.opendaylight.openflowjava.protocol.impl.core;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
 
@@ -41,25 +40,5 @@ public class SslKeyStoreTest {
         InputStream inputStream = SslKeyStore.asInputStream("src/main/resources/key.bin", PathType.PATH);
         assertNotNull( inputStream );
         inputStream.close();
-    }
-
-    /**
-     * Test certificate password retrieval
-     */
-    @Test
-    public void testGetCertificatePassword() {
-        char[] password = SslKeyStore.getCertificatePassword();
-        assertNotNull(password);
-        assertTrue (password.length>0) ;
-    }
-
-    /**
-     * Test keystore password retrieval
-     */
-    @Test
-    public void testGetKeyStorePassword() {
-        char[] password = SslKeyStore.getKeyStorePassword() ;
-        assertNotNull(password);
-        assertTrue (password.length>0) ;
     }
 }

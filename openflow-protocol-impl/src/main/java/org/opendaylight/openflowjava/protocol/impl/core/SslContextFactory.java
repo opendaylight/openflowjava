@@ -19,8 +19,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
 import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.KeystoreType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.PathType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,12 +32,7 @@ public class SslContextFactory {
     // "TLS" - supports some version of TLS
     // Use "TLSv1", "TLSv1.1", "TLSv1.2" for specific TLS version
     private static final String PROTOCOL = "TLS";
-    private String keystore;
-    private KeystoreType keystoreType;
-    private String truststore;
-    private KeystoreType truststoreType;
-    private PathType keystorePathType;
-    private PathType truststorePathType;
+    private TlsConfiguration tlsConfig;
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(SslContextFactory.class);
@@ -50,12 +43,7 @@ public class SslContextFactory {
      *            keystore types
      */
     public SslContextFactory(TlsConfiguration tlsConfig) {
-        keystore = tlsConfig.getTlsKeystore();
-        keystoreType = tlsConfig.getTlsKeystoreType();
-        keystorePathType = tlsConfig.getTlsKeystorePathType();
-        truststore = tlsConfig.getTlsTruststore();
-        truststoreType = tlsConfig.getTlsTruststoreType();
-        truststorePathType = tlsConfig.getTlsTruststorePathType();
+        this.tlsConfig = tlsConfig;
     }
 
     /**
@@ -69,15 +57,15 @@ public class SslContextFactory {
         }
         SSLContext serverContext = null;
         try {
-            KeyStore ks = KeyStore.getInstance(keystoreType.name());
-            ks.load(SslKeyStore.asInputStream(keystore, keystorePathType),
-                    SslKeyStore.getKeyStorePassword());
+            KeyStore ks = KeyStore.getInstance(tlsConfig.getTlsKeystoreType().name());
+            ks.load(SslKeyStore.asInputStream(tlsConfig.getTlsKeystore(), tlsConfig.getTlsKeystorePathType()),
+                    tlsConfig.getKeystorePassword().toCharArray());
             KeyManagerFactory kmf = KeyManagerFactory.getInstance(algorithm);
-            kmf.init(ks, SslKeyStore.getCertificatePassword());
+            kmf.init(ks, tlsConfig.getCertificatePassword().toCharArray());
 
-            KeyStore ts = KeyStore.getInstance(truststoreType.name());
-            ts.load(SslKeyStore.asInputStream(truststore, truststorePathType),
-                    SslKeyStore.getKeyStorePassword());
+            KeyStore ts = KeyStore.getInstance(tlsConfig.getTlsTruststoreType().name());
+            ts.load(SslKeyStore.asInputStream(tlsConfig.getTlsTruststore(), tlsConfig.getTlsTruststorePathType()),
+                    tlsConfig.getTruststorePassword().toCharArray());
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(algorithm);
             tmf.init(ts);
 

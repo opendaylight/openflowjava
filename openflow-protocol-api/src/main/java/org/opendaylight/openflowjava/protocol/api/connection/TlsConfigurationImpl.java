@@ -12,8 +12,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.K
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.PathType;
 
 /**
+ * Class is used only for testing purposes - passwords are hardcoded
  * @author michal.polkorab
- * 
  */
 public class TlsConfigurationImpl implements TlsConfiguration {
 
@@ -72,5 +72,20 @@ public class TlsConfigurationImpl implements TlsConfiguration {
     @Override
     public PathType getTlsTruststorePathType() {
         return truststorePathType;
+    }
+
+    @Override
+    public String getKeystorePassword() {
+        return "opendaylight";
+    }
+
+    @Override
+    public String getCertificatePassword() {
+        return "opendaylight";
+    }
+
+    @Override
+    public String getTruststorePassword() {
+        return "opendaylight";
     }
 }

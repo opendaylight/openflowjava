@@ -122,6 +122,18 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
                     public org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.PathType getTlsTruststorePathType() {
                         return Objects.firstNonNull(tlsConfig.getTruststorePathType(), null);
                     }
+                    @Override
+                    public String getKeystorePassword() {
+                        return Objects.firstNonNull(tlsConfig.getKeystorePassword(), null);
+                    }
+                    @Override
+                    public String getCertificatePassword() {
+                        return Objects.firstNonNull(tlsConfig.getCertificatePassword(), null);
+                    }
+                    @Override
+                    public String getTruststorePassword() {
+                        return Objects.firstNonNull(tlsConfig.getTruststorePassword(), null);
+                    }
                 };
             }
             @Override

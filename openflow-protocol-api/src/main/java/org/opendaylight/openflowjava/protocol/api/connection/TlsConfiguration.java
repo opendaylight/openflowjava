@@ -39,12 +39,27 @@ public interface TlsConfiguration {
     public KeystoreType getTlsTruststoreType();
 
     /**
-     * @return keystore path type (classpath or path)
+     * @return keystore path type (CLASSPATH or PATH)
      */
     public PathType getTlsKeystorePathType();
 
     /**
-     * @return truststore path type (classpath or path)
+     * @return truststore path type (CLASSPATH or PATH)
      */
     public PathType getTlsTruststorePathType();
+
+    /**
+     * @return password protecting specified keystore
+     */
+    public String getKeystorePassword();
+
+    /**
+     * @return password protecting certificate
+     */
+    public String getCertificatePassword();
+
+    /**
+     * @return password protecting specified truststore
+     */
+    public String getTruststorePassword();
 }
