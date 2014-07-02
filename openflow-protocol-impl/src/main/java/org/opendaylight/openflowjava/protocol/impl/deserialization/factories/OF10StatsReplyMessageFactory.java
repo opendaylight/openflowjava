@@ -18,7 +18,7 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegi
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.CodeKeyMaker;
 import org.opendaylight.openflowjava.protocol.impl.util.CodeKeyMakerFactory;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;

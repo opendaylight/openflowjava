@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv6AddressMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;

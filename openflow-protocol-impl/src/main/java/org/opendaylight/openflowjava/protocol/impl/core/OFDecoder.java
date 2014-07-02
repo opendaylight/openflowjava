@@ -14,7 +14,7 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
-import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
-import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**

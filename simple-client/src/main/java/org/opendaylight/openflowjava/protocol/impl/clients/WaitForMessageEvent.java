@@ -10,7 +10,7 @@ package org.opendaylight.openflowjava.protocol.impl.clients;
 
 import java.util.Arrays;
 
-import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

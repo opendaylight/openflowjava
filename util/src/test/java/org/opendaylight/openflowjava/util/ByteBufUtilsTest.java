@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.impl.util;
+package org.opendaylight.openflowjava.util;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 
 /**
  * @author michal.polkorab
@@ -28,7 +29,7 @@ public class ByteBufUtilsTest {
     private byte[] expected = new byte[]{0x01, 0x02, 0x03, 0x04, 0x05, (byte) 0xff};
     
     /**
-     * Test of {@link ByteBufUtils#hexStringToBytes(String)}
+     * Test of {@link org.opendaylight.openflowjava.util.ByteBufUtils#hexStringToBytes(String)}
      */
     @Test
     public void testHexStringToBytes() {
