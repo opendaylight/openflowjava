@@ -22,6 +22,7 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6FlowLabel;
@@ -257,7 +258,7 @@ public class OF13MatchSerializerTest {
         byte[] label = new byte[4];
         out.readBytes(label);
         
-        LOG.debug("label: "+ByteBufUtils.bytesToHexString(label));
+        LOG.debug("label: "+ ByteBufUtils.bytesToHexString(label));
         Assert.assertArrayEquals("Wrong ipv6FLabel", new byte[]{0, 0x0f, (byte) 0x9e, (byte) 0x8d}, label);
     }
     

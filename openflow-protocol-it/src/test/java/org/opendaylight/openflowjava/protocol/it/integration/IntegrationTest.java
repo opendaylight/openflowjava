@@ -28,7 +28,7 @@ import org.opendaylight.openflowjava.protocol.impl.clients.SleepEvent;
 import org.opendaylight.openflowjava.protocol.impl.clients.WaitForMessageEvent;
 import org.opendaylight.openflowjava.protocol.impl.connection.SwitchConnectionProviderImpl;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler;
-import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.KeystoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.PathType;
 import org.slf4j.Logger;
