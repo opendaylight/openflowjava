@@ -33,12 +33,23 @@ public class SslKeyStoreTest {
     }
 
     /**
-     * Test keystore file access
+     * Test keystore file access - via classpath
      * @throws Exception 
      */
     @Test
     public void testAsInputStream() throws Exception {
-        InputStream inputStream = SslKeyStore.asInputStream("src/main/resources/key.bin", PathType.PATH);
+        InputStream inputStream = SslKeyStore.asInputStream("/key.bin", PathType.CLASSPATH);
+        assertNotNull( inputStream );
+        inputStream.close();
+    }
+
+    /**
+     * Test keystore file access - via relative path
+     * @throws Exception 
+     */
+    @Test
+    public void testAsInputStream2() throws Exception {
+        InputStream inputStream = SslKeyStore.asInputStream("src/test/resources/key.bin", PathType.PATH);
         assertNotNull( inputStream );
         inputStream.close();
     }

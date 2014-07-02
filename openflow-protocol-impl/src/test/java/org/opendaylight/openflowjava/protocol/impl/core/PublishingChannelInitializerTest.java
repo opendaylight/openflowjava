@@ -91,8 +91,8 @@ public class PublishingChannelInitializerTest {
         when(mockSwConnHandler.accept(eq(InetAddress.getLocalHost()))).thenReturn(true) ;
         when(mockSocketCh.pipeline()).thenReturn(mockChPipeline) ;
         
-        tlsConfiguration = new TlsConfigurationImpl(KeystoreType.JKS, "src/main/resources/selfSignedSwitch", PathType.PATH,
-                KeystoreType.JKS, "src/main/resources/selfSignedController", PathType.PATH);
+        tlsConfiguration = new TlsConfigurationImpl(KeystoreType.JKS, "/selfSignedSwitch", PathType.CLASSPATH,
+                KeystoreType.JKS, "/selfSignedController", PathType.CLASSPATH);
     }
 
 

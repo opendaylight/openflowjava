@@ -64,8 +64,8 @@ public class IntegrationTest {
         startupAddress = InetAddress.getLocalHost();
         if (secured) {
             tlsConfiguration = new TlsConfigurationImpl(KeystoreType.JKS,
-                    "../openflow-protocol-impl/src/main/resources/selfSignedSwitch", PathType.PATH, KeystoreType.JKS,
-                    "../openflow-protocol-impl/src/main/resources/selfSignedController", PathType.PATH) ;
+                    "/selfSignedSwitch", PathType.CLASSPATH, KeystoreType.JKS,
+                    "/selfSignedController", PathType.CLASSPATH) ;
             connConfig = new ConnectionConfigurationImpl(startupAddress, 0, tlsConfiguration, SWITCH_IDLE_TIMEOUT);
         } else {
             connConfig = new ConnectionConfigurationImpl(startupAddress, 0, null, SWITCH_IDLE_TIMEOUT);
