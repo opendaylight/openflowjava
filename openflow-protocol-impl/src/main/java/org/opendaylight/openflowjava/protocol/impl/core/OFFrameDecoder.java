@@ -44,7 +44,12 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        LOGGER.warn("Unexpected exception from downstream.", cause);
+        if (cause instanceof io.netty.handler.ssl.NotSslRecordException) {
+            LOGGER.warn("Not an TLS record exception - please verify TLS configuration.");
+        } else {
+            LOGGER.warn("Unexpected exception from downstream.", cause);
+        }
+        LOGGER.warn("Closing connection.");
         ctx.close();
     }
 
