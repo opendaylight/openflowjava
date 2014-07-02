@@ -130,7 +130,7 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     }
 
     @Override
-    public <E extends DataObject> void registerCustomSerializer(MessageTypeKey<E> key,
+    public <KEY_TYPE, E extends DataObject> void registerCustomSerializer(MessageTypeKey<KEY_TYPE> key,
             OFSerializer<E> serializer) {
         serializerRegistry.registerSerializer(key, serializer);
     }
