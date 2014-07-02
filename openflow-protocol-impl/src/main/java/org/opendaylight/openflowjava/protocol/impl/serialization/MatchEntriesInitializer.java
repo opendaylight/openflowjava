@@ -51,7 +51,7 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmUdpDst
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmUdpSrcSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmVlanPcpSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmVlanVidSerializer;
-import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.EnhancedKeyRegistryHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpOp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpSha;

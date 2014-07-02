@@ -36,7 +36,7 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF13SetF
 import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF13SetMplsTtlActionSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF13SetNwTtlActionSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF13SetQueueActionSerializer;
-import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.EnhancedKeyRegistryHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.CopyTtlIn;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.CopyTtlOut;
