@@ -8,6 +8,7 @@
     <modules>
         <module>openflow-protocol-api</module>
         <module>openflow-protocol-spi</module>
+        <module>util</module>
         <module>openflow-protocol-impl</module>
         <module>openflow-protocol-it</module>
         <module>feature</module>
