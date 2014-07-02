@@ -1645,7 +1645,7 @@
                 position 0;
             }
             bit no-stp {
-                description" Disable 802.1D spanning tree on port.";
+                description "Disable 802.1D spanning tree on port.";
                 position 1;
             }
             bit no-recv { 
