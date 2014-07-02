@@ -34,7 +34,7 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.factories.SetAs
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.SetConfigMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.TableModInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.CommonMessageRegistryHelper;
-import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoReplyInput;

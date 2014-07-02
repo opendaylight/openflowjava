@@ -15,7 +15,7 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.instruction.G
 import org.opendaylight.openflowjava.protocol.impl.deserialization.instruction.MeterInstructionDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.instruction.WriteActionsInstructionDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.instruction.WriteMetadataInstructionDeserializer;
-import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.SimpleDeserializerRegistryHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 

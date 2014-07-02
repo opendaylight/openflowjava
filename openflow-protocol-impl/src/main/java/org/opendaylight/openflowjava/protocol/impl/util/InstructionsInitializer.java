@@ -9,6 +9,7 @@
 package org.opendaylight.openflowjava.protocol.impl.util;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.serialization.instruction.ApplyActionsInstructionSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.instruction.ClearActionsInstructionSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.instruction.GoToTableInstructionSerializer;
