@@ -35,8 +35,8 @@ public class SslContextFactoryTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        tlsConfiguration = new TlsConfigurationImpl(KeystoreType.JKS, "src/main/resources/ctlTrustStore",
-                PathType.PATH, KeystoreType.JKS, "src/main/resources/ctlKeystore", PathType.PATH) ;
+        tlsConfiguration = new TlsConfigurationImpl(KeystoreType.JKS, "/ctlTrustStore",
+                PathType.CLASSPATH, KeystoreType.JKS, "/ctlKeystore", PathType.CLASSPATH) ;
         sslContextFactory = new SslContextFactory(tlsConfiguration);
     }
 
