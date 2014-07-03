@@ -99,6 +99,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.opendaylight.openflowjava</groupId>
+            <artifactId>util</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-common-util</artifactId>
             <version>${yang.prototype.version}</version>
