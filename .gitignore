@@ -4,6 +4,4 @@ target/
 .settings/
 .externalToolBuilders/
 maven-eclipse.xml
-yang-gen-config
-yang-gen-sal
 .checkstyle
