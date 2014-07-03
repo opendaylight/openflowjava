@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.DlAddressAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IpAddressAction;
@@ -91,7 +92,7 @@ public class OF10ActionsDeserializerTest {
         Action action5 = actions.get(4);
         Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight"
                 + ".openflow.common.action.rev130731.SetDlSrc", action5.getType().getName());
-        Assert.assertArrayEquals("Wrong dl-src", ByteBufUtils.macAddressToBytes("01:02:03:04:05:06"), 
+        Assert.assertArrayEquals("Wrong dl-src", ByteBufUtils.macAddressToBytes("01:02:03:04:05:06"),
                 ByteBufUtils.macAddressToBytes(action5.getAugmentation(DlAddressAction.class).getDlAddress().getValue()));
         Action action6 = actions.get(5);
         Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight"

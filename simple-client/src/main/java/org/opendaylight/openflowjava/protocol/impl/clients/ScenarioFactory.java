@@ -10,7 +10,7 @@ package org.opendaylight.openflowjava.protocol.impl.clients;
 
 import java.util.Stack;
 
-import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 
 /**
  * Class for providing prepared handshake scenario

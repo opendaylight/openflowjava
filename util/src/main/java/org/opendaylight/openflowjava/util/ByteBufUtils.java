@@ -7,7 +7,7 @@
  */
 
 
-package org.opendaylight.openflowjava.protocol.impl.util;
+package org.opendaylight.openflowjava.util;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;

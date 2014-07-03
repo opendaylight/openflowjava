@@ -23,7 +23,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionFacade;
-import org.opendaylight.openflowjava.protocol.impl.util.ByteBufUtils;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 
 /**
  * Testing class of {@link OFFrameDecoder}
