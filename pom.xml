@@ -32,8 +32,8 @@
         <exam.version>3.0.0</exam.version>
         <url.version>1.5.0</url.version>
         <enunciate.version>1.26.2</enunciate.version>
-        <jmxGeneratorPath>src/main/yang-gen-config</jmxGeneratorPath>
-        <salGeneratorPath>src/main/yang-gen-sal</salGeneratorPath>
+        <jmxGeneratorPath>${project.build.directory}/yang-gen-config</jmxGeneratorPath>
+        <salGeneratorPath>${project.build.directory}/yang-gen-sal</salGeneratorPath>
         <sonar.branch>${user.name}-private-view</sonar.branch>
         <sonar.skippedModules>org.openflow.openflowj,net.sf.jung2</sonar.skippedModules>
         <logback.version>1.0.9</logback.version>
@@ -286,8 +286,6 @@
                             <configuration>
                                 <sources>
                                     <source>src/main/yang</source>
-                                    <source>${jmxGeneratorPath}</source>
-                                    <source>${salGeneratorPath}</source>
                                 </sources>
                             </configuration>
                         </execution>
