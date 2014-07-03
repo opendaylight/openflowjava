@@ -11,11 +11,10 @@ package org.opendaylight.openflowjava.protocol.spi.connection;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
-import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralSerializer;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
@@ -54,9 +53,9 @@ public interface SwitchConnectionProvider extends AutoCloseable {
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */
-    public  <KEY_TYPE, E extends DataObject> void registerCustomSerializer(MessageTypeKey<KEY_TYPE> key,
-            OFSerializer<E> serializer);
-            
+    public  <KEY_TYPE> void registerSerializer(MessageTypeKey<KEY_TYPE> key,
+            OFGeneralSerializer serializer);
+
     /**
      * Registers custom deserializer
      * @param key used for deserializer lookup
