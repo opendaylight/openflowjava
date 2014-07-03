@@ -63,4 +63,21 @@ public interface SwitchConnectionProvider extends AutoCloseable {
      */
     public void registerDeserializer(MessageCodeKey key, OFGeneralDeserializer deserializer);
 
+    /**
+     * Unregisters custom serializer
+     * @param key used for serializer lookup
+     * @param serializer serializer implementation
+     * @return true if serializer was removed,
+     *  false if no serializer was found under specified key
+     */
+    public  <KEY_TYPE> boolean unregisterSerializer(MessageTypeKey<KEY_TYPE> key);
+
+    /**
+     * Unregisters custom deserializer
+     * @param key used for deserializer lookup
+     * @param deserializer deserializer instance
+     * @return true if deserializer was removed,
+     *  false if no deserializer was found under specified key
+     */
+    public boolean unregisterDeserializer(MessageCodeKey key);
 }

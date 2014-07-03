@@ -144,4 +144,14 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     public void close() throws Exception {
         shutdown();
     }
+
+    @Override
+    public <KEY_TYPE> boolean unregisterSerializer(MessageTypeKey<KEY_TYPE> key) {
+        return serializerRegistry.unregisterSerializer(key);
+    }
+
+    @Override
+    public boolean unregisterDeserializer(MessageCodeKey key) {
+        return deserializerRegistry.unregisterDeserializer(key);
+    }
 }
