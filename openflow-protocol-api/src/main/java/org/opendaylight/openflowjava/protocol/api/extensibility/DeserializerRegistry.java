@@ -27,8 +27,18 @@ public interface DeserializerRegistry {
             SERIALIZER_TYPE getDeserializer(MessageCodeKey key);
 
     /**
+     * Registers deserializer under key
      * @param key used to registry lookup
      * @param deserializer deserializer instance
      */
     public void registerDeserializer(MessageCodeKey key, OFGeneralDeserializer deserializer);
+
+    /**
+     * Unregisters deserializer under key
+     * @param key used to registry lookup
+     * @param deserializer deserializer instance
+     * @return true if deserializer was removed,
+     *  false if no deserializer was found under specified key
+     */
+    public boolean unregisterDeserializer(MessageCodeKey key);
 }

@@ -81,4 +81,16 @@ public class SerializerRegistryImpl implements SerializerRegistry {
         }
         registry.put(msgTypeKey, serializer);
     }
+
+    @Override
+    public <KEY_TYPE> boolean unregisterSerializer(MessageTypeKey<KEY_TYPE> msgTypeKey) {
+        if (msgTypeKey == null) {
+            throw new NullPointerException("MessageTypeKey is null");
+        }
+        OFGeneralSerializer serializer = registry.remove(msgTypeKey);
+        if (serializer == null) {
+            return false;
+        }
+        return true;
+    }
 }

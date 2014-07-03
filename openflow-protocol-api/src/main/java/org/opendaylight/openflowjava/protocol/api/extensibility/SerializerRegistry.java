@@ -34,4 +34,13 @@ public interface SerializerRegistry {
      */
     public <KEY_TYPE> void
         registerSerializer(MessageTypeKey<KEY_TYPE> msgTypeKey, OFGeneralSerializer serializer);
+
+    /**
+     * Unregisters serializer under key
+     * @param msgTypeKey lookup key
+     * @param serializer serializer implementation
+     * @return true if serializer was removed,
+     *  false if no serializer was found under specified key
+     */
+    public <KEY_TYPE> boolean unregisterSerializer(MessageTypeKey<KEY_TYPE> msgTypeKey);
 }

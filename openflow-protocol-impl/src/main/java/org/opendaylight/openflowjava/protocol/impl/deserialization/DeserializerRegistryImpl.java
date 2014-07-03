@@ -78,4 +78,16 @@ public class DeserializerRegistryImpl implements DeserializerRegistry {
         registry.put(key, deserializer);
     }
 
+    @Override
+    public boolean unregisterDeserializer(MessageCodeKey key) {
+        if (key == null) {
+            throw new NullPointerException("MessageCodeKey is null");
+        }
+        OFGeneralDeserializer deserializer = registry.remove(key);
+        if (deserializer == null) {
+            return false;
+        }
+        return true;
+    }
+
 }
