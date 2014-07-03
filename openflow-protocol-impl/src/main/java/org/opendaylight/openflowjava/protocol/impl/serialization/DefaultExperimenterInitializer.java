@@ -18,7 +18,7 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.experimenters.O
 import org.opendaylight.openflowjava.protocol.impl.serialization.experimenters.OF13MultipartExperimenterSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.experimenters.OF13TableFeatExpSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.CommonMessageRegistryHelper;
-import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.EnhancedKeyRegistryHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;

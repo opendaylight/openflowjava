@@ -51,9 +51,9 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmUdpD
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmUdpSrcDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmVlanPcpDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmVlanVidDeserializer;
-import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.MatchEntryDeserializerRegistryHelper;
-import org.opendaylight.openflowjava.protocol.impl.util.OxmMatchConstants;
+import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
 
 /**
  * @author michal.polkorab

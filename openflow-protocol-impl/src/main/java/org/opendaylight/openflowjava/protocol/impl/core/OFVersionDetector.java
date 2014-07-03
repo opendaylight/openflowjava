@@ -14,7 +14,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
 
-import org.opendaylight.openflowjava.protocol.impl.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
