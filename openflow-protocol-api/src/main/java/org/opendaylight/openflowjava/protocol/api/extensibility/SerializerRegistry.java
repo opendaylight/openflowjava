@@ -8,6 +8,8 @@
 package org.opendaylight.openflowjava.protocol.api.extensibility;
 
 
+
+
 /**
  * Stores and handles serializers 
  * @author michal.polkorab
@@ -28,19 +30,19 @@ public interface SerializerRegistry {
         getSerializer(MessageTypeKey<KEY_TYPE> msgTypeKey);
 
     /**
-     * Registers serializer under key
-     * @param msgTypeKey lookup key
+     * Registers serializer
+     * @param key used for serializer lookup
      * @param serializer serializer implementation
      */
-    public <KEY_TYPE> void
-        registerSerializer(MessageTypeKey<KEY_TYPE> msgTypeKey, OFGeneralSerializer serializer);
+    public <KEY_TYPE> void registerSerializer(MessageTypeKey<KEY_TYPE> key,
+            OFGeneralSerializer serializer);
 
     /**
-     * Unregisters serializer under key
-     * @param msgTypeKey lookup key
+     * Unregisters serializer
+     * @param key used for serializer lookup
      * @param serializer serializer implementation
      * @return true if serializer was removed,
      *  false if no serializer was found under specified key
      */
-    public <KEY_TYPE> boolean unregisterSerializer(MessageTypeKey<KEY_TYPE> msgTypeKey);
+    public <KEY_TYPE> boolean unregisterSerializer(MessageTypeKey<KEY_TYPE> key);
 }

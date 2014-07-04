@@ -139,18 +139,6 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     }
 
     @Override
-    public void registerSerializer(ExperimenterSerializerKey key,
-            OFGeneralSerializer serializer) {
-        serializerRegistry.registerSerializer((MessageTypeKey<?>) key, serializer);
-    }
-
-    @Override
-    public void registerDeserializer(ExperimenterDeserializerKey key,
-            OFGeneralDeserializer deserializer) {
-        deserializerRegistry.registerDeserializer((MessageCodeKey) key, deserializer);
-    }
-
-    @Override
     public void close() throws Exception {
         shutdown();
     }
@@ -168,36 +156,36 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     @Override
     public void registerActionSerializer(ExperimenterActionSerializerKey key,
             OFGeneralSerializer serializer) {
-        registerSerializer(key, serializer);
+        serializerRegistry.registerSerializer(key, serializer);
     }
 
     @Override
     public void registerActionDeserializer(ExperimenterActionDeserializerKey key,
             OFGeneralDeserializer deserializer) {
-        registerDeserializer(key, deserializer);
+        deserializerRegistry.registerDeserializer(key, deserializer);
     }
 
     @Override
     public void registerInstructionSerializer(ExperimenterInstructionSerializerKey key,
             OFGeneralSerializer serializer) {
-        registerSerializer(key, serializer);
+        serializerRegistry.registerSerializer(key, serializer);
     }
 
     @Override
     public void registerInstructionDeserializer(ExperimenterInstructionDeserializerKey key,
             OFGeneralDeserializer deserializer) {
-        registerDeserializer(key, deserializer);
+        deserializerRegistry.registerDeserializer(key, deserializer);
     }
 
     @Override
     public <OXM_CLASS extends OxmClassBase, OXM_TYPE extends MatchField> void registerMatchEntrySerializer(MatchEntrySerializerKey<OXM_CLASS, OXM_TYPE> key,
             OFGeneralSerializer serializer) {
-        registerSerializer(key, serializer);
+        serializerRegistry.registerSerializer(key, serializer);
     }
 
     @Override
     public void registerMatchEntryDeserializer(MatchEntryDeserializerKey key,
             OFGeneralDeserializer deserializer) {
-        registerDeserializer(key, deserializer);
+        deserializerRegistry.registerDeserializer(key, deserializer);
     }
 }
