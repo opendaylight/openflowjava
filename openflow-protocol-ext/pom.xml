@@ -87,7 +87,7 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.openflowjava</groupId>
-            <artifactId>openflow-protocol-impl</artifactId>
+            <artifactId>util</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

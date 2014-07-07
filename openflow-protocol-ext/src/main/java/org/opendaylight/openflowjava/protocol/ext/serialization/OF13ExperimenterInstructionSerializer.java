@@ -12,7 +12,7 @@ import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.protocol.ext.util.ExtConstants;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 
@@ -25,8 +25,8 @@ public class OF13ExperimenterInstructionSerializer implements OFSerializer<Instr
 
     @Override
     public void serializeHeader(Instruction instruction, ByteBuf outBuffer) {
-        outBuffer.writeShort(ExtConstants.EXPERIMENTER_VALUE);
-        outBuffer.writeShort(ExtConstants.EXPERIMENTER_IDS_LENGTH);
+        outBuffer.writeShort(EncodeConstants.EXPERIMENTER_VALUE);
+        outBuffer.writeShort(EncodeConstants.EXPERIMENTER_IDS_LENGTH);
         outBuffer.writeInt(instruction
                 .getAugmentation(ExperimenterInstruction.class).getExperimenter().intValue());
     }
@@ -34,9 +34,9 @@ public class OF13ExperimenterInstructionSerializer implements OFSerializer<Instr
     @Override
     public void serialize(Instruction instruction, ByteBuf outBuffer) {
         int startIndex = outBuffer.writerIndex();
-        outBuffer.writeShort(ExtConstants.EXPERIMENTER_VALUE);
+        outBuffer.writeShort(EncodeConstants.EXPERIMENTER_VALUE);
         int lengthIndex = outBuffer.writerIndex();
-        outBuffer.writeShort(ExtConstants.EMPTY_LENGTH);
+        outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
         ExperimenterInstruction experimenter =
                 instruction.getAugmentation(ExperimenterInstruction.class);
         outBuffer.writeInt(experimenter.getExperimenter().intValue());
@@ -45,5 +45,4 @@ public class OF13ExperimenterInstructionSerializer implements OFSerializer<Instr
         }
         outBuffer.setShort(lengthIndex, outBuffer.writerIndex() - startIndex);
     }
-
 }

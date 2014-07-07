@@ -13,7 +13,7 @@ import io.netty.buffer.UnpooledByteBufAllocator;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.ext.util.ExtConstants;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
@@ -31,7 +31,7 @@ public class OF10VendorActionDeserializerTest {
     @Test
     public void test() {
         ByteBuf buffer = UnpooledByteBufAllocator.DEFAULT.buffer();
-        buffer.writeShort(ExtConstants.EXPERIMENTER_VALUE);
+        buffer.writeShort(EncodeConstants.EXPERIMENTER_VALUE);
         buffer.writeShort(16);
         buffer.writeInt(42);
         byte[] data = new byte[]{0, 1, 2, 3, 4, 0, 0, 0};
@@ -54,57 +54,13 @@ public class OF10VendorActionDeserializerTest {
     @Test
     public void testWithoutData() {
         ByteBuf buffer = UnpooledByteBufAllocator.DEFAULT.buffer();
-        buffer.writeShort(ExtConstants.EXPERIMENTER_VALUE);
+        buffer.writeShort(EncodeConstants.EXPERIMENTER_VALUE);
         buffer.writeShort(8);
         buffer.writeInt(42);
 
         OF10VendorActionDeserializer deserializer =
                 new OF10VendorActionDeserializer();
         Action action = deserializer.deserialize(buffer);
-
-        Assert.assertEquals("Wrong type", Experimenter.class, action.getType());
-        ExperimenterAction experimenter = action.getAugmentation(ExperimenterAction.class);
-        Assert.assertEquals("Wrong experimenter", 42, experimenter.getExperimenter().intValue());
-        Assert.assertNull("Data not null", experimenter.getData());
-    }
-
-    /**
-     * Testing of {@link OF13ExperimenterActionDeserializer} for correct translation into POJO
-     * @throws Exception 
-     */
-    @Test
-    public void testHeader() {
-        ByteBuf buffer = UnpooledByteBufAllocator.DEFAULT.buffer();
-        buffer.writeShort(ExtConstants.EXPERIMENTER_VALUE);
-        buffer.writeShort(8);
-        buffer.writeInt(42);
-
-        OF10VendorActionDeserializer deserializer =
-                new OF10VendorActionDeserializer();
-        Action action = deserializer.deserializeHeader(buffer);
-
-        Assert.assertEquals("Wrong type", Experimenter.class, action.getType());
-        ExperimenterAction experimenter = action.getAugmentation(ExperimenterAction.class);
-        Assert.assertEquals("Wrong experimenter", 42, experimenter.getExperimenter().intValue());
-        Assert.assertNull("Data not null", experimenter.getData());
-    }
-
-    /**
-     * Testing of {@link OF13ExperimenterActionDeserializer} for correct translation into POJO
-     * @throws Exception 
-     */
-    @Test
-    public void testHeaderWithData() {
-        ByteBuf buffer = UnpooledByteBufAllocator.DEFAULT.buffer();
-        buffer.writeShort(ExtConstants.EXPERIMENTER_VALUE);
-        buffer.writeShort(8);
-        buffer.writeInt(42);
-        byte[] data = new byte[]{0, 1, 2, 3, 4, 0, 0, 0};
-        buffer.writeBytes(data);
-
-        OF10VendorActionDeserializer deserializer =
-                new OF10VendorActionDeserializer();
-        Action action = deserializer.deserializeHeader(buffer);
 
         Assert.assertEquals("Wrong type", Experimenter.class, action.getType());
         ExperimenterAction experimenter = action.getAugmentation(ExperimenterAction.class);

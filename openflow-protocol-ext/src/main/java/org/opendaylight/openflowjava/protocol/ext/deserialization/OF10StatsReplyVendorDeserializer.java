@@ -31,5 +31,4 @@ public class OF10StatsReplyVendorDeserializer implements OFDeserializer<Multipar
         }
         return builder.build();
     }
-
 }

@@ -10,7 +10,7 @@ package org.opendaylight.openflowjava.protocol.ext.serialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.EnhancedMessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
-import org.opendaylight.openflowjava.protocol.ext.util.ExtConstants;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
@@ -32,7 +32,7 @@ public class DefaultExperimenterSerializerInitializer {
      */
     public static void registerSerializers(SwitchConnectionProvider provider) {
         // register OF v1.0 default experimenter serializers
-        short version = ExtConstants.OF10_VERSION_ID;
+        short version = EncodeConstants.OF10_VERSION_ID;
         // - default vendor (experimenter) message serializer
         provider.registerSerializer(new MessageTypeKey<>(version, ExperimenterInput.class),
                 new OF10VendorInputMessageFactory());
@@ -44,7 +44,7 @@ public class DefaultExperimenterSerializerInitializer {
                 new OF10StatsRequestVendorSerializer());
 
         // register OF v1.3 default experimenter serializers
-        version = ExtConstants.OF13_VERSION_ID;
+        version = EncodeConstants.OF13_VERSION_ID;
         // - default experimenter message serializer
         provider.registerSerializer(new MessageTypeKey<>(version, ExperimenterInput.class),
                 new OF13ExperimenterInputMessageFactory());

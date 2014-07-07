@@ -11,7 +11,7 @@ package org.opendaylight.openflowjava.protocol.ext.deserialization;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.ext.util.ExtConstants;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterMessageBuilder;
 
@@ -24,7 +24,7 @@ public class OF13ExperimenterMessageDeserializer implements OFDeserializer<Exper
     @Override
     public ExperimenterMessage deserialize(ByteBuf message) {
         ExperimenterMessageBuilder builder = new ExperimenterMessageBuilder();
-        builder.setVersion((short) ExtConstants.OF13_VERSION_ID);
+        builder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
         builder.setXid(message.readUnsignedInt());
         builder.setExperimenter(message.readUnsignedInt());
         builder.setExpType(message.readUnsignedInt());

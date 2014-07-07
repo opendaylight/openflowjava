@@ -11,7 +11,7 @@ package org.opendaylight.openflowjava.protocol.ext.deserialization;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.ext.util.ExtConstants;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterRelatedTableFeaturePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableFeaturesPropType;
@@ -36,7 +36,7 @@ public class OF13TableFeaturesExperimenterDeserializer
         expBuilder.setExperimenter(input.readUnsignedInt());
         expBuilder.setExpType(input.readUnsignedInt());
         // extract experimenter_data length
-        length = length - 2 * ExtConstants.SIZE_OF_SHORT_IN_BYTES - 2 * ExtConstants.SIZE_OF_INT_IN_BYTES;
+        length = length - 2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES - 2 * EncodeConstants.SIZE_OF_INT_IN_BYTES;
         if (length > 0) {
             byte[] data = new byte[length];
             input.readBytes(data);

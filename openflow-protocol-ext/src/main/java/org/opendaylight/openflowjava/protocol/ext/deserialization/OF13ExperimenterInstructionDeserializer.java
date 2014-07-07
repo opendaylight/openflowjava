@@ -12,7 +12,7 @@ import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderDeserializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.ext.util.ExtConstants;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterInstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.Experimenter;
@@ -26,33 +26,38 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction
 public class OF13ExperimenterInstructionDeserializer implements OFDeserializer<Instruction>,
         HeaderDeserializer<Instruction> {
 
+    /** Size of Experimenter instruction header (2 * short + int) */
+    private static final byte HEADER_LENGTH = 8;
     @Override
     public Instruction deserializeHeader(ByteBuf input) {
-        InstructionBuilder builder = new InstructionBuilder();
-        input.skipBytes(ExtConstants.SIZE_OF_SHORT_IN_BYTES);
-        builder.setType(Experimenter.class);
-        input.skipBytes(ExtConstants.SIZE_OF_SHORT_IN_BYTES);
-        ExperimenterInstructionBuilder expBuilder = new ExperimenterInstructionBuilder();
-        expBuilder.setExperimenter(input.readUnsignedInt());
-        builder.addAugmentation(ExperimenterInstruction.class, expBuilder.build());
+        InstructionBuilder builder = processHeader(input, false);
         return builder.build();
     }
 
     @Override
     public Instruction deserialize(ByteBuf input) {
+        InstructionBuilder builder = processHeader(input, true);
+        return builder.build();
+    }
+
+    private static InstructionBuilder processHeader(ByteBuf input, boolean readWholeAugmentation) {
         InstructionBuilder builder = new InstructionBuilder();
-        input.skipBytes(ExtConstants.SIZE_OF_SHORT_IN_BYTES);
+        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         builder.setType(Experimenter.class);
-        input.skipBytes(ExtConstants.SIZE_OF_SHORT_IN_BYTES);
+        int length = input.readUnsignedShort();
+        addExpInstructionAugmentation(input, builder, length, readWholeAugmentation);
+        return builder;
+    }
+
+    private static void addExpInstructionAugmentation(ByteBuf input,
+            InstructionBuilder builder, int length, boolean readWholeAugmentation) {
         ExperimenterInstructionBuilder expBuilder = new ExperimenterInstructionBuilder();
         expBuilder.setExperimenter(input.readUnsignedInt());
-        if (input.readableBytes() > 0) {
-            byte[] data = new byte[input.readableBytes()];
+        if (readWholeAugmentation && ((length - HEADER_LENGTH) > 0)) {
+            byte[] data = new byte[length - HEADER_LENGTH];
             input.readBytes(data);
             expBuilder.setData(data);
         }
         builder.addAugmentation(ExperimenterInstruction.class, expBuilder.build());
-        return builder.build();
     }
-
 }

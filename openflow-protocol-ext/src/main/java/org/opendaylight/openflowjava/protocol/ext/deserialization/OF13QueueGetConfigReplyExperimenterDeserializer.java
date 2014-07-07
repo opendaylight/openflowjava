@@ -11,7 +11,7 @@ package org.opendaylight.openflowjava.protocol.ext.deserialization;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.ext.util.ExtConstants;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterQueueProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterQueuePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.QueueProperties;
@@ -39,8 +39,8 @@ public class OF13QueueGetConfigReplyExperimenterDeserializer
         expBuilder.setExperimenter(input.readUnsignedInt());
         input.skipBytes(PADDING_IN_EXPERIMENTER_QUEUE_PROPERTY);
         // extract experimenter_data length
-        length = length - 2 * ExtConstants.SIZE_OF_SHORT_IN_BYTES - PADDING_IN_QUEUE_PROPERTY_HEADER
-                - ExtConstants.SIZE_OF_INT_IN_BYTES - PADDING_IN_EXPERIMENTER_QUEUE_PROPERTY;
+        length = length - 2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES - PADDING_IN_QUEUE_PROPERTY_HEADER
+                - EncodeConstants.SIZE_OF_INT_IN_BYTES - PADDING_IN_EXPERIMENTER_QUEUE_PROPERTY;
         if (length > 0) {
             byte[] data = new byte[length];
             input.readBytes(data);

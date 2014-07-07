@@ -13,7 +13,7 @@ import io.netty.buffer.UnpooledByteBufAllocator;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.ext.util.ExtConstants;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.Experimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
@@ -31,8 +31,8 @@ public class OF13ExperimenterInstructionDeserializerTest {
     @Test
     public void test() {
         ByteBuf buffer = UnpooledByteBufAllocator.DEFAULT.buffer();
-        buffer.writeShort(ExtConstants.EXPERIMENTER_VALUE);
-        buffer.writeShort(8);
+        buffer.writeShort(EncodeConstants.EXPERIMENTER_VALUE);
+        buffer.writeShort(16);
         buffer.writeInt(42);
         byte[] data = new byte[]{0, 1, 2, 3, 4, 0, 0, 0};
         buffer.writeBytes(data);
@@ -54,7 +54,7 @@ public class OF13ExperimenterInstructionDeserializerTest {
     @Test
     public void testWithoutData() {
         ByteBuf buffer = UnpooledByteBufAllocator.DEFAULT.buffer();
-        buffer.writeShort(ExtConstants.EXPERIMENTER_VALUE);
+        buffer.writeShort(EncodeConstants.EXPERIMENTER_VALUE);
         buffer.writeShort(8);
         buffer.writeInt(42);
 
@@ -75,7 +75,7 @@ public class OF13ExperimenterInstructionDeserializerTest {
     @Test
     public void testHeader() {
         ByteBuf buffer = UnpooledByteBufAllocator.DEFAULT.buffer();
-        buffer.writeShort(ExtConstants.EXPERIMENTER_VALUE);
+        buffer.writeShort(EncodeConstants.EXPERIMENTER_VALUE);
         buffer.writeShort(8);
         buffer.writeInt(42);
 
@@ -96,7 +96,7 @@ public class OF13ExperimenterInstructionDeserializerTest {
     @Test
     public void testHeaderWithData() {
         ByteBuf buffer = UnpooledByteBufAllocator.DEFAULT.buffer();
-        buffer.writeShort(ExtConstants.EXPERIMENTER_VALUE);
+        buffer.writeShort(EncodeConstants.EXPERIMENTER_VALUE);
         buffer.writeShort(8);
         buffer.writeInt(42);
         byte[] data = new byte[]{0, 1, 2, 3, 4, 0, 0, 0};

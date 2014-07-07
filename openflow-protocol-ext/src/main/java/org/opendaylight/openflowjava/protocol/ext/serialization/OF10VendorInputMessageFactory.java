@@ -11,8 +11,8 @@ package org.opendaylight.openflowjava.protocol.ext.serialization;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.protocol.ext.util.ExtBufferUtils;
-import org.opendaylight.openflowjava.protocol.ext.util.ExtConstants;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterInput;
 
 /**
@@ -25,13 +25,12 @@ public class OF10VendorInputMessageFactory implements OFSerializer<ExperimenterI
 
     @Override
     public void serialize(ExperimenterInput input, ByteBuf outBuffer) {
-        ExtBufferUtils.writeOFHeader(MESSAGE_TYPE, input, outBuffer, ExtConstants.EMPTY_LENGTH);
+        ByteBufUtils.writeOFHeader(MESSAGE_TYPE, input, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeInt(input.getExperimenter().intValue());
         byte[] data = input.getData();
         if (data != null) {
             outBuffer.writeBytes(data);
         }
-        ExtBufferUtils.updateOFHeaderLength(outBuffer);
+        ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
-
 }

@@ -13,8 +13,7 @@ import io.netty.buffer.UnpooledByteBufAllocator;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.ext.util.ExtBufferUtils;
-import org.opendaylight.openflowjava.protocol.ext.util.ExtConstants;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterQueueProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.QueueProperties;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.queue.property.header.QueueProperty;
@@ -32,11 +31,11 @@ public class OF13QueueGetConfigReplyExperimenterDeserializerTest {
     @Test
     public void test() {
         ByteBuf buffer = UnpooledByteBufAllocator.DEFAULT.buffer();
-        buffer.writeShort(ExtConstants.EXPERIMENTER_VALUE);
+        buffer.writeShort(EncodeConstants.EXPERIMENTER_VALUE);
         buffer.writeShort(24);
-        ExtBufferUtils.padBuffer(4, buffer);
+        buffer.writeZero(4);
         buffer.writeInt(128);
-        ExtBufferUtils.padBuffer(4, buffer);
+        buffer.writeZero(4);
         byte[] data = new byte[]{0, 0, 1, 1, 2, 2, 3, 3};
         buffer.writeBytes(data);
 
@@ -57,11 +56,11 @@ public class OF13QueueGetConfigReplyExperimenterDeserializerTest {
     @Test
     public void testWithoutData() {
         ByteBuf buffer = UnpooledByteBufAllocator.DEFAULT.buffer();
-        buffer.writeShort(ExtConstants.EXPERIMENTER_VALUE);
+        buffer.writeShort(EncodeConstants.EXPERIMENTER_VALUE);
         buffer.writeShort(16);
-        ExtBufferUtils.padBuffer(4, buffer);
+        buffer.writeZero(4);
         buffer.writeInt(128);
-        ExtBufferUtils.padBuffer(4, buffer);
+        buffer.writeZero(4);
 
         OF13QueueGetConfigReplyExperimenterDeserializer deserializer =
                 new OF13QueueGetConfigReplyExperimenterDeserializer();

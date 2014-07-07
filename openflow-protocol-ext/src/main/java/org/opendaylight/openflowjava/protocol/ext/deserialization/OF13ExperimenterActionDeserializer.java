@@ -12,7 +12,7 @@ import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderDeserializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.ext.util.ExtConstants;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
@@ -29,9 +29,9 @@ public class OF13ExperimenterActionDeserializer implements OFDeserializer<Action
     @Override
     public Action deserializeHeader(ByteBuf input) {
         ActionBuilder builder = new ActionBuilder();
-        input.skipBytes(ExtConstants.SIZE_OF_SHORT_IN_BYTES);
+        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         builder.setType(Experimenter.class);
-        input.skipBytes(ExtConstants.SIZE_OF_SHORT_IN_BYTES);
+        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         ExperimenterActionBuilder expBuilder = new ExperimenterActionBuilder();
         expBuilder.setExperimenter(input.readUnsignedInt());
         builder.addAugmentation(ExperimenterAction.class, expBuilder.build());
@@ -41,11 +41,11 @@ public class OF13ExperimenterActionDeserializer implements OFDeserializer<Action
     @Override
     public Action deserialize(ByteBuf input) {
         ActionBuilder builder = new ActionBuilder();
-        input.skipBytes(ExtConstants.SIZE_OF_SHORT_IN_BYTES);
+        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         builder.setType(Experimenter.class);
         int length = input.readUnsignedShort();
         // subtract experimenter header length
-        length -= ExtConstants.EXPERIMENTER_IDS_LENGTH;
+        length -= EncodeConstants.EXPERIMENTER_IDS_LENGTH;
         ExperimenterActionBuilder expBuilder = new ExperimenterActionBuilder();
         expBuilder.setExperimenter(input.readUnsignedInt());
         if (length > 0) {

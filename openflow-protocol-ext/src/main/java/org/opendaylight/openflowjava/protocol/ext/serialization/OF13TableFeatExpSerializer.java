@@ -11,8 +11,7 @@ package org.opendaylight.openflowjava.protocol.ext.serialization;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.protocol.ext.util.ExtBufferUtils;
-import org.opendaylight.openflowjava.protocol.ext.util.ExtConstants;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableFeaturesPropType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.grouping.TableFeatureProperties;
@@ -35,7 +34,7 @@ public class OF13TableFeatExpSerializer implements OFSerializer<TableFeatureProp
             outBuffer.writeShort(EXPERIMENTER_MISS_CODE);
         }
         int lengthIndex = outBuffer.writerIndex();
-        outBuffer.writeShort(ExtConstants.EMPTY_LENGTH);
+        outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
         ExperimenterRelatedTableFeatureProperty exp = property.
                 getAugmentation(ExperimenterRelatedTableFeatureProperty.class);
         outBuffer.writeInt(exp.getExperimenter().intValue());
@@ -44,10 +43,10 @@ public class OF13TableFeatExpSerializer implements OFSerializer<TableFeatureProp
         if (data != null) {
             outBuffer.writeBytes(data);
         }
-        int paddingRemainder = (outBuffer.writerIndex() - startIndex) % ExtConstants.PADDING;
+        int paddingRemainder = (outBuffer.writerIndex() - startIndex) % EncodeConstants.PADDING;
         if (paddingRemainder != 0) {
-            int padding = ExtConstants.PADDING - paddingRemainder;
-            ExtBufferUtils.padBuffer(padding, outBuffer);
+            int padding = EncodeConstants.PADDING - paddingRemainder;
+            outBuffer.writeZero(padding);
         }
         outBuffer.setShort(lengthIndex, outBuffer.writerIndex() - startIndex);
     }
