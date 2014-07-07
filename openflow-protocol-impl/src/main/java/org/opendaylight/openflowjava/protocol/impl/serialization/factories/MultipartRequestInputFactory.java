@@ -340,50 +340,38 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
 
     private void writeInstructionRelatedTableProperty(final ByteBuf output,
             final TableFeatureProperties property, final byte code) {
+        int startIndex = output.writerIndex();
         output.writeShort(code);
+        int lengthIndex = output.writerIndex();
+        output.writeShort(EncodeConstants.EMPTY_LENGTH);
         List<Instruction> instructions = property.
                 getAugmentation(InstructionRelatedTableFeatureProperty.class).getInstruction();
-        int length = TABLE_FEAT_HEADER_LENGTH;
-        int padding = 0;
         if (instructions != null) {
-            for (Instruction instruction : instructions) {
-                if (instruction.getType().isAssignableFrom(Experimenter.class)) {
-                    length += EncodeConstants.EXPERIMENTER_IDS_LENGTH;
-                } else {
-                    length += STRUCTURE_HEADER_LENGTH;
-                }
-            }
-            padding = paddingNeeded(length);
-            output.writeShort(length);
             EnhancedTypeKeyMaker<Instruction> keyMaker = EnhancedTypeKeyMakerFactory
                     .createInstructionKeyMaker(EncodeConstants.OF13_VERSION_ID);
             ListSerializer.serializeHeaderList(instructions, keyMaker, registry, output);
-        } else {
-            padding = paddingNeeded(length);
-            output.writeShort(length);
         }
-        output.writeZero(padding);
+        int length = output.writerIndex() - startIndex;
+        output.setShort(lengthIndex, length);
+        ByteBufUtils.padBuffer(paddingNeeded(length), output);
     }
 
     private static void writeNextTableRelatedTableProperty(final ByteBuf output,
             final TableFeatureProperties property, final byte code) {
+        int startIndex = output.writerIndex();
         output.writeShort(code);
+        int lengthIndex = output.writerIndex();
+        output.writeShort(EncodeConstants.EMPTY_LENGTH);
         List<NextTableIds> nextTableIds = property.
                 getAugmentation(NextTableRelatedTableFeatureProperty.class).getNextTableIds();
-        int length = TABLE_FEAT_HEADER_LENGTH;
-        int padding = 0;
         if (nextTableIds != null) {
-            length += nextTableIds.size();
-            padding = paddingNeeded(length);
-            output.writeShort(length);
             for (NextTableIds next : nextTableIds) {
                 output.writeByte(next.getTableId());
             }
-        } else {
-            padding = paddingNeeded(length);
-            output.writeShort(length + padding);
         }
-        output.writeZero(padding);
+        int length = output.writerIndex() - startIndex;
+        output.setShort(lengthIndex, length);
+        ByteBufUtils.padBuffer(paddingNeeded(length), output);
     }
 
     private static int paddingNeeded(final int length) {
@@ -397,63 +385,45 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
 
     private void writeActionsRelatedTableProperty(final ByteBuf output,
             final TableFeatureProperties property, final byte code) {
+        int startIndex = output.writerIndex();
         output.writeShort(code);
+        int lengthIndex = output.writerIndex();
+        output.writeShort(EncodeConstants.EMPTY_LENGTH);
         List<Action> actions = property.
                 getAugmentation(ActionRelatedTableFeatureProperty.class).getAction();
-        int length = TABLE_FEAT_HEADER_LENGTH;
-        int padding = 0;
         if (actions != null) {
-            for (Action action : actions) {
-                if (action.getType().isAssignableFrom(Experimenter.class)) {
-                    length += EncodeConstants.EXPERIMENTER_IDS_LENGTH;
-                } else {
-                    length += STRUCTURE_HEADER_LENGTH;
-                }
-            }
-            length += actions.size() * STRUCTURE_HEADER_LENGTH;
-            padding += paddingNeeded(length);
-            output.writeShort(length);
             EnhancedTypeKeyMaker<Action> keyMaker = EnhancedTypeKeyMakerFactory
                     .createActionKeyMaker(EncodeConstants.OF13_VERSION_ID);
             ListSerializer.serializeHeaderList(actions, keyMaker, registry, output);
-        } else {
-            padding = paddingNeeded(length);
-            output.writeShort(length);
         }
-        output.writeZero(padding);
+        int length = output.writerIndex() - startIndex;
+        output.setShort(lengthIndex, length);
+        ByteBufUtils.padBuffer(paddingNeeded(length), output);
     }
 
     private void writeOxmRelatedTableProperty(final ByteBuf output,
             final TableFeatureProperties property, final byte code) {
+        int startIndex = output.writerIndex();
         output.writeShort(code);
+        int lengthIndex = output.writerIndex();
+        output.writeShort(EncodeConstants.EMPTY_LENGTH);
         List<MatchEntries> entries = property.
                 getAugmentation(OxmRelatedTableFeatureProperty.class).getMatchEntries();
-        int length = TABLE_FEAT_HEADER_LENGTH;
-        int padding = 0;
         if (entries != null) {
-            // experimenter length / definition ?
-            length += entries.size() * STRUCTURE_HEADER_LENGTH;
-            padding = paddingNeeded(length);
-            output.writeShort(length);
-
-            for (MatchEntries entry : entries) {
-                HeaderSerializer<MatchEntries> entrySerializer = registry.getSerializer(
-                        new EnhancedMessageTypeKey<>(EncodeConstants.OF13_VERSION_ID,
-                                entry.getOxmClass(), entry.getOxmMatchField()));
-                entrySerializer.serializeHeader(entry, output);
-            }
-        } else {
-            padding = paddingNeeded(length);
-            output.writeShort(length);
+            EnhancedTypeKeyMaker<MatchEntries> keyMaker = EnhancedTypeKeyMakerFactory
+                    .createMatchEntriesKeyMaker(EncodeConstants.OF13_VERSION_ID);
+            ListSerializer.serializeHeaderList(entries, keyMaker, registry, output);
         }
-        output.writeZero(padding);
+        int length = output.writerIndex() - startIndex;
+        output.setShort(lengthIndex, length);
+        ByteBufUtils.padBuffer(paddingNeeded(length), output);
     }
 
     private void writeExperimenterRelatedTableProperty(final ByteBuf output,
             final TableFeatureProperties property) {
-    	OFSerializer<TableFeatureProperties> serializer = registry.getSerializer(
-    			new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, TableFeatureProperties.class));
-    	serializer.serialize(property, output);
+        OFSerializer<TableFeatureProperties> serializer = registry.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, TableFeatureProperties.class));
+        serializer.serialize(property, output);
     }
 
     private static int createTableConfigBitmask(final TableConfig tableConfig) {
