@@ -12,30 +12,25 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.List;
 
-import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
-import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.ListSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMaker;
 import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMakerFactory;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeatureProperty;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.NextTableRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OxmRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.table.features.properties.container.table.feature.properties.NextTableIds;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.Experimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableFeaturesPropType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ExperimenterClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInput;
@@ -75,7 +70,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class MultipartRequestInputFactory implements OFSerializer<MultipartRequestInput>, SerializerRegistryInjector {
     private static final byte MESSAGE_TYPE = 18;
     private static final byte PADDING_IN_MULTIPART_REQUEST_MESSAGE = 4;
-    private static final byte TABLE_FEAT_HEADER_LENGTH = 4;
     private static final byte INSTRUCTIONS_CODE = 0;
     private static final byte INSTRUCTIONS_MISS_CODE = 1;
     private static final byte NEXT_TABLE_CODE = 2;
@@ -342,50 +336,38 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
 
     private void writeInstructionRelatedTableProperty(final ByteBuf output,
             final TableFeatureProperties property, final byte code) {
+        int startIndex = output.writerIndex();
         output.writeShort(code);
+        int lengthIndex = output.writerIndex();
+        output.writeShort(EncodeConstants.EMPTY_LENGTH);
         List<Instruction> instructions = property.
                 getAugmentation(InstructionRelatedTableFeatureProperty.class).getInstruction();
-        int length = TABLE_FEAT_HEADER_LENGTH;
-        int padding = 0;
         if (instructions != null) {
-            for (Instruction instruction : instructions) {
-                if (instruction.getType().isAssignableFrom(Experimenter.class)) {
-                    length += EncodeConstants.EXPERIMENTER_IDS_LENGTH;
-                } else {
-                    length += STRUCTURE_HEADER_LENGTH;
-                }
-            }
-            padding = paddingNeeded(length);
-            output.writeShort(length);
             TypeKeyMaker<Instruction> keyMaker = TypeKeyMakerFactory
                     .createInstructionKeyMaker(EncodeConstants.OF13_VERSION_ID);
             ListSerializer.serializeHeaderList(instructions, keyMaker, registry, output);
-        } else {
-            padding = paddingNeeded(length);
-            output.writeShort(length);
         }
-        output.writeZero(padding);
+        int length = output.writerIndex() - startIndex;
+        output.setShort(lengthIndex, length);
+        output.writeZero(paddingNeeded(length));
     }
 
     private static void writeNextTableRelatedTableProperty(final ByteBuf output,
             final TableFeatureProperties property, final byte code) {
+        int startIndex = output.writerIndex();
         output.writeShort(code);
+        int lengthIndex = output.writerIndex();
+        output.writeShort(EncodeConstants.EMPTY_LENGTH);
         List<NextTableIds> nextTableIds = property.
                 getAugmentation(NextTableRelatedTableFeatureProperty.class).getNextTableIds();
-        int length = TABLE_FEAT_HEADER_LENGTH;
-        int padding = 0;
         if (nextTableIds != null) {
-            length += nextTableIds.size();
-            padding = paddingNeeded(length);
-            output.writeShort(length);
             for (NextTableIds next : nextTableIds) {
                 output.writeByte(next.getTableId());
             }
-        } else {
-            padding = paddingNeeded(length);
-            output.writeShort(length + padding);
         }
-        output.writeZero(padding);
+        int length = output.writerIndex() - startIndex;
+        output.setShort(lengthIndex, length);
+        output.writeZero(paddingNeeded(length));
     }
 
     private static int paddingNeeded(final int length) {
@@ -399,69 +381,45 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
 
     private void writeActionsRelatedTableProperty(final ByteBuf output,
             final TableFeatureProperties property, final byte code) {
+        int startIndex = output.writerIndex();
         output.writeShort(code);
+        int lengthIndex = output.writerIndex();
+        output.writeShort(EncodeConstants.EMPTY_LENGTH);
         List<Action> actions = property.
                 getAugmentation(ActionRelatedTableFeatureProperty.class).getAction();
-        int length = TABLE_FEAT_HEADER_LENGTH;
-        int padding = 0;
         if (actions != null) {
-            for (Action action : actions) {
-                if (action.getType().isAssignableFrom(Experimenter.class)) {
-                    length += EncodeConstants.EXPERIMENTER_IDS_LENGTH;
-                } else {
-                    length += STRUCTURE_HEADER_LENGTH;
-                }
-            }
-            length += actions.size() * STRUCTURE_HEADER_LENGTH;
-            padding += paddingNeeded(length);
-            output.writeShort(length);
             TypeKeyMaker<Action> keyMaker = TypeKeyMakerFactory
                     .createActionKeyMaker(EncodeConstants.OF13_VERSION_ID);
             ListSerializer.serializeHeaderList(actions, keyMaker, registry, output);
-        } else {
-            padding = paddingNeeded(length);
-            output.writeShort(length);
         }
-        output.writeZero(padding);
+        int length = output.writerIndex() - startIndex;
+        output.setShort(lengthIndex, length);
+        output.writeZero(paddingNeeded(length));
     }
 
     private void writeOxmRelatedTableProperty(final ByteBuf output,
             final TableFeatureProperties property, final byte code) {
+        int startIndex = output.writerIndex();
         output.writeShort(code);
+        int lengthIndex = output.writerIndex();
+        output.writeShort(EncodeConstants.EMPTY_LENGTH);
         List<MatchEntries> entries = property.
                 getAugmentation(OxmRelatedTableFeatureProperty.class).getMatchEntries();
-        int length = TABLE_FEAT_HEADER_LENGTH;
-        int padding = 0;
         if (entries != null) {
-            // experimenter length / definition ?
-            length += entries.size() * STRUCTURE_HEADER_LENGTH;
-            padding = paddingNeeded(length);
-            output.writeShort(length);
-
-            for (MatchEntries entry : entries) {
-                MatchEntrySerializerKey<?, ?> key = new MatchEntrySerializerKey<>(
-                        EncodeConstants.OF13_VERSION_ID, entry.getOxmClass(), entry.getOxmMatchField());
-                if (entry.getOxmClass().equals(ExperimenterClass.class)) {
-                    key.setExperimenterId(entry.getAugmentation(ExperimenterIdMatchEntry.class)
-                            .getExperimenter().getValue());
-                } else {
-                    key.setExperimenterId(null);
-                }
-                HeaderSerializer<MatchEntries> entrySerializer = registry.getSerializer(key);
-                entrySerializer.serializeHeader(entry, output);
-            }
-        } else {
-            padding = paddingNeeded(length);
-            output.writeShort(length);
+            TypeKeyMaker<MatchEntries> keyMaker = TypeKeyMakerFactory
+                    .createMatchEntriesKeyMaker(EncodeConstants.OF13_VERSION_ID);
+            ListSerializer.serializeHeaderList(entries, keyMaker, registry, output);
         }
-        output.writeZero(padding);
+        int length = output.writerIndex() - startIndex;
+        output.setShort(lengthIndex, length);
+        output.writeZero(paddingNeeded(length));
     }
 
     private void writeExperimenterRelatedTableProperty(final ByteBuf output,
             final TableFeatureProperties property) {
-    	OFSerializer<TableFeatureProperties> serializer = registry.getSerializer(
-    			new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, TableFeatureProperties.class));
-    	serializer.serialize(property, output);
+        OFSerializer<TableFeatureProperties> serializer = registry.getSerializer(
+                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, TableFeatureProperties.class));
+        serializer.serialize(property, output);
     }
 
     private static int createTableConfigBitmask(final TableConfig tableConfig) {
