@@ -11,8 +11,8 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.HelloElementType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.hello.Elements;
@@ -43,7 +43,7 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
                     }
                     int length = output.writerIndex() - elementStartIndex;
                     int padding = length - versionBitmap.length * 4 - HELLO_ELEMENT_HEADER_SIZE;
-                    ByteBufUtils.padBuffer(padding , output);
+                    output.writeZero(padding);
                     output.setShort(elementLengthIndex, output.writerIndex() - elementStartIndex);
                 }
             } 
@@ -58,7 +58,7 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
         int endWriterIndex = outBuffer.writerIndex();
         int paddingRemainder = (endWriterIndex - startWriterIndex) % EncodeConstants.PADDING;
         if (paddingRemainder != 0) {
-            ByteBufUtils.padBuffer(EncodeConstants.PADDING - paddingRemainder, outBuffer);
+            outBuffer.writeZero(EncodeConstants.PADDING - paddingRemainder);
         }
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }

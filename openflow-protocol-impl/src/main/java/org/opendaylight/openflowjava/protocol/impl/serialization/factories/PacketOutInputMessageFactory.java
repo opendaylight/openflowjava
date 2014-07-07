@@ -38,7 +38,7 @@ public class PacketOutInputMessageFactory implements OFSerializer<PacketOutInput
         outBuffer.writeInt(message.getInPort().getValue().intValue());
         int actionsLengthIndex = outBuffer.writerIndex();
         outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
-        ByteBufUtils.padBuffer(PADDING_IN_PACKET_OUT_MESSAGE, outBuffer);
+        outBuffer.writeZero(PADDING_IN_PACKET_OUT_MESSAGE);
         int actionsStartIndex = outBuffer.writerIndex();
         ListSerializer.serializeList(message.getAction(), EnhancedTypeKeyMakerFactory
                 .createActionKeyMaker(EncodeConstants.OF13_VERSION_ID), registry, outBuffer);

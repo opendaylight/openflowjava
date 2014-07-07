@@ -30,7 +30,7 @@ public class RoleRequestInputMessageFactory implements OFSerializer<RoleRequestI
     public void serialize(RoleRequestInput message, ByteBuf outBuffer) {
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeInt(message.getRole().getIntValue());
-        ByteBufUtils.padBuffer(PADDING_IN_ROLE_REQUEST_MESSAGE, outBuffer);
+        outBuffer.writeZero(PADDING_IN_ROLE_REQUEST_MESSAGE);
         outBuffer.writeLong(message.getGenerationId().longValue());
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }

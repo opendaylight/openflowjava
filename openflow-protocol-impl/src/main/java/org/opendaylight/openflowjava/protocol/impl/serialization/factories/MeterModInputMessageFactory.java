@@ -16,8 +16,8 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterBandCommons;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterModInput;
@@ -70,13 +70,13 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput>,
                     MeterBandDropCase dropBandCase = (MeterBandDropCase) meterBand;
                     MeterBandDrop dropBand = dropBandCase.getMeterBandDrop();
                     writeBandCommonFields(dropBand, outBuffer);
-                    ByteBufUtils.padBuffer(PADDING_IN_METER_BAND_DROP, outBuffer);
+                    outBuffer.writeZero(PADDING_IN_METER_BAND_DROP);
                 } else if (meterBand instanceof MeterBandDscpRemarkCase) {
                     MeterBandDscpRemarkCase dscpRemarkBandCase = (MeterBandDscpRemarkCase) meterBand;
                     MeterBandDscpRemark dscpRemarkBand = dscpRemarkBandCase.getMeterBandDscpRemark();
                     writeBandCommonFields(dscpRemarkBand, outBuffer);
                     outBuffer.writeByte(dscpRemarkBand.getPrecLevel());
-                    ByteBufUtils.padBuffer(PADDING_IN_METER_BAND_DSCP_REMARK, outBuffer);
+                    outBuffer.writeZero(PADDING_IN_METER_BAND_DSCP_REMARK);
                 } else if (meterBand instanceof MeterBandExperimenterCase) {
                     OFSerializer<MeterBandExperimenter> serializer = registry.getSerializer(
                             new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, MeterBandExperimenter.class));

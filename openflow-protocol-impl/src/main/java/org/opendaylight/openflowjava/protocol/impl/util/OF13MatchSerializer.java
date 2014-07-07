@@ -14,10 +14,9 @@ import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.EnhancedMessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.StandardMatchType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmMatchType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
@@ -52,7 +51,7 @@ public class OF13MatchSerializer implements OFSerializer<Match>, SerializerRegis
         outBuffer.setShort(matchLengthIndex, matchLength);
         int paddingRemainder = matchLength % EncodeConstants.PADDING;
         if (paddingRemainder != 0) {
-            ByteBufUtils.padBuffer(EncodeConstants.PADDING - paddingRemainder, outBuffer);
+            outBuffer.writeZero(EncodeConstants.PADDING - paddingRemainder);
         }
     }
 

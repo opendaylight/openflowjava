@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMaker;
 import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMakerFactory;
@@ -44,13 +43,13 @@ public abstract class AbstractActionInstructionSerializer extends AbstractInstru
             List<Action> actions = instruction.getAugmentation(ActionsInstruction.class).getAction();
             int lengthIndex = outBuffer.writerIndex();
             outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
-            ByteBufUtils.padBuffer(InstructionConstants.PADDING_IN_ACTIONS_INSTRUCTION, outBuffer);
+            outBuffer.writeZero(InstructionConstants.PADDING_IN_ACTIONS_INSTRUCTION);
             ListSerializer.serializeList(actions, ACTION_KEY_MAKER, getRegistry(), outBuffer);
             int instructionLength = outBuffer.writerIndex() - startIndex;
             outBuffer.setShort(lengthIndex, instructionLength);
         } else {
             outBuffer.writeShort(InstructionConstants.STANDARD_INSTRUCTION_LENGTH);
-            ByteBufUtils.padBuffer(InstructionConstants.PADDING_IN_ACTIONS_INSTRUCTION, outBuffer);
+            outBuffer.writeZero(InstructionConstants.PADDING_IN_ACTIONS_INSTRUCTION);
         }
     }
 

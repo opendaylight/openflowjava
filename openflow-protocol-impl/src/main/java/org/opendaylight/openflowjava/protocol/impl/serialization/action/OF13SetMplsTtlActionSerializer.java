@@ -11,7 +11,6 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.action;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MplsTtlAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 
@@ -28,7 +27,7 @@ public class OF13SetMplsTtlActionSerializer extends AbstractActionSerializer {
         super.serialize(action, outBuffer);
         MplsTtlAction mplsTtl = action.getAugmentation(MplsTtlAction.class);
         outBuffer.writeByte(mplsTtl.getMplsTtl());
-        ByteBufUtils.padBuffer(ActionConstants.SET_MPLS_TTL_PADDING, outBuffer);
+        outBuffer.writeZero(ActionConstants.SET_MPLS_TTL_PADDING);
     }
 
     @Override

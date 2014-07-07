@@ -11,7 +11,6 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.action;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 
 /**
@@ -23,7 +22,7 @@ public abstract class AbstractHeaderActionSerializer extends AbstractActionSeria
     @Override
     public void serialize(Action action, ByteBuf outBuffer) {
         super.serialize(action, outBuffer);
-        ByteBufUtils.padBuffer(ActionConstants.PADDING_IN_ACTION_HEADER, outBuffer);
+        outBuffer.writeZero(ActionConstants.PADDING_IN_ACTION_HEADER);
     }
 
     @Override

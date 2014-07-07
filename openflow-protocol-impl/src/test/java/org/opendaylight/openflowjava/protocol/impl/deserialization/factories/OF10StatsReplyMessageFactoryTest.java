@@ -17,10 +17,9 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidAction;
@@ -74,31 +73,31 @@ public class OF10StatsReplyMessageFactoryTest {
         byte[] mfrDescBytes = new byte[256];
         mfrDescBytes = mfrDesc.getBytes();
         bb.writeBytes(mfrDescBytes);
-        ByteBufUtils.padBuffer((DESC_STR_LEN - mfrDescBytes.length), bb);
+        bb.writeZero(DESC_STR_LEN - mfrDescBytes.length);
         
         String hwDesc = "Hardware description";
         byte[] hwDescBytes = new byte[256];
         hwDescBytes = hwDesc.getBytes();
         bb.writeBytes(hwDescBytes);
-        ByteBufUtils.padBuffer((DESC_STR_LEN - hwDescBytes.length), bb);
+        bb.writeZero(DESC_STR_LEN - hwDescBytes.length);
         
         String swDesc = "Software description";
         byte[] swDescBytes = new byte[256];
         swDescBytes = swDesc.getBytes();
         bb.writeBytes(swDescBytes);
-        ByteBufUtils.padBuffer((DESC_STR_LEN - swDescBytes.length), bb);
+        bb.writeZero(DESC_STR_LEN - swDescBytes.length);
         
         String serialNum = "SN0123456789";
         byte[] serialNumBytes = new byte[32];
         serialNumBytes = serialNum.getBytes();
         bb.writeBytes(serialNumBytes);
-        ByteBufUtils.padBuffer((SERIAL_NUM_LEN - serialNumBytes.length), bb);
+        bb.writeZero(SERIAL_NUM_LEN - serialNumBytes.length);
         
         String dpDesc = "switch3 in room 3120";
         byte[] dpDescBytes = new byte[256];
         dpDescBytes = dpDesc.getBytes();
         bb.writeBytes(dpDescBytes);
-        ByteBufUtils.padBuffer((DESC_STR_LEN - dpDescBytes.length), bb);
+        bb.writeZero(DESC_STR_LEN - dpDescBytes.length);
         
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(statsFactory, bb);
         

@@ -11,7 +11,6 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.action;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthertypeAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 
@@ -26,7 +25,7 @@ public abstract class AbstractEthertypeActionSerializer extends AbstractActionSe
         super.serialize(action, outBuffer);
         EthertypeAction ethertype = action.getAugmentation(EthertypeAction.class);
         outBuffer.writeShort(ethertype.getEthertype().getValue());
-        ByteBufUtils.padBuffer(ActionConstants.ETHERTYPE_ACTION_PADDING, outBuffer);
+        outBuffer.writeZero(ActionConstants.ETHERTYPE_ACTION_PADDING);
     }
 
     @Override

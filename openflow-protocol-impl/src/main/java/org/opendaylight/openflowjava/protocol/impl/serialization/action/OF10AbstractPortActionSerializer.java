@@ -11,7 +11,6 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.action;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 
@@ -26,6 +25,6 @@ public abstract class OF10AbstractPortActionSerializer extends AbstractActionSer
         super.serialize(action, outBuffer);
         PortAction port = action.getAugmentation(PortAction.class);
         outBuffer.writeShort(port.getPort().getValue().intValue());
-        ByteBufUtils.padBuffer(ActionConstants.PADDING_IN_TP_PORT_ACTION, outBuffer);
+        outBuffer.writeZero(ActionConstants.PADDING_IN_TP_PORT_ACTION);
     }
 }

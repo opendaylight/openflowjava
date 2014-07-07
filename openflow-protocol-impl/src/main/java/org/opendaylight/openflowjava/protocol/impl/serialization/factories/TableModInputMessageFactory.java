@@ -29,7 +29,7 @@ public class TableModInputMessageFactory implements OFSerializer<TableModInput> 
     public void serialize(final TableModInput message, final ByteBuf outBuffer) {
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeByte(message.getTableId().getValue().byteValue());
-        ByteBufUtils.padBuffer(PADDING_IN_TABLE_MOD_MESSAGE, outBuffer);
+        outBuffer.writeZero(PADDING_IN_TABLE_MOD_MESSAGE);
         outBuffer.writeInt(createConfigBitmask(message.getConfig()));
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }

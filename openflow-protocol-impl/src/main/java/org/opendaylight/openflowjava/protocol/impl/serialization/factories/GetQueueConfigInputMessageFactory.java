@@ -11,8 +11,8 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetQueueConfigInput;
 
 /**
@@ -29,7 +29,7 @@ public class GetQueueConfigInputMessageFactory implements OFSerializer<GetQueueC
     public void serialize(GetQueueConfigInput message, ByteBuf outBuffer) {
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeInt(message.getPort().getValue().intValue());
-        ByteBufUtils.padBuffer(PADDING_IN_GET_QUEUE_CONFIG_MESSAGE, outBuffer);
+        outBuffer.writeZero(PADDING_IN_GET_QUEUE_CONFIG_MESSAGE);
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
