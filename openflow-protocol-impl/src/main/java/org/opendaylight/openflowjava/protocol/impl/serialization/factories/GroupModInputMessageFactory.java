@@ -15,10 +15,10 @@ import java.util.List;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMakerFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.ListSerializer;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GroupModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.buckets.grouping.BucketsList;
 
@@ -38,7 +38,7 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupModInput>,
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeShort(message.getCommand().getIntValue());
         outBuffer.writeByte(message.getType().getIntValue());
-        ByteBufUtils.padBuffer(PADDING_IN_GROUP_MOD_MESSAGE, outBuffer);
+        outBuffer.writeZero(PADDING_IN_GROUP_MOD_MESSAGE);
         outBuffer.writeInt(message.getGroupId().getValue().intValue());
         serializerBuckets(message.getBucketsList(), outBuffer);
         ByteBufUtils.updateOFHeaderLength(outBuffer);
@@ -52,7 +52,7 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupModInput>,
                 outBuffer.writeShort(currentBucket.getWeight().shortValue());
                 outBuffer.writeInt(currentBucket.getWatchPort().getValue().intValue());
                 outBuffer.writeInt(currentBucket.getWatchGroup().intValue());
-                ByteBufUtils.padBuffer(PADDING_IN_BUCKET, outBuffer);
+                outBuffer.writeZero(PADDING_IN_BUCKET);
                 ListSerializer.serializeList(currentBucket.getAction(), TypeKeyMakerFactory
                         .createActionKeyMaker(EncodeConstants.OF13_VERSION_ID), registry, outBuffer);
                 outBuffer.setShort(bucketLengthIndex, outBuffer.writerIndex() - bucketLengthIndex);

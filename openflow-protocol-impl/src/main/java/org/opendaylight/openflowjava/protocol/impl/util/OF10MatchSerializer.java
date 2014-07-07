@@ -39,11 +39,11 @@ public class OF10MatchSerializer implements OFSerializer<MatchV10> {
         outBuffer.writeBytes(ByteBufUtils.macAddressToBytes(match.getDlDst().getValue()));
         outBuffer.writeShort(match.getDlVlan());
         outBuffer.writeByte(match.getDlVlanPcp());
-        ByteBufUtils.padBuffer(PADDING_IN_MATCH, outBuffer);
+        outBuffer.writeZero(PADDING_IN_MATCH);
         outBuffer.writeShort(match.getDlType());
         outBuffer.writeByte(match.getNwTos());
         outBuffer.writeByte(match.getNwProto());
-        ByteBufUtils.padBuffer(PADDING_IN_MATCH_2, outBuffer);
+        outBuffer.writeZero(PADDING_IN_MATCH_2);
         Iterable<String> srcGroups = ByteBufUtils.DOT_SPLITTER.split(match.getNwSrc().getValue());
         for (String group : srcGroups) {
             outBuffer.writeByte(Short.parseShort(group));

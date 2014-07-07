@@ -26,7 +26,7 @@ public abstract class OF10AbstractMacAddressActionSerializer extends AbstractAct
         super.serialize(action, outBuffer);
         outBuffer.writeBytes(ByteBufUtils.macAddressToBytes(action
                 .getAugmentation(DlAddressAction.class).getDlAddress().getValue()));
-        ByteBufUtils.padBuffer(ActionConstants.PADDING_IN_DL_ADDRESS_ACTION, outBuffer);
+        outBuffer.writeZero(ActionConstants.PADDING_IN_DL_ADDRESS_ACTION);
     }
 
 }

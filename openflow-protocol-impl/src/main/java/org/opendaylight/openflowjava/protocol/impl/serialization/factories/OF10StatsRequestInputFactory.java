@@ -99,7 +99,7 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
                 EncodeConstants.OF10_VERSION_ID, MatchV10.class));
         matchSerializer.serialize(flow.getMatchV10(), output);
         output.writeByte(flow.getTableId().shortValue());
-        ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_FLOW_BODY, output);
+        output.writeZero(PADDING_IN_MULTIPART_REQUEST_FLOW_BODY);
         output.writeShort(flow.getOutPort().intValue());
     }
 
@@ -110,7 +110,7 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
                 EncodeConstants.OF10_VERSION_ID, MatchV10.class));
         matchSerializer.serialize(aggregate.getMatchV10(), output);
         output.writeByte(aggregate.getTableId().shortValue());
-        ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_AGGREGATE_BODY, output);
+        output.writeZero(PADDING_IN_MULTIPART_REQUEST_AGGREGATE_BODY);
         output.writeShort(aggregate.getOutPort().intValue());
     }
 
@@ -118,14 +118,14 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
         MultipartRequestPortStatsCase portstatsCase = (MultipartRequestPortStatsCase) multipartRequestBody;
         MultipartRequestPortStats portstats = portstatsCase.getMultipartRequestPortStats();
         output.writeShort(portstats.getPortNo().intValue());
-        ByteBufUtils.padBuffer(PADDING_IN_MULTIPART_REQUEST_PORT_BODY, output);
+        output.writeZero(PADDING_IN_MULTIPART_REQUEST_PORT_BODY);
     }
 
     private static void serializeQueueBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output) {
         MultipartRequestQueueCase queueCase = (MultipartRequestQueueCase) multipartRequestBody;
         MultipartRequestQueue queue = queueCase.getMultipartRequestQueue();
         output.writeShort(queue.getPortNo().intValue());
-        ByteBufUtils.padBuffer(PADING_IN_QUEUE_BODY, output);
+        output.writeZero(PADING_IN_QUEUE_BODY);
         output.writeInt(queue.getQueueId().intValue());
     }
 

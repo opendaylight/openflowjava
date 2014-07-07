@@ -10,7 +10,6 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.instruction;
 
 import io.netty.buffer.ByteBuf;
 
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.impl.util.InstructionConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.TableIdInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
@@ -26,7 +25,7 @@ public class GoToTableInstructionSerializer extends AbstractInstructionSerialize
         outBuffer.writeShort(getType());
         outBuffer.writeShort(InstructionConstants.STANDARD_INSTRUCTION_LENGTH);
         outBuffer.writeByte(instruction.getAugmentation(TableIdInstruction.class).getTableId());
-        ByteBufUtils.padBuffer(InstructionConstants.PADDING_IN_GOTO_TABLE, outBuffer);
+        outBuffer.writeZero(InstructionConstants.PADDING_IN_GOTO_TABLE);
     }
 
     @Override

@@ -28,7 +28,7 @@ public class OF10QueueGetConfigInputMessageFactory implements OFSerializer<GetQu
     public void serialize(GetQueueConfigInput message, ByteBuf outBuffer) {
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeShort(message.getPort().getValue().intValue());
-        ByteBufUtils.padBuffer(PADDING_IN_GET_QUEUE_CONFIG_MESSAGE, outBuffer);
+        outBuffer.writeZero(PADDING_IN_GET_QUEUE_CONFIG_MESSAGE);
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 

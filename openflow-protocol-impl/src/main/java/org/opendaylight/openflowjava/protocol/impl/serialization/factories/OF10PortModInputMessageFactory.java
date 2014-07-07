@@ -34,7 +34,7 @@ public class OF10PortModInputMessageFactory implements OFSerializer<PortModInput
         outBuffer.writeInt(createPortConfigBitmask(message.getConfigV10()));
         outBuffer.writeInt(createPortConfigBitmask(message.getMaskV10()));
         outBuffer.writeInt(createPortFeaturesBitmask(message.getAdvertiseV10()));
-        ByteBufUtils.padBuffer(PADDING_IN_PORT_MOD_MESSAGE, outBuffer);
+        outBuffer.writeZero(PADDING_IN_PORT_MOD_MESSAGE);
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 

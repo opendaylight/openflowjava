@@ -11,7 +11,6 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.action;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanPcpAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 
@@ -25,7 +24,7 @@ public class OF10SetVlanPcpActionSerializer extends AbstractActionSerializer {
     public void serialize(Action action, ByteBuf outBuffer) {
         super.serialize(action, outBuffer);
         outBuffer.writeByte(action.getAugmentation(VlanPcpAction.class).getVlanPcp());
-        ByteBufUtils.padBuffer(ActionConstants.PADDING_IN_SET_VLAN_PCP_ACTION, outBuffer);
+        outBuffer.writeZero(ActionConstants.PADDING_IN_SET_VLAN_PCP_ACTION);
     }
 
     @Override
