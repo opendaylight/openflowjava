@@ -33,7 +33,6 @@ public class SerializerRegistryImpl implements SerializerRegistry {
     private static final short OF13 = EncodeConstants.OF13_VERSION_ID;
     private Map<MessageTypeKey<?>, OFGeneralSerializer> registry;
 
-
     @Override
     public void init() {
         registry = new HashMap<>();
