@@ -13,6 +13,7 @@
         <module>openflow-protocol-it</module>
         <module>feature</module>
         <module>simple-client</module>
+        <module>openflow-nx-resubmit-action</module>
     </modules>
     <scm>
         <connection>scm:git:ssh://git.opendaylight.org:29418/openflowjava.git</connection>
