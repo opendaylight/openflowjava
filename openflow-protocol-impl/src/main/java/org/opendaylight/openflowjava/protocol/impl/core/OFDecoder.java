@@ -48,14 +48,15 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
         } catch(Exception e) {
             LOGGER.error("Message deserialization failed");
             LOGGER.error(e.getMessage(), e);
+            msg.getMessageBuffer().release();
             return;
         }
         if (dataObject == null) {
             LOGGER.warn("Translated POJO is null");
-            return;
+        } else {
+            out.add(dataObject);
         }
         msg.getMessageBuffer().release();
-        out.add(dataObject);
     }
 
     /**
