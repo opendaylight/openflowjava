@@ -1,0 +1,45 @@
+/*
+ * Copyright (c) 2014 Pantheon Technologies s.r.o. and others. All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+
+module openflow-nx-resubmit-action {
+	yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:openflow:nx:resubmit:action";
+    prefix "openflow-nx-resubmit-action";
+
+    import config {prefix config; revision-date 2013-04-05;}
+    import openflow-switch-connection-provider {prefix openflow-switch-connection-provider;revision-date 2014-03-28;}
+
+
+    description
+        "openflow library default exemplary package";
+
+    revision "2014-07-09" {
+        description
+            "Initial revision";
+    }
+
+    identity openflow-nx-resubmit-action {
+        base config:module-type;
+        config:java-name-prefix NxResubmitActionRegistrator;
+    }
+
+    augment "/config:modules/config:module/config:configuration" {
+        case openflow-nx-resubmit-action {
+            when "/config:modules/config:module/config:type = 'openflow-nx-resubmit-action'";
+
+            list openflow-switch-connection-provider {
+                uses config:service-ref {
+                    refine type {
+                        mandatory true;
+                        config:required-identity openflow-switch-connection-provider:openflow-switch-connection-provider;
+                    }
+                }
+            }
+        }
+    }
+}
