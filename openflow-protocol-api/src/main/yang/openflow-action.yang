@@ -92,6 +92,7 @@
     grouping actions-grouping {
         list action {
             config false;
+            ordered-by user;
             leaf type {
                 type identityref {
                     base oft:action-base;
