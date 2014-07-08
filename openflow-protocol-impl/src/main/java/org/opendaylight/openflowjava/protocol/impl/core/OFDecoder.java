@@ -38,8 +38,10 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
     @Override
     protected void decode(ChannelHandlerContext ctx, VersionMessageWrapper msg,
             List<Object> out) throws Exception {
-        LOGGER.debug("VersionMessageWrapper received");
-        LOGGER.debug("<< " + ByteBufUtils.byteBufToHexString(msg.getMessageBuffer()));
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("VersionMessageWrapper received");
+            LOGGER.debug("<< " + ByteBufUtils.byteBufToHexString(msg.getMessageBuffer()));
+        }
 
         DataObject dataObject = null;
         try {
