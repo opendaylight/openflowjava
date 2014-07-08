@@ -47,17 +47,19 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
         try {
             dataObject = deserializationFactory.deserialize(msg.getMessageBuffer(),
                     msg.getVersion());
+            if (dataObject == null) {
+                LOGGER.warn("Translated POJO is null");
+            } else {
+                out.add(dataObject);
+            }
         } catch(Exception e) {
             LOGGER.error("Message deserialization failed");
             LOGGER.error(e.getMessage(), e);
-            return;
+            // TODO: delegate exception to allow easier deserialization
+            // debugging / deserialization problem awareness
+        } finally {
+            msg.getMessageBuffer().release();
         }
-        if (dataObject == null) {
-            LOGGER.warn("Translated POJO is null");
-            return;
-        }
-        msg.getMessageBuffer().release();
-        out.add(dataObject);
     }
 
     /**

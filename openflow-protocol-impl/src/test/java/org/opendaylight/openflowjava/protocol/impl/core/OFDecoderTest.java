@@ -90,7 +90,7 @@ public class OFDecoderTest {
 
         // Verify that the message buf was released...
         assertEquals( 0, outList.size() ) ;
-        assertEquals( 1, writeObj.refCnt() ) ;
+        assertEquals( 0, writeObj.refCnt() ) ;
     }
 
     /**
@@ -109,6 +109,6 @@ public class OFDecoderTest {
 
         // Verify that the message buf was released...
         assertEquals( 0, outList.size() ) ;
-        assertEquals( 1, writeObj.refCnt() ) ;
+        assertEquals( 0, writeObj.refCnt() ) ;
     }
 }
