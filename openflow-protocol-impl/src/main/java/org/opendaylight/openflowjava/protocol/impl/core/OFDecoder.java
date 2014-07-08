@@ -52,10 +52,10 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
         }
         if (dataObject == null) {
             LOGGER.warn("Translated POJO is null");
-            return;
+        } else {
+            out.add(dataObject);
         }
         msg.getMessageBuffer().release();
-        out.add(dataObject);
     }
 
     /**
