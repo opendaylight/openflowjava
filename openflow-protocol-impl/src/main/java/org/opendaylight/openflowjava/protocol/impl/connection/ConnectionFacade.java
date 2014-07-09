@@ -9,12 +9,21 @@
 
 package org.opendaylight.openflowjava.protocol.impl.connection;
 
+import java.net.SocketAddress;
+
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionAdapter;
 
 /**
  * @author michal.polkorab
+ *
+ *         unifying superinterface
  */
 public interface ConnectionFacade extends MessageConsumer, ConnectionAdapter {
 
- // empty unifying superinterface
+	/**
+	 * This method is for debugging purposes only
+	 */
+	@Override
+	public SocketAddress remoteAddress();
+
 }

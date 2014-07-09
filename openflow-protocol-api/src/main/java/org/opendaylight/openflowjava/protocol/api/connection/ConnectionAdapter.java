@@ -9,6 +9,7 @@
 
 package org.opendaylight.openflowjava.protocol.api.connection;
 
+import java.net.SocketAddress;
 import java.util.concurrent.Future;
 
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OpenflowProtocolListener;
@@ -26,17 +27,17 @@ public interface ConnectionAdapter extends OpenflowProtocolService {
      * @return future set to true, when disconnect completed
      */
     public Future<Boolean> disconnect();
-    
+
     /**
      * @return true, if connection to switch is alive
      */
     public boolean isAlive();
-    
+
     /**
      * @param messageListener here will be pushed all messages from switch
      */
     public void setMessageListener(OpenflowProtocolListener messageListener);
-    
+
     /**
      * @param systemListener here will be pushed all system messages from library
      */
@@ -53,9 +54,14 @@ public interface ConnectionAdapter extends OpenflowProtocolService {
     public void fireConnectionReadyNotification();
 
     /**
-     * set listener for connection became ready-to-use event  
+     * set listener for connection became ready-to-use event
      * @param connectionReadyListener
      */
     public void setConnectionReadyListener(ConnectionReadyListener connectionReadyListener);
 
+    /**
+	 * returns the SocketAddress of the remote end if connected for debugging
+	 * purposes only
+	 */
+    public SocketAddress remoteAddress();
 }

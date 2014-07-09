@@ -14,6 +14,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.GenericFutureListener;
 
+import java.net.SocketAddress;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -468,4 +469,9 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
             final ConnectionReadyListener connectionReadyListener) {
         this.connectionReadyListener = connectionReadyListener;
     }
+    @Override
+    public SocketAddress remoteAddress() {
+    	return channel.remoteAddress() ;
+    }
+    
 }
