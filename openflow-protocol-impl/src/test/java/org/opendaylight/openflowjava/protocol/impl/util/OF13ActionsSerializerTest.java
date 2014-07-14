@@ -177,7 +177,7 @@ public class OF13ActionsSerializerTest {
         actions.add(actionBuilder.build());
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        ListSerializer.serializeList(actions, EnhancedTypeKeyMakerFactory
+        ListSerializer.serializeList(actions, TypeKeyMakerFactory
                 .createActionKeyMaker(EncodeConstants.OF13_VERSION_ID), registry, out);
         
         Assert.assertEquals("Wrong action type", 0, out.readUnsignedShort());

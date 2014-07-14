@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.impl.util;
+package org.opendaylight.openflowjava.protocol.impl.serialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
@@ -16,13 +16,13 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.instruction.GoT
 import org.opendaylight.openflowjava.protocol.impl.serialization.instruction.MeterInstructionSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.instruction.WriteActionsInstructionSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.instruction.WriteMetadataInstructionSerializer;
+import org.opendaylight.openflowjava.protocol.impl.util.InstructionSerializerRegistryHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.ApplyActions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.ClearActions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.GotoTable;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.Meter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.WriteActions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.WriteMetadata;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 
 /**
  * @author michal.polkorab
@@ -35,11 +35,9 @@ public class InstructionsInitializer {
      * @param serializerRegistry registry to be initialized with instruction serializers
      */
     public static void registerInstructionSerializers(SerializerRegistry serializerRegistry) {
-        Class<Instruction> instructionClass = Instruction.class;
         // register OF v1.3 instruction serializers
-        EnhancedKeyRegistryHelper<Instruction> helper =
-                new EnhancedKeyRegistryHelper<>(EncodeConstants.OF13_VERSION_ID,
-                        instructionClass, serializerRegistry);
+        InstructionSerializerRegistryHelper helper= new InstructionSerializerRegistryHelper(
+                EncodeConstants.OF13_VERSION_ID, serializerRegistry);
         helper.registerSerializer(GotoTable.class, new GoToTableInstructionSerializer());
         helper.registerSerializer(WriteMetadata.class, new WriteMetadataInstructionSerializer());
         helper.registerSerializer(WriteActions.class, new WriteActionsInstructionSerializer());

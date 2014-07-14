@@ -32,7 +32,7 @@ public abstract class ListSerializer {
      * @param outBuffer output buffer
      */
     public static <E extends DataObject> void serializeList(List<E> list,
-            EnhancedTypeKeyMaker<E> keyMaker, SerializerRegistry registry, ByteBuf outBuffer) {
+            TypeKeyMaker<E> keyMaker, SerializerRegistry registry, ByteBuf outBuffer) {
         if (list != null) {
             for (E item : list) {
                 OFSerializer<E> serializer = registry.getSerializer(keyMaker.make(item));
@@ -49,7 +49,7 @@ public abstract class ListSerializer {
      * @param outBuffer output buffer
      */
     public static <E extends DataObject> void serializeHeaderList(List<E> list,
-            EnhancedTypeKeyMaker<E> keyMaker, SerializerRegistry registry, ByteBuf outBuffer) {
+            TypeKeyMaker<E> keyMaker, SerializerRegistry registry, ByteBuf outBuffer) {
         if (list != null) {
             for (E item : list) {
                 HeaderSerializer<E> serializer = registry.getSerializer(keyMaker.make(item));

@@ -8,9 +8,8 @@
 package org.opendaylight.openflowjava.protocol.impl.util;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
-import org.opendaylight.openflowjava.protocol.api.extensibility.EnhancedMessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.openflowjava.protocol.api.extensibility.keys.MatchEntryDeserializerKey;
 
 /**
  * @author michal.polkorab
@@ -41,7 +40,8 @@ public class MatchEntryDeserializerRegistryHelper {
      * @param deserializer deserializer instance
      */
     public void register(int oxmField, OFGeneralDeserializer deserializer) {
-        registry.registerDeserializer(new EnhancedMessageCodeKey(version, oxmClass,
-                oxmField, MatchEntries.class), deserializer);
+        MatchEntryDeserializerKey key = new MatchEntryDeserializerKey(version, oxmClass, oxmField);
+        key.setExperimenterId(null);
+        registry.registerDeserializer(key, deserializer);
     }
 }

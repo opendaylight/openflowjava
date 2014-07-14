@@ -8,6 +8,7 @@
 package org.opendaylight.openflowjava.protocol.impl.serialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF10EnqueueActionSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF10OutputActionSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF10SetDlDstActionSerializer;
@@ -36,8 +37,7 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF13SetF
 import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF13SetMplsTtlActionSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF13SetNwTtlActionSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF13SetQueueActionSerializer;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.impl.util.EnhancedKeyRegistryHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.ActionSerializerRegistryHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.CopyTtlIn;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.CopyTtlOut;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.DecMplsTtl;
@@ -65,7 +65,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetVlanPcp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetVlanVid;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.StripVlan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 
 /**
  * Initializes serializer registry with action serializers
@@ -78,10 +77,9 @@ public class ActionsInitializer {
      * @param serializerRegistry registry to be initialized with action serializers
      */
     public static void registerActionSerializers(SerializerRegistry serializerRegistry) {
-        Class<Action> actionClass = Action.class;
         // register OF v1.0 action serializers
-        EnhancedKeyRegistryHelper<Action> helper =
-                new EnhancedKeyRegistryHelper<>(EncodeConstants.OF10_VERSION_ID, actionClass, serializerRegistry);
+        ActionSerializerRegistryHelper helper = new ActionSerializerRegistryHelper(
+                EncodeConstants.OF10_VERSION_ID, serializerRegistry);
         helper.registerSerializer(Output.class, new OF10OutputActionSerializer());
         helper.registerSerializer(SetVlanVid.class, new OF10SetVlanVidActionSerializer());
         helper.registerSerializer(SetVlanPcp.class, new OF10SetVlanPcpActionSerializer());
@@ -95,8 +93,8 @@ public class ActionsInitializer {
         helper.registerSerializer(SetTpDst.class, new OF10SetTpDstActionSerializer());
         helper.registerSerializer(Enqueue.class, new OF10EnqueueActionSerializer());
         // register OF v1.0 action serializers
-        helper = new EnhancedKeyRegistryHelper<>(
-                EncodeConstants.OF13_VERSION_ID, actionClass, serializerRegistry);
+        helper = new ActionSerializerRegistryHelper(
+                EncodeConstants.OF13_VERSION_ID, serializerRegistry);
         helper.registerSerializer(Output.class, new OF13OutputActionSerializer());
         helper.registerSerializer(CopyTtlOut.class, new OF13CopyTtlOutActionSerializer());
         helper.registerSerializer(CopyTtlIn.class, new OF13CopyTtlInActionSerializer());
