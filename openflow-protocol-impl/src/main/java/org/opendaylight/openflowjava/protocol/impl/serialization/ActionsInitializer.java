@@ -8,6 +8,7 @@
 package org.opendaylight.openflowjava.protocol.impl.serialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF10EnqueueActionSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF10OutputActionSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF10SetDlDstActionSerializer;
@@ -36,8 +37,7 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF13SetF
 import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF13SetMplsTtlActionSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF13SetNwTtlActionSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.action.OF13SetQueueActionSerializer;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.impl.util.EnhancedKeyRegistryHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.ActionSerializerRegistryHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.CopyTtlIn;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.CopyTtlOut;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.DecMplsTtl;
@@ -80,38 +80,38 @@ public class ActionsInitializer {
     public static void registerActionSerializers(SerializerRegistry serializerRegistry) {
         Class<Action> actionClass = Action.class;
         // register OF v1.0 action serializers
-        EnhancedKeyRegistryHelper<Action> helper =
-                new EnhancedKeyRegistryHelper<>(EncodeConstants.OF10_VERSION_ID, actionClass, serializerRegistry);
-        helper.registerSerializer(Output.class, new OF10OutputActionSerializer());
-        helper.registerSerializer(SetVlanVid.class, new OF10SetVlanVidActionSerializer());
-        helper.registerSerializer(SetVlanPcp.class, new OF10SetVlanPcpActionSerializer());
-        helper.registerSerializer(StripVlan.class, new OF10StripVlanActionSerializer());
-        helper.registerSerializer(SetDlSrc.class, new OF10SetDlSrcActionSerializer());
-        helper.registerSerializer(SetDlDst.class, new OF10SetDlDstActionSerializer());
-        helper.registerSerializer(SetNwSrc.class, new OF10SetNwSrcActionSerializer());
-        helper.registerSerializer(SetNwDst.class, new OF10SetNwDstActionSerializer());
-        helper.registerSerializer(SetNwTos.class, new OF10SetNwTosActionSerializer());
-        helper.registerSerializer(SetTpSrc.class, new OF10SetTpSrcActionSerializer());
-        helper.registerSerializer(SetTpDst.class, new OF10SetTpDstActionSerializer());
-        helper.registerSerializer(Enqueue.class, new OF10EnqueueActionSerializer());
+        ActionSerializerRegistryHelper<Action> helper = new ActionSerializerRegistryHelper<>(
+                EncodeConstants.OF10_VERSION_ID, actionClass, serializerRegistry);
+        helper.registerSerializer(Output.class, null, new OF10OutputActionSerializer());
+        helper.registerSerializer(SetVlanVid.class, null, new OF10SetVlanVidActionSerializer());
+        helper.registerSerializer(SetVlanPcp.class, null, new OF10SetVlanPcpActionSerializer());
+        helper.registerSerializer(StripVlan.class, null, new OF10StripVlanActionSerializer());
+        helper.registerSerializer(SetDlSrc.class, null, new OF10SetDlSrcActionSerializer());
+        helper.registerSerializer(SetDlDst.class, null, new OF10SetDlDstActionSerializer());
+        helper.registerSerializer(SetNwSrc.class, null, new OF10SetNwSrcActionSerializer());
+        helper.registerSerializer(SetNwDst.class, null, new OF10SetNwDstActionSerializer());
+        helper.registerSerializer(SetNwTos.class, null, new OF10SetNwTosActionSerializer());
+        helper.registerSerializer(SetTpSrc.class, null, new OF10SetTpSrcActionSerializer());
+        helper.registerSerializer(SetTpDst.class, null, new OF10SetTpDstActionSerializer());
+        helper.registerSerializer(Enqueue.class, null, new OF10EnqueueActionSerializer());
         // register OF v1.0 action serializers
-        helper = new EnhancedKeyRegistryHelper<>(
+        helper = new ActionSerializerRegistryHelper<>(
                 EncodeConstants.OF13_VERSION_ID, actionClass, serializerRegistry);
-        helper.registerSerializer(Output.class, new OF13OutputActionSerializer());
-        helper.registerSerializer(CopyTtlOut.class, new OF13CopyTtlOutActionSerializer());
-        helper.registerSerializer(CopyTtlIn.class, new OF13CopyTtlInActionSerializer());
-        helper.registerSerializer(SetMplsTtl.class, new OF13SetMplsTtlActionSerializer());
-        helper.registerSerializer(DecMplsTtl.class, new OF13DecMplsTtlActionSerializer());
-        helper.registerSerializer(PushVlan.class, new OF13PushVlanActionSerializer());
-        helper.registerSerializer(PopVlan.class, new OF13PopVlanActionSerializer());
-        helper.registerSerializer(PushMpls.class, new OF13PushMplsActionSerializer());
-        helper.registerSerializer(PopMpls.class, new OF13PopMplsActionSerializer());
-        helper.registerSerializer(SetQueue.class, new OF13SetQueueActionSerializer());
-        helper.registerSerializer(Group.class, new OF13GroupActionSerializer());
-        helper.registerSerializer(SetNwTtl.class, new OF13SetNwTtlActionSerializer());
-        helper.registerSerializer(DecNwTtl.class, new OF13DecNwTtlActionSerializer());
-        helper.registerSerializer(SetField.class, new OF13SetFieldActionSerializer());
-        helper.registerSerializer(PushPbb.class, new OF13PushPbbActionSerializer());
-        helper.registerSerializer(PopPbb.class, new OF13PopPbbActionSerializer());
+        helper.registerSerializer(Output.class, null, new OF13OutputActionSerializer());
+        helper.registerSerializer(CopyTtlOut.class, null, new OF13CopyTtlOutActionSerializer());
+        helper.registerSerializer(CopyTtlIn.class, null, new OF13CopyTtlInActionSerializer());
+        helper.registerSerializer(SetMplsTtl.class, null, new OF13SetMplsTtlActionSerializer());
+        helper.registerSerializer(DecMplsTtl.class, null, new OF13DecMplsTtlActionSerializer());
+        helper.registerSerializer(PushVlan.class, null, new OF13PushVlanActionSerializer());
+        helper.registerSerializer(PopVlan.class, null, new OF13PopVlanActionSerializer());
+        helper.registerSerializer(PushMpls.class, null, new OF13PushMplsActionSerializer());
+        helper.registerSerializer(PopMpls.class, null, new OF13PopMplsActionSerializer());
+        helper.registerSerializer(SetQueue.class, null, new OF13SetQueueActionSerializer());
+        helper.registerSerializer(Group.class, null, new OF13GroupActionSerializer());
+        helper.registerSerializer(SetNwTtl.class, null, new OF13SetNwTtlActionSerializer());
+        helper.registerSerializer(DecNwTtl.class, null, new OF13DecNwTtlActionSerializer());
+        helper.registerSerializer(SetField.class, null, new OF13SetFieldActionSerializer());
+        helper.registerSerializer(PushPbb.class, null, new OF13PushPbbActionSerializer());
+        helper.registerSerializer(PopPbb.class, null, new OF13PopPbbActionSerializer());
     }
 }

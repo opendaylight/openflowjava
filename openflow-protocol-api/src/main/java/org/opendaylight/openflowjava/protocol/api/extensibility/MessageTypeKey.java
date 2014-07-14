@@ -17,22 +17,22 @@ package org.opendaylight.openflowjava.protocol.api.extensibility;
  */
 public class MessageTypeKey<E> {
 
-    private final Class<E> msgType;
+    private final Class<? extends E> msgType;
     private final short msgVersion;
     
     /**
      * @param msgVersion protocol version
-     * @param msgType type of message
+     * @param msgType type of message - class of serialized object
      */
-    public MessageTypeKey(short msgVersion, Class<E> msgType) {
-        super();
+    public MessageTypeKey(short msgVersion, Class<? extends E> msgType) {
+//        super();
         this.msgType = msgType;
         this.msgVersion = msgVersion;
     }
     
     @Override
     public String toString() {
-        return "msgVersion: " + msgVersion + " msgType: " + msgType.getName();
+        return "msgVersion: " + msgVersion + " objectType: " + msgType.getName();
     }
 
     @Override

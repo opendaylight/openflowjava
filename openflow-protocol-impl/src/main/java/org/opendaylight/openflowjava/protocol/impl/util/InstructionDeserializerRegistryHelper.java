@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Pantheon Technologies s.r.o. and others.  All rights reserved.
+ * Copyright (c) 2014 Pantheon Technologies s.r.o. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -8,14 +8,14 @@
 package org.opendaylight.openflowjava.protocol.impl.util;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.keys.InstructionDeserializerKey;
 
 /**
  * @author michal.polkorab
  *
  */
-public class SimpleDeserializerRegistryHelper {
+public class InstructionDeserializerRegistryHelper {
 
     private short version;
     private DeserializerRegistry registry;
@@ -24,7 +24,7 @@ public class SimpleDeserializerRegistryHelper {
      * @param version wire protocol version
      * @param deserializerRegistry registry to be filled with message deserializers
      */
-    public SimpleDeserializerRegistryHelper(short version, DeserializerRegistry deserializerRegistry) {
+    public InstructionDeserializerRegistryHelper(short version, DeserializerRegistry deserializerRegistry) {
         this.version = version;
         this.registry = deserializerRegistry;
     }
@@ -37,8 +37,8 @@ public class SimpleDeserializerRegistryHelper {
      * @param deserializer deserializer instance
      */
     public void registerDeserializer(int code,
-            Long experimenterID, Class<?> deserializedObjectClass, OFGeneralDeserializer deserializer) {
-        registry.registerDeserializer(new MessageCodeKey(version, code,
-                deserializedObjectClass), deserializer);
+            Long experimenterID, OFGeneralDeserializer deserializer) {
+        registry.registerDeserializer(new InstructionDeserializerKey(version, code,
+                experimenterID), deserializer);
     }
 }

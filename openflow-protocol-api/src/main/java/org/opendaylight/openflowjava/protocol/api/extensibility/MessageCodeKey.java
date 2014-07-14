@@ -19,7 +19,7 @@ public class MessageCodeKey {
     /**
      * Constructor
      * @param version wire protocol version
-     * @param value used as distinguisher
+     * @param value used as distinguisher (read from binary data / buffer)
      * @param clazz class of object that is going to be deserialized
      */
     public MessageCodeKey(short version, int value, Class<?> clazz) {
@@ -60,6 +60,6 @@ public class MessageCodeKey {
 
     @Override
     public String toString() {
-        return "msgVersion: " + msgVersion + " class: " + clazz.getName() + " msgType: " + msgType;
+        return "msgVersion: " + msgVersion + " objectClass: " + clazz.getName() + " msgType: " + msgType;
     }
 }

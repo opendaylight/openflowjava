@@ -70,54 +70,54 @@ public class MatchEntryDeserializerInitializer {
         MatchEntryDeserializerRegistryHelper helper =
                 new MatchEntryDeserializerRegistryHelper(EncodeConstants.OF13_VERSION_ID,
                         OxmMatchConstants.OPENFLOW_BASIC_CLASS, registry);
-        helper.register(OxmMatchConstants.IN_PORT, new OxmInPortDeserializer());
-        helper.register(OxmMatchConstants.IN_PHY_PORT, new OxmInPhyPortDeserializer());
-        helper.register(OxmMatchConstants.METADATA, new OxmMetadataDeserializer());
-        helper.register(OxmMatchConstants.ETH_DST, new OxmEthDstDeserializer());
-        helper.register(OxmMatchConstants.ETH_SRC, new OxmEthSrcDeserializer());
-        helper.register(OxmMatchConstants.ETH_TYPE, new OxmEthTypeDeserializer());
-        helper.register(OxmMatchConstants.VLAN_VID, new OxmVlanVidDeserializer());
-        helper.register(OxmMatchConstants.VLAN_PCP, new OxmVlanPcpDeserializer());
-        helper.register(OxmMatchConstants.IP_DSCP, new OxmIpDscpDeserializer());
-        helper.register(OxmMatchConstants.IP_ECN, new OxmIpEcnDeserializer());
-        helper.register(OxmMatchConstants.IP_PROTO, new OxmIpProtoDeserializer());
-        helper.register(OxmMatchConstants.IPV4_SRC, new OxmIpv4SrcDeserializer());
-        helper.register(OxmMatchConstants.IPV4_DST, new OxmIpv4DstDeserializer());
-        helper.register(OxmMatchConstants.TCP_SRC, new OxmTcpSrcDeserializer());
-        helper.register(OxmMatchConstants.TCP_DST, new OxmTcpDstDeserializer());
-        helper.register(OxmMatchConstants.UDP_SRC, new OxmUdpSrcDeserializer());
-        helper.register(OxmMatchConstants.UDP_DST, new OxmUdpDstDeserializer());
-        helper.register(OxmMatchConstants.SCTP_SRC, new OxmSctpSrcDeserializer());
-        helper.register(OxmMatchConstants.SCTP_DST, new OxmSctpDstDeserializer());
-        helper.register(OxmMatchConstants.ICMPV4_TYPE, new OxmIcmpv4TypeDeserializer());
-        helper.register(OxmMatchConstants.ICMPV4_CODE, new OxmIcmpv4CodeDeserializer());
-        helper.register(OxmMatchConstants.ARP_OP, new OxmArpOpDeserializer());
-        helper.register(OxmMatchConstants.ARP_SPA, new OxmArpSpaDeserializer());
-        helper.register(OxmMatchConstants.ARP_TPA, new OxmArpTpaDeserializer());
-        helper.register(OxmMatchConstants.ARP_SHA, new OxmArpShaDeserializer());
-        helper.register(OxmMatchConstants.ARP_THA, new OxmArpThaDeserializer());
-        helper.register(OxmMatchConstants.IPV6_SRC, new OxmIpv6SrcDeserializer());
-        helper.register(OxmMatchConstants.IPV6_DST, new OxmIpv6DstDeserializer());
-        helper.register(OxmMatchConstants.IPV6_FLABEL, new OxmIpv6FlabelDeserializer());
-        helper.register(OxmMatchConstants.ICMPV6_TYPE, new OxmIcmpv6TypeDeserializer());
-        helper.register(OxmMatchConstants.ICMPV6_CODE, new OxmIcmpv6CodeDeserializer());
-        helper.register(OxmMatchConstants.IPV6_ND_TARGET, new OxmIpv6NdTargetDeserializer());
-        helper.register(OxmMatchConstants.IPV6_ND_SLL, new OxmIpv6NdSllDeserializer());
-        helper.register(OxmMatchConstants.IPV6_ND_TLL, new OxmIpv6NdTllDeserializer());
-        helper.register(OxmMatchConstants.MPLS_LABEL, new OxmMplsLabelDeserializer());
-        helper.register(OxmMatchConstants.MPLS_TC, new OxmMplsTcDeserializer());
-        helper.register(OxmMatchConstants.MPLS_BOS, new OxmMplsBosDeserializer());
-        helper.register(OxmMatchConstants.PBB_ISID, new OxmPbbIsidDeserializer());
-        helper.register(OxmMatchConstants.TUNNEL_ID, new OxmTunnelIdDeserializer());
-        helper.register(OxmMatchConstants.IPV6_EXTHDR, new OxmIpv6ExtHdrDeserializer());
+        helper.register(OxmMatchConstants.IN_PORT, null, new OxmInPortDeserializer());
+        helper.register(OxmMatchConstants.IN_PHY_PORT, null, new OxmInPhyPortDeserializer());
+        helper.register(OxmMatchConstants.METADATA, null, new OxmMetadataDeserializer());
+        helper.register(OxmMatchConstants.ETH_DST, null, new OxmEthDstDeserializer());
+        helper.register(OxmMatchConstants.ETH_SRC, null, new OxmEthSrcDeserializer());
+        helper.register(OxmMatchConstants.ETH_TYPE, null, new OxmEthTypeDeserializer());
+        helper.register(OxmMatchConstants.VLAN_VID, null, new OxmVlanVidDeserializer());
+        helper.register(OxmMatchConstants.VLAN_PCP, null, new OxmVlanPcpDeserializer());
+        helper.register(OxmMatchConstants.IP_DSCP, null, new OxmIpDscpDeserializer());
+        helper.register(OxmMatchConstants.IP_ECN, null, new OxmIpEcnDeserializer());
+        helper.register(OxmMatchConstants.IP_PROTO, null, new OxmIpProtoDeserializer());
+        helper.register(OxmMatchConstants.IPV4_SRC, null, new OxmIpv4SrcDeserializer());
+        helper.register(OxmMatchConstants.IPV4_DST, null, new OxmIpv4DstDeserializer());
+        helper.register(OxmMatchConstants.TCP_SRC, null, new OxmTcpSrcDeserializer());
+        helper.register(OxmMatchConstants.TCP_DST, null, new OxmTcpDstDeserializer());
+        helper.register(OxmMatchConstants.UDP_SRC, null, new OxmUdpSrcDeserializer());
+        helper.register(OxmMatchConstants.UDP_DST, null, new OxmUdpDstDeserializer());
+        helper.register(OxmMatchConstants.SCTP_SRC, null, new OxmSctpSrcDeserializer());
+        helper.register(OxmMatchConstants.SCTP_DST, null, new OxmSctpDstDeserializer());
+        helper.register(OxmMatchConstants.ICMPV4_TYPE, null, new OxmIcmpv4TypeDeserializer());
+        helper.register(OxmMatchConstants.ICMPV4_CODE, null, new OxmIcmpv4CodeDeserializer());
+        helper.register(OxmMatchConstants.ARP_OP, null, new OxmArpOpDeserializer());
+        helper.register(OxmMatchConstants.ARP_SPA, null, new OxmArpSpaDeserializer());
+        helper.register(OxmMatchConstants.ARP_TPA, null, new OxmArpTpaDeserializer());
+        helper.register(OxmMatchConstants.ARP_SHA, null, new OxmArpShaDeserializer());
+        helper.register(OxmMatchConstants.ARP_THA, null, new OxmArpThaDeserializer());
+        helper.register(OxmMatchConstants.IPV6_SRC, null, new OxmIpv6SrcDeserializer());
+        helper.register(OxmMatchConstants.IPV6_DST, null, new OxmIpv6DstDeserializer());
+        helper.register(OxmMatchConstants.IPV6_FLABEL, null, new OxmIpv6FlabelDeserializer());
+        helper.register(OxmMatchConstants.ICMPV6_TYPE, null, new OxmIcmpv6TypeDeserializer());
+        helper.register(OxmMatchConstants.ICMPV6_CODE, null, new OxmIcmpv6CodeDeserializer());
+        helper.register(OxmMatchConstants.IPV6_ND_TARGET, null, new OxmIpv6NdTargetDeserializer());
+        helper.register(OxmMatchConstants.IPV6_ND_SLL, null, new OxmIpv6NdSllDeserializer());
+        helper.register(OxmMatchConstants.IPV6_ND_TLL, null, new OxmIpv6NdTllDeserializer());
+        helper.register(OxmMatchConstants.MPLS_LABEL, null, new OxmMplsLabelDeserializer());
+        helper.register(OxmMatchConstants.MPLS_TC, null, new OxmMplsTcDeserializer());
+        helper.register(OxmMatchConstants.MPLS_BOS, null, new OxmMplsBosDeserializer());
+        helper.register(OxmMatchConstants.PBB_ISID, null, new OxmPbbIsidDeserializer());
+        helper.register(OxmMatchConstants.TUNNEL_ID, null, new OxmTunnelIdDeserializer());
+        helper.register(OxmMatchConstants.IPV6_EXTHDR, null, new OxmIpv6ExtHdrDeserializer());
 
         // Register NXM1Class match entry deserializers
         MatchEntryDeserializerRegistryHelper nxm1helper =
                 new MatchEntryDeserializerRegistryHelper(EncodeConstants.OF13_VERSION_ID,
                         OxmMatchConstants.NXM_1_CLASS, registry);
-        nxm1helper.register(OxmMatchConstants.NXM_NX_TUN_IPV4_SRC, new NxmTunnelIpv4SrcDeserializer());
-        nxm1helper.register(OxmMatchConstants.NXM_NX_TUN_IPV4_DST, new NxmTunnelIpv4DstDeserializer());
-        nxm1helper.register(OxmMatchConstants.NXM_NX_TCP_FLAG, new NxmTcpFlagDeserializer());
+        nxm1helper.register(OxmMatchConstants.NXM_NX_TUN_IPV4_SRC, null, new NxmTunnelIpv4SrcDeserializer());
+        nxm1helper.register(OxmMatchConstants.NXM_NX_TUN_IPV4_DST, null, new NxmTunnelIpv4DstDeserializer());
+        nxm1helper.register(OxmMatchConstants.NXM_NX_TCP_FLAG, null, new NxmTcpFlagDeserializer());
 
     }
 }
