@@ -15,6 +15,7 @@
         <module>simple-client</module>
         <module>openflow-protocol-ext</module>
         <module>openflow-nx-resubmit-action</module>
+        <module>openflow-extension-nicira</module>
     </modules>
     <scm>
         <connection>scm:git:ssh://git.opendaylight.org:29418/openflowjava.git</connection>

@@ -1,0 +1,36 @@
+module nicira-extension-provider-impl {
+	yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:controller:config:openflow:extension:nicira:impl";
+    prefix "openflow-nx";
+
+    import config {prefix config; revision-date 2013-04-05;}
+    import openflow-switch-connection-provider {prefix openflow-switch-connection-provider;revision-date 2014-03-28;}
+
+    description
+        "Nicira extensions in openflow library.";
+
+    revision "2014-07-11" {
+        description
+            "Initial revision";
+    }
+
+    identity openflow-extension-nicira {
+        base config:module-type;
+        config:java-name-prefix NiciraExtensionProvider;
+    }
+
+    augment "/config:modules/config:module/config:configuration" {
+        case openflow-extension-nicira {
+            when "/config:modules/config:module/config:type = 'openflow-extension-nicira'";
+
+            list openflow-switch-connection-provider {
+                uses config:service-ref {
+                    refine type {
+                        mandatory true;
+                        config:required-identity openflow-switch-connection-provider:openflow-switch-connection-provider;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,93 @@
+module nicira-match {
+    yang-version 1;
+
+    namespace "urn:opendaylight:groupbasedpolicy:of:extension:nicira:match";
+    prefix "nicira-match";
+	
+	import openflow-extensible-match {prefix ofoxm;}
+	import openflow-types {prefix oft;}
+	import yang-ext {prefix ext; revision-date "2013-07-09";}
+
+    description 
+        "Nicira openflow extensions of match.";
+
+    revision "2014-04-21" {
+        description "Initial revision";
+    }
+
+	identity nx-match-reg0 {
+		base ofoxm:match-field;
+	}
+	identity nx-match-reg1 {
+		base ofoxm:match-field;
+	}
+	identity nx-match-reg2 {
+		base ofoxm:match-field;
+	}
+	identity nx-match-reg3 {
+		base ofoxm:match-field;
+	}
+	identity nx-match-reg4 {
+		base ofoxm:match-field;
+	}
+	identity nx-match-reg5 {
+		base ofoxm:match-field;
+	}
+	identity nx-match-reg6 {
+		base ofoxm:match-field;
+	}
+	identity nx-match-reg7 {
+		base ofoxm:match-field;
+	}
+	identity nx-match-tun-id {
+		base ofoxm:match-field;
+	}
+	identity nx-match-arp-sha {
+		base ofoxm:match-field;
+	}
+	identity nx-match-arp-tha {
+		base ofoxm:match-field;
+	}
+	
+	grouping nx-match-reg-grouping {
+		container match-reg {
+			leaf value {
+				type uint32;
+			}
+		}
+	}
+	grouping nx-match-tun-id-grouping {
+		container match-tun-id {
+			leaf value {
+				type uint64;
+			}
+		}
+	}
+	grouping nx-match-arp-sha-grouping {
+		container match-arp-sha {
+			leaf value {
+				type uint64 {
+					range 0..281474976710655;
+				}
+			}
+		}
+	}
+	grouping nx-match-arp-tha-grouping {
+		container match-arp-tha {
+			leaf value {
+				type uint64 {
+					range 0..281474976710655;
+				}
+			}
+		}
+	}
+	
+	augment "/ofoxm:oxm-container/ofoxm:match-entries" {
+		ext:augment-identifier "aug_nx_match";
+		uses nx-match-reg-grouping;
+		uses nx-match-tun-id-grouping;
+		uses nx-match-arp-sha-grouping;
+		uses nx-match-arp-tha-grouping;
+	}
+
+}
