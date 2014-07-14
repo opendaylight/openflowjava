@@ -12,13 +12,15 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.List;
 
-import org.opendaylight.openflowjava.protocol.api.extensibility.EnhancedMessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
+import org.opendaylight.openflowjava.protocol.api.extensibility.keys.MatchEntrySerializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.StandardMatchType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ExperimenterClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmMatchType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
@@ -75,9 +77,15 @@ public class OF13MatchSerializer implements OFSerializer<Match>, SerializerRegis
             return;
         }
         for (MatchEntries entry : matchEntries) {
-            OFSerializer<MatchEntries> entrySerializer = registry.getSerializer(
-                    new EnhancedMessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, entry.getOxmClass(),
-                            entry.getOxmMatchField()));
+            
+            MatchEntrySerializerKey<?, ?> key = new MatchEntrySerializerKey<>(
+                    EncodeConstants.OF13_VERSION_ID, entry.getOxmClass(), entry.getOxmMatchField());
+            if (entry.getOxmClass().equals(ExperimenterClass.class)) {
+                key.setExperimenterId(entry.getAugmentation(ExperimenterMatchEntry.class).getExperimenter());
+            } else {
+                key.setExperimenterId(null);
+            }
+            OFSerializer<MatchEntries> entrySerializer = registry.getSerializer(key);
             entrySerializer.serialize(entry, out);
         }
     }

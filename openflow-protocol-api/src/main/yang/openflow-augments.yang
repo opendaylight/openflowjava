@@ -176,6 +176,12 @@
          }
      }
      augment "/oxm:oxm-container/oxm:match-entries" {
+         ext:augment-identifier "experimenter-match-entry";
+         leaf experimenter {
+             type uint32;
+         }
+     }
+     augment "/oxm:oxm-container/oxm:match-entries" {
          ext:augment-identifier "tcp-flag-match-entry";
          leaf tcp-flag {
              type uint16;

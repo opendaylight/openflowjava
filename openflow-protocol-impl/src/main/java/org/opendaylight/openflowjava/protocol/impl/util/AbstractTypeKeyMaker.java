@@ -8,19 +8,28 @@
 
 package org.opendaylight.openflowjava.protocol.impl.util;
 
-import org.opendaylight.openflowjava.protocol.api.extensibility.EnhancedMessageTypeKey;
 
 /**
  * @author michal.polkorab
- * @param <T> 
+ * @param <T> type the key maker is based on 
  */
-public interface EnhancedTypeKeyMaker<T> {
+public abstract class AbstractTypeKeyMaker<T> implements TypeKeyMaker<T> {
+
+    private short version;
 
     /**
-     * @param entry
-     * @return key that will be used for serializer lookup in 
-     * the serializer registry
+     * @param version openflow wire version
      */
-    public abstract EnhancedMessageTypeKey<?,?> make(T entry);
+    public AbstractTypeKeyMaker(short version) {
+        this.version = version;
+        
+    }
+
+    /**
+     * @return the version
+     */
+    public short getVersion() {
+        return version;
+    }
 
 }

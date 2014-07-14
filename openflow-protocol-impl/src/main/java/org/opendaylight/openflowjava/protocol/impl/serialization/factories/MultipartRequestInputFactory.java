@@ -12,18 +12,19 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.List;
 
-import org.opendaylight.openflowjava.protocol.api.extensibility.EnhancedMessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.api.extensibility.keys.MatchEntrySerializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMaker;
-import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMakerFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.ListSerializer;
+import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMaker;
+import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMakerFactory;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeatureProperty;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.NextTableRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OxmRelatedTableFeatureProperty;
@@ -34,6 +35,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableFeaturesPropType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ExperimenterClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInput;
@@ -355,7 +357,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
             }
             padding = paddingNeeded(length);
             output.writeShort(length);
-            EnhancedTypeKeyMaker<Instruction> keyMaker = EnhancedTypeKeyMakerFactory
+            TypeKeyMaker<Instruction> keyMaker = TypeKeyMakerFactory
                     .createInstructionKeyMaker(EncodeConstants.OF13_VERSION_ID);
             ListSerializer.serializeHeaderList(instructions, keyMaker, registry, output);
         } else {
@@ -413,7 +415,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
             length += actions.size() * STRUCTURE_HEADER_LENGTH;
             padding += paddingNeeded(length);
             output.writeShort(length);
-            EnhancedTypeKeyMaker<Action> keyMaker = EnhancedTypeKeyMakerFactory
+            TypeKeyMaker<Action> keyMaker = TypeKeyMakerFactory
                     .createActionKeyMaker(EncodeConstants.OF13_VERSION_ID);
             ListSerializer.serializeHeaderList(actions, keyMaker, registry, output);
         } else {
@@ -437,9 +439,14 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
             output.writeShort(length);
 
             for (MatchEntries entry : entries) {
-                HeaderSerializer<MatchEntries> entrySerializer = registry.getSerializer(
-                        new EnhancedMessageTypeKey<>(EncodeConstants.OF13_VERSION_ID,
-                                entry.getOxmClass(), entry.getOxmMatchField()));
+                MatchEntrySerializerKey<?, ?> key = new MatchEntrySerializerKey<>(
+                        EncodeConstants.OF13_VERSION_ID, entry.getOxmClass(), entry.getOxmMatchField());
+                if (entry.getOxmClass().equals(ExperimenterClass.class)) {
+                    key.setExperimenterId(entry.getAugmentation(ExperimenterMatchEntry.class).getExperimenter());
+                } else {
+                    key.setExperimenterId(null);
+                }
+                HeaderSerializer<MatchEntries> entrySerializer = registry.getSerializer(key);
                 entrySerializer.serializeHeader(entry, output);
             }
         } else {
