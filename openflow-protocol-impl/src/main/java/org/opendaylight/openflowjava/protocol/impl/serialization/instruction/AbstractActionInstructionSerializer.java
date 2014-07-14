@@ -16,8 +16,8 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegist
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMaker;
-import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMakerFactory;
+import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMaker;
+import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMakerFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.InstructionConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.ListSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionsInstruction;
@@ -31,8 +31,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction
 public abstract class AbstractActionInstructionSerializer extends AbstractInstructionSerializer
         implements SerializerRegistryInjector {
 
-    private static final EnhancedTypeKeyMaker<Action> ACTION_KEY_MAKER =
-            EnhancedTypeKeyMakerFactory.createActionKeyMaker(EncodeConstants.OF13_VERSION_ID);
+    private static final TypeKeyMaker<Action> ACTION_KEY_MAKER =
+            TypeKeyMakerFactory.createActionKeyMaker(EncodeConstants.OF13_VERSION_ID);
 
     private SerializerRegistry registry;
 

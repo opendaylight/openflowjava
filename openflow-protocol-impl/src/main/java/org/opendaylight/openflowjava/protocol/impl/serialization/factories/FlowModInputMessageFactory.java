@@ -16,8 +16,8 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegist
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMaker;
-import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMakerFactory;
+import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMaker;
+import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMakerFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.ListSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowModFlags;
@@ -32,8 +32,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class FlowModInputMessageFactory implements OFSerializer<FlowModInput>, SerializerRegistryInjector {
     private static final byte MESSAGE_TYPE = 14;
     private static final byte PADDING_IN_FLOW_MOD_MESSAGE = 2;
-    private static final EnhancedTypeKeyMaker<Instruction> INSTRUCTION_KEY_MAKER =
-            EnhancedTypeKeyMakerFactory.createInstructionKeyMaker(EncodeConstants.OF13_VERSION_ID);
+    private static final TypeKeyMaker<Instruction> INSTRUCTION_KEY_MAKER =
+            TypeKeyMakerFactory.createInstructionKeyMaker(EncodeConstants.OF13_VERSION_ID);
     private SerializerRegistry registry;
 
     @Override

@@ -8,15 +8,15 @@
 
 package org.opendaylight.openflowjava.protocol.impl.deserialization.action;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
-import org.opendaylight.openflowjava.protocol.api.extensibility.EnhancedMessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.keys.MatchEntryDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OxmFieldsAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OxmFieldsActionBuilder;
@@ -46,9 +46,14 @@ public class OF13SetFieldActionDeserializer extends AbstractActionDeserializer
         // get oxm_field & hasMask byte and extract the field value
         int oxmField = input.getUnsignedByte(input.readerIndex()
                 + EncodeConstants.SIZE_OF_SHORT_IN_BYTES) >>> 1;
-        OFDeserializer<MatchEntries> matchDeserializer = registry.getDeserializer(
-                new EnhancedMessageCodeKey(EncodeConstants.OF13_VERSION_ID, oxmClass,
-                        oxmField, MatchEntries.class));
+        MatchEntryDeserializerKey key = new MatchEntryDeserializerKey(EncodeConstants.OF13_VERSION_ID,
+                oxmClass, oxmField, MatchEntries.class);
+        if (oxmClass == EncodeConstants.EXPERIMENTER_VALUE) {
+            long expId = input.getUnsignedInt(input.readerIndex() + EncodeConstants.SIZE_OF_SHORT_IN_BYTES
+                    + 2 * EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
+            key.setExperimenterId(expId);
+        }
+        OFDeserializer<MatchEntries> matchDeserializer = registry.getDeserializer(key);
         List<MatchEntries> entry = new ArrayList<>();
         entry.add(matchDeserializer.deserialize(input));
         matchEntries.setMatchEntries(entry);

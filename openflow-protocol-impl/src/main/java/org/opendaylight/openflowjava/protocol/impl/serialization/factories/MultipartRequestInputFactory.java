@@ -20,8 +20,8 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegist
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMaker;
-import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMakerFactory;
+import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMaker;
+import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMakerFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.ListSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeatureProperty;
@@ -355,7 +355,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
             }
             padding = paddingNeeded(length);
             output.writeShort(length);
-            EnhancedTypeKeyMaker<Instruction> keyMaker = EnhancedTypeKeyMakerFactory
+            TypeKeyMaker<Instruction> keyMaker = TypeKeyMakerFactory
                     .createInstructionKeyMaker(EncodeConstants.OF13_VERSION_ID);
             ListSerializer.serializeHeaderList(instructions, keyMaker, registry, output);
         } else {
@@ -413,7 +413,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
             length += actions.size() * STRUCTURE_HEADER_LENGTH;
             padding += paddingNeeded(length);
             output.writeShort(length);
-            EnhancedTypeKeyMaker<Action> keyMaker = EnhancedTypeKeyMakerFactory
+            TypeKeyMaker<Action> keyMaker = TypeKeyMakerFactory
                     .createActionKeyMaker(EncodeConstants.OF13_VERSION_ID);
             ListSerializer.serializeHeaderList(actions, keyMaker, registry, output);
         } else {

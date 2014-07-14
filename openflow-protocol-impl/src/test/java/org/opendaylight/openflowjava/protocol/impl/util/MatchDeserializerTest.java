@@ -15,9 +15,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
-import org.opendaylight.openflowjava.protocol.api.extensibility.EnhancedMessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.keys.MatchEntryDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
@@ -122,8 +122,10 @@ public class MatchDeserializerTest {
     public void testIpv4Address() {
         ByteBuf buffer = ByteBufUtils.hexStringToByteBuf("80 00 18 04 00 01 02 03");
 
-        OFDeserializer<MatchEntries> entryDeserializer = registry.getDeserializer(
-                new EnhancedMessageCodeKey(EncodeConstants.OF13_VERSION_ID, 0x8000, 12, MatchEntries.class));
+        MatchEntryDeserializerKey key = new MatchEntryDeserializerKey(EncodeConstants.OF13_VERSION_ID,
+                0x8000, 12, MatchEntries.class);
+        key.setExperimenterId(null);
+        OFDeserializer<MatchEntries> entryDeserializer = registry.getDeserializer(key);
         MatchEntries entry = entryDeserializer.deserialize(buffer);
         Assert.assertEquals("Wrong Ipv4 address format", new Ipv4Address("0.1.2.3"),
                 entry.getAugmentation(Ipv4AddressMatchEntry.class).getIpv4Address());
@@ -136,8 +138,10 @@ public class MatchDeserializerTest {
     public void testIpv6Address() {
         ByteBuf buffer = ByteBufUtils.hexStringToByteBuf("80 00 34 10 00 00 00 01 00 02 00 03 00 04 00 05 00 06 0F 07");
         
-        OFDeserializer<MatchEntries> entryDeserializer = registry.getDeserializer(
-                new EnhancedMessageCodeKey(EncodeConstants.OF13_VERSION_ID, 0x8000, 26, MatchEntries.class));
+        MatchEntryDeserializerKey key = new MatchEntryDeserializerKey(EncodeConstants.OF13_VERSION_ID,
+                0x8000, 26, MatchEntries.class);
+        key.setExperimenterId(null);
+        OFDeserializer<MatchEntries> entryDeserializer = registry.getDeserializer(key);
         MatchEntries entry = entryDeserializer.deserialize(buffer);
         Assert.assertEquals("Wrong Ipv6 address format", new Ipv6Address("0000:0001:0002:0003:0004:0005:0006:0F07"),
                 entry.getAugmentation(Ipv6AddressMatchEntry.class).getIpv6Address());

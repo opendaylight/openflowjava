@@ -22,7 +22,7 @@ public class MessageTypeKey<E> {
     
     /**
      * @param msgVersion protocol version
-     * @param msgType type of message
+     * @param msgType type of message - class of serialized object
      */
     public MessageTypeKey(short msgVersion, Class<E> msgType) {
         super();
@@ -32,7 +32,7 @@ public class MessageTypeKey<E> {
     
     @Override
     public String toString() {
-        return "msgVersion: " + msgVersion + " msgType: " + msgType.getName();
+        return "msgVersion: " + msgVersion + " objectType: " + msgType.getName();
     }
 
     @Override

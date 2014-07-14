@@ -37,14 +37,13 @@ public class InstructionsInitializer {
     public static void registerInstructionSerializers(SerializerRegistry serializerRegistry) {
         Class<Instruction> instructionClass = Instruction.class;
         // register OF v1.3 instruction serializers
-        EnhancedKeyRegistryHelper<Instruction> helper =
-                new EnhancedKeyRegistryHelper<>(EncodeConstants.OF13_VERSION_ID,
-                        instructionClass, serializerRegistry);
-        helper.registerSerializer(GotoTable.class, new GoToTableInstructionSerializer());
-        helper.registerSerializer(WriteMetadata.class, new WriteMetadataInstructionSerializer());
-        helper.registerSerializer(WriteActions.class, new WriteActionsInstructionSerializer());
-        helper.registerSerializer(ApplyActions.class, new ApplyActionsInstructionSerializer());
-        helper.registerSerializer(ClearActions.class, new ClearActionsInstructionSerializer());
-        helper.registerSerializer(Meter.class, new MeterInstructionSerializer());
+        InstructionSerializerRegistryHelper<Instruction> helper= new InstructionSerializerRegistryHelper<>(
+                EncodeConstants.OF13_VERSION_ID, instructionClass, serializerRegistry);
+        helper.registerSerializer(GotoTable.class, null, new GoToTableInstructionSerializer());
+        helper.registerSerializer(WriteMetadata.class, null, new WriteMetadataInstructionSerializer());
+        helper.registerSerializer(WriteActions.class, null, new WriteActionsInstructionSerializer());
+        helper.registerSerializer(ApplyActions.class, null, new ApplyActionsInstructionSerializer());
+        helper.registerSerializer(ClearActions.class, null, new ClearActionsInstructionSerializer());
+        helper.registerSerializer(Meter.class, null, new MeterInstructionSerializer());
     }
 }

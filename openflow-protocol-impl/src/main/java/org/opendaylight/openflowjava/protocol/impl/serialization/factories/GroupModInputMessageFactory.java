@@ -17,7 +17,7 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegist
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.impl.util.EnhancedTypeKeyMakerFactory;
+import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMakerFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.ListSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GroupModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.buckets.grouping.BucketsList;
@@ -53,7 +53,7 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupModInput>,
                 outBuffer.writeInt(currentBucket.getWatchPort().getValue().intValue());
                 outBuffer.writeInt(currentBucket.getWatchGroup().intValue());
                 ByteBufUtils.padBuffer(PADDING_IN_BUCKET, outBuffer);
-                ListSerializer.serializeList(currentBucket.getAction(), EnhancedTypeKeyMakerFactory
+                ListSerializer.serializeList(currentBucket.getAction(), TypeKeyMakerFactory
                         .createActionKeyMaker(EncodeConstants.OF13_VERSION_ID), registry, outBuffer);
                 outBuffer.setShort(bucketLengthIndex, outBuffer.writerIndex() - bucketLengthIndex);
             }
