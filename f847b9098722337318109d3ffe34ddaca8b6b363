@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa82b9bf_e31a44c5",
+        "filename": "openflow-extension-nicira/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-07-15T08:33:03Z",
+      "side": 1,
+      "message": "Probably unnecessary dependency on impl - I will also remove impl dependency from exemplary bundle",
+      "revId": "f847b9098722337318109d3ffe34ddaca8b6b363",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa82b9bf_837b38f4",
+        "filename": "openflow-extension-nicira/src/main/java/org/opendaylight/openflowjava/nx/NiciraExtensionsRegistrator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-07-15T08:33:03Z",
+      "side": 1,
+      "message": "Unregistration should be already supported (https://git.opendaylight.org/gerrit/#/c/8599/)",
+      "revId": "f847b9098722337318109d3ffe34ddaca8b6b363",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa82b9bf_a380bcc0",
+        "filename": "openflow-extension-nicira/src/main/java/org/opendaylight/openflowjava/nx/codec/action/ActionCodec.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-07-15T08:33:03Z",
+      "side": 1,
+      "message": "Feel free to use openflow-protocol-api EncodeConstants",
+      "revId": "f847b9098722337318109d3ffe34ddaca8b6b363",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa82b9bf_4381b0c1",
+        "filename": "openflow-extension-nicira/src/main/java/org/opendaylight/openflowjava/nx/codec/action/ActionCodec.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-07-15T08:33:03Z",
+      "side": 1,
+      "message": "Feel free to use openflow-protocol-api EncodeConstants",
+      "revId": "f847b9098722337318109d3ffe34ddaca8b6b363",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa82b9bf_e371e40c",
+        "filename": "openflow-extension-nicira/src/main/java/org/opendaylight/openflowjava/nx/codec/match/AbstractMatchCodec.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-07-15T08:33:03Z",
+      "side": 1,
+      "message": "Feel free to use openflow-protocol-api OxmMatchConstants",
+      "revId": "f847b9098722337318109d3ffe34ddaca8b6b363",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa82b9bf_8362583c",
+        "filename": "openflow-extension-nicira/src/main/java/org/opendaylight/openflowjava/nx/codec/match/AbstractMatchRegCodec.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-07-15T08:33:03Z",
+      "side": 1,
+      "message": "Why setting mask, oxmClass and oxmField again ? Is the builder already immutable ?",
+      "revId": "f847b9098722337318109d3ffe34ddaca8b6b363",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa82b9bf_a3675c4c",
+        "filename": "openflow-extension-nicira/src/main/yang/nicira-action.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-07-15T08:33:03Z",
+      "side": 1,
+      "message": "Unused / unnecessary - I will also remove identities from exemplary bundle",
+      "revId": "f847b9098722337318109d3ffe34ddaca8b6b363",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
