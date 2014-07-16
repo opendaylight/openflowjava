@@ -11,10 +11,10 @@ package org.opendaylight.openflowjava.protocol.spi.connection;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralSerializer;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterSerializerKey;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
@@ -53,7 +53,7 @@ public interface SwitchConnectionProvider extends AutoCloseable {
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */
-    public  <KEY_TYPE> void registerSerializer(MessageTypeKey<KEY_TYPE> key,
+    public void registerSerializer(ExperimenterSerializerKey key,
             OFGeneralSerializer serializer);
 
     /**
@@ -61,7 +61,7 @@ public interface SwitchConnectionProvider extends AutoCloseable {
      * @param key used for deserializer lookup
      * @param deserializer deserializer instance
      */
-    public void registerDeserializer(MessageCodeKey key, OFGeneralDeserializer deserializer);
+    public void registerDeserializer(ExperimenterDeserializerKey key, OFGeneralDeserializer deserializer);
 
     /**
      * Unregisters custom serializer
@@ -70,7 +70,7 @@ public interface SwitchConnectionProvider extends AutoCloseable {
      * @return true if serializer was removed,
      *  false if no serializer was found under specified key
      */
-    public  <KEY_TYPE> boolean unregisterSerializer(MessageTypeKey<KEY_TYPE> key);
+    public boolean unregisterSerializer(ExperimenterSerializerKey key);
 
     /**
      * Unregisters custom deserializer
@@ -79,5 +79,5 @@ public interface SwitchConnectionProvider extends AutoCloseable {
      * @return true if deserializer was removed,
      *  false if no deserializer was found under specified key
      */
-    public boolean unregisterDeserializer(MessageCodeKey key);
+    public boolean unregisterDeserializer(ExperimenterDeserializerKey key);
 }

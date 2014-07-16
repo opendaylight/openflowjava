@@ -6,26 +6,26 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.api.extensibility.keys;
+package org.opendaylight.openflowjava.protocol.api.keys.experimenter;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 
 /**
  * @author michal.polkorab
  *
  */
-public class InstructionDeserializerKey extends MessageCodeKey {
+public class ExperimenterActionDeserializerKey extends MessageCodeKey 
+        implements ExperimenterDeserializerKey {
 
     private Long experimenterId;
     /**
      * @param version protocol wire version
-     * @param type instruction type
-     * @param experimenterId 
+     * @param experimenterId experimenter / vendor ID
      */
-    public InstructionDeserializerKey(short version, int type,
-            Long experimenterId) {
-        super(version, type, Instruction.class);
+    public ExperimenterActionDeserializerKey(short version, Long experimenterId) {
+        super(version, EncodeConstants.EXPERIMENTER_VALUE, Action.class);
         this.experimenterId = experimenterId;
     }
 
@@ -37,7 +37,7 @@ public class InstructionDeserializerKey extends MessageCodeKey {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        InstructionDeserializerKey other = (InstructionDeserializerKey) obj;
+        ExperimenterActionDeserializerKey other = (ExperimenterActionDeserializerKey) obj;
         if (experimenterId == null) {
             if (other.experimenterId != null)
                 return false;

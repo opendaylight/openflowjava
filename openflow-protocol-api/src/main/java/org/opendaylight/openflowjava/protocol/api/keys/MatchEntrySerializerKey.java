@@ -6,9 +6,10 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.api.extensibility.keys;
+package org.opendaylight.openflowjava.protocol.api.keys;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterSerializerKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Clazz;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
@@ -18,8 +19,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
  * @param <OXM_CLASS> oxm_class (see specification)
  * @param <OXM_FIELD> oxm_field (see specification)
  */
-public class MatchEntrySerializerKey<OXM_CLASS extends Clazz,
-        OXM_FIELD extends MatchField> extends MessageTypeKey<MatchEntries>{
+public class MatchEntrySerializerKey<OXM_CLASS extends Clazz, OXM_FIELD extends MatchField>
+        extends MessageTypeKey<MatchEntries> implements ExperimenterSerializerKey{
 
     private Class<OXM_CLASS> oxmClass;
     private Class<OXM_FIELD> oxmField;

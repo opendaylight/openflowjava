@@ -6,26 +6,30 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.api.extensibility.keys;
+package org.opendaylight.openflowjava.protocol.api.keys;
 
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionBase;
 
 /**
  * @author michal.polkorab
- *
+ * @param <TYPE> action type
  */
-public class ActionDeserializerKey extends MessageCodeKey {
+public class ActionSerializerKey<TYPE extends ActionBase> extends MessageTypeKey<Action> {
 
+    private Class<TYPE> actionType;
     private Long experimenterId;
+
     /**
-     * @param version protocol wire version
-     * @param type action type
+     * @param msgVersion protocol wire version
+     * @param actionType type of action
      * @param experimenterId experimenter / vendor ID
      */
-    public ActionDeserializerKey(short version,
-            int type, Long experimenterId) {
-        super(version, type, Action.class);
+    public ActionSerializerKey(short msgVersion, Class<TYPE> actionType,
+            Long experimenterId) {
+        super(msgVersion, Action.class);
+        this.actionType = actionType;
         this.experimenterId = experimenterId;
     }
 
@@ -37,7 +41,13 @@ public class ActionDeserializerKey extends MessageCodeKey {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        ActionDeserializerKey other = (ActionDeserializerKey) obj;
+        @SuppressWarnings("rawtypes")
+        ActionSerializerKey other = (ActionSerializerKey) obj;
+        if (actionType == null) {
+            if (other.actionType != null)
+                return false;
+        } else if (!actionType.equals(other.actionType))
+            return false;
         if (experimenterId == null) {
             if (other.experimenterId != null)
                 return false;
@@ -48,6 +58,6 @@ public class ActionDeserializerKey extends MessageCodeKey {
 
     @Override
     public String toString() {
-        return super.toString() + " experimenterID: " + experimenterId;
+        return super.toString() + " action type: " + actionType.getName() + " experimenterID: " + experimenterId;
     }
 }

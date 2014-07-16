@@ -9,7 +9,7 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.keys.InstructionDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.InstructionDeserializerKey;
 
 /**
  * @author michal.polkorab

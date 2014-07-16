@@ -17,6 +17,8 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterSerializerKey;
 import org.opendaylight.openflowjava.protocol.impl.core.PublishingChannelInitializerFactory;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
@@ -129,15 +131,15 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     }
 
     @Override
-    public <KEY_TYPE> void registerSerializer(MessageTypeKey<KEY_TYPE> key,
+    public void registerSerializer(ExperimenterSerializerKey key,
             OFGeneralSerializer serializer) {
-        serializerRegistry.registerSerializer(key, serializer);
+        serializerRegistry.registerSerializer((MessageTypeKey<?>) key, serializer);
     }
 
     @Override
-    public void registerDeserializer(MessageCodeKey key,
+    public void registerDeserializer(ExperimenterDeserializerKey key,
             OFGeneralDeserializer deserializer) {
-        deserializerRegistry.registerDeserializer(key, deserializer);
+        deserializerRegistry.registerDeserializer((MessageCodeKey) key, deserializer);
     }
 
     @Override
@@ -146,12 +148,12 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     }
 
     @Override
-    public <KEY_TYPE> boolean unregisterSerializer(MessageTypeKey<KEY_TYPE> key) {
-        return serializerRegistry.unregisterSerializer(key);
+    public boolean unregisterSerializer(ExperimenterSerializerKey key) {
+        return serializerRegistry.unregisterSerializer((MessageTypeKey<?>) key);
     }
 
     @Override
-    public boolean unregisterDeserializer(MessageCodeKey key) {
-        return deserializerRegistry.unregisterDeserializer(key);
+    public boolean unregisterDeserializer(ExperimenterDeserializerKey key) {
+        return deserializerRegistry.unregisterDeserializer((MessageCodeKey) key);
     }
 }

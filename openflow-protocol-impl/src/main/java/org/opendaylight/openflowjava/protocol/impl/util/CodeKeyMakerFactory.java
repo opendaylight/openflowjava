@@ -11,9 +11,9 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
-import org.opendaylight.openflowjava.protocol.api.extensibility.keys.ActionDeserializerKey;
-import org.opendaylight.openflowjava.protocol.api.extensibility.keys.InstructionDeserializerKey;
-import org.opendaylight.openflowjava.protocol.api.extensibility.keys.MatchEntryDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.ActionDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.InstructionDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.MatchEntryDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 
 /**

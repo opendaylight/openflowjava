@@ -8,9 +8,9 @@
 
 package org.opendaylight.openflowjava.protocol.impl.util;
 
-import org.opendaylight.openflowjava.protocol.api.extensibility.keys.ActionSerializerKey;
-import org.opendaylight.openflowjava.protocol.api.extensibility.keys.InstructionSerializerKey;
-import org.opendaylight.openflowjava.protocol.api.extensibility.keys.MatchEntrySerializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.ActionSerializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.InstructionSerializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterMatchEntry;

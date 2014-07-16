@@ -6,35 +6,26 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.api.extensibility.keys;
+package org.opendaylight.openflowjava.protocol.api.keys.experimenter;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 
 /**
  * @author michal.polkorab
  *
  */
-public class MatchEntryDeserializerKey extends MessageCodeKey {
+public class ExperimenterInstructionDeserializerKey extends MessageCodeKey
+        implements ExperimenterDeserializerKey {
 
-    private int oxmField;
     private Long experimenterId;
-
     /**
      * @param version protocol wire version
-     * @param oxmClass oxm_class (see specification)
-     * @param oxmField oxm_field (see specification)
+     * @param experimenterId 
      */
-    public MatchEntryDeserializerKey(short version,
-            int oxmClass, int oxmField) {
-        super(version, oxmClass, MatchEntries.class);
-        this.oxmField = oxmField;
-    }
-
-    /**
-     * @param experimenterId experimenter / vendor ID
-     */
-    public void setExperimenterId(Long experimenterId) {
+    public ExperimenterInstructionDeserializerKey(short version, Long experimenterId) {
+        super(version, EncodeConstants.EXPERIMENTER_VALUE, Instruction.class);
         this.experimenterId = experimenterId;
     }
 
@@ -46,19 +37,17 @@ public class MatchEntryDeserializerKey extends MessageCodeKey {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        MatchEntryDeserializerKey other = (MatchEntryDeserializerKey) obj;
+        ExperimenterInstructionDeserializerKey other = (ExperimenterInstructionDeserializerKey) obj;
         if (experimenterId == null) {
             if (other.experimenterId != null)
                 return false;
         } else if (!experimenterId.equals(other.experimenterId))
-            return false;
-        if (oxmField != other.oxmField)
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return super.toString() + " oxm_field: " + oxmField + " experimenterID: " + experimenterId;
+        return super.toString() + " experimenterID: " + experimenterId;
     }
 }

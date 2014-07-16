@@ -16,7 +16,7 @@ import java.util.List;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.keys.MatchEntryDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.MatchEntryDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OxmFieldsAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OxmFieldsActionBuilder;

@@ -17,7 +17,7 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.keys.MatchEntryDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.MatchEntryDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.util.ByteBufUtils;

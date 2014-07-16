@@ -6,32 +6,29 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.api.extensibility.keys;
+package org.opendaylight.openflowjava.protocol.api.keys.experimenter;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.InstructionBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionBase;
 
 /**
  * @author michal.polkorab
- * @param <TYPE> action type
  */
-public class InstructionSerializerKey<TYPE extends InstructionBase>
-        extends MessageTypeKey<Instruction>{
+public class ExperimenterActionSerializerKey extends MessageTypeKey<Action> 
+        implements ExperimenterSerializerKey {
 
-    private Class<TYPE> instructionType;
+    private Class<? extends ActionBase> actionType;
     private Long experimenterId;
 
     /**
      * @param msgVersion protocol wire version
-     * @param objectType class of serialized object (Instruction.class)
-     * @param instructionType type of instruction
      * @param experimenterId experimenter / vendor ID
      */
-    public InstructionSerializerKey(short msgVersion, Class<TYPE> instructionType,
-            Long experimenterId) {
-        super(msgVersion, Instruction.class);
-        this.instructionType = instructionType;
+    public ExperimenterActionSerializerKey(short msgVersion, Long experimenterId) {
+        super(msgVersion, Action.class);
+        this.actionType = Experimenter.class;
         this.experimenterId = experimenterId;
     }
 
@@ -43,12 +40,11 @@ public class InstructionSerializerKey<TYPE extends InstructionBase>
             return false;
         if (getClass() != obj.getClass())
             return false;
-        @SuppressWarnings("rawtypes")
-        InstructionSerializerKey other = (InstructionSerializerKey) obj;
-        if (instructionType == null) {
-            if (other.instructionType != null)
+        ExperimenterActionSerializerKey other = (ExperimenterActionSerializerKey) obj;
+        if (actionType == null) {
+            if (other.actionType != null)
                 return false;
-        } else if (!instructionType.equals(other.instructionType))
+        } else if (!actionType.equals(other.actionType))
             return false;
         if (experimenterId == null) {
             if (other.experimenterId != null)
@@ -60,7 +56,6 @@ public class InstructionSerializerKey<TYPE extends InstructionBase>
 
     @Override
     public String toString() {
-        return super.toString() + " instructionType type: " + instructionType.getName()
-                + " vendorID: " + experimenterId;
+        return super.toString() + " action type: " + actionType.getName() + " experimenterID: " + experimenterId;
     }
 }
