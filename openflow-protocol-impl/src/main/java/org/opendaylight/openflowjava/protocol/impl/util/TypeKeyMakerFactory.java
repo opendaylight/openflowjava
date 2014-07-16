@@ -11,9 +11,9 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 import org.opendaylight.openflowjava.protocol.api.keys.ActionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.InstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterInstruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterMatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdInstruction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
@@ -39,8 +39,8 @@ public abstract class TypeKeyMakerFactory {
                 key = new MatchEntrySerializerKey<>(getVersion(), entry.getOxmClass(),
                         entry.getOxmMatchField());
                 if (entry.getOxmClass().equals(ExperimenterClass.class)) {
-                    key.setExperimenterId(entry.getAugmentation(ExperimenterMatchEntry.class)
-                            .getExperimenter());
+                    key.setExperimenterId(entry.getAugmentation(ExperimenterIdMatchEntry.class)
+                            .getExperimenter().getValue());
                     return key;
                 }
                 key.setExperimenterId(null);
@@ -59,7 +59,8 @@ public abstract class TypeKeyMakerFactory {
             @Override
             public ActionSerializerKey<?> make(Action entry) {
                 if (entry.getType().equals(Experimenter.class)) {
-                    return new ActionSerializerKey<>(getVersion(), entry.getType(), entry.getAugmentation(ExperimenterAction.class).getExperimenter());
+                    return new ActionSerializerKey<>(getVersion(), entry.getType(),
+                            entry.getAugmentation(ExperimenterIdAction.class).getExperimenter().getValue());
                 }
                 return new ActionSerializerKey<>(getVersion(), entry.getType(), null);
             }
@@ -77,7 +78,9 @@ public abstract class TypeKeyMakerFactory {
             public InstructionSerializerKey<?> make(Instruction entry) {
                 if (entry.getType().equals(org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common
                         .instruction.rev130731.Experimenter.class)) {
-                    return new InstructionSerializerKey<>(getVersion(), entry.getType(), entry.getAugmentation(ExperimenterInstruction.class).getExperimenter());
+                    return new InstructionSerializerKey<>(getVersion(), entry.getType(),
+                            entry.getAugmentation(ExperimenterIdInstruction.class)
+                            .getExperimenter().getValue());
                 }
                 return new InstructionSerializerKey<>(getVersion(), entry.getType(), null);
             }

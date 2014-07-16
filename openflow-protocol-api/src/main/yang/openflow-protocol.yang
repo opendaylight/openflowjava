@@ -213,13 +213,10 @@
                 uses ofHeader;
                 
                 leaf experimenter {
-                    type uint32;
+                    type oft:experimenter-id;
                 }
                 leaf exp_type {
                     type uint32;
-                }
-                leaf data {
-                    type binary;
                 }
             }
         /* Switch configuration messages. */
@@ -682,15 +679,7 @@
                     }
                     case multipart-request-experimenter-case {
                         container multipart-request-experimenter {
-                            leaf experimenter {
-                                type uint32;
-                            }
-                            leaf exp-type {
-                                type uint32;
-                            }
-                            leaf data {
-                                type binary;
-                            }
+                            // empty body - used for experimenter augmentation
                         }
                     }
                 }
@@ -1057,15 +1046,7 @@
                     }
                     case multipart-reply-experimenter-case {
                         container multipart-reply-experimenter {
-                            leaf experimenter {
-                                type uint32;
-                            }
-                            leaf exp-type {
-                                type uint32;
-                            }
-                            leaf data {
-                                type binary;
-                            }
+                            // empty body - used for experimenter augmentation
                         }
                     }
                 }
@@ -1212,6 +1193,9 @@
                 }
             }
             
+            container meter-band-container {
+                uses meter-band-header;
+            }
             grouping meter-band-header {
                 choice meter-band {
                     case meter-band-drop-case {
@@ -1230,12 +1214,6 @@
                     case meter-band-experimenter-case {
                         container meter-band-experimenter {
                             uses meter-band-commons;
-                            leaf experimenter {
-                                type uint32;
-                            }
-                            leaf data {
-                            	type binary;
-                            }
                         }
                     }
                 }

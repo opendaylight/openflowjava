@@ -673,14 +673,15 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                         bandsBuilder.setMeterBand(bandDscpRemarkCaseBuilder.build());
                         break;
                     case 0xFFFF:
-                    	MeterBandExperimenterCaseBuilder bandExperimenterCaseBuilder = new MeterBandExperimenterCaseBuilder();
+                        MeterBandExperimenterCaseBuilder bandExperimenterCaseBuilder = new MeterBandExperimenterCaseBuilder();
                         MeterBandExperimenterBuilder bandExperimenterBuilder = new MeterBandExperimenterBuilder();
-                        bandExperimenterBuilder.setType(MeterBandType.forValue(bandType));
-                        actualLength += input.readUnsignedShort();
-                        bandExperimenterBuilder.setRate(input.readUnsignedInt());
-                        bandExperimenterBuilder.setBurstSize(input.readUnsignedInt());
-                        bandExperimenterBuilder.setExperimenter(input.readUnsignedInt());
-                        bandExperimenterCaseBuilder.setMeterBandExperimenter(bandExperimenterBuilder.build());
+                        // TODO - implement lookup into registry
+//                        bandExperimenterBuilder.setType(MeterBandType.forValue(bandType));
+//                        actualLength += input.readUnsignedShort();
+//                        bandExperimenterBuilder.setRate(input.readUnsignedInt());
+//                        bandExperimenterBuilder.setBurstSize(input.readUnsignedInt());
+//                        bandExperimenterBuilder.setExperimenter(input.readUnsignedInt());
+//                        bandExperimenterCaseBuilder.setMeterBandExperimenter(bandExperimenterBuilder.build());
                         bandsBuilder.setMeterBand(bandExperimenterCaseBuilder.build());
                         break;
                     default:
@@ -697,13 +698,14 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyExperimenterCase setExperimenter(ByteBuf input) {
+     // TODO - implement lookup into registry
     	MultipartReplyExperimenterCaseBuilder caseBuilder = new MultipartReplyExperimenterCaseBuilder();
         MultipartReplyExperimenterBuilder builder = new MultipartReplyExperimenterBuilder();
-        builder.setExperimenter(input.readUnsignedInt());
-        builder.setExpType(input.readUnsignedInt());
-        byte[] data = new byte[input.readableBytes()];
-        input.readBytes(data);
-        builder.setData(data);
+//        builder.setExperimenter(input.readUnsignedInt());
+//        builder.setExpType(input.readUnsignedInt());
+//        byte[] data = new byte[input.readableBytes()];
+//        input.readBytes(data);
+//        builder.setData(data);
         caseBuilder.setMultipartReplyExperimenter(builder.build());
         return caseBuilder.build();
     }

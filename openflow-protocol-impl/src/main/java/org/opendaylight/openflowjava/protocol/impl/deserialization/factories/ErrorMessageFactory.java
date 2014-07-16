@@ -15,7 +15,7 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegi
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterError;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdError;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.BadActionCode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.BadInstructionCode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.BadMatchCode;
@@ -55,10 +55,10 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage>,
         ErrorType errorType = ErrorType.forValue(type);
         if (ErrorType.EXPERIMENTER.equals(errorType)) {
             builder.setType(errorType.getIntValue());
-            OFDeserializer<ExperimenterError> deserializer = registry.getDeserializer(new MessageCodeKey(
+            OFDeserializer<ExperimenterIdError> deserializer = registry.getDeserializer(new MessageCodeKey(
                     EncodeConstants.OF13_VERSION_ID, EncodeConstants.EXPERIMENTER_VALUE, ErrorMessage.class));
-            ExperimenterError error = deserializer.deserialize(rawMessage);
-            builder.addAugmentation(ExperimenterError.class, error);
+            ExperimenterIdError error = deserializer.deserialize(rawMessage);
+            builder.addAugmentation(ExperimenterIdError.class, error);
         } else {
             decodeType(builder, errorType, type);
             decodeCode(rawMessage, builder, errorType);

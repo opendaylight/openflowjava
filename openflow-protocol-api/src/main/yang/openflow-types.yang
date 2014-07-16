@@ -226,7 +226,13 @@
     typedef ether-type {
         type uint16;
     }
-
+    typedef experimenter-id {
+        description "This type represents experimenter ID used in experimenter messages.
+                     It also represents vendor ID - as it is the same for OF version 1.3+.
+                     (VENDOR naming convention has been changed in OF v1.3 specification
+                      to EXPERIMENTER)";
+        type uint32;
+    }
     typedef error-type {
         type enumeration {
             enum HELLO_FAILED {

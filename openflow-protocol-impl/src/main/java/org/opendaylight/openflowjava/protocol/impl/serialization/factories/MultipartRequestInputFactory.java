@@ -24,7 +24,7 @@ import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMaker;
 import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMakerFactory;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeatureProperty;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterMatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.NextTableRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OxmRelatedTableFeatureProperty;
@@ -442,7 +442,8 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
                 MatchEntrySerializerKey<?, ?> key = new MatchEntrySerializerKey<>(
                         EncodeConstants.OF13_VERSION_ID, entry.getOxmClass(), entry.getOxmMatchField());
                 if (entry.getOxmClass().equals(ExperimenterClass.class)) {
-                    key.setExperimenterId(entry.getAugmentation(ExperimenterMatchEntry.class).getExperimenter());
+                    key.setExperimenterId(entry.getAugmentation(ExperimenterIdMatchEntry.class)
+                            .getExperimenter().getValue());
                 } else {
                     key.setExperimenterId(null);
                 }

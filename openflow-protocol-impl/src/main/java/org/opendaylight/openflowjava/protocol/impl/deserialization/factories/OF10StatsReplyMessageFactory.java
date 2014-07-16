@@ -296,12 +296,13 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MultipartReplyExperimenterCase setExperimenter(ByteBuf input) {
-    	MultipartReplyExperimenterCaseBuilder caseBuilder = new MultipartReplyExperimenterCaseBuilder();
+        // TODO - implement lookup into registry
+        MultipartReplyExperimenterCaseBuilder caseBuilder = new MultipartReplyExperimenterCaseBuilder();
         MultipartReplyExperimenterBuilder builder = new MultipartReplyExperimenterBuilder();
-        builder.setExperimenter(input.readUnsignedInt());
-        byte[] data = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
-        input.readBytes(data);
-        builder.setData(data);
+//        builder.setExperimenter(input.readUnsignedInt());
+//        byte[] data = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
+//        input.readBytes(data);
+//        builder.setData(data);
         caseBuilder.setMultipartReplyExperimenter(builder.build());
         return caseBuilder.build();
     }

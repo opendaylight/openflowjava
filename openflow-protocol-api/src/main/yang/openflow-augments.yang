@@ -176,9 +176,9 @@
          }
      }
      augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "experimenter-match-entry";
+         ext:augment-identifier "experimenter-id-match-entry";
          leaf experimenter {
-             type uint32;
+             type oft:experimenter-id;
          }
      }
      augment "/oxm:oxm-container/oxm:match-entries" {
@@ -248,12 +248,9 @@
          uses oxm:oxm-fields-grouping;
      }
      augment "/ofaction:actions-container/ofaction:action" {
-         ext:augment-identifier "experimenter-action";
+         ext:augment-identifier "experimenter-id-action";
          leaf experimenter {
-             type uint32;
-         }
-         leaf data {
-             type binary;
+             type oft:experimenter-id;
          }
      }
      // OF1.0 structures
@@ -311,15 +308,12 @@
          uses oxm:oxm-fields-grouping;
      }
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
-         ext:augment-identifier "experimenter-related-table-feature-property";
+         ext:augment-identifier "experimenter-id-table-feature-property";
          leaf experimenter {
-             type uint32;
+             type oft:experimenter-id;
          }
          leaf exp-type {
              type uint32;
-         }
-         leaf data {
-             type binary;
          }
      }
 
@@ -350,12 +344,9 @@
          }
      }
      augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
-         ext:augment-identifier "experimenter-instruction";
+         ext:augment-identifier "experimenter-id-instruction";
          leaf experimenter {
-             type uint32;
-         }
-         leaf data {
-             type binary;
+             type oft:experimenter-id;
          }
      }
      
@@ -367,27 +358,45 @@
          }
      }
      augment "/ofproto:queue-prop-container/ofproto:queue-property" {
-         ext:augment-identifier "experimenter-queue-property";
+         ext:augment-identifier "experimenter-id-queue-property";
          leaf experimenter {
-             type uint32;
-         }
-         leaf data {
-             type binary;
+             type oft:experimenter-id;
          }
      }
      
 // OFP_ERROR_AUGMENTS (only experimenter till OpenFlow v1.3)
-    augment "/ofproto:error-message" {
-         ext:augment-identifier "experimenter-error";
-         leaf exp_type {
-             type uint16;
-         }
+     augment "/ofproto:error-message" {
+         ext:augment-identifier "experimenter-id-error";
          leaf experimenter {
-             type uint32;
-         }
-         leaf exp-data {
-             type binary;
+             type oft:experimenter-id;
          }
      }
 
+// OFP_MULTIPART AUGMENTS
+     augment "/ofproto:multipart-request/input/ofproto:multipart-request-body/ofproto:multipart-request-experimenter-case/ofproto:multipart-request-experimenter" {
+         ext:augment-identifier "experimenter-id-multipart-request";
+         leaf experimenter {
+             type oft:experimenter-id;
+         }
+         leaf exp-type {
+             type uint32;
+         }
+     }
+     augment "/ofproto:multipart-reply-message/ofproto:multipart-reply-body/ofproto:multipart-reply-experimenter-case/ofproto:multipart-reply-experimenter" {
+         ext:augment-identifier "experimenter-id-multipart-reply";
+         leaf experimenter {
+             type oft:experimenter-id;
+         }
+         leaf exp-type {
+             type uint32;
+         }
+     }
+
+// OFP_METER_BAND AUGMENTS
+     augment "/ofproto:meter-band-container/ofproto:meter-band/ofproto:meter-band-experimenter-case/ofproto:meter-band-experimenter" {
+         ext:augment-identifier "experimenter-id-meter-band";
+         leaf experimenter {
+             type oft:experimenter-id;
+         }
+     }
 }
