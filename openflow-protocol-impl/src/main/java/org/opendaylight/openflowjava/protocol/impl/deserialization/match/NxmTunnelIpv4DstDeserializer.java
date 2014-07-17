@@ -7,9 +7,9 @@
  */
 package org.opendaylight.openflowjava.protocol.impl.deserialization.match;
 
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Clazz;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Nxm1Class;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmClassBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.TunnelIpv4Dst;
 
 /**
@@ -24,7 +24,7 @@ public class NxmTunnelIpv4DstDeserializer extends AbstractOxmIpv4AddressDeserial
     }
 
     @Override
-    protected Class<? extends Clazz> getOxmClass() {
+    protected Class<? extends OxmClassBase> getOxmClass() {
         return Nxm1Class.class;
     }
 }

@@ -10,14 +10,14 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Clazz;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmClassBase;
 
 /**
  * @author michal.polkorab
  * @param <OXM_CLASS> OXM class
  */
-public class MatchEntrySerializerRegistryHelper<OXM_CLASS extends Clazz> {
+public class MatchEntrySerializerRegistryHelper<OXM_CLASS extends OxmClassBase> {
 
     private short version;
     private Class<OXM_CLASS> generalClass;

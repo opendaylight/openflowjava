@@ -26,27 +26,27 @@
     }
     
     // oxm classes
-        identity clazz {
+        identity oxm-class-base {
             description "Base identity for OXM classes";
         }
 
         identity nxm-0-class {
             description "Match class for backward compatibility with NXM";
-            base clazz;
+            base oxm-class-base;
         }
         identity nxm-1-class {
             description "Match class for backward compatibility with NXM";
-            base clazz;
+            base oxm-class-base;
         }
         identity openflow-basic-class {
             description "Basic class for OpenFlow";
-            base clazz;
+            base oxm-class-base;
         }
         identity experimenter-class {
             description 
                 "Marks Experimenter match type class.
                 All experimenter match classes MUST use this class as a base.";
-            base clazz;
+            base oxm-class-base;
         }
 
     // field types
@@ -236,7 +236,7 @@
                 config false;
                 leaf oxm-class {
                     type identityref {
-                        base clazz;
+                        base oxm-class-base;
                     }
                 }
                 leaf oxm-match-field {
