@@ -17,7 +17,13 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.keys.MatchEntryDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterActionDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterActionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterInstructionDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterInstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterSerializerKey;
 import org.opendaylight.openflowjava.protocol.impl.core.PublishingChannelInitializerFactory;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler;
@@ -26,6 +32,8 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerR
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmClassBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,5 +163,41 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     @Override
     public boolean unregisterDeserializer(ExperimenterDeserializerKey key) {
         return deserializerRegistry.unregisterDeserializer((MessageCodeKey) key);
+    }
+
+    @Override
+    public void registerActionSerializer(ExperimenterActionSerializerKey key,
+            OFGeneralSerializer serializer) {
+        registerSerializer(key, serializer);
+    }
+
+    @Override
+    public void registerActionDeserializer(ExperimenterActionDeserializerKey key,
+            OFGeneralDeserializer deserializer) {
+        registerDeserializer(key, deserializer);
+    }
+
+    @Override
+    public void registerInstructionSerializer(ExperimenterInstructionSerializerKey key,
+            OFGeneralSerializer serializer) {
+        registerSerializer(key, serializer);
+    }
+
+    @Override
+    public void registerInstructionDeserializer(ExperimenterInstructionDeserializerKey key,
+            OFGeneralDeserializer deserializer) {
+        registerDeserializer(key, deserializer);
+    }
+
+    @Override
+    public <OXM_CLASS extends OxmClassBase, OXM_TYPE extends MatchField> void registerMatchEntrySerializer(MatchEntrySerializerKey<OXM_CLASS, OXM_TYPE> key,
+            OFGeneralSerializer serializer) {
+        registerSerializer(key, serializer);
+    }
+
+    @Override
+    public void registerMatchEntryDeserializer(MatchEntryDeserializerKey key,
+            OFGeneralDeserializer deserializer) {
+        registerDeserializer(key, deserializer);
     }
 }
