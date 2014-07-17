@@ -180,8 +180,8 @@ final class ChannelOutboundQueue extends ChannelInboundHandlerAdapter {
                 break;
             }
 
-            final ChannelFuture p = channel.write(h.takeMessage());
             final GenericFutureListener<Future<Void>> l = h.takeListener();
+            final ChannelFuture p = channel.write(new MessageListenerWrapper(h.takeMessage(), l));
             if (l != null) {
                 p.addListener(l);
             }

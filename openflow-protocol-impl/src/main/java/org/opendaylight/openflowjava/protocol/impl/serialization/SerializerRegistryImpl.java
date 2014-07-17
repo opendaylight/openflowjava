@@ -61,8 +61,9 @@ public class SerializerRegistryImpl implements SerializerRegistry {
             MessageTypeKey<KEY_TYPE> msgTypeKey) {
         OFGeneralSerializer serializer = registry.get(msgTypeKey);
         if (serializer == null) {
-            throw new NullPointerException("Serializer for key: " + msgTypeKey.toString()
-                    + " was not found");
+            throw new IllegalArgumentException("Serializer for key: {}" + msgTypeKey.toString()
+                    + " was not found - please verify that you are using correct message"
+                    + " combination (e.g. OF v1.0 message to OF v1.0 device)");
         }
         return (SERIALIZER_TYPE) serializer;
     }
@@ -71,7 +72,7 @@ public class SerializerRegistryImpl implements SerializerRegistry {
     public <KEY_TYPE> void registerSerializer(
             MessageTypeKey<KEY_TYPE> msgTypeKey, OFGeneralSerializer serializer) {
         if ((msgTypeKey == null) || (serializer == null)) {
-            throw new NullPointerException("MessageTypeKey or Serializer is null");
+            throw new IllegalArgumentException("MessageTypeKey or Serializer is null");
         }
         if (serializer instanceof SerializerRegistryInjector) {
             ((SerializerRegistryInjector) serializer).injectSerializerRegistry(this);
@@ -82,7 +83,7 @@ public class SerializerRegistryImpl implements SerializerRegistry {
     @Override
     public <KEY_TYPE> boolean unregisterSerializer(MessageTypeKey<KEY_TYPE> msgTypeKey) {
         if (msgTypeKey == null) {
-            throw new NullPointerException("MessageTypeKey is null");
+            throw new IllegalArgumentException("MessageTypeKey is null");
         }
         OFGeneralSerializer serializer = registry.remove(msgTypeKey);
         if (serializer == null) {

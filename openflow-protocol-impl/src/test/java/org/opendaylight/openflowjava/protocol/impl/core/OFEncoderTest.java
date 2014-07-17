@@ -16,12 +16,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.connection.MessageListenerWrapper;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -34,8 +38,11 @@ public class OFEncoderTest {
 
     @Mock ChannelHandlerContext mockChHndlrCtx ;
     @Mock SerializationFactory mockSerializationFactory ;
+    @Mock MessageListenerWrapper wrapper;
     @Mock OfHeader mockMsg ;
     @Mock ByteBuf mockOut ;
+    @Mock Future<Void> future;
+    @Mock GenericFutureListener<Future<Void>> listener;
 
     OFEncoder ofEncoder = new OFEncoder() ;
 
@@ -55,8 +62,10 @@ public class OFEncoderTest {
     @Test
     public void testEncodeSuccess() {
         when(mockOut.readableBytes()).thenReturn(1);
+        when(wrapper.getMsg()).thenReturn(mockMsg);
+        when(wrapper.getMsg().getVersion()).thenReturn((short) EncodeConstants.OF13_VERSION_ID);
         try {
-            ofEncoder.encode(mockChHndlrCtx, mockMsg, mockOut);
+            ofEncoder.encode(mockChHndlrCtx, wrapper, mockOut);
         } catch (Exception e) {
             Assert.fail();
         }
@@ -70,9 +79,12 @@ public class OFEncoderTest {
      */
     @Test
     public void testEncodeSerializationException() {
+        when(wrapper.getMsg()).thenReturn(mockMsg);
+        when(wrapper.getListener()).thenReturn(listener);
+        when(wrapper.getMsg().getVersion()).thenReturn((short) EncodeConstants.OF13_VERSION_ID);
         doThrow(new IllegalArgumentException()).when(mockSerializationFactory).messageToBuffer(anyShort(),any(ByteBuf.class), any(DataObject.class));
         try {
-            ofEncoder.encode(mockChHndlrCtx, mockMsg, mockOut);
+            ofEncoder.encode(mockChHndlrCtx, wrapper, mockOut);
         } catch (Exception e) {
             Assert.fail();
         }
@@ -87,8 +99,10 @@ public class OFEncoderTest {
     @Test
     public void testEncodeSerializesNoBytes() {
         when(mockOut.readableBytes()).thenReturn(0);
+        when(wrapper.getMsg()).thenReturn(mockMsg);
+        when(wrapper.getMsg().getVersion()).thenReturn((short) EncodeConstants.OF13_VERSION_ID);
         try {
-            ofEncoder.encode(mockChHndlrCtx, mockMsg, mockOut);
+            ofEncoder.encode(mockChHndlrCtx, wrapper, mockOut);
         } catch (Exception e) {
             Assert.fail();
         }

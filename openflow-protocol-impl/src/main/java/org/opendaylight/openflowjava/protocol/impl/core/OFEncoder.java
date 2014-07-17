@@ -11,9 +11,10 @@ package org.opendaylight.openflowjava.protocol.impl.core;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import io.netty.util.concurrent.Future;
 
+import org.opendaylight.openflowjava.protocol.impl.connection.MessageListenerWrapper;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * @author michal.polkorab
  * @author timotej.kubas
  */
-public class OFEncoder extends MessageToByteEncoder<OfHeader> {
+public class OFEncoder extends MessageToByteEncoder<MessageListenerWrapper> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OFEncoder.class);
     private SerializationFactory serializationFactory;
@@ -33,14 +34,15 @@ public class OFEncoder extends MessageToByteEncoder<OfHeader> {
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, OfHeader msg, ByteBuf out)
+    protected void encode(ChannelHandlerContext ctx, MessageListenerWrapper wrapper, ByteBuf out)
             throws Exception {
         LOGGER.trace("Encoding");
         try {
-            serializationFactory.messageToBuffer(msg.getVersion(), out, msg);
+            serializationFactory.messageToBuffer(wrapper.getMsg().getVersion(), out, wrapper.getMsg());
         } catch(Exception e) {
-            LOGGER.error("Message serialization failed");
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.warn("Message serialization failed: {}", e.getMessage());
+            Future<Void> newFailedFuture = ctx.newFailedFuture(e);
+            wrapper.getListener().operationComplete(newFailedFuture);
             out.clear();
             return;
         }
