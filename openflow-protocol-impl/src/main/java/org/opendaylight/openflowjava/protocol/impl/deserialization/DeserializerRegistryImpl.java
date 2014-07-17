@@ -59,7 +59,7 @@ public class DeserializerRegistryImpl implements DeserializerRegistry {
         OFGeneralDeserializer deserializer = registry.get(key);
         if (deserializer == null) {
             throw new NullPointerException("Deserializer for key: " + key.toString()
-                    + " was not found");
+                    + " was not found - please verify that all needed deserializers ale loaded correctly");
         }
         return (DESERIALIZER_TYPE) deserializer;
     }
@@ -68,7 +68,7 @@ public class DeserializerRegistryImpl implements DeserializerRegistry {
     public void registerDeserializer(MessageCodeKey key,
             OFGeneralDeserializer deserializer) {
         if ((key == null) || (deserializer == null)) {
-            throw new NullPointerException("MessageCodeKey or Deserializer is null");
+            throw new IllegalArgumentException("MessageCodeKey or Deserializer is null");
         }
         if (deserializer instanceof DeserializerRegistryInjector) {
             ((DeserializerRegistryInjector) deserializer).injectDeserializerRegistry(this);
@@ -79,7 +79,7 @@ public class DeserializerRegistryImpl implements DeserializerRegistry {
     @Override
     public boolean unregisterDeserializer(MessageCodeKey key) {
         if (key == null) {
-            throw new NullPointerException("MessageCodeKey is null");
+            throw new IllegalArgumentException("MessageCodeKey is null");
         }
         OFGeneralDeserializer deserializer = registry.remove(key);
         if (deserializer == null) {
