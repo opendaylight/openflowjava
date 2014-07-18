@@ -226,25 +226,20 @@ public abstract class ByteBufUtils {
      * @param macAddress
      * @return byte representation of mac address
      * @see {@link MacAddress}
-     *
-     * FIXME: this method does not support shortened values, e.g.
-     *        "0:1:2:3:4:5", only "00:11:22:33:44:55".
      */
     public static byte[] macAddressToBytes(final String macAddress) {
-        final byte[] result = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
-        final char[] mac = macAddress.toCharArray();
+        String[] octets = macAddress.split(":");
+        byte[] ret = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
+        if (octets.length > EncodeConstants.MAC_ADDRESS_LENGTH)
+            throw new NumberFormatException("MAC address too long");
 
-        int offset = 0;
-        for (int i = 0; i < EncodeConstants.MAC_ADDRESS_LENGTH - 1; ++i) {
-            result[i] = UnsignedBytes.checkedCast(
-                    (hexValue(mac[offset++]) << 4) | hexValue(mac[offset++]));
-            Preconditions.checkArgument(mac[offset] == ':', "Invalid value: %s", macAddress);
-            offset++;
+        int offset = (EncodeConstants.MAC_ADDRESS_LENGTH - octets.length);
+        for(int i = 0; i < octets.length; i++) {
+            if (octets[i].length() > 2)
+                throw new NumberFormatException("Invalid octet length");
+            ret[i+offset] = Integer.valueOf(octets[i], 16).byteValue();
         }
-
-        result[EncodeConstants.MAC_ADDRESS_LENGTH - 1] =
-                UnsignedBytes.checkedCast(hexValue(mac[offset++]) << 4 | hexValue(mac[offset]));
-        return result;
+        return ret;
     }
 
     private static final void appendHexByte(final StringBuilder sb, final byte b) {
