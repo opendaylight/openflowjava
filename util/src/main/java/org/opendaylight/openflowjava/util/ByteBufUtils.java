@@ -226,24 +226,42 @@ public abstract class ByteBufUtils {
      * @param macAddress
      * @return byte representation of mac address
      * @see {@link MacAddress}
-     *
-     * FIXME: this method does not support shortened values, e.g.
-     *        "0:1:2:3:4:5", only "00:11:22:33:44:55".
      */
     public static byte[] macAddressToBytes(final String macAddress) {
         final byte[] result = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
         final char[] mac = macAddress.toCharArray();
 
-        int offset = 0;
-        for (int i = 0; i < EncodeConstants.MAC_ADDRESS_LENGTH - 1; ++i) {
-            result[i] = UnsignedBytes.checkedCast(
-                    (hexValue(mac[offset++]) << 4) | hexValue(mac[offset++]));
-            Preconditions.checkArgument(mac[offset] == ':', "Invalid value: %s", macAddress);
-            offset++;
-        }
+        try {
+            int offset1 = 0;
+            int offset2 = 1;
+            for (int i = 0; i < EncodeConstants.MAC_ADDRESS_LENGTH - 1; ++i) {
+                if (mac[offset1 + EncodeConstants.SIZE_OF_BYTE_IN_BYTES] == ':') {
+                    result[i] = UnsignedBytes.checkedCast(hexValue(mac[offset1]));
+                    offset1++;
+                } else {
+                    result[i] = UnsignedBytes.checkedCast(
+                            (hexValue(mac[offset1]) << 4) | hexValue(mac[offset2]));
+                    offset1 += 2;
+                }
+                Preconditions.checkArgument(mac[offset1] == ':', "Invalid value: %s", macAddress);
+                offset1++;
+                offset2 = offset1 + 1;
+            }
 
-        result[EncodeConstants.MAC_ADDRESS_LENGTH - 1] =
-                UnsignedBytes.checkedCast(hexValue(mac[offset++]) << 4 | hexValue(mac[offset]));
+            if (offset1 == (mac.length - 1)) {
+                result[EncodeConstants.MAC_ADDRESS_LENGTH - 1] = UnsignedBytes.checkedCast(hexValue(mac[offset1]));
+            } else {
+                result[EncodeConstants.MAC_ADDRESS_LENGTH - 1] =
+                        UnsignedBytes.checkedCast(hexValue(mac[offset1]) << 4 | hexValue(mac[offset2]));
+                offset1++;
+            }
+            if (offset1 != (mac.length -1)) {
+                throw new IllegalArgumentException("Incorrect MAC address length");
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Unable to serialize MAC address for input: " + macAddress
+                    + ". \n" + e);
+        }
         return result;
     }
 
