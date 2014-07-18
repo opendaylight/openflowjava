@@ -219,6 +219,25 @@ public class ByteBufUtilsTest {
     public void testMacToBytes() {
         Assert.assertArrayEquals("Wrong byte array", new byte[]{0, 1, 2, 3, (byte) 255, 5},
                 ByteBufUtils.macAddressToBytes("00:01:02:03:FF:05"));
+        Assert.assertArrayEquals("Wrong byte array", new byte[]{0, 1, 2, 3, (byte) 255, 5},
+                ByteBufUtils.macAddressToBytes("01:02:03:FF:05"));
+        Assert.assertArrayEquals("Wrong byte array", new byte[]{0, 1, 2, 3, (byte) 255, 5},
+                ByteBufUtils.macAddressToBytes("1:2:3:FF:5"));
+    }
+
+    @Test(expected=NumberFormatException.class)
+    public void testMacToBytesTooLong() {
+        ByteBufUtils.macAddressToBytes("00:01:02:03:FF:05:85");
+    }
+
+    @Test(expected=NumberFormatException.class)
+    public void testMacToBytesInvalidOctet() {
+        ByteBufUtils.macAddressToBytes("00:01:02:03:FF:05d");
+    }
+
+    @Test(expected=NumberFormatException.class)
+    public void testMacToBytesInvalidOctet2() {
+        ByteBufUtils.macAddressToBytes("00:01:rr:03:FF:05");
     }
 
     /**
