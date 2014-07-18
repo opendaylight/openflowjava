@@ -40,7 +40,7 @@ public class OFEncoder extends MessageToByteEncoder<MessageListenerWrapper> {
         try {
             serializationFactory.messageToBuffer(wrapper.getMsg().getVersion(), out, wrapper.getMsg());
         } catch(Exception e) {
-            LOGGER.warn("Message serialization failed: {}", e.getMessage());
+            LOGGER.warn("Message serialization failed ", e);
             Future<Void> newFailedFuture = ctx.newFailedFuture(e);
             wrapper.getListener().operationComplete(newFailedFuture);
             out.clear();
