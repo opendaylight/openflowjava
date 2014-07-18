@@ -8,9 +8,12 @@
 
 package org.opendaylight.openflowjava.protocol.impl.util;
 
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ActionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.InstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterActionSerializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterInstructionSerializerKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdMatchEntry;
@@ -57,9 +60,9 @@ public abstract class TypeKeyMakerFactory {
     public static TypeKeyMaker<Action> createActionKeyMaker(short version) {
         return new AbstractTypeKeyMaker<Action>(version) {
             @Override
-            public ActionSerializerKey<?> make(Action entry) {
+            public MessageTypeKey<?> make(Action entry) {
                 if (entry.getType().equals(Experimenter.class)) {
-                    return new ActionSerializerKey<>(getVersion(), entry.getType(),
+                    return new ExperimenterActionSerializerKey(getVersion(),
                             entry.getAugmentation(ExperimenterIdAction.class).getExperimenter().getValue());
                 }
                 return new ActionSerializerKey<>(getVersion(), entry.getType(), null);
@@ -75,10 +78,10 @@ public abstract class TypeKeyMakerFactory {
     public static TypeKeyMaker<Instruction> createInstructionKeyMaker(short version) {
         return new AbstractTypeKeyMaker<Instruction>(version) {
             @Override
-            public InstructionSerializerKey<?> make(Instruction entry) {
+            public MessageTypeKey<?> make(Instruction entry) {
                 if (entry.getType().equals(org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common
                         .instruction.rev130731.Experimenter.class)) {
-                    return new InstructionSerializerKey<>(getVersion(), entry.getType(),
+                    return new ExperimenterInstructionSerializerKey(getVersion(),
                             entry.getAugmentation(ExperimenterIdInstruction.class)
                             .getExperimenter().getValue());
                 }

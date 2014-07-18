@@ -14,6 +14,8 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ActionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.InstructionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntryDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterActionDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterInstructionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 
 /**
@@ -59,7 +61,7 @@ public abstract class CodeKeyMakerFactory {
                 if (type == EncodeConstants.EXPERIMENTER_VALUE) {
                     Long expId = input.getUnsignedInt(input.readerIndex()
                             + 2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-                    return new ActionDeserializerKey(getVersion(), type, expId);
+                    return new ExperimenterActionDeserializerKey(getVersion(), expId);
                 }
                 ActionDeserializerKey actionDeserializerKey = new ActionDeserializerKey(getVersion(), type, null);
                 return actionDeserializerKey;
@@ -79,7 +81,7 @@ public abstract class CodeKeyMakerFactory {
                 if (type == EncodeConstants.EXPERIMENTER_VALUE) {
                     Long expId = input.getUnsignedInt(input.readerIndex()
                             + 2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-                    return new InstructionDeserializerKey(getVersion(), type, expId);
+                    return new ExperimenterInstructionDeserializerKey(getVersion(), expId);
                 }
                 return new InstructionDeserializerKey(getVersion(), type, null);
             }
