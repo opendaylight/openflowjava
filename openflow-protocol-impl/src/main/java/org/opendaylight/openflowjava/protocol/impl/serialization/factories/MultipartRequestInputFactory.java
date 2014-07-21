@@ -280,7 +280,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         if (multipartRequestBody != null) {
             MultipartRequestTableFeaturesCase tableFeaturesCase = (MultipartRequestTableFeaturesCase) multipartRequestBody;
             MultipartRequestTableFeatures tableFeatures = tableFeaturesCase.getMultipartRequestTableFeatures();
-            if(tableFeatures.getTableFeatures() != null) {
+            if(! tableFeatures.getTableFeatures().isEmpty()) {
                 for (TableFeatures currTableFeature : tableFeatures.getTableFeatures()) {
                     int tableFeatureLengthIndex = output.writerIndex();
                     output.writeShort(EncodeConstants.EMPTY_LENGTH);
@@ -300,7 +300,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
     }
 
     private void writeTableFeatureProperties(final ByteBuf output, final List<TableFeatureProperties> props) {
-        if (props != null) {
+        if (! props.isEmpty()) {
             for (TableFeatureProperties property : props) {
                 TableFeaturesPropType type = property.getType();
                 if (type.equals(TableFeaturesPropType.OFPTFPTINSTRUCTIONS)) {
@@ -347,7 +347,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
                 getAugmentation(InstructionRelatedTableFeatureProperty.class).getInstruction();
         int length = TABLE_FEAT_HEADER_LENGTH;
         int padding = 0;
-        if (instructions != null) {
+        if (! instructions.isEmpty()) {
             for (Instruction instruction : instructions) {
                 if (instruction.getType().isAssignableFrom(Experimenter.class)) {
                     length += EncodeConstants.EXPERIMENTER_IDS_LENGTH;
@@ -374,7 +374,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
                 getAugmentation(NextTableRelatedTableFeatureProperty.class).getNextTableIds();
         int length = TABLE_FEAT_HEADER_LENGTH;
         int padding = 0;
-        if (nextTableIds != null) {
+        if (! nextTableIds.isEmpty()) {
             length += nextTableIds.size();
             padding = paddingNeeded(length);
             output.writeShort(length);
@@ -404,7 +404,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
                 getAugmentation(ActionRelatedTableFeatureProperty.class).getAction();
         int length = TABLE_FEAT_HEADER_LENGTH;
         int padding = 0;
-        if (actions != null) {
+        if (! actions.isEmpty()) {
             for (Action action : actions) {
                 if (action.getType().isAssignableFrom(Experimenter.class)) {
                     length += EncodeConstants.EXPERIMENTER_IDS_LENGTH;
@@ -432,7 +432,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
                 getAugmentation(OxmRelatedTableFeatureProperty.class).getMatchEntries();
         int length = TABLE_FEAT_HEADER_LENGTH;
         int padding = 0;
-        if (entries != null) {
+        if (! entries.isEmpty()) {
             // experimenter length / definition ?
             length += entries.size() * STRUCTURE_HEADER_LENGTH;
             padding = paddingNeeded(length);

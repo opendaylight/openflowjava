@@ -45,7 +45,7 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupModInput>,
     }
 
     private void serializerBuckets(List<BucketsList> buckets, ByteBuf outBuffer) {
-        if (buckets != null) {
+        if (! buckets.isEmpty()) {
             for (BucketsList currentBucket : buckets) {
                 int bucketLengthIndex = outBuffer.writerIndex();
                 outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);

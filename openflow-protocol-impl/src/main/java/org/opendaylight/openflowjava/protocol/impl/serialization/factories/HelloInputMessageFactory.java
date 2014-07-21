@@ -30,7 +30,7 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
 
     private static void serializeElementsList(HelloInput message, ByteBuf output) {
         int[] versionBitmap;
-        if (message.getElements() != null) {
+        if (! message.getElements().isEmpty()) {
             for (Elements currElement : message.getElements()) {
                 int elementStartIndex = output.writerIndex();
                 output.writeShort(currElement.getType().getIntValue());

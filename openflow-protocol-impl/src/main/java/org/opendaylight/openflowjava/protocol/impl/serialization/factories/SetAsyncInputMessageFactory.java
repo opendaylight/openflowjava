@@ -43,10 +43,10 @@ public class SetAsyncInputMessageFactory implements OFSerializer<SetAsyncInput> 
     }
 
     private static void serializePacketInMask(List<PacketInMask> packetInMask, ByteBuf outBuffer) {
-        if (packetInMask != null) {
+        if (! packetInMask.isEmpty()) {
             for (PacketInMask currentPacketMask : packetInMask) {
                 List<PacketInReason> mask = currentPacketMask.getMask();
-                if (mask != null)  {
+                if (! mask.isEmpty())  {
                     Map<Integer, Boolean> packetInReasonMap = new HashMap<>();
                     for (PacketInReason packetInReason : mask) {
                         if (PacketInReason.OFPRNOMATCH.equals(packetInReason)) {
@@ -58,16 +58,18 @@ public class SetAsyncInputMessageFactory implements OFSerializer<SetAsyncInput> 
                         }
                     }
                     outBuffer.writeInt(ByteBufUtils.fillBitMaskFromMap(packetInReasonMap));
+                } else {
+                    outBuffer.writeInt(EncodeConstants.EMPTY_VALUE);
                 }
             }
         }
     }
     
     private static void serializePortStatusMask(List<PortStatusMask> portStatusMask, ByteBuf outBuffer) {
-        if (portStatusMask != null) {
+        if (! portStatusMask.isEmpty()) {
             for (PortStatusMask currentPortStatusMask : portStatusMask) {
                 List<PortReason> mask = currentPortStatusMask.getMask();
-                if (mask != null)  {
+                if (! mask.isEmpty())  {
                     Map<Integer, Boolean> portStatusReasonMap = new HashMap<>();
                     for (PortReason packetInReason : mask) {
                         if (PortReason.OFPPRADD.equals(packetInReason)) {
@@ -79,16 +81,18 @@ public class SetAsyncInputMessageFactory implements OFSerializer<SetAsyncInput> 
                         }
                     }
                     outBuffer.writeInt(ByteBufUtils.fillBitMaskFromMap(portStatusReasonMap));
+                } else {
+                    outBuffer.writeInt(EncodeConstants.EMPTY_VALUE);
                 }
             }
         }
     }
     
     private static void serializerFlowRemovedMask(List<FlowRemovedMask> flowRemovedMask, ByteBuf outBuffer) {
-        if (flowRemovedMask != null) {
+        if (! flowRemovedMask.isEmpty()) {
             for (FlowRemovedMask currentFlowRemovedMask : flowRemovedMask) {
                 List<FlowRemovedReason> mask = currentFlowRemovedMask.getMask();
-                if (mask != null)  {
+                if (! mask.isEmpty())  {
                     Map<Integer, Boolean> flowRemovedReasonMap = new HashMap<>();
                     for (FlowRemovedReason packetInReason : mask) {
                         if (FlowRemovedReason.OFPRRIDLETIMEOUT.equals(packetInReason)) {
@@ -102,6 +106,8 @@ public class SetAsyncInputMessageFactory implements OFSerializer<SetAsyncInput> 
                         }
                     }
                     outBuffer.writeInt(ByteBufUtils.fillBitMaskFromMap(flowRemovedReasonMap));
+                } else {
+                    outBuffer.writeInt(EncodeConstants.EMPTY_VALUE);
                 }
             }
         }

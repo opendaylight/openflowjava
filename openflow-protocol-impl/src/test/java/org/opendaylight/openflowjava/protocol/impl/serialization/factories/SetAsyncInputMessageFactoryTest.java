@@ -79,7 +79,7 @@ public class SetAsyncInputMessageFactoryTest {
         Assert.assertEquals("Wrong packetInMask", 5, out.readUnsignedInt());
         Assert.assertEquals("Wrong packetInMask", 7, out.readUnsignedInt());
         Assert.assertEquals("Wrong portStatusMask", 6, out.readUnsignedInt());
-        Assert.assertEquals("Wrong portStatusMask", 0, out.readUnsignedInt());
+        Assert.assertEquals("Wrong portStatusMask", 1, out.readUnsignedInt());
         Assert.assertEquals("Wrong flowRemovedMask", 10, out.readUnsignedInt());
         Assert.assertEquals("Wrong flowRemovedMask", 5, out.readUnsignedInt());
         
@@ -119,6 +119,7 @@ public class SetAsyncInputMessageFactoryTest {
         // OFPCR_ROLE_SLAVE
         builder = new PortStatusMaskBuilder();
         portReasonList = new ArrayList<>();
+        portReasonList.add(PortReason.OFPPRADD);
         builder.setMask(portReasonList);
         masks.add(builder.build());
         return masks;

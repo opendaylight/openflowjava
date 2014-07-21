@@ -67,6 +67,7 @@ public class HelloInputMessageFactoryTest {
         helloFactory.serialize(hi, out);
         
         BufferHelper.checkHeaderV13(out,(byte) 0, EncodeConstants.OFHEADER_SIZE);
+        Assert.assertTrue("Unexpected data", out.readableBytes() == 0);
     }
     
     /**

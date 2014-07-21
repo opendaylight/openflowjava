@@ -63,7 +63,7 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput>,
     }
 
     private void serializeBands(final List<Bands> bands, final ByteBuf outBuffer) {
-        if (bands != null) {
+        if (! bands.isEmpty()) {
             for (Bands currentBand : bands) {
                 MeterBand meterBand = currentBand.getMeterBand();
                 if (meterBand instanceof MeterBandDropCase) {
