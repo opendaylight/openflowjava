@@ -49,7 +49,7 @@ public class OF10HelloMessageFactoryTest {
                 helloFactory, bb);
 
         BufferHelper.checkHeaderV10(builtByFactory);
-        Assert.assertNull("Wrong elements", builtByFactory.getElements());
+        Assert.assertTrue("Wrong elements", builtByFactory.getElements().isEmpty());
     }
 	
 	/**
@@ -67,7 +67,7 @@ public class OF10HelloMessageFactoryTest {
                 helloFactory, bb);
 
         BufferHelper.checkHeaderV10(builtByFactory);
-        Assert.assertNull("Wrong elements", builtByFactory.getElements());
+        Assert.assertTrue("Wrong elements", builtByFactory.getElements().isEmpty());
     }
 
 }

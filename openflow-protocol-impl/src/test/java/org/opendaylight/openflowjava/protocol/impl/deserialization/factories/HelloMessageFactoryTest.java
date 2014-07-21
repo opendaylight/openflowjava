@@ -85,4 +85,17 @@ public class HelloMessageFactoryTest {
         
         return elementsList;
     }
+
+    /**
+     * Testing {@link OF13HelloMessageFactory} for correct translation into POJO
+     */
+    @Test
+    public void testWithoutElements() {
+        ByteBuf bb = BufferHelper.buildBuffer();
+        HelloMessage builtByFactory = BufferHelper.deserialize(
+                helloFactory, bb);
+
+        BufferHelper.checkHeaderV13(builtByFactory);
+        Assert.assertTrue("Wrong elements", builtByFactory.getElements().isEmpty());
+    }
 }
