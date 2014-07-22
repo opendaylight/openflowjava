@@ -20,6 +20,8 @@ import org.opendaylight.openflowjava.protocol.impl.util.MatchDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.OF10MatchDeserializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.v10.grouping.MatchV10;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Stores and registers deserializers
@@ -27,6 +29,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.matc
  */
 public class DeserializerRegistryImpl implements DeserializerRegistry {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeserializerRegistryImpl.class);
     private Map<MessageCodeKey, OFGeneralDeserializer> registry;
 
     /**
@@ -70,10 +73,15 @@ public class DeserializerRegistryImpl implements DeserializerRegistry {
         if ((key == null) || (deserializer == null)) {
             throw new IllegalArgumentException("MessageCodeKey or Deserializer is null");
         }
+        OFGeneralDeserializer desInRegistry = registry.put(key, deserializer);
+        if (desInRegistry != null) {
+            LOGGER.warn("Deserializer for key " + key + " overwritten. Old deserializer: "
+                    + desInRegistry.getClass().getName() + ", new deserializer: "
+                    + deserializer.getClass().getName() );
+        }
         if (deserializer instanceof DeserializerRegistryInjector) {
             ((DeserializerRegistryInjector) deserializer).injectDeserializerRegistry(this);
         }
-        registry.put(key, deserializer);
     }
 
     @Override

@@ -31,6 +31,12 @@ public interface SerializerRegistry {
 
     /**
      * Registers serializer
+     * Throws IllegalStateException when there is
+     * a serializer already registered under given key.
+     * 
+     * If the serializer implements {@link SerializerRegistryInjector} interface,
+     * the serializer is injected with SerializerRegistry instance.
+     * 
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */

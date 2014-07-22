@@ -20,6 +20,8 @@ import org.opendaylight.openflowjava.protocol.impl.util.OF10MatchSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.OF13MatchSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.v10.grouping.MatchV10;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Stores and handles serializers
@@ -28,6 +30,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.matc
  */
 public class SerializerRegistryImpl implements SerializerRegistry {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SerializerRegistryImpl.class);
     private static final short OF10 = EncodeConstants.OF10_VERSION_ID;
     private static final short OF13 = EncodeConstants.OF13_VERSION_ID;
     private Map<MessageTypeKey<?>, OFGeneralSerializer> registry;
@@ -74,10 +77,15 @@ public class SerializerRegistryImpl implements SerializerRegistry {
         if ((msgTypeKey == null) || (serializer == null)) {
             throw new IllegalArgumentException("MessageTypeKey or Serializer is null");
         }
+        OFGeneralSerializer serInRegistry = registry.put(msgTypeKey, serializer);
+        if (serInRegistry != null) {
+            LOGGER.warn("Serializer for key " + msgTypeKey + " overwritten. Old serializer: "
+                    + serInRegistry.getClass().getName() + ", new serializer: "
+                    + serializer.getClass().getName() );
+        }
         if (serializer instanceof SerializerRegistryInjector) {
             ((SerializerRegistryInjector) serializer).injectSerializerRegistry(this);
         }
-        registry.put(msgTypeKey, serializer);
     }
 
     @Override
