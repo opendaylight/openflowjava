@@ -8,6 +8,7 @@
 package org.opendaylight.openflowjava.protocol.impl.serialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.NxmTcpFlagSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.NxmTunnelIpv4DstSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.NxmTunnelIpv4SrcSerializer;
@@ -51,8 +52,6 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmUdpDst
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmUdpSrcSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmVlanPcpSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmVlanVidSerializer;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.impl.util.EnhancedKeyRegistryHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.MatchEntrySerializerRegistryHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpOp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpSha;
@@ -159,8 +158,9 @@ public class MatchEntriesInitializer {
 
         // Register OpenFlow NXM1Class match entry serializer
         Class<Nxm1Class> nxm1Class = Nxm1Class.class;
-        EnhancedKeyRegistryHelper<Nxm1Class> nxm1RegistryHelper =
-                new EnhancedKeyRegistryHelper<>(EncodeConstants.OF13_VERSION_ID, nxm1Class, serializerRegistry);
+        MatchEntrySerializerRegistryHelper<Nxm1Class> nxm1RegistryHelper =
+                new MatchEntrySerializerRegistryHelper<>(EncodeConstants.OF13_VERSION_ID,
+                        nxm1Class, serializerRegistry);
         nxm1RegistryHelper.registerSerializer(TunnelIpv4Dst.class, new NxmTunnelIpv4DstSerializer());
         nxm1RegistryHelper.registerSerializer(TunnelIpv4Src.class, new NxmTunnelIpv4SrcSerializer());
         nxm1RegistryHelper.registerSerializer(TcpFlag.class, new NxmTcpFlagSerializer());
