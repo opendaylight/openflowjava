@@ -42,8 +42,8 @@ public class PublishingChannelInitializerFactoryTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         factory = new PublishingChannelInitializerFactory();
-        tlsConfiguration = new TlsConfigurationImpl(KeystoreType.JKS, "/ctlTrustStore",
-                PathType.CLASSPATH, KeystoreType.JKS, "/ctlKeystore", PathType.CLASSPATH);
+        tlsConfiguration = new TlsConfigurationImpl(KeystoreType.JKS, "/exemplary-ctlTrustStore",
+                PathType.CLASSPATH, KeystoreType.JKS, "/exemplary-ctlKeystore", PathType.CLASSPATH);
         factory.setDeserializationFactory(deserializationFactory);
         factory.setSerializationFactory(serializationFactory);
         factory.setSwitchConnectionHandler(switchConnectionHandler);
