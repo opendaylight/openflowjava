@@ -22,7 +22,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 
 
 /**
- * Provides methods for serialization part of extensibility
+ * Provides methods for serialization part of extensibility.
+ * In case of handling multiple structures of same type (actions,
+ * instructions, match entries, ... ) which are differentiated by
+ * vendor / experimenter subtype, vendor has to switch / choose between
+ * these subtypes. <br />
+ * 
+ * This has to be done in this way because of unknown augmentations
+ * - that's why vendor has to handle it in his own implementations.
  * @author michal.polkorab
  */
 public interface SerializerExtensionProvider {
