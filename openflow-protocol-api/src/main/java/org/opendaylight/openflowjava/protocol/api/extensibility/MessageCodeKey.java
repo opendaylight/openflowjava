@@ -34,6 +34,7 @@ public class MessageCodeKey {
         int result = 1;
         result = prime * result + ((clazz == null) ? 0 : clazz.hashCode());
         result = prime * result + msgType;
+        result = prime * result + msgVersion;
         return result;
     }
 
@@ -43,7 +44,7 @@ public class MessageCodeKey {
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (!(obj instanceof MessageCodeKey))
             return false;
         MessageCodeKey other = (MessageCodeKey) obj;
         if (clazz == null) {
@@ -62,4 +63,5 @@ public class MessageCodeKey {
     public String toString() {
         return "msgVersion: " + msgVersion + " objectClass: " + clazz.getName() + " msgType: " + msgType;
     }
+
 }

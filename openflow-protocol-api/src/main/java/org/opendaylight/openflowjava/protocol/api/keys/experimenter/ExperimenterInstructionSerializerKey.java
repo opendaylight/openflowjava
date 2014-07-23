@@ -8,55 +8,21 @@
 
 package org.opendaylight.openflowjava.protocol.api.keys.experimenter;
 
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.keys.InstructionSerializerKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.Experimenter;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.InstructionBase;
 
 /**
  * @author michal.polkorab
  */
-public class ExperimenterInstructionSerializerKey extends MessageTypeKey<Instruction>
+public final class ExperimenterInstructionSerializerKey extends InstructionSerializerKey<Experimenter>
         implements ExperimenterSerializerKey {
-
-    private Class<? extends InstructionBase> instructionType;
-    private Long experimenterId;
 
     /**
      * @param msgVersion protocol wire version
      * @param experimenterId experimenter / vendor ID
      */
     public ExperimenterInstructionSerializerKey(short msgVersion, Long experimenterId) {
-        super(msgVersion, Instruction.class);
-        this.instructionType = Experimenter.class;
-        this.experimenterId = experimenterId;
+        super(msgVersion, Experimenter.class, experimenterId);
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ExperimenterInstructionSerializerKey other = (ExperimenterInstructionSerializerKey) obj;
-        if (instructionType == null) {
-            if (other.instructionType != null)
-                return false;
-        } else if (!instructionType.equals(other.instructionType))
-            return false;
-        if (experimenterId == null) {
-            if (other.experimenterId != null)
-                return false;
-        } else if (!experimenterId.equals(other.experimenterId))
-            return false;
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return super.toString() + " instructionType type: " + instructionType.getName()
-                + " vendorID: " + experimenterId;
-    }
 }

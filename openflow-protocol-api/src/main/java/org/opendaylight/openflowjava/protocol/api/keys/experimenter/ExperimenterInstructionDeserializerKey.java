@@ -8,46 +8,22 @@
 
 package org.opendaylight.openflowjava.protocol.api.keys.experimenter;
 
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.keys.InstructionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 
 /**
  * @author michal.polkorab
  *
  */
-public class ExperimenterInstructionDeserializerKey extends MessageCodeKey
+public final class ExperimenterInstructionDeserializerKey extends InstructionDeserializerKey
         implements ExperimenterDeserializerKey {
 
-    private Long experimenterId;
     /**
      * @param version protocol wire version
      * @param experimenterId 
      */
     public ExperimenterInstructionDeserializerKey(short version, Long experimenterId) {
-        super(version, EncodeConstants.EXPERIMENTER_VALUE, Instruction.class);
-        this.experimenterId = experimenterId;
+        super(version, EncodeConstants.EXPERIMENTER_VALUE, experimenterId);
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ExperimenterInstructionDeserializerKey other = (ExperimenterInstructionDeserializerKey) obj;
-        if (experimenterId == null) {
-            if (other.experimenterId != null)
-                return false;
-        } else if (!experimenterId.equals(other.experimenterId))
-            return false;
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return super.toString() + " experimenterID: " + experimenterId;
-    }
 }

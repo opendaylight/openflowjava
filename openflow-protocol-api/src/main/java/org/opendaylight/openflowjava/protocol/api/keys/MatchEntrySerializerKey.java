@@ -19,8 +19,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
  * @param <OXM_CLASS> oxm_class (see specification)
  * @param <OXM_FIELD> oxm_field (see specification)
  */
-public class MatchEntrySerializerKey<OXM_CLASS extends OxmClassBase, OXM_FIELD extends MatchField>
-        extends MessageTypeKey<MatchEntries> implements ExperimenterSerializerKey{
+public final class MatchEntrySerializerKey<OXM_CLASS extends OxmClassBase, OXM_FIELD extends MatchField>
+        extends MessageTypeKey<MatchEntries> implements ExperimenterSerializerKey {
 
     private Class<OXM_CLASS> oxmClass;
     private Class<OXM_FIELD> oxmField;
@@ -47,6 +47,16 @@ public class MatchEntrySerializerKey<OXM_CLASS extends OxmClassBase, OXM_FIELD e
     }
 
     @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((experimenterId == null) ? 0 : experimenterId.hashCode());
+        result = prime * result + ((oxmClass == null) ? 0 : oxmClass.hashCode());
+        result = prime * result + ((oxmField == null) ? 0 : oxmField.hashCode());
+        return result;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
@@ -54,8 +64,7 @@ public class MatchEntrySerializerKey<OXM_CLASS extends OxmClassBase, OXM_FIELD e
             return false;
         if (getClass() != obj.getClass())
             return false;
-        @SuppressWarnings("rawtypes")
-        MatchEntrySerializerKey other = (MatchEntrySerializerKey) obj;
+        MatchEntrySerializerKey<?, ?> other = (MatchEntrySerializerKey<?, ?>) obj;
         if (experimenterId == null) {
             if (other.experimenterId != null)
                 return false;

@@ -16,7 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
  * @author michal.polkorab
  *
  */
-public class MatchEntryDeserializerKey extends MessageCodeKey
+public final class MatchEntryDeserializerKey extends MessageCodeKey
         implements ExperimenterDeserializerKey {
 
     private int oxmField;
@@ -38,6 +38,15 @@ public class MatchEntryDeserializerKey extends MessageCodeKey
      */
     public void setExperimenterId(Long experimenterId) {
         this.experimenterId = experimenterId;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((experimenterId == null) ? 0 : experimenterId.hashCode());
+        result = prime * result + oxmField;
+        return result;
     }
 
     @Override

@@ -34,15 +34,23 @@ public class ActionSerializerKey<TYPE extends ActionBase> extends MessageTypeKey
     }
 
     @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((actionType == null) ? 0 : actionType.hashCode());
+        result = prime * result + ((experimenterId == null) ? 0 : experimenterId.hashCode());
+        return result;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
         if (!super.equals(obj))
             return false;
-        if (getClass() != obj.getClass())
+        if (!(obj instanceof ActionSerializerKey))
             return false;
-        @SuppressWarnings("rawtypes")
-        ActionSerializerKey other = (ActionSerializerKey) obj;
+        ActionSerializerKey<?> other = (ActionSerializerKey<?>) obj;
         if (actionType == null) {
             if (other.actionType != null)
                 return false;

@@ -38,7 +38,8 @@ public class MessageTypeKey<E> {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((msgType == null) ? 0 : msgType.getName().hashCode());
+        result = prime * result + ((msgType == null) ? 0 : msgType.hashCode());
+        result = prime * result + msgVersion;
         return result;
     }
 
@@ -48,13 +49,13 @@ public class MessageTypeKey<E> {
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (!(obj instanceof MessageTypeKey))
             return false;
         MessageTypeKey<?> other = (MessageTypeKey<?>) obj;
         if (msgType == null) {
             if (other.msgType != null)
                 return false;
-        } else if (!other.msgType.getName().equals(msgType.getName()))
+        } else if (!msgType.equals(other.msgType))
             return false;
         if (msgVersion != other.msgVersion)
             return false;
