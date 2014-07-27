@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa82b9bf_860c953c",
+        "filename": "openflow-extension-nicira/src/main/yang/nicira-match.yang",
+        "patchSetId": 14
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 11
+      },
+      "writtenOn": "2014-07-27T17:18:23Z",
+      "side": 1,
+      "message": "Is this a copy paste error to have a namespace with groupbasedpolicy ?",
+      "revId": "ed66a68ce0bc2cfce8658b82ce372f179b94825d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
