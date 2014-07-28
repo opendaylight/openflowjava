@@ -15,8 +15,10 @@
         <bundle>mvn:io.netty/netty-transport/${netty.version}</bundle>
         <bundle>mvn:io.netty/netty-codec/${netty.version}</bundle>
         <bundle>mvn:io.netty/netty-handler/${netty.version}</bundle>
+        <bundle>mvn:com.google.guava/guava/${guava.version}</bundle>
         <bundle>mvn:org.opendaylight.openflowjava/openflow-protocol-api/${project.version}</bundle>
         <bundle>mvn:org.opendaylight.openflowjava/openflow-protocol-spi/${project.version}</bundle>
         <bundle>mvn:org.opendaylight.openflowjava/openflow-protocol-impl/${project.version}</bundle>
+        <bundle>mvn:org.opendaylight.openflowjava/util/${project.version}</bundle>
     </feature>
 </features>
