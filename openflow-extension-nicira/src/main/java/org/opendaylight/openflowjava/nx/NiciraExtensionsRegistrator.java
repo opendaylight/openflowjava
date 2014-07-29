@@ -2,7 +2,10 @@ package org.opendaylight.openflowjava.nx;
 
 import java.util.List;
 
-import org.opendaylight.openflowjava.nx.codec.action.ActionCodec;
+import org.opendaylight.openflowjava.nx.codec.action.ActionDeserializer;
+import org.opendaylight.openflowjava.nx.codec.action.NiciraActionCodecs;
+import org.opendaylight.openflowjava.nx.codec.action.RegLoadCodec;
+import org.opendaylight.openflowjava.nx.codec.action.RegMoveCodec;
 import org.opendaylight.openflowjava.nx.codec.match.ArpOpCodec;
 import org.opendaylight.openflowjava.nx.codec.match.ArpShaCodec;
 import org.opendaylight.openflowjava.nx.codec.match.ArpSpaCodec;
@@ -10,6 +13,7 @@ import org.opendaylight.openflowjava.nx.codec.match.ArpThaCodec;
 import org.opendaylight.openflowjava.nx.codec.match.ArpTpaCodec;
 import org.opendaylight.openflowjava.nx.codec.match.EthDstCodec;
 import org.opendaylight.openflowjava.nx.codec.match.EthSrcCodec;
+import org.opendaylight.openflowjava.nx.codec.match.EthTypeCodec;
 import org.opendaylight.openflowjava.nx.codec.match.Reg0Codec;
 import org.opendaylight.openflowjava.nx.codec.match.Reg1Codec;
 import org.opendaylight.openflowjava.nx.codec.match.Reg2Codec;
@@ -27,7 +31,6 @@ import com.google.common.base.Preconditions;
 
 public class NiciraExtensionsRegistrator implements AutoCloseable {
 
-    private static final ActionCodec ACTION_CODEC = new ActionCodec();
     private final List<SwitchConnectionProvider> providers;
 
     /**
@@ -40,8 +43,9 @@ public class NiciraExtensionsRegistrator implements AutoCloseable {
 
     public void registerNiciraExtensions() {
         for (SwitchConnectionProvider provider : providers) {
-            provider.registerActionDeserializer(ActionCodec.DESERIALIZER_KEY, ACTION_CODEC);
-            provider.registerActionSerializer(ActionCodec.SERIALIZER_KEY, ACTION_CODEC);
+            provider.registerActionDeserializer(ActionDeserializer.DESERIALIZER_KEY, NiciraActionCodecs.ACTION_DESERIALIZER);
+            provider.registerActionSerializer(RegLoadCodec.SERIALIZER_KEY, NiciraActionCodecs.REG_LOAD_CODEC);
+            provider.registerActionSerializer(RegMoveCodec.SERIALIZER_KEY, NiciraActionCodecs.REG_MOVE_CODEC);
             provider.registerMatchEntrySerializer(Reg0Codec.SERIALIZER_KEY, NiciraMatchCodecs.REG0_CODEC);
             provider.registerMatchEntryDeserializer(Reg0Codec.DESERIALIZER_KEY, NiciraMatchCodecs.REG0_CODEC);
             provider.registerMatchEntrySerializer(Reg1Codec.SERIALIZER_KEY, NiciraMatchCodecs.REG1_CODEC);
@@ -78,13 +82,16 @@ public class NiciraExtensionsRegistrator implements AutoCloseable {
             provider.registerMatchEntryDeserializer(TunIpv4DstCodec.DESERIALIZER_KEY, NiciraMatchCodecs.TUN_IPV4_DST_CODEC);
             provider.registerMatchEntrySerializer(TunIpv4SrcCodec.SERIALIZER_KEY, NiciraMatchCodecs.TUN_IPV4_SRC_CODEC);
             provider.registerMatchEntryDeserializer(TunIpv4SrcCodec.DESERIALIZER_KEY, NiciraMatchCodecs.TUN_IPV4_SRC_CODEC);
+            provider.registerMatchEntrySerializer(EthTypeCodec.SERIALIZER_KEY, NiciraMatchCodecs.ETH_TYPE_CODEC);
+            provider.registerMatchEntryDeserializer(EthTypeCodec.DESERIALIZER_KEY, NiciraMatchCodecs.ETH_TYPE_CODEC);
         }
     }
 
     public void unregisterExtensions() {
         for (SwitchConnectionProvider provider : providers) {
-            provider.unregisterSerializer(ActionCodec.SERIALIZER_KEY);
-            provider.unregisterDeserializer(ActionCodec.DESERIALIZER_KEY);
+            provider.unregisterDeserializer(ActionDeserializer.DESERIALIZER_KEY);
+            provider.unregisterSerializer(RegLoadCodec.SERIALIZER_KEY);
+            provider.unregisterSerializer(RegMoveCodec.SERIALIZER_KEY);
             provider.unregisterSerializer(Reg0Codec.SERIALIZER_KEY);
             provider.unregisterDeserializer(Reg0Codec.DESERIALIZER_KEY);
             provider.unregisterSerializer(Reg1Codec.SERIALIZER_KEY);
@@ -121,6 +128,8 @@ public class NiciraExtensionsRegistrator implements AutoCloseable {
             provider.unregisterDeserializer(TunIpv4DstCodec.DESERIALIZER_KEY);
             provider.unregisterSerializer(TunIpv4SrcCodec.SERIALIZER_KEY);
             provider.unregisterDeserializer(TunIpv4SrcCodec.DESERIALIZER_KEY);
+            provider.unregisterSerializer(EthTypeCodec.SERIALIZER_KEY);
+            provider.unregisterDeserializer(EthTypeCodec.DESERIALIZER_KEY);
         }
     }
 

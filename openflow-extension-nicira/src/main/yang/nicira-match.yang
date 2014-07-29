@@ -74,6 +74,9 @@ module nicira-match {
     identity nxm-of-eth-dst {
         base ofoxm:match-field;
     }
+    identity nxm-of-eth-type {
+        base ofoxm:match-field;
+    }
 
     grouping ofj-nxm-nx-match-reg-grouping {
         container reg-values {
@@ -152,6 +155,13 @@ module nicira-match {
             }
         }
     }
+    grouping ofj-nxm-of-match-eth-type-grouping {
+        container eth-type-values {
+            leaf value {
+                type uint16;
+            }
+        }
+    }
 
     augment "/ofoxm:oxm-container/ofoxm:match-entries" {
         ext:augment-identifier "ofj-aug_nx_match";
@@ -166,6 +176,7 @@ module nicira-match {
         uses ofj-nxm-nx-match-tun-ipv4-src-grouping;
         uses ofj-nxm-of-match-eth-src-grouping;
         uses ofj-nxm-of-match-eth-dst-grouping;
+        uses ofj-nxm-of-match-eth-type-grouping;
     }
 
 }

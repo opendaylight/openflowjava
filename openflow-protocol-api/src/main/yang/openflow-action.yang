@@ -84,7 +84,11 @@
         description "";
         base oft:action-base;
     }
-    
+
+    identity experimenter-action-sub-type {
+        description "The base identity for vendor's actions.";
+    }
+
     container actions-container {
         uses actions-grouping;
     }
