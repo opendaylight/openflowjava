@@ -48,7 +48,7 @@ public class ActionSerializerKey<TYPE extends ActionBase> extends MessageTypeKey
             return true;
         if (!super.equals(obj))
             return false;
-        if (!(obj instanceof ActionSerializerKey))
+        if (getClass() != obj.getClass())
             return false;
         ActionSerializerKey<?> other = (ActionSerializerKey<?>) obj;
         if (actionType == null) {

@@ -14,6 +14,13 @@ module nicira-action {
     revision "2014-04-21" {
         description "Initial revision";
     }
+    
+    identity nxm-nx-action-reg-load {
+        base ofaction:experimenter-action-sub-type;
+    }
+    identity nxm-nx-action-reg-move {
+        base ofaction:experimenter-action-sub-type;
+    }
 
     grouping ofj-nx-action-reg-load-grouping {
         container action-reg-load {
