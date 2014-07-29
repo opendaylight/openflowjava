@@ -4,9 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.nx.NiciraConstants;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterActionDeserializerKey;
-import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterActionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdActionBuilder;
@@ -19,39 +17,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.extension.nicira.a
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ActionCodec implements OFSerializer<Action>, OFDeserializer<Action> {
+public class ActionDeserializer implements OFDeserializer<Action> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ActionCodec.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ActionDeserializer.class);
 
-    public static final ExperimenterActionSerializerKey SERIALIZER_KEY = new ExperimenterActionSerializerKey(EncodeConstants.OF13_VERSION_ID, NiciraConstants.NX_VENDOR_ID); 
-    public static final ExperimenterActionDeserializerKey DESERIALIZER_KEY = new ExperimenterActionDeserializerKey(EncodeConstants.OF13_VERSION_ID, NiciraConstants.NX_VENDOR_ID);
+    public static final ExperimenterActionDeserializerKey DESERIALIZER_KEY = new ExperimenterActionDeserializerKey(
+            EncodeConstants.OF13_VERSION_ID, NiciraConstants.NX_VENDOR_ID);
     private static final RegMoveCodec regMoveCodec = new RegMoveCodec();
     private static final RegLoadCodec regLoadCodec = new RegLoadCodec();
-    
-    @Override
-    public void serialize(Action input, ByteBuf outBuffer) {
-        outBuffer.writeShort(EncodeConstants.EXPERIMENTER_VALUE);
-        OfjAugNxAction augNxAction = input.getAugmentation(OfjAugNxAction.class);
-        if (augNxAction == null) {
-            LOG.info("Action {} does not have any serializer.", input.getClass());
-            return;
-        }
-        if (augNxAction.getActionRegMove() != null) {
-            writeMsgLengthVendorIdSubtypeToBuffer(RegMoveCodec.LENGTH, RegMoveCodec.SUBTYPE, outBuffer);
-            regMoveCodec.serialize(augNxAction.getActionRegMove(), outBuffer);
-        } else if (augNxAction.getActionRegLoad() != null) {
-            writeMsgLengthVendorIdSubtypeToBuffer(RegLoadCodec.LENGTH, RegLoadCodec.SUBTYPE, outBuffer);
-            regLoadCodec.serialize(augNxAction.getActionRegLoad(), outBuffer);
-        } else {
-            LOG.info("Action {} does not have any serializer.", input.getClass());
-        }
-    }
-
-    private final static void writeMsgLengthVendorIdSubtypeToBuffer(int msgLength, int subtype, ByteBuf outBuffer) {
-        outBuffer.writeShort(msgLength);
-        outBuffer.writeInt(NiciraConstants.NX_VENDOR_ID.intValue());
-        outBuffer.writeShort(subtype);
-    }
 
     @Override
     public Action deserialize(ByteBuf message) {
