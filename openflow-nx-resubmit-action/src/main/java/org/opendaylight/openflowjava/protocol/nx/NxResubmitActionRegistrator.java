@@ -16,6 +16,7 @@ import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.nx.deserialization.NxActionResubmitDeserializer;
 import org.opendaylight.openflowjava.protocol.nx.serialization.NxActionResubmitSerializer;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.nx.resubmit.action.rev130731.NxResubmitAction;
 
 /**
  * @author michal.polkorab
@@ -34,17 +35,8 @@ public class NxResubmitActionRegistrator implements AutoCloseable {
         if (providers != null) {
             this.providers = providers;
             for (SwitchConnectionProvider provider : providers) {
-                /* In case of handling multiple actions, instructions and other structures which
-                 * are differentiated by vendor / experimenter subtype, vendor has to
-                 * switch / choose between these subtypes.
-                 * 
-                 * This has to be done in this way because of experimenter headers, which
-                 * provide only vendor / experimenter ID. Subtype position may be different
-                 * for different vendors (or not present at all) - that's why vendor has to
-                 * handle it in his own implementations.
-                 */
                 provider.registerActionSerializer(new ExperimenterActionSerializerKey(
-                        EncodeConstants.OF13_VERSION_ID, NICIRA_EXPERIMENTER_ID),
+                        EncodeConstants.OF13_VERSION_ID, NICIRA_EXPERIMENTER_ID, NxResubmitAction.class),
                         new NxActionResubmitSerializer());
             }
         }
@@ -78,7 +70,7 @@ public class NxResubmitActionRegistrator implements AutoCloseable {
         for (SwitchConnectionProvider provider : providers) {
             // unregister serializer
             provider.unregisterSerializer(new ExperimenterActionSerializerKey(
-                    EncodeConstants.OF13_VERSION_ID, NICIRA_EXPERIMENTER_ID));
+                    EncodeConstants.OF13_VERSION_ID, NICIRA_EXPERIMENTER_ID, NxResubmitAction.class));
             // unregister deserializer
             provider.unregisterDeserializer(new ExperimenterActionDeserializerKey(
                     EncodeConstants.OF13_VERSION_ID, NICIRA_EXPERIMENTER_ID));
