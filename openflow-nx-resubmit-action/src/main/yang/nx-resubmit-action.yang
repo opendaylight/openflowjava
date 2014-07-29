@@ -17,6 +17,10 @@
     revision "2013-07-31" {
         description "OpenFlow 1.3 - action model";
     }
+    
+    identity nx-resubmit-action {
+        base ofaction:experimenter-action-sub-type;
+    }
 
     augment "/ofaction:actions-container/ofaction:action" {
          ext:augment-identifier "nx-action-resubmit-augment";

@@ -252,6 +252,11 @@
          leaf experimenter {
              type oft:experimenter-id;
          }
+         leaf sub-type {
+            type identityref {
+                base ofaction:experimenter-action-sub-type;
+            }
+         }
      }
      // OF1.0 structures
      augment "/ofaction:actions-container/ofaction:action" {
