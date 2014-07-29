@@ -63,7 +63,7 @@ public abstract class TypeKeyMakerFactory {
             public MessageTypeKey<?> make(Action entry) {
                 if (entry.getType().equals(Experimenter.class)) {
                     return new ExperimenterActionSerializerKey(getVersion(),
-                            entry.getAugmentation(ExperimenterIdAction.class).getExperimenter().getValue());
+                            entry.getAugmentation(ExperimenterIdAction.class).getExperimenter().getValue(), entry.getAugmentation(ExperimenterIdAction.class).getSubType());
                 }
                 return new ActionSerializerKey<>(getVersion(), entry.getType(), null);
             }

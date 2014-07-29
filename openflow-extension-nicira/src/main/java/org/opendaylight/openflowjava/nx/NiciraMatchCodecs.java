@@ -14,6 +14,7 @@ import org.opendaylight.openflowjava.nx.codec.match.ArpThaCodec;
 import org.opendaylight.openflowjava.nx.codec.match.ArpTpaCodec;
 import org.opendaylight.openflowjava.nx.codec.match.EthDstCodec;
 import org.opendaylight.openflowjava.nx.codec.match.EthSrcCodec;
+import org.opendaylight.openflowjava.nx.codec.match.EthTypeCodec;
 import org.opendaylight.openflowjava.nx.codec.match.Reg0Codec;
 import org.opendaylight.openflowjava.nx.codec.match.Reg1Codec;
 import org.opendaylight.openflowjava.nx.codec.match.Reg2Codec;
@@ -50,5 +51,6 @@ public class NiciraMatchCodecs {
     public static final EthSrcCodec ETH_SRC_CODEC = new EthSrcCodec();
     public static final TunIpv4DstCodec TUN_IPV4_DST_CODEC = new TunIpv4DstCodec();
     public static final TunIpv4SrcCodec TUN_IPV4_SRC_CODEC = new TunIpv4SrcCodec();
+    public static final EthTypeCodec ETH_TYPE_CODEC = new EthTypeCodec();
 
 }

@@ -21,7 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
 public class EthDstCodec extends AbstractMatchCodec {
 
     private static final int VALUE_LENGTH = 6;
-    private static final int NXM_FIELD_CODE = 2;
+    private static final int NXM_FIELD_CODE = 1;
     public static final MatchEntrySerializerKey<Nxm0Class, NxmOfEthDst> SERIALIZER_KEY = new MatchEntrySerializerKey<>(
             EncodeConstants.OF13_VERSION_ID, Nxm0Class.class, NxmOfEthDst.class);
     public static final MatchEntryDeserializerKey DESERIALIZER_KEY = new MatchEntryDeserializerKey(

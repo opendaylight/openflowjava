@@ -13,6 +13,7 @@ import org.opendaylight.openflowjava.protocol.api.keys.experimenter.Experimenter
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterInstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.ExperimenterActionSubType;
 
 /**
  * @author michal.polkorab
@@ -49,9 +50,9 @@ public class KeysTest {
         ActionSerializerKey<Experimenter> actionSerializerKey = new ActionSerializerKey<>(
                 EncodeConstants.OF13_VERSION_ID, Experimenter.class, 1L);
         ExperimenterActionSerializerKey experimenterActionSerializerKey = new ExperimenterActionSerializerKey(
-                EncodeConstants.OF13_VERSION_ID, 1L);
-        Assert.assertEquals(actionSerializerKey, experimenterActionSerializerKey);
-        Assert.assertEquals(actionSerializerKey.hashCode(), experimenterActionSerializerKey.hashCode());
+                EncodeConstants.OF13_VERSION_ID, 1L, ExpSubType.class);
+        Assert.assertFalse(actionSerializerKey.equals(experimenterActionSerializerKey));
+        Assert.assertFalse(experimenterActionSerializerKey.equals(actionSerializerKey));
 
         InstructionSerializerKey<org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.Experimenter> instructionSerializerKey = new InstructionSerializerKey<>(
                 EncodeConstants.OF13_VERSION_ID,
@@ -60,6 +61,10 @@ public class KeysTest {
         ExperimenterInstructionSerializerKey experimenterInstructionSerializerKey = new ExperimenterInstructionSerializerKey(EncodeConstants.OF13_VERSION_ID, 1L);
         Assert.assertEquals(instructionSerializerKey, experimenterInstructionSerializerKey);
         Assert.assertEquals(instructionSerializerKey.hashCode(), experimenterInstructionSerializerKey.hashCode());
+    }
+    
+    private static class ExpSubType extends ExperimenterActionSubType {
+        
     }
 
 }
