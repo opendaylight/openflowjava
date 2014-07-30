@@ -35,8 +35,8 @@
         <exam.version>3.0.0</exam.version>
         <url.version>1.5.0</url.version>
         <enunciate.version>1.26.2</enunciate.version>
-        <jmxGeneratorPath>${project.build.directory}/yang-gen-config</jmxGeneratorPath>
-        <salGeneratorPath>${project.build.directory}/yang-gen-sal</salGeneratorPath>
+        <jmxGeneratorPath>src/yang-gen-config</jmxGeneratorPath>
+        <salGeneratorPath>src/yang-gen-sal</salGeneratorPath>
         <sonar.branch>${user.name}-private-view</sonar.branch>
         <sonar.skippedModules>org.openflow.openflowj,net.sf.jung2</sonar.skippedModules>
         <logback.version>1.0.9</logback.version>
@@ -51,6 +51,7 @@
         <yangtools.version>0.6.2-SNAPSHOT</yangtools.version>
         <yangtools.generator.version>0.6.2-SNAPSHOT</yangtools.generator.version>
         <config.version>0.2.5-SNAPSHOT</config.version>
+        <osgi.core.version>5.0.0</osgi.core.version>
     </properties>
 
     <pluginRepositories>
@@ -269,6 +270,19 @@
                     <groupId>org.opendaylight.yangtools</groupId>
                     <artifactId>yang-maven-plugin</artifactId>
                     <version>${yangtools.version}</version>
+                    <dependencies>
+                      <dependency>
+                        <groupId>org.opendaylight.yangtools</groupId>
+                        <artifactId>maven-sal-api-gen-plugin</artifactId>
+                        <version>${yangtools.version}</version>
+                        <type>jar</type>
+                      </dependency>
+                      <dependency>
+                        <groupId>org.osgi</groupId>
+                        <artifactId>org.osgi.core</artifactId>
+                        <version>${osgi.core.version}</version>
+                      </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.felix</groupId>
@@ -289,6 +303,8 @@
                             <configuration>
                                 <sources>
                                     <source>src/main/yang</source>
+                                    <source>${jmxGeneratorPath}</source>
+                                    <source>${salGeneratorPath}</source>
                                 </sources>
                             </configuration>
                         </execution>
@@ -412,6 +428,25 @@
                         </pluginExecution>
                       </pluginExecutions>
                     </lifecycleMappingMetadata>
+                  </configuration>
+                </plugin>
+                <plugin>
+                  <artifactId>maven-clean-plugin</artifactId>
+                  <configuration>
+                    <filesets>
+                      <fileset>
+                        <directory>${jmxGeneratorPath}</directory>
+                        <includes>
+                          <include>**</include>
+                        </includes>
+                      </fileset>
+                      <fileset>
+                        <directory>${salGeneratorPath}</directory>
+                        <includes>
+                          <include>**</include>
+                        </includes>
+                      </fileset>
+                    </filesets>
                   </configuration>
                 </plugin>
             </plugins>
