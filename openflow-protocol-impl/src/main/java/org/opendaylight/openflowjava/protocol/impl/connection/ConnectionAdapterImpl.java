@@ -9,11 +9,11 @@
 
 package org.opendaylight.openflowjava.protocol.impl.connection;
 
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.GenericFutureListener;
 
+import java.net.InetSocketAddress;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -111,7 +111,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     private final Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> responseCache;
 
     private final ChannelOutboundQueue output;
-    private final Channel channel;
+    private final SocketChannel channel;
 
     private ConnectionReadyListener connectionReadyListener;
     private OpenflowProtocolListener messageListener;
@@ -467,5 +467,10 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     public void setConnectionReadyListener(
             final ConnectionReadyListener connectionReadyListener) {
         this.connectionReadyListener = connectionReadyListener;
+    }
+
+    @Override
+    public InetSocketAddress getRemoteAddress() {
+        return channel.remoteAddress();
     }
 }
