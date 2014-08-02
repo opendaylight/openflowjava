@@ -9,6 +9,7 @@
 
 package org.opendaylight.openflowjava.protocol.api.connection;
 
+import java.net.InetSocketAddress;
 import java.util.concurrent.Future;
 
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OpenflowProtocolListener;
@@ -32,6 +33,10 @@ public interface ConnectionAdapter extends OpenflowProtocolService {
      */
     public boolean isAlive();
     
+    /**
+     * @return address of the remote end - address of a switch if connected
+     */
+    public InetSocketAddress getRemoteAddress();
     /**
      * @param messageListener here will be pushed all messages from switch
      */
