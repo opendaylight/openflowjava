@@ -12,6 +12,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ExperimenterId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.extension.nicira.action.rev140421.NxmNxOutputReg;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.extension.nicira.action.rev140421.NxmNxRegLoad;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.extension.nicira.action.rev140421.NxmNxRegMove;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.extension.nicira.action.rev140421.OfjAugNxAction;
@@ -44,6 +45,10 @@ public class ActionDeserializer implements OFDeserializer<Action> {
         case RegLoadCodec.SUBTYPE:
             augNxActionBuilder.setActionRegLoad(NiciraActionCodecs.REG_LOAD_CODEC.deserialize(message));
             expIdBuilder.setSubType(NxmNxRegLoad.class);
+            break;
+        case OutputRegCodec.SUBTYPE:
+            augNxActionBuilder.setActionOutputReg(NiciraActionCodecs.OUTPUT_REG_CODEC.deserialize(message));
+            expIdBuilder.setSubType(NxmNxOutputReg.class);
             break;
         default:
             LOG.info("Action {} does not have any deserializer.", subtype);

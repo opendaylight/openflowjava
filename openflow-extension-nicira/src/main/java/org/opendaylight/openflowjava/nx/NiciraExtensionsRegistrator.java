@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.opendaylight.openflowjava.nx.codec.action.ActionDeserializer;
 import org.opendaylight.openflowjava.nx.codec.action.NiciraActionCodecs;
+import org.opendaylight.openflowjava.nx.codec.action.OutputRegCodec;
 import org.opendaylight.openflowjava.nx.codec.action.RegLoadCodec;
 import org.opendaylight.openflowjava.nx.codec.action.RegMoveCodec;
 import org.opendaylight.openflowjava.nx.codec.match.ArpOpCodec;
@@ -46,6 +47,7 @@ public class NiciraExtensionsRegistrator implements AutoCloseable {
             provider.registerActionDeserializer(ActionDeserializer.DESERIALIZER_KEY, NiciraActionCodecs.ACTION_DESERIALIZER);
             provider.registerActionSerializer(RegLoadCodec.SERIALIZER_KEY, NiciraActionCodecs.REG_LOAD_CODEC);
             provider.registerActionSerializer(RegMoveCodec.SERIALIZER_KEY, NiciraActionCodecs.REG_MOVE_CODEC);
+            provider.registerActionSerializer(OutputRegCodec.SERIALIZER_KEY, NiciraActionCodecs.OUTPUT_REG_CODEC);
             provider.registerMatchEntrySerializer(Reg0Codec.SERIALIZER_KEY, NiciraMatchCodecs.REG0_CODEC);
             provider.registerMatchEntryDeserializer(Reg0Codec.DESERIALIZER_KEY, NiciraMatchCodecs.REG0_CODEC);
             provider.registerMatchEntrySerializer(Reg1Codec.SERIALIZER_KEY, NiciraMatchCodecs.REG1_CODEC);
@@ -92,6 +94,7 @@ public class NiciraExtensionsRegistrator implements AutoCloseable {
             provider.unregisterDeserializer(ActionDeserializer.DESERIALIZER_KEY);
             provider.unregisterSerializer(RegLoadCodec.SERIALIZER_KEY);
             provider.unregisterSerializer(RegMoveCodec.SERIALIZER_KEY);
+            provider.unregisterSerializer(OutputRegCodec.SERIALIZER_KEY);
             provider.unregisterSerializer(Reg0Codec.SERIALIZER_KEY);
             provider.unregisterDeserializer(Reg0Codec.DESERIALIZER_KEY);
             provider.unregisterSerializer(Reg1Codec.SERIALIZER_KEY);
