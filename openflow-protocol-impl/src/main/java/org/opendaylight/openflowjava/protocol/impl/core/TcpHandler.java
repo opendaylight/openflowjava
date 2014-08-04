@@ -21,6 +21,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
+import org.opendaylight.openflowjava.protocol.api.connection.ThreadConfiguration;
 import org.opendaylight.openflowjava.protocol.impl.connection.ServerFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +54,7 @@ public class TcpHandler implements ServerFacade {
     private NioEventLoopGroup workerGroup;
     private NioEventLoopGroup bossGroup;
     private final SettableFuture<Boolean> isOnlineFuture;
+    private ThreadConfiguration threadConfig;
 
     private PublishingChannelInitializer channelInitializer;
 
@@ -81,8 +83,13 @@ public class TcpHandler implements ServerFacade {
      */
     @Override
     public void run() {
-        bossGroup = new NioEventLoopGroup();
-        workerGroup = new NioEventLoopGroup();
+        if (threadConfig != null) {
+            bossGroup = new NioEventLoopGroup(threadConfig.getBossThreadCount());
+            workerGroup = new NioEventLoopGroup(threadConfig.getWorkerThreadCount());
+        } else {
+            bossGroup = new NioEventLoopGroup();
+            workerGroup = new NioEventLoopGroup();
+        }
 
         /*
          * We generally do not perform IO-unrelated tasks, so we want to have
@@ -194,4 +201,10 @@ public class TcpHandler implements ServerFacade {
         this.channelInitializer = channelInitializer;
     }
 
+    /**
+     * @param threadConfig EventLoopGroup configuration
+     */
+    public void setThreadConfig(ThreadConfiguration threadConfig) {
+        this.threadConfig = threadConfig;
+    }
 }
