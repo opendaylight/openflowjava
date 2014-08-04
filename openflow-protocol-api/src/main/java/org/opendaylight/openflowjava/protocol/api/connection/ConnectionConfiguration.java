@@ -50,5 +50,9 @@ public interface ConnectionConfiguration {
      * @return seed for {@link SSLEngine}
      */
     public Object getSslContext();
-
+    
+    /**
+     * @return thread numbers for TcpHandler's eventloopGroups
+     */
+    public ThreadConfiguration getThreadConfiguration();
 }
