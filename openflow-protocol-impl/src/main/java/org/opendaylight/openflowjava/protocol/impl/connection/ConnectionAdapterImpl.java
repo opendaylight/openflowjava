@@ -9,15 +9,17 @@
 
 package org.opendaylight.openflowjava.protocol.impl.connection;
 
+import com.google.common.base.Preconditions;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.GenericFutureListener;
-
-import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.TimeUnit;
-
 import org.opendaylight.controller.sal.common.util.RpcErrors;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionReadyListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
@@ -68,13 +70,9 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Handles messages (notifications + rpcs) and connections
@@ -213,6 +211,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     @Override
     public Future<RpcResult<RoleRequestOutput>> roleRequest(
             final RoleRequestInput input) {
+        LOG.error("Kamal-ConnAdapter: calling roleRequest");
         return sendToSwitchExpectRpcResultFuture(
                 input, RoleRequestOutput.class, "role-request-config-input sending failed");
     }
@@ -262,6 +261,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
 
     @Override
     public void consume(final DataObject message) {
+        LOG.error("Kamal-ConnAdapter: calling consume");
         LOG.debug("ConsumeIntern msg");
         if (disconnectOccured ) {
             return;
@@ -297,15 +297,19 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 LOG.warn("message listening not supported for type: {}", message.getClass());
             }
         } else {
+            LOG.error("Kamal-ConnAdapter: message not instanceof notification");
             if (message instanceof OfHeader) {
-                LOG.debug("OFheader msg received");
+                LOG.error("Kamal-ConnAdapter: OFheader msg received");
                 RpcResponseKey key = createRpcResponseKey((OfHeader) message);
+                LOG.error("Kamal-ConnAdapter: key="+key);
                 final ResponseExpectedRpcListener<?> listener = findRpcResponse(key);
+                LOG.error("Kamal-ConnAdapter: listener="+listener);
                 if (listener != null) {
-                    LOG.debug("corresponding rpcFuture found");
+                    LOG.error("Kamal-ConnAdapter: corresponding rpcFuture found");
                     listener.completed((OfHeader)message);
-                    LOG.debug("after setting rpcFuture");
+                    LOG.error("Kamal-ConnAdapter: after setting rpcFuture");
                     responseCache.invalidate(key);
+                    LOG.error("Kamal-ConnAdapter: after invalidate");
                 } else {
                     LOG.warn("received unexpected rpc response: {}", key);
                 }

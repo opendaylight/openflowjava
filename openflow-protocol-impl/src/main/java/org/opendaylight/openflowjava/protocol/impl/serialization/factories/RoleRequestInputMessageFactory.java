@@ -14,6 +14,8 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.RoleRequestInput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Translates RoleRequest messages
@@ -21,18 +23,21 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author timotej.kubas
  */
 public class RoleRequestInputMessageFactory implements OFSerializer<RoleRequestInput> {
-
+    private static final Logger LOG = LoggerFactory.getLogger(RoleRequestInputMessageFactory.class);
     /** Code type of RoleRequest message */
     private static final byte MESSAGE_TYPE = 24;
     private static final byte PADDING_IN_ROLE_REQUEST_MESSAGE = 4;
 
     @Override
     public void serialize(RoleRequestInput message, ByteBuf outBuffer) {
+        LOG.error("Kamal-RoleRequestInputMessageFactory: calling serialize");
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
+        int role = message.getRole().getIntValue();
         outBuffer.writeInt(message.getRole().getIntValue());
         outBuffer.writeZero(PADDING_IN_ROLE_REQUEST_MESSAGE);
         outBuffer.writeLong(message.getGenerationId().longValue());
         ByteBufUtils.updateOFHeaderLength(outBuffer);
+        LOG.error("Kamal-RoleRequestInputMessageFactory: done serialize");
     }
 
 }
