@@ -13,6 +13,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
+import org.opendaylight.openflowjava.protocol.api.connection.ThreadConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
 import org.opendaylight.openflowjava.protocol.impl.connection.SwitchConnectionProviderImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpAddress;
@@ -77,6 +78,7 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
         final Integer port = getPort();
         final long switchIdleTimeout = getSwitchIdleTimeout();
         final Tls tlsConfig = getTls();
+        final Threads threads = getThreads();
         
         return new ConnectionConfiguration() {
             @Override
@@ -144,6 +146,24 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
             public Object getSslContext() {
                 // TODO Auto-generated method stub
                 return null;
+            }
+            @Override
+            public ThreadConfiguration getThreadConfiguration() {
+                if (threads == null) {
+                    return null;
+                }
+                return new ThreadConfiguration() {
+                    
+                    @Override
+                    public int getWorkerThreadCount() {
+                        return threads.getWorkerThreads();
+                    }
+                    
+                    @Override
+                    public int getBossThreadCount() {
+                        return threads.getBossThreads();
+                    }
+                };
             }
         };
     }

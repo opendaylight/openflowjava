@@ -11,6 +11,7 @@ package org.opendaylight.openflowjava.protocol.it.integration;
 import java.net.InetAddress;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
+import org.opendaylight.openflowjava.protocol.api.connection.ThreadConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
 
 /**
@@ -24,6 +25,7 @@ public class ConnectionConfigurationImpl implements ConnectionConfiguration {
     private Object transferProtocol;
     private TlsConfiguration tlsConfig;
     private long switchIdleTimeout;
+    private ThreadConfiguration threadConfig;
 
     /**
      * Creates {@link ConnectionConfigurationImpl}
@@ -70,4 +72,15 @@ public class ConnectionConfigurationImpl implements ConnectionConfiguration {
         return tlsConfig;
     }
 
+    @Override
+    public ThreadConfiguration getThreadConfiguration() {
+        return threadConfig;
+    }
+
+    /**
+     * @param threadConfig thread model configuration (configures threads used)
+     */
+    public void setThreadConfiguration(ThreadConfiguration threadConfig) {
+        this.threadConfig = threadConfig;
+    }
 }

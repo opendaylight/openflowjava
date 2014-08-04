@@ -79,6 +79,14 @@ module openflow-switch-connection-provider-impl {
                     type string;
                 }
             }
+            container threads {
+                leaf boss-threads {
+                    type uint16;
+                }
+                leaf worker-threads {
+                    type uint16;
+                }
+            }
         }
     }
 }
