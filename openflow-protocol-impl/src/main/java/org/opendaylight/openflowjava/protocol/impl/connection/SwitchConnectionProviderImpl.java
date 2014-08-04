@@ -128,6 +128,7 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
         factory.setSerializationFactory(serializationFactory);
         factory.setDeserializationFactory(deserializationFactory);
         server.setChannelInitializer(factory.createPublishingChannelInitializer());
+        server.setThreadConfig(connConfig.getThreadConfiguration());
         return server;
     }
 
