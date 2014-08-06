@@ -50,7 +50,11 @@
         <releaseplugin.version>2.3.2</releaseplugin.version>
         <yangtools.version>0.6.2-SNAPSHOT</yangtools.version>
         <yangtools.generator.version>0.6.2-SNAPSHOT</yangtools.generator.version>
-        <config.version>0.2.5-SNAPSHOT</config.version>
+	<config.version>0.2.5-SNAPSHOT</config.version>
+
+        <!-- Sonar config -->
+        <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+        <sonar.jacoco.reportPath>target/code-coverage/jacoco.exec</sonar.jacoco.reportPath>
     </properties>
 
     <pluginRepositories>
@@ -196,6 +200,20 @@
                         <goals>
                             <goal>jar-no-fork</goal>
                         </goals> 
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <destFile>${sonar.jacoco.reportPath}</destFile>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
