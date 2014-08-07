@@ -9,7 +9,9 @@
 
 package org.opendaylight.openflowjava.protocol.impl.connection;
 
-import io.netty.channel.socket.SocketChannel;
+import java.net.InetSocketAddress;
+
+import io.netty.channel.Channel;
 
 /**
  * @author mirehak
@@ -22,8 +24,8 @@ public class ConnectionAdapterFactoryImpl implements ConnectionAdapterFactory {
      * @return connection adapter tcp-implementation
      */
 	@Override
-    public ConnectionFacade createConnectionFacade(SocketChannel ch) {
-        return new ConnectionAdapterImpl(ch);
+    public ConnectionFacade createConnectionFacade(Channel ch, InetSocketAddress address) {
+        return new ConnectionAdapterImpl(ch, address);
     }
 
 }

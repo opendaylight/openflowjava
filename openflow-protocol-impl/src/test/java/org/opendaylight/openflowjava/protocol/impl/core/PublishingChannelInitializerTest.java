@@ -36,7 +36,6 @@ import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.TlsConfigurationImpl;
 import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionAdapterFactory;
 import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionFacade;
-import org.opendaylight.openflowjava.protocol.impl.core.PublishingChannelInitializer.COMPONENT_NAMES;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.KeystoreType;
@@ -83,7 +82,7 @@ public class PublishingChannelInitializerTest {
 
         inetSockAddr = new InetSocketAddress(InetAddress.getLocalHost(), 8675 ) ;
 
-        when(mockConnAdaptorFactory.createConnectionFacade(mockSocketCh))
+        when(mockConnAdaptorFactory.createConnectionFacade(mockSocketCh, null))
         .thenReturn(mockConnFacade);
         when(mockSocketCh.remoteAddress()).thenReturn(inetSockAddr) ;
         when(mockSocketCh.localAddress()).thenReturn(inetSockAddr) ;
@@ -105,7 +104,7 @@ public class PublishingChannelInitializerTest {
         pubChInitializer.initChannel(mockSocketCh) ;
 
         verifyCommonHandlers();
-        verify(mockChPipeline, times(1)).addLast(eq(COMPONENT_NAMES.SSL_HANDLER.name()),any(SslHandler.class)) ;
+        verify(mockChPipeline, times(1)).addLast(eq(PIPELINE_HANDLERS.SSL_HANDLER.name()),any(SslHandler.class)) ;
     }
 
     /**
@@ -117,7 +116,7 @@ public class PublishingChannelInitializerTest {
         pubChInitializer.initChannel(mockSocketCh) ;
 
         verifyCommonHandlers();
-        verify(mockChPipeline, times(0)).addLast(eq(COMPONENT_NAMES.SSL_HANDLER.name()),any(SslHandler.class)) ;
+        verify(mockChPipeline, times(0)).addLast(eq(PIPELINE_HANDLERS.SSL_HANDLER.name()),any(SslHandler.class)) ;
     }
 
     /**
@@ -160,12 +159,12 @@ public class PublishingChannelInitializerTest {
      * All paths should install these six handlers:
      */
     private void verifyCommonHandlers() {
-        verify(mockChPipeline, times(1)).addLast(eq(COMPONENT_NAMES.IDLE_HANDLER.name()),any(IdleHandler.class)) ;
-        verify(mockChPipeline, times(1)).addLast(eq(COMPONENT_NAMES.OF_DECODER.name()),any(OFDecoder.class)) ;
-        verify(mockChPipeline, times(1)).addLast(eq(COMPONENT_NAMES.OF_ENCODER.name()),any(OFEncoder.class)) ;
-        verify(mockChPipeline, times(1)).addLast(eq(COMPONENT_NAMES.OF_FRAME_DECODER.name()),any(OFFrameDecoder.class)) ;
-        verify(mockChPipeline, times(1)).addLast(eq(COMPONENT_NAMES.OF_VERSION_DETECTOR.name()),any(OFVersionDetector.class)) ;
-        verify(mockChPipeline, times(1)).addLast(eq(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name()),any(DelegatingInboundHandler.class));
+        verify(mockChPipeline, times(1)).addLast(eq(PIPELINE_HANDLERS.IDLE_HANDLER.name()),any(IdleHandler.class)) ;
+        verify(mockChPipeline, times(1)).addLast(eq(PIPELINE_HANDLERS.OF_DECODER.name()),any(OFDecoder.class)) ;
+        verify(mockChPipeline, times(1)).addLast(eq(PIPELINE_HANDLERS.OF_ENCODER.name()),any(OFEncoder.class)) ;
+        verify(mockChPipeline, times(1)).addLast(eq(PIPELINE_HANDLERS.OF_FRAME_DECODER.name()),any(OFFrameDecoder.class)) ;
+        verify(mockChPipeline, times(1)).addLast(eq(PIPELINE_HANDLERS.OF_VERSION_DETECTOR.name()),any(OFVersionDetector.class)) ;
+        verify(mockChPipeline, times(1)).addLast(eq(PIPELINE_HANDLERS.DELEGATING_INBOUND_HANDLER.name()),any(DelegatingInboundHandler.class));
         assertEquals(1, pubChInitializer.size()) ;
     }
 }

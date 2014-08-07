@@ -13,6 +13,7 @@ import java.net.InetAddress;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.ThreadConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.TransportProtocol;
 
 /**
  * @author michal.polkorab
@@ -26,6 +27,7 @@ public class ConnectionConfigurationImpl implements ConnectionConfiguration {
     private TlsConfiguration tlsConfig;
     private long switchIdleTimeout;
     private ThreadConfiguration threadConfig;
+    private TransportProtocol protocol;
 
     /**
      * Creates {@link ConnectionConfigurationImpl}
@@ -54,6 +56,14 @@ public class ConnectionConfigurationImpl implements ConnectionConfiguration {
     @Override
     public Object getTransferProtocol() {
         return transferProtocol;
+    }
+
+    /**
+     * Used for testing - sets transport protocol
+     * @param protocol
+     */
+    public void setTransferProtocol(TransportProtocol protocol) {
+        this.transferProtocol = protocol;
     }
 
     @Override

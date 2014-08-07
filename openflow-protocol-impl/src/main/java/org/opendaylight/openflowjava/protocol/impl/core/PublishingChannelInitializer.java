@@ -36,45 +36,6 @@ import org.slf4j.LoggerFactory;
  */
 public class PublishingChannelInitializer extends ChannelInitializer<SocketChannel> {
 
-    /**
-     * Enum used for storing names of used components (in pipeline).
-     */
-    public static enum COMPONENT_NAMES {
-
-        /**
-         * Detects switch idle state
-         */
-        IDLE_HANDLER,
-        /**
-         * Detects TLS connections
-         */
-        TLS_DETECTOR,
-        /**
-         * Component for handling TLS frames
-         */
-        SSL_HANDLER,
-        /**
-         * Decodes incoming messages into message frames
-         */
-        OF_FRAME_DECODER,
-        /**
-         * Detects version of incoming OpenFlow Protocol message
-         */
-        OF_VERSION_DETECTOR,
-        /**
-         * Transforms OpenFlow Protocol byte messages into POJOs
-         */
-        OF_DECODER,
-        /**
-         * Transforms POJOs into OpenFlow Protocol byte messages
-         */
-        OF_ENCODER,
-        /**
-         * Delegates translated POJOs into MessageConsumer
-         */
-        DELEGATING_INBOUND_HANDLER,
-    }
-
     private static final Logger LOGGER = LoggerFactory
             .getLogger(PublishingChannelInitializer.class);
     private final DefaultChannelGroup allChannels;
@@ -116,12 +77,12 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
         LOGGER.info("Incoming connection accepted - building pipeline");
         allChannels.add(ch);
         ConnectionFacade connectionFacade = null;
-        connectionFacade = connectionAdapterFactory.createConnectionFacade(ch);
+        connectionFacade = connectionAdapterFactory.createConnectionFacade(ch, null);
         try {
             LOGGER.debug("calling plugin: " + switchConnectionHandler);
             switchConnectionHandler.onSwitchConnected(connectionFacade);
             connectionFacade.checkListeners();
-            ch.pipeline().addLast(COMPONENT_NAMES.IDLE_HANDLER.name(), new IdleHandler(switchIdleTimeout, TimeUnit.MILLISECONDS));
+            ch.pipeline().addLast(PIPELINE_HANDLERS.IDLE_HANDLER.name(), new IdleHandler(switchIdleTimeout, TimeUnit.MILLISECONDS));
             
             // If this channel is configured to support SSL it will only support SSL
             if (tlsConfiguration != null) {
@@ -129,17 +90,17 @@ public class PublishingChannelInitializer extends ChannelInitializer<SocketChann
                 SSLEngine engine = sslFactory.getServerContext().createSSLEngine();
                 engine.setNeedClientAuth(true);
                 engine.setUseClientMode(false);
-                ch.pipeline().addLast(COMPONENT_NAMES.SSL_HANDLER.name(), new SslHandler(engine));
+                ch.pipeline().addLast(PIPELINE_HANDLERS.SSL_HANDLER.name(), new SslHandler(engine));
             }
-            ch.pipeline().addLast(COMPONENT_NAMES.OF_FRAME_DECODER.name(), new OFFrameDecoder(connectionFacade));
-            ch.pipeline().addLast(COMPONENT_NAMES.OF_VERSION_DETECTOR.name(), new OFVersionDetector());
+            ch.pipeline().addLast(PIPELINE_HANDLERS.OF_FRAME_DECODER.name(), new OFFrameDecoder(connectionFacade));
+            ch.pipeline().addLast(PIPELINE_HANDLERS.OF_VERSION_DETECTOR.name(), new OFVersionDetector());
             OFDecoder ofDecoder = new OFDecoder();
             ofDecoder.setDeserializationFactory(deserializationFactory);
-            ch.pipeline().addLast(COMPONENT_NAMES.OF_DECODER.name(), ofDecoder);
+            ch.pipeline().addLast(PIPELINE_HANDLERS.OF_DECODER.name(), ofDecoder);
             OFEncoder ofEncoder = new OFEncoder();
             ofEncoder.setSerializationFactory(serializationFactory);
-            ch.pipeline().addLast(COMPONENT_NAMES.OF_ENCODER.name(), ofEncoder);
-            ch.pipeline().addLast(COMPONENT_NAMES.DELEGATING_INBOUND_HANDLER.name(), new DelegatingInboundHandler(connectionFacade));
+            ch.pipeline().addLast(PIPELINE_HANDLERS.OF_ENCODER.name(), ofEncoder);
+            ch.pipeline().addLast(PIPELINE_HANDLERS.DELEGATING_INBOUND_HANDLER.name(), new DelegatingInboundHandler(connectionFacade));
             if (tlsConfiguration == null) {
                 connectionFacade.fireConnectionReadyNotification();
             }

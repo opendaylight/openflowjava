@@ -9,10 +9,16 @@
 
 package org.opendaylight.openflowjava.protocol.impl.connection;
 
+import org.opendaylight.openflowjava.protocol.api.connection.ThreadConfiguration;
+
 /**
  * @author mirehak
  */
 public interface ServerFacade extends ShutdownProvider, OnlineProvider, Runnable {
 
-    // empty unifying superinterface
+    /**
+     * Sets thread configuration
+     * @param threadConfig desired thread configuration
+     */
+    public void setThreadConfig(ThreadConfiguration threadConfig);
 }

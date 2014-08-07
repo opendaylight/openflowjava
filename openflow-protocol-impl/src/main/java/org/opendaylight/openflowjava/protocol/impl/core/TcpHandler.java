@@ -30,7 +30,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
 /**
- * Class implementing server over TCP for handling incoming connections.
+ * Class implementing server over TCP / TLS for handling incoming connections.
  *
  * @author michal.polkorab
  */
@@ -135,7 +135,7 @@ public class TcpHandler implements ServerFacade {
 
             LOGGER.debug("address from tcphandler: {}", address);
             isOnlineFuture.set(true);
-            LOGGER.info("Switch listener started and ready to accept incoming connections on port: {}", port);
+            LOGGER.info("Switch listener started and ready to accept incoming tcp/tls connections on port: {}", port);
             f.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             LOGGER.error("Interrupted while waiting for port {} shutdown", port, e);
@@ -201,9 +201,7 @@ public class TcpHandler implements ServerFacade {
         this.channelInitializer = channelInitializer;
     }
 
-    /**
-     * @param threadConfig EventLoopGroup configuration
-     */
+    @Override
     public void setThreadConfig(ThreadConfiguration threadConfig) {
         this.threadConfig = threadConfig;
     }

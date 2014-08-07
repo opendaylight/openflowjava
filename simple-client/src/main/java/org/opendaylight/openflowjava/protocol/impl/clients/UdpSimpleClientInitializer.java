@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Pantheon Technologies s.r.o. and others. All rights reserved.
+ * Copyright (c) 2014 Pantheon Technologies s.r.o. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -11,47 +11,34 @@ package org.opendaylight.openflowjava.protocol.impl.clients;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.ssl.SslHandler;
-
-import javax.net.ssl.SSLEngine;
+import io.netty.channel.socket.nio.NioDatagramChannel;
 
 import com.google.common.util.concurrent.SettableFuture;
 
-/** Initializes secured {@link SimpleClient} pipeline
+/** Initializes udp pipeline
  * 
  * @author michal.polkorab
  */
-public class SimpleClientInitializer extends ChannelInitializer<NioSocketChannel> {
+public class UdpSimpleClientInitializer extends ChannelInitializer<NioDatagramChannel> {
     
     private SettableFuture<Boolean> isOnlineFuture;
-    private boolean secured;
     private ScenarioHandler scenarioHandler;
 
     /**
      * @param isOnlineFuture future notifier of connected channel
-     * @param secured true if {@link SimpleClient} should use encrypted communication
      */
-    public SimpleClientInitializer(SettableFuture<Boolean> isOnlineFuture, boolean secured) {
+    public UdpSimpleClientInitializer(SettableFuture<Boolean> isOnlineFuture) {
         this.isOnlineFuture = isOnlineFuture;
-        this.secured = secured;
     }
 
     @Override
-    public void initChannel(NioSocketChannel ch) throws Exception {
+    public void initChannel(NioDatagramChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-        if (secured) {
-            SSLEngine engine = ClientSslContextFactory.getClientContext()
-                    .createSSLEngine();
-            engine.setUseClientMode(true);
-            pipeline.addLast("ssl", new SslHandler(engine));
-        }
         SimpleClientHandler simpleClientHandler = new SimpleClientHandler(isOnlineFuture, scenarioHandler);
         simpleClientHandler.setScenario(scenarioHandler);
-        pipeline.addLast("framer", new SimpleClientFramer());
+        pipeline.addLast("framer", new UdpSimpleClientFramer());
         pipeline.addLast("handler", simpleClientHandler);
         isOnlineFuture = null;
-
     }
 
     /**

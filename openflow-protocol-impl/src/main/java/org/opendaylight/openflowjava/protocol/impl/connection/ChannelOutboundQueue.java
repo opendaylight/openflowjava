@@ -16,6 +16,7 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
+import java.net.InetSocketAddress;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
@@ -95,6 +96,7 @@ final class ChannelOutboundQueue extends ChannelInboundHandlerAdapter {
     private final Queue<MessageHolder<?>> queue;
     private final long maxWorkTime;
     private final Channel channel;
+    private InetSocketAddress address;
 
     public ChannelOutboundQueue(final Channel channel, final int queueDepth) {
         Preconditions.checkArgument(queueDepth > 0, "Queue depth has to be positive");
@@ -181,7 +183,13 @@ final class ChannelOutboundQueue extends ChannelInboundHandlerAdapter {
             }
 
             final GenericFutureListener<Future<Void>> l = h.takeListener();
-            final ChannelFuture p = channel.write(new MessageListenerWrapper(h.takeMessage(), l));
+            
+            final ChannelFuture p;
+            if (address == null) {
+                p = channel.write(new MessageListenerWrapper(h.takeMessage(), l));
+            } else {
+                p = channel.write(new UdpMessageListenerWrapper(h.takeMessage(), l, address));
+            }
             if (l != null) {
                 p.addListener(l);
             }
@@ -267,5 +275,9 @@ final class ChannelOutboundQueue extends ChannelInboundHandlerAdapter {
     @Override
     public String toString() {
         return String.format("Channel %s queue [%s messages flushing=%s]", channel, queue.size(), flushScheduled);
+    }
+
+    public void setAddress(InetSocketAddress address) {
+        this.address = address;
     }
 }

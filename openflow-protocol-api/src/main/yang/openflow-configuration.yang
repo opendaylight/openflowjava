@@ -39,4 +39,21 @@
             }
         }
     }
+
+    typedef transport-protocol {
+        type enumeration {
+            enum TCP {
+                value 0;
+                description "Communication over TCP protocol.";
+            }
+            enum TLS {
+                value 1;
+                description "Communication over TLS protocol.";
+            }
+            enum UDP {
+                value 2;
+                description "Communication over UDP protocol.";
+            }
+        }
+    }
 }
