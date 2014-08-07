@@ -9,8 +9,8 @@
 
 package org.opendaylight.openflowjava.protocol.impl.connection;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.GenericFutureListener;
 
 import java.net.InetSocketAddress;
@@ -111,7 +111,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     private final Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> responseCache;
 
     private final ChannelOutboundQueue output;
-    private final SocketChannel channel;
+    private final Channel channel;
 
     private ConnectionReadyListener connectionReadyListener;
     private OpenflowProtocolListener messageListener;
@@ -121,14 +121,17 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     /**
      * default ctor
      * @param channel the channel to be set - used for communication
+     * @param address client address (used only in case of UDP communication,
+     *  as there is no need to store address over tcp (stable channel))
      */
-    public ConnectionAdapterImpl(final SocketChannel channel) {
+    public ConnectionAdapterImpl(final Channel channel, final InetSocketAddress address) {
         responseCache = CacheBuilder.newBuilder()
                 .concurrencyLevel(1)
                 .expireAfterWrite(RPC_RESPONSE_EXPIRATION, TimeUnit.MINUTES)
                 .removalListener(REMOVAL_LISTENER).build();
         this.channel = Preconditions.checkNotNull(channel);
         this.output = new ChannelOutboundQueue(channel, DEFAULT_QUEUE_DEPTH);
+        output.setAddress(address);
         channel.pipeline().addLast(output);
         LOG.debug("ConnectionAdapter created");
     }
@@ -471,6 +474,6 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
 
     @Override
     public InetSocketAddress getRemoteAddress() {
-        return channel.remoteAddress();
+        return (InetSocketAddress) channel.remoteAddress();
     }
 }

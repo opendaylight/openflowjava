@@ -18,6 +18,7 @@ import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
 import org.opendaylight.openflowjava.protocol.impl.connection.SwitchConnectionProviderImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.KeystoreType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.TransportProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +80,7 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
         final long switchIdleTimeout = getSwitchIdleTimeout();
         final Tls tlsConfig = getTls();
         final Threads threads = getThreads();
+        final TransportProtocol transportProtocol = getTransportProtocol();
         
         return new ConnectionConfiguration() {
             @Override
@@ -91,12 +93,11 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
             }
             @Override
             public Object getTransferProtocol() {
-                // TODO Auto-generated method stub
-                return null;
+                return transportProtocol;
             }
             @Override
             public TlsConfiguration getTlsConfiguration() {
-                if (tlsConfig == null) {
+                if (tlsConfig == null || !(TransportProtocol.TLS.equals(transportProtocol))) {
                     return null;
                 }
                 return new TlsConfiguration() {
