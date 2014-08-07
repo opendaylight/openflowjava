@@ -36,6 +36,11 @@ module openflow-switch-connection-provider-impl {
                 description "address of local listening interface";
                 type ietf-inet:ip-address;
             }
+            leaf transport-protocol {
+                description "Transport protocol used for communication.";
+                type of-config:transport-protocol;
+                mandatory true;
+            }
             leaf switch-idle-timeout {
                 description "idle timeout in [ms]";
                 type uint32;

@@ -29,7 +29,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.P
 public class PublishingChannelInitializerFactoryTest {
 
     TlsConfiguration tlsConfiguration ;
-    PublishingChannelInitializerFactory factory;
+    ChannelInitializerFactory factory;
     private final long switchIdleTimeOut = 60;
     @Mock SwitchConnectionHandler switchConnectionHandler ;
     @Mock SerializationFactory serializationFactory;
@@ -41,7 +41,7 @@ public class PublishingChannelInitializerFactoryTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        factory = new PublishingChannelInitializerFactory();
+        factory = new ChannelInitializerFactory();
         tlsConfiguration = new TlsConfigurationImpl(KeystoreType.JKS, "/exemplary-ctlTrustStore",
                 PathType.CLASSPATH, KeystoreType.JKS, "/exemplary-ctlKeystore", PathType.CLASSPATH);
         factory.setDeserializationFactory(deserializationFactory);
@@ -52,11 +52,11 @@ public class PublishingChannelInitializerFactoryTest {
     }
 
     /**
-     * Test {@link PublishingChannelInitializer} creation
+     * Test {@link TcpChannelInitializer} creation
      */
     @Test
     public void testCreatePublishingChannelInitializer() {
-        PublishingChannelInitializer initializer = factory.createPublishingChannelInitializer() ;
+        TcpChannelInitializer initializer = factory.createPublishingChannelInitializer() ;
         assertNotNull( initializer );
     }
 }

@@ -36,7 +36,7 @@ public class TcpHandlerTest {
 
     private InetAddress serverAddress = InetAddress.getLoopbackAddress() ;
     @Mock ChannelHandlerContext mockChHndlrCtx ;
-    @Mock PublishingChannelInitializer mockChannelInitializer;
+    @Mock TcpChannelInitializer mockChannelInitializer;
     @Mock SwitchConnectionHandler mockSwitchConnHndler ;
     @Mock SerializationFactory mockSerializationFactory ;
     @Mock DeserializationFactory mockDeserializationFactory ;

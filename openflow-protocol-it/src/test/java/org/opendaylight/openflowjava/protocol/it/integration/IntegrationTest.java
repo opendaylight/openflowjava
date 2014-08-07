@@ -20,17 +20,21 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.TlsConfigurationImpl;
 import org.opendaylight.openflowjava.protocol.impl.clients.ClientEvent;
+import org.opendaylight.openflowjava.protocol.impl.clients.OFClient;
 import org.opendaylight.openflowjava.protocol.impl.clients.ScenarioFactory;
 import org.opendaylight.openflowjava.protocol.impl.clients.ScenarioHandler;
 import org.opendaylight.openflowjava.protocol.impl.clients.SendEvent;
 import org.opendaylight.openflowjava.protocol.impl.clients.SimpleClient;
 import org.opendaylight.openflowjava.protocol.impl.clients.SleepEvent;
+import org.opendaylight.openflowjava.protocol.impl.clients.UdpSimpleClient;
 import org.opendaylight.openflowjava.protocol.impl.clients.WaitForMessageEvent;
 import org.opendaylight.openflowjava.protocol.impl.connection.SwitchConnectionProviderImpl;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler;
+import org.opendaylight.openflowjava.protocol.impl.core.UdpHandler;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.KeystoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.PathType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.TransportProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +48,7 @@ public class IntegrationTest {
             .getLogger(IntegrationTest.class);
     
     private static int port;
-    private TlsConfiguration tlsConfiguration ;
+    private TlsConfiguration tlsConfiguration;
     private static final int SWITCH_IDLE_TIMEOUT = 2000;
     private static final long CONNECTION_TIMEOUT = 2000;
     private InetAddress startupAddress;
@@ -53,31 +57,36 @@ public class IntegrationTest {
     private ConnectionConfigurationImpl connConfig;
 
     /**
-     * @param secured true if an encrypted connection should be used
+     * @param protocol communication protocol to be used during test
      * @throws Exception
      */
-    public void setUp(boolean secured) throws Exception {
+    public void setUp(TransportProtocol protocol) throws Exception {
         LOGGER.debug("\n starting test -------------------------------");
         
         String currentDir = System.getProperty("user.dir");
         LOGGER.debug("Current dir using System:" +currentDir);
         startupAddress = InetAddress.getLocalHost();
-        if (secured) {
+        tlsConfiguration = null;
+        if (protocol.equals(TransportProtocol.TLS)) {
             tlsConfiguration = new TlsConfigurationImpl(KeystoreType.JKS,
                     "/selfSignedSwitch", PathType.CLASSPATH, KeystoreType.JKS,
                     "/selfSignedController", PathType.CLASSPATH) ;
-            connConfig = new ConnectionConfigurationImpl(startupAddress, 0, tlsConfiguration, SWITCH_IDLE_TIMEOUT);
-        } else {
-            connConfig = new ConnectionConfigurationImpl(startupAddress, 0, null, SWITCH_IDLE_TIMEOUT);
         }
+        connConfig = new ConnectionConfigurationImpl(startupAddress, 0, tlsConfiguration, SWITCH_IDLE_TIMEOUT);
+        connConfig.setTransferProtocol(protocol);
         mockPlugin = new MockPlugin();
         
         switchConnectionProvider = new SwitchConnectionProviderImpl();
         switchConnectionProvider.setSwitchConnectionHandler(mockPlugin);
         switchConnectionProvider.setConfiguration(connConfig);
         switchConnectionProvider.startup().get(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
-        TcpHandler tcpHandler = (TcpHandler) switchConnectionProvider.getServerFacade();
-        port = tcpHandler.getPort();
+        if (protocol.equals(TransportProtocol.TCP) || protocol.equals(TransportProtocol.TLS)) {
+            TcpHandler tcpHandler = (TcpHandler) switchConnectionProvider.getServerFacade();
+            port = tcpHandler.getPort();
+        } else {
+            UdpHandler udpHandler = (UdpHandler) switchConnectionProvider.getServerFacade();
+            port = udpHandler.getPort();
+        }
     }
 
     /**
@@ -87,7 +96,6 @@ public class IntegrationTest {
     public void tearDown() throws Exception {
         switchConnectionProvider.close();
         LOGGER.debug("\n ending test -------------------------------");
-
     }
 
     /**
@@ -96,12 +104,12 @@ public class IntegrationTest {
      */
     @Test
     public void testHandshake() throws Exception {
-        setUp(false);
+        setUp(TransportProtocol.TCP);
         int amountOfCLients = 1;
         Stack<ClientEvent> scenario = ScenarioFactory.createHandshakeScenario();
         ScenarioHandler handler = new ScenarioHandler(scenario);
-        List<SimpleClient> clients = createAndStartClient(amountOfCLients, handler, false);
-        SimpleClient firstClient = clients.get(0);
+        List<OFClient> clients = createAndStartClient(amountOfCLients, handler, TransportProtocol.TCP);
+        OFClient firstClient = clients.get(0);
         firstClient.getScenarioDone().get();
         Thread.sleep(1000);
         
@@ -109,17 +117,17 @@ public class IntegrationTest {
     }
 
     /**
-     * Library integration and communication test with handshake
+     * Library integration and secured communication test with handshake
      * @throws Exception 
      */
     @Test
     public void testTlsHandshake() throws Exception {
-        setUp(true);
+        setUp(TransportProtocol.TLS);
         int amountOfCLients = 1;
         Stack<ClientEvent> scenario = ScenarioFactory.createHandshakeScenario();
         ScenarioHandler handler = new ScenarioHandler(scenario);
-        List<SimpleClient> clients = createAndStartClient(amountOfCLients, handler, true);
-        SimpleClient firstClient = clients.get(0);
+        List<OFClient> clients = createAndStartClient(amountOfCLients, handler, TransportProtocol.TLS);
+        OFClient firstClient = clients.get(0);
         firstClient.getScenarioDone().get();
         Thread.sleep(1000);
         
@@ -132,7 +140,7 @@ public class IntegrationTest {
      */
     @Test
     public void testHandshakeAndEcho() throws Exception {
-        setUp(false);
+        setUp(TransportProtocol.TCP);
         int amountOfCLients = 1;
         Stack<ClientEvent> scenario = ScenarioFactory.createHandshakeScenario();
         scenario.add(0, new SleepEvent(1000));
@@ -140,20 +148,20 @@ public class IntegrationTest {
         scenario.add(0, new SleepEvent(1000));
         scenario.add(0, new WaitForMessageEvent(ByteBufUtils.hexStringToBytes("04 03 00 08 00 00 00 04")));
         ScenarioHandler handler = new ScenarioHandler(scenario);
-        List<SimpleClient> clients = createAndStartClient(amountOfCLients, handler, false);
-        SimpleClient firstClient = clients.get(0);
+        List<OFClient> clients = createAndStartClient(amountOfCLients, handler, TransportProtocol.TCP);
+        OFClient firstClient = clients.get(0);
         firstClient.getScenarioDone().get();
 
         LOGGER.debug("testHandshakeAndEcho() Finished") ;
     }
 
     /**
-     * Library integration and communication test with handshake + echo exchange
+     * Library integration and secured communication test with handshake + echo exchange
      * @throws Exception 
      */
     @Test
     public void testTlsHandshakeAndEcho() throws Exception {
-        setUp(true);
+        setUp(TransportProtocol.TLS);
         int amountOfCLients = 1;
         Stack<ClientEvent> scenario = ScenarioFactory.createHandshakeScenario();
         scenario.add(0, new SleepEvent(1000));
@@ -161,40 +169,69 @@ public class IntegrationTest {
         scenario.add(0, new SleepEvent(1000));
         scenario.add(0, new WaitForMessageEvent(ByteBufUtils.hexStringToBytes("04 03 00 08 00 00 00 04")));
         ScenarioHandler handler = new ScenarioHandler(scenario);
-        List<SimpleClient> clients = createAndStartClient(amountOfCLients, handler, true);
-        SimpleClient firstClient = clients.get(0);
+        List<OFClient> clients = createAndStartClient(amountOfCLients, handler, TransportProtocol.TLS);
+        OFClient firstClient = clients.get(0);
         firstClient.getScenarioDone().get();
 
         LOGGER.debug("testTlsHandshakeAndEcho() Finished") ;
     }
 
     /**
-     * Library integration and communication test (with virtual machine)        
-     * @throws Exception        
-     */     
-    //@Test         
-    public void testCommunicationWithVM() throws Exception {        
-        mockPlugin.getFinishedFuture().get();       
+     * Library udp integration and communication test with handshake + echo exchange
+     * @throws Exception 
+     */
+    @Test
+    public void testUdpHandshakeAndEcho() throws Exception {
+        setUp(TransportProtocol.UDP);
+        int amountOfCLients = 1;
+        Stack<ClientEvent> scenario = ScenarioFactory.createHandshakeScenario();
+        scenario.add(0, new SleepEvent(1000));
+        scenario.add(0, new SendEvent(ByteBufUtils.hexStringToBytes("04 02 00 08 00 00 00 04")));
+        scenario.add(0, new SleepEvent(1000));
+        scenario.add(0, new WaitForMessageEvent(ByteBufUtils.hexStringToBytes("04 03 00 08 00 00 00 04")));
+        ScenarioHandler handler = new ScenarioHandler(scenario);
+        List<OFClient> clients = createAndStartClient(amountOfCLients, handler, TransportProtocol.UDP);
+        OFClient firstClient = clients.get(0);
+        firstClient.getScenarioDone().get();
+
+        LOGGER.debug("testUdpHandshakeAndEcho() Finished") ;
+    }
+
+    /**
+     * Library integration and communication test (with virtual machine)
+     * @throws Exception
+     */
+    //@Test
+    public void testCommunicationWithVM() throws Exception {
+        mockPlugin.getFinishedFuture().get();
     }
 
     /**
      * @param amountOfCLients 
-     * @param secured true if encrypted connection should be used
+     * @param protocol true if encrypted connection should be used
      * @return new clients up and running
      * @throws ExecutionException if some client could not start
      */
-    private List<SimpleClient> createAndStartClient(int amountOfCLients, ScenarioHandler scenarioHandler,
-            boolean secured) throws ExecutionException {
-        List<SimpleClient> clientsHorde = new ArrayList<>();
+    private List<OFClient> createAndStartClient(int amountOfCLients, ScenarioHandler scenarioHandler,
+            TransportProtocol protocol) throws ExecutionException {
+        List<OFClient> clientsHorde = new ArrayList<>();
         for (int i = 0; i < amountOfCLients; i++) {
             LOGGER.debug("startup address in createclient: " + startupAddress.getHostAddress());
-            SimpleClient sc = new SimpleClient(startupAddress.getHostAddress(), port);
-            sc.setSecuredClient(secured);
+            OFClient sc = null;
+            if (protocol.equals(TransportProtocol.TCP)) {
+                sc = new SimpleClient(startupAddress.getHostAddress(), port);
+                sc.setSecuredClient(false);
+            } else if (protocol.equals(TransportProtocol.TLS)) {
+                sc = new SimpleClient(startupAddress.getHostAddress(), port);
+                sc.setSecuredClient(true);
+            } else {
+                sc = new UdpSimpleClient(startupAddress.getHostAddress(), port);
+            }
             sc.setScenarioHandler(scenarioHandler);
             clientsHorde.add(sc);
-            sc.start();
+            sc.run();
         }
-        for (SimpleClient sc : clientsHorde) {
+        for (OFClient sc : clientsHorde) {
             try {
                 sc.getIsOnlineFuture().get(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
             } catch (Exception e) {

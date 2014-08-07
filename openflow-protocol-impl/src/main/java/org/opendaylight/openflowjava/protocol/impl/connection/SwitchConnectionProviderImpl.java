@@ -25,13 +25,15 @@ import org.opendaylight.openflowjava.protocol.api.keys.experimenter.Experimenter
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterInstructionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterInstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterSerializerKey;
-import org.opendaylight.openflowjava.protocol.impl.core.PublishingChannelInitializerFactory;
+import org.opendaylight.openflowjava.protocol.impl.core.ChannelInitializerFactory;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler;
+import org.opendaylight.openflowjava.protocol.impl.core.UdpHandler;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.TransportProtocol;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmClassBase;
 import org.slf4j.Logger;
@@ -118,16 +120,23 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     /**
      * @return
      */
-    private TcpHandler createAndConfigureServer() {
+    private ServerFacade createAndConfigureServer() {
         LOGGER.debug("Configuring ..");
-        TcpHandler server = new TcpHandler(connConfig.getAddress(), connConfig.getPort());
-        PublishingChannelInitializerFactory factory = new PublishingChannelInitializerFactory();
+        ServerFacade server = null;
+        ChannelInitializerFactory factory = new ChannelInitializerFactory();
         factory.setSwitchConnectionHandler(switchConnectionHandler);
         factory.setSwitchIdleTimeout(connConfig.getSwitchIdleTimeout());
         factory.setTlsConfig(connConfig.getTlsConfiguration());
         factory.setSerializationFactory(serializationFactory);
         factory.setDeserializationFactory(deserializationFactory);
-        server.setChannelInitializer(factory.createPublishingChannelInitializer());
+        TransportProtocol transportProtocol = (TransportProtocol) connConfig.getTransferProtocol();
+        if (transportProtocol.equals(TransportProtocol.TCP) || transportProtocol.equals(TransportProtocol.TLS)) {
+            server = new TcpHandler(connConfig.getAddress(), connConfig.getPort());
+            ((TcpHandler) server).setChannelInitializer(factory.createPublishingChannelInitializer());
+        } else {
+            server = new UdpHandler(connConfig.getAddress(), connConfig.getPort());
+            ((UdpHandler) server).setChannelInitializer(factory.createUdpChannelInitializer());
+        }
         server.setThreadConfig(connConfig.getThreadConfiguration());
         return server;
     }

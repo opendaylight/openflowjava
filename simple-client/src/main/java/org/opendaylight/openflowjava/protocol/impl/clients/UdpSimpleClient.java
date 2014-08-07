@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Pantheon Technologies s.r.o. and others. All rights reserved.
+ * Copyright (c) 2014 Pantheon Technologies s.r.o. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -9,9 +9,10 @@
 package org.opendaylight.openflowjava.protocol.impl.clients;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.util.concurrent.Future;
 
 import java.net.InetAddress;
@@ -27,16 +28,15 @@ import com.google.common.util.concurrent.SettableFuture;
  *
  * @author michal.polkorab
  */
-public class SimpleClient implements OFClient {
+public class UdpSimpleClient implements OFClient {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UdpSimpleClient.class);
     private final String host;
     private final int port;
-    private boolean securedClient = false;
     private EventLoopGroup group;
     private SettableFuture<Boolean> isOnlineFuture;
     private SettableFuture<Boolean> scenarioDone;
-    private SimpleClientInitializer clientInitializer;
+    private UdpSimpleClientInitializer clientInitializer;
     private ScenarioHandler scenarioHandler;
     
     /**
@@ -45,7 +45,7 @@ public class SimpleClient implements OFClient {
      * @param host address of host
      * @param port host listening port
      */
-    public SimpleClient(String host, int port) {
+    public UdpSimpleClient(String host, int port) {
         this.host = host;
         this.port = port;
         init();
@@ -57,17 +57,18 @@ public class SimpleClient implements OFClient {
     }
     
     /**
-     * Starting class of {@link SimpleClient}
+     * Starting class of {@link UdpSimpleClient}
      */
     @Override
     public void run() {
         group = new NioEventLoopGroup();
-        clientInitializer = new SimpleClientInitializer(isOnlineFuture, securedClient);
+        clientInitializer = new UdpSimpleClientInitializer(isOnlineFuture);
         clientInitializer.setScenario(scenarioHandler);
         try {
             Bootstrap b = new Bootstrap();
             b.group(group)
-                .channel(NioSocketChannel.class)
+                .channel(NioDatagramChannel.class)
+                .option(ChannelOption.SO_BROADCAST, false)
                 .handler(clientInitializer);
 
             b.connect(host, port).sync();
@@ -98,13 +99,8 @@ public class SimpleClient implements OFClient {
         return group.shutdownGracefully();
     }
 
-    @Override
-    public void setSecuredClient(boolean securedClient) {
-        this.securedClient = securedClient;
-    }
-
     /**
-     * Sets up {@link SimpleClient} and fires run()
+     * Sets up {@link UdpSimpleClient} and fires run()
      *
      * @param args
      * @throws Exception
@@ -112,24 +108,23 @@ public class SimpleClient implements OFClient {
     public static void main(String[] args) throws Exception {
         String host;
         int port;
-        SimpleClient sc;
-        if (args.length != 3) {
-            LOGGER.error("Usage: " + SimpleClient.class.getSimpleName()
-                    + " <host> <port> <secured>");
+        UdpSimpleClient sc;
+        if (args.length != 2) {
+            LOGGER.error("Usage: " + UdpSimpleClient.class.getSimpleName()
+                    + " <host> <port>");
             LOGGER.error("Trying to use default setting.");
             InetAddress ia = InetAddress.getLocalHost();
             InetAddress[] all = InetAddress.getAllByName(ia.getHostName());
             host = all[0].getHostAddress();
             port = 6633;
-            sc = new SimpleClient(host, port);
-            sc.setSecuredClient(true);
+            sc = new UdpSimpleClient(host, port);
         } else {
             host = args[0];
             port = Integer.parseInt(args[1]);
-            sc = new SimpleClient(host, port);
-            sc.setSecuredClient(Boolean.parseBoolean(args[2]));
+            sc = new UdpSimpleClient(host, port);
         }
         sc.run();
+        
     }
 
     @Override
@@ -145,5 +140,10 @@ public class SimpleClient implements OFClient {
     @Override
     public void setScenarioHandler(ScenarioHandler scenario) {
         this.scenarioHandler = scenario;
+    }
+
+    @Override
+    public void setSecuredClient(boolean securedClient) {
+        // TODO: Finish implementation when DTLS is supported
     }
 }

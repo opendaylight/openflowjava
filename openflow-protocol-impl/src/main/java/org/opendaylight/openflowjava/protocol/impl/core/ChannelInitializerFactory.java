@@ -17,7 +17,7 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFa
  * @author michal.polkorab
  *
  */
-public class PublishingChannelInitializerFactory {
+public class ChannelInitializerFactory {
 
     private long switchIdleTimeOut;
     private DeserializationFactory deserializationFactory;
@@ -28,12 +28,24 @@ public class PublishingChannelInitializerFactory {
     /**
      * @return PublishingChannelInitializer that initializes new channels
      */
-    public PublishingChannelInitializer createPublishingChannelInitializer() {
-        PublishingChannelInitializer initializer = new PublishingChannelInitializer();
+    public TcpChannelInitializer createPublishingChannelInitializer() {
+        TcpChannelInitializer initializer = new TcpChannelInitializer();
         initializer.setSwitchIdleTimeout(switchIdleTimeOut);
         initializer.setDeserializationFactory(deserializationFactory);
         initializer.setSerializationFactory(serializationFactory);
         initializer.setTlsConfiguration(tlsConfig);
+        initializer.setSwitchConnectionHandler(switchConnectionHandler);
+        return initializer;
+    }
+
+    /**
+     * @return PublishingChannelInitializer that initializes new channels
+     */
+    public UdpChannelInitializer createUdpChannelInitializer() {
+        UdpChannelInitializer initializer = new UdpChannelInitializer();
+        initializer.setSwitchIdleTimeout(switchIdleTimeOut);
+        initializer.setDeserializationFactory(deserializationFactory);
+        initializer.setSerializationFactory(serializationFactory);
         initializer.setSwitchConnectionHandler(switchConnectionHandler);
         return initializer;
     }
@@ -72,6 +84,4 @@ public class PublishingChannelInitializerFactory {
     public void setSwitchConnectionHandler(SwitchConnectionHandler switchConnectionHandler) {
         this.switchConnectionHandler = switchConnectionHandler;
     }
-
-    
 }
