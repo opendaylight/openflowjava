@@ -9,6 +9,7 @@
 package org.opendaylight.openflowjava.util;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.UnpooledByteBufAllocator;
 
 import java.util.ArrayList;
@@ -18,7 +19,10 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloInputBuilder;
 
 /**
  * @author michal.polkorab
@@ -219,15 +223,27 @@ public class ByteBufUtilsTest {
     public void testMacToBytes() {
         Assert.assertArrayEquals("Wrong byte array", new byte[]{0, 1, 2, 3, (byte) 255, 5},
                 ByteBufUtils.macAddressToBytes("00:01:02:03:FF:05"));
+        Assert.assertArrayEquals("Wrong byte array", new byte[]{11, 1, 2, 3, (byte) 255, 10},
+                ByteBufUtils.macAddressToBytes("0b:01:02:03:FF:0a"));
+    }
+
+    /**
+     * Test of {@link ByteBufUtils#macAddressToBytes(String)}
+     */
+    @Test(expected=IllegalArgumentException.class)
+    public void testMacToBytes2() {
+        Assert.assertArrayEquals("Wrong byte array", new byte[]{0, 1, 2, 3, (byte) 255, 5},
+                ByteBufUtils.macAddressToBytes("00:01:02:03:FF:0G"));
     }
 
     /**
      * Test of {@link ByteBufUtils#macAddressToString(byte[])}
      */
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void testMacToString() {
         Assert.assertEquals("Wrong string decoded", "00:01:02:03:FF:05",
                 ByteBufUtils.macAddressToString(new byte[]{0, 1, 2, 3, (byte) 255, 5}));
+        ByteBufUtils.macAddressToString(new byte[]{0, 1, 2, 3, (byte) 255, 5, 6});
     }
 
     /**
@@ -252,4 +268,103 @@ public class ByteBufUtilsTest {
         Assert.assertEquals("Wrong data read", "04 05 06 07", ByteBufUtils.byteBufToHexString(buf));
     }
 
+    /**
+     * Buffer padding test
+     */
+    @Test
+    public void testPadBuffer() {
+        ByteBuf buf = PooledByteBufAllocator.DEFAULT.buffer();
+        ByteBufUtils.padBuffer(4, buf);
+        Assert.assertEquals("Wrong padding", 0, buf.readUnsignedInt());
+        ByteBufUtils.padBuffer(0, buf);
+        Assert.assertTrue("Wrong padding", buf.readableBytes() == 0);
+    }
+
+    /**
+     * Write OF header test
+     */
+    @Test
+    public void testWriteHeader() {
+        ByteBuf buf = PooledByteBufAllocator.DEFAULT.buffer();
+        HelloInputBuilder helloBuilder = new HelloInputBuilder();
+        helloBuilder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
+        helloBuilder.setXid(12345L);
+        helloBuilder.setElements(null);
+        HelloInput helloInput = helloBuilder.build();
+        ByteBufUtils.writeOFHeader((byte) 0, helloInput, buf, EncodeConstants.OFHEADER_SIZE);
+        Assert.assertEquals("Wrong version", EncodeConstants.OF13_VERSION_ID, buf.readUnsignedByte());
+        Assert.assertEquals("Wrong type", 0, buf.readUnsignedByte());
+        Assert.assertEquals("Wrong length", EncodeConstants.OFHEADER_SIZE, buf.readUnsignedShort());
+        Assert.assertEquals("Wrong xid", 12345, buf.readUnsignedInt());
+        Assert.assertTrue("Unexpected data", buf.readableBytes() == 0);
+    }
+
+    /**
+     * Fill bitmask test
+     */
+    @Test
+    public void testFillBitmask() {
+        Assert.assertEquals("Wrong bitmask", 0, ByteBufUtils.fillBitMask(0, false));
+        Assert.assertEquals("Wrong bitmask", 1, ByteBufUtils.fillBitMask(0, true));
+        Assert.assertEquals("Wrong bitmask", 3, ByteBufUtils.fillBitMask(0, true, true));
+        Assert.assertEquals("Wrong bitmask", 2, ByteBufUtils.fillBitMask(0, false, true));
+        Assert.assertEquals("Wrong bitmask", 1, ByteBufUtils.fillBitMask(0, true, false));
+        Assert.assertEquals("Wrong bitmask", 2, ByteBufUtils.fillBitMask(1, true, false));
+        Assert.assertEquals("Wrong bitmask", 4, ByteBufUtils.fillBitMask(1, false, true));
+        Assert.assertEquals("Wrong bitmask", 6, ByteBufUtils.fillBitMask(1, true, true));
+        Assert.assertEquals("Wrong bitmask", 0, ByteBufUtils.fillBitMask(1));
+    }
+
+    /**
+     * Test bytes to hex string
+     */
+    @Test
+    public void testBytesToHexString() {
+        byte[] array = new byte[]{10, 11, 12, 13, 14, 15, 16};
+        Assert.assertEquals("Wrong conversion", "0a 0b 0c 0d 0e 0f 10", ByteBufUtils.bytesToHexString(array));
+        byte[] empty = new byte[0];
+        Assert.assertEquals("Wrong conversion", "", ByteBufUtils.bytesToHexString(empty));
+    }
+
+    /**
+     * Test ipv4 address conversion
+     */
+    @Test(expected=IndexOutOfBoundsException.class)
+    public void testReadIpv4Address() {
+        ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
+        buffer.writeByte(10);
+        buffer.writeByte(20);
+        buffer.writeByte(30);
+        buffer.writeByte(40);
+        String ipv4Address = ByteBufUtils.readIpv4Address(buffer);
+        Assert.assertEquals("Wrong conversion", "10.20.30.40", ipv4Address);
+        Assert.assertTrue("Unexpected data", buffer.readableBytes() == 0);
+        
+        ByteBuf buffer2 = PooledByteBufAllocator.DEFAULT.buffer();
+        buffer.writeByte(10);
+        ipv4Address = ByteBufUtils.readIpv4Address(buffer2);
+    }
+
+    /**
+     * Test ipv6 address conversion
+     */
+    @Test(expected=IndexOutOfBoundsException.class)
+    public void testReadIpv6Address() {
+        ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
+        buffer.writeShort(10);
+        buffer.writeShort(65535);
+        buffer.writeShort(4096);
+        buffer.writeShort(0);
+        buffer.writeShort(1024);
+        buffer.writeShort(42);
+        buffer.writeShort(2568);
+        buffer.writeShort(45689);
+        String ipv4Address = ByteBufUtils.readIpv6Address(buffer);
+        Assert.assertEquals("Wrong conversion", "000A:FFFF:1000:0000:0400:002A:0A08:B279", ipv4Address);
+        Assert.assertTrue("Unexpected data", buffer.readableBytes() == 0);
+        
+        ByteBuf buffer2 = PooledByteBufAllocator.DEFAULT.buffer();
+        buffer.writeShort(10);
+        ipv4Address = ByteBufUtils.readIpv6Address(buffer2);
+    }
 }

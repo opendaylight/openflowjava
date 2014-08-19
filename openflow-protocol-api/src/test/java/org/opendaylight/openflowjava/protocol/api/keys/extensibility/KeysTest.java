@@ -7,13 +7,18 @@ import org.opendaylight.openflowjava.protocol.api.keys.ActionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ActionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.InstructionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.InstructionSerializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.MatchEntryDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterActionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterActionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterInstructionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterInstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.ExperimenterActionSubType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.InPort;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
 
 /**
  * @author michal.polkorab
@@ -39,7 +44,12 @@ public class KeysTest {
         Assert.assertEquals(instructionDeserializerKey, experimenterInstructionDeserializerKey);
         Assert.assertEquals(instructionDeserializerKey.hashCode(), experimenterInstructionDeserializerKey.hashCode());
         
-        
+        MatchEntryDeserializerKey matchKey = new MatchEntryDeserializerKey(EncodeConstants.OF13_VERSION_ID,
+                OxmMatchConstants.OPENFLOW_BASIC_CLASS, OxmMatchConstants.ARP_OP);
+        MatchEntryDeserializerKey matchKey2 = new MatchEntryDeserializerKey(EncodeConstants.OF13_VERSION_ID,
+                OxmMatchConstants.OPENFLOW_BASIC_CLASS, OxmMatchConstants.ARP_OP);
+        Assert.assertEquals(matchKey, matchKey2);
+        Assert.assertEquals(matchKey.hashCode(), matchKey2.hashCode());
     }
 
     /**
@@ -61,10 +71,17 @@ public class KeysTest {
         ExperimenterInstructionSerializerKey experimenterInstructionSerializerKey = new ExperimenterInstructionSerializerKey(EncodeConstants.OF13_VERSION_ID, 1L);
         Assert.assertEquals(instructionSerializerKey, experimenterInstructionSerializerKey);
         Assert.assertEquals(instructionSerializerKey.hashCode(), experimenterInstructionSerializerKey.hashCode());
+
+        MatchEntrySerializerKey<OpenflowBasicClass, InPort> matchKey = new MatchEntrySerializerKey<>(
+                EncodeConstants.OF10_VERSION_ID, OpenflowBasicClass.class, InPort.class);
+        MatchEntrySerializerKey<OpenflowBasicClass, InPort> matchKey2 = new MatchEntrySerializerKey<>(
+                EncodeConstants.OF10_VERSION_ID, OpenflowBasicClass.class, InPort.class);
+        Assert.assertEquals(matchKey, matchKey2);
+        Assert.assertEquals(matchKey.hashCode(), matchKey2.hashCode());
     }
     
     private static class ExpSubType extends ExperimenterActionSubType {
-        
+        // empty class - only used in test for comparation
     }
 
 }
