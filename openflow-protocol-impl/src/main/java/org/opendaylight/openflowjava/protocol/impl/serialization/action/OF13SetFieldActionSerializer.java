@@ -30,32 +30,41 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
 public class OF13SetFieldActionSerializer implements OFSerializer<Action>,
         HeaderSerializer<Action>, SerializerRegistryInjector {
 
-    private SerializerRegistry registry;
+	private SerializerRegistry registry;
 
-    @Override
-    public void serialize(Action action, ByteBuf outBuffer) {
-        int startIndex = outBuffer.writerIndex();
-        outBuffer.writeShort(ActionConstants.SET_FIELD_CODE);
-        int lengthIndex = outBuffer.writerIndex();
-        outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
-        OxmFieldsAction oxmField = action.getAugmentation(OxmFieldsAction.class);
-        MatchEntries entry = oxmField.getMatchEntries().get(0);
-        MatchEntrySerializerKey<?, ?> key = new MatchEntrySerializerKey<>(
-                EncodeConstants.OF13_VERSION_ID, entry.getOxmClass(), entry.getOxmMatchField());
-        if (entry.getOxmClass().equals(ExperimenterClass.class)) {
-            key.setExperimenterId(entry.getAugmentation(ExperimenterIdMatchEntry.class)
-                    .getExperimenter().getValue());
-        } else {
-            key.setExperimenterId(null);
-        }
-        OFSerializer<MatchEntries> serializer = registry.getSerializer(key);
-        serializer.serialize(entry, outBuffer);
-        int paddingRemainder = (outBuffer.writerIndex() - startIndex) % EncodeConstants.PADDING;
-        if (paddingRemainder != 0) {
-            outBuffer.writeZero(EncodeConstants.PADDING - paddingRemainder);
-        }
-        outBuffer.setShort(lengthIndex, outBuffer.writerIndex() - startIndex);
-    }
+	@Override
+	public void serialize(Action action, ByteBuf outBuffer) {
+
+		OxmFieldsAction oxmField = action
+				.getAugmentation(OxmFieldsAction.class);
+
+		for (MatchEntries entry : oxmField.getMatchEntries()) {
+
+			int startIndex = outBuffer.writerIndex();
+			outBuffer.writeShort(ActionConstants.SET_FIELD_CODE);
+			int lengthIndex = outBuffer.writerIndex();
+			outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
+			MatchEntrySerializerKey<?, ?> key = new MatchEntrySerializerKey<>(
+					EncodeConstants.OF13_VERSION_ID, entry.getOxmClass(),
+					entry.getOxmMatchField());
+			if (entry.getOxmClass().equals(ExperimenterClass.class)) {
+				key.setExperimenterId(entry
+						.getAugmentation(ExperimenterIdMatchEntry.class)
+						.getExperimenter().getValue());
+			} else {
+				key.setExperimenterId(null);
+			}
+			OFSerializer<MatchEntries> serializer = registry.getSerializer(key);
+			serializer.serialize(entry, outBuffer);
+			int paddingRemainder = (outBuffer.writerIndex() - startIndex)
+					% EncodeConstants.PADDING;
+			if (paddingRemainder != 0) {
+				outBuffer.writeZero(EncodeConstants.PADDING - paddingRemainder);
+			}
+			outBuffer.setShort(lengthIndex, outBuffer.writerIndex()
+					- startIndex);
+		}
+	}
 
     @Override
     public void serializeHeader(Action input, ByteBuf outBuffer) {

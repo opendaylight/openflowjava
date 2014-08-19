@@ -23,6 +23,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthertypeActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.GroupIdAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.GroupIdActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MplsTtlAction;
@@ -37,6 +39,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortNumberMatchEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.QueueIdAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.QueueIdActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanPcpMatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanPcpMatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidMatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidMatchEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.CopyTtlIn;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.CopyTtlOut;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.DecMplsTtl;
@@ -59,6 +65,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.InPort;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.VlanPcp;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.VlanVid;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
 
@@ -84,6 +92,7 @@ public class OF13ActionsSerializerTest {
      */
     @Test
     public void test() {
+    	
         List<Action> actions = new ArrayList<>();
         ActionBuilder actionBuilder = new ActionBuilder();
         actionBuilder.setType(Output.class);
@@ -94,27 +103,33 @@ public class OF13ActionsSerializerTest {
         maxLen.setMaxLength(52);
         actionBuilder.addAugmentation(MaxLengthAction.class, maxLen.build());
         actions.add(actionBuilder.build());
+        
         actionBuilder = new ActionBuilder();
         actionBuilder.setType(CopyTtlOut.class);
         actions.add(actionBuilder.build());
+        
         actionBuilder = new ActionBuilder();
         actionBuilder.setType(CopyTtlIn.class);
         actions.add(actionBuilder.build());
+        
         actionBuilder = new ActionBuilder();
         actionBuilder.setType(SetMplsTtl.class);
         MplsTtlActionBuilder mplsTtl = new MplsTtlActionBuilder();
         mplsTtl.setMplsTtl((short) 4);
         actionBuilder.addAugmentation(MplsTtlAction.class, mplsTtl.build());
         actions.add(actionBuilder.build());
+        
         actionBuilder = new ActionBuilder();
         actionBuilder.setType(DecMplsTtl.class);
         actions.add(actionBuilder.build());
+        
         actionBuilder = new ActionBuilder();
         actionBuilder.setType(PushVlan.class);
         EthertypeActionBuilder etherType = new EthertypeActionBuilder();
         etherType.setEthertype(new EtherType(16));
         actionBuilder.addAugmentation(EthertypeAction.class, etherType.build());
         actions.add(actionBuilder.build());
+        
         actionBuilder = new ActionBuilder();
         actionBuilder.setType(PopVlan.class);
         actions.add(actionBuilder.build());
@@ -122,35 +137,41 @@ public class OF13ActionsSerializerTest {
         actionBuilder.setType(PushMpls.class);
         etherType = new EthertypeActionBuilder();
         etherType.setEthertype(new EtherType(17));
-        actionBuilder.addAugmentation(EthertypeAction.class, etherType.build());
+        actionBuilder.addAugmentation(EthertypeAction.class, etherType.build());        
         actions.add(actionBuilder.build());
+        
         actionBuilder = new ActionBuilder();
         actionBuilder.setType(PopMpls.class);
         etherType = new EthertypeActionBuilder();
         etherType.setEthertype(new EtherType(18));
         actionBuilder.addAugmentation(EthertypeAction.class, etherType.build());
         actions.add(actionBuilder.build());
+        
         actionBuilder = new ActionBuilder();
         actionBuilder.setType(SetQueue.class);
         QueueIdActionBuilder queueId = new QueueIdActionBuilder();
         queueId.setQueueId(1234L);
         actionBuilder.addAugmentation(QueueIdAction.class, queueId.build());
         actions.add(actionBuilder.build());
+        
         actionBuilder = new ActionBuilder();
         actionBuilder.setType(Group.class);
         GroupIdActionBuilder group = new GroupIdActionBuilder();
         group.setGroupId(555L);
         actionBuilder.addAugmentation(GroupIdAction.class, group.build());
         actions.add(actionBuilder.build());
+        
         actionBuilder = new ActionBuilder();
         actionBuilder.setType(SetNwTtl.class);
         NwTtlActionBuilder nwTtl = new NwTtlActionBuilder();
         nwTtl.setNwTtl((short) 8);
         actionBuilder.addAugmentation(NwTtlAction.class, nwTtl.build());
         actions.add(actionBuilder.build());
+        
         actionBuilder = new ActionBuilder();
         actionBuilder.setType(DecNwTtl.class);
         actions.add(actionBuilder.build());
+        
         actionBuilder = new ActionBuilder();
         actionBuilder.setType(SetField.class);
         OxmFieldsActionBuilder matchEntries = new OxmFieldsActionBuilder();
@@ -166,15 +187,55 @@ public class OF13ActionsSerializerTest {
         matchEntries.setMatchEntries(entries);
         actionBuilder.addAugmentation(OxmFieldsAction.class, matchEntries.build());
         actions.add(actionBuilder.build());
+        
         actionBuilder = new ActionBuilder();
         actionBuilder.setType(PushPbb.class);
         etherType = new EthertypeActionBuilder();
         etherType.setEthertype(new EtherType(19));
         actionBuilder.addAugmentation(EthertypeAction.class, etherType.build());
         actions.add(actionBuilder.build());
+        
         actionBuilder = new ActionBuilder();
         actionBuilder.setType(PopPbb.class);
         actions.add(actionBuilder.build());
+        
+        // Test a list of set field actions ... such as VlanID and VlanPCP
+        
+        MatchEntriesBuilder entryBuilder = new MatchEntriesBuilder();
+        MaskMatchEntryBuilder maskBuilder = new MaskMatchEntryBuilder();
+        
+        actionBuilder = new ActionBuilder();
+        actionBuilder.setType(SetField.class);
+        entries = new ArrayList<>();
+        matchEntries = new OxmFieldsActionBuilder();
+
+        //VlanID
+        entryBuilder = new MatchEntriesBuilder();
+        entryBuilder.setOxmClass(OpenflowBasicClass.class);
+        entryBuilder.setOxmMatchField(VlanVid.class);
+        entryBuilder.setHasMask(true);
+        VlanVidMatchEntryBuilder vidBuilder = new VlanVidMatchEntryBuilder();
+        vidBuilder.setCfiBit(true);
+        vidBuilder.setVlanVid(245);
+        entryBuilder.addAugmentation(VlanVidMatchEntry.class, vidBuilder.build());
+        maskBuilder = new MaskMatchEntryBuilder();
+        maskBuilder.setMask(new byte[]{0,9});
+        entryBuilder.addAugmentation(MaskMatchEntry.class, maskBuilder.build());
+        entries.add(entryBuilder.build());
+        //VlanPCP
+        entryBuilder = new MatchEntriesBuilder();
+        entryBuilder.setOxmClass(OpenflowBasicClass.class);
+        entryBuilder.setOxmMatchField(VlanPcp.class);
+        entryBuilder.setHasMask(false);
+        VlanPcpMatchEntryBuilder pcpBuilder = new VlanPcpMatchEntryBuilder();
+        pcpBuilder.setVlanPcp((short) 7);
+        entryBuilder.addAugmentation(VlanPcpMatchEntry.class, pcpBuilder.build());
+        entries.add(entryBuilder.build());
+        
+        matchEntries.setMatchEntries(entries);
+        actionBuilder.addAugmentation(OxmFieldsAction.class, matchEntries.build());
+        actions.add(actionBuilder.build());
+        
         
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         ListSerializer.serializeList(actions, TypeKeyMakerFactory
@@ -185,34 +246,43 @@ public class OF13ActionsSerializerTest {
         Assert.assertEquals("Wrong action port", 42, out.readUnsignedInt());
         Assert.assertEquals("Wrong action max-length", 52, out.readUnsignedShort());
         out.skipBytes(6);
+        
         Assert.assertEquals("Wrong action type", 11, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         out.skipBytes(4);
+        
         Assert.assertEquals("Wrong action type", 12, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         out.skipBytes(4);
+        
         Assert.assertEquals("Wrong action type", 15, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         Assert.assertEquals("Wrong action mpls-ttl", 4, out.readUnsignedByte());
         out.skipBytes(3);
+        
         Assert.assertEquals("Wrong action type", 16, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         out.skipBytes(4);
+        
         Assert.assertEquals("Wrong action type", 17, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         Assert.assertEquals("Wrong action ethertype", 16, out.readUnsignedShort());
         out.skipBytes(2);
+        
         Assert.assertEquals("Wrong action type", 18, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         out.skipBytes(4);
+        
         Assert.assertEquals("Wrong action type", 19, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         Assert.assertEquals("Wrong action ethertype", 17, out.readUnsignedShort());
         out.skipBytes(2);
+        
         Assert.assertEquals("Wrong action type", 20, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         Assert.assertEquals("Wrong action ethertype", 18, out.readUnsignedShort());
         out.skipBytes(2);
+        
         Assert.assertEquals("Wrong action type", 21, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         Assert.assertEquals("Wrong action queue-id", 1234, out.readUnsignedInt());
@@ -223,9 +293,11 @@ public class OF13ActionsSerializerTest {
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         Assert.assertEquals("Wrong action nw-ttl", 8, out.readUnsignedByte());
         out.skipBytes(3);
+        
         Assert.assertEquals("Wrong action type", 24, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         out.skipBytes(4);
+        
         Assert.assertEquals("Wrong action type", 25, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 16, out.readUnsignedShort());
         Assert.assertEquals("Wrong match entry class", 0x8000, out.readUnsignedShort());
@@ -233,13 +305,33 @@ public class OF13ActionsSerializerTest {
         Assert.assertEquals("Wrong match entry length", 4, out.readUnsignedByte());
         Assert.assertEquals("Wrong match entry value", 1, out.readUnsignedInt());
         out.skipBytes(4);
+        
         Assert.assertEquals("Wrong action type", 26, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         Assert.assertEquals("Wrong action ethertype", 19, out.readUnsignedShort());
         out.skipBytes(2);
+        
         Assert.assertEquals("Wrong action type", 27, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         out.skipBytes(4);
+        
+        Assert.assertEquals("Wrong action type", 25, out.readUnsignedShort());
+        Assert.assertEquals("Wrong action length", 16, out.readUnsignedShort());
+        Assert.assertEquals("Wrong match entry class", 0x8000, out.readUnsignedShort());
+        Assert.assertEquals("Wrong match entry field & mask", 13, out.readUnsignedByte());
+        Assert.assertEquals("Wrong match entry length", 4, out.readUnsignedByte());
+        Assert.assertEquals("Wrong match entry thingy", 16, out.readUnsignedByte());
+        Assert.assertEquals("Wrong match entry value", 245, out.readUnsignedByte());
+        out.skipBytes(6);
+        
+        Assert.assertEquals("Wrong action type", 25, out.readUnsignedShort());
+        Assert.assertEquals("Wrong action length", 16, out.readUnsignedShort());
+        Assert.assertEquals("Wrong match entry class", 0x8000, out.readUnsignedShort());
+        Assert.assertEquals("Wrong match entry field & hasMask", 14, out.readUnsignedByte());
+        Assert.assertEquals("Wrong match entry length", 1, out.readUnsignedByte());
+        Assert.assertEquals("Wrong match entry value", 7, out.readUnsignedByte());
+        out.skipBytes(7);
+        
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
     }
 
