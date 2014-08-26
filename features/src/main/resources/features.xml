@@ -11,7 +11,6 @@
     <feature name='odl-openflowjava-protocol' version='${project.version}' description="OpenDaylight :: Openflow Java :: Protocol">
         <feature version='${yangtools.version}'>odl-yangtools-common</feature>
         <feature version='${yangtools.version}'>odl-yangtools-binding</feature>
-        <feature version='${yangtools.version}'>odl-yangtools-binding-generator</feature>
         <feature version='${yangtools.version}'>odl-yangtools-models</feature>
         <feature version='${config.version}'>odl-config-api</feature>
         <feature version='${yang.prototype.version}'>odl-mdsal-common</feature>
