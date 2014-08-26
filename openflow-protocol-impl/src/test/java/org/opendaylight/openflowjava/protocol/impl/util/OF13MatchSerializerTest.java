@@ -106,7 +106,7 @@ public class OF13MatchSerializerTest {
     /**
      * Test for correct serialization of Ipv6Address match entry
      */
-    @Test
+    @Test(expected=IllegalStateException.class)
     public void testIpv6Various() {
         MatchBuilder builder = new MatchBuilder();
         builder.setType(OxmMatchType.class);
@@ -163,6 +163,15 @@ public class OF13MatchSerializerTest {
         entriesBuilder.setHasMask(false);
         addressBuilder = new Ipv6AddressMatchEntryBuilder();
         addressBuilder.setIpv6Address(new Ipv6Address("1:2:3:4:5:6:7:8:9"));
+        entriesBuilder.addAugmentation(Ipv6AddressMatchEntry.class, addressBuilder.build());
+        entries.add(entriesBuilder.build());
+        // ipv6 match entry with too abbreviated Ipv6 address
+        entriesBuilder = new MatchEntriesBuilder();
+        entriesBuilder.setOxmClass(OpenflowBasicClass.class);
+        entriesBuilder.setOxmMatchField(Ipv6NdTarget.class);
+        entriesBuilder.setHasMask(false);
+        addressBuilder = new Ipv6AddressMatchEntryBuilder();
+        addressBuilder.setIpv6Address(new Ipv6Address("1:2::::8"));
         entriesBuilder.addAugmentation(Ipv6AddressMatchEntry.class, addressBuilder.build());
         entries.add(entriesBuilder.build());
         builder.setMatchEntries(entries);

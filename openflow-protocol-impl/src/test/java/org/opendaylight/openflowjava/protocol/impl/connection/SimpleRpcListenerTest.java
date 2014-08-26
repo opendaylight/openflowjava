@@ -9,12 +9,19 @@
 package org.opendaylight.openflowjava.protocol.impl.connection;
 
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import io.netty.util.concurrent.Future;
 
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.opendaylight.controller.sal.common.util.Rpcs;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -26,6 +33,16 @@ import com.google.common.util.concurrent.SettableFuture;
  *
  */
 public class SimpleRpcListenerTest {
+
+    @Mock Future<Void> future;
+
+    /**
+     * Initializes mocks
+     */
+    @Before
+    public void startUp() {
+        MockitoAnnotations.initMocks(this);
+    }
 
     /**
      * Test SimpleRpcListener creation
@@ -52,6 +69,39 @@ public class SimpleRpcListenerTest {
             Assert.assertEquals("Wrong result", result.get().isSuccessful(), listener.getResult().get().isSuccessful());
         } catch (InterruptedException | ExecutionException e) {
             fail("Problem accessing result");
+        }
+    }
+
+    /**
+     * Test rpc success
+     */
+    @Test
+    public void testOperationComplete() {
+        when(future.isSuccess()).thenReturn(false);
+        SimpleRpcListener listener = new SimpleRpcListener("MESSAGE", "Failed to send message");
+        listener.operationComplete(future);
+        verify(future, times(1)).cause();
+        try {
+            Assert.assertEquals("Wrong result", 1, listener.getResult().get().getErrors().size());
+        } catch (InterruptedException | ExecutionException e) {
+            Assert.fail();
+        }
+    }
+
+    /**
+     * Test rpc success
+     */
+    @Test
+    public void testOperationComplete2() {
+        when(future.isSuccess()).thenReturn(true);
+        SimpleRpcListener listener = new SimpleRpcListener("MESSAGE", "Failed to send message");
+        listener.operationComplete(future);
+        verify(future, times(0)).cause();
+        try {
+            Assert.assertEquals("Wrong result", 0, listener.getResult().get().getErrors().size());
+            Assert.assertEquals("Wrong result", true, listener.getResult().get().isSuccessful());
+        } catch (InterruptedException | ExecutionException e) {
+            Assert.fail();
         }
     }
 }

@@ -15,6 +15,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderDeserializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntryDeserializerKey;
@@ -194,7 +195,7 @@ public class MatchDeserializerTest {
                 + "80 00 48 01 01 "
                 + "80 00 4B 06 00 00 02 00 00 01 "
                 + "80 00 4D 10 00 00 00 00 00 00 00 07 00 00 00 00 00 00 00 FF "
-                + "80 00 4F 04 01 66 03 04 "
+                + "80 00 4F 04 00 00 03 04 "
                 + "00 00 00 00");
 
         Match match = matchDeserializer.deserialize(buffer);
@@ -474,11 +475,28 @@ public class MatchDeserializerTest {
         Assert.assertEquals("Wrong entry field", Ipv6Exthdr.class, entry39.getOxmMatchField());
         Assert.assertEquals("Wrong entry hasMask", true, entry39.isHasMask());
         Assert.assertEquals("Wrong entry value",
-                new Ipv6ExthdrFlags(true, false, true, false, true, false, true, false, true),
+                new Ipv6ExthdrFlags(false, false, false, false, false, false, false, false, false),
                 entry39.getAugmentation(PseudoFieldMatchEntry.class).getPseudoField());
         Assert.assertArrayEquals("Wrong entry mask", ByteBufUtils.hexStringToBytes("03 04"),
                 entry39.getAugmentation(MaskMatchEntry.class).getMask());
         Assert.assertTrue("Unread data", buffer.readableBytes() == 0);
     }
 
+    /**
+     * Testing header deserialization
+     */
+    @Test
+    public void testHeaders() {
+        ByteBuf buffer = ByteBufUtils.hexStringToByteBuf("80 00 18 04 00 01 02 03");
+
+        MatchEntryDeserializerKey key = new MatchEntryDeserializerKey(EncodeConstants.OF13_VERSION_ID,
+                0x8000, 12);
+        key.setExperimenterId(null);
+        HeaderDeserializer<MatchEntries> entryDeserializer = registry.getDeserializer(key);
+        MatchEntries entry = entryDeserializer.deserializeHeader(buffer);
+        Assert.assertEquals("Wrong entry class", OpenflowBasicClass.class, entry.getOxmClass());
+        Assert.assertEquals("Wrong entry field", Ipv4Dst.class, entry.getOxmMatchField());
+        Assert.assertEquals("Wrong entry hasMask", false, entry.isHasMask());
+        Assert.assertEquals("Wrong Ipv4 address", null, entry.getAugmentation(Ipv4AddressMatchEntry.class));
+    }
 }

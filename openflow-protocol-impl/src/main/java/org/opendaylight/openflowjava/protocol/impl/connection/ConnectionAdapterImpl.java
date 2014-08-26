@@ -108,7 +108,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     };
 
     /** expiring cache for future rpcResponses */
-    private final Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> responseCache;
+    private Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> responseCache;
 
     private final ChannelOutboundQueue output;
     private final Channel channel;
@@ -465,7 +465,6 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
         }).start();
     }
 
-
     @Override
     public void setConnectionReadyListener(
             final ConnectionReadyListener connectionReadyListener) {
@@ -475,5 +474,13 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     @Override
     public InetSocketAddress getRemoteAddress() {
         return (InetSocketAddress) channel.remoteAddress();
+    }
+
+    /**
+     * Used only for testing purposes
+     * @param cache
+     */
+    public void setResponseCache(Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> cache) {
+        this.responseCache = cache;
     }
 }
