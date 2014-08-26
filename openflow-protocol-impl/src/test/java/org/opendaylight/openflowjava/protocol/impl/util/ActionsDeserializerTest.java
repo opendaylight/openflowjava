@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.action.AbstractActionDeserializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthertypeAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.GroupIdAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthAction;
@@ -142,4 +143,24 @@ public class ActionsDeserializerTest {
         Assert.assertTrue("Unread data in message", message.readableBytes() == 0);
     }
 
+    /**
+     * Tests {@link AbstractActionDeserializer#deserializeHeader(ByteBuf)}
+     */
+    @Test
+    public void testDeserializeHeader() {
+        ByteBuf message = BufferHelper.buildBuffer("00 00 00 04 00 19 00 04");
+
+        message.skipBytes(4); // skip XID
+        CodeKeyMaker keyMaker = CodeKeyMakerFactory.createActionsKeyMaker(EncodeConstants.OF13_VERSION_ID);
+        List<Action> actions = ListDeserializer.deserializeHeaders(EncodeConstants.OF13_VERSION_ID,
+                message.readableBytes(), message, keyMaker, registry);
+
+        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
+                + "openflow.common.action.rev130731.Output", actions.get(0).getType().getName());
+        Assert.assertEquals("Wrong action port", null, actions.get(0).getAugmentation(PortAction.class));
+        Assert.assertEquals("Wrong action max-length", null, actions.get(0).getAugmentation(MaxLengthAction.class));
+        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
+                + "openflow.common.action.rev130731.SetField", actions.get(1).getType().getName());
+        Assert.assertEquals("Wrong action oxm field", null, actions.get(1).getAugmentation(OxmFieldsAction.class));
+    }
 }

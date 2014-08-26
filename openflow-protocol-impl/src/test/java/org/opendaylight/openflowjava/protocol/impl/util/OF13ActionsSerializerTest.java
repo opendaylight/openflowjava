@@ -243,4 +243,45 @@ public class OF13ActionsSerializerTest {
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
     }
 
+    /**
+     * Testing correct serialization of actions
+     */
+    @Test
+    public void testHeaders() {
+        List<Action> actions = new ArrayList<>();
+        ActionBuilder actionBuilder = new ActionBuilder();
+        actionBuilder.setType(Output.class);
+        PortActionBuilder port = new PortActionBuilder();
+        port.setPort(new PortNumber(42L));
+        actionBuilder.addAugmentation(PortAction.class, port.build());
+        MaxLengthActionBuilder maxLen = new MaxLengthActionBuilder();
+        maxLen.setMaxLength(52);
+        actionBuilder.addAugmentation(MaxLengthAction.class, maxLen.build());
+        actions.add(actionBuilder.build());
+        actionBuilder = new ActionBuilder();
+        actionBuilder.setType(SetField.class);
+        OxmFieldsActionBuilder matchEntries = new OxmFieldsActionBuilder();
+        List<MatchEntries> entries = new ArrayList<>();
+        MatchEntriesBuilder matchBuilder = new MatchEntriesBuilder();
+        matchBuilder.setOxmClass(OpenflowBasicClass.class);
+        matchBuilder.setOxmMatchField(InPort.class);
+        matchBuilder.setHasMask(false);
+        PortNumberMatchEntryBuilder portBuilder = new PortNumberMatchEntryBuilder();
+        portBuilder.setPortNumber(new PortNumber(1L));
+        matchBuilder.addAugmentation(PortNumberMatchEntry.class, portBuilder.build());
+        entries.add(matchBuilder.build());
+        matchEntries.setMatchEntries(entries);
+        actionBuilder.addAugmentation(OxmFieldsAction.class, matchEntries.build());
+        actions.add(actionBuilder.build());
+
+        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+        ListSerializer.serializeHeaderList(actions, TypeKeyMakerFactory
+                .createActionKeyMaker(EncodeConstants.OF13_VERSION_ID), registry, out);
+
+        Assert.assertEquals("Wrong action type", 0, out.readUnsignedShort());
+        Assert.assertEquals("Wrong action length", 4, out.readUnsignedShort());
+        Assert.assertEquals("Wrong action type", 25, out.readUnsignedShort());
+        Assert.assertEquals("Wrong action length", 4, out.readUnsignedShort());
+        Assert.assertTrue("Unread data", out.readableBytes() == 0);
+    }
 }
