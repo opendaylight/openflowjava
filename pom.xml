@@ -37,6 +37,7 @@
         <enunciate.version>1.26.2</enunciate.version>
         <jmxGeneratorPath>${project.build.directory}/yang-gen-config</jmxGeneratorPath>
         <karaf.distro.empty.version>1.4.2-SNAPSHOT</karaf.distro.empty.version>
+        <karaf.version>3.0.1</karaf.version>
         <salGeneratorPath>${project.build.directory}/yang-gen-sal</salGeneratorPath>
         <sonar.branch>${user.name}-private-view</sonar.branch>
         <sonar.skippedModules>org.openflow.openflowj,net.sf.jung2</sonar.skippedModules>
