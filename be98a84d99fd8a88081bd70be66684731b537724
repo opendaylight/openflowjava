@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa82b9bf_23b53e7d",
+        "filename": "util/src/main/java/org/opendaylight/openflowjava/util/ByteBufUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2014-08-27T09:28:12Z",
+      "side": 1,
+      "message": "could you please add message like input MAC too long: \u003cinput\u003e?",
+      "revId": "be98a84d99fd8a88081bd70be66684731b537724",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa82b9bf_43b88274",
+        "filename": "util/src/test/java/org/opendaylight/openflowjava/util/ByteBufUtilsTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2014-08-27T09:28:12Z",
+      "side": 1,
+      "message": "could you add test cases with \"short\" input:\n00:01:05d:03:FF:\n00:01:05d:03:FF::\n00:01:05d:03:FF:::\n?\nWhich covers the 6. step after main parsing loop is done.",
+      "revId": "be98a84d99fd8a88081bd70be66684731b537724",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
