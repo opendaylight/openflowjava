@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa82b9bf_0557d7ca",
+        "filename": "features/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1788
+      },
+      "writtenOn": "2014-08-29T22:32:08Z",
+      "side": 1,
+      "message": "Thank you very much Michal.. however I must apologize but KAR packaging is no longer necessary. Ed changed the the way the final distribution / assembly is done via the dependency plugin. As such this section is no longer required.. your file was ok! (Wiki has been updated too)",
+      "revId": "66e3e445f7d298d750ce87079f19ac1f1f0e8b75",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa82b9bf_255a1bf2",
+        "filename": "features/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1788
+      },
+      "writtenOn": "2014-08-29T22:32:08Z",
+      "side": 1,
+      "message": "No required",
+      "revId": "66e3e445f7d298d750ce87079f19ac1f1f0e8b75",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
