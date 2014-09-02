@@ -14,6 +14,7 @@ import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHan
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
@@ -22,8 +23,14 @@ import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterActionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterActionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterErrorDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterInstructionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterInstructionSerializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterMessageDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterMeterBandDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterMultipartReplyMessageDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterMultipartReplyTFDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterQueuePropertyDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterSerializerKey;
 import org.opendaylight.openflowjava.protocol.impl.core.ChannelInitializerFactory;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler;
@@ -36,6 +43,12 @@ import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionPro
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.TransportProtocol;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmClassBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ErrorMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.queue.property.header.QueueProperty;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.grouping.TableFeatureProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -196,6 +209,42 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     @Override
     public void registerMatchEntryDeserializer(MatchEntryDeserializerKey key,
             OFGeneralDeserializer deserializer) {
+        deserializerRegistry.registerDeserializer(key, deserializer);
+    }
+
+    @Override
+    public void registerErrorDeserializer(ExperimenterErrorDeserializerKey key,
+            OFDeserializer<ErrorMessage> deserializer) {
+        deserializerRegistry.registerDeserializer(key, deserializer);
+    }
+
+    @Override
+    public void registerExperimenterMessageDeserializer(ExperimenterMessageDeserializerKey key,
+            OFDeserializer<ExperimenterMessage> deserializer) {
+        deserializerRegistry.registerDeserializer(key, deserializer);
+    }
+
+    @Override
+    public void registerMultipartReplyMessageDeserializer(ExperimenterMultipartReplyMessageDeserializerKey key,
+            OFDeserializer<MultipartReplyMessage> deserializer) {
+        deserializerRegistry.registerDeserializer(key, deserializer);
+    }
+
+    @Override
+    public void registerMultipartReplyTFDeserializer(ExperimenterMultipartReplyTFDeserializerKey key,
+            OFGeneralDeserializer deserializer) {
+        deserializerRegistry.registerDeserializer(key, deserializer);
+    }
+
+    @Override
+    public void registerQueuePropertyDeserializer(ExperimenterQueuePropertyDeserializerKey key,
+            OFDeserializer<QueueProperty> deserializer) {
+        deserializerRegistry.registerDeserializer(key, deserializer);
+    }
+
+    @Override
+    public void registerMeterBandDeserializer(ExperimenterMeterBandDeserializerKey key,
+            OFDeserializer<MeterBandExperimenterCase> deserializer) {
         deserializerRegistry.registerDeserializer(key, deserializer);
     }
 }

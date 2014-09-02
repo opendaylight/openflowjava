@@ -18,11 +18,14 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegi
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterMeterBandDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterMultipartReplyMessageDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterMultipartReplyTFDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.CodeKeyMaker;
 import org.opendaylight.openflowjava.protocol.impl.util.CodeKeyMakerFactory;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.ListDeserializer;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeaturePropertyBuilder;
@@ -62,16 +65,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.buckets.grouping.BucketsListBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDropCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDscpRemarkCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.drop._case.MeterBandDropBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.dscp.remark._case.MeterBandDscpRemarkBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.experimenter._case.MeterBandExperimenterBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyAggregateCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyAggregateCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyDescCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyDescCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyExperimenterCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyExperimenterCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyFlowCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyFlowCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyGroupCase;
@@ -98,7 +99,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyTableFeaturesCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.aggregate._case.MultipartReplyAggregateBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.desc._case.MultipartReplyDescBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.experimenter._case.MultipartReplyExperimenterBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow._case.MultipartReplyFlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow._case.multipart.reply.flow.FlowStats;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow._case.multipart.reply.flow.FlowStatsBuilder;
@@ -378,6 +378,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         List<TableFeatureProperties> properties = new ArrayList<>();
         int tableFeaturesLength = length;
         while (tableFeaturesLength > 0) {
+            int propStartIndex = input.readerIndex();
             TableFeaturePropertiesBuilder builder = new TableFeaturePropertiesBuilder();
             TableFeaturesPropType type = TableFeaturesPropType.forValue(input.readUnsignedShort());
             builder.setType(type);
@@ -430,12 +431,10 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                 builder.addAugmentation(OxmRelatedTableFeatureProperty.class, oxmBuilder.build());
             } else if (type.equals(TableFeaturesPropType.OFPTFPTEXPERIMENTER)
                     || type.equals(TableFeaturesPropType.OFPTFPTEXPERIMENTERMISS)) {
-                // return index to property start, so that the experimenter properties are deserialized
-                // correctly - as whole ofp_table_feature_prop_experimenter property
-                input.readerIndex(input.readerIndex() - 2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+                long expId = input.readUnsignedInt();
+                input.readerIndex(propStartIndex);
                 OFDeserializer<TableFeatureProperties> propDeserializer = registry.getDeserializer(
-                        new MessageCodeKey(EncodeConstants.OF13_VERSION_ID,
-                                type.getIntValue(), TableFeatureProperties.class));
+                        new ExperimenterMultipartReplyTFDeserializerKey(EncodeConstants.OF13_VERSION_ID, expId));
                 TableFeatureProperties expProp = propDeserializer.deserialize(input);
                 properties.add(expProp);
                 continue;
@@ -634,7 +633,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return caseBuilder.build();
     }
     
-    private static MultipartReplyMeterConfigCase setMeterConfig(ByteBuf input) {
+    private MultipartReplyMeterConfigCase setMeterConfig(ByteBuf input) {
         MultipartReplyMeterConfigCaseBuilder caseBuilder = new MultipartReplyMeterConfigCaseBuilder();
         MultipartReplyMeterConfigBuilder builder = new MultipartReplyMeterConfigBuilder();
         List<MeterConfig> meterConfigList = new ArrayList<>();
@@ -646,6 +645,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             int actualLength = METER_CONFIG_LENGTH;
             List<Bands> bandsList = new ArrayList<>();
             while (actualLength < meterConfigBodyLength) {
+                int bandStartIndex = input.readerIndex();
                 BandsBuilder bandsBuilder = new BandsBuilder();
                 int bandType = input.readUnsignedShort();
                 switch (bandType) {
@@ -673,16 +673,12 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                         bandsBuilder.setMeterBand(bandDscpRemarkCaseBuilder.build());
                         break;
                     case 0xFFFF:
-                        MeterBandExperimenterCaseBuilder bandExperimenterCaseBuilder = new MeterBandExperimenterCaseBuilder();
-                        MeterBandExperimenterBuilder bandExperimenterBuilder = new MeterBandExperimenterBuilder();
-                        // TODO - implement lookup into registry
-//                        bandExperimenterBuilder.setType(MeterBandType.forValue(bandType));
-//                        actualLength += input.readUnsignedShort();
-//                        bandExperimenterBuilder.setRate(input.readUnsignedInt());
-//                        bandExperimenterBuilder.setBurstSize(input.readUnsignedInt());
-//                        bandExperimenterBuilder.setExperimenter(input.readUnsignedInt());
-//                        bandExperimenterCaseBuilder.setMeterBandExperimenter(bandExperimenterBuilder.build());
-                        bandsBuilder.setMeterBand(bandExperimenterCaseBuilder.build());
+                        actualLength += input.readUnsignedShort();
+                        long expId = input.getUnsignedInt(input.readerIndex() + 2 * EncodeConstants.SIZE_OF_INT_IN_BYTES);
+                        input.readerIndex(bandStartIndex);
+                        OFDeserializer<MeterBandExperimenterCase> deserializer = registry.getDeserializer(
+                                new ExperimenterMeterBandDeserializerKey(EncodeConstants.OF13_VERSION_ID, expId));
+                        bandsBuilder.setMeterBand(deserializer.deserialize(input));
                         break;
                     default:
                         break;
@@ -697,17 +693,9 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return caseBuilder.build();
     }
     
-    private static MultipartReplyExperimenterCase setExperimenter(ByteBuf input) {
-     // TODO - implement lookup into registry
-    	MultipartReplyExperimenterCaseBuilder caseBuilder = new MultipartReplyExperimenterCaseBuilder();
-        MultipartReplyExperimenterBuilder builder = new MultipartReplyExperimenterBuilder();
-//        builder.setExperimenter(input.readUnsignedInt());
-//        builder.setExpType(input.readUnsignedInt());
-//        byte[] data = new byte[input.readableBytes()];
-//        input.readBytes(data);
-//        builder.setData(data);
-        caseBuilder.setMultipartReplyExperimenter(builder.build());
-        return caseBuilder.build();
+    private MultipartReplyExperimenterCase setExperimenter(ByteBuf input) {
+        return registry.getDeserializer(new ExperimenterMultipartReplyMessageDeserializerKey(
+                EncodeConstants.OF13_VERSION_ID, input.readUnsignedInt()));
     }
     
     private static MultipartReplyPortDescCase setPortDesc(ByteBuf input) {

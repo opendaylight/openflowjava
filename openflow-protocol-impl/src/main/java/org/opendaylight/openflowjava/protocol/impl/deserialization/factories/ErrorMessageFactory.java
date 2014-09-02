@@ -12,10 +12,9 @@ import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterErrorDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdError;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.BadActionCode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.BadInstructionCode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.BadMatchCode;
@@ -48,23 +47,23 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage>,
 
     @Override
     public ErrorMessage deserialize(ByteBuf rawMessage) {
+        int startIndex = rawMessage.readerIndex();
         ErrorMessageBuilder builder = new ErrorMessageBuilder();
         builder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
         builder.setXid(rawMessage.readUnsignedInt());
         int type = rawMessage.readUnsignedShort();
         ErrorType errorType = ErrorType.forValue(type);
         if (ErrorType.EXPERIMENTER.equals(errorType)) {
-            builder.setType(errorType.getIntValue());
-            OFDeserializer<ExperimenterIdError> deserializer = registry.getDeserializer(new MessageCodeKey(
-                    EncodeConstants.OF13_VERSION_ID, EncodeConstants.EXPERIMENTER_VALUE, ErrorMessage.class));
-            ExperimenterIdError error = deserializer.deserialize(rawMessage);
-            builder.addAugmentation(ExperimenterIdError.class, error);
-        } else {
-            decodeType(builder, errorType, type);
-            decodeCode(rawMessage, builder, errorType);
-            if (rawMessage.readableBytes() > 0) {
-                builder.setData(rawMessage.readBytes(rawMessage.readableBytes()).array());
-            }
+            OFDeserializer<ErrorMessage> deserializer = registry.getDeserializer(
+                    new ExperimenterErrorDeserializerKey(EncodeConstants.OF13_VERSION_ID, rawMessage
+                            .getUnsignedInt(rawMessage.readerIndex() + EncodeConstants.SIZE_OF_SHORT_IN_BYTES)));
+            rawMessage.readerIndex(startIndex);
+            return deserializer.deserialize(rawMessage);
+        }
+        decodeType(builder, errorType, type);
+        decodeCode(rawMessage, builder, errorType);
+        if (rawMessage.readableBytes() > 0) {
+            builder.setData(rawMessage.readBytes(rawMessage.readableBytes()).array());
         }
         return builder.build();
     }
