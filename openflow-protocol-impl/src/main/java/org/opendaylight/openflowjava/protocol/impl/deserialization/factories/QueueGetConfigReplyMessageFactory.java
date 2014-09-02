@@ -15,9 +15,9 @@ import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.util.ExperimenterDeserializerKeyFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.RateQueueProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.RateQueuePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
@@ -43,7 +43,6 @@ public class QueueGetConfigReplyMessageFactory implements OFDeserializer<GetQueu
     private static final byte PADDING_IN_QUEUE_PROPERTY_HEADER = 4;
     private static final int PADDING_IN_RATE_QUEUE_PROPERTY = 6;
     private static final byte PACKET_QUEUE_LENGTH = 16;
-    private static final byte QUEUE_PROP_HEADER_SIZE = 8;
     private DeserializerRegistry registry;
 
     @Override
@@ -75,6 +74,7 @@ public class QueueGetConfigReplyMessageFactory implements OFDeserializer<GetQueu
         int propertiesLength = length;
         List<QueueProperty> propertiesList = new ArrayList<>();
         while (propertiesLength > 0) {
+            int propertyStartIndex = input.readerIndex();
             QueuePropertyBuilder propertiesBuilder = new QueuePropertyBuilder();
             QueueProperties property = QueueProperties.forValue(input.readUnsignedShort());
             propertiesBuilder.setProperty(property);
@@ -87,16 +87,12 @@ public class QueueGetConfigReplyMessageFactory implements OFDeserializer<GetQueu
                 propertiesBuilder.addAugmentation(RateQueueProperty.class, rateBuilder.build());
                 input.skipBytes(PADDING_IN_RATE_QUEUE_PROPERTY);
             } else if (property.equals(QueueProperties.OFPQTEXPERIMENTER)) {
-                // return index to property start, so that the experimenter properties are deserialized
-                // correctly - as whole ofp_queue_prop_experimenter property
-                input.readerIndex(input.readerIndex() - 2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES
-                        - PADDING_IN_QUEUE_PROPERTY_HEADER);
+                long expId = input.readUnsignedInt();
+                input.readerIndex(propertyStartIndex);
                 OFDeserializer<QueueProperty> deserializer = registry.getDeserializer(
-                        new MessageCodeKey(EncodeConstants.OF13_VERSION_ID,
-                                EncodeConstants.EXPERIMENTER_VALUE, QueueProperty.class));
-                QueueProperty expProp = deserializer.deserialize(input.slice(input.readerIndex(),
-                        currentPropertyLength - QUEUE_PROP_HEADER_SIZE));
-                propertiesList.add(expProp);
+                        ExperimenterDeserializerKeyFactory.createQueuePropertyDeserializerKey(
+                                EncodeConstants.OF13_VERSION_ID, expId));
+                propertiesList.add(deserializer.deserialize(input));
                 continue;
             }
             propertiesList.add(propertiesBuilder.build());
@@ -108,5 +104,4 @@ public class QueueGetConfigReplyMessageFactory implements OFDeserializer<GetQueu
     public void injectDeserializerRegistry(DeserializerRegistry deserializerRegistry) {
         this.registry = deserializerRegistry;
     }
-
 }

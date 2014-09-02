@@ -11,7 +11,13 @@ package org.opendaylight.openflowjava.protocol.api.extensibility;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntryDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterActionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterIdDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterInstructionDeserializerKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ErrorMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.queue.property.header.QueueProperty;
 
 /**
  * Provides methods for deserialization part of extensibility
@@ -50,4 +56,52 @@ public interface DeserializerExtensionProvider {
      */
     public void registerMatchEntryDeserializer(MatchEntryDeserializerKey key,
             OFGeneralDeserializer deserializer);
+
+    /**
+     * Registers error message deserializer
+     * @param key used for deserializer lookup
+     * @param deserializer deserializer instance
+     */
+    void registerErrorDeserializer(ExperimenterIdDeserializerKey key,
+            OFDeserializer<ErrorMessage> deserializer);
+
+    /**
+     * Registers experimenter (vendor) message deserializer
+     * @param key used for deserializer lookup
+     * @param deserializer deserializer instance
+     */
+    void registerExperimenterMessageDeserializer(ExperimenterIdDeserializerKey key,
+            OFDeserializer<ExperimenterMessage> deserializer);
+
+    /**
+     * Registers multipart-reply (stats) message deserializer
+     * @param key used for deserializer lookup
+     * @param deserializer deserializer instance
+     */
+    void registerMultipartReplyMessageDeserializer(ExperimenterIdDeserializerKey key,
+            OFDeserializer<MultipartReplyMessage> deserializer);
+
+    /**
+     * Registers multipart-reply table-features message deserializer
+     * @param key used for deserializer lookup
+     * @param deserializer deserializer instance
+     */
+    void registerMultipartReplyTFDeserializer(ExperimenterIdDeserializerKey key,
+            OFGeneralDeserializer deserializer);
+
+    /**
+     * Registers meter band deserializer (used in multipart-reply meter-config)
+     * @param key used for deserializer lookup
+     * @param deserializer deserializer instance
+     */
+    void registerMeterBandDeserializer(ExperimenterIdDeserializerKey key,
+            OFDeserializer<MeterBandExperimenterCase> deserializer);
+
+    /**
+     * Registers queue property (QUEUE_GET_CONFIG_REPLY message) deserializer
+     * @param key used for deserializer lookup
+     * @param deserializer deserializer instance
+     */
+    void registerQueuePropertyDeserializer(ExperimenterIdDeserializerKey key,
+            OFDeserializer<QueueProperty> deserializer);
 }
