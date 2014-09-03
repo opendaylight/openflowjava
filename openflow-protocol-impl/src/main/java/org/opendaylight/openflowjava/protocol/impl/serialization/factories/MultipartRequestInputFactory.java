@@ -21,7 +21,10 @@ import org.opendaylight.openflowjava.protocol.impl.util.ListSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMaker;
 import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMakerFactory;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
+import org.opendaylight.openflowjava.util.ExperimenterSerializerKeyFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeatureProperty;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdMultipartRequest;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.NextTableRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OxmRelatedTableFeatureProperty;
@@ -84,7 +87,6 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
     private static final byte WRITE_SETFIELD_MISS_CODE = 13;
     private static final byte APPLY_SETFIELD_CODE = 14;
     private static final byte APPLY_SETFIELD_MISS_CODE = 15;
-    private static final byte STRUCTURE_HEADER_LENGTH = 4;
     private static final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_01 = 3;
     private static final byte PADDING_IN_MULTIPART_REQUEST_FLOW_BODY_02 = 4;
     private static final byte PADDING_IN_MULTIPART_REQUEST_AGREGGATE_BODY_01 = 3;
@@ -142,9 +144,11 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         MultipartRequestExperimenterCase expCase =
                 (MultipartRequestExperimenterCase) message.getMultipartRequestBody();
         MultipartRequestExperimenter experimenter = expCase.getMultipartRequestExperimenter();
-        OFSerializer<MultipartRequestExperimenter> serializer = registry.getSerializer(
-                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, MultipartRequestExperimenter.class));
-        serializer.serialize(experimenter, outBuffer);
+        long expId = experimenter.getAugmentation(ExperimenterIdMultipartRequest.class).getExperimenter().getValue();
+        OFSerializer<MultipartRequestExperimenterCase> serializer = registry.getSerializer(
+                ExperimenterSerializerKeyFactory.createMultipartRequestSerializerKey(
+                        EncodeConstants.OF13_VERSION_ID, expId));
+        serializer.serialize(expCase, outBuffer);
     }
 
     private static int createMultipartRequestFlagsBitmask(final MultipartRequestFlags flags) {
@@ -417,8 +421,10 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
 
     private void writeExperimenterRelatedTableProperty(final ByteBuf output,
             final TableFeatureProperties property) {
+        long expId = property.getAugmentation(ExperimenterIdTableFeatureProperty.class).getExperimenter().getValue();
         OFSerializer<TableFeatureProperties> serializer = registry.getSerializer(
-                new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, TableFeatureProperties.class));
+                ExperimenterSerializerKeyFactory.createMultipartRequestTFSerializerKey(
+                        EncodeConstants.OF13_VERSION_ID, expId));
         serializer.serialize(property, output);
     }
 

@@ -14,8 +14,10 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
+import org.opendaylight.openflowjava.util.ExperimenterSerializerKeyFactory;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdMultipartRequest;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.v10.grouping.MatchV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInput;
@@ -130,16 +132,17 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
     }
 
     private void serializeExperimenterBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output) {
-        MultipartRequestExperimenterCase experimenterCase = (MultipartRequestExperimenterCase) multipartRequestBody;
-        MultipartRequestExperimenter experimenter = experimenterCase.getMultipartRequestExperimenter();
-        OFSerializer<MultipartRequestExperimenter> expSerializer = registry.getSerializer(
-        		new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, MultipartRequestExperimenter.class));
-        expSerializer.serialize(experimenter, output);
+        MultipartRequestExperimenterCase expCase = (MultipartRequestExperimenterCase) multipartRequestBody;
+        MultipartRequestExperimenter experimenter = expCase.getMultipartRequestExperimenter();
+        long expId = experimenter.getAugmentation(ExperimenterIdMultipartRequest.class).getExperimenter().getValue();
+        OFSerializer<MultipartRequestExperimenterCase> serializer = registry.getSerializer(
+                ExperimenterSerializerKeyFactory.createExperimenterMessageSerializerKey(
+                        EncodeConstants.OF10_VERSION_ID, expId));
+        serializer.serialize(expCase, output);
     }
 
     @Override
     public void injectSerializerRegistry(final SerializerRegistry serializerRegistry) {
         this.registry = serializerRegistry;
     }
-
 }

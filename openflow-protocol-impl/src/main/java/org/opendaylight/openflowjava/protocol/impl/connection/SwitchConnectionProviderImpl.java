@@ -17,6 +17,7 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralSerializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntryDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
@@ -24,6 +25,7 @@ import org.opendaylight.openflowjava.protocol.api.keys.experimenter.Experimenter
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterActionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterIdDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterIdSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterInstructionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterInstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterSerializerKey;
@@ -39,10 +41,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.T
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmClassBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ErrorMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenterCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.queue.property.header.QueueProperty;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.grouping.TableFeatureProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -240,5 +245,29 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     public void registerMeterBandDeserializer(ExperimenterIdDeserializerKey key,
             OFDeserializer<MeterBandExperimenterCase> deserializer) {
         deserializerRegistry.registerDeserializer(key, deserializer);
+    }
+
+    @Override
+    public void registerExperimenterMessageSerializer(ExperimenterIdSerializerKey<ExperimenterInput> key,
+            OFSerializer<ExperimenterInput> serializer) {
+        serializerRegistry.registerSerializer(key, serializer);
+    }
+
+    @Override
+    public void registerMultipartRequestSerializer(ExperimenterIdSerializerKey<MultipartRequestExperimenterCase> key,
+            OFSerializer<MultipartRequestExperimenterCase> serializer) {
+        serializerRegistry.registerSerializer(key, serializer);
+    }
+
+    @Override
+    public void registerMultipartRequestTFSerializer(ExperimenterIdSerializerKey<TableFeatureProperties> key,
+            OFGeneralSerializer serializer) {
+        serializerRegistry.registerSerializer(key, serializer);
+    }
+
+    @Override
+    public void registerMeterBandSerializer(ExperimenterIdSerializerKey<MeterBandExperimenterCase> key,
+            OFSerializer<MeterBandExperimenterCase> serializer) {
+        serializerRegistry.registerSerializer(key, serializer);
     }
 }

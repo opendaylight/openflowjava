@@ -10,10 +10,15 @@ package org.opendaylight.openflowjava.protocol.api.extensibility;
 
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterActionSerializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterIdSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterInstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterSerializerKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmClassBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenterCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.grouping.TableFeatureProperties;
 
 
 /**
@@ -53,4 +58,36 @@ public interface SerializerExtensionProvider {
      */
     public <OXM_CLASS extends OxmClassBase, OXM_TYPE extends MatchField> void registerMatchEntrySerializer(
             MatchEntrySerializerKey<OXM_CLASS, OXM_TYPE> key,OFGeneralSerializer serializer);
+
+    /**
+     * Registers experimenter (vendor) message serializer
+     * @param key used for serializer lookup
+     * @param serializer serializer implementation
+     */
+    public void registerExperimenterMessageSerializer(ExperimenterIdSerializerKey<ExperimenterInput> key,
+            OFSerializer<ExperimenterInput> serializer);
+
+    /**
+     * Registers multipart-request (stats-request) serializer
+     * @param key used for serializer lookup
+     * @param serializer serializer implementation
+     */
+    public void registerMultipartRequestSerializer(ExperimenterIdSerializerKey<MultipartRequestExperimenterCase> key,
+            OFSerializer<MultipartRequestExperimenterCase> serializer);
+
+    /**
+     * Registers multipart-request table-features serializer
+     * @param key used for serializer lookup
+     * @param serializer serializer implementation
+     */
+    public void registerMultipartRequestTFSerializer(ExperimenterIdSerializerKey<TableFeatureProperties> key,
+            OFGeneralSerializer serializer);
+
+    /**
+     * Registers meter band serializer (used in meter-mod messages)
+     * @param key used for serializer lookup
+     * @param serializer serializer implementation
+     */
+    public void registerMeterBandSerializer(ExperimenterIdSerializerKey<MeterBandExperimenterCase> key,
+            OFSerializer<MeterBandExperimenterCase> serializer);
 }

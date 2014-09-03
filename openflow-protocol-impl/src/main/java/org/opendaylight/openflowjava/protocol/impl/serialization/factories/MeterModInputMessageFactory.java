@@ -12,12 +12,13 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.List;
 
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
+import org.opendaylight.openflowjava.util.ExperimenterSerializerKeyFactory;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdMeterBand;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterBandCommons;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterModInput;
@@ -78,11 +79,14 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput>,
                     outBuffer.writeByte(dscpRemarkBand.getPrecLevel());
                     outBuffer.writeZero(PADDING_IN_METER_BAND_DSCP_REMARK);
                 } else if (meterBand instanceof MeterBandExperimenterCase) {
-                    OFSerializer<MeterBandExperimenter> serializer = registry.getSerializer(
-                            new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, MeterBandExperimenter.class));
                     MeterBandExperimenterCase experimenterBandCase = (MeterBandExperimenterCase) meterBand;
                     MeterBandExperimenter experimenterBand = experimenterBandCase.getMeterBandExperimenter();
-                    serializer.serialize(experimenterBand, outBuffer);
+                    long expId = experimenterBand.getAugmentation(ExperimenterIdMeterBand.class)
+                            .getExperimenter().getValue();
+                    OFSerializer<MeterBandExperimenterCase> serializer = registry.getSerializer(
+                            ExperimenterSerializerKeyFactory.createMeterBandSerializerKey(
+                                    EncodeConstants.OF13_VERSION_ID, expId));
+                    serializer.serialize(experimenterBandCase, outBuffer);
                 }
             }
         }
@@ -99,5 +103,4 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput>,
     public void injectSerializerRegistry(final SerializerRegistry serializerRegistry) {
         registry = serializerRegistry;
     }
-
 }
