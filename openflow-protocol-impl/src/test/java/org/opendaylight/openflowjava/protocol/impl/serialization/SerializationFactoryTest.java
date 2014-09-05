@@ -44,7 +44,7 @@ public class SerializationFactoryTest {
     /**
      * Test serializer not found scenario
      */
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected=IllegalStateException.class)
     public void testNotExistingSerializer() {
         SerializerRegistry registry = new SerializerRegistryImpl();
         registry.init();
