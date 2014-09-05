@@ -61,7 +61,7 @@ public class DeserializerRegistryImpl implements DeserializerRegistry {
             MessageCodeKey key) {
         OFGeneralDeserializer deserializer = registry.get(key);
         if (deserializer == null) {
-            throw new NullPointerException("Deserializer for key: " + key.toString()
+            throw new IllegalStateException("Deserializer for key: " + key
                     + " was not found - please verify that all needed deserializers ale loaded correctly");
         }
         return (DESERIALIZER_TYPE) deserializer;

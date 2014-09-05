@@ -64,7 +64,7 @@ public class SerializerRegistryImpl implements SerializerRegistry {
             MessageTypeKey<KEY_TYPE> msgTypeKey) {
         OFGeneralSerializer serializer = registry.get(msgTypeKey);
         if (serializer == null) {
-            throw new IllegalArgumentException("Serializer for key: {}" + msgTypeKey.toString()
+            throw new IllegalStateException("Serializer for key: {}" + msgTypeKey
                     + " was not found - please verify that you are using correct message"
                     + " combination (e.g. OF v1.0 message to OF v1.0 device)");
         }
