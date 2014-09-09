@@ -1,4 +1,4 @@
-package org.opendaylight.openflowjava.protocol.api.keys.extensibility;
+package org.opendaylight.openflowjava.protocol.api.keys;
 
 import junit.framework.Assert;
 

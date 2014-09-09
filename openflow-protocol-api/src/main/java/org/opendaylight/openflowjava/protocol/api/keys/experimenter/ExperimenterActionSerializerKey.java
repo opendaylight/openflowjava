@@ -23,6 +23,7 @@ public final class ExperimenterActionSerializerKey extends ActionSerializerKey<E
     /**
      * @param msgVersion protocol wire version
      * @param experimenterId experimenter / vendor ID
+     * @param actionSubType vendor defined subtype
      */
     public ExperimenterActionSerializerKey(short msgVersion, Long experimenterId, Class<? extends ExperimenterActionSubType> actionSubType) {
         super(msgVersion, Experimenter.class, experimenterId);

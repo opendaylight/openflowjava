@@ -18,7 +18,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  *
  */
-public class ExperimenterSerializerKeyFactory {
+public abstract class ExperimenterSerializerKeyFactory {
 
     /**
      * @param msgVersion openflow wire version
