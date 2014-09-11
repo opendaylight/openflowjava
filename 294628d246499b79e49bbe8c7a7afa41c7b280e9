@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa82b9bf_d05f5374",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/serialization/SerializerRegistryImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2014-09-11T08:18:14Z",
+      "side": 1,
+      "message": "{} wont work here",
+      "revId": "294628d246499b79e49bbe8c7a7afa41c7b280e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
