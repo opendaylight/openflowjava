@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.it.integration;
+package org.opendaylight.openflowjava.protocol.impl.connection;
 
 import java.net.InetAddress;
 

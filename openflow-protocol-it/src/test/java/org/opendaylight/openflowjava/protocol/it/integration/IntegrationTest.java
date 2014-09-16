@@ -28,6 +28,7 @@ import org.opendaylight.openflowjava.protocol.impl.clients.SimpleClient;
 import org.opendaylight.openflowjava.protocol.impl.clients.SleepEvent;
 import org.opendaylight.openflowjava.protocol.impl.clients.UdpSimpleClient;
 import org.opendaylight.openflowjava.protocol.impl.clients.WaitForMessageEvent;
+import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionConfigurationImpl;
 import org.opendaylight.openflowjava.protocol.impl.connection.SwitchConnectionProviderImpl;
 import org.opendaylight.openflowjava.protocol.impl.core.TcpHandler;
 import org.opendaylight.openflowjava.protocol.impl.core.UdpHandler;
