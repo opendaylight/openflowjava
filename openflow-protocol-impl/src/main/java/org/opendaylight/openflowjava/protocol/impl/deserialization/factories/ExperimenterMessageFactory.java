@@ -24,7 +24,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class ExperimenterMessageFactory implements OFDeserializer<ExperimenterMessage>,
         DeserializerRegistryInjector {
 
-    private static final byte EXPERIMENTER_ID_INDEX = 8;
+    /** Experimenter ID index after version, message type and length were read */
+    private static final byte EXPERIMENTER_ID_INDEX = 4;
     private DeserializerRegistry deserializerRegistry;
 
     @Override
