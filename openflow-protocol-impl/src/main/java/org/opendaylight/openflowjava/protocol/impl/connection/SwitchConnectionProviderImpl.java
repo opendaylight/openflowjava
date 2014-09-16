@@ -105,19 +105,11 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     @Override
     public ListenableFuture<Boolean> startup() {
         LOGGER.debug("Startup summoned");
-        serverFacade = createAndConfigureServer();
-        
-        LOGGER.debug("Starting ..");
         ListenableFuture<Boolean> result = null;
         try {
-            if (serverFacade == null) {
-                throw new IllegalStateException("No server configured");
-            }
-            if (serverFacade.getIsOnlineFuture().isDone()) {
-                throw new IllegalStateException("Server already running");
-            }
+            serverFacade = createAndConfigureServer();
             if (switchConnectionHandler == null) {
-                throw new IllegalStateException("switchConnectionHandler is not set");
+                throw new IllegalStateException("SwitchConnectionHandler is not set");
             }
             new Thread(serverFacade).start();
             result = serverFacade.getIsOnlineFuture();
@@ -145,9 +137,11 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
         if (transportProtocol.equals(TransportProtocol.TCP) || transportProtocol.equals(TransportProtocol.TLS)) {
             server = new TcpHandler(connConfig.getAddress(), connConfig.getPort());
             ((TcpHandler) server).setChannelInitializer(factory.createPublishingChannelInitializer());
-        } else {
+        } else if (transportProtocol.equals(TransportProtocol.UDP)){
             server = new UdpHandler(connConfig.getAddress(), connConfig.getPort());
             ((UdpHandler) server).setChannelInitializer(factory.createUdpChannelInitializer());
+        } else {
+            throw new IllegalStateException("Unknown transport protocol received: " + transportProtocol);
         }
         server.setThreadConfig(connConfig.getThreadConfiguration());
         return server;

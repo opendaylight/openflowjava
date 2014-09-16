@@ -8,9 +8,11 @@
 package org.opendaylight.openflowjava.protocol.impl.serialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.BarrierInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.EchoInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.EchoReplyInputMessageFactory;
+import org.opendaylight.openflowjava.protocol.impl.serialization.factories.ExperimenterInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.FlowModInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.GetAsyncRequestMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.GetConfigInputMessageFactory;
@@ -34,10 +36,10 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.factories.SetAs
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.SetConfigMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.TableModInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.CommonMessageRegistryHelper;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoReplyInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetAsyncInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetConfigInput;
@@ -71,6 +73,7 @@ public class MessageFactoryInitializer {
         registryHelper.registerSerializer(BarrierInput.class, new OF10BarrierInputMessageFactory());
         registryHelper.registerSerializer(EchoInput.class, new EchoInputMessageFactory());
         registryHelper.registerSerializer(EchoReplyInput.class, new EchoReplyInputMessageFactory());
+        registryHelper.registerSerializer(ExperimenterInput.class, new ExperimenterInputMessageFactory());
         registryHelper.registerSerializer(FlowModInput.class, new OF10FlowModInputMessageFactory());
         registryHelper.registerSerializer(GetConfigInput.class, new GetConfigInputMessageFactory());
         registryHelper.registerSerializer(GetFeaturesInput.class, new GetFeaturesInputMessageFactory());
@@ -86,6 +89,7 @@ public class MessageFactoryInitializer {
         registryHelper.registerSerializer(BarrierInput.class, new BarrierInputMessageFactory());
         registryHelper.registerSerializer(EchoInput.class, new EchoInputMessageFactory());
         registryHelper.registerSerializer(EchoReplyInput.class, new EchoReplyInputMessageFactory());
+        registryHelper.registerSerializer(ExperimenterInput.class, new ExperimenterInputMessageFactory());
         registryHelper.registerSerializer(FlowModInput.class, new FlowModInputMessageFactory());
         registryHelper.registerSerializer(GetAsyncInput.class, new GetAsyncRequestMessageFactory());
         registryHelper.registerSerializer(GetConfigInput.class, new GetConfigInputMessageFactory());
