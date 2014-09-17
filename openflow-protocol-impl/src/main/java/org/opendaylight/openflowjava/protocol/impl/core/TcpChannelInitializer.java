@@ -73,16 +73,19 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
             getSwitchConnectionHandler().onSwitchConnected(connectionFacade);
             connectionFacade.checkListeners();
             ch.pipeline().addLast(PipelineHandlers.IDLE_HANDLER.name(), new IdleHandler(getSwitchIdleTimeout(), TimeUnit.MILLISECONDS));
-            
+            boolean tlsPresent = false;
+
             // If this channel is configured to support SSL it will only support SSL
             if (getTlsConfiguration() != null) {
+                tlsPresent = true;
                 SslContextFactory sslFactory = new SslContextFactory(getTlsConfiguration());
                 SSLEngine engine = sslFactory.getServerContext().createSSLEngine();
                 engine.setNeedClientAuth(true);
                 engine.setUseClientMode(false);
                 ch.pipeline().addLast(PipelineHandlers.SSL_HANDLER.name(), new SslHandler(engine));
             }
-            ch.pipeline().addLast(PipelineHandlers.OF_FRAME_DECODER.name(), new OFFrameDecoder(connectionFacade));
+            ch.pipeline().addLast(PipelineHandlers.OF_FRAME_DECODER.name(),
+                    new OFFrameDecoder(connectionFacade, tlsPresent));
             ch.pipeline().addLast(PipelineHandlers.OF_VERSION_DETECTOR.name(), new OFVersionDetector());
             OFDecoder ofDecoder = new OFDecoder();
             ofDecoder.setDeserializationFactory(getDeserializationFactory());
@@ -91,7 +94,7 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
             ofEncoder.setSerializationFactory(getSerializationFactory());
             ch.pipeline().addLast(PipelineHandlers.OF_ENCODER.name(), ofEncoder);
             ch.pipeline().addLast(PipelineHandlers.DELEGATING_INBOUND_HANDLER.name(), new DelegatingInboundHandler(connectionFacade));
-            if (getTlsConfiguration() == null) {
+            if (!tlsPresent) {
                 connectionFacade.fireConnectionReadyNotification();
             }
         } catch (Exception e) {

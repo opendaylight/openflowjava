@@ -31,14 +31,19 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
     private static final byte LENGTH_INDEX_IN_HEADER = 2;
     private static final Logger LOGGER = LoggerFactory.getLogger(OFFrameDecoder.class);
     private ConnectionFacade connectionFacade;
-    private boolean started = false;
+    private boolean firstTlsPass = false;
 
     /**
      * Constructor of class.
-     * @param connectionFacade 
+     * @param connectionFacade  ConnectionFacade that will be notified
+     * with ConnectionReadyNotification after TLS has been successfully set up.
+     * @param tlsPresent true is TLS is required, false otherwise
      */
-    public OFFrameDecoder(ConnectionFacade connectionFacade) {
+    public OFFrameDecoder(ConnectionFacade connectionFacade, boolean tlsPresent) {
         LOGGER.trace("Creating OFFrameDecoder");
+        if (tlsPresent) {
+            firstTlsPass = true;
+        }
         this.connectionFacade = connectionFacade;
     }
 
@@ -55,9 +60,9 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext chc, ByteBuf bb, List<Object> list) throws Exception {
-        if (!started) {
+        if (firstTlsPass) {
             connectionFacade.fireConnectionReadyNotification();
-            started = true;
+            firstTlsPass = false;
         }
         int readableBytes = bb.readableBytes();
         if (readableBytes < LENGTH_OF_HEADER) {

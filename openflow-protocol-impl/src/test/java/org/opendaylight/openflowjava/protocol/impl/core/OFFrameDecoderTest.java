@@ -47,7 +47,7 @@ public class OFFrameDecoderTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        decoder = new OFFrameDecoder(connectionFacade);
+        decoder = new OFFrameDecoder(connectionFacade, false);
         list.clear();
 
     }
@@ -145,5 +145,23 @@ public class OFFrameDecoderTest {
     @Test
     public void testExceptionCaught() throws Exception {
         decoder.exceptionCaught(channelHandlerContext, new Throwable());
+    }
+
+    /**
+     * Test of decoding
+     * {@link OFFrameDecoder#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)}
+     */
+    @Test
+    public void testDecode8BMessageWithTls() {
+        decoder = new OFFrameDecoder(connectionFacade, true);
+        try {
+            decoder.decode(channelHandlerContext,
+                    ByteBufUtils.hexStringToByteBuf("04 00 00 08 00 00 00 01"),
+                    list);
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        assertEquals(8, ((ByteBuf) list.get(0)).readableBytes());
     }
 }
