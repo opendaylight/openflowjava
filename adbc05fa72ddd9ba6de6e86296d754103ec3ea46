@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da87b5cf_01cb4a73",
+        "filename": ".gitreview",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 48
+      },
+      "writtenOn": "2014-10-06T16:38:02Z",
+      "side": 1,
+      "message": "can we kill the trailing whitespace?",
+      "revId": "adbc05fa72ddd9ba6de6e86296d754103ec3ea46",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
