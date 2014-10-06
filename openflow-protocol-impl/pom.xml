@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.opendaylight.openflowjava</groupId>
         <artifactId>openflow-protocol-parent</artifactId>
-        <version>0.5-Helium</version>
+        <version>0.5.1-SNAPSHOT</version>
     </parent>
     <artifactId>openflow-protocol-impl</artifactId>
     <packaging>bundle</packaging>
@@ -14,9 +14,9 @@
   </scm>
 
     <properties>
-        <yangtools.version>0.6.2-Helium</yangtools.version>
-        <yangtools.generator.version>0.6.2-Helium</yangtools.generator.version>
-        <yangtools.binding.version>0.6.2-Helium</yangtools.binding.version>
+        <yangtools.version>0.6.3-SNAPSHOT</yangtools.version>
+        <yangtools.generator.version>0.6.3-SNAPSHOT</yangtools.generator.version>
+        <yangtools.binding.version>0.6.3-SNAPSHOT</yangtools.binding.version>
     </properties>
     
     <build>
