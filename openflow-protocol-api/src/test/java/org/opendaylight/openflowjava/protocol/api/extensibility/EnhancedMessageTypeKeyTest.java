@@ -49,4 +49,29 @@ public class EnhancedMessageTypeKeyTest {
         Assert.assertFalse("Wrong equals", key1.equals(key2));
         Assert.assertFalse("Wrong hashcode", key1.hashCode() == key2.hashCode());
     }
+    
+    /**
+     * Test EnhancedMessageTypeKey equals - additional test
+     */
+    @Test
+    public void testEquals() {
+        EnhancedMessageTypeKey<?,?> key1;
+        EnhancedMessageTypeKey<?,?> key2;
+
+        key1 = new EnhancedMessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, Action.class, Output.class);
+        key2 = new EnhancedMessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, Action.class, Output.class);
+        
+        Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
+        
+        Assert.assertFalse("Wrong equal to different class.", key1.equals(new Object()));
+        
+        key1 = new EnhancedMessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, Action.class, null);
+        Assert.assertFalse("Wrong equal by msgType2.", key1.equals(key2));
+        key1 = new EnhancedMessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, Action.class, Output.class);
+        key2 = new EnhancedMessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, Action.class, SetField.class);
+        Assert.assertFalse("Wrong equal by msgType2 class name.", key1.equals(key2));
+
+    }
+    
+    
 }

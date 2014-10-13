@@ -47,4 +47,20 @@ public class ActionSerializerKeyTest {
         Assert.assertFalse("Wrong equals", key1.equals(key2));
         Assert.assertFalse("Wrong hashCode", key1.hashCode() == key2.hashCode());
     }
+    
+    /**
+     * Test ActionDeserializerKey equals - additional test
+     */
+    @Test
+    public void testEquals(){
+         ActionSerializerKey<CopyTtlIn> key1 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, null, 42L);
+         ActionSerializerKey<?> key2 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, CopyTtlIn.class, 42L);
+         
+         Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
+         
+         Assert.assertFalse("Wrong equal by actionType", key1.equals(key2));
+         
+         key1 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID,  CopyTtlIn.class, null);
+         Assert.assertFalse("Wrong equal by experimenterId", key1.equals(key2));
+    }
 }

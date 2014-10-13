@@ -47,4 +47,18 @@ public class EnhancedMessageCodeKeyTest {
         Assert.assertFalse("Wrong equals", key1.equals(key2));
         Assert.assertFalse("Wrong hashcode", key1.hashCode() == key2.hashCode());
     }
+    
+    /**
+     * Test EnhancedMessageTypeKey equals - additional test
+     */
+    @Test
+    public void testEquals() {
+        
+         EnhancedMessageCodeKey key1 =
+                 new EnhancedMessageCodeKey(EncodeConstants.OF10_VERSION_ID, 4, 8, BarrierInput.class);
+         
+         Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
+         Assert.assertFalse("Wrong equal to different class.", key1.equals(new Object()));
+         
+    }
 }
