@@ -47,4 +47,26 @@ public class InstructionSerializerKeyTest {
         Assert.assertFalse("Wrong equals", key1.equals(key2));
         Assert.assertFalse("Wrong hashCode", key1.hashCode() == key2.hashCode());
     }
+    
+    /**
+     * Test InstructionSerializerKey equals  - additional test
+     */
+    @Test
+    public void testEquals(){
+    	
+    	InstructionSerializerKey<?> key1 =
+                new InstructionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, ApplyActions.class, 42L);
+        InstructionSerializerKey<?> key2 =
+                new InstructionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, ApplyActions.class, 42L);
+        
+        Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
+        Assert.assertFalse("Wrong equal to different class.", key1.equals(new Object()));
+        
+        key1 = new InstructionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, ApplyActions.class, null);
+        Assert.assertFalse("Wrong equal by experimenterId.", key1.equals(key2));
+        
+        key1 = new InstructionSerializerKey<>(EncodeConstants.OF10_VERSION_ID,  null, 42L);
+        Assert.assertFalse("Wrong equal by instructionType.", key1.equals(key2));
+        
+    }
 }

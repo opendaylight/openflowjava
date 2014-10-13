@@ -47,4 +47,20 @@ public class ExperimenterIdSerializerKeyTest {
         Assert.assertFalse("Wrong equals", key1.equals(key2));
         Assert.assertFalse("Wrong hashcode", key1.hashCode() == key2.hashCode());
     }
+    
+    /**
+     * Test ExperimenterIdSerializerKey equals - additional test
+     */
+    @Test
+    public void testEquals() {
+    	ExperimenterIdSerializerKey<?> key1 =
+                new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID, null, ExperimenterMessage.class);
+    	
+    	
+    	
+        ExperimenterIdSerializerKey<?> key2 =
+                new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID, 42L, ExperimenterMessage.class);
+        
+    }
+    
 }

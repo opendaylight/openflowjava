@@ -41,4 +41,24 @@ public class MessageTypeKeyTest {
         Assert.assertFalse("Wrong equals", key1.equals(key2));
         Assert.assertFalse("Wrong hashcode", key1.hashCode() == key2.hashCode());
     }
+    
+    /**
+     * Test EnhancedMessageTypeKey equals - additional test
+     */
+    @Test
+    public void testEquals() {
+    	 MessageTypeKey<?> key1;
+    	 MessageTypeKey<?> key2; 
+    	 
+    	 key1 = new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, BarrierInput.class);
+         
+         Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
+         Assert.assertFalse("Wrong equal to null.", key1.equals(null));
+         Assert.assertFalse("Wrong equal to different class.", key1.equals(new Object()));
+         
+         key1 = new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, null);
+         key2 = new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, BarrierInput.class);
+         
+         Assert.assertFalse("Wrong equal by msgType.", key1.equals(key2));
+    }
 }
