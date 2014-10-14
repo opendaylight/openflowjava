@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba8cc1f7_b4b8982b",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/connection/ConnectionAdapterImplTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-10-14T15:01:02Z",
+      "side": 1,
+      "message": "Please use InetSocketAddress.createUnresolved()",
+      "revId": "f424966860983ff86ee105760eac4966e87c867b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba8cc1f7_d4b51c32",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/connection/ConnectionAdapterImplTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-10-14T15:01:02Z",
+      "side": 1,
+      "message": "Please use InetSocketAddress.createUnresolved()",
+      "revId": "f424966860983ff86ee105760eac4966e87c867b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba8cc1f7_f4ae20e7",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/connection/UdpMessageListenerWrapperTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-10-14T15:01:02Z",
+      "side": 1,
+      "message": "Please use InetSocketAddress.createUnresolved()",
+      "revId": "f424966860983ff86ee105760eac4966e87c867b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba8cc1f7_14ace4ec",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/core/VersionMessageUdpWrapperTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-10-14T15:01:02Z",
+      "side": 1,
+      "message": "Please use InetSocketAddress.createUnresolved()",
+      "revId": "f424966860983ff86ee105760eac4966e87c867b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
