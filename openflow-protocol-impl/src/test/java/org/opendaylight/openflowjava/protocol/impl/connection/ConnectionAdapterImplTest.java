@@ -12,6 +12,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 
@@ -61,6 +62,7 @@ import com.google.common.cache.RemovalNotification;
 
 /**
  * @author michal.polkorab
+ * @author madamjak
  *
  */
 public class ConnectionAdapterImplTest {
@@ -81,7 +83,7 @@ public class ConnectionAdapterImplTest {
     @Mock SystemNotificationsListener systemListener;
     @Mock ConnectionReadyListener readyListener;
     @Mock Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> mockCache;
-
+    @Mock ChannelFuture channelFuture;
     private ConnectionAdapterImpl adapter;
     private Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> cache;
 
@@ -99,6 +101,7 @@ public class ConnectionAdapterImplTest {
         cache = CacheBuilder.newBuilder().concurrencyLevel(1).expireAfterWrite(RPC_RESPONSE_EXPIRATION, TimeUnit.MINUTES)
                 .removalListener(REMOVAL_LISTENER).build();
         adapter.setResponseCache(cache);
+        when(channel.disconnect()).thenReturn(channelFuture);
     }
 
     /**
@@ -174,4 +177,34 @@ public class ConnectionAdapterImplTest {
         ResponseExpectedRpcListener<?> ifPresent = cache.getIfPresent(key);
         Assert.assertNull("Listener was not discarded", ifPresent);
     }
+    /**
+     * Test IsAlive method
+     */
+    @Test
+    public void testIsAlive(){
+        int port = 9876;
+        String host ="localhost";
+        InetSocketAddress inetSockAddr = InetSocketAddress.createUnresolved(host, port);
+        ConnectionAdapterImpl connAddapter = new ConnectionAdapterImpl(channel,inetSockAddr);
+        Assert.assertEquals("Wrong - diffrence between channel.isOpen() and ConnectionAdapterImpl.isAlive()", channel.isOpen(), connAddapter.isAlive());
+
+        connAddapter.disconnect();
+        Assert.assertFalse("Wrong - ConnectionAdapterImpl can not be aliva after disconnet.", connAddapter.isAlive());
+    }
+
+    /**
+     * Test throw exception if no listener are present
+     */
+    @Test(expected = java.lang.IllegalStateException.class)
+    public void testMissingListeners(){
+        int port = 9876;
+        String host ="localhost";
+        InetSocketAddress inetSockAddr = InetSocketAddress.createUnresolved(host, port);
+        ConnectionAdapterImpl connAddapter = new ConnectionAdapterImpl(channel,inetSockAddr);
+        connAddapter.setSystemListener(null);
+        connAddapter.setMessageListener(null);
+        connAddapter.setConnectionReadyListener(null);
+        connAddapter.checkListeners();
+    }
+
 }
