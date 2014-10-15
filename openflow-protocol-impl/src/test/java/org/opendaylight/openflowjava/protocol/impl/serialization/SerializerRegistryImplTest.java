@@ -50,7 +50,7 @@ public class SerializerRegistryImplTest {
      * Test - unregister serializer 
      */
     @Test
-    public void testUnRegisterSerialize(){
+    public void testUnRegisterSerializer(){
         SerializerRegistryImpl serReg = new SerializerRegistryImpl();
         serReg.init();
         serReg.registerSerializer(new MessageTypeKey<>(OF13, Match.class), new OF13MatchSerializer());
