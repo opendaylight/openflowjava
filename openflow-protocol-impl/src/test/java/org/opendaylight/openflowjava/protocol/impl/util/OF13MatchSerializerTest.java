@@ -26,6 +26,8 @@ import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6FlowLabel;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdMatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdMatchEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv4AddressMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv4AddressMatchEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv6AddressMatchEntry;
@@ -34,11 +36,15 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv6FlabelMatchEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ExperimenterId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.StandardMatchType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ExperimenterClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv4Src;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6Dst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6Flabel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6NdTarget;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6Src;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmMatchType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
@@ -335,7 +341,46 @@ public class OF13MatchSerializerTest {
         Match match = builder.build();
         return match;
     }
-    
-    
 
+    /**
+     * Test Standard match type
+     */
+    @Test
+    public void testStandardMatchType() {
+        MatchBuilder builder = new MatchBuilder();
+        builder.setType(StandardMatchType.class);
+        Match match = builder.build();
+        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+
+        matchSerializer.serialize(match, out);
+
+        Assert.assertEquals("Wrong match type", 0, out.readUnsignedShort());
+        Assert.assertEquals("Wrong match length", 4, out.readUnsignedShort());
+        Assert.assertEquals("Wrong padding", 0, out.readUnsignedInt());
+        Assert.assertEquals("Unexpected data", 0, out.readableBytes());
+    }
+
+    /**
+     * Test serialize experimenter match entry - with no experimenter
+     * match entry serializer registered
+     */
+    @Test(expected=IllegalStateException.class)
+    public void testSerializeExperimenterMatchEntry() {
+        List<MatchEntries> entries = new ArrayList<>();
+        MatchEntriesBuilder builder = new MatchEntriesBuilder();
+        builder.setOxmClass(ExperimenterClass.class);
+        builder.setOxmMatchField(OxmMatchFieldClass.class);
+        builder.setHasMask(true);
+        ExperimenterIdMatchEntryBuilder expIdBuilder = new ExperimenterIdMatchEntryBuilder();
+        expIdBuilder.setExperimenter(new ExperimenterId(42L));
+        builder.addAugmentation(ExperimenterIdMatchEntry.class, expIdBuilder.build());
+        entries.add(builder.build());
+        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+
+        ((OF13MatchSerializer) matchSerializer).serializeMatchEntries(entries, out);
+    }
+
+    private class OxmMatchFieldClass extends MatchField {
+        // only for testing purposes
+    }
 }

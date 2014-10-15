@@ -50,6 +50,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanPcpMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.Ipv6ExthdrFlags;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.StandardMatchType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpOp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpSha;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpSpa;
@@ -498,5 +499,18 @@ public class MatchDeserializerTest {
         Assert.assertEquals("Wrong entry field", Ipv4Dst.class, entry.getOxmMatchField());
         Assert.assertEquals("Wrong entry hasMask", false, entry.isHasMask());
         Assert.assertEquals("Wrong Ipv4 address", null, entry.getAugmentation(Ipv4AddressMatchEntry.class));
+    }
+
+    /**
+     * Testing standard match type
+     */
+    @Test
+    public void testStandardMatch() {
+        ByteBuf buffer = ByteBufUtils.hexStringToByteBuf("00 00 00 10 80 00 04 08 00 00 00 00 00 00 00 01");
+
+        Match match = matchDeserializer.deserialize(buffer);
+
+        Assert.assertEquals("Wrong match type", StandardMatchType.class, match.getType());
+        Assert.assertEquals("Wrong match entries size", 1, match.getMatchEntries().size());
     }
 }
