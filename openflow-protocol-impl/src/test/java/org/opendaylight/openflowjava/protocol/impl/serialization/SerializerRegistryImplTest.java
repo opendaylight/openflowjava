@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2014 Pantheon Technologies s.r.o. and others. All rights reserved.
  *
@@ -50,7 +49,7 @@ public class SerializerRegistryImplTest {
      * Test - unregister serializer 
      */
     @Test
-    public void testUnRegisterSerialize(){
+    public void testUnRegisterSerializer(){
         SerializerRegistryImpl serReg = new SerializerRegistryImpl();
         serReg.init();
         serReg.registerSerializer(new MessageTypeKey<>(OF13, Match.class), new OF13MatchSerializer());
