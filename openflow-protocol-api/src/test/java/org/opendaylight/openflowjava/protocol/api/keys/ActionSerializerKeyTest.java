@@ -49,18 +49,33 @@ public class ActionSerializerKeyTest {
     }
     
     /**
-     * Test ActionDeserializerKey equals - additional test
+     * Test ActionSerializerKey equals - additional test
      */
     @Test
     public void testEquals(){
-         ActionSerializerKey<CopyTtlIn> key1 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, null, 42L);
+         ActionSerializerKey<?> key1 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, null, 42L);
          ActionSerializerKey<?> key2 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, CopyTtlIn.class, 42L);
          
          Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
-         
          Assert.assertFalse("Wrong equal by actionType", key1.equals(key2));
          
+         key2 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, null, 42L);
+         Assert.assertTrue("Wrong equal by action type", key1.equals(key2));
          key1 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID,  CopyTtlIn.class, null);
          Assert.assertFalse("Wrong equal by experimenterId", key1.equals(key2));
+         key2 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, CopyTtlIn.class, null);
+         Assert.assertTrue("Wrong equal by experimenterId", key1.equals(key2));
+    }
+
+    /**
+     * Test ActionSerializerKey toString()
+     */
+    @Test
+    public void testToString(){
+        ActionSerializerKey<CopyTtlIn> key1 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, CopyTtlIn.class, 42L);
+
+        Assert.assertEquals("Wrong toString()", "msgVersion: 1 objectType: org.opendaylight.yang.gen.v1.urn.opendaylight"
+                + ".openflow.common.action.rev130731.actions.grouping.Action action type: org.opendaylight.yang.gen.v1.urn"
+                + ".opendaylight.openflow.common.action.rev130731.CopyTtlIn experimenterID: 42", key1.toString());
     }
 }

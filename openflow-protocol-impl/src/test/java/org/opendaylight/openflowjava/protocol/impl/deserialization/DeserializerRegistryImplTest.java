@@ -13,6 +13,7 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.MatchDeserializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.v10.grouping.MatchV10;
 /**
  * 
  * @author madamjak
@@ -22,7 +23,7 @@ public class DeserializerRegistryImplTest {
 
     private static final short OF13 = EncodeConstants.OF13_VERSION_ID;
     private static final short OF10 = EncodeConstants.OF10_VERSION_ID;
-    public static final int EMPTY_VALUE = EncodeConstants.EMPTY_VALUE;
+    private static final int EMPTY_VALUE = EncodeConstants.EMPTY_VALUE;
 
     /**
      * Test - register deserializer without arguments
@@ -34,26 +35,52 @@ public class DeserializerRegistryImplTest {
     }
 
     /**
-     * Test - unregister deserializer without MessageTypeKye
+     * Test - register deserializer with no key
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testRegisterDeserializerNoKey(){
+        DeserializerRegistryImpl serReg = new DeserializerRegistryImpl();
+        serReg.registerDeserializer(null, new MatchDeserializer());
+    }
+
+    /**
+     * Test - register deserializer with no deserializer
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testRegisterDeserializerNoDeserializer(){
+        DeserializerRegistryImpl serReg = new DeserializerRegistryImpl();
+        serReg.registerDeserializer(new MessageCodeKey(OF13, EMPTY_VALUE, Match.class), null);
+    }
+
+    /**
+     * Test - unregister deserializer without MessageTypeKey
      */
     @Test(expected = IllegalArgumentException.class)
     public void testUnRegisterDeserializerNoMessageTypeKey(){
         DeserializerRegistryImpl derserReg = new DeserializerRegistryImpl();
         derserReg.init();
-        derserReg.registerDeserializer(new MessageCodeKey(OF13,EMPTY_VALUE, Match.class), new MatchDeserializer());
         derserReg.unregisterDeserializer(null);
     }
 
     /**
-     * Test - unregister deserializer 
+     * Test - unregister deserializer
      */
     @Test
     public void testUnRegisterDeserializer(){
         DeserializerRegistryImpl derserReg = new DeserializerRegistryImpl();
         derserReg.init();
-        derserReg.registerDeserializer(new MessageCodeKey(OF13,EMPTY_VALUE, Match.class), new MatchDeserializer());
         Assert.assertTrue("Wrong - unregister serializer",derserReg.unregisterDeserializer(new MessageCodeKey(OF13,EMPTY_VALUE, Match.class)));
-        derserReg.registerDeserializer(new MessageCodeKey(OF13, EMPTY_VALUE, Match.class), new MatchDeserializer());
         Assert.assertFalse("Wrong - unregister serializer",derserReg.unregisterDeserializer(new MessageCodeKey(OF10,EMPTY_VALUE, Match.class)));
+    }
+
+    /**
+     * Test - get deserializer
+     */
+    @Test(expected=IllegalStateException.class)
+    public void testGetDeserializer(){
+        DeserializerRegistryImpl registry = new DeserializerRegistryImpl();
+        registry.init();
+        registry.getDeserializer(new MessageCodeKey((short) 5000, EncodeConstants.EMPTY_VALUE, MatchV10.class));
+        Assert.fail();
     }
 }

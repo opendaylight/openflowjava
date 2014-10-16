@@ -53,6 +53,8 @@ public class MatchEntrySerializerKeyTest {
                 null, InPhyPort.class);
         Assert.assertFalse("Wrong equals", key1.equals(key2));
         Assert.assertFalse("Wrong hashCode", key1.hashCode() == key2.hashCode());
+        key2.setExperimenterId(42L);
+        Assert.assertFalse("Wrong hashCode", key1.hashCode() == key2.hashCode());
     }
     
     /**
@@ -78,8 +80,28 @@ public class MatchEntrySerializerKeyTest {
         key1 = new MatchEntrySerializerKey<>(EncodeConstants.OF13_VERSION_ID, null, InPort.class);
         key1.setExperimenterId(expId2);
         Assert.assertFalse("Wrong equal by oxmClass", key1.equals(key2));
+        key2 = new MatchEntrySerializerKey<>(EncodeConstants.OF13_VERSION_ID, null, InPort.class);
+        key2.setExperimenterId(expId2);
+        Assert.assertTrue("Wrong equal by oxmClass", key1.equals(key2));
         key1 = new MatchEntrySerializerKey<>(EncodeConstants.OF13_VERSION_ID, OpenflowBasicClass.class, null);
         key1.setExperimenterId(expId2);
         Assert.assertFalse("Wrong equal by oxmField", key1.equals(key2));
+        key2 = new MatchEntrySerializerKey<>(EncodeConstants.OF13_VERSION_ID, OpenflowBasicClass.class, null);
+        key2.setExperimenterId(expId2);
+        Assert.assertTrue("Wrong equal by oxmField", key1.equals(key2));
+    }
+
+    /**
+     * Test MatchEntrySerializerKey toString()
+     */
+    @Test
+    public void testToString(){
+        MatchEntrySerializerKey<?, ?> key1;
+        key1 = new MatchEntrySerializerKey<>(EncodeConstants.OF13_VERSION_ID, OpenflowBasicClass.class, InPort.class);
+
+        Assert.assertEquals("Wrong toString()", "msgVersion: 4 objectType: org.opendaylight.yang.gen.v1.urn.opendaylight"
+                + ".openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries oxm_class: org.opendaylight.yang.gen.v1.urn"
+                + ".opendaylight.openflow.oxm.rev130731.OpenflowBasicClass oxm_field: org.opendaylight.yang.gen.v1.urn"
+                + ".opendaylight.openflow.oxm.rev130731.InPort experimenterID: null", key1.toString());
     }
 }

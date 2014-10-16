@@ -46,15 +46,25 @@ public class ActionDeserializerKeyTest {
      */
     @Test
     public void testEquals(){
-        
         ActionDeserializerKey key1 = new ActionDeserializerKey(EncodeConstants.OF10_VERSION_ID, 11, null);
         ActionDeserializerKey key2 = new ActionDeserializerKey(EncodeConstants.OF10_VERSION_ID, 11, 42L);
-        
+
         Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
-        
         Assert.assertFalse("Wrong equal to different class.", key1.equals(new Object()));
-        
         Assert.assertFalse("Wrong equal by experimenterId", key1.equals(key2));
-        
+        key2 = new ActionDeserializerKey(EncodeConstants.OF10_VERSION_ID, 11, null);
+        Assert.assertTrue("Wrong equal by experimenterId", key1.equals(key2));
+    }
+
+    /**
+     * Test InstructionDeserializerKey toString()
+     */
+    @Test
+    public void testToString(){
+        ActionDeserializerKey key1 = new ActionDeserializerKey(EncodeConstants.OF10_VERSION_ID, 11, null);
+
+        Assert.assertEquals("Wrong toString()", "msgVersion: 1 objectClass: org.opendaylight.yang.gen.v1.urn"
+                + ".opendaylight.openflow.common.action.rev130731.actions.grouping.Action msgType: 11"
+                + " experimenterID: null", key1.toString());
     }
 }

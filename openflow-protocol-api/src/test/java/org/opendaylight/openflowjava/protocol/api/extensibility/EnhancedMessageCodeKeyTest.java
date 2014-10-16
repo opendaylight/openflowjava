@@ -53,12 +53,22 @@ public class EnhancedMessageCodeKeyTest {
      */
     @Test
     public void testEquals() {
-        
          EnhancedMessageCodeKey key1 =
                  new EnhancedMessageCodeKey(EncodeConstants.OF10_VERSION_ID, 4, 8, BarrierInput.class);
          
          Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
          Assert.assertFalse("Wrong equal to different class.", key1.equals(new Object()));
-         
+    }
+
+    /**
+     * Test EnhancedMessageCodeKey toString()
+     */
+    @Test
+    public void testToString() {
+        EnhancedMessageCodeKey key1 =
+                new EnhancedMessageCodeKey(EncodeConstants.OF10_VERSION_ID, 4, 8, BarrierInput.class);
+
+        Assert.assertEquals("Wrong toString()", "msgVersion: 1 objectClass: org.opendaylight.yang.gen.v1.urn.opendaylight"
+                + ".openflow.protocol.rev130731.BarrierInput msgType: 4 msgType2: 8", key1.toString());
     }
 }

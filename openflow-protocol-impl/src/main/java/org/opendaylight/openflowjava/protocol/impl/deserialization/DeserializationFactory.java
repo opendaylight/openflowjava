@@ -49,9 +49,7 @@ public class DeserializationFactory {
         rawMessage.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         OFDeserializer<DataObject> deserializer = registry.getDeserializer(
                 new MessageCodeKey(version, type, clazz));
-        if (deserializer != null) {
-            dataObject = deserializer.deserialize(rawMessage);
-        }
+        dataObject = deserializer.deserialize(rawMessage);
         return dataObject;
     }
 

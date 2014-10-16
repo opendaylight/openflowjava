@@ -44,28 +44,34 @@ public class MessageCodeKeyTest {
         Assert.assertFalse("Wrong equals", key1.equals(key2));
         Assert.assertFalse("Wrong hashcode", key1.hashCode() == key2.hashCode());
     }
-    
+
     /**
-     * Test EnhancedMessageTypeKey equals - additional test
+     * Test MessageCodeKey equals - additional test
      */
     @Test
     public void testEquals() {
-        
-        MessageCodeKey key1;
-        MessageCodeKey key2;
-        
-        key1 = new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, 4, BarrierInput.class);
-        
-        
+        MessageCodeKey key1 = new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, 4, BarrierInput.class);
+
         Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
         Assert.assertFalse("Wrong equal to null.", key1.equals(null));
         Assert.assertFalse("Wrong equal to different class.", key1.equals(new Object()));
-        
+
         key1 = new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, 4, null);
-        key2 = new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, 4, BarrierInput.class);
-        
+        MessageCodeKey key2 = new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, 4, BarrierInput.class);
         Assert.assertFalse("Wrong equal by clazz.", key1.equals(key2));
-        
+
+        key2 = new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, 4, null);
+        Assert.assertTrue("Wrong equal by clazz.", key1.equals(key2));
     }
-    
+
+    /**
+     * Test MessageCodeKey toString()
+     */
+    @Test
+    public void testToString() {
+        MessageCodeKey key1 = new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, 4, BarrierInput.class);
+
+        Assert.assertEquals("Wrong toString()", "msgVersion: 1 objectClass: org.opendaylight.yang.gen.v1.urn"
+                + ".opendaylight.openflow.protocol.rev130731.BarrierInput msgType: 4", key1.toString());
+    }
 }

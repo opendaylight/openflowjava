@@ -53,20 +53,33 @@ public class InstructionSerializerKeyTest {
      */
     @Test
     public void testEquals(){
-        
         InstructionSerializerKey<?> key1 =
                 new InstructionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, ApplyActions.class, 42L);
         InstructionSerializerKey<?> key2 =
                 new InstructionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, ApplyActions.class, 42L);
-        
+
         Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
         Assert.assertFalse("Wrong equal to different class.", key1.equals(new Object()));
-        
+
         key1 = new InstructionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, ApplyActions.class, null);
         Assert.assertFalse("Wrong equal by experimenterId.", key1.equals(key2));
-        
-        key1 = new InstructionSerializerKey<>(EncodeConstants.OF10_VERSION_ID,  null, 42L);
-        Assert.assertFalse("Wrong equal by instructionType.", key1.equals(key2));
-        
+
+        key1 = new InstructionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, null, 42L);
+        key2 = new InstructionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, null, 42L);
+        Assert.assertTrue("Wrong equal by instructionType.", key1.equals(key2));
+    }
+
+    /**
+     * Test InstructionSerializerKey toString()
+     */
+    @Test
+    public void testToString(){
+        InstructionSerializerKey<?> key1 =
+                new InstructionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, ApplyActions.class, 42L);
+
+        Assert.assertEquals("Wrong toString()", "msgVersion: 1 objectType: org.opendaylight.yang.gen.v1.urn.opendaylight"
+                + ".openflow.common.instruction.rev130731.instructions.grouping.Instruction"
+                + " instructionType type: org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common"
+                + ".instruction.rev130731.ApplyActions vendorID: 42", key1.toString());
     }
 }
