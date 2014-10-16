@@ -10,6 +10,7 @@ package org.opendaylight.openflowjava.protocol.api.keys.experimenter;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ErrorMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterMessage;
@@ -55,14 +56,12 @@ public class ExperimenterIdSerializerKeyTest {
     public void testEquals() {
         ExperimenterIdSerializerKey<?> key1 =
                 new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID, null, ExperimenterMessage.class);
-        
         Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
-        Assert.assertFalse("Wrong equal to different class.", key1.equals(new Object()));
-        
+        MessageTypeKey<?>mk = new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID,ExperimenterMessage.class);
+        Assert.assertFalse("Wrong equal to different class.", key1.equals(mk));
         ExperimenterIdSerializerKey<?> key2 =
                 new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID, 42L, ExperimenterMessage.class);
         Assert.assertFalse("Wrong equal by experimenterId.", key1.equals(key2));
-        
     }
     
 }
