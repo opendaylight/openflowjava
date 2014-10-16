@@ -8,6 +8,7 @@
 
 package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
+import org.junit.Assert;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 
@@ -52,10 +53,8 @@ public class EchoInputMessageFactoryTest {
         EchoInputBuilder eib = new EchoInputBuilder();
         BufferHelper.setupHeader(eib, EncodeConstants.OF13_VERSION_ID);
         EchoInput ei = eib.build();
-        
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         echoFactory.serialize(ei, out);
-        
         BufferHelper.checkHeaderV13(out, ECHO_REQUEST_MESSAGE_CODE_TYPE, 8);
     }
     
@@ -68,11 +67,28 @@ public class EchoInputMessageFactoryTest {
         EchoInputBuilder eib = new EchoInputBuilder();
         BufferHelper.setupHeader(eib, EncodeConstants.OF10_VERSION_ID);
         EchoInput ei = eib.build();
-        
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         echoFactory.serialize(ei, out);
-        
         BufferHelper.checkHeaderV10(out, ECHO_REQUEST_MESSAGE_CODE_TYPE, 8);
     }
 
+    /**
+     * Testing of {@link EchoInputMessageFactory} for correct data serialization
+     * @throws Exception 
+     */
+    @Test
+    public void testData() throws Exception{
+        byte[] dataToTest = new byte[]{91,92,93,94,95,96,97,98};
+        EchoInputBuilder eib = new EchoInputBuilder();
+        BufferHelper.setupHeader(eib, EncodeConstants.OF13_VERSION_ID);
+        eib.setData(dataToTest);
+        EchoInput ei = eib.build();
+        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+        echoFactory.serialize(ei, out);
+        BufferHelper.checkHeaderV13(out, ECHO_REQUEST_MESSAGE_CODE_TYPE, 8+dataToTest.length);
+        byte[] outData = new byte[dataToTest.length];
+        out.readBytes(outData);
+        Assert.assertArrayEquals(dataToTest, outData);
+        out.release();
+    }
 }
