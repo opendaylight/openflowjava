@@ -39,20 +39,137 @@ public class OF10ErrorMessageFactoryTest {
     }
 
     /**
-     * Test of {@link OF10ErrorMessageFactory} for correct translation into POJO
+     * Test of {@link ErrorMessageFactory} for correct translation into POJO
      */
-	@Test
-	public void testWithoutData() {
-		ByteBuf bb = BufferHelper.buildBuffer("00 01 00 02");
-		ErrorMessage builtByFactory = BufferHelper.deserialize(errorFactory, bb);
+    @Test
+    public void testWithoutData() {
+        ByteBuf bb = BufferHelper.buildBuffer("00 00 00 00");
+        ErrorMessage builtByFactory = BufferHelper.deserialize(errorFactory, bb);
 
-		BufferHelper.checkHeaderV10(builtByFactory);
-		Assert.assertEquals("Wrong type", 1, builtByFactory.getType().intValue());
-		Assert.assertEquals("Wrong code", 2, builtByFactory.getCode().intValue());
-		Assert.assertEquals("Wrong type string", "BADREQUEST", builtByFactory.getTypeString());
-		Assert.assertEquals("Wrong code string", "BADSTAT", builtByFactory.getCodeString());
-		Assert.assertNull("Data is not null", builtByFactory.getData());
-	}
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 0, builtByFactory.getType().intValue());
+        Assert.assertEquals("Wrong code", 0, builtByFactory.getCode().intValue());
+        Assert.assertEquals("Wrong type string", "HELLOFAILED", builtByFactory.getTypeString());
+        Assert.assertEquals("Wrong code string", "INCOMPATIBLE", builtByFactory.getCodeString());
+        Assert.assertNull("Data is not null", builtByFactory.getData());
+
+        bb = BufferHelper.buildBuffer("00 01 00 00");
+        builtByFactory = BufferHelper.deserialize(errorFactory, bb);
+
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 1, builtByFactory.getType().intValue());
+        Assert.assertEquals("Wrong code", 0, builtByFactory.getCode().intValue());
+        Assert.assertEquals("Wrong type string", "BADREQUEST", builtByFactory.getTypeString());
+        Assert.assertEquals("Wrong code string", "BADVERSION", builtByFactory.getCodeString());
+        Assert.assertNull("Data is not null", builtByFactory.getData());
+
+        bb = BufferHelper.buildBuffer("00 02 00 00");
+        builtByFactory = BufferHelper.deserialize(errorFactory, bb);
+
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 2, builtByFactory.getType().intValue());
+        Assert.assertEquals("Wrong code", 0, builtByFactory.getCode().intValue());
+        Assert.assertEquals("Wrong type string", "BADACTION", builtByFactory.getTypeString());
+        Assert.assertEquals("Wrong code string", "BADTYPE", builtByFactory.getCodeString());
+        Assert.assertNull("Data is not null", builtByFactory.getData());
+
+        bb = BufferHelper.buildBuffer("00 03 00 00");
+        builtByFactory = BufferHelper.deserialize(errorFactory, bb);
+
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 3, builtByFactory.getType().intValue());
+        Assert.assertEquals("Wrong code", 0, builtByFactory.getCode().intValue());
+        Assert.assertEquals("Wrong type string", "FLOWMODFAILED", builtByFactory.getTypeString());
+        Assert.assertEquals("Wrong code string", "ALLTABLESFULL", builtByFactory.getCodeString());
+        Assert.assertNull("Data is not null", builtByFactory.getData());
+
+        bb = BufferHelper.buildBuffer("00 04 00 00");
+        builtByFactory = BufferHelper.deserialize(errorFactory, bb);
+
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 4, builtByFactory.getType().intValue());
+        Assert.assertEquals("Wrong code", 0, builtByFactory.getCode().intValue());
+        Assert.assertEquals("Wrong type string", "PORTMODFAILED", builtByFactory.getTypeString());
+        Assert.assertEquals("Wrong code string", "BADPORT", builtByFactory.getCodeString());
+        Assert.assertNull("Data is not null", builtByFactory.getData());
+
+        bb = BufferHelper.buildBuffer("00 05 00 00");
+        builtByFactory = BufferHelper.deserialize(errorFactory, bb);
+
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 5, builtByFactory.getType().intValue());
+        Assert.assertEquals("Wrong code", 0, builtByFactory.getCode().intValue());
+        Assert.assertEquals("Wrong type string", "QUEUEOPFAILED", builtByFactory.getTypeString());
+        Assert.assertEquals("Wrong code string", "BADPORT", builtByFactory.getCodeString());
+        Assert.assertNull("Data is not null", builtByFactory.getData());
+    }
+
+    /**
+     * Test of {@link ErrorMessageFactory} for correct translation into POJO
+     * - not existing code used
+     */
+    @Test
+    public void testWithoutData2() {
+        ByteBuf bb = BufferHelper.buildBuffer("00 00 FF FF");
+        ErrorMessage builtByFactory = BufferHelper.deserialize(errorFactory, bb);
+
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 0, builtByFactory.getType().intValue());
+        Assert.assertEquals("Wrong code", 65535, builtByFactory.getCode().intValue());
+        Assert.assertEquals("Wrong type string", "HELLOFAILED", builtByFactory.getTypeString());
+        Assert.assertEquals("Wrong code string", "UNKNOWN_CODE", builtByFactory.getCodeString());
+        Assert.assertNull("Data is not null", builtByFactory.getData());
+
+        bb = BufferHelper.buildBuffer("00 01 FF FF");
+        builtByFactory = BufferHelper.deserialize(errorFactory, bb);
+
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 1, builtByFactory.getType().intValue());
+        Assert.assertEquals("Wrong code", 65535, builtByFactory.getCode().intValue());
+        Assert.assertEquals("Wrong type string", "BADREQUEST", builtByFactory.getTypeString());
+        Assert.assertEquals("Wrong code string", "UNKNOWN_CODE", builtByFactory.getCodeString());
+        Assert.assertNull("Data is not null", builtByFactory.getData());
+
+        bb = BufferHelper.buildBuffer("00 02 FF FF");
+        builtByFactory = BufferHelper.deserialize(errorFactory, bb);
+
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 2, builtByFactory.getType().intValue());
+        Assert.assertEquals("Wrong code", 65535, builtByFactory.getCode().intValue());
+        Assert.assertEquals("Wrong type string", "BADACTION", builtByFactory.getTypeString());
+        Assert.assertEquals("Wrong code string", "UNKNOWN_CODE", builtByFactory.getCodeString());
+        Assert.assertNull("Data is not null", builtByFactory.getData());
+
+        bb = BufferHelper.buildBuffer("00 03 FF FF");
+        builtByFactory = BufferHelper.deserialize(errorFactory, bb);
+
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 3, builtByFactory.getType().intValue());
+        Assert.assertEquals("Wrong code", 65535, builtByFactory.getCode().intValue());
+        Assert.assertEquals("Wrong type string", "FLOWMODFAILED", builtByFactory.getTypeString());
+        Assert.assertEquals("Wrong code string", "UNKNOWN_CODE", builtByFactory.getCodeString());
+        Assert.assertNull("Data is not null", builtByFactory.getData());
+
+        bb = BufferHelper.buildBuffer("00 04 FF FF");
+        builtByFactory = BufferHelper.deserialize(errorFactory, bb);
+
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 4, builtByFactory.getType().intValue());
+        Assert.assertEquals("Wrong code", 65535, builtByFactory.getCode().intValue());
+        Assert.assertEquals("Wrong type string", "PORTMODFAILED", builtByFactory.getTypeString());
+        Assert.assertEquals("Wrong code string", "UNKNOWN_CODE", builtByFactory.getCodeString());
+        Assert.assertNull("Data is not null", builtByFactory.getData());
+
+        bb = BufferHelper.buildBuffer("00 05 FF FF");
+        builtByFactory = BufferHelper.deserialize(errorFactory, bb);
+
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 5, builtByFactory.getType().intValue());
+        Assert.assertEquals("Wrong code", 65535, builtByFactory.getCode().intValue());
+        Assert.assertEquals("Wrong type string", "QUEUEOPFAILED", builtByFactory.getTypeString());
+        Assert.assertEquals("Wrong code string", "UNKNOWN_CODE", builtByFactory.getCodeString());
+        Assert.assertNull("Data is not null", builtByFactory.getData());
+    }
 	
 	/**
      * Test of {@link OF10ErrorMessageFactory} for correct translation into POJO
