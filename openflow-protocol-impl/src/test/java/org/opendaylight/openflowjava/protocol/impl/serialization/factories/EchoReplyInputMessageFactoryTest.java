@@ -8,6 +8,7 @@
 
 package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
+import org.junit.Assert;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 
@@ -52,10 +53,8 @@ public class EchoReplyInputMessageFactoryTest {
         EchoReplyInputBuilder erib = new EchoReplyInputBuilder();
         BufferHelper.setupHeader(erib, EncodeConstants.OF13_VERSION_ID);
         EchoReplyInput eri = erib.build();
-        
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         echoFactory.serialize(eri, out);
-        
         BufferHelper.checkHeaderV13(out, ECHO_REPLY_MESSAGE_CODE_TYPE, 8);
     }
     
@@ -68,11 +67,28 @@ public class EchoReplyInputMessageFactoryTest {
         EchoReplyInputBuilder erib = new EchoReplyInputBuilder();
         BufferHelper.setupHeader(erib, EncodeConstants.OF10_VERSION_ID);
         EchoReplyInput eri = erib.build();
-        
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         echoFactory.serialize(eri, out);
-        
         BufferHelper.checkHeaderV10(out, ECHO_REPLY_MESSAGE_CODE_TYPE, 8);
     }
 
+    /**
+     * Testing of {@link EchoReplyInputMessageFactory} for correct message serialization
+     * @throws Exception
+     */
+    @Test
+    public void testDataSerialize()throws Exception {
+        byte[] dataToTest = new byte[]{91,92,93,94,95,96,97,98};
+        EchoReplyInputBuilder erib = new EchoReplyInputBuilder();
+        BufferHelper.setupHeader(erib, EncodeConstants.OF13_VERSION_ID);
+        erib.setData(dataToTest);
+        EchoReplyInput eri = erib.build();
+        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+        echoFactory.serialize(eri, out);
+        BufferHelper.checkHeaderV13(out, ECHO_REPLY_MESSAGE_CODE_TYPE, 8+dataToTest.length);
+        byte[] outData = new byte[dataToTest.length];
+        out.readBytes(outData);
+        Assert.assertArrayEquals("Wrong - different output data.",dataToTest, outData);
+        out.release();
+    }
 }
