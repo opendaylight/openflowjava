@@ -21,7 +21,6 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthertypeAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.GroupIdAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthAction;
@@ -47,14 +46,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetMplsTtl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetNwTtl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetQueue;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowModFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterFlags;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeatures;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.InPort;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmMatchType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDropCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandDscpRemarkCase;
@@ -62,24 +56,19 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.dscp.remark._case.MeterBandDscpRemark;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyAggregateCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyDescCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyFlowCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyGroupCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyGroupDescCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeterCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeterConfigCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyPortDescCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyPortStatsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyQueueCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyTableCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.aggregate._case.MultipartReplyAggregate;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.desc._case.MultipartReplyDesc;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow._case.MultipartReplyFlow;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow._case.multipart.reply.flow.FlowStats;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group._case.MultipartReplyGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group.desc._case.MultipartReplyGroupDesc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.meter._case.MultipartReplyMeter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.meter.config._case.MultipartReplyMeterConfig;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.port.desc._case.MultipartReplyPortDesc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.port.stats._case.MultipartReplyPortStats;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.queue._case.MultipartReplyQueue;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.table._case.MultipartReplyTable;
@@ -160,74 +149,7 @@ public class MultipartReplyMessageFactoryTest {
         Assert.assertEquals("Wrong serialNum", "SN0123456789", message.getSerialNum());
         Assert.assertEquals("Wrong dpDesc", "switch3 in room 3120", message.getDpDesc());
     }
-    
-    /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
-     */
-    @Test
-    public void testMultipartReplyFlowBody(){
-        ByteBuf bb = BufferHelper.buildBuffer("00 01 00 01 00 00 00 00 "+
-                                              "00 48 "+//length
-                                              "08 "+//tableId
-                                              "00 "+//pad_01
-                                              "00 00 00 09 "+//durationSec
-                                              "00 00 00 07 "+//durationNsec
-                                              "00 0C "+//priority
-                                              "00 0E "+//idleTimeout
-                                              "00 0F "+//hardTimeout
-                                              "00 0B "+//flags
-                                              "00 00 00 00 "+//pad_02
-                                              "FF 01 01 01 01 01 01 01 "+//cookie
-                                              "EF 01 01 01 01 01 01 01 "+//packetCount
-                                              "7F 01 01 01 01 01 01 01 "+//byteCount
-                                              "00 01 00 04 00 00 00 00 "+//empty match
-                                              "00 01 00 08 06 00 00 00 "+
-                                              "00 01 00 08 06 00 00 00 "+
-                                              "00 48 "+//length
-                                              "08 "+//tableId
-                                              "00 "+//pad_01
-                                              "00 00 00 09 "+//durationSec
-                                              "00 00 00 07 "+//durationNsec
-                                              "00 0C "+//priority
-                                              "00 0E "+//idleTimeout
-                                              "00 0F "+//hardTimeout
-                                              "00 0B "+//flags
-                                              "00 00 00 00 "+//pad_02
-                                              "FF 01 01 01 01 01 01 01 "+//cookie
-                                              "EF 01 01 01 01 01 01 01 "+//packetCount
-                                              "7F 01 01 01 01 01 01 01 "+//byteCount
-                                              "00 01 00 04 00 00 00 00 "+//empty match
-                                              "00 01 00 08 06 00 00 00 "+
-                                              "00 01 00 08 06 00 00 00");
-        
-        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
-        
-        BufferHelper.checkHeaderV13(builtByFactory);
-        Assert.assertEquals("Wrong type", 0x01, builtByFactory.getType().getIntValue());
-        Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        MultipartReplyFlowCase messageCase = (MultipartReplyFlowCase) builtByFactory.getMultipartReplyBody();
-        MultipartReplyFlow message = messageCase.getMultipartReplyFlow();
-        FlowStats flowStats1 = message.getFlowStats().get(0);
-        Assert.assertEquals("Wrong tableId", 8, flowStats1.getTableId().intValue());
-        Assert.assertEquals("Wrong durationSec", 9, flowStats1.getDurationSec().intValue());
-        Assert.assertEquals("Wrong durationNsec", 7, flowStats1.getDurationNsec().intValue());
-        Assert.assertEquals("Wrong priority", 12, flowStats1.getPriority().intValue());
-        Assert.assertEquals("Wrong idleTimeOut", 14, flowStats1.getIdleTimeout().intValue());
-        Assert.assertEquals("Wrong hardTimeOut", 15, flowStats1.getHardTimeout().intValue());
-        Assert.assertEquals("Wrong flags", new FlowModFlags(true, false, true, false, true), 
-                flowStats1.getFlags());
-        Assert.assertEquals("Wrong cookie", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
-                flowStats1.getCookie());
-        Assert.assertEquals("Wrong packetCount", 
-                new BigInteger(1, new byte[]{(byte) 0xEF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
-                flowStats1.getPacketCount());
-        Assert.assertEquals("Wrong byteCount", 
-                new BigInteger(1, new byte[]{(byte) 0x7F, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
-                flowStats1.getByteCount());
-        Assert.assertEquals("Wrong match type", OxmMatchType.class, flowStats1.getMatch().getType());
-    }
-    
+
     /**
      * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
      */
@@ -778,78 +700,6 @@ public class MultipartReplyMessageFactoryTest {
         
     }
 
-    /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
-     */
-    @Test
-    public void testMultipartReplyPortDescBody(){
-        final byte MAX_PORT_NAME_LEN = 16;
-        ByteBuf bb = BufferHelper.buildBuffer("00 0D 00 01 00 00 00 00 "+
-                                              "00 01 02 03 "+ //portNo
-                                              "00 00 00 00 "+ //padding01
-                                              "08 00 27 00 B0 EB " + //mac address
-                                              "00 00"); //padding02
-        //port name
-        String portName = "SampleText";
-        byte[] portNameBytes = new byte[MAX_PORT_NAME_LEN];
-        portNameBytes = portName.getBytes();
-        bb.writeBytes(portNameBytes);
-        bb.writeZero(MAX_PORT_NAME_LEN - portNameBytes.length);
-        
-        ByteBuf bb2 =  BufferHelper.buildBuffer("00 00 00 41 " + //port config
-                                                "00 00 00 05 " + //port state
-                                                "00 00 00 81 " + //current features
-                                                "00 00 81 81 " + //advertised features
-                                                "00 00 C1 89 " + //supported features
-                                                "00 00 C5 8D " + //peer features
-                                                "00 00 00 81 " + //curr speed
-                                                "00 00 00 80" //max speed
-                                                );
-        bb.writeBytes(bb2.copy(4, bb2.readableBytes()-4));//excluding version and xid
-        
-        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
-        
-        BufferHelper.checkHeaderV13(builtByFactory);
-        Assert.assertEquals("Wrong type", 13, builtByFactory.getType().getIntValue());
-        Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        MultipartReplyPortDescCase messageCase = (MultipartReplyPortDescCase) builtByFactory.getMultipartReplyBody();
-        MultipartReplyPortDesc message = messageCase.getMultipartReplyPortDesc();
-        Assert.assertEquals("Wrong portNo", 66051L, message.getPorts().get(0).getPortNo().longValue());
-        Assert.assertEquals("Wrong macAddress", new MacAddress("08:00:27:00:B0:EB"), 
-                                                message.getPorts().get(0).getHwAddr());
-        Assert.assertEquals("Wrong portName", "SampleText", 
-                                                message.getPorts().get(0).getName());
-        Assert.assertEquals("Wrong portConfig", new PortConfig(false, true, false, true), 
-                message.getPorts().get(0).getConfig());
-        Assert.assertEquals("Wrong portState", new PortState(false, true, true),
-                                               message.getPorts().get(0).getState());
-        Assert.assertEquals("Wrong currentFeatures", new PortFeatures(false, false, false, false,
-                                                                      false, true, false, false, 
-                                                                      false, true, false, false, 
-                                                                      false, false, false, false), 
-                                                  message.getPorts().get(0).getCurrentFeatures());
-        Assert.assertEquals("Wrong advertisedFeatures", 
-                                            new PortFeatures(true, false, false, false,
-                                                            false, true, false, false, 
-                                                            false, true, false, false, 
-                                                            false, false, false, true), 
-                                              message.getPorts().get(0).getAdvertisedFeatures());
-        Assert.assertEquals("Wrong supportedFeatures", 
-                                            new PortFeatures(true, true, false, false,
-                                                            false, true, false, false, 
-                                                            false, true, false, false, 
-                                                            false, false, true, true), 
-                                              message.getPorts().get(0).getSupportedFeatures());
-        Assert.assertEquals("Wrong peerFeatures", 
-                                            new PortFeatures(true, true, true, false,
-                                                    false, true, false, false, 
-                                                    false, true, false, false, 
-                                                    false, true, true, true), 
-                                              message.getPorts().get(0).getPeerFeatures());
-        Assert.assertEquals("Wrong currSpeed", 129L, message.getPorts().get(0).getCurrSpeed().longValue());
-        Assert.assertEquals("Wrong maxSpeed", 128L, message.getPorts().get(0).getMaxSpeed().longValue());
-    }
-    
     /**
      * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
      * Test covers bodies of actions Output, Copy TTL Out, Copy TTL In
