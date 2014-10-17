@@ -84,6 +84,7 @@ public class ConnectionAdapterImplTest {
     @Mock ConnectionReadyListener readyListener;
     @Mock Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> mockCache;
     @Mock ChannelFuture channelFuture;
+
     private ConnectionAdapterImpl adapter;
     private Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> cache;
 
@@ -189,11 +190,11 @@ public class ConnectionAdapterImplTest {
         Assert.assertEquals("Wrong - diffrence between channel.isOpen() and ConnectionAdapterImpl.isAlive()", channel.isOpen(), connAddapter.isAlive());
 
         connAddapter.disconnect();
-        Assert.assertFalse("Wrong - ConnectionAdapterImpl can not be aliva after disconnet.", connAddapter.isAlive());
+        Assert.assertFalse("Wrong - ConnectionAdapterImpl can not be alive after disconnet.", connAddapter.isAlive());
     }
 
     /**
-     * Test throw exception if no listener are present
+     * Test throw exception if no listeners are present
      */
     @Test(expected = java.lang.IllegalStateException.class)
     public void testMissingListeners(){
@@ -206,5 +207,4 @@ public class ConnectionAdapterImplTest {
         connAddapter.setConnectionReadyListener(null);
         connAddapter.checkListeners();
     }
-
 }

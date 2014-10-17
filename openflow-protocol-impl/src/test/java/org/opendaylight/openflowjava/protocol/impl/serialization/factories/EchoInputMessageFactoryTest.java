@@ -8,18 +8,18 @@
 
 package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
-import org.junit.Assert;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoInputBuilder;
 
@@ -88,7 +88,7 @@ public class EchoInputMessageFactoryTest {
         BufferHelper.checkHeaderV13(out, ECHO_REQUEST_MESSAGE_CODE_TYPE, 8+dataToTest.length);
         byte[] outData = new byte[dataToTest.length];
         out.readBytes(outData);
-        Assert.assertArrayEquals(dataToTest, outData);
+        Assert.assertArrayEquals("Wrong - different output data.", dataToTest, outData);
         out.release();
     }
 }

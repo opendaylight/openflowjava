@@ -177,4 +177,5 @@ public class SwitchConnectionProviderImplTest {
             e.printStackTrace();
         }
     }
+
 }
