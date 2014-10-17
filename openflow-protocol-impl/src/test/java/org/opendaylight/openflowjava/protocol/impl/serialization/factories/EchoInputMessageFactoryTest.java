@@ -7,11 +7,10 @@
  */
 
 package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
-
+import static org.junit.Assert.assertArrayEquals;
 import org.junit.Assert;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
@@ -88,7 +87,7 @@ public class EchoInputMessageFactoryTest {
         BufferHelper.checkHeaderV13(out, ECHO_REQUEST_MESSAGE_CODE_TYPE, 8+dataToTest.length);
         byte[] outData = new byte[dataToTest.length];
         out.readBytes(outData);
-        Assert.assertArrayEquals(dataToTest, outData);
+        assertArrayEquals("Wrong - different output data.", dataToTest, outData);
         out.release();
     }
 }

@@ -15,7 +15,8 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * @author michal.polkorab
  * @param <TYPE> class of object to be serialized
  */
-public class ExperimenterIdSerializerKey<TYPE extends DataObject> extends MessageTypeKey<TYPE> {
+public class ExperimenterIdSerializerKey<TYPE extends DataObject> extends MessageTypeKey<TYPE>
+        implements ExperimenterSerializerKey {
 
     private Long experimenterId;
 

@@ -30,6 +30,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoRequestMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoRequestMessageBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ErrorMessage;
@@ -84,6 +85,7 @@ public class ConnectionAdapterImplTest {
     @Mock ConnectionReadyListener readyListener;
     @Mock Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> mockCache;
     @Mock ChannelFuture channelFuture;
+    @Mock EchoInput echoInput;
     private ConnectionAdapterImpl adapter;
     private Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> cache;
 
@@ -189,11 +191,11 @@ public class ConnectionAdapterImplTest {
         Assert.assertEquals("Wrong - diffrence between channel.isOpen() and ConnectionAdapterImpl.isAlive()", channel.isOpen(), connAddapter.isAlive());
 
         connAddapter.disconnect();
-        Assert.assertFalse("Wrong - ConnectionAdapterImpl can not be aliva after disconnet.", connAddapter.isAlive());
+        Assert.assertFalse("Wrong - ConnectionAdapterImpl can not be alive after disconnet.", connAddapter.isAlive());
     }
 
     /**
-     * Test throw exception if no listener are present
+     * Test throw exception if no listeners are present
      */
     @Test(expected = java.lang.IllegalStateException.class)
     public void testMissingListeners(){
@@ -206,5 +208,4 @@ public class ConnectionAdapterImplTest {
         connAddapter.setConnectionReadyListener(null);
         connAddapter.checkListeners();
     }
-
 }

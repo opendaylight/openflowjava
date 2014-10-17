@@ -19,6 +19,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
  */
 public class ExperimenterActionSerializerKeyTest {
 
+
     /**
      * Test ExperimenterActionSerializerKey equals and hashCode
      */
@@ -49,24 +50,17 @@ public class ExperimenterActionSerializerKeyTest {
 
     @Test
     public void testEquals() {
-        
         ExperimenterActionSerializerKey key1;
         ExperimenterActionSerializerKey key2;
-        
         key1 = new ExperimenterActionSerializerKey(EncodeConstants.OF10_VERSION_ID, 42L, null);
-                
         Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
-        Assert.assertFalse("Wrong equal to different class.", key1.equals(new Object()));
-                
         key2 = new ExperimenterActionSerializerKey(EncodeConstants.OF10_VERSION_ID, 42L, TestSubType2.class);
         Assert.assertFalse("Wrong equal by actionSubType.", key1.equals(key2));
-        
         key1 = new ExperimenterActionSerializerKey(EncodeConstants.OF10_VERSION_ID, 42L, TestSubType.class);
         Assert.assertFalse("Wrong equal by actionSubType.", key1.equals(key2));
-        
     }
-    
-    
+
+ 
     private static class TestSubType extends ExperimenterActionSubType {
         // empty class - only used in test for comparation
     }
@@ -74,4 +68,6 @@ public class ExperimenterActionSerializerKeyTest {
     private static class TestSubType2 extends ExperimenterActionSubType {
         // empty class - only used in test for comparation
     }
+    
+
 }
