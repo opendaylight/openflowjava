@@ -783,22 +783,22 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     
     private static ActionType createActionBitmap(long input) {
         final Boolean OFPAT_OUTPUT = ((input) & (1<<0)) != 0;
-        final Boolean OFPAT_COPY_TTL_OUT = ((input) & (1<<1)) != 0;
-        final Boolean OFPAT_COPY_TTL_IN = ((input) & (1<<2)) != 0;
-        final Boolean OFPAT_SET_MPLS_TTL = ((input) & (1<<3)) != 0;
-        final Boolean OFPAT_DEC_MPLS_TTL = ((input) & (1<<4)) != 0;
-        final Boolean OFPAT_PUSH_VLAN = ((input) & (1<<5)) != 0;
-        final Boolean OFPAT_POP_VLAN = ((input) & (1<<6)) != 0;
-        final Boolean OFPAT_PUSH_MPLS = ((input) & (1<<7)) != 0;
-        final Boolean OFPAT_POP_MPLS = ((input) & (1<<8)) != 0;
-        final Boolean OFPAT_SET_QUEUE = ((input) & (1<<9)) != 0;
-        final Boolean OFPAT_GROUP = ((input) & (1<<10)) != 0;
-        final Boolean OFPAT_SET_NW_TTL = ((input) & (1<<11)) != 0;
-        final Boolean OFPAT_DEC_NW_TTL = ((input) & (1<<12)) != 0;
-        final Boolean OFPAT_SET_FIELD = ((input) & (1<<13)) != 0;
-        final Boolean OFPAT_PUSH_PBB = ((input) & (1<<14)) != 0;
-        final Boolean OFPAT_POP_PBB = ((input) & (1<<15)) != 0;
-        final Boolean OFPAT_EXPERIMENTER = ((input) & (1<<16)) != 0;
+        final Boolean OFPAT_COPY_TTL_OUT = ((input) & (1<<11)) != 0;
+        final Boolean OFPAT_COPY_TTL_IN = ((input) & (1<<12)) != 0;
+        final Boolean OFPAT_SET_MPLS_TTL = ((input) & (1<<15)) != 0;
+        final Boolean OFPAT_DEC_MPLS_TTL = ((input) & (1<<16)) != 0;
+        final Boolean OFPAT_PUSH_VLAN = ((input) & (1<<17)) != 0;
+        final Boolean OFPAT_POP_VLAN = ((input) & (1<<18)) != 0;
+        final Boolean OFPAT_PUSH_MPLS = ((input) & (1<<19)) != 0;
+        final Boolean OFPAT_POP_MPLS = ((input) & (1<<20)) != 0;
+        final Boolean OFPAT_SET_QUEUE = ((input) & (1<<21)) != 0;
+        final Boolean OFPAT_GROUP = ((input) & (1<<22)) != 0;
+        final Boolean OFPAT_SET_NW_TTL = ((input) & (1<<23)) != 0;
+        final Boolean OFPAT_DEC_NW_TTL = ((input) & (1<<24)) != 0;
+        final Boolean OFPAT_SET_FIELD = ((input) & (1<<25)) != 0;
+        final Boolean OFPAT_PUSH_PBB = ((input) & (1<<26)) != 0;
+        final Boolean OFPAT_POP_PBB = ((input) & (1<<27)) != 0;
+        final Boolean OFPAT_EXPERIMENTER = false;
         return new ActionType(OFPAT_COPY_TTL_IN, OFPAT_COPY_TTL_OUT, OFPAT_DEC_MPLS_TTL,
                 OFPAT_DEC_NW_TTL, OFPAT_EXPERIMENTER, OFPAT_GROUP, OFPAT_OUTPUT, OFPAT_POP_MPLS,
                 OFPAT_POP_PBB, OFPAT_POP_VLAN, OFPAT_PUSH_MPLS, OFPAT_PUSH_PBB, OFPAT_PUSH_VLAN,
