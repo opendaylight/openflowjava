@@ -48,7 +48,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetNwTtl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetQueue;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowModFlags;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterBandTypeBitmap;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeatures;
@@ -68,7 +67,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyGroupDescCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeterCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeterConfigCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyMeterFeaturesCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyPortDescCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyPortStatsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyQueueCase;
@@ -81,7 +79,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group.desc._case.MultipartReplyGroupDesc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.meter._case.MultipartReplyMeter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.meter.config._case.MultipartReplyMeterConfig;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.meter.features._case.MultipartReplyMeterFeatures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.port.desc._case.MultipartReplyPortDesc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.port.stats._case.MultipartReplyPortStats;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.queue._case.MultipartReplyQueue;
@@ -488,36 +485,7 @@ public class MultipartReplyMessageFactoryTest {
                 new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}), 
                 message.getGroupStats().get(1).getBucketStats().get(1).getByteCount());
     }
-    
-    /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
-     */
-    @Test
-    public void testMultipartReplyMeterFeaturesBody(){
-        ByteBuf bb = BufferHelper.buildBuffer("00 0B 00 01 00 00 00 00 "+
-                                              "00 00 00 09 "+//maxMeter
-                                              "00 00 00 01 "+//bandTypes
-                                              "00 00 00 03 "+//capabilities
-                                              "03 "+//maxBands
-                                              "04 "+//maxColor
-                                              "00 00"//pad
-                                              );
-        
-        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
-        
-        BufferHelper.checkHeaderV13(builtByFactory);
-        Assert.assertEquals("Wrong type", 11, builtByFactory.getType().getIntValue());
-        Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        MultipartReplyMeterFeaturesCase messageCase = (MultipartReplyMeterFeaturesCase) builtByFactory.getMultipartReplyBody();
-        MultipartReplyMeterFeatures message = messageCase.getMultipartReplyMeterFeatures();        
-        Assert.assertEquals("Wrong maxMeter", 9, message.getMaxMeter().intValue());
-        Assert.assertEquals("Wrong bandTypes", new MeterBandTypeBitmap(true, false), message.getBandTypes());
-        Assert.assertEquals("Wrong capabilities", new MeterFlags(false, true, true, false), 
-                                                      message.getCapabilities());
-        Assert.assertEquals("Wrong maxBands", 3, message.getMaxBands().intValue());
-        Assert.assertEquals("Wrong maxColor", 4, message.getMaxColor().intValue());
-    }
-    
+
     /**
      * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
      */

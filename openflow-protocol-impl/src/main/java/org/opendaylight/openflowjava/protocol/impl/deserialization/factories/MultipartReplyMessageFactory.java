@@ -349,7 +349,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             int length = input.readUnsignedShort();
             featuresBuilder.setTableId(input.readUnsignedByte());
             input.skipBytes(PADDING_IN_MULTIPART_REPLY_TABLE_FEATURES);
-            featuresBuilder.setName(input.readBytes(MAX_TABLE_NAME_LENGTH).toString());
+            featuresBuilder.setName(ByteBufUtils.decodeNullTerminatedString(input, MAX_TABLE_NAME_LENGTH));
             byte[] metadataMatch = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
             input.readBytes(metadataMatch);
             featuresBuilder.setMetadataMatch(metadataMatch);
@@ -588,8 +588,8 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MeterBandTypeBitmap createMeterBandsBitmap(long input) {
-        final Boolean _oFPMBTDROP = (input & (1 << 0)) != 0;
-        final Boolean _oFPMBTDSCPREMARK = (input & (1 << 1)) != 0;
+        final Boolean _oFPMBTDROP = (input & (1 << 1)) != 0;
+        final Boolean _oFPMBTDSCPREMARK = (input & (1 << 2)) != 0;
         return new MeterBandTypeBitmap(_oFPMBTDROP, _oFPMBTDSCPREMARK);
     }
     
