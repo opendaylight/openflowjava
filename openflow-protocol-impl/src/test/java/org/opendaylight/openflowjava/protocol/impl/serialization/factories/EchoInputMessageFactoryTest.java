@@ -7,11 +7,10 @@
  */
 
 package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
-
+import static org.junit.Assert.assertArrayEquals;
 import junit.framework.Assert;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
@@ -53,10 +52,8 @@ public class EchoInputMessageFactoryTest {
         EchoInputBuilder eib = new EchoInputBuilder();
         BufferHelper.setupHeader(eib, EncodeConstants.OF13_VERSION_ID);
         EchoInput ei = eib.build();
-        
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         echoFactory.serialize(ei, out);
-        
         BufferHelper.checkHeaderV13(out, ECHO_REQUEST_MESSAGE_CODE_TYPE, 8);
     }
     
@@ -69,10 +66,8 @@ public class EchoInputMessageFactoryTest {
         EchoInputBuilder eib = new EchoInputBuilder();
         BufferHelper.setupHeader(eib, EncodeConstants.OF10_VERSION_ID);
         EchoInput ei = eib.build();
-        
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         echoFactory.serialize(ei, out);
-        
         BufferHelper.checkHeaderV10(out, ECHO_REQUEST_MESSAGE_CODE_TYPE, 8);
     }
 
@@ -92,9 +87,7 @@ public class EchoInputMessageFactoryTest {
         BufferHelper.checkHeaderV13(out, ECHO_REQUEST_MESSAGE_CODE_TYPE, 8+dataToTest.length);
         byte[] outData = new byte[dataToTest.length];
         out.readBytes(outData);
-        for(int i = 0; i<=dataToTest.length - 1; i++){
-            Assert.assertEquals("Wrong - different output data.", dataToTest[i], outData[i]);
-        }
+        assertArrayEquals("Wrong - different output data.", dataToTest, outData);
         out.release();
     }
 }
