@@ -15,14 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.OpenflowUtils;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionTypeV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.CapabilitiesV10;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfigV10;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeaturesV10;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortStateV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.features.reply.PhyPort;
@@ -88,7 +86,7 @@ public class OF10FeaturesReplyMessageFactory implements OFDeserializer<GetFeatur
                 SET_NW_DST, SET_NW_SRC, SET_NW_TOS, SET_TP_DST, SET_TP_SRC,
                 SET_VLAN_PCP, SET_VLAN_VID, STRIP_VLAN, VENDOR);
     }
-    
+
     private static PhyPort deserializePort(ByteBuf rawMessage) {
         PhyPortBuilder builder = new PhyPortBuilder();
         builder.setPortNo((long) rawMessage.readUnsignedShort());
@@ -96,55 +94,12 @@ public class OF10FeaturesReplyMessageFactory implements OFDeserializer<GetFeatur
         rawMessage.readBytes(address);
         builder.setHwAddr(new MacAddress(ByteBufUtils.macAddressToString(address)));
         builder.setName(ByteBufUtils.decodeNullTerminatedString(rawMessage, EncodeConstants.MAX_PORT_NAME_LENGTH));
-        builder.setConfigV10(createPortConfig(rawMessage.readUnsignedInt()));
-        builder.setStateV10(createPortState(rawMessage.readUnsignedInt()));
-        builder.setCurrentFeaturesV10(createPortFeatures(rawMessage.readUnsignedInt()));
-        builder.setAdvertisedFeaturesV10(createPortFeatures(rawMessage.readUnsignedInt()));
-        builder.setSupportedFeaturesV10(createPortFeatures(rawMessage.readUnsignedInt()));
-        builder.setPeerFeaturesV10(createPortFeatures(rawMessage.readUnsignedInt()));
+        builder.setConfigV10(OpenflowUtils.createPortConfig(rawMessage.readUnsignedInt()));
+        builder.setStateV10(OpenflowUtils.createPortState(rawMessage.readUnsignedInt()));
+        builder.setCurrentFeaturesV10(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt()));
+        builder.setAdvertisedFeaturesV10(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt()));
+        builder.setSupportedFeaturesV10(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt()));
+        builder.setPeerFeaturesV10(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt()));
         return builder.build();
     }
-
-    
-    
-    private static PortStateV10 createPortState(long input){
-        final Boolean _linkDown = ((input) & (1<<0)) != 0;
-        final Boolean _blocked = ((input) & (1<<1)) != 0;
-        final Boolean _live = ((input) & (1<<2)) != 0;
-        final Boolean _stpListen = ((input) & (0<<8)) != 0;
-        final Boolean _stpLearn = ((input) & (1<<8)) != 0;
-        final Boolean _stpForward = ((input) & (1<<9)) != 0; // equals 2 << 8
-        final Boolean _stpBlock = (((input) & (1<<9)) != 0) && (((input) & (1<<8)) != 0); // equals 3 << 8
-        final Boolean _stpMask = ((input) & (1<<10)) != 0; // equals 4 << 8
-        return new PortStateV10(_blocked, _linkDown, _live, _stpBlock, _stpForward, _stpLearn, _stpListen, _stpMask);
-    }
-    
-    private static PortConfigV10 createPortConfig(long input){
-        final Boolean _portDown = ((input) & (1<<0)) != 0;
-        final Boolean _noStp = ((input) & (1<<1)) != 0;
-        final Boolean _noRecv = ((input) & (1<<2)) != 0;
-        final Boolean _noRecvStp = ((input) & (1<<3)) != 0;
-        final Boolean _noFlood = ((input) & (1<<4)) != 0;
-        final Boolean _noFwd  = ((input) & (1<<5)) != 0;
-        final Boolean _noPacketIn = ((input) & (1<<6)) != 0;
-        return new PortConfigV10(_noFlood, _noFwd, _noPacketIn, _noRecv, _noRecvStp, _noStp, _portDown);
-    }
-    
-    private static PortFeaturesV10 createPortFeatures(long input){
-        final Boolean _10mbHd = ((input) & (1<<0)) != 0;
-        final Boolean _10mbFd = ((input) & (1<<1)) != 0;
-        final Boolean _100mbHd = ((input) & (1<<2)) != 0;
-        final Boolean _100mbFd = ((input) & (1<<3)) != 0;
-        final Boolean _1gbHd = ((input) & (1<<4)) != 0;
-        final Boolean _1gbFd = ((input) & (1<<5)) != 0;
-        final Boolean _10gbFd = ((input) & (1<<6)) != 0;
-        final Boolean _copper = ((input) & (1<<7)) != 0;
-        final Boolean _fiber = ((input) & (1<<8)) != 0;
-        final Boolean _autoneg = ((input) & (1<<9)) != 0;
-        final Boolean _pause = ((input) & (1<<10)) != 0;
-        final Boolean _pauseAsym = ((input) & (1<<11)) != 0;
-        return new PortFeaturesV10(_100mbFd, _100mbHd, _10gbFd, _10mbFd, _10mbHd,
-                _1gbFd, _1gbHd, _autoneg, _copper, _fiber, _pause, _pauseAsym);
-    }
-    
 }
