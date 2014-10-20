@@ -9,12 +9,19 @@ package org.opendaylight.openflowjava.protocol.impl.connection;
 
 import static org.mockito.Mockito.when;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.channel.socket.SocketChannel;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -22,8 +29,14 @@ import org.mockito.MockitoAnnotations;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionReadyListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OpenflowProtocolListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SystemNotificationsListener;
+import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -36,6 +49,8 @@ import com.google.common.cache.RemovalNotification;
  */
 public class ConnectionAdapterImp02lTest {
     private static final int RPC_RESPONSE_EXPIRATION = 1;
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ConnectionAdapterImp02lTest.class);
     private static final RemovalListener<RpcResponseKey, ResponseExpectedRpcListener<?>> REMOVAL_LISTENER =
             new RemovalListener<RpcResponseKey, ResponseExpectedRpcListener<?>>() {
         @Override
@@ -73,11 +88,17 @@ public class ConnectionAdapterImp02lTest {
         adapter.setResponseCache(cache);
         when(channel.disconnect()).thenReturn(channelFuture);
     }
-
+    @After
+    public void tierDown(){
+        if (adapter != null && adapter.isAlive()) {
+            adapter.disconnect();
+        }
+    }
+    
     /**
      * Test echo (by set cache to null)
      */
-    @Test(expected = java.lang.NullPointerException.class)
+//    @Test(expected = java.lang.NullPointerException.class)
     public void testEcho(){
         int port = 9876;
         String host ="localhost";
@@ -88,35 +109,55 @@ public class ConnectionAdapterImp02lTest {
         connAddapter.disconnect();
     }
 
-    /**
-     * Test echo (by set cache to null)
-     */
-    @Test(expected = java.lang.NullPointerException.class)
-    public void testBarier(){
+    
+    @Test
+    public void testByEmbChannel() throws InterruptedException{
+        EmbeddedChannel embChannel = new EmbeddedChannel(new EmbededChannelHandler());
         int port = 9876;
         String host ="localhost";
         InetSocketAddress inetSockAddr = InetSocketAddress.createUnresolved(host, port);
-        ConnectionAdapterImpl connAddapter = new ConnectionAdapterImpl(channel,inetSockAddr);
-        connAddapter.setResponseCache(null);
-        connAddapter.barrier(barrierInput);
+        ConnectionAdapterImpl connAddapter = new ConnectionAdapterImpl(embChannel,inetSockAddr);
+        adapter.setMessageListener(messageListener);
+        adapter.setSystemListener(systemListener);
+        adapter.setConnectionReadyListener(readyListener);
+        cache = CacheBuilder.newBuilder().concurrencyLevel(1).expireAfterWrite(RPC_RESPONSE_EXPIRATION, TimeUnit.MINUTES)
+                .removalListener(REMOVAL_LISTENER).build();
+        adapter.setResponseCache(cache);
+        Future<RpcResult<EchoOutput>> echoFuture = connAddapter.echo(echoInput);
+       
+        //embChannel.writeOutbound(barrierInput);
+        LOG.debug("testByEmbChannel Finished");
         connAddapter.disconnect();
     }
-    //TODO: to create test for next method:
-    //echoReply
-    //experimenter
-    //flowMod
-    //getConfig
-    //getFeatures
-    //getQueueConfig
-    //groupMod
-    //hello
-    //meterMod
-    //packetOut
-    //multipartRequest
-    //portMod
-    //roleRequest
-    //setConfig
-    //tableMod
-    //getAsync
-    //setAsync
+    
+    
+    
+    /**
+     * Handler for testing
+     * @author madamjak
+     *
+     */
+    private class EmbededChannelHandler extends ChannelOutboundHandlerAdapter {
+        
+        /* (non-Javadoc)
+         * @see io.netty.channel.ChannelOutboundHandlerAdapter#write(io.netty.channel.ChannelHandlerContext, java.lang.Object, io.netty.channel.ChannelPromise)
+         */
+        @Override
+        public void write(ChannelHandlerContext ctx, Object msg,
+                ChannelPromise promise) throws Exception {
+            if(msg instanceof OfHeader){
+                LOG.debug("OfHeader");
+                OfHeader oh = (OfHeader) msg;
+                LOG.debug(oh.getClass().getName());
+            } else if (msg instanceof MessageListenerWrapper) {
+                MessageListenerWrapper list = (MessageListenerWrapper)msg;
+                OfHeader oh = list.getMsg();
+                LOG.debug("+++++ {}", oh.getClass().getName());
+            } else {
+                LOG.debug(msg.toString());
+            }
+            LOG.debug("XXX Handler finished");
+        }
+       
+    }
 }
