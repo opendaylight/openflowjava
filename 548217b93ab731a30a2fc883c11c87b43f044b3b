@@ -1,0 +1,7 @@
+Code-Review+2: michal rehak <mirehak@cisco.com>
+Verified+1: jenkins-openflowjava <jenkins-openflowjava@opendaylight.org>
+Submitted-by: michal rehak <mirehak@cisco.com>
+Submitted-at: Mon, 20 Oct 2014 15:17:34 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/12048
+Project: openflowjava
+Branch: refs/heads/master
