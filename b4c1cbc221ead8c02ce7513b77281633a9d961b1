@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba8cc1f7_aa6350b0",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/serialization/factories/EchoInputMessageFactoryTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-10-20T09:07:32Z",
+      "side": 1,
+      "message": "Please use Assert.assertArrayEquals() for checking array content",
+      "revId": "b4c1cbc221ead8c02ce7513b77281633a9d961b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba8cc1f7_4a5884fa",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/serialization/factories/EchoReplyInputMessageFactoryTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-10-20T09:07:32Z",
+      "side": 1,
+      "message": "Please use Assert.assertArrayEquals() for checking array content",
+      "revId": "b4c1cbc221ead8c02ce7513b77281633a9d961b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
