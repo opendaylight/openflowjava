@@ -91,4 +91,31 @@ public class PortStatusMessageFactoryTest {
         Assert.assertEquals("Wrong currSpeed", 129L, builtByFactory.getCurrSpeed().longValue());
         Assert.assertEquals("Wrong maxSpeed", 128L, builtByFactory.getMaxSpeed().longValue());
     }
+
+    /**
+     * Testing {@link PortStatusMessageFactory} for correct translation into POJO
+     */
+    @Test
+    public void testWithDifferentBitmaps(){
+        ByteBuf bb = BufferHelper.buildBuffer("01 00 00 00 00 00 00 00 " + //reason, padding
+                                              "00 01 02 03 00 00 00 00 " + //port no, padding
+                                              "08 00 27 00 B0 EB 00 00 " + //mac address, padding
+                                              "73 31 2d 65 74 68 31 00 00 00 00 00 00 00 00 00 " + // port name, String "s1-eth1"
+                                              "00 00 00 24 " + //port config
+                                              "00 00 00 02 " + //port state
+                                              "00 00 00 81 00 00 00 A1 " + //current + advertised features
+                                              "00 00 FF FF 00 00 00 00 " + //supported + peer features
+                                              "00 00 00 81 00 00 00 80" //curr speed, max speed
+                                              );
+        PortStatusMessage message = BufferHelper.deserialize(statusFactory, bb);
+
+        Assert.assertEquals("Wrong portConfig", new PortConfig(true, false, true, false), message.getConfig());
+        Assert.assertEquals("Wrong portState", new PortState(true, false, false), message.getState());
+        Assert.assertEquals("Wrong supportedFeatures", new PortFeatures(true, true, true, true,
+                     true, true, true, true, true, true, true, true, true, true, true, true),
+                     message.getSupportedFeatures());
+        Assert.assertEquals("Wrong peerFeatures", new PortFeatures(false, false, false, false,
+                     false, false, false, false, false, false, false, false, false, false,
+                     false, false), message.getPeerFeatures());
+    }
 }

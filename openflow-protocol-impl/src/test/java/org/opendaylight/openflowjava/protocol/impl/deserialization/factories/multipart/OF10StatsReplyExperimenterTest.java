@@ -19,7 +19,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.MultipartReplyMessageFactory;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10StatsReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 
@@ -28,26 +28,25 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  *
  */
 @RunWith(MockitoJUnitRunner.class)
-public class MultipartReplyExperimenterTest {
+public class OF10StatsReplyExperimenterTest {
 
     @Mock DeserializerRegistry registry;
 
-    private MultipartReplyMessageFactory factory = new MultipartReplyMessageFactory();
-
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Tests {@link OF10StatsReplyMessageFactory} for experimenter body translation
      */
     @Test
-    public void testMultipartReplyExperimenter() {
+    public void test() {
+        OF10StatsReplyMessageFactory factory = new OF10StatsReplyMessageFactory();
         factory.injectDeserializerRegistry(registry);
+
         ByteBuf bb = BufferHelper.buildBuffer("FF FF 00 01 00 00 00 00 "
-                                            + "00 00 00 01 00 00 00 02"); // expID, expType
+                                            + "00 00 00 01"); // expID
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
+        BufferHelper.checkHeaderV10(builtByFactory);
         Assert.assertEquals("Wrong type", 65535, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-
         Mockito.verify(registry, Mockito.times(1)).getDeserializer(Matchers.any(MessageCodeKey.class));
     }
 }

@@ -57,29 +57,27 @@ public class GetAsyncReplyMessageFactoryTest {
      */
     @Test
     public void testGetAsyncReplyMessage() {
-        ByteBuf bb = BufferHelper.buildBuffer("00 00 00 06 "+ 
-                                              "00 00 00 05 "+
+        ByteBuf bb = BufferHelper.buildBuffer("00 00 00 07 "+ 
+                                              "00 00 00 00 "+
                                               "00 00 00 07 "+
                                               "00 00 00 00 "+
-                                              "00 00 00 03 "+
-                                              "00 00 00 0A");
+                                              "00 00 00 0F "+
+                                              "00 00 00 00");
         GetAsyncOutput builtByFactory = BufferHelper.deserialize(asyncFactory, bb);
 
         BufferHelper.checkHeaderV13(builtByFactory);
-        Assert.assertEquals("Wrong packetInMask",createPacketInMask(), 
-                                                 builtByFactory.getPacketInMask());
-        Assert.assertEquals("Wrong portStatusMask",createPortStatusMask(), 
-                                                   builtByFactory.getPortStatusMask());
-        Assert.assertEquals("Wrong flowRemovedMask",createFlowRemovedMask(), 
-                                                    builtByFactory.getFlowRemovedMask());
+        Assert.assertEquals("Wrong packetInMask",createPacketInMask(), builtByFactory.getPacketInMask());
+        Assert.assertEquals("Wrong portStatusMask",createPortStatusMask(), builtByFactory.getPortStatusMask());
+        Assert.assertEquals("Wrong flowRemovedMask",createFlowRemovedMask(), builtByFactory.getFlowRemovedMask());
     }
-    
+
     private static List<PacketInMask> createPacketInMask() {
         List<PacketInMask> inMasks = new ArrayList<>();
         PacketInMaskBuilder maskBuilder;
         // OFPCR_ROLE_EQUAL or OFPCR_ROLE_MASTER
         maskBuilder = new PacketInMaskBuilder();
         List<PacketInReason> reasons = new ArrayList<>();
+        reasons.add(PacketInReason.OFPRNOMATCH);
         reasons.add(PacketInReason.OFPRACTION);
         reasons.add(PacketInReason.OFPRINVALIDTTL);
         maskBuilder.setMask(reasons);
@@ -87,13 +85,11 @@ public class GetAsyncReplyMessageFactoryTest {
         // OFPCR_ROLE_SLAVE
         maskBuilder = new PacketInMaskBuilder();
         reasons = new ArrayList<>();
-        reasons.add(PacketInReason.OFPRNOMATCH);
-        reasons.add(PacketInReason.OFPRINVALIDTTL);
         maskBuilder.setMask(reasons);
         inMasks.add(maskBuilder.build());
         return inMasks;
     }
-    
+
     private static List<PortStatusMask> createPortStatusMask() {
         List<PortStatusMask> inMasks = new ArrayList<>();
         PortStatusMaskBuilder maskBuilder;
@@ -111,7 +107,7 @@ public class GetAsyncReplyMessageFactoryTest {
         inMasks.add(maskBuilder.build());
         return inMasks;
     }
-    
+
     private static List<FlowRemovedMask> createFlowRemovedMask() {
         List<FlowRemovedMask> inMasks = new ArrayList<>();
         FlowRemovedMaskBuilder maskBuilder;
@@ -120,13 +116,13 @@ public class GetAsyncReplyMessageFactoryTest {
         List<FlowRemovedReason> reasons = new ArrayList<>();
         reasons.add(FlowRemovedReason.OFPRRIDLETIMEOUT);
         reasons.add(FlowRemovedReason.OFPRRHARDTIMEOUT);
+        reasons.add(FlowRemovedReason.OFPRRDELETE);
+        reasons.add(FlowRemovedReason.OFPRRGROUPDELETE);
         maskBuilder.setMask(reasons);
         inMasks.add(maskBuilder.build());
         // OFPCR_ROLE_SLAVE
         maskBuilder = new FlowRemovedMaskBuilder();
         reasons = new ArrayList<>();
-        reasons.add(FlowRemovedReason.OFPRRHARDTIMEOUT);
-        reasons.add(FlowRemovedReason.OFPRRGROUPDELETE);
         maskBuilder.setMask(reasons);
         inMasks.add(maskBuilder.build());
         return inMasks;
