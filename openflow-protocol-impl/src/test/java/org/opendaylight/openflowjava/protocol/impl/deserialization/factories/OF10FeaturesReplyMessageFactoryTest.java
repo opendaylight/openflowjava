@@ -53,31 +53,31 @@ public class OF10FeaturesReplyMessageFactoryTest {
     @Test
     public void test() {
         ByteBuf bb = BufferHelper.buildBuffer("00 01 02 03 04 05 06 07 00 01 02 03 01 00 00 00 "
-                + "00 00 00 8B 00 00 03 B5 "
-                + "00 10 01 01 05 01 04 02 41 4C 4F 48 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 15 00 00 01 01 "
-                + "00 00 00 31 00 00 04 42 00 00 03 0C 00 00 08 88");
+                + "00 00 00 FF 00 00 0F FF "
+                + "00 10 01 01 05 01 04 02 41 4C 4F 48 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 7F 00 00 02 00 "
+                + "00 00 0F FF 00 00 00 00 00 00 03 0C 00 00 08 88");
         GetFeaturesOutput builtByFactory = BufferHelper.deserialize(featuresFactory, bb);
 
         BufferHelper.checkHeaderV10(builtByFactory);
         Assert.assertEquals("Wrong datapathId", 0x0001020304050607L, builtByFactory.getDatapathId().longValue());
         Assert.assertEquals("Wrong n-buffers", 0x00010203L, builtByFactory.getBuffers().longValue());
         Assert.assertEquals("Wrong n-tables", 0x01, builtByFactory.getTables().shortValue());
-        Assert.assertEquals("Wrong capabilities", new CapabilitiesV10(true, true, false, false, false, false, true, true),
+        Assert.assertEquals("Wrong capabilities", new CapabilitiesV10(true, true, true, true, true, true, true, true),
                 builtByFactory.getCapabilitiesV10());
-        Assert.assertEquals("Wrong actions", new ActionTypeV10(false, true, true, true, true, false, true,
-                false, true, true, false, false, false), builtByFactory.getActionsV10());
+        Assert.assertEquals("Wrong actions", new ActionTypeV10(true, true, true, true, true, true, true,
+                true, true, true, true, true, false), builtByFactory.getActionsV10());
         PhyPort port = builtByFactory.getPhyPort().get(0);
         Assert.assertEquals("Wrong port - port-no", 16, port.getPortNo().intValue());
         Assert.assertEquals("Wrong port - hw-addr", new MacAddress("01:01:05:01:04:02"), port.getHwAddr());
         Assert.assertEquals("Wrong port - name", new String("ALOHA"), port.getName());
-        Assert.assertEquals("Wrong port - config", new PortConfigV10(true, false, false, true, false, false, true),
+        Assert.assertEquals("Wrong port - config", new PortConfigV10(true, true, true, true, true, true, true),
                 port.getConfigV10());
-        Assert.assertEquals("Wrong port - state", new PortStateV10(false, true, false, false, false, true, false, false),
+        Assert.assertEquals("Wrong port - state",  new PortStateV10(false, false, false, false, true, false, true, false),
                 port.getStateV10());
-        Assert.assertEquals("Wrong port - curr", new PortFeaturesV10(false, false, false, false, true, true, true,
-                false, false, false, false, false), port.getCurrentFeaturesV10());
-        Assert.assertEquals("Wrong port - advertised", new PortFeaturesV10(false, false, true, true, false, false,
-                false, false, false, false, true, false), port.getAdvertisedFeaturesV10());
+        Assert.assertEquals("Wrong port - curr", new PortFeaturesV10(true, true, true, true, true, true, true,
+                true, true, true, true, true), port.getCurrentFeaturesV10());
+        Assert.assertEquals("Wrong port - advertised", new PortFeaturesV10(false, false, false, false, false, false,
+                false, false, false, false, false, false), port.getAdvertisedFeaturesV10());
         Assert.assertEquals("Wrong port - supported", new PortFeaturesV10(true, true, false, false, false, false,
                 false, true, false, true, false, false), port.getSupportedFeaturesV10());
         Assert.assertEquals("Wrong port - peer", new PortFeaturesV10(true, false, false, false, false, false, false,
@@ -88,30 +88,44 @@ public class OF10FeaturesReplyMessageFactoryTest {
      * Testing {@link OF10FeaturesReplyMessageFactory} for correct translation into POJO
      */
     @Test
-    public void testWithNoPortsSet() {
+    public void testWithTwoPortsSet() {
         ByteBuf bb = BufferHelper.buildBuffer("00 01 02 03 04 05 06 07 00 01 02 03 01 00 00 00 "
                 + "00 00 00 8B 00 00 03 B5 "
-                + "00 10 01 01 05 01 04 02 41 4C 4F 48 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 15 00 00 01 01 "
+                + "00 10 01 01 05 01 04 02 41 4C 4F 48 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 07 01 "
                 + "00 00 00 31 00 00 04 42 00 00 03 0C 00 00 08 88 "
-                + "00 10 01 01 05 01 04 02 41 4C 4F 48 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 15 00 00 01 01 "
+                + "00 10 01 01 05 01 04 02 41 4C 4F 48 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 15 00 00 00 00 "
                 + "00 00 00 31 00 00 04 42 00 00 03 0C 00 00 08 88");
         GetFeaturesOutput builtByFactory = BufferHelper.deserialize(featuresFactory, bb);
 
         BufferHelper.checkHeaderV10(builtByFactory);
         Assert.assertEquals("Wrong ports size", 2, builtByFactory.getPhyPort().size());
+        PhyPort port = builtByFactory.getPhyPort().get(0);
+        Assert.assertEquals("Wrong port - port-no", 16, port.getPortNo().intValue());
+        Assert.assertEquals("Wrong port - hw-addr", new MacAddress("01:01:05:01:04:02"), port.getHwAddr());
+        Assert.assertEquals("Wrong port - name", new String("ALOHA"), port.getName());
+        Assert.assertEquals("Wrong port - config", new PortConfigV10(false, false, false, false, false, false, false),
+                port.getConfigV10());
+        Assert.assertEquals("Wrong port - state",  new PortStateV10(false, true, false, true, true, true, false, true),
+                port.getStateV10());
+        port = builtByFactory.getPhyPort().get(1);
+        Assert.assertEquals("Wrong port - state",  new PortStateV10(false, false, false, false, false, false, true, false),
+                port.getStateV10());
     }
-    
+
     /**
      * Testing {@link OF10FeaturesReplyMessageFactory} for correct translation into POJO
      */
     @Test
-    public void testWithTwoPortsSet() {
+    public void testWithNoPortsSet() {
         ByteBuf bb = BufferHelper.buildBuffer("00 01 02 03 04 05 06 07 00 01 02 03 01 00 00 00 "
-                + "00 00 00 8B 00 00 03 B5");
+                + "00 00 00 00 00 00 00 00");
         GetFeaturesOutput builtByFactory = BufferHelper.deserialize(featuresFactory, bb);
 
         BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong capabilities", new CapabilitiesV10(false, false, false, false, false, false, false, false),
+                builtByFactory.getCapabilitiesV10());
+        Assert.assertEquals("Wrong actions", new ActionTypeV10(false, false, false, false, false, false, false,
+                false, false, false, false, false, false), builtByFactory.getActionsV10());
         Assert.assertEquals("Wrong ports size", 0, builtByFactory.getPhyPort().size());
     }
-
 }

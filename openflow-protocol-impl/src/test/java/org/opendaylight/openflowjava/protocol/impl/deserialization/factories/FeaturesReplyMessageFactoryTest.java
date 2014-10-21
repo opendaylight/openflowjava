@@ -47,7 +47,7 @@ public class FeaturesReplyMessageFactoryTest {
     @Test
     public void test() {
         ByteBuf bb = BufferHelper.buildBuffer("00 01 02 03 04 05 06 07 00 01 02 03 01 01 00 00 00"
-                + " 00 01 41 00 01 02 03");
+                + " 00 00 00 00 01 02 03");
         GetFeaturesOutput builtByFactory = BufferHelper.deserialize(featuresFactory, bb);
 
         BufferHelper.checkHeaderV13(builtByFactory);
@@ -55,7 +55,21 @@ public class FeaturesReplyMessageFactoryTest {
         Assert.assertEquals("Wrong buffers", 0x00010203L, builtByFactory.getBuffers().longValue());
         Assert.assertEquals("Wrong number of tables", 0x01, builtByFactory.getTables().shortValue());
         Assert.assertEquals("Wrong auxiliaryId", 0x01, builtByFactory.getAuxiliaryId().shortValue());
-        Assert.assertEquals("Wrong capabilities", new Capabilities(true, false, false, true, false, true, false), builtByFactory.getCapabilities());
+        Assert.assertEquals("Wrong capabilities", new Capabilities(false, false, false, false, false, false, false), builtByFactory.getCapabilities());
         Assert.assertEquals("Wrong reserved", 0x00010203L, builtByFactory.getReserved().longValue());
+    }
+
+    /**
+     * Testing {@link FeaturesReplyMessageFactory} for correct translation into POJO
+     * (capabilities set)
+     */
+    @Test
+    public void testCapabilities() {
+        ByteBuf bb = BufferHelper.buildBuffer("00 01 02 03 04 05 06 07 00 01 02 03 01 01 00 00 00"
+                + " 00 01 6F 00 01 02 03");
+        GetFeaturesOutput builtByFactory = BufferHelper.deserialize(featuresFactory, bb);
+
+        BufferHelper.checkHeaderV13(builtByFactory);
+        Assert.assertEquals("Wrong capabilities", new Capabilities(true, true, true, true, true, true, true), builtByFactory.getCapabilities());
     }
 }

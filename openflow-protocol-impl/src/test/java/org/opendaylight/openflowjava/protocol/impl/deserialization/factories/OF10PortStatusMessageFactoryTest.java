@@ -52,7 +52,7 @@ public class OF10PortStatusMessageFactoryTest {
     public void test(){
         ByteBuf bb = BufferHelper.buildBuffer("00 00 00 00 00 00 00 00 "
                 + "00 10 01 01 05 01 04 02 41 4C 4F 48 41 00 00 00 00 00 00 00 00 00 00 "
-                + "00 00 00 00 15 00 00 01 01 00 00 00 31 00 00 04 42 00 00 03 0C 00 00 08 88");
+                + "00 00 00 00 15 00 00 00 01 00 00 00 31 00 00 04 42 00 00 03 0C 00 00 08 88");
         PortStatusMessage builtByFactory = BufferHelper.deserialize(statusFactory, bb);
         
         BufferHelper.checkHeaderV10(builtByFactory);
@@ -62,7 +62,7 @@ public class OF10PortStatusMessageFactoryTest {
         Assert.assertEquals("Wrong builtByFactory - name", new String("ALOHA"), builtByFactory.getName());
         Assert.assertEquals("Wrong builtByFactory - config", new PortConfigV10(true, false, false, true, false, false, true),
                 builtByFactory.getConfigV10());
-        Assert.assertEquals("Wrong builtByFactory - state", new PortStateV10(false, true, false, false, false, true, false, false),
+        Assert.assertEquals("Wrong builtByFactory - state", new PortStateV10(false, true, false, false, false, false, true, false),
                 builtByFactory.getStateV10());
         Assert.assertEquals("Wrong builtByFactory - curr", new PortFeaturesV10(false, false, false, false, true, true, true,
                 false, false, false, false, false), builtByFactory.getCurrentFeaturesV10());
@@ -73,5 +73,4 @@ public class OF10PortStatusMessageFactoryTest {
         Assert.assertEquals("Wrong builtByFactory - peer", new PortFeaturesV10(true, false, false, false, false, false, false,
                 false, true, false, false, true), builtByFactory.getPeerFeaturesV10());
     }
-
 }
