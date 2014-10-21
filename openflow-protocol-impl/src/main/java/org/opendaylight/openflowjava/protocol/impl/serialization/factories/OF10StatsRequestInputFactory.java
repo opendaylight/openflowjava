@@ -136,7 +136,7 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
         MultipartRequestExperimenter experimenter = expCase.getMultipartRequestExperimenter();
         long expId = experimenter.getAugmentation(ExperimenterIdMultipartRequest.class).getExperimenter().getValue();
         OFSerializer<MultipartRequestExperimenterCase> serializer = registry.getSerializer(
-                ExperimenterSerializerKeyFactory.createExperimenterMessageSerializerKey(
+                ExperimenterSerializerKeyFactory.createMultipartRequestSerializerKey(
                         EncodeConstants.OF10_VERSION_ID, expId));
         serializer.serialize(expCase, output);
     }

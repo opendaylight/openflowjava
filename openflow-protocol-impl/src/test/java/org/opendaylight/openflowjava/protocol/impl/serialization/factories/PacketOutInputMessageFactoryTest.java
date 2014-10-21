@@ -98,4 +98,27 @@ public class PacketOutInputMessageFactoryTest {
         out.skipBytes(PADDING_IN_ACTION_HEADER);
         Assert.assertArrayEquals("Wrong data", message.getData(), out.readBytes(out.readableBytes()).array());
     }
+
+    /**
+     * Testing of {@link PacketOutInputMessageFactory} for correct translation from POJO
+     * @throws Exception 
+     */
+    @Test
+    public void testPacketOutInputWithNoData() throws Exception {
+        PacketOutInputBuilder builder = new PacketOutInputBuilder();
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
+        builder.setBufferId(256L);
+        builder.setInPort(new PortNumber(256L));
+        List<Action> actions = new ArrayList<>();
+        builder.setAction(actions);
+        builder.setData(null);
+        PacketOutInput message = builder.build();
+
+        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+        packetOutFactory.serialize(message, out);
+
+        BufferHelper.checkHeaderV13(out, MESSAGE_TYPE, 24);
+        out.skipBytes(16); // skip packet out message to data index
+        Assert.assertTrue("Unexpected data", out.readableBytes() == 0);
+    }
 }

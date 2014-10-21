@@ -20,10 +20,9 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowRemovedReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PacketInReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortReason;
@@ -35,16 +34,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.async.body.grouping.PacketInMaskBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.async.body.grouping.PortStatusMask;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.async.body.grouping.PortStatusMaskBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author timotej.kubas
  * @author michal.polkorab
  */
 public class SetAsyncInputMessageFactoryTest {
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(SetAsyncInputMessageFactoryTest.class);
+
     private SerializerRegistry registry;
     private OFSerializer<SetAsyncInput> setAsyncFactory;
 
@@ -71,20 +67,20 @@ public class SetAsyncInputMessageFactoryTest {
         builder.setPortStatusMask(createPortStatusMask());
         builder.setFlowRemovedMask(createFlowRemowedMask());
         SetAsyncInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         setAsyncFactory.serialize(message, out);
-        LOGGER.debug("<< " + ByteBufUtils.byteBufToHexString(out));
+
         BufferHelper.checkHeaderV13(out,(byte) 28, 32);
-        Assert.assertEquals("Wrong packetInMask", 5, out.readUnsignedInt());
         Assert.assertEquals("Wrong packetInMask", 7, out.readUnsignedInt());
-        Assert.assertEquals("Wrong portStatusMask", 6, out.readUnsignedInt());
+        Assert.assertEquals("Wrong packetInMask", 0, out.readUnsignedInt());
+        Assert.assertEquals("Wrong portStatusMask", 7, out.readUnsignedInt());
         Assert.assertEquals("Wrong portStatusMask", 0, out.readUnsignedInt());
-        Assert.assertEquals("Wrong flowRemovedMask", 10, out.readUnsignedInt());
-        Assert.assertEquals("Wrong flowRemovedMask", 5, out.readUnsignedInt());
+        Assert.assertEquals("Wrong flowRemovedMask", 15, out.readUnsignedInt());
+        Assert.assertEquals("Wrong flowRemovedMask", 0, out.readUnsignedInt());
         
     }
-    
+
     private static List<PacketInMask> createPacketInMask() {
         List<PacketInMask> masks = new ArrayList<>();
         PacketInMaskBuilder builder;
@@ -92,26 +88,25 @@ public class SetAsyncInputMessageFactoryTest {
         builder = new PacketInMaskBuilder();
         List<PacketInReason> packetInReasonList = new ArrayList<>();
         packetInReasonList.add(PacketInReason.OFPRNOMATCH);
+        packetInReasonList.add(PacketInReason.OFPRACTION);
         packetInReasonList.add(PacketInReason.OFPRINVALIDTTL);
         builder.setMask(packetInReasonList);
         masks.add(builder.build());
         // OFPCR_ROLE_SLAVE
         builder = new PacketInMaskBuilder();
         packetInReasonList = new ArrayList<>();
-        packetInReasonList.add(PacketInReason.OFPRNOMATCH);
-        packetInReasonList.add(PacketInReason.OFPRACTION);
-        packetInReasonList.add(PacketInReason.OFPRINVALIDTTL);
         builder.setMask(packetInReasonList);
         masks.add(builder.build());
         return masks;
     }
-    
+
     private static List<PortStatusMask> createPortStatusMask() {
         List<PortStatusMask> masks = new ArrayList<>();
         PortStatusMaskBuilder builder;
         builder = new PortStatusMaskBuilder();
         // OFPCR_ROLE_EQUAL or OFPCR_ROLE_MASTER
         List<PortReason> portReasonList = new ArrayList<>();
+        portReasonList.add(PortReason.OFPPRADD);
         portReasonList.add(PortReason.OFPPRDELETE);
         portReasonList.add(PortReason.OFPPRMODIFY);
         builder.setMask(portReasonList);
@@ -123,24 +118,44 @@ public class SetAsyncInputMessageFactoryTest {
         masks.add(builder.build());
         return masks;
     }
-    
+
     private static List<FlowRemovedMask> createFlowRemowedMask() {
         List<FlowRemovedMask> masks = new ArrayList<>();
         FlowRemovedMaskBuilder builder;
         // OFPCR_ROLE_EQUAL or OFPCR_ROLE_MASTER
         builder = new FlowRemovedMaskBuilder();
         List<FlowRemovedReason> flowRemovedReasonList = new ArrayList<>();
+        flowRemovedReasonList.add(FlowRemovedReason.OFPRRIDLETIMEOUT);
         flowRemovedReasonList.add(FlowRemovedReason.OFPRRHARDTIMEOUT);
+        flowRemovedReasonList.add(FlowRemovedReason.OFPRRDELETE);
         flowRemovedReasonList.add(FlowRemovedReason.OFPRRGROUPDELETE);
         builder.setMask(flowRemovedReasonList);
         masks.add(builder.build());
         // OFPCR_ROLE_SLAVE
         builder = new FlowRemovedMaskBuilder();
         flowRemovedReasonList = new ArrayList<>();
-        flowRemovedReasonList.add(FlowRemovedReason.OFPRRIDLETIMEOUT);
-        flowRemovedReasonList.add(FlowRemovedReason.OFPRRDELETE);
         builder.setMask(flowRemovedReasonList);
         masks.add(builder.build());
         return masks;
+    }
+
+    /**
+     * @throws Exception 
+     * Testing of {@link SetAsyncInputMessageFactory} for correct translation from POJO
+     */
+    @Test
+    public void testSetAsyncInputWithNullMasks() throws Exception {
+        SetAsyncInputBuilder builder = new SetAsyncInputBuilder();
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
+        builder.setPacketInMask(null);
+        builder.setPortStatusMask(null);
+        builder.setFlowRemovedMask(null);
+        SetAsyncInput message = builder.build();
+
+        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+        setAsyncFactory.serialize(message, out);
+
+        BufferHelper.checkHeaderV13(out,(byte) 28, 8);
+        Assert.assertTrue("Unexpected data", out.readableBytes() == 0);
     }
 }

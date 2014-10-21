@@ -102,4 +102,26 @@ public class OF10PacketOutInputMessageFactoryTest {
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
     }
 
+    /**
+     * Testing of {@link OF10PacketOutInputMessageFactory} for correct translation from POJO
+     * @throws Exception 
+     */
+    @Test
+    public void testPacketOutInputWithNoData() throws Exception {
+        PacketOutInputBuilder builder = new PacketOutInputBuilder();
+        BufferHelper.setupHeader(builder, EncodeConstants.OF10_VERSION_ID);
+        builder.setBufferId(256L);
+        builder.setInPort(new PortNumber(257L));
+        List<Action> actions = new ArrayList<>();
+        builder.setAction(actions);
+        builder.setData(null);
+        PacketOutInput message = builder.build();
+
+        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+        packetOutFactory.serialize(message, out);
+
+        BufferHelper.checkHeaderV10(out, (byte) 13, 16);
+        out.skipBytes(8); // skip packet out message to data index
+        Assert.assertTrue("Unread data", out.readableBytes() == 0);
+    }
 }

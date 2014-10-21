@@ -20,9 +20,9 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupModCommand;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupType;
@@ -104,5 +104,29 @@ public class GroupModInputMessageFactoryTest {
         bucket = bucketsBuilder.build();
         bucketsList.add(bucket);
         return bucketsList;
+    }
+
+    /**
+     * Testing of {@link GroupModInputMessageFactory} for correct translation from POJO
+     * @throws Exception
+     */
+    @Test
+    public void testGroupModInputWithNoBuckets() throws Exception {
+        GroupModInputBuilder builder = new GroupModInputBuilder();
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
+        builder.setCommand(GroupModCommand.forValue(2));
+        builder.setType(GroupType.forValue(3));
+        builder.setGroupId(new GroupId(256L));
+        GroupModInput message = builder.build();
+
+        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+        groupModFactory.serialize(message, out);
+
+        BufferHelper.checkHeaderV13(out, MESSAGE_TYPE, 16);
+        Assert.assertEquals("Wrong command", message.getCommand().getIntValue(), out.readUnsignedShort());
+        Assert.assertEquals("Wrong type", message.getType().getIntValue(), out.readUnsignedByte());
+        out.skipBytes(PADDING_IN_GROUP_MOD_MESSAGE);
+        Assert.assertEquals("Wrong groupId", message.getGroupId().getValue().intValue(), out.readUnsignedInt());
+        Assert.assertTrue("Unexpected data", out.readableBytes() == 0);
     }
 }

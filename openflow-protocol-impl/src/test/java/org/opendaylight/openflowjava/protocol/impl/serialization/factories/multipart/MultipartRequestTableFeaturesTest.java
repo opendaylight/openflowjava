@@ -17,15 +17,24 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.MultipartRequestInputFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.MultipartRequestInputFactoryTest;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeatureProperty;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionRelatedTableFeaturePropertyBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdTableFeatureProperty;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdTableFeaturePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.InstructionRelatedTableFeaturePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.NextTableRelatedTableFeatureProperty;
@@ -34,6 +43,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OxmRelatedTableFeaturePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.table.features.properties.container.table.feature.properties.NextTableIds;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.table.features.properties.container.table.feature.properties.NextTableIdsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Output;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.ApplyActions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.ClearActions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.GotoTable;
@@ -42,6 +54,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.WriteMetadata;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.InstructionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ExperimenterId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableConfig;
@@ -66,17 +79,24 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  *
  */
-public class TableFeaturesTest {
+@RunWith(MockitoJUnitRunner.class)
+public class MultipartRequestTableFeaturesTest {
+
     private static final byte PADDING_IN_MULTIPART_REQUEST_MESSAGE =
             MultipartRequestInputFactoryTest.PADDING_IN_MULTIPART_REQUEST_MESSAGE;
     private SerializerRegistry registry;
     private OFSerializer<MultipartRequestInput> multipartFactory;
+
+    @Mock SerializerRegistry mockRegistry;
+    @Mock OFSerializer<TableFeatureProperties> serializer;
 
     /**
      * Initializes serializer registry and stores correct factory in field
      */
     @Before
     public void startUp() {
+        Mockito.when(mockRegistry.getSerializer((MessageTypeKey<?>)Matchers.any()))
+        .thenReturn(serializer);
         registry = new SerializerRegistryImpl();
         registry.init();
         multipartFactory = registry.getSerializer(
@@ -118,7 +138,6 @@ public class TableFeaturesTest {
         propBuilder.setType(TableFeaturesPropType.OFPTFPTNEXTTABLESMISS);
         nextPropBuilder = new NextTableRelatedTableFeaturePropertyBuilder();
         nextIds = new ArrayList<>();
-        nextIds.add(new NextTableIdsBuilder().setTableId((short) 3).build());
         nextPropBuilder.setNextTableIds(nextIds);
         propBuilder.addAugmentation(NextTableRelatedTableFeatureProperty.class, nextPropBuilder.build());
         properties.add(propBuilder.build());
@@ -169,6 +188,37 @@ public class TableFeaturesTest {
         tableFeaturesBuilder.setMaxEntries(67L);
         properties = new ArrayList<>();
         propBuilder = new TableFeaturePropertiesBuilder();
+        propBuilder.setType(TableFeaturesPropType.OFPTFPTWRITEACTIONS);
+        ActionRelatedTableFeaturePropertyBuilder actBuilder = new ActionRelatedTableFeaturePropertyBuilder();
+        List<Action> actions = new ArrayList<>();
+        ActionBuilder actionBuilder = new ActionBuilder();
+        actionBuilder.setType(Output.class);
+        actions.add(actionBuilder.build());
+        actBuilder.setAction(actions);
+        propBuilder.addAugmentation(ActionRelatedTableFeatureProperty.class, actBuilder.build());
+        properties.add(propBuilder.build());
+        propBuilder = new TableFeaturePropertiesBuilder();
+        propBuilder.setType(TableFeaturesPropType.OFPTFPTWRITEACTIONSMISS);
+        actBuilder = new ActionRelatedTableFeaturePropertyBuilder();
+        actions = new ArrayList<>();
+        actBuilder.setAction(actions);
+        propBuilder.addAugmentation(ActionRelatedTableFeatureProperty.class, actBuilder.build());
+        properties.add(propBuilder.build());
+        propBuilder = new TableFeaturePropertiesBuilder();
+        propBuilder.setType(TableFeaturesPropType.OFPTFPTAPPLYACTIONS);
+        actBuilder = new ActionRelatedTableFeaturePropertyBuilder();
+        actions = new ArrayList<>();
+        actBuilder.setAction(actions);
+        propBuilder.addAugmentation(ActionRelatedTableFeatureProperty.class, actBuilder.build());
+        properties.add(propBuilder.build());
+        propBuilder = new TableFeaturePropertiesBuilder();
+        propBuilder.setType(TableFeaturesPropType.OFPTFPTAPPLYACTIONSMISS);
+        actBuilder = new ActionRelatedTableFeaturePropertyBuilder();
+        actions = new ArrayList<>();
+        actBuilder.setAction(actions);
+        propBuilder.addAugmentation(ActionRelatedTableFeatureProperty.class, actBuilder.build());
+        properties.add(propBuilder.build());
+        propBuilder = new TableFeaturePropertiesBuilder();
         propBuilder.setType(TableFeaturesPropType.OFPTFPTMATCH);
         OxmRelatedTableFeaturePropertyBuilder oxmBuilder = new OxmRelatedTableFeaturePropertyBuilder();
         List<MatchEntries> entries = new ArrayList<>();
@@ -182,6 +232,27 @@ public class TableFeaturesTest {
         entriesBuilder.setOxmMatchField(InPort.class);
         entriesBuilder.setHasMask(false);
         entries.add(entriesBuilder.build());
+        oxmBuilder.setMatchEntries(entries);
+        propBuilder.addAugmentation(OxmRelatedTableFeatureProperty.class, oxmBuilder.build());
+        properties.add(propBuilder.build());
+        propBuilder = new TableFeaturePropertiesBuilder();
+        propBuilder.setType(TableFeaturesPropType.OFPTFPTWILDCARDS);
+        oxmBuilder = new OxmRelatedTableFeaturePropertyBuilder();
+        entries = new ArrayList<>();
+        oxmBuilder.setMatchEntries(entries);
+        propBuilder.addAugmentation(OxmRelatedTableFeatureProperty.class, oxmBuilder.build());
+        properties.add(propBuilder.build());
+        propBuilder = new TableFeaturePropertiesBuilder();
+        propBuilder.setType(TableFeaturesPropType.OFPTFPTWRITESETFIELD);
+        oxmBuilder = new OxmRelatedTableFeaturePropertyBuilder();
+        entries = new ArrayList<>();
+        oxmBuilder.setMatchEntries(entries);
+        propBuilder.addAugmentation(OxmRelatedTableFeatureProperty.class, oxmBuilder.build());
+        properties.add(propBuilder.build());
+        propBuilder = new TableFeaturePropertiesBuilder();
+        propBuilder.setType(TableFeaturesPropType.OFPTFPTWRITESETFIELDMISS);
+        oxmBuilder = new OxmRelatedTableFeaturePropertyBuilder();
+        entries = new ArrayList<>();
         oxmBuilder.setMatchEntries(entries);
         propBuilder.addAugmentation(OxmRelatedTableFeatureProperty.class, oxmBuilder.build());
         properties.add(propBuilder.build());
@@ -202,6 +273,13 @@ public class TableFeaturesTest {
         oxmBuilder.setMatchEntries(entries);
         propBuilder.addAugmentation(OxmRelatedTableFeatureProperty.class, oxmBuilder.build());
         properties.add(propBuilder.build());
+        propBuilder = new TableFeaturePropertiesBuilder();
+        propBuilder.setType(TableFeaturesPropType.OFPTFPTAPPLYSETFIELDMISS);
+        oxmBuilder = new OxmRelatedTableFeaturePropertyBuilder();
+        entries = new ArrayList<>();
+        oxmBuilder.setMatchEntries(entries);
+        propBuilder.addAugmentation(OxmRelatedTableFeatureProperty.class, oxmBuilder.build());
+        properties.add(propBuilder.build());
         tableFeaturesBuilder.setTableFeatureProperties(properties);
         tableFeaturesList.add(tableFeaturesBuilder.build());
         featuresBuilder.setTableFeatures(tableFeaturesList);
@@ -212,7 +290,7 @@ public class TableFeaturesTest {
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         multipartFactory.serialize(message, out);
 
-        BufferHelper.checkHeaderV13(out, (byte) 18, 232);
+        BufferHelper.checkHeaderV13(out, (byte) 18, 296);
         Assert.assertEquals("Wrong type", 12, out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", 1, out.readUnsignedShort());
         out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
@@ -237,9 +315,8 @@ public class TableFeaturesTest {
         Assert.assertEquals("Wrong next-registry-id", 2, out.readUnsignedByte());
         out.skipBytes(2);
         Assert.assertEquals("Wrong property type", 3, out.readUnsignedShort());
-        Assert.assertEquals("Wrong property length", 5, out.readUnsignedShort());
-        Assert.assertEquals("Wrong next-registry-id", 3, out.readUnsignedByte());
-        out.skipBytes(3);
+        Assert.assertEquals("Wrong property length", 4, out.readUnsignedShort());
+        out.skipBytes(4);
         Assert.assertEquals("Wrong property type", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong property length", 12, out.readUnsignedShort());
         Assert.assertEquals("Wrong instruction type", 3, out.readUnsignedShort());
@@ -259,7 +336,7 @@ public class TableFeaturesTest {
         Assert.assertEquals("Wrong instruction length", 4, out.readUnsignedShort());
         Assert.assertEquals("Wrong instruction type", 1, out.readUnsignedShort());
         Assert.assertEquals("Wrong instruction length", 4, out.readUnsignedShort());
-        Assert.assertEquals("Wrong length", 96, out.readUnsignedShort());
+        Assert.assertEquals("Wrong length", 160, out.readUnsignedShort());
         Assert.assertEquals("Wrong registry-id", 8, out.readUnsignedByte());
         out.skipBytes(5);
         Assert.assertEquals("Wrong name", "AAAABBBBCCCCDDDDEEEEFFFFGGGG",
@@ -274,6 +351,19 @@ public class TableFeaturesTest {
                 new byte[] {0x00, 0x07, 0x01, 0x05, 0x01, 0x00, 0x03, 0x01}, metadataWrite);
         Assert.assertEquals("Wrong config", 8, out.readUnsignedInt());
         Assert.assertEquals("Wrong max-entries", 67, out.readUnsignedInt());
+        Assert.assertEquals("Wrong property type", 4, out.readUnsignedShort());
+        Assert.assertEquals("Wrong property length", 8, out.readUnsignedShort());
+        Assert.assertEquals("Wrong action type", 0, out.readUnsignedShort());
+        Assert.assertEquals("Wrong action length", 4, out.readUnsignedShort());
+        Assert.assertEquals("Wrong property type", 5, out.readUnsignedShort());
+        Assert.assertEquals("Wrong property length", 4, out.readUnsignedShort());
+        out.skipBytes(4);
+        Assert.assertEquals("Wrong property type", 6, out.readUnsignedShort());
+        Assert.assertEquals("Wrong property length", 4, out.readUnsignedShort());
+        out.skipBytes(4);
+        Assert.assertEquals("Wrong property type", 7, out.readUnsignedShort());
+        Assert.assertEquals("Wrong property length", 4, out.readUnsignedShort());
+        out.skipBytes(4);
         Assert.assertEquals("Wrong property type", 8, out.readUnsignedShort());
         Assert.assertEquals("Wrong property length", 12, out.readUnsignedShort());
         Assert.assertEquals("Wrong match class", 0x8000, out.readUnsignedShort());
@@ -282,6 +372,15 @@ public class TableFeaturesTest {
         Assert.assertEquals("Wrong match class", 0x8000, out.readUnsignedShort());
         Assert.assertEquals("Wrong match field&mask", 0, out.readUnsignedByte());
         Assert.assertEquals("Wrong match length", 4, out.readUnsignedByte());
+        out.skipBytes(4);
+        Assert.assertEquals("Wrong property type", 10, out.readUnsignedShort());
+        Assert.assertEquals("Wrong property length", 4, out.readUnsignedShort());
+        out.skipBytes(4);
+        Assert.assertEquals("Wrong property type", 12, out.readUnsignedShort());
+        Assert.assertEquals("Wrong property length", 4, out.readUnsignedShort());
+        out.skipBytes(4);
+        Assert.assertEquals("Wrong property type", 13, out.readUnsignedShort());
+        Assert.assertEquals("Wrong property length", 4, out.readUnsignedShort());
         out.skipBytes(4);
         Assert.assertEquals("Wrong property type", 14, out.readUnsignedShort());
         Assert.assertEquals("Wrong property length", 12, out.readUnsignedShort());
@@ -292,7 +391,77 @@ public class TableFeaturesTest {
         Assert.assertEquals("Wrong match field&mask", 18, out.readUnsignedByte());
         Assert.assertEquals("Wrong match length", 1, out.readUnsignedByte());
         out.skipBytes(4);
+        Assert.assertEquals("Wrong property type", 15, out.readUnsignedShort());
+        Assert.assertEquals("Wrong property length", 4, out.readUnsignedShort());
+        out.skipBytes(4);
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
     }
 
+    /**
+     * @throws Exception
+     * Testing of {@link MultipartRequestInputFactory} for correct translation from POJO
+     */
+    @Test
+    public void testMultipartRequestTableFeaturesExperimenter() throws Exception {
+        MultipartRequestInputFactory factory = new MultipartRequestInputFactory();
+        factory.injectSerializerRegistry(mockRegistry);
+        MultipartRequestInputBuilder builder = new MultipartRequestInputBuilder();
+        BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
+        builder.setType(MultipartType.forValue(12));
+        builder.setFlags(new MultipartRequestFlags(true));
+        MultipartRequestTableFeaturesCaseBuilder caseBuilder = new MultipartRequestTableFeaturesCaseBuilder();
+        MultipartRequestTableFeaturesBuilder featuresBuilder = new MultipartRequestTableFeaturesBuilder();
+        List<TableFeatures> tableFeaturesList = new ArrayList<>();
+        TableFeaturesBuilder tableFeaturesBuilder = new TableFeaturesBuilder();
+        tableFeaturesBuilder.setTableId((short) 8);
+        tableFeaturesBuilder.setName("AAAABBBBCCCCDDDDEEEEFFFFGGGG");
+        tableFeaturesBuilder.setMetadataMatch(new BigInteger(new byte[] {0x00, 0x01, 0x02, 0x03, 0x01, 0x04, 0x08, 0x01}));
+        tableFeaturesBuilder.setMetadataWrite(new BigInteger(new byte[] {0x00, 0x07, 0x01, 0x05, 0x01, 0x00, 0x03, 0x01}));
+        tableFeaturesBuilder.setConfig(new TableConfig(true));
+        tableFeaturesBuilder.setMaxEntries(65L);
+        List<TableFeatureProperties> properties = new ArrayList<>();
+        TableFeaturePropertiesBuilder propBuilder = new TableFeaturePropertiesBuilder();
+        propBuilder.setType(TableFeaturesPropType.OFPTFPTEXPERIMENTER);
+        ExperimenterIdTableFeaturePropertyBuilder expBuilder = new ExperimenterIdTableFeaturePropertyBuilder();
+        expBuilder.setExperimenter(new ExperimenterId(42L));
+        propBuilder.addAugmentation(ExperimenterIdTableFeatureProperty.class, expBuilder.build());
+        properties.add(propBuilder.build());
+        propBuilder = new TableFeaturePropertiesBuilder();
+        propBuilder.setType(TableFeaturesPropType.OFPTFPTEXPERIMENTERMISS);
+        expBuilder = new ExperimenterIdTableFeaturePropertyBuilder();
+        expBuilder.setExperimenter(new ExperimenterId(43L));
+        propBuilder.addAugmentation(ExperimenterIdTableFeatureProperty.class, expBuilder.build());
+        properties.add(propBuilder.build());
+        tableFeaturesBuilder.setTableFeatureProperties(properties);
+        tableFeaturesList.add(tableFeaturesBuilder.build());
+        featuresBuilder.setTableFeatures(tableFeaturesList);
+        caseBuilder.setMultipartRequestTableFeatures(featuresBuilder.build());
+        builder.setMultipartRequestBody(caseBuilder.build());
+        MultipartRequestInput message = builder.build();
+
+        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+        factory.serialize(message, out);
+
+        BufferHelper.checkHeaderV13(out, (byte) 18, 80);
+        Assert.assertEquals("Wrong type", 12, out.readUnsignedShort());
+        Assert.assertEquals("Wrong flags", 1, out.readUnsignedShort());
+        out.skipBytes(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
+        Assert.assertEquals("Wrong length", 64, out.readUnsignedShort());
+        Assert.assertEquals("Wrong registry-id", 8, out.readUnsignedByte());
+        out.skipBytes(5);
+        Assert.assertEquals("Wrong name", "AAAABBBBCCCCDDDDEEEEFFFFGGGG",
+                ByteBufUtils.decodeNullTerminatedString(out, 32));
+        byte[] metadataMatch = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
+        out.readBytes(metadataMatch);
+        Assert.assertArrayEquals("Wrong metadata-match",
+                new byte[] {0x00, 0x01, 0x02, 0x03, 0x01, 0x04, 0x08, 0x01}, metadataMatch);
+        byte[] metadataWrite = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
+        out.readBytes(metadataWrite);
+        Assert.assertArrayEquals("Wrong metadata-write",
+                new byte[] {0x00, 0x07, 0x01, 0x05, 0x01, 0x00, 0x03, 0x01}, metadataWrite);
+        Assert.assertEquals("Wrong config", 8, out.readUnsignedInt());
+        Assert.assertEquals("Wrong max-entries", 65, out.readUnsignedInt());
+        Mockito.verify(serializer, Mockito.times(2)).serialize(Matchers.any(TableFeatureProperties.class),
+                Matchers.any(ByteBuf.class));
+    }
 }
