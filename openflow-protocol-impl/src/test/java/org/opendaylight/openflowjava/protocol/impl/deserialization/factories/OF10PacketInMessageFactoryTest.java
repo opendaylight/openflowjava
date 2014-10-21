@@ -56,4 +56,14 @@ public class OF10PacketInMessageFactoryTest {
         Assert.assertArrayEquals("Wrong data", ByteBufUtils.hexStringToBytes("01 02 03 04"), builtByFactory.getData());
     }
 
+    /**
+     * Testing {@link OF10PacketInMessageFactory} for correct translation into POJO
+     */
+    @Test
+    public void testWithNoAdditionalData(){
+        ByteBuf bb = BufferHelper.buildBuffer("00 01 02 03 01 02 01 02 00 00");
+        PacketInMessage builtByFactory = BufferHelper.deserialize(packetInFactory, bb); 
+
+        Assert.assertNull("Wrong data", builtByFactory.getData());
+    }
 }
