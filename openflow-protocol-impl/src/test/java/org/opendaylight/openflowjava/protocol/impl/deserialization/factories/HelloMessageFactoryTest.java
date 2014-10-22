@@ -30,11 +30,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 /**
  * @author michal.polkorab
  * @author timotej.kubas
+ * @author madamjak
  */
 public class HelloMessageFactoryTest {
 
-    /** Number of currently supported version / codec */
-    public static final Short VERSION_YET_SUPPORTED = 0x04;
     private OFDeserializer<HelloMessage> helloFactory;
 
     /**
@@ -49,25 +48,56 @@ public class HelloMessageFactoryTest {
     }
 
     /**
-     * Testing {@link HelloMessageFactory} for correct translation into POJO
+     * Testing {@link HelloMessageFactory} for correct length without padding
      */
     @Test
-    public void test() {
+    public void testWithoutPadding() {
+        ByteBuf bb = BufferHelper.buildBuffer("00 01 " // type
+                                            + "00 08 " // length
+                                            + "00 00 00 11" // bitmap 1
+                                            );
+        HelloMessage builtByFactory = BufferHelper.deserialize(helloFactory, bb);
+        BufferHelper.checkHeaderV13(builtByFactory);
+        List<Elements> element = createElement(4,HelloElementType.VERSIONBITMAP.getIntValue());
+        Assert.assertEquals("Wrong type", element.get(0).getType(), builtByFactory.getElements().get(0).getType());
+        Assert.assertEquals("Wrong versionBitmap", element.get(0).getVersionBitmap(), builtByFactory.getElements().get(0).getVersionBitmap());
+    }
+
+    /**
+     * Testing {@link HelloMessageFactory} for correct length with padding
+     */
+    @Test
+    public void testWithPadding() {
         ByteBuf bb = BufferHelper.buildBuffer("00 01 " // type
                                             + "00 0c " // length
                                             + "00 00 00 11 " // bitmap 1
                                             + "00 00 00 00 " // bitmap 2
                                             + "00 00 00 00"  // padding
-                );
+                                            );
         HelloMessage builtByFactory = BufferHelper.deserialize(helloFactory, bb);
-
         BufferHelper.checkHeaderV13(builtByFactory);
-        List<Elements> element = createElement();
+        List<Elements> element = createElement(8,HelloElementType.VERSIONBITMAP.getIntValue());
         Assert.assertEquals("Wrong type", element.get(0).getType(), builtByFactory.getElements().get(0).getType());
         Assert.assertEquals("Wrong versionBitmap", element.get(0).getVersionBitmap(), builtByFactory.getElements().get(0).getVersionBitmap());
     }
-    
-    private static List<Elements> createElement() {
+ 
+    /**
+     * Testing {@link HelloMessageFactory} if incorrect version is set
+     */
+    @Test
+    public void testBadType(){
+        ByteBuf bb = BufferHelper.buildBuffer("00 02 " // type
+                                            + "00 0c " // length
+                                            + "00 00 00 11 " // bitmap 1
+                                            + "00 00 00 00 " // bitmap 2
+                                            + "00 00 00 00"  // padding
+                                            );
+        HelloMessage builtByFactory = BufferHelper.deserialize(helloFactory, bb);
+        BufferHelper.checkHeaderV13(builtByFactory);
+        Assert.assertEquals("Wrong - no element has been expected", 0, builtByFactory.getElements().size());
+    }
+
+    private static List<Elements> createElement(int lengthInByte, int type) {
         ElementsBuilder elementsBuilder = new ElementsBuilder();
         List<Elements> elementsList = new ArrayList<>();
         List<Boolean> booleanList = new ArrayList<>();
@@ -76,13 +106,13 @@ public class HelloMessageFactoryTest {
         booleanList.add(false);
         booleanList.add(false);
         booleanList.add(true);
-        for (int i = 1; i < 60; i++) {
+        int inSize = booleanList.size();
+        for (int i = 1; i < ((lengthInByte * 8) - inSize + 1); i++) {
             booleanList.add(false);
         }
-        elementsBuilder.setType(HelloElementType.forValue(1));
+        elementsBuilder.setType(HelloElementType.forValue(type));
         elementsBuilder.setVersionBitmap(booleanList);
         elementsList.add(elementsBuilder.build());
-        
         return elementsList;
     }
 }

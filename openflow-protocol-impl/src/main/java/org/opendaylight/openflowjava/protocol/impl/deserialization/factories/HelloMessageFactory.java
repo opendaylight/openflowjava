@@ -57,6 +57,8 @@ public class HelloMessageFactory implements OFDeserializer<HelloMessage> {
                 if (paddingRemainder != 0) {
                     input.readBytes(EncodeConstants.PADDING - paddingRemainder);
                 }
+            } else {
+                return elementsList;
             }
             elementsList.add(elementsBuilder.build());
         }
