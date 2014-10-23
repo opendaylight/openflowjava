@@ -44,7 +44,7 @@ import org.opendaylight.openflowjava.protocol.impl.util.ActionDeserializerRegist
  * @author michal.polkorab
  *
  */
-public class ActionDeserializerInitializer {
+public abstract class ActionDeserializerInitializer {
 
     /**
      * Registers action deserializers

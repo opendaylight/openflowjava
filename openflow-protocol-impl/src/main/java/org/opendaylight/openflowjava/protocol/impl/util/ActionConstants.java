@@ -12,7 +12,7 @@ package org.opendaylight.openflowjava.protocol.impl.util;
  * @author michal.polkorab
  *
  */
-public class ActionConstants {
+public abstract class ActionConstants {
 
     /** Openflow v1.0 & v1.3 OFPAT_OUTPUT code */
     public static final byte OUTPUT_CODE = 0;

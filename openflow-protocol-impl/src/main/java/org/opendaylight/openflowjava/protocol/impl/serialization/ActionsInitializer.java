@@ -70,7 +70,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
  * Initializes serializer registry with action serializers
  * @author michal.polkorab
  */
-public class ActionsInitializer {
+public abstract class ActionsInitializer {
 
     /**
      * Registers action serializers into provided registry

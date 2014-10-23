@@ -59,7 +59,7 @@ import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
  * @author michal.polkorab
  *
  */
-public class MatchEntryDeserializerInitializer {
+public abstract class MatchEntryDeserializerInitializer {
 
     /**
      * Registers match entry deserializers

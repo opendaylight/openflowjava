@@ -19,7 +19,7 @@ import org.opendaylight.openflowjava.protocol.impl.connection.MessageConsumer;
 
  * @author michal.polkorab
  */
-public class UdpConnectionMap {
+public abstract class UdpConnectionMap {
 
     private static HashMap<InetSocketAddress, MessageConsumer> connectionMap = new HashMap<>();
 

@@ -60,7 +60,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  *
  */
-public class MessageFactoryInitializer {
+public abstract class MessageFactoryInitializer {
 
     /**
      * Registers message serializers into provided registry

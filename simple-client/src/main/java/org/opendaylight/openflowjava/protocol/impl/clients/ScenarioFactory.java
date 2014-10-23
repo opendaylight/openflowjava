@@ -17,7 +17,7 @@ import org.opendaylight.openflowjava.util.ByteBufUtils;
  * 
  * @author michal.polkorab
  */
-public class ScenarioFactory {
+public abstract class ScenarioFactory {
 
     /**
      * Creates stack with handshake needed messages.

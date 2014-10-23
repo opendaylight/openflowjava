@@ -17,7 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
  * @author michal.polkorab
  *
  */
-public class OxmMaskDeserializer {
+public abstract class OxmMaskDeserializer {
 
     /**
      * Appends mask to match entry (match entry builder)

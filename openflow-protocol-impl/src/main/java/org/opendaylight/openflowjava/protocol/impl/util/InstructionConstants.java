@@ -12,7 +12,7 @@ package org.opendaylight.openflowjava.protocol.impl.util;
  * @author michal.polkorab
  *
  */
-public class InstructionConstants {
+public abstract class InstructionConstants {
 
     /** Openflow v1.3 OFPIT_GOTO_TABLE code */
     public static final byte GOTO_TABLE_TYPE = 1;

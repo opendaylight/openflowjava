@@ -15,7 +15,7 @@ import java.io.InputStream;
  *
  * @author michal.polkorab
  */
-public final class ClientSslKeyStore {
+public abstract class ClientSslKeyStore {
 
     private static final String filename = "/selfSignedSwitch";
 

@@ -22,7 +22,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * @author michal.polkorab
  *
  */
-public class ListDeserializer {
+public abstract class ListDeserializer {
 
     /**
      * Deserializes items into list

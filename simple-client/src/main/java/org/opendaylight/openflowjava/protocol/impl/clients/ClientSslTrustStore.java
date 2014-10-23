@@ -15,7 +15,7 @@ import java.io.InputStream;
  *
  * @author michal.polkorab
  */
-public final class ClientSslTrustStore {
+public abstract class ClientSslTrustStore {
 
     private static final String filename = "/selfSignedController";
 

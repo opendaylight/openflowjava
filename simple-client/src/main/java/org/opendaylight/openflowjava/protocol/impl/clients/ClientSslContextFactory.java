@@ -20,7 +20,7 @@ import javax.net.ssl.TrustManagerFactory;
  *
  * @author michal.polkorab
  */
-public final class ClientSslContextFactory {
+public abstract class ClientSslContextFactory {
 
     
     // "TLS" - supports some version of TLS
