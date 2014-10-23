@@ -42,16 +42,16 @@ public class OxmIpv6ExtHdrDeserializer extends AbstractOxmMatchEntryDeserializer
             MatchEntriesBuilder builder) {
         PseudoFieldMatchEntryBuilder pseudoBuilder = new PseudoFieldMatchEntryBuilder();
         int bitmap = input.readUnsignedShort();
-        final Boolean NONEXT = ((bitmap) & (1<<0)) != 0;
-        final Boolean ESP = ((bitmap) & (1<<1)) != 0;
-        final Boolean AUTH = ((bitmap) & (1<<2)) != 0;
-        final Boolean DEST = ((bitmap) & (1<<3)) != 0;
-        final Boolean FRAG = ((bitmap) & (1<<4)) != 0;
-        final Boolean ROUTER = ((bitmap) & (1<<5)) != 0;
-        final Boolean HOP = ((bitmap) & (1<<6)) != 0;
-        final Boolean UNREP = ((bitmap) & (1<<7)) != 0;
-        final Boolean UNSEQ = ((bitmap) & (1<<8)) != 0;
-        pseudoBuilder.setPseudoField(new Ipv6ExthdrFlags(AUTH, DEST, ESP, FRAG, HOP, NONEXT, ROUTER, UNREP, UNSEQ));
+        final Boolean nonext = ((bitmap) & (1<<0)) != 0;
+        final Boolean esp = ((bitmap) & (1<<1)) != 0;
+        final Boolean auth = ((bitmap) & (1<<2)) != 0;
+        final Boolean dest = ((bitmap) & (1<<3)) != 0;
+        final Boolean frag = ((bitmap) & (1<<4)) != 0;
+        final Boolean router = ((bitmap) & (1<<5)) != 0;
+        final Boolean hop = ((bitmap) & (1<<6)) != 0;
+        final Boolean unrep = ((bitmap) & (1<<7)) != 0;
+        final Boolean unseq = ((bitmap) & (1<<8)) != 0;
+        pseudoBuilder.setPseudoField(new Ipv6ExthdrFlags(auth, dest, esp, frag, hop, nonext, router, unrep, unseq));
         builder.addAugmentation(PseudoFieldMatchEntry.class, pseudoBuilder.build());
     }
 
