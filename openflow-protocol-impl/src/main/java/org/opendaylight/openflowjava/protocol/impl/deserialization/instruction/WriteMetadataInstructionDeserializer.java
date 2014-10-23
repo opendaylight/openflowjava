@@ -35,9 +35,9 @@ public class WriteMetadataInstructionDeserializer extends AbstractInstructionDes
         byte[] metadata = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         input.readBytes(metadata);
         metadataBuilder.setMetadata(metadata);
-        byte[] metadata_mask = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
-        input.readBytes(metadata_mask);
-        metadataBuilder.setMetadataMask(metadata_mask);
+        byte[] metadataMask = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
+        input.readBytes(metadataMask);
+        metadataBuilder.setMetadataMask(metadataMask);
         builder.addAugmentation(MetadataInstruction.class, metadataBuilder.build());
         return builder.build();
     }

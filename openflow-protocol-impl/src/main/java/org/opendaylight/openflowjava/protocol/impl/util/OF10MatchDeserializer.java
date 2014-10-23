@@ -69,18 +69,18 @@ public class OF10MatchDeserializer implements OFDeserializer<MatchV10> {
      * @return decoded FlowWildcardsV10
      */
     public static FlowWildcardsV10 createWildcards(final long input) {
-        boolean _iNPORT = (input & (1 << 0)) != 0;
-        boolean _dLVLAN = (input & (1 << 1)) != 0;
-        boolean _dLSRC = (input & (1 << 2)) != 0;
-        boolean _dLDST = (input & (1 << 3)) != 0;
-        boolean _dLTYPE = (input & (1 << 4)) != 0;
-        boolean _nWPROTO = (input & (1 << 5)) != 0;
-        boolean _tPSRC = (input & (1 << 6)) != 0;
-        boolean _tPDST = (input & (1 << 7)) != 0;
-        boolean _dLVLANPCP = (input & (1 << 20)) != 0;
-        boolean _nWTOS = (input & (1 << 21)) != 0;
-        return new FlowWildcardsV10(_dLDST, _dLSRC, _dLTYPE, _dLVLAN,
-                _dLVLANPCP, _iNPORT, _nWPROTO, _nWTOS, _tPDST, _tPSRC);
+        boolean inPort = (input & (1 << 0)) != 0;
+        boolean dlVLAN = (input & (1 << 1)) != 0;
+        boolean dlSrc = (input & (1 << 2)) != 0;
+        boolean dlDst = (input & (1 << 3)) != 0;
+        boolean dLType = (input & (1 << 4)) != 0;
+        boolean nwProto = (input & (1 << 5)) != 0;
+        boolean tpSrc = (input & (1 << 6)) != 0;
+        boolean tpDst = (input & (1 << 7)) != 0;
+        boolean dlVLANpcp = (input & (1 << 20)) != 0;
+        boolean nwTos = (input & (1 << 21)) != 0;
+        return new FlowWildcardsV10(dlDst, dlSrc, dLType, dlVLAN,
+                dlVLANpcp, inPort, nwProto, nwTos, tpDst, tpSrc);
     }
 
     /**
