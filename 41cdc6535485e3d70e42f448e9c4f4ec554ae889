@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba8cc1f7_31ad6f32",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/core/OFDatagramPacketDecoderTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-10-23T08:41:29Z",
+      "side": 1,
+      "message": "Please delete this test - as it is completely covered in test02()",
+      "revId": "41cdc6535485e3d70e42f448e9c4f4ec554ae889",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba8cc1f7_d1a9a325",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/core/OFDatagramPacketHandlerTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-10-23T08:41:29Z",
+      "side": 1,
+      "message": "Please use ByteBufUtils.hexStringToByteBuf() instead of createBuffer()",
+      "revId": "41cdc6535485e3d70e42f448e9c4f4ec554ae889",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
