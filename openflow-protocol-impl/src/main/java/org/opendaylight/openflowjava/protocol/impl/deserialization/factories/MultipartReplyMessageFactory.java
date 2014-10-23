@@ -188,36 +188,36 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         builder.setFlags(new MultipartRequestFlags((rawMessage.readUnsignedShort() & 0x01) != 0));
         rawMessage.skipBytes(PADDING_IN_MULTIPART_REPLY_HEADER);
 
-        switch (type) {
-        case 0:  builder.setMultipartReplyBody(setDesc(rawMessage));
+        switch (MultipartType.forValue(type)) {
+        case OFPMPDESC:  builder.setMultipartReplyBody(setDesc(rawMessage));
                  break;
-        case 1:  builder.setMultipartReplyBody(setFlow(rawMessage));
+        case OFPMPFLOW:  builder.setMultipartReplyBody(setFlow(rawMessage));
                  break;
-        case 2:  builder.setMultipartReplyBody(setAggregate(rawMessage));
+        case OFPMPAGGREGATE:  builder.setMultipartReplyBody(setAggregate(rawMessage));
                  break;
-        case 3:  builder.setMultipartReplyBody(setTable(rawMessage));
+        case OFPMPTABLE:  builder.setMultipartReplyBody(setTable(rawMessage));
                  break;         
-        case 4:  builder.setMultipartReplyBody(setPortStats(rawMessage));
+        case OFPMPPORTSTATS:  builder.setMultipartReplyBody(setPortStats(rawMessage));
                  break;
-        case 5:  builder.setMultipartReplyBody(setQueue(rawMessage));
+        case OFPMPQUEUE:  builder.setMultipartReplyBody(setQueue(rawMessage));
                  break;         
-        case 6:  builder.setMultipartReplyBody(setGroup(rawMessage));
+        case OFPMPGROUP:  builder.setMultipartReplyBody(setGroup(rawMessage));
                  break;
-        case 7:  builder.setMultipartReplyBody(setGroupDesc(rawMessage));
+        case OFPMPGROUPDESC:  builder.setMultipartReplyBody(setGroupDesc(rawMessage));
                  break;
-        case 8:  builder.setMultipartReplyBody(setGroupFeatures(rawMessage));
+        case OFPMPGROUPFEATURES:  builder.setMultipartReplyBody(setGroupFeatures(rawMessage));
                  break;
-        case 9:  builder.setMultipartReplyBody(setMeter(rawMessage));
+        case OFPMPMETER:  builder.setMultipartReplyBody(setMeter(rawMessage));
                  break;
-        case 10: builder.setMultipartReplyBody(setMeterConfig(rawMessage));
+        case OFPMPMETERCONFIG: builder.setMultipartReplyBody(setMeterConfig(rawMessage));
                  break;
-        case 11: builder.setMultipartReplyBody(setMeterFeatures(rawMessage));
+        case OFPMPMETERFEATURES: builder.setMultipartReplyBody(setMeterFeatures(rawMessage));
                  break;
-        case 12: builder.setMultipartReplyBody(setTableFeatures(rawMessage));
+        case OFPMPTABLEFEATURES: builder.setMultipartReplyBody(setTableFeatures(rawMessage));
                  break;
-        case 13: builder.setMultipartReplyBody(setPortDesc(rawMessage));
+        case OFPMPPORTDESC: builder.setMultipartReplyBody(setPortDesc(rawMessage));
                  break;
-        case 0xFFFF: builder.setMultipartReplyBody(setExperimenter(rawMessage));
+        case OFPMPEXPERIMENTER: builder.setMultipartReplyBody(setExperimenter(rawMessage));
                  break;
         default: 
                  break;
