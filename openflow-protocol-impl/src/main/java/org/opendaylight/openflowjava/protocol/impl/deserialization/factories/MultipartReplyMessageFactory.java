@@ -295,12 +295,12 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static FlowModFlags createFlowModFlagsFromBitmap(int input){
-        final Boolean _oFPFFSENDFLOWREM = (input & (1 << 0)) != 0;
-        final Boolean _oFPFFCHECKOVERLAP = (input & (1 << 1)) != 0;
-        final Boolean _oFPFFRESETCOUNTS = (input & (1 << 2)) != 0; 
-        final Boolean _oFPFFNOPKTCOUNTS = (input & (1 << 3)) != 0;
-        final Boolean _oFPFFNOBYTCOUNTS = (input & (1 << 4)) != 0;
-        return new FlowModFlags(_oFPFFCHECKOVERLAP, _oFPFFNOBYTCOUNTS, _oFPFFNOPKTCOUNTS, _oFPFFRESETCOUNTS, _oFPFFSENDFLOWREM);
+        final Boolean fmfSENDFLOWREM = (input & (1 << 0)) != 0;
+        final Boolean fmfCHECKOVERLAP = (input & (1 << 1)) != 0;
+        final Boolean fmfRESETCOUNTS = (input & (1 << 2)) != 0; 
+        final Boolean fmfNOPKTCOUNTS = (input & (1 << 3)) != 0;
+        final Boolean fmfNOBYTCOUNTS = (input & (1 << 4)) != 0;
+        return new FlowModFlags(fmfCHECKOVERLAP, fmfNOBYTCOUNTS, fmfNOPKTCOUNTS, fmfRESETCOUNTS, fmfSENDFLOWREM);
     }
     
     private static MultipartReplyAggregateCase setAggregate(ByteBuf input) {
@@ -580,17 +580,17 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static MeterFlags createMeterFlags(long input){
-        final Boolean _oFPMFKBPS = (input & (1 << 0)) != 0;
-        final Boolean _oFPMFPKTPS = (input & (1 << 1)) != 0;
-        final Boolean _oFPMFBURST = (input & (1 << 2)) != 0;
-        final Boolean _oFPMFSTATS = (input & (1 << 3)) != 0;
-        return new MeterFlags(_oFPMFBURST, _oFPMFKBPS, _oFPMFPKTPS, _oFPMFSTATS);
+        final Boolean mfKBPS = (input & (1 << 0)) != 0;
+        final Boolean mfPKTPS = (input & (1 << 1)) != 0;
+        final Boolean mfBURST = (input & (1 << 2)) != 0;
+        final Boolean mfSTATS = (input & (1 << 3)) != 0;
+        return new MeterFlags(mfBURST, mfKBPS, mfPKTPS, mfSTATS);
     }
     
     private static MeterBandTypeBitmap createMeterBandsBitmap(long input) {
-        final Boolean _oFPMBTDROP = (input & (1 << 1)) != 0;
-        final Boolean _oFPMBTDSCPREMARK = (input & (1 << 2)) != 0;
-        return new MeterBandTypeBitmap(_oFPMBTDROP, _oFPMBTDSCPREMARK);
+        final Boolean mbtDROP = (input & (1 << 1)) != 0;
+        final Boolean mbtDSCPREMARK = (input & (1 << 2)) != 0;
+        return new MeterBandTypeBitmap(mbtDROP, mbtDSCPREMARK);
     }
     
     private static MultipartReplyMeterCase setMeter(ByteBuf input) {
@@ -727,39 +727,39 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static PortConfig createPortConfig(long input){
-        final Boolean _portDown   = ((input) & (1<<0)) != 0;
-        final Boolean _noRecv    = ((input) & (1<<2)) != 0;
-        final Boolean _noFwd       = ((input) & (1<<5)) != 0;
-        final Boolean _noPacketIn = ((input) & (1<<6)) != 0;
-        return new PortConfig(_noFwd, _noPacketIn, _noRecv, _portDown);
+        final Boolean pcPortDown   = ((input) & (1<<0)) != 0;
+        final Boolean pcNRecv    = ((input) & (1<<2)) != 0;
+        final Boolean pcNFwd       = ((input) & (1<<5)) != 0;
+        final Boolean pcNPacketIn = ((input) & (1<<6)) != 0;
+        return new PortConfig(pcNFwd, pcNPacketIn, pcNRecv, pcPortDown);
     }
     
     private static PortState createPortState(long input){
-        final Boolean _linkDown = ((input) & (1<<0)) != 0;
-        final Boolean _blocked  = ((input) & (1<<1)) != 0;
-        final Boolean _live     = ((input) & (1<<2)) != 0;
-        return new PortState(_blocked, _linkDown, _live);
+        final Boolean psLinkDown = ((input) & (1<<0)) != 0;
+        final Boolean psBlocked  = ((input) & (1<<1)) != 0;
+        final Boolean psLive     = ((input) & (1<<2)) != 0;
+        return new PortState(psBlocked, psLinkDown, psLive);
     }
     
     private static PortFeatures createPortFeatures(long input){
-        final Boolean _10mbHd = ((input) & (1<<0)) != 0;
-        final Boolean _10mbFd = ((input) & (1<<1)) != 0;
-        final Boolean _100mbHd = ((input) & (1<<2)) != 0;
-        final Boolean _100mbFd = ((input) & (1<<3)) != 0;
-        final Boolean _1gbHd = ((input) & (1<<4)) != 0;
-        final Boolean _1gbFd = ((input) & (1<<5)) != 0;
-        final Boolean _10gbFd = ((input) & (1<<6)) != 0;
-        final Boolean _40gbFd = ((input) & (1<<7)) != 0;
-        final Boolean _100gbFd = ((input) & (1<<8)) != 0;
-        final Boolean _1tbFd = ((input) & (1<<9)) != 0;
-        final Boolean _other = ((input) & (1<<10)) != 0;
-        final Boolean _copper = ((input) & (1<<11)) != 0;
-        final Boolean _fiber = ((input) & (1<<12)) != 0;
-        final Boolean _autoneg = ((input) & (1<<13)) != 0;
-        final Boolean _pause = ((input) & (1<<14)) != 0;
-        final Boolean _pauseAsym = ((input) & (1<<15)) != 0;
-        return new PortFeatures(_100gbFd, _100mbFd, _100mbHd, _10gbFd, _10mbFd, _10mbHd, _1gbFd,
-                _1gbHd, _1tbFd, _40gbFd, _autoneg, _copper, _fiber, _other, _pause, _pauseAsym);
+        final Boolean pf10mbHd = ((input) & (1<<0)) != 0;
+        final Boolean pf10mbFd = ((input) & (1<<1)) != 0;
+        final Boolean pf100mbHd = ((input) & (1<<2)) != 0;
+        final Boolean pf100mbFd = ((input) & (1<<3)) != 0;
+        final Boolean pf1gbHd = ((input) & (1<<4)) != 0;
+        final Boolean pf1gbFd = ((input) & (1<<5)) != 0;
+        final Boolean pf10gbFd = ((input) & (1<<6)) != 0;
+        final Boolean pf40gbFd = ((input) & (1<<7)) != 0;
+        final Boolean pf100gbFd = ((input) & (1<<8)) != 0;
+        final Boolean pf1tbFd = ((input) & (1<<9)) != 0;
+        final Boolean pfOther = ((input) & (1<<10)) != 0;
+        final Boolean pfCopper = ((input) & (1<<11)) != 0;
+        final Boolean pfFiber = ((input) & (1<<12)) != 0;
+        final Boolean pfAutoneg = ((input) & (1<<13)) != 0;
+        final Boolean pfPause = ((input) & (1<<14)) != 0;
+        final Boolean pfPauseAsym = ((input) & (1<<15)) != 0;
+        return new PortFeatures(pf100gbFd, pf100mbFd, pf100mbHd, pf10gbFd, pf10mbFd, pf10mbHd, pf1gbFd,
+                pf1gbHd, pf1tbFd, pf40gbFd, pfAutoneg, pfCopper, pfFiber, pfOther, pfPause, pfPauseAsym);
     }
     
     private static MultipartReplyGroupFeaturesCase setGroupFeatures(ByteBuf rawMessage) {
@@ -782,43 +782,43 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     }
     
     private static ActionType createActionBitmap(long input) {
-        final Boolean OFPAT_OUTPUT = ((input) & (1<<0)) != 0;
-        final Boolean OFPAT_COPY_TTL_OUT = ((input) & (1<<11)) != 0;
-        final Boolean OFPAT_COPY_TTL_IN = ((input) & (1<<12)) != 0;
-        final Boolean OFPAT_SET_MPLS_TTL = ((input) & (1<<15)) != 0;
-        final Boolean OFPAT_DEC_MPLS_TTL = ((input) & (1<<16)) != 0;
-        final Boolean OFPAT_PUSH_VLAN = ((input) & (1<<17)) != 0;
-        final Boolean OFPAT_POP_VLAN = ((input) & (1<<18)) != 0;
-        final Boolean OFPAT_PUSH_MPLS = ((input) & (1<<19)) != 0;
-        final Boolean OFPAT_POP_MPLS = ((input) & (1<<20)) != 0;
-        final Boolean OFPAT_SET_QUEUE = ((input) & (1<<21)) != 0;
-        final Boolean OFPAT_GROUP = ((input) & (1<<22)) != 0;
-        final Boolean OFPAT_SET_NW_TTL = ((input) & (1<<23)) != 0;
-        final Boolean OFPAT_DEC_NW_TTL = ((input) & (1<<24)) != 0;
-        final Boolean OFPAT_SET_FIELD = ((input) & (1<<25)) != 0;
-        final Boolean OFPAT_PUSH_PBB = ((input) & (1<<26)) != 0;
-        final Boolean OFPAT_POP_PBB = ((input) & (1<<27)) != 0;
-        final Boolean OFPAT_EXPERIMENTER = false;
-        return new ActionType(OFPAT_COPY_TTL_IN, OFPAT_COPY_TTL_OUT, OFPAT_DEC_MPLS_TTL,
-                OFPAT_DEC_NW_TTL, OFPAT_EXPERIMENTER, OFPAT_GROUP, OFPAT_OUTPUT, OFPAT_POP_MPLS,
-                OFPAT_POP_PBB, OFPAT_POP_VLAN, OFPAT_PUSH_MPLS, OFPAT_PUSH_PBB, OFPAT_PUSH_VLAN,
-                OFPAT_SET_FIELD, OFPAT_SET_MPLS_TTL, OFPAT_SET_NW_TTL, OFPAT_SET_QUEUE);
+        final Boolean atOutput = ((input) & (1<<0)) != 0;
+        final Boolean atCopyTTLout = ((input) & (1<<11)) != 0;
+        final Boolean atCopyTTLin = ((input) & (1<<12)) != 0;
+        final Boolean atSetMplsTTL = ((input) & (1<<15)) != 0;
+        final Boolean atDecMplsTTL = ((input) & (1<<16)) != 0;
+        final Boolean atPushVLAN = ((input) & (1<<17)) != 0;
+        final Boolean atPopVLAN = ((input) & (1<<18)) != 0;
+        final Boolean atPushMPLS = ((input) & (1<<19)) != 0;
+        final Boolean atPopMPLS = ((input) & (1<<20)) != 0;
+        final Boolean atSetQueue = ((input) & (1<<21)) != 0;
+        final Boolean atGroup = ((input) & (1<<22)) != 0;
+        final Boolean atSetNWTTL = ((input) & (1<<23)) != 0;
+        final Boolean atDecNWTTL = ((input) & (1<<24)) != 0;
+        final Boolean atSetField = ((input) & (1<<25)) != 0;
+        final Boolean atPushPBB = ((input) & (1<<26)) != 0;
+        final Boolean atPopPBB = ((input) & (1<<27)) != 0;
+        final Boolean atExperimenter = false;
+        return new ActionType(atCopyTTLin, atCopyTTLout, atDecMplsTTL,
+                atDecNWTTL, atExperimenter, atGroup, atOutput, atPopMPLS,
+                atPopPBB, atPopVLAN, atPushMPLS, atPushPBB, atPushVLAN,
+                atSetField, atSetMplsTTL, atSetNWTTL, atSetQueue);
     }
 
     private static GroupCapabilities createCapabilities(long input) {
-        final Boolean OFOFPGFC_SELECT_WEIGHT = ((input) & (1<<0)) != 0;
-        final Boolean OFPGFC_SELECT_LIVENESS = ((input) & (1<<1)) != 0;
-        final Boolean OFPGFC_CHAINING = ((input) & (1<<2)) != 0;
-        final Boolean OFPGFC_CHAINING_CHECKS = ((input) & (1<<3)) != 0;
-        return new GroupCapabilities(OFPGFC_CHAINING, OFPGFC_CHAINING_CHECKS, OFPGFC_SELECT_LIVENESS, OFOFPGFC_SELECT_WEIGHT);
+        final Boolean gcSelectWeight = ((input) & (1<<0)) != 0;
+        final Boolean gcSelectLiveness = ((input) & (1<<1)) != 0;
+        final Boolean gcChaining = ((input) & (1<<2)) != 0;
+        final Boolean gcChainingChecks = ((input) & (1<<3)) != 0;
+        return new GroupCapabilities(gcChaining, gcChainingChecks, gcSelectLiveness, gcSelectWeight);
     }
 
     private static GroupTypes createGroupType(long input) {
-        final Boolean OFPGT_ALL = ((input) & (1<<0)) != 0;
-        final Boolean OFPGT_SELECT = ((input) & (1<<1)) != 0;
-        final Boolean OFPGT_INDIRECT = ((input) & (1<<2)) != 0;
-        final Boolean OFPGT_FF = ((input) & (1<<3)) != 0;
-        return new GroupTypes(OFPGT_ALL, OFPGT_FF, OFPGT_INDIRECT, OFPGT_SELECT);
+        final Boolean gtAll = ((input) & (1<<0)) != 0;
+        final Boolean gtSelect = ((input) & (1<<1)) != 0;
+        final Boolean gtIndirect = ((input) & (1<<2)) != 0;
+        final Boolean gtFF = ((input) & (1<<3)) != 0;
+        return new GroupTypes(gtAll, gtFF, gtIndirect, gtSelect);
     }
     
     private MultipartReplyGroupDescCase setGroupDesc(ByteBuf input) {

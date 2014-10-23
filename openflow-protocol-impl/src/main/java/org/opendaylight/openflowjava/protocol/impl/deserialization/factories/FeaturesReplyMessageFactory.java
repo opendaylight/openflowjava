@@ -45,15 +45,15 @@ public class FeaturesReplyMessageFactory implements OFDeserializer<GetFeaturesOu
     }
 
     private static Capabilities createCapabilities(long input) {
-        final Boolean FLOW_STATS = (input & (1 << 0)) != 0;
-        final Boolean TABLE_STATS = (input & (1 << 1)) != 0;
-        final Boolean PORT_STATS = (input & (1 << 2)) != 0;
-        final Boolean GROUP_STATS = (input & (1 << 3)) != 0;
-        final Boolean IP_REASM = (input & (1 << 5)) != 0;
-        final Boolean QUEUE_STATS = (input & (1 << 6)) != 0;
-        final Boolean PORT_BLOCKED = (input & (1 << 8)) != 0;
-        return new Capabilities(FLOW_STATS, GROUP_STATS, IP_REASM,
-                PORT_BLOCKED, PORT_STATS, QUEUE_STATS, TABLE_STATS);
+        final Boolean flowStats = (input & (1 << 0)) != 0;
+        final Boolean tableStats = (input & (1 << 1)) != 0;
+        final Boolean potStats = (input & (1 << 2)) != 0;
+        final Boolean groupStats = (input & (1 << 3)) != 0;
+        final Boolean ipReasm = (input & (1 << 5)) != 0;
+        final Boolean queueStats = (input & (1 << 6)) != 0;
+        final Boolean portBlocked = (input & (1 << 8)) != 0;
+        return new Capabilities(flowStats, groupStats, ipReasm,
+                portBlocked, potStats, queueStats, tableStats);
     }
 
 }

@@ -56,35 +56,35 @@ public class OF10FeaturesReplyMessageFactory implements OFDeserializer<GetFeatur
     }
 
     private static CapabilitiesV10 createCapabilitiesV10(long input) {
-        final Boolean FLOW_STATS = (input & (1 << 0)) != 0;
-        final Boolean TABLE_STATS = (input & (1 << 1)) != 0;
-        final Boolean PORT_STATS = (input & (1 << 2)) != 0;
-        final Boolean STP = (input & (1 << 3)) != 0;
-        final Boolean RESERVED = (input & (1 << 4)) != 0;
-        final Boolean IP_REASM = (input & (1 << 5)) != 0;
-        final Boolean QUEUE_STATS = (input & (1 << 6)) != 0;
-        final Boolean ARP_MATCH_IP = (input & (1 << 7)) != 0;
-        return new CapabilitiesV10(ARP_MATCH_IP, FLOW_STATS, IP_REASM,
-                PORT_STATS, QUEUE_STATS, RESERVED, STP, TABLE_STATS);
+        final Boolean flowStats = (input & (1 << 0)) != 0;
+        final Boolean tableStats = (input & (1 << 1)) != 0;
+        final Boolean portStats = (input & (1 << 2)) != 0;
+        final Boolean stp = (input & (1 << 3)) != 0;
+        final Boolean reserved = (input & (1 << 4)) != 0;
+        final Boolean ipReasm = (input & (1 << 5)) != 0;
+        final Boolean queueStats = (input & (1 << 6)) != 0;
+        final Boolean arpMatchIp = (input & (1 << 7)) != 0;
+        return new CapabilitiesV10(arpMatchIp, flowStats, ipReasm,
+                portStats, queueStats, reserved, stp, tableStats);
     }
     
     private static ActionTypeV10 createActionsV10(long input) {
-        final Boolean OUTPUT = (input & (1 << 0)) != 0;
-        final Boolean SET_VLAN_VID = (input & (1 << 1)) != 0;
-        final Boolean SET_VLAN_PCP = (input & (1 << 2)) != 0;
-        final Boolean STRIP_VLAN = (input & (1 << 3)) != 0;
-        final Boolean SET_DL_SRC = (input & (1 << 4)) != 0;
-        final Boolean SET_DL_DST = (input & (1 << 5)) != 0;
-        final Boolean SET_NW_SRC = (input & (1 << 6)) != 0;
-        final Boolean SET_NW_DST = (input & (1 << 7)) != 0;
-        final Boolean SET_NW_TOS = (input & (1 << 8)) != 0;
-        final Boolean SET_TP_SRC = (input & (1 << 9)) != 0;
-        final Boolean SET_TP_DST = (input & (1 << 10)) != 0;
-        final Boolean ENQUEUE = (input & (1 << 11)) != 0;
-        final Boolean VENDOR = (input & (1 << 12)) != 0;
-        return new ActionTypeV10(ENQUEUE, OUTPUT, SET_DL_DST, SET_DL_SRC,
-                SET_NW_DST, SET_NW_SRC, SET_NW_TOS, SET_TP_DST, SET_TP_SRC,
-                SET_VLAN_PCP, SET_VLAN_VID, STRIP_VLAN, VENDOR);
+        final Boolean output = (input & (1 << 0)) != 0;
+        final Boolean setVLANvid = (input & (1 << 1)) != 0;
+        final Boolean setVLANpcp = (input & (1 << 2)) != 0;
+        final Boolean stripVLAN = (input & (1 << 3)) != 0;
+        final Boolean setDLsrc = (input & (1 << 4)) != 0;
+        final Boolean setDLdst = (input & (1 << 5)) != 0;
+        final Boolean setNWsrc = (input & (1 << 6)) != 0;
+        final Boolean setNWdst = (input & (1 << 7)) != 0;
+        final Boolean setNWtos = (input & (1 << 8)) != 0;
+        final Boolean setTPsrc = (input & (1 << 9)) != 0;
+        final Boolean setTPdst = (input & (1 << 10)) != 0;
+        final Boolean enqueue = (input & (1 << 11)) != 0;
+        final Boolean vendor = (input & (1 << 12)) != 0;
+        return new ActionTypeV10(enqueue, output, setDLdst, setDLsrc,
+                setNWdst, setNWsrc, setNWtos, setTPdst, setTPsrc,
+                setVLANpcp, setVLANvid, stripVLAN, vendor);
     }
 
     private static PhyPort deserializePort(ByteBuf rawMessage) {
