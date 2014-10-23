@@ -55,13 +55,13 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
         outBuffer.writeShort(message.getType().getIntValue());
         outBuffer.writeShort(createMultipartRequestFlagsBitmask(message.getFlags()));
         if (message.getMultipartRequestBody() instanceof MultipartRequestDescCase) {
-            serializeDescBody(message.getMultipartRequestBody(), outBuffer);
+            serializeDescBody();
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestFlowCase) {
             serializeFlowBody(message.getMultipartRequestBody(), outBuffer);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestAggregateCase) {
             serializeAggregateBody(message.getMultipartRequestBody(), outBuffer);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestTableCase) {
-            serializeTableBody(message.getMultipartRequestBody(), outBuffer);
+            serializeTableBody();
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestPortStatsCase) {
             serializePortBody(message.getMultipartRequestBody(), outBuffer);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestQueueCase) {
@@ -80,8 +80,7 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
      * @param multipartRequestBody
      * @param output
      */
-    private void serializeDescBody(final MultipartRequestBody multipartRequestBody,
-            final ByteBuf output) {
+    private void serializeDescBody() {
         // The body of MultiPartRequestDesc is empty
     }
 
@@ -89,8 +88,7 @@ public class OF10StatsRequestInputFactory implements OFSerializer<MultipartReque
      * @param multipartRequestBody
      * @param out
      */
-    private void serializeTableBody(final MultipartRequestBody multipartRequestBody,
-            final ByteBuf out) {
+    private void serializeTableBody() {
      // The body of MultiPartTable is empty
     }
 

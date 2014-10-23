@@ -106,13 +106,13 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         outBuffer.writeZero(PADDING_IN_MULTIPART_REQUEST_MESSAGE);
 
         if (message.getMultipartRequestBody() instanceof MultipartRequestDescCase){
-            serializeDescBody(message.getMultipartRequestBody(), outBuffer);
+            serializeDescBody();
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestFlowCase) {
             serializeFlowBody(message.getMultipartRequestBody(), outBuffer);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestAggregateCase) {
             serializeAggregateBody(message.getMultipartRequestBody(), outBuffer);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestTableCase) {
-            serializeTableBody(message.getMultipartRequestBody(), outBuffer);
+            serializeTableBody();
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestPortStatsCase) {
             serializePortStatsBody(message.getMultipartRequestBody(), outBuffer);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestQueueCase) {
@@ -120,19 +120,19 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestGroupCase) {
             serializeeGroupStatsBody(message.getMultipartRequestBody(), outBuffer);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestGroupDescCase) {
-            serializeGroupDescBody(message.getMultipartRequestBody(), outBuffer);
+            serializeGroupDescBody();
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestGroupFeaturesCase) {
-            serializeGroupFeaturesBody(message.getMultipartRequestBody(), outBuffer);
+            serializeGroupFeaturesBody();
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestMeterCase) {
             serializeMeterBody(message.getMultipartRequestBody(), outBuffer);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestMeterConfigCase) {
             serializeMeterConfigBody(message.getMultipartRequestBody(), outBuffer);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestMeterFeaturesCase) {
-            serializeMeterFeaturesBody(message.getMultipartRequestBody(), outBuffer);
+            serializeMeterFeaturesBody();
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestTableFeaturesCase) {
             serializeTableFeaturesBody(message.getMultipartRequestBody(), outBuffer);
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestPortDescCase) {
-            serializePortDescBody(message.getMultipartRequestBody(), outBuffer);
+            serializePortDescBody();
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestExperimenterCase) {
         	serializeExperimenterBody(message, outBuffer);
         }
@@ -159,8 +159,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
      * @param multipartRequestBody
      * @param output
      */
-    private void serializeDescBody(final MultipartRequestBody multipartRequestBody,
-            final ByteBuf output) {
+    private void serializeDescBody() {
         // The body of MultiPartRequestDesc is empty
     }
 
@@ -168,8 +167,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
      * @param multipartRequestBody
      * @param out
      */
-    private void serializeTableBody(final MultipartRequestBody multipartRequestBody,
-            final ByteBuf out) {
+    private void serializeTableBody() {
      // The body of MultiPartTable is empty
     }
 
@@ -177,8 +175,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
      * @param multipartRequestBody
      * @param out
      */
-    private void serializeGroupDescBody(final MultipartRequestBody multipartRequestBody,
-            final ByteBuf out) {
+    private void serializeGroupDescBody() {
      // The body of MultiPartRequestGroupDesc is empty
     }
 
@@ -186,8 +183,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
      * @param multipartRequestBody
      * @param out
      */
-    private void serializeGroupFeaturesBody(
-            final MultipartRequestBody multipartRequestBody, final ByteBuf out) {
+    private void serializeGroupFeaturesBody() {
      // The body of MultiPartRequestGroupFeatures is empty
     }
 
@@ -195,8 +191,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
      * @param multipartRequestBody
      * @param out
      */
-    private void serializeMeterFeaturesBody(
-            final MultipartRequestBody multipartRequestBody, final ByteBuf out) {
+    private void serializeMeterFeaturesBody() {
      // The body of MultiPartMeterFeatures is empty
     }
 
@@ -204,8 +199,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
      * @param multipartRequestBody
      * @param out
      */
-    private void serializePortDescBody(final MultipartRequestBody multipartRequestBody,
-            final ByteBuf out) {
+    private void serializePortDescBody() {
      // The body of MultiPartPortDesc is empty
     }
 
