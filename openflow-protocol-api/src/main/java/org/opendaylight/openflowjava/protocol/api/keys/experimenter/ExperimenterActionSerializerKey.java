@@ -40,19 +40,23 @@ public final class ExperimenterActionSerializerKey extends ActionSerializerKey<E
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         ExperimenterActionSerializerKey other = (ExperimenterActionSerializerKey) obj;
         if (actionSubType == null) {
-            if (other.actionSubType != null)
+            if (other.actionSubType != null) {
                 return false;
-        } else if (!actionSubType.equals(other.actionSubType))
+            }
+        } else if (!actionSubType.equals(other.actionSubType)) {
             return false;
+        }
         return true;
     }
-
 }

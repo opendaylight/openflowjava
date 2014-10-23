@@ -44,23 +44,30 @@ public class ActionSerializerKey<TYPE extends ActionBase> extends MessageTypeKey
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         ActionSerializerKey<?> other = (ActionSerializerKey<?>) obj;
         if (actionType == null) {
-            if (other.actionType != null)
+            if (other.actionType != null) {
                 return false;
-        } else if (!actionType.equals(other.actionType))
+            }
+        } else if (!actionType.equals(other.actionType)) {
             return false;
+        }
         if (experimenterId == null) {
-            if (other.experimenterId != null)
+            if (other.experimenterId != null) {
                 return false;
-        } else if (!experimenterId.equals(other.experimenterId))
+            }
+        } else if (!experimenterId.equals(other.experimenterId)) {
             return false;
+        }
         return true;
     }
 

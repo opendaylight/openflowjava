@@ -39,18 +39,23 @@ public class InstructionDeserializerKey extends MessageCodeKey {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (!(obj instanceof InstructionDeserializerKey))
+        }
+        if (!(obj instanceof InstructionDeserializerKey)) {
             return false;
+        }
         InstructionDeserializerKey other = (InstructionDeserializerKey) obj;
         if (experimenterId == null) {
-            if (other.experimenterId != null)
+            if (other.experimenterId != null) {
                 return false;
-        } else if (!experimenterId.equals(other.experimenterId))
+            }
+        } else if (!experimenterId.equals(other.experimenterId)) {
             return false;
+        }
         return true;
     }
 

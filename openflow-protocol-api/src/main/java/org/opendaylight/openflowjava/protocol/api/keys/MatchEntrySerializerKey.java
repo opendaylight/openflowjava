@@ -58,28 +58,37 @@ public final class MatchEntrySerializerKey<OXM_CLASS extends OxmClassBase, OXM_F
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         MatchEntrySerializerKey<?, ?> other = (MatchEntrySerializerKey<?, ?>) obj;
         if (experimenterId == null) {
-            if (other.experimenterId != null)
+            if (other.experimenterId != null) {
                 return false;
-        } else if (!experimenterId.equals(other.experimenterId))
+            }
+        } else if (!experimenterId.equals(other.experimenterId)) {
             return false;
+        }
         if (oxmClass == null) {
-            if (other.oxmClass != null)
+            if (other.oxmClass != null) {
                 return false;
-        } else if (!oxmClass.equals(other.oxmClass))
+            }
+        } else if (!oxmClass.equals(other.oxmClass)) {
             return false;
+        }
         if (oxmField == null) {
-            if (other.oxmField != null)
+            if (other.oxmField != null) {
                 return false;
-        } else if (!oxmField.equals(other.oxmField))
+            }
+        } else if (!oxmField.equals(other.oxmField)) {
             return false;
+        }
         return true;
     }
 

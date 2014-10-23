@@ -46,23 +46,30 @@ public class InstructionSerializerKey<TYPE extends InstructionBase>
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (!(obj instanceof InstructionSerializerKey))
+        }
+        if (!(obj instanceof InstructionSerializerKey)) {
             return false;
+        }
         InstructionSerializerKey<?> other = (InstructionSerializerKey<?>) obj;
         if (experimenterId == null) {
-            if (other.experimenterId != null)
+            if (other.experimenterId != null) {
                 return false;
-        } else if (!experimenterId.equals(other.experimenterId))
+            }
+        } else if (!experimenterId.equals(other.experimenterId)) {
             return false;
+        }
         if (instructionType == null) {
-            if (other.instructionType != null)
+            if (other.instructionType != null) {
                 return false;
-        } else if (!instructionType.equals(other.instructionType))
+            }
+        } else if (!instructionType.equals(other.instructionType)) {
             return false;
+        }
         return true;
     }
 

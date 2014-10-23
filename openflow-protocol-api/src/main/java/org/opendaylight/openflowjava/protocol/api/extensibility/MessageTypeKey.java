@@ -45,21 +45,26 @@ public class MessageTypeKey<E> {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (!(obj instanceof MessageTypeKey))
+        }
+        if (!(obj instanceof MessageTypeKey)) {
             return false;
+        }
         MessageTypeKey<?> other = (MessageTypeKey<?>) obj;
         if (msgType == null) {
-            if (other.msgType != null)
+            if (other.msgType != null) {
                 return false;
-        } else if (!msgType.equals(other.msgType))
+            }
+        } else if (!msgType.equals(other.msgType)) {
             return false;
-        if (msgVersion != other.msgVersion)
+        }
+        if (msgVersion != other.msgVersion) {
             return false;
+        }
         return true;
     }
- 
 }

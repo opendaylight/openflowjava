@@ -43,18 +43,23 @@ public final class ExperimenterIdDeserializerKey extends MessageCodeKey
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (!(obj instanceof ExperimenterIdDeserializerKey))
+        }
+        if (!(obj instanceof ExperimenterIdDeserializerKey)) {
             return false;
+        }
         ExperimenterIdDeserializerKey other = (ExperimenterIdDeserializerKey) obj;
         if (experimenterId == null) {
-            if (other.experimenterId != null)
+            if (other.experimenterId != null) {
                 return false;
-        } else if (!experimenterId.equals(other.experimenterId))
+            }
+        } else if (!experimenterId.equals(other.experimenterId)) {
             return false;
+        }
         return true;
     }
 

@@ -53,18 +53,22 @@ public class MessageTypeCodeKey {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         MessageTypeCodeKey other = (MessageTypeCodeKey) obj;
-        if (msgType != other.msgType)
+        if (msgType != other.msgType) {
             return false;
-        if (msgVersion != other.msgVersion)
+        }
+        if (msgVersion != other.msgVersion) {
             return false;
+        }
         return true;
     }
-    
 }

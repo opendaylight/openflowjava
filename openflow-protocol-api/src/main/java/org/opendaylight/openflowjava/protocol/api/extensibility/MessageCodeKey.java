@@ -40,22 +40,29 @@ public class MessageCodeKey {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (!(obj instanceof MessageCodeKey))
+        }
+        if (!(obj instanceof MessageCodeKey)) {
             return false;
+        }
         MessageCodeKey other = (MessageCodeKey) obj;
         if (clazz == null) {
-            if (other.clazz != null)
+            if (other.clazz != null) {
                 return false;
-        } else if (!clazz.equals(other.clazz))
+            }
+        } else if (!clazz.equals(other.clazz)) {
             return false;
-        if (msgType != other.msgType)
+        }
+        if (msgType != other.msgType) {
             return false;
-        if (msgVersion != other.msgVersion)
+        }
+        if (msgVersion != other.msgVersion) {
             return false;
+        }
         return true;
     }
 
@@ -63,5 +70,4 @@ public class MessageCodeKey {
     public String toString() {
         return "msgVersion: " + msgVersion + " objectClass: " + clazz.getName() + " msgType: " + msgType;
     }
-
 }

@@ -37,15 +37,19 @@ public class EnhancedMessageCodeKey extends MessageCodeKey {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         EnhancedMessageCodeKey other = (EnhancedMessageCodeKey) obj;
-        if (msgType2 != other.msgType2)
+        if (msgType2 != other.msgType2) {
             return false;
+        }
         return true;
     }
 

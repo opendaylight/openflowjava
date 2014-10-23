@@ -51,20 +51,26 @@ public final class MatchEntryDeserializerKey extends MessageCodeKey
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         MatchEntryDeserializerKey other = (MatchEntryDeserializerKey) obj;
         if (experimenterId == null) {
-            if (other.experimenterId != null)
+            if (other.experimenterId != null) {
                 return false;
-        } else if (!experimenterId.equals(other.experimenterId))
+            }
+        } else if (!experimenterId.equals(other.experimenterId)) {
             return false;
-        if (oxmField != other.oxmField)
+        }
+        if (oxmField != other.oxmField) {
             return false;
+        }
         return true;
     }
 

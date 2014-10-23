@@ -30,19 +30,24 @@ public class EnhancedMessageTypeKey<E, F> extends MessageTypeKey<E> {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         @SuppressWarnings("rawtypes")
         EnhancedMessageTypeKey other = (EnhancedMessageTypeKey) obj;
         if (msgType2 == null) {
-            if (other.msgType2 != null)
+            if (other.msgType2 != null) {
                 return false;
-        } else if (!msgType2.getName().equals(other.msgType2.getName()))
+            }
+        } else if (!msgType2.getName().equals(other.msgType2.getName())) {
             return false;
+        }
         return true;
     }
 
