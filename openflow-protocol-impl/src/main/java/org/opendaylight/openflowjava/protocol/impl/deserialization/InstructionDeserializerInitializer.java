@@ -22,7 +22,7 @@ import org.opendaylight.openflowjava.protocol.impl.util.InstructionDeserializerR
  * @author michal.polkorab
  *
  */
-public class InstructionDeserializerInitializer {
+public abstract class InstructionDeserializerInitializer {
 
     /**
      * Registers instruction deserializers

@@ -55,7 +55,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  *
  */
-public class MessageDerializerInitializer {
+public abstract class MessageDerializerInitializer {
 
     /**
      * Registers message deserializers

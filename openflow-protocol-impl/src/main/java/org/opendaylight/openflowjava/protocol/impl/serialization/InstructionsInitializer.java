@@ -28,7 +28,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction
  * @author michal.polkorab
  *
  */
-public class InstructionsInitializer {
+public abstract class InstructionsInitializer {
 
     /**
      * Registers instruction serializers into provided registry

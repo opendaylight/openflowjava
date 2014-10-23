@@ -103,7 +103,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Vlan
  * Initializes serializer registry with match entry serializers
  * @author michal.polkorab
  */
-public class MatchEntriesInitializer {
+public abstract class MatchEntriesInitializer {
 
     /**
      * Registers match entry serializers into provided registry

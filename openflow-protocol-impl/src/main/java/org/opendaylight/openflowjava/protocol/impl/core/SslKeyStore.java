@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author michal.polkorab
  */
-public final class SslKeyStore {
+public abstract class SslKeyStore {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SslKeyStore.class);
 
