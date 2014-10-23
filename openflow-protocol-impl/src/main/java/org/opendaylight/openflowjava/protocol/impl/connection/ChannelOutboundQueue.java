@@ -96,9 +96,9 @@ final class ChannelOutboundQueue extends ChannelInboundHandlerAdapter {
     private final Queue<MessageHolder<?>> queue;
     private final long maxWorkTime;
     private final Channel channel;
-    private InetSocketAddress address;
+    private final InetSocketAddress address;
 
-    public ChannelOutboundQueue(final Channel channel, final int queueDepth) {
+    public ChannelOutboundQueue(final Channel channel, final int queueDepth, final InetSocketAddress address) {
         Preconditions.checkArgument(queueDepth > 0, "Queue depth has to be positive");
 
         /*
@@ -110,6 +110,7 @@ final class ChannelOutboundQueue extends ChannelInboundHandlerAdapter {
         this.queue = new LinkedBlockingQueue<>(queueDepth);
         this.channel = Preconditions.checkNotNull(channel);
         this.maxWorkTime = TimeUnit.MICROSECONDS.toNanos(DEFAULT_WORKTIME_MICROS);
+        this.address = address;
     }
 
     /**
@@ -275,9 +276,5 @@ final class ChannelOutboundQueue extends ChannelInboundHandlerAdapter {
     @Override
     public String toString() {
         return String.format("Channel %s queue [%s messages flushing=%s]", channel, queue.size(), flushScheduled);
-    }
-
-    public void setAddress(InetSocketAddress address) {
-        this.address = address;
     }
 }
