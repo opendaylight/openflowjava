@@ -247,10 +247,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
         responseCache.invalidateAll();
         disconnectOccured = true;
 
-        String failureInfo = "switch disconnecting failed";
-        ErrorSeverity errorSeverity = ErrorSeverity.ERROR;
-        String message = "Check the switch connection";
-        return handleTransportChannelFuture(disconnectResult, failureInfo, errorSeverity, message);
+        return handleTransportChannelFuture(disconnectResult);
     }
 
     @Override
@@ -377,8 +374,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
      * @return
      */
     private static SettableFuture<Boolean> handleTransportChannelFuture(
-            final ChannelFuture resultFuture, final String failureInfo,
-            final ErrorSeverity errorSeverity, final String message) {
+            final ChannelFuture resultFuture) {
 
         final SettableFuture<Boolean> transportResult = SettableFuture.create();
 
