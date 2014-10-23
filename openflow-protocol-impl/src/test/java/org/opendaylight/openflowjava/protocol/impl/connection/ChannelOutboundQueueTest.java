@@ -35,7 +35,7 @@ public class ChannelOutboundQueueTest {
      */
     @Test(expected=IllegalArgumentException.class)
     public void testIncorrectQueueCreation() {
-        new ChannelOutboundQueue(channel, 0);
+        new ChannelOutboundQueue(channel, 0, null);
     }
 
     /**
@@ -43,7 +43,7 @@ public class ChannelOutboundQueueTest {
      */
     @Test
     public void testEnqueue() {
-        ChannelOutboundQueue queue = new ChannelOutboundQueue(channel, 1);
+        ChannelOutboundQueue queue = new ChannelOutboundQueue(channel, 1, null);
         boolean enqueued = queue.enqueue(new SimpleRpcListener("INPUT", "Failed to send INPUT"));
         Assert.assertTrue("Enqueue problem", enqueued);
         enqueued = queue.enqueue(new SimpleRpcListener("INPUT", "Failed to send INPUT"));

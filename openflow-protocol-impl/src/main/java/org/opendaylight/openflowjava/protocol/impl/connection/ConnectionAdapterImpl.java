@@ -130,8 +130,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 .expireAfterWrite(RPC_RESPONSE_EXPIRATION, TimeUnit.MINUTES)
                 .removalListener(REMOVAL_LISTENER).build();
         this.channel = Preconditions.checkNotNull(channel);
-        this.output = new ChannelOutboundQueue(channel, DEFAULT_QUEUE_DEPTH);
-        output.setAddress(address);
+        this.output = new ChannelOutboundQueue(channel, DEFAULT_QUEUE_DEPTH, address);
         channel.pipeline().addLast(output);
         LOG.debug("ConnectionAdapter created");
     }
