@@ -51,12 +51,12 @@ public class OF10FlowRemovedMessageFactory implements OFDeserializer<FlowRemoved
         builder.setDurationNsec(rawMessage.readUnsignedInt());
         builder.setIdleTimeout(rawMessage.readUnsignedShort());
         rawMessage.skipBytes(PADDING_IN_FLOW_REMOVED_MESSAGE_2);
-        byte[] packet_count = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
-        rawMessage.readBytes(packet_count);
-        builder.setPacketCount(new BigInteger(1, packet_count));
-        byte[] byte_count = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
-        rawMessage.readBytes(byte_count);
-        builder.setByteCount(new BigInteger(1, byte_count));
+        byte[] packetCount = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
+        rawMessage.readBytes(packetCount);
+        builder.setPacketCount(new BigInteger(1, packetCount));
+        byte[] byteCount = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
+        rawMessage.readBytes(byteCount);
+        builder.setByteCount(new BigInteger(1, byteCount));
         return builder.build();
     }
 

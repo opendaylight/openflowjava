@@ -48,12 +48,12 @@ public class FlowRemovedMessageFactory implements OFDeserializer<FlowRemovedMess
         builder.setDurationNsec(rawMessage.readUnsignedInt());
         builder.setIdleTimeout(rawMessage.readUnsignedShort());
         builder.setHardTimeout(rawMessage.readUnsignedShort());
-        byte[] packet_count = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
-        rawMessage.readBytes(packet_count);
-        builder.setPacketCount(new BigInteger(1, packet_count));
-        byte[] byte_count = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
-        rawMessage.readBytes(byte_count);
-        builder.setByteCount(new BigInteger(1, byte_count));
+        byte[] packetCount = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
+        rawMessage.readBytes(packetCount);
+        builder.setPacketCount(new BigInteger(1, packetCount));
+        byte[] byteCount = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
+        rawMessage.readBytes(byteCount);
+        builder.setByteCount(new BigInteger(1, byteCount));
         OFDeserializer<Match> matchDeserializer = registry.getDeserializer(new MessageCodeKey(
                 EncodeConstants.OF13_VERSION_ID, EncodeConstants.EMPTY_VALUE, Match.class));
         builder.setMatch(matchDeserializer.deserialize(rawMessage));
