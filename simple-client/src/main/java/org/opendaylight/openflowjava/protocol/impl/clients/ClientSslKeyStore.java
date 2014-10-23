@@ -19,6 +19,10 @@ public final class ClientSslKeyStore {
 
     private static final String filename = "/selfSignedSwitch";
 
+    private ClientSslKeyStore() {
+        throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
+    }
+
     /**
      * InputStream instance of key
      *

@@ -60,7 +60,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  *
  */
-public class MessageFactoryInitializer {
+public final class MessageFactoryInitializer {
+
+    private MessageFactoryInitializer() {
+        throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
+    }
 
     /**
      * Registers message serializers into provided registry

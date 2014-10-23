@@ -103,7 +103,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Vlan
  * Initializes serializer registry with match entry serializers
  * @author michal.polkorab
  */
-public class MatchEntriesInitializer {
+public final class MatchEntriesInitializer {
+
+    private MatchEntriesInitializer() {
+        throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
+    }
 
     /**
      * Registers match entry serializers into provided registry

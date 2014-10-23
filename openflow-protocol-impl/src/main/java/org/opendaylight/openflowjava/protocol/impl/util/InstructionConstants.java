@@ -12,7 +12,7 @@ package org.opendaylight.openflowjava.protocol.impl.util;
  * @author michal.polkorab
  *
  */
-public class InstructionConstants {
+public final class InstructionConstants {
 
     /** Openflow v1.3 OFPIT_GOTO_TABLE code */
     public static final byte GOTO_TABLE_TYPE = 1;
@@ -41,4 +41,8 @@ public class InstructionConstants {
     public static final byte WRITE_METADATA_LENGTH = 24;
     /** Openflow v1.3 header length (only type and length fields) */
     public static final byte INSTRUCTION_IDS_LENGTH = 4;
+
+    private InstructionConstants() {
+        throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
+    }
 }

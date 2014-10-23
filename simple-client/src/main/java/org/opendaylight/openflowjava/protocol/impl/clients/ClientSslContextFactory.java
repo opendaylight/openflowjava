@@ -22,7 +22,10 @@ import javax.net.ssl.TrustManagerFactory;
  */
 public final class ClientSslContextFactory {
 
-    
+    private ClientSslContextFactory() {
+        throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
+    }
+
     // "TLS" - supports some version of TLS
     // Use "TLSv1", "TLSv1.1", "TLSv1.2" for specific TLS version
     private static final String PROTOCOL = "TLS";

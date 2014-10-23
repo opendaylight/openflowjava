@@ -59,7 +59,11 @@ import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
  * @author michal.polkorab
  *
  */
-public class MatchEntryDeserializerInitializer {
+public final class MatchEntryDeserializerInitializer {
+
+    private MatchEntryDeserializerInitializer() {
+        throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
+    }
 
     /**
      * Registers match entry deserializers

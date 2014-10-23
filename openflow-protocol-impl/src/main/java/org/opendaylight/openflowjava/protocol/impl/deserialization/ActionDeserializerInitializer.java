@@ -44,7 +44,11 @@ import org.opendaylight.openflowjava.protocol.impl.util.ActionDeserializerRegist
  * @author michal.polkorab
  *
  */
-public class ActionDeserializerInitializer {
+public final class ActionDeserializerInitializer {
+
+    private ActionDeserializerInitializer() {
+        throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
+    }
 
     /**
      * Registers action deserializers

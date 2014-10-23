@@ -22,7 +22,11 @@ import org.opendaylight.openflowjava.protocol.impl.util.InstructionDeserializerR
  * @author michal.polkorab
  *
  */
-public class InstructionDeserializerInitializer {
+public final class InstructionDeserializerInitializer {
+
+    private InstructionDeserializerInitializer() {
+        throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
+    }
 
     /**
      * Registers instruction deserializers

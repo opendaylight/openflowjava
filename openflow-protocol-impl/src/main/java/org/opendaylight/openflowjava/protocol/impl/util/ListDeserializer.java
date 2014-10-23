@@ -22,7 +22,11 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * @author michal.polkorab
  *
  */
-public class ListDeserializer {
+public final class ListDeserializer {
+
+    private ListDeserializer() {
+        throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
+    }
 
     /**
      * Deserializes items into list

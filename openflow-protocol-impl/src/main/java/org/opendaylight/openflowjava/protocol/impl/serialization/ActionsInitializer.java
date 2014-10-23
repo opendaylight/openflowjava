@@ -70,7 +70,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
  * Initializes serializer registry with action serializers
  * @author michal.polkorab
  */
-public class ActionsInitializer {
+public final class ActionsInitializer {
+
+    private ActionsInitializer() {
+        throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
+    }
 
     /**
      * Registers action serializers into provided registry

@@ -20,9 +20,13 @@ import org.opendaylight.openflowjava.protocol.impl.connection.MessageConsumer;
 
  * @author michal.polkorab
  */
-public class UdpConnectionMap {
+public final class UdpConnectionMap {
 
     private static Map<InetSocketAddress, MessageConsumer> connectionMap = new HashMap<>();
+
+    private UdpConnectionMap() {
+        throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
+    }
 
     /**
      * @param address sender's address

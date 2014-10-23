@@ -19,6 +19,10 @@ public final class ClientSslTrustStore {
 
     private static final String filename = "/selfSignedController";
 
+    private ClientSslTrustStore() {
+        throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
+    }
+
     /**
      * InputStream instance of key
      *

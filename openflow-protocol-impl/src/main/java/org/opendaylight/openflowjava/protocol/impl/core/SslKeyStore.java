@@ -26,6 +26,10 @@ public final class SslKeyStore {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SslKeyStore.class);
 
+    private SslKeyStore() {
+        throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
+    }
+
     /**
      * InputStream instance of key - key location is on classpath
      * @param filename keystore location

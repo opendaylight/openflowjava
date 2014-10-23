@@ -17,7 +17,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
  * @author michal.polkorab
  *
  */
-public class OxmMaskDeserializer {
+public final class OxmMaskDeserializer {
+
+    private OxmMaskDeserializer() {
+        throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
+    }
 
     /**
      * Appends mask to match entry (match entry builder)

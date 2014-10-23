@@ -12,7 +12,7 @@ package org.opendaylight.openflowjava.protocol.impl.util;
  * @author michal.polkorab
  *
  */
-public class ActionConstants {
+public final class ActionConstants {
 
     /** Openflow v1.0 & v1.3 OFPAT_OUTPUT code */
     public static final byte OUTPUT_CODE = 0;
@@ -101,4 +101,7 @@ public class ActionConstants {
     /** Action header size */
     public static final byte ACTION_IDS_LENGTH = 4;
 
+    private ActionConstants() {
+        throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
+    }
 }

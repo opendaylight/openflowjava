@@ -39,7 +39,7 @@ public class DeserializerRegistryImpl implements DeserializerRegistry {
     public void init() {
         registry = new HashMap<>();
         // register message deserializers
-        MessageDerializerInitializer.registerMessageDeserializers(this);
+        MessageDeserializerInitializer.registerMessageDeserializers(this);
 
         // register common structure deserializers
         registerDeserializer(new MessageCodeKey(EncodeConstants.OF10_VERSION_ID,

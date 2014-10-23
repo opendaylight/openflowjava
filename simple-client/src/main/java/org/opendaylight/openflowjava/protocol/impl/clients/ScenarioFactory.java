@@ -17,7 +17,11 @@ import org.opendaylight.openflowjava.util.ByteBufUtils;
  * 
  * @author michal.polkorab
  */
-public class ScenarioFactory {
+public final class ScenarioFactory {
+
+    private ScenarioFactory() {
+        throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
+    }
 
     /**
      * Creates stack with handshake needed messages.

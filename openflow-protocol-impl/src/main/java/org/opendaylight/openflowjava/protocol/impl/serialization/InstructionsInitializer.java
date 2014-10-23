@@ -28,7 +28,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction
  * @author michal.polkorab
  *
  */
-public class InstructionsInitializer {
+public final class InstructionsInitializer {
+
+    private InstructionsInitializer() {
+        throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
+    }
 
     /**
      * Registers instruction serializers into provided registry
