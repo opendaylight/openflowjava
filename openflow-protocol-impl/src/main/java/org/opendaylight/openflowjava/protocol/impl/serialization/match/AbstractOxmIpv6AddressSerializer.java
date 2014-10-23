@@ -44,7 +44,7 @@ public abstract class AbstractOxmIpv6AddressSerializer extends AbstractOxmMatchE
         writeMask(entry, outBuffer, getValueLength());
     }
 
-    private static List<String> parseIpv6Address(final ArrayList<String> addressGroups) {
+    private static List<String> parseIpv6Address(final List<String> addressGroups) {
         int countEmpty = 0;
         for (String group : addressGroups) {
             if (group.equals("")) {

@@ -10,6 +10,7 @@ package org.opendaylight.openflowjava.protocol.impl.core;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.opendaylight.openflowjava.protocol.impl.connection.MessageConsumer;
 
@@ -21,7 +22,7 @@ import org.opendaylight.openflowjava.protocol.impl.connection.MessageConsumer;
  */
 public class UdpConnectionMap {
 
-    private static HashMap<InetSocketAddress, MessageConsumer> connectionMap = new HashMap<>();
+    private static Map<InetSocketAddress, MessageConsumer> connectionMap = new HashMap<>();
 
     /**
      * @param address sender's address

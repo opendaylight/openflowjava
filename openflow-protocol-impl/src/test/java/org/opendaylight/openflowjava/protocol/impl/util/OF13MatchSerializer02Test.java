@@ -128,7 +128,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
  * @author michal.polkorab
  *
  */
-public class OF13MatchSerializerTest2 {
+public class OF13MatchSerializer02Test {
 
     private SerializerRegistry registry;
     private OFSerializer<Match> matchSerializer;
