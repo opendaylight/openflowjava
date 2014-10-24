@@ -113,6 +113,14 @@ public class SwitchConnectionProviderImpl02Test {
     }
 
     /**
+     * Test shutdown on unconfigured provider
+     */
+    @Test(expected = IllegalStateException.class)
+    public void testShutdownUnconfigured(){
+        startUp(TransportProtocol.TCP);
+        provider.shutdown();
+    }
+    /**
      * Test unregister by wrong key
      */
     @Test
