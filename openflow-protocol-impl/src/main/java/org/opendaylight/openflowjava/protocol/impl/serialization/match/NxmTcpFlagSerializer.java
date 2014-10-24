@@ -8,20 +8,17 @@
 package org.opendaylight.openflowjava.protocol.impl.serialization.match;
 
 import io.netty.buffer.ByteBuf;
+
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.TcpFlagMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author brent.salisbury
  *
  */
 public class NxmTcpFlagSerializer extends AbstractOxmMatchEntrySerializer {
-
-    private static final Logger logger = LoggerFactory.getLogger(NxmTcpFlagSerializer.class);
 
     @Override
     public void serialize(MatchEntries entry, ByteBuf outBuffer) {
