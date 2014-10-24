@@ -42,18 +42,18 @@ public abstract class AbstractOxmMatchEntryDeserializer implements HeaderDeseria
      * Prepares match entry header - sets oxm_class, oxm_field, hasMask
      *  + sets the buffer.readerIndex() to the end of match entry 
      *  - where augmentation starts
-     * @param oxm_class oxm class type
-     * @param oxm_field oxm field type
+     * @param oxmClass oxm class type
+     * @param oxmField oxm field type
      * @param input input bytebuf
      * @return MatchEntriesBuilder which can be filled with MatchEntry augmentation
      */
-    protected MatchEntriesBuilder processHeader(Class<? extends OxmClassBase> oxm_class,
-            Class<? extends MatchField> oxm_field, ByteBuf input) {
+    protected MatchEntriesBuilder processHeader(Class<? extends OxmClassBase> oxmClass,
+            Class<? extends MatchField> oxmField, ByteBuf input) {
         MatchEntriesBuilder builder = new MatchEntriesBuilder();
-        builder.setOxmClass(oxm_class);
+        builder.setOxmClass(oxmClass);
         // skip oxm_class (provided)
         input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-        builder.setOxmMatchField(oxm_field);
+        builder.setOxmMatchField(oxmField);
         boolean hasMask = (input.readUnsignedByte() & 1) != 0;
         builder.setHasMask(hasMask);
         // skip match entry length - not needed
