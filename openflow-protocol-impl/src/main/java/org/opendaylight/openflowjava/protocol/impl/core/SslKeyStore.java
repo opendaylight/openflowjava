@@ -55,7 +55,7 @@ public final class SslKeyStore {
                 in = new FileInputStream(keystorefile);
             } catch (FileNotFoundException e) {
                 throw new IllegalStateException("KeyStore file not found: "
-                        + filename);
+                        + filename,e);
             }
             break;
         default:
