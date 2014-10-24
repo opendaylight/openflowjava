@@ -9,8 +9,6 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 
 import java.util.Map;
 
-import org.opendaylight.openflowjava.protocol.impl.deserialization.TypeToClassKey;
-
 /**
  * @author michal.polkorab
  *
