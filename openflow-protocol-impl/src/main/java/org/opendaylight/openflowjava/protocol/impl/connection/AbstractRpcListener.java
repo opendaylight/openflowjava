@@ -67,7 +67,7 @@ abstract class AbstractRpcListener<T> implements GenericFutureListener<Future<Vo
         return this;
     }
 
-    abstract protected void operationSuccessful();
+    protected abstract void operationSuccessful();
 
     protected final void failedRpc(final Throwable cause) {
         final RpcError rpcError = ConnectionAdapterImpl.buildRpcError(
