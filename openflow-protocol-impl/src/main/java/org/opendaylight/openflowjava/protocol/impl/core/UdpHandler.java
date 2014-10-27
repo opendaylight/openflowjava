@@ -37,7 +37,6 @@ public final class UdpHandler implements ServerFacade {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(UdpHandler.class);
     private int port;
-    private String address;
     private EventLoopGroup group;
     private final InetAddress startupAddress;
     private final SettableFuture<Boolean> isOnlineFuture;
@@ -91,7 +90,7 @@ public final class UdpHandler implements ServerFacade {
 
         try {
             InetSocketAddress isa = (InetSocketAddress) f.channel().localAddress();
-            this.address = isa.getHostString();
+            String address = isa.getHostString();
 
             // Update port, as it may have been specified as 0
             this.port = isa.getPort();

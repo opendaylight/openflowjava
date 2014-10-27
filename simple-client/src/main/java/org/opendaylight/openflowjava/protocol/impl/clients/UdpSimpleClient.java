@@ -36,7 +36,6 @@ public class UdpSimpleClient implements OFClient {
     private EventLoopGroup group;
     private SettableFuture<Boolean> isOnlineFuture;
     private SettableFuture<Boolean> scenarioDone;
-    private UdpSimpleClientInitializer clientInitializer;
     private ScenarioHandler scenarioHandler;
     
     /**
@@ -62,7 +61,7 @@ public class UdpSimpleClient implements OFClient {
     @Override
     public void run() {
         group = new NioEventLoopGroup();
-        clientInitializer = new UdpSimpleClientInitializer(isOnlineFuture);
+        UdpSimpleClientInitializer clientInitializer = new UdpSimpleClientInitializer(isOnlineFuture);
         clientInitializer.setScenario(scenarioHandler);
         try {
             Bootstrap b = new Bootstrap();

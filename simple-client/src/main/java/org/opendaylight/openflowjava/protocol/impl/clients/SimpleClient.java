@@ -36,7 +36,6 @@ public class SimpleClient implements OFClient {
     private EventLoopGroup group;
     private SettableFuture<Boolean> isOnlineFuture;
     private SettableFuture<Boolean> scenarioDone;
-    private SimpleClientInitializer clientInitializer;
     private ScenarioHandler scenarioHandler;
     
     /**
@@ -62,7 +61,7 @@ public class SimpleClient implements OFClient {
     @Override
     public void run() {
         group = new NioEventLoopGroup();
-        clientInitializer = new SimpleClientInitializer(isOnlineFuture, securedClient);
+        SimpleClientInitializer clientInitializer = new SimpleClientInitializer(isOnlineFuture, securedClient);
         clientInitializer.setScenario(scenarioHandler);
         try {
             Bootstrap b = new Bootstrap();
