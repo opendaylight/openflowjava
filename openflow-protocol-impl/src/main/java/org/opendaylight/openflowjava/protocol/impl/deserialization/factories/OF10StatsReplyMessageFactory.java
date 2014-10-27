@@ -87,20 +87,20 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         int type = rawMessage.readUnsignedShort();
         builder.setType(MultipartType.forValue(type));
         builder.setFlags(new MultipartRequestFlags((rawMessage.readUnsignedShort() & 0x01) != 0));
-        switch (type) {
-        case 0:  builder.setMultipartReplyBody(setDesc(rawMessage));
+        switch (MultipartType.forValue(type)) {
+        case OFPMPDESC:  builder.setMultipartReplyBody(setDesc(rawMessage));
             break;
-        case 1:  builder.setMultipartReplyBody(setFlow(rawMessage));
+        case OFPMPFLOW:  builder.setMultipartReplyBody(setFlow(rawMessage));
             break;
-        case 2:  builder.setMultipartReplyBody(setAggregate(rawMessage));
+        case OFPMPAGGREGATE:  builder.setMultipartReplyBody(setAggregate(rawMessage));
             break;
-        case 3:  builder.setMultipartReplyBody(setTable(rawMessage));
+        case OFPMPTABLE:  builder.setMultipartReplyBody(setTable(rawMessage));
             break;         
-        case 4:  builder.setMultipartReplyBody(setPortStats(rawMessage));
+        case OFPMPPORTSTATS:  builder.setMultipartReplyBody(setPortStats(rawMessage));
             break;
-        case 5:  builder.setMultipartReplyBody(setQueue(rawMessage));
+        case OFPMPQUEUE:  builder.setMultipartReplyBody(setQueue(rawMessage));
             break;         
-        case 0xFFFF: builder.setMultipartReplyBody(setExperimenter(rawMessage));
+        case OFPMPEXPERIMENTER: builder.setMultipartReplyBody(setExperimenter(rawMessage));
             break;
         default: 
             break;
