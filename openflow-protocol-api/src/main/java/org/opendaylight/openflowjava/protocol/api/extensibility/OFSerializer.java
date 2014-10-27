@@ -25,6 +25,6 @@ public interface OFSerializer <SERIALIZER_TYPE extends DataObject> extends OFGen
      * @param input object to be serialized
      * @param outBuffer output buffer
      */
-    public void serialize(SERIALIZER_TYPE input, ByteBuf outBuffer);
+    void serialize(SERIALIZER_TYPE input, ByteBuf outBuffer);
 
 }

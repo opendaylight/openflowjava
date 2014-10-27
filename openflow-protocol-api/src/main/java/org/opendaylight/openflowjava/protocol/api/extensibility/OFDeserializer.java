@@ -26,5 +26,5 @@ public interface OFDeserializer<E extends DataObject> extends OFGeneralDeseriali
      * @param message message as bytes in ByteBuf
      * @return POJO/DTO
      */
-    public E deserialize(ByteBuf message);
+    E deserialize(ByteBuf message);
 }

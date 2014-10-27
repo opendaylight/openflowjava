@@ -23,5 +23,5 @@ public interface HeaderSerializer<SERIALIZER_TYPE extends DataObject> extends OF
      * @param input object whose headers should be serialized
      * @param outBuffer output buffer
      */
-    public void serializeHeader(SERIALIZER_TYPE input, ByteBuf outBuffer);
+    void serializeHeader(SERIALIZER_TYPE input, ByteBuf outBuffer);
 }

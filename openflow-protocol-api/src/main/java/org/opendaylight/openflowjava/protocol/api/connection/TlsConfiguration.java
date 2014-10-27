@@ -21,45 +21,45 @@ public interface TlsConfiguration {
     /**
      * @return keystore location
      */
-    public String getTlsKeystore();
+    String getTlsKeystore();
     
     /**
      * @return keystore type
      */
-    public KeystoreType getTlsKeystoreType();
+    KeystoreType getTlsKeystoreType();
     
     /**
      * @return truststore location
      */
-    public String getTlsTruststore();
+    String getTlsTruststore();
     
     /**
      * @return truststore type
      */
-    public KeystoreType getTlsTruststoreType();
+    KeystoreType getTlsTruststoreType();
 
     /**
      * @return keystore path type (CLASSPATH or PATH)
      */
-    public PathType getTlsKeystorePathType();
+    PathType getTlsKeystorePathType();
 
     /**
      * @return truststore path type (CLASSPATH or PATH)
      */
-    public PathType getTlsTruststorePathType();
+    PathType getTlsTruststorePathType();
 
     /**
      * @return password protecting specified keystore
      */
-    public String getKeystorePassword();
+    String getKeystorePassword();
 
     /**
      * @return password protecting certificate
      */
-    public String getCertificatePassword();
+    String getCertificatePassword();
 
     /**
      * @return password protecting specified truststore
      */
-    public String getTruststorePassword();
+    String getTruststorePassword();
 }

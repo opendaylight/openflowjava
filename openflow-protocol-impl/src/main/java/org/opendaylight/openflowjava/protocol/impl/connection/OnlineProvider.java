@@ -19,6 +19,6 @@ public interface OnlineProvider {
     /**
      * @return the isOnlineFuture
      */
-    public ListenableFuture<Boolean> getIsOnlineFuture();
+    ListenableFuture<Boolean> getIsOnlineFuture();
 
 }

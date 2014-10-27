@@ -19,5 +19,5 @@ public interface ClientEvent {
      * Common method for triggering events
      * @return true if event executed successfully
      */
-    public boolean eventExecuted();
+    boolean eventExecuted();
 }

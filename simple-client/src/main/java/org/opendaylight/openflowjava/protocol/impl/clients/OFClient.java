@@ -20,21 +20,21 @@ public interface OFClient extends Runnable {
     /**
      * @return the isOnlineFuture which is set when client is started
      */
-    public SettableFuture<Boolean> getIsOnlineFuture();
+    SettableFuture<Boolean> getIsOnlineFuture();
 
     /**
      * @return the scenarioDone when scenario is successfully finished
      */
-    public SettableFuture<Boolean> getScenarioDone();
+    SettableFuture<Boolean> getScenarioDone();
 
     /**
      * @param scenario list of desired actions
      */
-    public void setScenarioHandler(ScenarioHandler scenario);
+    void setScenarioHandler(ScenarioHandler scenario);
 
     /**
      * @param securedClient true is client should use encrypted communication,
      * false otherwise
      */
-    public void setSecuredClient(boolean securedClient);
+    void setSecuredClient(boolean securedClient);
 }

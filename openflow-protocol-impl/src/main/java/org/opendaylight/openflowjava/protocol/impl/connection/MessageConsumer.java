@@ -19,6 +19,6 @@ public interface MessageConsumer {
     /**
      * @param message to process
      */
-    public void consume(DataObject message);
+    void consume(DataObject message);
 
 }

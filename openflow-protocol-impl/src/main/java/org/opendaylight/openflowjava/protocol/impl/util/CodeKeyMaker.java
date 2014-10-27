@@ -21,6 +21,6 @@ public interface CodeKeyMaker {
      * @param input buffer that will be the needed data gathered from
      * @return key for deserializer lookup
      */
-    public abstract MessageCodeKey make(ByteBuf input);
+    abstract MessageCodeKey make(ByteBuf input);
 
 }

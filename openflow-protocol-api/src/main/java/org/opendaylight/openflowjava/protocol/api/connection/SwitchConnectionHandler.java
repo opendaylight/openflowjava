@@ -21,12 +21,12 @@ public interface SwitchConnectionHandler {
     /**
      * @param connection to switch proving message sending/receiving, connection management
      */
-    public void onSwitchConnected(ConnectionAdapter connection);
+    void onSwitchConnected(ConnectionAdapter connection);
     
     /**
      * @param switchAddress
      * @return true, if connection from switch having given address shell be accepted; false otherwise
      */
-    public boolean accept(InetAddress switchAddress);
+    boolean accept(InetAddress switchAddress);
 
 }

@@ -17,13 +17,13 @@ public interface DeserializerRegistry {
     /**
      * Initializes deserializers
      */
-    public void init();
+    void init();
 
     /**
      * @param key used for deserializer lookup
      * @return deserializer found
      */
-    public <SERIALIZERTYPE extends OFGeneralDeserializer>
+    <SERIALIZERTYPE extends OFGeneralDeserializer>
             SERIALIZERTYPE getDeserializer(MessageCodeKey key);
 
     /**
@@ -37,7 +37,7 @@ public interface DeserializerRegistry {
      * @param key used for deserializer lookup
      * @param deserializer deserializer instance
      */
-    public void registerDeserializer(MessageCodeKey key,
+    void registerDeserializer(MessageCodeKey key,
             OFGeneralDeserializer deserializer);
 
     /**
@@ -47,5 +47,5 @@ public interface DeserializerRegistry {
      * @return true if deserializer was removed,
      *  false if no deserializer was found under specified key
      */
-    public boolean unregisterDeserializer(MessageCodeKey key);
+    boolean unregisterDeserializer(MessageCodeKey key);
 }
