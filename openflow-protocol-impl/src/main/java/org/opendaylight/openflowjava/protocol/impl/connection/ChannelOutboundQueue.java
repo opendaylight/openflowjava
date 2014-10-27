@@ -202,12 +202,10 @@ final class ChannelOutboundQueue extends ChannelInboundHandlerAdapter {
              *      should be able to perform dynamic adjustments here.
              *      is that additional complexity needed, though?
              */
-            if ((messages % WORKTIME_RECHECK_MSGS) == 0) {
-                if (System.nanoTime() >= deadline) {
-                    LOG.trace("Exceeded allotted work time {}us",
-                            TimeUnit.NANOSECONDS.toMicros(maxWorkTime));
-                    break;
-                }
+            if ((messages % WORKTIME_RECHECK_MSGS) == 0 && System.nanoTime() >= deadline) {
+                LOG.trace("Exceeded allotted work time {}us",
+                        TimeUnit.NANOSECONDS.toMicros(maxWorkTime));
+                break;
             }
         }
 
