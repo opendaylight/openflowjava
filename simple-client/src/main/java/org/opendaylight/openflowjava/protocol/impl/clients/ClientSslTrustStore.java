@@ -17,7 +17,7 @@ import java.io.InputStream;
  */
 public final class ClientSslTrustStore {
 
-    private static final String filename = "/selfSignedController";
+    private static final String KEY_STORE_FILENAME = "/selfSignedController";
 
     private ClientSslTrustStore() {
         throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
@@ -29,9 +29,9 @@ public final class ClientSslTrustStore {
      * @return key as InputStream
      */
     public static InputStream asInputStream() {
-        InputStream in = ClientSslTrustStore.class.getResourceAsStream(filename);
+        InputStream in = ClientSslTrustStore.class.getResourceAsStream(KEY_STORE_FILENAME);
         if (in == null) {
-            throw new IllegalStateException("KeyStore file not found: " + filename);
+            throw new IllegalStateException("KeyStore file not found: " + KEY_STORE_FILENAME);
         }
         return in;
     }
