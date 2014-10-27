@@ -30,6 +30,7 @@ public class ScenarioHandler extends Thread {
     private BlockingQueue<byte[]> ofMsg;
     private ChannelHandlerContext ctx;
     private int eventNumber;
+    private boolean scenarioFinished = false;
 
     /**
      * 
@@ -79,6 +80,7 @@ public class ScenarioHandler extends Thread {
         }
         LOGGER.debug("Scenario finished");
         synchronized (this) {
+            scenarioFinished = true;
             this.notify();
         }
     }
@@ -116,5 +118,12 @@ public class ScenarioHandler extends Thread {
      */
     public void addOfMsg(byte[] message) {
         ofMsg.add(message);
+    }
+
+    /**
+     * @return true is scenario is finished
+     */
+    public boolean isScenarioFinished() {
+        return scenarioFinished;
     }
 }

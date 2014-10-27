@@ -74,7 +74,9 @@ public class UdpSimpleClient implements OFClient {
 
             synchronized (scenarioHandler) {
                 LOGGER.debug("WAITING FOR SCENARIO");
-                scenarioHandler.wait();
+                while (! scenarioHandler.isScenarioFinished()) {
+                    scenarioHandler.wait();
+                }
             }
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);

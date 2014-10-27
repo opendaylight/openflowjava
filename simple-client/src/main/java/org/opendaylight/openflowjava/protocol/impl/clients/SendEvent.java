@@ -30,7 +30,10 @@ public class SendEvent implements ClientEvent {
      * @param msgToSend message to be sent
      */
     public SendEvent(byte[] msgToSend) {
-        this.msgToSend = msgToSend;
+        this.msgToSend = new byte[msgToSend.length];
+        for (int i = 0; i < msgToSend.length; i++) {
+            this.msgToSend[i] = msgToSend[i];
+        }
     }
 
     @Override
