@@ -17,7 +17,7 @@ import java.io.InputStream;
  */
 public final class ClientSslKeyStore {
 
-    private static final String filename = "/selfSignedSwitch";
+    private static final String KEY_STORE_FILENAME = "/selfSignedSwitch";
 
     private ClientSslKeyStore() {
         throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
@@ -29,9 +29,9 @@ public final class ClientSslKeyStore {
      * @return key as InputStream
      */
     public static InputStream asInputStream() {
-        InputStream in = ClientSslKeyStore.class.getResourceAsStream(filename);
+        InputStream in = ClientSslKeyStore.class.getResourceAsStream(KEY_STORE_FILENAME);
         if (in == null) {
-            throw new IllegalStateException("KeyStore file not found: " + filename);
+            throw new IllegalStateException("KeyStore file not found: " + KEY_STORE_FILENAME);
         }
         return in;
     }

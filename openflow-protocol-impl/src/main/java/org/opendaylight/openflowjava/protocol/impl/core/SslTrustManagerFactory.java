@@ -28,7 +28,7 @@ public class SslTrustManagerFactory extends TrustManagerFactorySpi {
     /**
      * Logger for SslTrustManagerFactory
      */
-    public static final Logger logger = LoggerFactory.getLogger(SslTrustManagerFactory.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(SslTrustManagerFactory.class);
     private static final TrustManager DUMMY_TRUST_MANAGER = new X509TrustManager() {
         @Override
         public X509Certificate[] getAcceptedIssuers() {
@@ -37,12 +37,12 @@ public class SslTrustManagerFactory extends TrustManagerFactorySpi {
 
         @Override
         public void checkClientTrusted(X509Certificate[] chain, String authType) {
-            logger.error("UNKNOWN CLIENT CERTIFICATE: " + chain[0].getSubjectDN());
+            LOGGER.error("UNKNOWN CLIENT CERTIFICATE: " + chain[0].getSubjectDN());
         }
 
         @Override
         public void checkServerTrusted(X509Certificate[] chain, String authType) {
-            logger.error("UNKNOWN SERVER CERTIFICATE: " + chain[0].getSubjectDN());
+            LOGGER.error("UNKNOWN SERVER CERTIFICATE: " + chain[0].getSubjectDN());
         }
     };
 
