@@ -17,5 +17,5 @@ public interface ConnectionReadyListener {
     /**
      * fired when connection becomes ready-to-use
      */
-    public void onConnectionReady();
+    void onConnectionReady();
 }

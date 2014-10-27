@@ -26,7 +26,7 @@ public interface SerializerRegistry {
      * @param msgTypeKey lookup key
      * @return serializer or NullPointerException if no serializer was found
      */
-    public <KEYTYPE, SERIALIZERTYPE extends OFGeneralSerializer> SERIALIZERTYPE 
+    <KEYTYPE, SERIALIZERTYPE extends OFGeneralSerializer> SERIALIZERTYPE 
         getSerializer(MessageTypeKey<KEYTYPE> msgTypeKey);
 
     /**
@@ -40,7 +40,7 @@ public interface SerializerRegistry {
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */
-    public <KEYTYPE> void registerSerializer(MessageTypeKey<KEYTYPE> key,
+    <KEYTYPE> void registerSerializer(MessageTypeKey<KEYTYPE> key,
             OFGeneralSerializer serializer);
 
     /**
@@ -50,5 +50,5 @@ public interface SerializerRegistry {
      * @return true if serializer was removed,
      *  false if no serializer was found under specified key
      */
-    public <KEYTYPE> boolean unregisterSerializer(MessageTypeKey<KEYTYPE> key);
+    <KEYTYPE> boolean unregisterSerializer(MessageTypeKey<KEYTYPE> key);
 }

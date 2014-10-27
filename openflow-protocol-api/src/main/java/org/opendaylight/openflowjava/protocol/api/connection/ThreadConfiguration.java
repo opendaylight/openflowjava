@@ -17,10 +17,10 @@ public interface ThreadConfiguration {
     /**
      * @return desired number of workerThreads processing the Openflow I/O
      */
-    public int getWorkerThreadCount();
+    int getWorkerThreadCount();
 
     /**
      * @return desired number of bossThreads registering incomming Openflow connections
      */
-    public int getBossThreadCount();
+    int getBossThreadCount();
 }

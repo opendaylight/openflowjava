@@ -20,6 +20,6 @@ public interface ShutdownProvider {
     /**
      * @return shutdown future 
      */
-    public ListenableFuture<Boolean> shutdown();
+    ListenableFuture<Boolean> shutdown();
 
 }

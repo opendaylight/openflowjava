@@ -40,14 +40,14 @@ public interface DeserializerExtensionProvider {
      * @return true if deserializer was removed,
      *  false if no deserializer was found under specified key
      */
-    public boolean unregisterDeserializer(ExperimenterDeserializerKey key);
+    boolean unregisterDeserializer(ExperimenterDeserializerKey key);
 
     /**
      * Registers action deserializer
      * @param key used for deserializer lookup
      * @param deserializer deserializer instance
      */
-    public void registerActionDeserializer(ExperimenterActionDeserializerKey key,
+    void registerActionDeserializer(ExperimenterActionDeserializerKey key,
             OFGeneralDeserializer deserializer);
 
     /**
@@ -55,7 +55,7 @@ public interface DeserializerExtensionProvider {
      * @param key used for deserializer lookup
      * @param deserializer deserializer instance
      */
-    public void registerInstructionDeserializer(ExperimenterInstructionDeserializerKey key,
+    void registerInstructionDeserializer(ExperimenterInstructionDeserializerKey key,
             OFGeneralDeserializer deserializer);
 
     /**
@@ -63,7 +63,7 @@ public interface DeserializerExtensionProvider {
      * @param key used for deserializer lookup
      * @param deserializer deserializer instance
      */
-    public void registerMatchEntryDeserializer(MatchEntryDeserializerKey key,
+    void registerMatchEntryDeserializer(MatchEntryDeserializerKey key,
             OFGeneralDeserializer deserializer);
 
     /**

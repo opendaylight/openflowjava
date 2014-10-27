@@ -40,14 +40,14 @@ public interface SerializerExtensionProvider {
      * @return true if serializer was removed,
      *  false if no serializer was found under specified key
      */
-    public boolean unregisterSerializer(ExperimenterSerializerKey key);
+    boolean unregisterSerializer(ExperimenterSerializerKey key);
 
     /**
      * Registers action serializer
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */
-    public void registerActionSerializer(ExperimenterActionSerializerKey key,
+    void registerActionSerializer(ExperimenterActionSerializerKey key,
             OFGeneralSerializer serializer);
 
     /**
@@ -55,7 +55,7 @@ public interface SerializerExtensionProvider {
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */
-    public void registerInstructionSerializer(ExperimenterInstructionSerializerKey key,
+    void registerInstructionSerializer(ExperimenterInstructionSerializerKey key,
             OFGeneralSerializer serializer);
 
     /**
@@ -63,7 +63,7 @@ public interface SerializerExtensionProvider {
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */
-    public <OXMCLASS extends OxmClassBase, OXMTYPE extends MatchField> void registerMatchEntrySerializer(
+    <OXMCLASS extends OxmClassBase, OXMTYPE extends MatchField> void registerMatchEntrySerializer(
             MatchEntrySerializerKey<OXMCLASS, OXMTYPE> key,OFGeneralSerializer serializer);
 
     /**
@@ -71,7 +71,7 @@ public interface SerializerExtensionProvider {
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */
-    public void registerExperimenterMessageSerializer(ExperimenterIdSerializerKey<ExperimenterInput> key,
+    void registerExperimenterMessageSerializer(ExperimenterIdSerializerKey<ExperimenterInput> key,
             OFSerializer<ExperimenterInput> serializer);
 
     /**
@@ -79,7 +79,7 @@ public interface SerializerExtensionProvider {
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */
-    public void registerMultipartRequestSerializer(ExperimenterIdSerializerKey<MultipartRequestExperimenterCase> key,
+    void registerMultipartRequestSerializer(ExperimenterIdSerializerKey<MultipartRequestExperimenterCase> key,
             OFSerializer<MultipartRequestExperimenterCase> serializer);
 
     /**
@@ -87,7 +87,7 @@ public interface SerializerExtensionProvider {
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */
-    public void registerMultipartRequestTFSerializer(ExperimenterIdSerializerKey<TableFeatureProperties> key,
+    void registerMultipartRequestTFSerializer(ExperimenterIdSerializerKey<TableFeatureProperties> key,
             OFGeneralSerializer serializer);
 
     /**
@@ -95,6 +95,6 @@ public interface SerializerExtensionProvider {
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */
-    public void registerMeterBandSerializer(ExperimenterIdSerializerKey<MeterBandExperimenterCase> key,
+    void registerMeterBandSerializer(ExperimenterIdSerializerKey<MeterBandExperimenterCase> key,
             OFSerializer<MeterBandExperimenterCase> serializer);
 }

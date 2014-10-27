@@ -17,5 +17,5 @@ public interface DeserializerRegistryInjector {
      * Injects deserializer registry into deserializer
      * @param deserializerRegistry
      */
-    public void injectDeserializerRegistry(DeserializerRegistry deserializerRegistry);
+    void injectDeserializerRegistry(DeserializerRegistry deserializerRegistry);
 }

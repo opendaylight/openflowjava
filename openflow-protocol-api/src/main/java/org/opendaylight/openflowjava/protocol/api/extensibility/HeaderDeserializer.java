@@ -23,5 +23,5 @@ public interface HeaderDeserializer<E extends DataObject> extends OFGeneralDeser
      * @param rawMessage message as bytes in ByteBuf
      * @return POJO/DTO
      */
-    public E deserializeHeader(ByteBuf rawMessage);
+    E deserializeHeader(ByteBuf rawMessage);
 }

@@ -21,6 +21,6 @@ public interface TypeKeyMaker<T> {
      * @return key that will be used for serializer lookup in 
      * the serializer registry
      */
-    public abstract MessageTypeKey<?> make(T entry);
+    abstract MessageTypeKey<?> make(T entry);
 
 }

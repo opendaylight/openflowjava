@@ -20,5 +20,5 @@ public interface ServerFacade extends ShutdownProvider, OnlineProvider, Runnable
      * Sets thread configuration
      * @param threadConfig desired thread configuration
      */
-    public void setThreadConfig(ThreadConfiguration threadConfig);
+    void setThreadConfig(ThreadConfiguration threadConfig);
 }

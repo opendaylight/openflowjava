@@ -23,6 +23,6 @@ public interface ConnectionAdapterFactory {
      * @param ch
      * @return connection adapter tcp-implementation
      */
-    public ConnectionFacade createConnectionFacade(Channel ch, InetSocketAddress address) ;
+    ConnectionFacade createConnectionFacade(Channel ch, InetSocketAddress address) ;
 
 }

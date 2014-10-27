@@ -17,6 +17,6 @@ public interface SerializerRegistryInjector {
      * Injects serializer registry
      * @param serializerRegistry registry instance
      */
-    public void injectSerializerRegistry(SerializerRegistry serializerRegistry);
+    void injectSerializerRegistry(SerializerRegistry serializerRegistry);
 
 }
