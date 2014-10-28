@@ -9,9 +9,7 @@
 package org.opendaylight.openflowjava.protocol.impl.core;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToMessageDecoder;
-
-import java.util.List;
+import io.netty.channel.SimpleChannelInboundHandler;
 
 import org.opendaylight.openflowjava.protocol.impl.connection.MessageConsumer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
@@ -24,23 +22,21 @@ import org.slf4j.LoggerFactory;
  * @author michal.polkorab
  *
  */
-public class OFDatagramPacketDecoder extends MessageToMessageDecoder<VersionMessageUdpWrapper>{
+public class OFDatagramPacketDecoder extends SimpleChannelInboundHandler<VersionMessageUdpWrapper>{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OFDatagramPacketDecoder.class);
     private DeserializationFactory deserializationFactory;
 
     @Override
-    protected void decode(ChannelHandlerContext ctx,
-            VersionMessageUdpWrapper msg, List<Object> out) throws Exception {
+    public void channelRead0(ChannelHandlerContext ctx, VersionMessageUdpWrapper msg)
+            throws Exception {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("UdpVersionMessageWrapper received");
-            LOGGER.debug("<< " + ByteBufUtils.byteBufToHexString(msg.getMessageBuffer()));
+                LOGGER.debug("UdpVersionMessageWrapper received");
+                LOGGER.debug("<< " + ByteBufUtils.byteBufToHexString(msg.getMessageBuffer()));
         }
-
         DataObject dataObject = null;
         try {
-            dataObject = deserializationFactory.deserialize(msg.getMessageBuffer(),
-                    msg.getVersion());
+            dataObject = deserializationFactory.deserialize(msg.getMessageBuffer(),msg.getVersion());
             if (dataObject == null) {
                 LOGGER.warn("Translated POJO is null");
             } else {
@@ -55,7 +51,6 @@ public class OFDatagramPacketDecoder extends MessageToMessageDecoder<VersionMess
         } finally {
             msg.getMessageBuffer().release();
         }
-        
     }
 
     /**
