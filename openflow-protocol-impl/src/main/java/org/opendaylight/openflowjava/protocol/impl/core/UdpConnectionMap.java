@@ -9,8 +9,8 @@
 package org.opendaylight.openflowjava.protocol.impl.core;
 
 import java.net.InetSocketAddress;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.opendaylight.openflowjava.protocol.impl.connection.MessageConsumer;
 
@@ -22,7 +22,7 @@ import org.opendaylight.openflowjava.protocol.impl.connection.MessageConsumer;
  */
 public final class UdpConnectionMap {
 
-    private static Map<InetSocketAddress, MessageConsumer> connectionMap = new HashMap<>();
+    private static Map<InetSocketAddress, MessageConsumer> connectionMap = new ConcurrentHashMap<>();
 
     private UdpConnectionMap() {
         throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
@@ -33,6 +33,9 @@ public final class UdpConnectionMap {
      * @return corresponding MessageConsumer
      */
     public static MessageConsumer getMessageConsumer(InetSocketAddress address) {
+        if(address == null){
+            throw new IllegalArgumentException("Address can not be null");
+        }
         return connectionMap.get(address);
     }
 
@@ -41,6 +44,9 @@ public final class UdpConnectionMap {
      * @param consumer MessageConsumer to be added / paired with specified address
      */
     public static void addConnection(InetSocketAddress address, MessageConsumer consumer) {
+        if(address == null){
+            throw new IllegalArgumentException("Address can not be null");
+        }
         connectionMap.put(address, consumer);
     }
 
@@ -48,6 +54,9 @@ public final class UdpConnectionMap {
      * @param address sender's address
      */
     public static void removeConnection(InetSocketAddress address) {
+        if(address == null){
+            throw new IllegalArgumentException("Address can not be null");
+        }
         connectionMap.remove(address);
     }
 }
