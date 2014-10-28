@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba8cc1f7_015fb60f",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/OFDatagramPacketDecoder.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-10-28T10:51:43Z",
+      "side": 1,
+      "message": "Please remove unused import",
+      "revId": "b1b5274876066283cb001bb89992ba6e9d216256",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba8cc1f7_a19b6ac8",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/OFDatagramPacketDecoder.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-10-28T10:51:43Z",
+      "side": 1,
+      "message": "Please use SimpleChannelInboundHandler\u003cVersionMessageUdpWrapper\u003e",
+      "revId": "b1b5274876066283cb001bb89992ba6e9d216256",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba8cc1f7_8173c6b0",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/UdpConnectionMap.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-10-28T10:51:43Z",
+      "side": 1,
+      "message": "Please change to IllegalArgumentException",
+      "revId": "b1b5274876066283cb001bb89992ba6e9d216256",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba8cc1f7_2168bab9",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/UdpConnectionMap.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-10-28T10:51:43Z",
+      "side": 1,
+      "message": "Please change to IllegalArgumentException",
+      "revId": "b1b5274876066283cb001bb89992ba6e9d216256",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba8cc1f7_4165bedf",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/UdpConnectionMap.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-10-28T10:51:43Z",
+      "side": 1,
+      "message": "Please change to IllegalArgumentException",
+      "revId": "b1b5274876066283cb001bb89992ba6e9d216256",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba8cc1f7_c1a0eef6",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/deserialization/instruction/ClearActionsInstructionDeserializer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-10-28T10:51:43Z",
+      "side": 1,
+      "message": "Please remove all logs ... + input.readableBytes() \u003e 0 - might be often true so the log would be incorrect",
+      "revId": "b1b5274876066283cb001bb89992ba6e9d216256",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
