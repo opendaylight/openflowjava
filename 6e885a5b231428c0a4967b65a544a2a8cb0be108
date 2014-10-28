@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba8cc1f7_c1a6aec1",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/deserialization/instruction/ClearActionsInstructionDeserializer.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2014-10-28T15:49:15Z",
+      "side": 1,
+      "message": "Please remove unused logger",
+      "revId": "6e885a5b231428c0a4967b65a544a2a8cb0be108",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
