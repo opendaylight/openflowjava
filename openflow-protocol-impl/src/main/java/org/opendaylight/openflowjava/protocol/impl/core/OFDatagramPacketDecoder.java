@@ -9,6 +9,7 @@
 package org.opendaylight.openflowjava.protocol.impl.core;
 
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.MessageToMessageDecoder;
 
 import java.util.List;
@@ -20,27 +21,34 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.org.apache.bcel.internal.generic.CASTORE;
+
 /**
  * @author michal.polkorab
  *
  */
-public class OFDatagramPacketDecoder extends MessageToMessageDecoder<VersionMessageUdpWrapper>{
+public class OFDatagramPacketDecoder extends ChannelInboundHandlerAdapter{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OFDatagramPacketDecoder.class);
     private DeserializationFactory deserializationFactory;
 
+    /* (non-Javadoc)
+     * @see io.netty.channel.ChannelInboundHandlerAdapter#channelRead(io.netty.channel.ChannelHandlerContext, java.lang.Object)
+     */
     @Override
-    protected void decode(ChannelHandlerContext ctx,
-            VersionMessageUdpWrapper msg, List<Object> out) throws Exception {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("UdpVersionMessageWrapper received");
-            LOGGER.debug("<< " + ByteBufUtils.byteBufToHexString(msg.getMessageBuffer()));
+    public void channelRead(ChannelHandlerContext ctx, Object message)
+            throws Exception {
+        if(!(message instanceof VersionMessageUdpWrapper)){
+            throw new ClassCastException("Message has not suitable type, VersionMessageUdpWrapper has been expected");
         }
-
+        VersionMessageUdpWrapper msg = (VersionMessageUdpWrapper) message;
+        if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("UdpVersionMessageWrapper received");
+                LOGGER.debug("<< " + ByteBufUtils.byteBufToHexString(msg.getMessageBuffer()));
+        }
         DataObject dataObject = null;
         try {
-            dataObject = deserializationFactory.deserialize(msg.getMessageBuffer(),
-                    msg.getVersion());
+            dataObject = deserializationFactory.deserialize(msg.getMessageBuffer(),msg.getVersion());
             if (dataObject == null) {
                 LOGGER.warn("Translated POJO is null");
             } else {
@@ -55,7 +63,6 @@ public class OFDatagramPacketDecoder extends MessageToMessageDecoder<VersionMess
         } finally {
             msg.getMessageBuffer().release();
         }
-        
     }
 
     /**

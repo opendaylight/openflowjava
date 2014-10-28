@@ -13,8 +13,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -34,12 +32,10 @@ public class OFDatagramPacketDecoderTest {
     @Mock ByteBuf messageBufferMock;
 
     private VersionMessageUdpWrapper msgWrapper;
-    private List<Object> out;
 
     @Before
     public void startUp(){
         MockitoAnnotations.initMocks(this);
-        out = new ArrayList<>();
     }
 
     @Test
@@ -48,7 +44,7 @@ public class OFDatagramPacketDecoderTest {
         decoder.setDeserializationFactory(deserializationFactory);
         msgWrapper = new VersionMessageUdpWrapper(EncodeConstants.OF13_VERSION_ID, messageBufferMock, new InetSocketAddress("10.0.0.1", 6653));
         try {
-            decoder.decode(ctx, msgWrapper, out);
+            decoder.channelRead(ctx, msgWrapper);
         } catch (Exception e) {
             Assert.fail("Exception occured");
         }
