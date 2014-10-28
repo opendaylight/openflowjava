@@ -20,12 +20,17 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.InstructionBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author michal.polkorab
  *
  */
 public class ClearActionsInstructionDeserializer extends AbstractInstructionDeserializer {
+
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(ClearActionsInstructionDeserializer.class);
 
     @Override
     public Instruction deserialize(ByteBuf input) {
