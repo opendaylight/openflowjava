@@ -15,11 +15,14 @@ import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.InstructionConstants;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionsInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ActionsInstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.InstructionBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author michal.polkorab
@@ -27,11 +30,19 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction
  */
 public class ClearActionsInstructionDeserializer extends AbstractInstructionDeserializer {
 
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(ClearActionsInstructionDeserializer.class);
+
     @Override
     public Instruction deserialize(ByteBuf input) {
+        System.out.println(ByteBufUtils.byteBufToHexString(input));
         InstructionBuilder builder = super.processHeader(input);
+        System.out.println(ByteBufUtils.byteBufToHexString(input));
         input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         input.skipBytes(InstructionConstants.PADDING_IN_ACTIONS_INSTRUCTION);
+        if(input.readableBytes() > 0){
+            LOGGER.debug("deserialize - additional data/actions are ignored.");
+        }
         ActionsInstructionBuilder actionsBuilder = 
                 new ActionsInstructionBuilder();
         List<Action> actions = new ArrayList<>();
