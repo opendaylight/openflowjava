@@ -10,6 +10,7 @@ package org.opendaylight.openflowjava.protocol.api.keys.experimenter;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterInstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 
 /**

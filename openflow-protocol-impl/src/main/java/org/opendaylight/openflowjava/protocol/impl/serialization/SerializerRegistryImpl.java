@@ -11,10 +11,10 @@ package org.opendaylight.openflowjava.protocol.impl.serialization;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
+import org.opendaylight.openflowjava.protocol.api.keys.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.OF10MatchSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.OF13MatchSerializer;
