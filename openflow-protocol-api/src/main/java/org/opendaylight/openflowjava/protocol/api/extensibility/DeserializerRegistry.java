@@ -7,6 +7,8 @@
  */
 package org.opendaylight.openflowjava.protocol.api.extensibility;
 
+import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
+
 
 /**
  * @author michal.polkorab

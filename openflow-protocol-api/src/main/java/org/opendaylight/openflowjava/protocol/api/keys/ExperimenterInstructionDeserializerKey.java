@@ -6,23 +6,22 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.api.keys.experimenter;
+package org.opendaylight.openflowjava.protocol.api.keys;
 
-import org.opendaylight.openflowjava.protocol.api.keys.ActionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 
 /**
  * @author michal.polkorab
  *
  */
-public final class ExperimenterActionDeserializerKey extends ActionDeserializerKey
+public final class ExperimenterInstructionDeserializerKey extends InstructionDeserializerKey
         implements ExperimenterDeserializerKey {
 
     /**
      * @param version protocol wire version
-     * @param experimenterId experimenter / vendor ID
+     * @param experimenterId
      */
-    public ExperimenterActionDeserializerKey(short version, Long experimenterId) {
+    public ExperimenterInstructionDeserializerKey(short version, Long experimenterId) {
         super(version, EncodeConstants.EXPERIMENTER_VALUE, experimenterId);
     }
 

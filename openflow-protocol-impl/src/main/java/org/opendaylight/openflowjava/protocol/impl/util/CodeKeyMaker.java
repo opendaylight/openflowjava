@@ -8,7 +8,7 @@
 
 package org.opendaylight.openflowjava.protocol.impl.util;
 
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
 
 import io.netty.buffer.ByteBuf;
 
