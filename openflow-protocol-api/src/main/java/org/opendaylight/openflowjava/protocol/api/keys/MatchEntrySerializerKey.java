@@ -8,8 +8,6 @@
 
 package org.opendaylight.openflowjava.protocol.api.keys;
 
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
-import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterSerializerKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmClassBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;

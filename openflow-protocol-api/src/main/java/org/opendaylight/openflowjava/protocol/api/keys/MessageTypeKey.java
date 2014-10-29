@@ -6,7 +6,9 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.api.extensibility;
+package org.opendaylight.openflowjava.protocol.api.keys;
+
+import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 
 
 /**

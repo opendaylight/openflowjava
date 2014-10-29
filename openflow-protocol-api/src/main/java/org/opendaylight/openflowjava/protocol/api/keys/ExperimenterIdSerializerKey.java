@@ -6,32 +6,29 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.api.keys.experimenter;
+package org.opendaylight.openflowjava.protocol.api.keys;
 
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageCodeKey;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
  * @author michal.polkorab
- *
+ * @param <T> class of object to be serialized
  */
-public final class ExperimenterIdDeserializerKey extends MessageCodeKey
-        implements ExperimenterDeserializerKey {
+public class ExperimenterIdSerializerKey<T extends DataObject> extends MessageTypeKey<T>
+        implements ExperimenterSerializerKey {
 
     private Long experimenterId;
 
     /**
-     * @param version protocol wire version
+     * @param msgVersion protocol wire version
      * @param experimenterId experimenter / vendor ID
-     * @param objectClass class of created object
+     * @param objectClass class of object to be serialized
      */
-    public <E extends DataObject> ExperimenterIdDeserializerKey(short version,
-            Long experimenterId, Class<E> objectClass) {
-        super(version, EncodeConstants.EXPERIMENTER_VALUE, objectClass);
+    public ExperimenterIdSerializerKey(short msgVersion,
+            Long experimenterId, Class<T> objectClass) {
+        super(msgVersion, objectClass);
         this.experimenterId = experimenterId;
     }
-
 
     @Override
     public int hashCode() {
@@ -49,10 +46,10 @@ public final class ExperimenterIdDeserializerKey extends MessageCodeKey
         if (!super.equals(obj)) {
             return false;
         }
-        if (!(obj instanceof ExperimenterIdDeserializerKey)) {
+        if (!(obj instanceof ExperimenterIdSerializerKey)) {
             return false;
         }
-        ExperimenterIdDeserializerKey other = (ExperimenterIdDeserializerKey) obj;
+        ExperimenterIdSerializerKey<?> other = (ExperimenterIdSerializerKey<?>) obj;
         if (experimenterId == null) {
             if (other.experimenterId != null) {
                 return false;

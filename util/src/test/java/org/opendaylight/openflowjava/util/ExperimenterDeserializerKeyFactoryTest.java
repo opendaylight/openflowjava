@@ -10,7 +10,7 @@ package org.opendaylight.openflowjava.util;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterIdDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ErrorMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterMessage;

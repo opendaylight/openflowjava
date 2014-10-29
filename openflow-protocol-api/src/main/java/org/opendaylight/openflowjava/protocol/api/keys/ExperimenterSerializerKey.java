@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.api.keys.experimenter;
+package org.opendaylight.openflowjava.protocol.api.keys;
 
 /**
  * Marker interface - marks keys appropriate for experimenter serializer registration

@@ -7,6 +7,8 @@
  */
 package org.opendaylight.openflowjava.protocol.api.extensibility;
 
+import org.opendaylight.openflowjava.protocol.api.keys.MessageTypeKey;
+
 
 /**
  * More specific key for {@link SerializerRegistry}

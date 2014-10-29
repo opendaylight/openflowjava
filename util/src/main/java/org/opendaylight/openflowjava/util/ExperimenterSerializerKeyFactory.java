@@ -8,7 +8,7 @@
 
 package org.opendaylight.openflowjava.util;
 
-import org.opendaylight.openflowjava.protocol.api.keys.experimenter.ExperimenterIdSerializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdSerializerKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenterCase;
