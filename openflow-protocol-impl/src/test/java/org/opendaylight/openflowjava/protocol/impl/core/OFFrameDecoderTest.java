@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionFacade;
+import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionFacade;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 
 /**

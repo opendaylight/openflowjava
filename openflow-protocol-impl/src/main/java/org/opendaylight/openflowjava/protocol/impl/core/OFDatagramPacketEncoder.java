@@ -10,7 +10,7 @@ package org.opendaylight.openflowjava.protocol.impl.core;
 
 import java.util.List;
 
-import org.opendaylight.openflowjava.protocol.impl.connection.UdpMessageListenerWrapper;
+import org.opendaylight.openflowjava.protocol.impl.core.connection.UdpMessageListenerWrapper;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

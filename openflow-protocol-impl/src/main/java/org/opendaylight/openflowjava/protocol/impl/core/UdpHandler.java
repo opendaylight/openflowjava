@@ -20,7 +20,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ThreadConfiguration;
-import org.opendaylight.openflowjava.protocol.impl.connection.ServerFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -15,7 +15,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
 
-import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionFacade;
+import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionFacade;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

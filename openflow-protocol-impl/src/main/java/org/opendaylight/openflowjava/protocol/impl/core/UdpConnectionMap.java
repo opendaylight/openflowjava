@@ -12,7 +12,7 @@ import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.opendaylight.openflowjava.protocol.impl.connection.MessageConsumer;
+import org.opendaylight.openflowjava.protocol.impl.core.connection.MessageConsumer;
 
 /**
  * As UDP communication is handled only by one channel, it is needed

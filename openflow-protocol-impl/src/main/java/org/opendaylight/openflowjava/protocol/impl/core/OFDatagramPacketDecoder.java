@@ -11,7 +11,7 @@ package org.opendaylight.openflowjava.protocol.impl.core;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-import org.opendaylight.openflowjava.protocol.impl.connection.MessageConsumer;
+import org.opendaylight.openflowjava.protocol.impl.core.connection.MessageConsumer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yangtools.yang.binding.DataObject;

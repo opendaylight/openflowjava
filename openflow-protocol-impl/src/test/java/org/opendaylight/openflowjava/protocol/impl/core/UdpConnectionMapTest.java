@@ -17,7 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.opendaylight.openflowjava.protocol.impl.connection.MessageConsumer;
+import org.opendaylight.openflowjava.protocol.impl.core.connection.MessageConsumer;
 
 /**
  * @author madamjak

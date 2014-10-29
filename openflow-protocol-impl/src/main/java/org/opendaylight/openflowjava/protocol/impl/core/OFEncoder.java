@@ -13,7 +13,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import io.netty.util.concurrent.Future;
 
-import org.opendaylight.openflowjava.protocol.impl.connection.MessageListenerWrapper;
+import org.opendaylight.openflowjava.protocol.impl.core.connection.MessageListenerWrapper;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

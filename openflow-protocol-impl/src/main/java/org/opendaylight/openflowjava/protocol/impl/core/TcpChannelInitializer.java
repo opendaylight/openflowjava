@@ -19,9 +19,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLEngine;
 
-import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionAdapterFactory;
-import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionAdapterFactoryImpl;
-import org.opendaylight.openflowjava.protocol.impl.connection.ConnectionFacade;
+import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionAdapterFactory;
+import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionAdapterFactoryImpl;
+import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

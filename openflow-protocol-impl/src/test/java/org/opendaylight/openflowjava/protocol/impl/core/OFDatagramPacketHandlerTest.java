@@ -24,7 +24,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.impl.connection.MessageConsumer;
+import org.opendaylight.openflowjava.protocol.impl.core.connection.MessageConsumer;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 
 /**
