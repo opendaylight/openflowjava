@@ -9,7 +9,7 @@ package org.opendaylight.openflowjava.protocol.impl.serialization;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.api.keys.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.OF13MatchSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;

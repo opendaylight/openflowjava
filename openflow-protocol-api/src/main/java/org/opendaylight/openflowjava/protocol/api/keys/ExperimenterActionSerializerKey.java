@@ -6,9 +6,8 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.api.keys.experimenter;
+package org.opendaylight.openflowjava.protocol.api.keys;
 
-import org.opendaylight.openflowjava.protocol.api.keys.ActionSerializerKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.ExperimenterActionSubType;
 
