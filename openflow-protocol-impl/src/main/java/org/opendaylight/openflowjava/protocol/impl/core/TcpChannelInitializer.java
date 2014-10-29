@@ -57,14 +57,14 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
         InetAddress switchAddress = ch.remoteAddress().getAddress();
         int port = ch.localAddress().getPort();
         int remotePort = ch.remoteAddress().getPort();
-        LOGGER.info("Incoming connection from (remote address): " + switchAddress.toString()
+        LOGGER.debug("Incoming connection from (remote address): " + switchAddress.toString()
                 + ":" + remotePort + " --> :" + port);
         if (!getSwitchConnectionHandler().accept(switchAddress)) {
             ch.disconnect();
-            LOGGER.info("Incoming connection rejected");
+            LOGGER.debug("Incoming connection rejected");
             return;
         }
-        LOGGER.info("Incoming connection accepted - building pipeline");
+        LOGGER.debug("Incoming connection accepted - building pipeline");
         allChannels.add(ch);
         ConnectionFacade connectionFacade = null;
         connectionFacade = connectionAdapterFactory.createConnectionFacade(ch, null);
@@ -98,7 +98,7 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
                 connectionFacade.fireConnectionReadyNotification();
             }
         } catch (Exception e) {
-            LOGGER.error("Failed to initialize channel", e);
+            LOGGER.warn("Failed to initialize channel", e);
             ch.close();
         }
     }

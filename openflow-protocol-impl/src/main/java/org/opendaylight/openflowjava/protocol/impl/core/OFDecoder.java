@@ -53,8 +53,8 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
                 out.add(dataObject);
             }
         } catch(Exception e) {
-            LOGGER.error("Message deserialization failed");
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.warn("Message deserialization failed");
+            LOGGER.warn(e.getMessage(), e);
             // TODO: delegate exception to allow easier deserialization
             // debugging / deserialization problem awareness
         } finally {

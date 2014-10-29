@@ -98,7 +98,7 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     public ListenableFuture<Boolean> shutdown() {
         LOGGER.debug("Shutdown summoned");
         if(serverFacade == null){
-            LOGGER.debug("Can not shutdown - not configured or started");
+            LOGGER.warn("Can not shutdown - not configured or started");
             throw new IllegalStateException("SwitchConnectionProvider is not started or not configured.");
         }
         return serverFacade.shutdown();

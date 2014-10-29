@@ -37,12 +37,12 @@ public class SslTrustManagerFactory extends TrustManagerFactorySpi {
 
         @Override
         public void checkClientTrusted(X509Certificate[] chain, String authType) {
-            LOGGER.error("UNKNOWN CLIENT CERTIFICATE: " + chain[0].getSubjectDN());
+            LOGGER.warn("UNKNOWN CLIENT CERTIFICATE: {}", chain[0].getSubjectDN());
         }
 
         @Override
         public void checkServerTrusted(X509Certificate[] chain, String authType) {
-            LOGGER.error("UNKNOWN SERVER CERTIFICATE: " + chain[0].getSubjectDN());
+            LOGGER.warn("UNKNOWN SERVER CERTIFICATE: {}", chain[0].getSubjectDN());
         }
     };
 
