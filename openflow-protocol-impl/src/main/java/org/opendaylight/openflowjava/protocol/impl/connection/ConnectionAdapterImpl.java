@@ -18,7 +18,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import org.opendaylight.controller.sal.common.util.RpcErrors;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionReadyListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierOutput;
@@ -61,9 +60,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.S
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SystemNotificationsListener;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Notification;
-import org.opendaylight.yangtools.yang.common.RpcError;
-import org.opendaylight.yangtools.yang.common.RpcError.ErrorSeverity;
-import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -393,28 +389,6 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
             }
         });
         return transportResult;
-    }
-
-    /**
-     * @param cause
-     * @return
-     */
-    static RpcError buildRpcError(final String info, final ErrorSeverity severity, final String message,
-            final Throwable cause) {
-        RpcError error = RpcErrors.getRpcError(APPLICATION_TAG, TAG, info, severity, message,
-                ErrorType.RPC, cause);
-        return error;
-    }
-
-    /**
-     * @param cause
-     * @return
-     */
-    protected static RpcError buildTransportError(final String info, final ErrorSeverity severity, final String message,
-            final Throwable cause) {
-        RpcError error = RpcErrors.getRpcError(APPLICATION_TAG, TAG, info, severity, message,
-                ErrorType.TRANSPORT, cause);
-        return error;
     }
 
     /**
