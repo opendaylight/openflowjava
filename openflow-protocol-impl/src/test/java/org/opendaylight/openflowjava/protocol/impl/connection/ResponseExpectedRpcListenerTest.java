@@ -79,7 +79,7 @@ public class ResponseExpectedRpcListenerTest {
         ResponseExpectedRpcListener<OfHeader> listener =
                 new ResponseExpectedRpcListener<>("MESSAGE", "Failed to send message", responseCache, key);
         listener.discard();
-        RpcError rpcError = ConnectionAdapterImpl.buildRpcError("Failed to send message",
+        RpcError rpcError = AbstractRpcListener.buildRpcError("Failed to send message",
                 ErrorSeverity.ERROR, "check switch connection", new TimeoutException("Request timed out"));
         SettableFuture<RpcResult<?>> result = SettableFuture.create();
         result.set(Rpcs.getRpcResult(false, null, Collections.singletonList(rpcError)));

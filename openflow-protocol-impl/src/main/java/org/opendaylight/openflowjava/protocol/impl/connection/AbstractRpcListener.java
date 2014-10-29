@@ -12,9 +12,11 @@ import io.netty.util.concurrent.GenericFutureListener;
 
 import java.util.Collections;
 
+import org.opendaylight.controller.sal.common.util.RpcErrors;
 import org.opendaylight.controller.sal.common.util.Rpcs;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorSeverity;
+import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +32,22 @@ import com.google.common.util.concurrent.SettableFuture;
  */
 abstract class AbstractRpcListener<T> implements GenericFutureListener<Future<Void>>, ChannelOutboundQueue.MessageHolder<Object> {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRpcListener.class);
+    private static final String APPLICATION_TAG = "OPENFLOW_LIBRARY";
+    private static final String TAG = "OPENFLOW";
     private final SettableFuture<RpcResult<T>> result = SettableFuture.create();
     private final String failureInfo;
     private Object message;
-
+    /**
+     * @param cause
+     * @return
+     */
+    static RpcError buildRpcError(final String info, final ErrorSeverity severity, final String message,
+            final Throwable cause) {
+        RpcError error = RpcErrors.getRpcError(APPLICATION_TAG, TAG, info, severity, message,
+                ErrorType.RPC, cause);
+        return error;
+    }
+    
     AbstractRpcListener(final Object message, final String failureInfo) {
         this.failureInfo = Preconditions.checkNotNull(failureInfo);
         this.message = Preconditions.checkNotNull(message);
@@ -70,7 +84,7 @@ abstract class AbstractRpcListener<T> implements GenericFutureListener<Future<Vo
     protected abstract void operationSuccessful();
 
     protected final void failedRpc(final Throwable cause) {
-        final RpcError rpcError = ConnectionAdapterImpl.buildRpcError(
+        final RpcError rpcError = buildRpcError(
                 failureInfo, ErrorSeverity.ERROR, "check switch connection", cause);
         result.set(Rpcs.getRpcResult(
                 false,

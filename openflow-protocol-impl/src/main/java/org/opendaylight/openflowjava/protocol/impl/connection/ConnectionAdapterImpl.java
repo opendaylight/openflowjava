@@ -395,27 +395,18 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
         return transportResult;
     }
 
-    /**
-     * @param cause
-     * @return
-     */
-    static RpcError buildRpcError(final String info, final ErrorSeverity severity, final String message,
-            final Throwable cause) {
-        RpcError error = RpcErrors.getRpcError(APPLICATION_TAG, TAG, info, severity, message,
-                ErrorType.RPC, cause);
-        return error;
-    }
+
 
     /**
      * @param cause
      * @return
      */
-    protected static RpcError buildTransportError(final String info, final ErrorSeverity severity, final String message,
-            final Throwable cause) {
-        RpcError error = RpcErrors.getRpcError(APPLICATION_TAG, TAG, info, severity, message,
-                ErrorType.TRANSPORT, cause);
-        return error;
-    }
+//    protected static RpcError buildTransportError(final String info, final ErrorSeverity severity, final String message,
+//            final Throwable cause) {
+//        RpcError error = RpcErrors.getRpcError(APPLICATION_TAG, TAG, info, severity, message,
+//                ErrorType.TRANSPORT, cause);
+//        return error;
+//    }
 
     /**
      * @param message
