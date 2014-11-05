@@ -57,6 +57,7 @@ public class OFEncoderStatisticsTest {
         ofEncoder = new OFEncoder() ;
         ofEncoder.setSerializationFactory(mockSerializationFactory) ;
         statCounters = StatisticsCounters.getInstance();
+        statCounters.resetCounters();
     }
 
     @After
@@ -78,7 +79,6 @@ public class OFEncoderStatisticsTest {
             Assert.fail();
         }
         LOGGER.debug("Waiting to event queue process");
-        Thread.sleep(StatisticsCounters.EVENT_QUEUE_PROCESS_DELAY+100);
         Assert.assertEquals("Wrong - bad counter value for OFEncoder encode succesfully ", count, statCounters.getCounter(CounterEventTypes.DS_ENCODE_SUCCESS).getCounterValue());
     }
 
@@ -97,7 +97,6 @@ public class OFEncoderStatisticsTest {
             Assert.fail();
         }
         LOGGER.debug("Waiting to event queue process");
-        Thread.sleep(StatisticsCounters.EVENT_QUEUE_PROCESS_DELAY+100);
         Assert.assertEquals("Wrong - bad counter value for OFEncoder fail encode", count, statCounters.getCounter(CounterEventTypes.DS_ENCODE_FAIL).getCounterValue());
     }
 }

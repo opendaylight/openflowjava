@@ -59,6 +59,7 @@ public class OFDecoderStatisticsTest {
         ofDecoder.setDeserializationFactory( mockDeserializationFactory ) ;
         outList = new ArrayList<>();
         statCounters = StatisticsCounters.getInstance();
+        statCounters.resetCounters();
     }
 
     @After
@@ -80,7 +81,6 @@ public class OFDecoderStatisticsTest {
             Assert.fail();
         }
         LOGGER.debug("Waiting to event queue process");
-        Thread.sleep(StatisticsCounters.EVENT_QUEUE_PROCESS_DELAY+100);
         Assert.assertEquals("Wrong - bad counter value for OFEncoder encode succesfully ", count, statCounters.getCounter(CounterEventTypes.US_DECODE_SUCCESS).getCounterValue());
     }
 
@@ -104,7 +104,6 @@ public class OFDecoderStatisticsTest {
             Assert.fail();
         }
         LOGGER.debug("Waiting to event queue process");
-        Thread.sleep(StatisticsCounters.EVENT_QUEUE_PROCESS_DELAY+100);
         Assert.assertEquals("Wrong - bad counter value for OFEncoder encode succesfully ", count, statCounters.getCounter(CounterEventTypes.US_DECODE_FAIL).getCounterValue());
 
     }

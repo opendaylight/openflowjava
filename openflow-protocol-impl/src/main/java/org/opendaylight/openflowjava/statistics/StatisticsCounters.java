@@ -8,10 +8,7 @@
 package org.opendaylight.openflowjava.statistics;
 
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,17 +19,18 @@ import org.slf4j.LoggerFactory;
  */
 public final class StatisticsCounters {
 
-    private static final int MAX_QUEUE_ENTRIES = 10000;
-    private static final String TIMER_NAME = "SC_Timer";
-    public static final int EVENT_QUEUE_PROCESS_DELAY = 500; // time (miliseconds) to queue process
     private static StatisticsCounters instanceHolder;
     private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsCounters.class);
-    
-    private Map<CounterEventTypes,Counter> countersMap;
-    private ConcurrentLinkedQueue<CounterEventTypes> queueEvents;
-    private Timer timerProcessQueue;
-    private QueueProcessor queueProcessor;
-    
+
+    private final Counter cntDSEncodeFail;
+    private final Counter cntDSEncodeSuccess;
+    private final Counter cntDSEnteredOFJava;
+    private final Counter cntUSDecodeFail;
+    private final Counter cntUSDecodeSuccess;
+    private final Counter cntUSMessagePass;
+    private final Counter cntUSReceivedOFJava;
+    //private Map<CounterEventTypes,Counter> countersMap;
+
     public static StatisticsCounters  getInstance(){
         if (instanceHolder == null){
             instanceHolder = new StatisticsCounters();
@@ -41,19 +39,23 @@ public final class StatisticsCounters {
     }
 
     private StatisticsCounters() {
-        queueEvents = new ConcurrentLinkedQueue<>();
-        countersMap = new ConcurrentHashMap<>();
-        countersMap.put(CounterEventTypes.DS_ENCODE_FAIL, new Counter());
-        countersMap.put(CounterEventTypes.DS_ENCODE_SUCCESS, new Counter());
-        countersMap.put(CounterEventTypes.DS_ENTERED_OFJAVA, new Counter());
-        countersMap.put(CounterEventTypes.US_DECODE_FAIL, new Counter());
-        countersMap.put(CounterEventTypes.US_DECODE_SUCCESS, new Counter());
-        countersMap.put(CounterEventTypes.US_MESSAGE_PASS, new Counter());
-        countersMap.put(CounterEventTypes.US_RECEIVED_IN_OFJAVA, new Counter());
-        timerProcessQueue = new Timer(TIMER_NAME);
-        queueProcessor = new QueueProcessor();
-        timerProcessQueue.schedule(queueProcessor, EVENT_QUEUE_PROCESS_DELAY);
-        LOGGER.debug("StaticsCounters has been created");
+        cntDSEncodeFail = new Counter();
+        cntDSEncodeSuccess = new Counter();
+        cntDSEnteredOFJava = new Counter();
+        cntUSDecodeFail = new Counter();
+        cntUSDecodeSuccess = new Counter();
+        cntUSMessagePass = new Counter();
+        cntUSReceivedOFJava = new Counter();
+        LOGGER.debug("StaticsCounters (without Map) has been created");
+//        countersMap = new ConcurrentHashMap<>();
+//        countersMap.put(CounterEventTypes.DS_ENCODE_FAIL, new Counter());
+//        countersMap.put(CounterEventTypes.DS_ENCODE_SUCCESS, new Counter());
+//        countersMap.put(CounterEventTypes.DS_ENTERED_OFJAVA, new Counter());
+//        countersMap.put(CounterEventTypes.US_DECODE_FAIL, new Counter());
+//        countersMap.put(CounterEventTypes.US_DECODE_SUCCESS, new Counter());
+//        countersMap.put(CounterEventTypes.US_MESSAGE_PASS, new Counter());
+//        countersMap.put(CounterEventTypes.US_RECEIVED_IN_OFJAVA, new Counter());
+//        LOGGER.debug("StaticsCounters (with Map) has been created");
     }
 
     /**
@@ -65,7 +67,25 @@ public final class StatisticsCounters {
         if(counterEventKey == null){
             throw new IllegalArgumentException("counterEventKey can not be null");
         }
-        return countersMap.get(counterEventKey);
+        switch (counterEventKey){
+            case DS_ENCODE_FAIL:
+                return cntDSEncodeFail;
+            case DS_ENCODE_SUCCESS:
+                return cntDSEncodeSuccess;
+            case DS_ENTERED_OFJAVA:
+                return cntDSEnteredOFJava;
+            case US_DECODE_FAIL:
+                return cntUSDecodeFail;
+            case US_DECODE_SUCCESS:
+                return cntUSDecodeSuccess;
+            case US_MESSAGE_PASS:
+                return cntUSMessagePass;
+            case US_RECEIVED_IN_OFJAVA:
+                return cntUSReceivedOFJava;
+            default:
+                throw new IllegalArgumentException("unknown counterEventKey");
+        }
+//        return countersMap.get(counterEventKey);
     }
 
     /**
@@ -74,54 +94,27 @@ public final class StatisticsCounters {
      * @return
      */
     public void incrementCounter(CounterEventTypes counterEventKey){
-        if(counterEventKey == null){
-            throw new IllegalArgumentException("counterEventKey can not be null");
-        }
-        queueEvents.add(counterEventKey);
-//        if(queueEvents.size()>= MAX_QUEUE_ENTRIES){
-//            queueProcessor.cancel();
-//            timerProcessQueue.purge();
-//            queueProcessor = new QueueProcessor();
-//            timerProcessQueue.schedule(queueProcessor, 0);
-//        }
+        getCounter(counterEventKey).incrementCounter();
     }
 
     /**
      * Set values of all counter to 0 (zero)
      */
     public void resetCounters(){
-        queueProcessor.cancel();
-        queueEvents.clear();
-        countersMap.get(CounterEventTypes.DS_ENCODE_FAIL).reset();
-        countersMap.get(CounterEventTypes.DS_ENCODE_SUCCESS).reset();
-        countersMap.get(CounterEventTypes.DS_ENTERED_OFJAVA).reset();
-        countersMap.get(CounterEventTypes.US_DECODE_FAIL).reset();
-        countersMap.get(CounterEventTypes.US_DECODE_SUCCESS).reset();
-        countersMap.get(CounterEventTypes.US_MESSAGE_PASS).reset();
-        countersMap.get(CounterEventTypes.US_RECEIVED_IN_OFJAVA).reset();
-        queueProcessor = new QueueProcessor();
-        timerProcessQueue.schedule(queueProcessor, EVENT_QUEUE_PROCESS_DELAY);
+        cntDSEncodeFail.reset(); ;
+        cntDSEncodeSuccess.reset();
+        cntDSEnteredOFJava.reset();
+        cntUSDecodeFail.reset();
+        cntUSDecodeSuccess.reset();
+        cntUSMessagePass.reset();
+        cntUSReceivedOFJava.reset();
+//        countersMap.get(CounterEventTypes.DS_ENCODE_FAIL).reset();
+//        countersMap.get(CounterEventTypes.DS_ENCODE_SUCCESS).reset();
+//        countersMap.get(CounterEventTypes.DS_ENTERED_OFJAVA).reset();
+//        countersMap.get(CounterEventTypes.US_DECODE_FAIL).reset();
+//        countersMap.get(CounterEventTypes.US_DECODE_SUCCESS).reset();
+//        countersMap.get(CounterEventTypes.US_MESSAGE_PASS).reset();
+//        countersMap.get(CounterEventTypes.US_RECEIVED_IN_OFJAVA).reset();
         LOGGER.debug("StaticsCounters has been reset");
-    }
-
-    private void processQueue(){
-        if(queueEvents.isEmpty()){
-            return;
-        }
-        CounterEventTypes cet = queueEvents.poll();
-        while(cet != null){
-            countersMap.get(cet).incrementCounter();
-            cet = queueEvents.poll();
-        }
-        LOGGER.debug("QueueEvents has been processed");
-    }
-
-    private class QueueProcessor extends TimerTask {
-        @Override
-        public void run() {
-            processQueue();
-            queueProcessor = new QueueProcessor();
-            timerProcessQueue.schedule(queueProcessor, EVENT_QUEUE_PROCESS_DELAY);
-        }
     }
 }

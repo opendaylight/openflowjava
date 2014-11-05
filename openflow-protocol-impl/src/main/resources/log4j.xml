@@ -8,6 +8,10 @@
         </layout>
     </appender>
 
+    <logger name="org.opendaylight.openflowjava.statistics" additivity="false">
+        <level value="DEBUG" />
+        <appender-ref ref="console" />
+    </logger>
     <logger name="org.opendaylight.openflowjava.protocol.impl" additivity="false">
         <level value="DEBUG" />
         <appender-ref ref="console" />

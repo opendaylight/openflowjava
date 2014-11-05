@@ -7,6 +7,7 @@
  */
 package org.opendaylight.openflowjava.statistics;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +26,12 @@ public class StatisticsCountersTest {
     @Before
     public void initTest(){
         statCounters = StatisticsCounters.getInstance();
+        statCounters.resetCounters();
+    }
+
+    @After
+    public void tierDown(){
+        statCounters.resetCounters();
     }
 
     @Test
@@ -38,7 +45,6 @@ public class StatisticsCountersTest {
         incrementCounter(CounterEventTypes.US_MESSAGE_PASS,testCount);
         incrementCounter(CounterEventTypes.US_RECEIVED_IN_OFJAVA,testCount);
         LOGGER.debug("Waiting to process event queue");
-        Thread.sleep(StatisticsCounters.EVENT_QUEUE_PROCESS_DELAY+100);
         Assert.assertEquals("Wrong - bad counter value " + CounterEventTypes.DS_ENTERED_OFJAVA, testCount, statCounters.getCounter(CounterEventTypes.DS_ENTERED_OFJAVA).getCounterValue());
         Assert.assertEquals("Wrong - bad counter value " + CounterEventTypes.DS_ENCODE_SUCCESS, testCount, statCounters.getCounter(CounterEventTypes.DS_ENCODE_SUCCESS).getCounterValue());
         Assert.assertEquals("Wrong - bad counter value " + CounterEventTypes.DS_ENCODE_FAIL, testCount, statCounters.getCounter(CounterEventTypes.DS_ENCODE_FAIL).getCounterValue());
@@ -61,7 +67,6 @@ public class StatisticsCountersTest {
         int testCount = 4;
         incrementCounter(CounterEventTypes.DS_ENTERED_OFJAVA,testCount);
         LOGGER.debug("Waiting to process event queue");
-        Thread.sleep(StatisticsCounters.EVENT_QUEUE_PROCESS_DELAY+100);
         Assert.assertEquals("Wrong - bad last read value.", 0,statCounters.getCounter(CounterEventTypes.DS_ENTERED_OFJAVA).getCounterLastReadValue());
         Assert.assertEquals("Wrong - bad value", 4,statCounters.getCounter(CounterEventTypes.DS_ENTERED_OFJAVA).getCounterValue(false));
         Assert.assertEquals("Wrong - bad last read value.", 0,statCounters.getCounter(CounterEventTypes.DS_ENTERED_OFJAVA).getCounterLastReadValue());
@@ -69,7 +74,6 @@ public class StatisticsCountersTest {
         Assert.assertEquals("Wrong - bad last read value.", 4,statCounters.getCounter(CounterEventTypes.DS_ENTERED_OFJAVA).getCounterLastReadValue());
         incrementCounter(CounterEventTypes.DS_ENTERED_OFJAVA,testCount);
         LOGGER.debug("Waiting to process event queue");
-        Thread.sleep(StatisticsCounters.EVENT_QUEUE_PROCESS_DELAY+100);
         Assert.assertEquals("Wrong - bad last read value.", 4,statCounters.getCounter(CounterEventTypes.DS_ENTERED_OFJAVA).getCounterLastReadValue());
         Assert.assertEquals("Wrong - bad last read value.", 8,statCounters.getCounter(CounterEventTypes.DS_ENTERED_OFJAVA).getCounterValue());
     }

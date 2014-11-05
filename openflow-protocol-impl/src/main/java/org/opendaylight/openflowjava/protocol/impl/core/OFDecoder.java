@@ -14,6 +14,8 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
+import org.opendaylight.openflowjava.statistics.CounterEventTypes;
+import org.opendaylight.openflowjava.statistics.StatisticsCounters;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.slf4j.Logger;
@@ -27,12 +29,13 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OFDecoder.class);
     private DeserializationFactory deserializationFactory;
-
+    private StatisticsCounters statisticsCounter;
     /**
      * Constructor of class
      */
     public OFDecoder() {
         LOGGER.trace("Creating OF 1.3 Decoder");
+        statisticsCounter = StatisticsCounters.getInstance();
     }
 
     @Override
@@ -49,14 +52,15 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
                     msg.getVersion());
             if (dataObject == null) {
                 LOGGER.warn("Translated POJO is null");
+                statisticsCounter.incrementCounter(CounterEventTypes.US_DECODE_FAIL);
             } else {
                 out.add(dataObject);
+                statisticsCounter.incrementCounter(CounterEventTypes.US_DECODE_SUCCESS);
             }
         } catch(Exception e) {
             LOGGER.warn("Message deserialization failed");
             LOGGER.warn(e.getMessage(), e);
-            // TODO: delegate exception to allow easier deserialization
-            // debugging / deserialization problem awareness
+            statisticsCounter.incrementCounter(CounterEventTypes.US_DECODE_FAIL);
         } finally {
             msg.getMessageBuffer().release();
         }
