@@ -15,6 +15,8 @@ import io.netty.util.concurrent.Future;
 
 import org.opendaylight.openflowjava.protocol.impl.core.connection.MessageListenerWrapper;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
+import org.opendaylight.openflowjava.statistics.CounterEventTypes;
+import org.opendaylight.openflowjava.statistics.StatisticsCounters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,9 +29,11 @@ public class OFEncoder extends MessageToByteEncoder<MessageListenerWrapper> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OFEncoder.class);
     private SerializationFactory serializationFactory;
-
+    private StatisticsCounters statisticsCounters;
+    
     /** Constructor of class */
     public OFEncoder() {
+        statisticsCounters = StatisticsCounters.getInstance();
         LOGGER.trace("Creating OF13Encoder");
     }
 
@@ -39,8 +43,10 @@ public class OFEncoder extends MessageToByteEncoder<MessageListenerWrapper> {
         LOGGER.trace("Encoding");
         try {
             serializationFactory.messageToBuffer(wrapper.getMsg().getVersion(), out, wrapper.getMsg());
+            statisticsCounters.incrementCounter(CounterEventTypes.DS_ENCODE_SUCCESS);
         } catch(Exception e) {
             LOGGER.warn("Message serialization failed ", e);
+            statisticsCounters.incrementCounter(CounterEventTypes.DS_ENCODE_FAIL);
             Future<Void> newFailedFuture = ctx.newFailedFuture(e);
             wrapper.getListener().operationComplete(newFailedFuture);
             out.clear();

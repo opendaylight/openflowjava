@@ -19,6 +19,8 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionReadyListener;
+import org.opendaylight.openflowjava.statistics.CounterEventTypes;
+import org.opendaylight.openflowjava.statistics.StatisticsCounters;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoInput;
@@ -116,6 +118,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     private OpenflowProtocolListener messageListener;
     private SystemNotificationsListener systemListener;
     private boolean disconnectOccured = false;
+    private StatisticsCounters statisticsCounters;
 
     /**
      * default ctor
@@ -131,6 +134,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
         this.channel = Preconditions.checkNotNull(channel);
         this.output = new ChannelOutboundQueue(channel, DEFAULT_QUEUE_DEPTH, address);
         channel.pipeline().addLast(output);
+        statisticsCounters = StatisticsCounters.getInstance();
         LOG.debug("ConnectionAdapter created");
     }
 
@@ -265,6 +269,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
             return;
         }
         if (message instanceof Notification) {
+
             // System events
             if (message instanceof DisconnectEvent) {
                 systemListener.onDisconnectEvent((DisconnectEvent) message);
@@ -272,25 +277,32 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 disconnectOccured = true;
             } else if (message instanceof SwitchIdleEvent) {
                 systemListener.onSwitchIdleEvent((SwitchIdleEvent) message);
-            }
-            // OpenFlow messages
-              else if (message instanceof EchoRequestMessage) {
+                // OpenFlow messages
+            } else if (message instanceof EchoRequestMessage) {
                 messageListener.onEchoRequestMessage((EchoRequestMessage) message);
+                statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else if (message instanceof ErrorMessage) {
                 messageListener.onErrorMessage((ErrorMessage) message);
+                statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else if (message instanceof ExperimenterMessage) {
                 messageListener.onExperimenterMessage((ExperimenterMessage) message);
+                statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else if (message instanceof FlowRemovedMessage) {
                 messageListener.onFlowRemovedMessage((FlowRemovedMessage) message);
+                statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else if (message instanceof HelloMessage) {
                 LOG.info("Hello received / branch");
                 messageListener.onHelloMessage((HelloMessage) message);
+                statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else if (message instanceof MultipartReplyMessage) {
                 messageListener.onMultipartReplyMessage((MultipartReplyMessage) message);
+                statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else if (message instanceof PacketInMessage) {
                 messageListener.onPacketInMessage((PacketInMessage) message);
+                statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else if (message instanceof PortStatusMessage) {
                 messageListener.onPortStatusMessage((PortStatusMessage) message);
+                statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else {
                 LOG.warn("message listening not supported for type: {}", message.getClass());
             }
@@ -302,6 +314,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 if (listener != null) {
                     LOG.debug("corresponding rpcFuture found");
                     listener.completed((OfHeader)message);
+                    statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
                     LOG.debug("after setting rpcFuture");
                     responseCache.invalidate(key);
                 } else {
@@ -338,6 +351,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
      */
     private ListenableFuture<RpcResult<Void>> sendToSwitchFuture(
             final DataObject input, final String failureInfo) {
+        statisticsCounters.incrementCounter(CounterEventTypes.DS_ENTERED_OFJAVA);
         return enqueueMessage(new SimpleRpcListener(input, failureInfo));
     }
 
@@ -361,6 +375,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
         final RpcResponseKey key = new RpcResponseKey(input.getXid(), responseClazz.getName());
         final ResponseExpectedRpcListener<OUT> listener =
                 new ResponseExpectedRpcListener<>(input, failureInfo, responseCache, key);
+        statisticsCounters.incrementCounter(CounterEventTypes.DS_ENTERED_OFJAVA);
         return enqueueMessage(listener);
     }
 
