@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * General tests for StatisticsCounters class 
  * @author madamjak
  *
  */
@@ -23,62 +24,115 @@ public class StatisticsCountersTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsCounters.class);
     private StatisticsCounters statCounters;
 
+    /**
+     * Initialize StatisticsCounters before each test, reset counters
+     */
     @Before
     public void initTest(){
         statCounters = StatisticsCounters.getInstance();
-        statCounters.resetCounters();
+        statCounters.startCounting(true,false, 0);
     }
 
+    /**
+     * Stop counting after each test
+     */
     @After
     public void tierDown(){
-        statCounters.resetCounters();
+        statCounters.stopCounting();
     }
 
+    /**
+     * Basic test of increment and reset counters
+     */
     @Test
-    public void testCounterAll() throws InterruptedException{
+    public void testCounterAll() {
         int testCount = 4;
-        incrementCounter(CounterEventTypes.DS_ENTERED_OFJAVA,testCount);
-        incrementCounter(CounterEventTypes.DS_ENCODE_SUCCESS,testCount);
-        incrementCounter(CounterEventTypes.DS_ENCODE_FAIL,testCount);
-        incrementCounter(CounterEventTypes.US_DECODE_FAIL,testCount);
-        incrementCounter(CounterEventTypes.US_DECODE_SUCCESS,testCount);
-        incrementCounter(CounterEventTypes.US_MESSAGE_PASS,testCount);
-        incrementCounter(CounterEventTypes.US_RECEIVED_IN_OFJAVA,testCount);
-        LOGGER.debug("Waiting to process event queue");
-        Assert.assertEquals("Wrong - bad counter value " + CounterEventTypes.DS_ENTERED_OFJAVA, testCount, statCounters.getCounter(CounterEventTypes.DS_ENTERED_OFJAVA).getCounterValue());
-        Assert.assertEquals("Wrong - bad counter value " + CounterEventTypes.DS_ENCODE_SUCCESS, testCount, statCounters.getCounter(CounterEventTypes.DS_ENCODE_SUCCESS).getCounterValue());
-        Assert.assertEquals("Wrong - bad counter value " + CounterEventTypes.DS_ENCODE_FAIL, testCount, statCounters.getCounter(CounterEventTypes.DS_ENCODE_FAIL).getCounterValue());
-        Assert.assertEquals("Wrong - bad counter value " + CounterEventTypes.US_DECODE_FAIL, testCount, statCounters.getCounter(CounterEventTypes.US_DECODE_FAIL).getCounterValue());
-        Assert.assertEquals("Wrong - bad counter value " + CounterEventTypes.US_DECODE_SUCCESS, testCount, statCounters.getCounter(CounterEventTypes.US_DECODE_SUCCESS).getCounterValue());
-        Assert.assertEquals("Wrong - bad counter value " + CounterEventTypes.US_MESSAGE_PASS, testCount, statCounters.getCounter(CounterEventTypes.US_MESSAGE_PASS).getCounterValue());
-        Assert.assertEquals("Wrong - bad counter value " + CounterEventTypes.US_RECEIVED_IN_OFJAVA, testCount, statCounters.getCounter(CounterEventTypes.US_RECEIVED_IN_OFJAVA).getCounterValue());
+        for(CounterEventTypes cet : CounterEventTypes.values()){
+            if(statCounters.isCounterEnabled(cet)){
+                incrementCounter(cet,testCount);
+                Assert.assertEquals("Wrong - bad counter value " + cet, testCount, statCounters.getCounter(cet).getCounterValue());
+            } else {
+                Assert.assertNull("Wrong - not enabled counter give not null value", statCounters.getCounter(cet));
+            }
+            
+        }
         statCounters.resetCounters();
-        Assert.assertEquals("Wrong - bad counter value after reset " + CounterEventTypes.DS_ENTERED_OFJAVA, 0, statCounters.getCounter(CounterEventTypes.DS_ENTERED_OFJAVA).getCounterValue());
-        Assert.assertEquals("Wrong - bad counter value after reset " + CounterEventTypes.DS_ENCODE_SUCCESS, 0, statCounters.getCounter(CounterEventTypes.DS_ENCODE_SUCCESS).getCounterValue());
-        Assert.assertEquals("Wrong - bad counter value after reset " + CounterEventTypes.DS_ENCODE_FAIL, 0, statCounters.getCounter(CounterEventTypes.DS_ENCODE_FAIL).getCounterValue());
-        Assert.assertEquals("Wrong - bad counter value after reset " + CounterEventTypes.US_DECODE_FAIL, 0, statCounters.getCounter(CounterEventTypes.US_DECODE_FAIL).getCounterValue());
-        Assert.assertEquals("Wrong - bad counter value after reset " + CounterEventTypes.US_DECODE_SUCCESS, 0, statCounters.getCounter(CounterEventTypes.US_DECODE_SUCCESS).getCounterValue());
-        Assert.assertEquals("Wrong - bad counter value after reset " + CounterEventTypes.US_MESSAGE_PASS, 0, statCounters.getCounter(CounterEventTypes.US_MESSAGE_PASS).getCounterValue());
-        Assert.assertEquals("Wrong - bad counter value after reset " + CounterEventTypes.US_RECEIVED_IN_OFJAVA, 0, statCounters.getCounter(CounterEventTypes.US_RECEIVED_IN_OFJAVA).getCounterValue());
+        for(CounterEventTypes cet : CounterEventTypes.values()){
+            if(statCounters.isCounterEnabled(cet)){
+                Assert.assertEquals("Wrong - bad counter value after reset " + cet, 0, statCounters.getCounter(cet).getCounterValue());
+            }
+        }
     }
 
+    /**
+     * Test to store current and last read value of counter (at least one counter has to be enabled)
+     */
     @Test
-    public void testCounterLastRead() throws InterruptedException{
+    public void testCounterLastRead() {
         int testCount = 4;
-        incrementCounter(CounterEventTypes.DS_ENTERED_OFJAVA,testCount);
+        CounterEventTypes firstEnabledCET = null;
+        for(CounterEventTypes  cet : CounterEventTypes.values()){
+            if(statCounters.isCounterEnabled(cet)){
+                firstEnabledCET = cet;
+                break;
+            }
+        }
+        if(firstEnabledCET == null){
+            Assert.fail("No counter is enabled");
+        }
+        incrementCounter(firstEnabledCET,testCount);
         LOGGER.debug("Waiting to process event queue");
-        Assert.assertEquals("Wrong - bad last read value.", 0,statCounters.getCounter(CounterEventTypes.DS_ENTERED_OFJAVA).getCounterLastReadValue());
-        Assert.assertEquals("Wrong - bad value", 4,statCounters.getCounter(CounterEventTypes.DS_ENTERED_OFJAVA).getCounterValue(false));
-        Assert.assertEquals("Wrong - bad last read value.", 0,statCounters.getCounter(CounterEventTypes.DS_ENTERED_OFJAVA).getCounterLastReadValue());
-        Assert.assertEquals("Wrong - bad last read value.", 4,statCounters.getCounter(CounterEventTypes.DS_ENTERED_OFJAVA).getCounterValue());
-        Assert.assertEquals("Wrong - bad last read value.", 4,statCounters.getCounter(CounterEventTypes.DS_ENTERED_OFJAVA).getCounterLastReadValue());
-        incrementCounter(CounterEventTypes.DS_ENTERED_OFJAVA,testCount);
-        LOGGER.debug("Waiting to process event queue");
-        Assert.assertEquals("Wrong - bad last read value.", 4,statCounters.getCounter(CounterEventTypes.DS_ENTERED_OFJAVA).getCounterLastReadValue());
-        Assert.assertEquals("Wrong - bad last read value.", 8,statCounters.getCounter(CounterEventTypes.DS_ENTERED_OFJAVA).getCounterValue());
+        Assert.assertEquals("Wrong - bad last read value.", 0,statCounters.getCounter(firstEnabledCET).getCounterLastReadValue());
+        Assert.assertEquals("Wrong - bad value", testCount,statCounters.getCounter(firstEnabledCET).getCounterValue(false));
+        Assert.assertEquals("Wrong - bad last read value.", 0,statCounters.getCounter(firstEnabledCET).getCounterLastReadValue());
+        Assert.assertEquals("Wrong - bad last read value.", testCount,statCounters.getCounter(firstEnabledCET).getCounterValue());
+        Assert.assertEquals("Wrong - bad last read value.", testCount,statCounters.getCounter(firstEnabledCET).getCounterLastReadValue());
+        incrementCounter(firstEnabledCET,testCount);
+        Assert.assertEquals("Wrong - bad last read value.", testCount,statCounters.getCounter(firstEnabledCET).getCounterLastReadValue());
+        Assert.assertEquals("Wrong - bad last read value.", 2*testCount,statCounters.getCounter(firstEnabledCET).getCounterValue());
+    }
+
+    /**
+     * Test start and stop log reporter
+     */
+    @Test
+    public void testStartStopLogReporter(){
+        int testDelay = 10000;
+        statCounters.startLogReport(testDelay);
+        Assert.assertTrue("Wrong - logRepoter is not running", statCounters.isRunLogReport());
+        Assert.assertEquals("Wrong - bad logReportPeriod", testDelay, statCounters.getLogReportPeriod());
+        statCounters.startLogReport();
+        Assert.assertTrue("Wrong - logRepoter is not running", statCounters.isRunLogReport());
+        Assert.assertEquals("Wrong - bad logReportPeriod", testDelay, statCounters.getLogReportPeriod());
+        statCounters.stopLogReport();
+        Assert.assertFalse("Wrong - logRepoter is running", statCounters.isRunLogReport());
+        statCounters.startLogReport(statCounters.MINIMAL_LOG_REPORT_PERIOD / 2);
+        Assert.assertTrue("Wrong - logRepoter is not running", statCounters.isRunLogReport());
+        Assert.assertEquals("Wrong - bad logReportPeriod", statCounters.MINIMAL_LOG_REPORT_PERIOD, statCounters.getLogReportPeriod());
+        statCounters.stopCounting();
+        Assert.assertFalse("Wrong - logRepoter is running", statCounters.isRunLogReport());
+    }
+
+    /**
+     * Test start log report with bad logReportDealy
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testLogReportBadPeriod(){
+        statCounters.startLogReport(-1);
+    }
+
+    /**
+     * Test to get counter with null key
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetCounterbyNull(){
+        statCounters.getCounter(null);
     }
 
     private void incrementCounter(CounterEventTypes cet, int count){
+        if(!statCounters.isCounterEnabled(cet)){
+            return;
+        }
         for(int i = 0; i< count; i++){
             statCounters.incrementCounter(cet);
         }

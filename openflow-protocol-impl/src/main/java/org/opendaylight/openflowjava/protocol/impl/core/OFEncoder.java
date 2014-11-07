@@ -17,6 +17,7 @@ import org.opendaylight.openflowjava.protocol.impl.core.connection.MessageListen
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.opendaylight.openflowjava.statistics.CounterEventTypes;
 import org.opendaylight.openflowjava.statistics.StatisticsCounters;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +44,9 @@ public class OFEncoder extends MessageToByteEncoder<MessageListenerWrapper> {
         LOGGER.trace("Encoding");
         try {
             serializationFactory.messageToBuffer(wrapper.getMsg().getVersion(), out, wrapper.getMsg());
+            if(wrapper.getMsg() instanceof FlowModInput){
+                statisticsCounters.incrementCounter(CounterEventTypes.DS_FLOW_MODS_SENT);
+            }
             statisticsCounters.incrementCounter(CounterEventTypes.DS_ENCODE_SUCCESS);
         } catch(Exception e) {
             LOGGER.warn("Message serialization failed ", e);

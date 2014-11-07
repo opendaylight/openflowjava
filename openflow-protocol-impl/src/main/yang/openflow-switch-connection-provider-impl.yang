@@ -92,6 +92,16 @@ module openflow-switch-connection-provider-impl {
                     type uint16;
                 }
             }
+            container statistics {
+                leaf statistics-collect {
+                    description "Toggle of collecting statistics";
+                    type boolean;
+                }
+                leaf log-report-delay {
+                    description "Delay between statistics logs";
+                    type uint16;
+                }
+            }
         }
     }
 }

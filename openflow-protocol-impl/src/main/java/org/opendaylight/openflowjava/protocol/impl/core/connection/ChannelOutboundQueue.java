@@ -129,7 +129,7 @@ final class ChannelOutboundQueue extends ChannelInboundHandlerAdapter {
             return true;
         }
 
-        LOG.trace("Message queue is full");
+        LOG.debug("Message queue is full");
         return false;
     }
 
@@ -165,6 +165,7 @@ final class ChannelOutboundQueue extends ChannelInboundHandlerAdapter {
      * uncontended.
      */
     private synchronized void flush() {
+
         final long start = System.nanoTime();
         final long deadline = start + maxWorkTime;
 

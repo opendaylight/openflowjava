@@ -11,7 +11,6 @@ package org.opendaylight.openflowjava.protocol.api.connection;
 import java.net.InetAddress;
 
 import javax.net.ssl.SSLEngine;
-
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SwitchIdleEvent;
 
 /**
@@ -54,4 +53,8 @@ public interface ConnectionConfiguration {
      * @return thread numbers for TcpHandler's eventloopGroups
      */
     ThreadConfiguration getThreadConfiguration();
+    /**
+     * @return Statistics configuration
+     */
+    StatisticsConfiguration getStatisticsConfiguration();
 }

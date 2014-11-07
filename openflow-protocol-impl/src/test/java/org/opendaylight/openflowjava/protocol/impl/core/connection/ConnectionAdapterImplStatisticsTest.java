@@ -9,19 +9,16 @@ package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
 import static org.mockito.Mockito.when;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.ChannelPromise;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.channel.socket.SocketChannel;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.Assert;
-
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -48,7 +45,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessageBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OpenflowProtocolListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketInMessageBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketOutInput;
@@ -60,8 +56,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SystemNotificationsListener;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -69,11 +63,12 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 
 /**
+ * Test counters in ConnectionAdapter (at least DS_ENTERED_OFJAVA, DS_FLOW_MODS_ENTERED and US_MESSAGE_PASS counters have to be enabled)
  * @author madamjak
  *
  */
 public class ConnectionAdapterImplStatisticsTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsCounters.class);
+
     private static final int RPC_RESPONSE_EXPIRATION = 1;
     private static final RemovalListener<RpcResponseKey, ResponseExpectedRpcListener<?>> REMOVAL_LISTENER =
             new RemovalListener<RpcResponseKey, ResponseExpectedRpcListener<?>>() {
@@ -83,10 +78,9 @@ public class ConnectionAdapterImplStatisticsTest {
             notification.getValue().discard();
         }
     };
-    
+
     @Mock SystemNotificationsListener systemListener;
     @Mock ConnectionReadyListener readyListener;
-    //@Mock Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> mockCache;
     @Mock ChannelFuture channelFuture;
     @Mock OpenflowProtocolListener messageListener;
     @Mock SocketChannel channel;
@@ -110,104 +104,101 @@ public class ConnectionAdapterImplStatisticsTest {
     @Mock TableModInput tableModInput;
     @Mock GetAsyncInput getAsyncInput;
     @Mock SetAsyncInput setAsyncInput;
-    
+
     private ConnectionAdapterImpl adapter;
     private Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> cache;
     private StatisticsCounters statCounters;
+
     /**
      * Initialize mocks
+     * Start counting and reset counters before each test
      */
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         statCounters = StatisticsCounters.getInstance();
-        statCounters.resetCounters();
+        statCounters.startCounting(true,false, 0);
     }
+
     /**
      * Disconnect adapter
+     * Stop counting after each test
      */
     @After
     public void tierDown(){
         if (adapter != null && adapter.isAlive()) {
             adapter.disconnect();
         }
-        statCounters.resetCounters();
+        statCounters.stopCounting();
     }
+
     /**
-     * Test statistic counter for all rpc calls 
-     * @throws InterruptedException 
+     * Test statistic counter for all rpc calls (counters DS_ENTERED_OFJAVA and DS_FLOW_MODS_ENTERED have to be enabled)
      */
     @Test
-    public void testEnterOFJavaCounter() throws InterruptedException {
+    public void testEnterOFJavaCounter() {
+        if(!statCounters.isCounterEnabled(CounterEventTypes.DS_ENTERED_OFJAVA)){
+            Assert.fail("Counter " + CounterEventTypes.DS_ENTERED_OFJAVA + " is not enabled");
+        }
+        if(!statCounters.isCounterEnabled(CounterEventTypes.DS_FLOW_MODS_ENTERED)){
+            Assert.fail("Counter " + CounterEventTypes.DS_FLOW_MODS_ENTERED + " is not enabled");
+        }
         EmbeddedChannel embChannel = new EmbeddedChannel(new EmbededChannelHandler());
         adapter = new ConnectionAdapterImpl(embChannel,InetSocketAddress.createUnresolved("localhost", 9876));
         cache = CacheBuilder.newBuilder().concurrencyLevel(1).expireAfterWrite(RPC_RESPONSE_EXPIRATION, TimeUnit.MINUTES)
                 .removalListener(REMOVAL_LISTENER).build();
         adapter.setResponseCache(cache);
-        // -- barrier
         adapter.barrier(barrierInput);
         embChannel.runPendingTasks();
-        // -- echo
         adapter.echo(echoInput);
         embChannel.runPendingTasks();
-        // -- echoReply
         adapter.echoReply(echoReplyInput);
         embChannel.runPendingTasks();
-        // -- experimenter
         adapter.experimenter(experimenterInput);
         embChannel.runPendingTasks();
-        // -- flowMod
         adapter.flowMod(flowModInput);
         embChannel.runPendingTasks();
-        // -- getConfig
         adapter.getConfig(getConfigInput);
         embChannel.runPendingTasks();
-        // -- getFeatures
         adapter.getFeatures(getFeaturesInput);
         embChannel.runPendingTasks();
-        // -- getQueueConfig
         adapter.getQueueConfig(getQueueConfigInput);
         embChannel.runPendingTasks();
-        // -- groupMod
         adapter.groupMod(groupModInput);
         embChannel.runPendingTasks();
-        // -- hello
         adapter.hello(helloInput);
         embChannel.runPendingTasks();
-        // -- meterMod
         adapter.meterMod(meterModInput);
         embChannel.runPendingTasks();
-        // -- packetOut
         adapter.packetOut(packetOutInput);
         embChannel.runPendingTasks();
-        // -- multipartRequest
         adapter.multipartRequest(multipartRequestInput);
         embChannel.runPendingTasks();
-        // -- portMod
         adapter.portMod(portModInput);
         embChannel.runPendingTasks();
-        // -- roleRequest
         adapter.roleRequest(roleRequestInput);
         embChannel.runPendingTasks();
-        // -- setConfig
         adapter.setConfig(setConfigInput);
         embChannel.runPendingTasks();
-        // -- tableMod
         adapter.tableMod(tableModInput);
         embChannel.runPendingTasks();
-        // -- getAsync
         adapter.getAsync(getAsyncInput);
         embChannel.runPendingTasks();
-        // -- setAsync
         adapter.setAsync(setAsyncInput);
         embChannel.runPendingTasks();
-        LOGGER.debug("Waiting to Event Queue process");
         Assert.assertEquals("Wrong - bad counter value for ConnectionAdapterImpl rpc methods", 19, statCounters.getCounter(CounterEventTypes.DS_ENTERED_OFJAVA).getCounterValue());
+        Assert.assertEquals("Wrong - bad counter value for ConnectionAdapterImpl flow-mod entered", 1, statCounters.getCounter(CounterEventTypes.DS_FLOW_MODS_ENTERED).getCounterValue());
         adapter.disconnect();
     }
 
+    /**
+     * Test counter for pass messages to consumer (counter US_MESSAGE_PASS has to be enabled)
+     */
     @Test
-    public void testMessagePassCounter() throws InterruptedException {
+    public void testMessagePassCounter() {
+        if(!statCounters.isCounterEnabled(CounterEventTypes.US_MESSAGE_PASS)){
+            Assert.fail("Counter " + CounterEventTypes.US_MESSAGE_PASS + " is not enabled");
+        }
         when(channel.pipeline()).thenReturn(pipeline);
         adapter = new ConnectionAdapterImpl(channel, InetSocketAddress.createUnresolved("10.0.0.1", 6653));
         adapter.setMessageListener(messageListener);
@@ -235,26 +226,16 @@ public class ConnectionAdapterImplStatisticsTest {
         adapter.consume(message);
         message = new EchoRequestMessageBuilder().build();
         adapter.consume(message);
-        LOGGER.debug("Waiting to Event Queue process");
         Assert.assertEquals("Wrong - bad counter value for ConnectionAdapterImpl consume method", 9, statCounters.getCounter(CounterEventTypes.US_MESSAGE_PASS).getCounterValue());
         adapter.disconnect();
     }
-    
+
     /**
-     * Channel Handler for testing
+     * Empty channel Handler for testing
      * @author madamjak
      *
      */
     private class EmbededChannelHandler extends ChannelOutboundHandlerAdapter {
-        @Override
-        public void write(ChannelHandlerContext ctx, Object msg,
-                ChannelPromise promise) throws Exception {
-            OfHeader responseOfCall = null;
-            if(msg instanceof MessageListenerWrapper){
-                MessageListenerWrapper listener = (MessageListenerWrapper) msg;
-                OfHeader ofHeader = listener.getMsg();
-                responseOfCall = ofHeader;
-            }
-        }
+        // no operation need to test
     }
 }

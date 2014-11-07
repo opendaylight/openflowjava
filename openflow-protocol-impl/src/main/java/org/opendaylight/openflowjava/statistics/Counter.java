@@ -9,7 +9,6 @@
 package org.opendaylight.openflowjava.statistics;
 
 import java.util.concurrent.atomic.AtomicLong;
-
 /**
  * Counts statistics
  * 
@@ -36,6 +35,8 @@ public class Counter {
     }
 
     /**
+     * return the last read value of counter. This value can be set during the reading of current counter value, 
+     *      for detail see method getCounterValue(boolean modifyLastReadValue).
      * @return the counterLastReadValue
      */
     public long getCounterLastReadValue() {
@@ -43,8 +44,8 @@ public class Counter {
     }
 
     /**
-     * get current counter value and rewrite CounterLastReadValue by current value
-     * @return
+     * get current value of counter and rewrite CounterLastReadValue by current value
+     * @return  the current value of counter
      */
     public long getCounterValue() {
         return getCounterValue(true);
@@ -55,7 +56,7 @@ public class Counter {
      * @param modifyLastReadValue
      *      true - CounterLastReadValue will be rewritten by current CounterValue
      *      false - no change CounterLastReadValue
-     * @return
+     * @return the current value of counter
      */
     public long getCounterValue(boolean modifyLastReadValue) {
         if(modifyLastReadValue){
@@ -74,6 +75,8 @@ public class Counter {
 
     @Override
     public String toString() {
-        return "Current value: " + counterValue + " Previous read value: " + counterLastReadValue;
+        long cntPrevVal = getCounterLastReadValue();
+        long cntCurValue = getCounterValue();
+        return String.format("+%d | %d",cntCurValue-cntPrevVal,cntCurValue);
     }
 }
