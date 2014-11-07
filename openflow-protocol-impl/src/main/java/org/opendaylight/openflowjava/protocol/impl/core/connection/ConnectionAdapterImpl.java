@@ -162,6 +162,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
 
     @Override
     public Future<RpcResult<Void>> flowMod(final FlowModInput input) {
+        statisticsCounters.incrementCounter(CounterEventTypes.DS_FLOW_MODS_ENTERED);
         return sendToSwitchFuture(input, "flow-mod sending failed");
     }
 

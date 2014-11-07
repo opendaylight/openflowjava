@@ -7,10 +7,10 @@
  */
 package org.opendaylight.openflowjava.statistics;
 
-import java.util.concurrent.atomic.AtomicLong;;
-
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
+ * Class to hold counter
  * @author madamjak
  *
  */
@@ -19,36 +19,44 @@ public class Counter {
     private AtomicLong counterValue;
     private AtomicLong counterLastReadValue;
 
+    /**
+     * constructor instantiate object and set default values (0) to counter
+     */
     public Counter() {
         counterValue = new AtomicLong(0l);
         counterLastReadValue = new AtomicLong(0l);
     }
 
     /**
-     * Increment current counter value
+     * Increment value of counter
      */
     public void incrementCounter(){
         counterValue.incrementAndGet();
     }
+
     /**
+     * return the last read value of counter. This value can be set during the reading of current counter value, 
+     *      for detail see method getCounterValue(boolean modifyLastReadValue).
      * @return the counterLastReadValue
      */
     public long getCounterLastReadValue() {
         return counterLastReadValue.get();
     }
+
     /**
-     * get current counter value and rewrite CounterLastReadValue by current value
-     * @return 
+     * get current value of counter and rewrite CounterLastReadValue by current value
+     * @return  the current value of counter
      */
     public long getCounterValue() {
         return getCounterValue(true);
     }
+
     /**
      * get current counter value
      * @param modifyLastReadValue 
      *      true - CounterLastReadValue will be rewritten by current CounterValue
      *      false - no change CounterLastReadValue
-     * @return
+     * @return the current value of counter
      */
     public long getCounterValue(boolean modifyLastReadValue) {
         if(modifyLastReadValue){
@@ -56,6 +64,7 @@ public class Counter {
         }
         return counterValue.get();
     }
+
     /**
      * set current counter value and CounterLastReadValue to 0 (zero)
      */
@@ -66,6 +75,8 @@ public class Counter {
 
     @Override
     public String toString() {
-        return "Current value: " + counterValue + " Previous read value: " + counterLastReadValue;
+        long cntPrevVal = getCounterLastReadValue();
+        long cntCurValue = getCounterValue();
+        return String.format("+%d | %d",cntCurValue-cntPrevVal,cntCurValue);
     }
 }

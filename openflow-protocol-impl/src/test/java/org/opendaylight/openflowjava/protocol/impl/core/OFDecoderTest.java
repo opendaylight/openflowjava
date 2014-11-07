@@ -84,7 +84,6 @@ public class OFDecoderTest {
         try {
             ofDecoder.decode(mockChHndlrCtx, inMsg, outList);
         } catch (Exception e) {
-            System.out.println("a");
             Assert.fail();
         }
 

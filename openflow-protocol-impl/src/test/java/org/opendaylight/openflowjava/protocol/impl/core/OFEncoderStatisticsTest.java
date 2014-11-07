@@ -27,18 +27,16 @@ import org.opendaylight.openflowjava.protocol.impl.core.connection.MessageListen
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.opendaylight.openflowjava.statistics.CounterEventTypes;
 import org.opendaylight.openflowjava.statistics.StatisticsCounters;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
+ * Test counters for encoding (at least DS_ENCODE_SUCCESS, DS_ENCODE_FAIL and DS_FLOW_MODS_SENT counters have to be enabled)
  * @author madamjak
  *
  */
 public class OFEncoderStatisticsTest {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(OFEncoderStatisticsTest.class);
 
     @Mock ChannelHandlerContext mockChHndlrCtx ;
     @Mock SerializationFactory mockSerializationFactory ;
@@ -47,26 +45,40 @@ public class OFEncoderStatisticsTest {
     @Mock ByteBuf mockOut ;
     @Mock Future<Void> future;
     @Mock GenericFutureListener<Future<Void>> listener;
+    @Mock FlowModInput mockFlowModInput;
 
     private StatisticsCounters statCounters;
     private OFEncoder ofEncoder;
 
+    /**
+     * Initialize tests, start and reset counters before each test
+     */
     @Before
-    public void initTest(){
+    public void initTlest(){
         MockitoAnnotations.initMocks(this);
         ofEncoder = new OFEncoder() ;
         ofEncoder.setSerializationFactory(mockSerializationFactory) ;
         statCounters = StatisticsCounters.getInstance();
-        statCounters.resetCounters();
+        statCounters.startCounting(true,false, 0);
     }
 
+    /**
+     * Stop counting after each test
+     */
     @After
     public void tierDown(){
-        statCounters.resetCounters();
+        statCounters.stopCounting();
     }
 
+    /**
+     * Test counting of success encode (counter DS_ENCODE_SUCCESS has to be enabled)
+     */
     @Test
-    public void testEncodeSuccessCounter() throws InterruptedException{
+    public void testEncodeSuccessCounter() {
+        CounterEventTypes cet = CounterEventTypes.DS_ENCODE_SUCCESS;
+        if(! statCounters.isCounterEnabled(cet)){
+            Assert.fail("Counter " + cet + " is not enabled.");
+        }
         int count = 4;
         when(mockOut.readableBytes()).thenReturn(1);
         when(wrapper.getMsg()).thenReturn(mockMsg);
@@ -78,12 +90,41 @@ public class OFEncoderStatisticsTest {
         } catch (Exception e) {
             Assert.fail();
         }
-        LOGGER.debug("Waiting to event queue process");
-        Assert.assertEquals("Wrong - bad counter value for OFEncoder encode succesfully ", count, statCounters.getCounter(CounterEventTypes.DS_ENCODE_SUCCESS).getCounterValue());
+        Assert.assertEquals("Wrong - bad counter value for OFEncoder encode succesfully ", count, statCounters.getCounter(cet).getCounterValue());
     }
 
+    /**
+     * Test counting of flow-mod sent (counter DS_FLOW_MODS_SENT has to be enabled)
+     */
     @Test
-    public void testEncodeEncodeFailCounter() throws InterruptedException {
+    public void testFlowModSentCounter() {
+        CounterEventTypes cet = CounterEventTypes.DS_FLOW_MODS_SENT;
+        if(! statCounters.isCounterEnabled(cet)){
+            Assert.fail("Counter " + cet + " is not enabled.");
+        }
+        int count = 4;
+        when(mockOut.readableBytes()).thenReturn(1);
+        when(wrapper.getMsg()).thenReturn(mockFlowModInput);
+        when(wrapper.getMsg().getVersion()).thenReturn((short) EncodeConstants.OF13_VERSION_ID);
+        try {
+            for(int i = 0; i< count; i++){
+                ofEncoder.encode(mockChHndlrCtx, wrapper, mockOut);
+            }
+        } catch (Exception e) {
+            Assert.fail();
+        }
+        Assert.assertEquals("Wrong - bad counter value for OFEncoder flow-mod sent", count, statCounters.getCounter(cet).getCounterValue());
+    }
+    /**
+     * Test counting of encode fail (counter DS_ENCODE_FAIL has to be enabled)
+     */
+
+    @Test
+    public void testEncodeEncodeFailCounter() {
+        CounterEventTypes cet = CounterEventTypes.DS_ENCODE_FAIL;
+        if(! statCounters.isCounterEnabled(cet)){
+            Assert.fail("Counter " + cet + " is not enabled.");
+        }
         int count = 2;
         when(wrapper.getMsg()).thenReturn(mockMsg);
         when(wrapper.getListener()).thenReturn(listener);
@@ -96,7 +137,6 @@ public class OFEncoderStatisticsTest {
         } catch (Exception e) {
             Assert.fail();
         }
-        LOGGER.debug("Waiting to event queue process");
-        Assert.assertEquals("Wrong - bad counter value for OFEncoder fail encode", count, statCounters.getCounter(CounterEventTypes.DS_ENCODE_FAIL).getCounterValue());
+        Assert.assertEquals("Wrong - bad counter value for OFEncoder fail encode", count, statCounters.getCounter(cet).getCounterValue());
     }
 }
