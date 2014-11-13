@@ -117,7 +117,7 @@ public class ConnectionAdapterImplStatisticsTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         statCounters = StatisticsCounters.getInstance();
-        statCounters.startCounting(true,false, 0);
+        statCounters.startCounting(false, 0);
     }
 
     /**

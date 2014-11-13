@@ -11,11 +11,9 @@ package org.opendaylight.openflowjava.protocol.impl.core.connection;
 import java.net.InetAddress;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
-import org.opendaylight.openflowjava.protocol.api.connection.StatisticsConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.ThreadConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.TransportProtocol;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow._switch.connection.provider.impl.rev140328.modules.module.configuration.openflow._switch.connection.provider.impl.Statistics;
 
 /**
  * @author michal.polkorab
@@ -29,8 +27,6 @@ public class ConnectionConfigurationImpl implements ConnectionConfiguration {
     private TlsConfiguration tlsConfig;
     private long switchIdleTimeout;
     private ThreadConfiguration threadConfig;
-    private TransportProtocol protocol;
-    private Statistics statistics;
 
     /**
      * Creates {@link ConnectionConfigurationImpl}
@@ -95,11 +91,5 @@ public class ConnectionConfigurationImpl implements ConnectionConfiguration {
      */
     public void setThreadConfiguration(ThreadConfiguration threadConfig) {
         this.threadConfig = threadConfig;
-    }
-
-    @Override
-    public StatisticsConfiguration getStatisticsConfiguration() {
-        // TODO Auto-generated method stub
-        return null;
     }
 }

@@ -53,8 +53,4 @@ public interface ConnectionConfiguration {
      * @return thread numbers for TcpHandler's eventloopGroups
      */
     ThreadConfiguration getThreadConfiguration();
-    /**
-     * @return Statistics configuration
-     */
-    StatisticsConfiguration getStatisticsConfiguration();
 }

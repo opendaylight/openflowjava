@@ -59,7 +59,7 @@ public class OFEncoderStatisticsTest {
         ofEncoder = new OFEncoder() ;
         ofEncoder.setSerializationFactory(mockSerializationFactory) ;
         statCounters = StatisticsCounters.getInstance();
-        statCounters.startCounting(true,false, 0);
+        statCounters.startCounting(false, 0);
     }
 
     /**

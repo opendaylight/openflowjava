@@ -58,7 +58,7 @@ public class OFDecoderStatisticsTest {
         ofDecoder.setDeserializationFactory(mockDeserializationFactory);
         outList = new ArrayList<>();
         statCounters = StatisticsCounters.getInstance();
-        statCounters.startCounting(true, false, 0);
+        statCounters.startCounting(false, 0);
     }
 
     /**
