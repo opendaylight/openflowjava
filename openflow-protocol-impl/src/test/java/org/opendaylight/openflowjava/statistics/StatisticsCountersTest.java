@@ -30,7 +30,7 @@ public class StatisticsCountersTest {
     @Before
     public void initTest(){
         statCounters = StatisticsCounters.getInstance();
-        statCounters.startCounting(true,false, 0);
+        statCounters.startCounting(false, 0);
     }
 
     /**
@@ -101,9 +101,6 @@ public class StatisticsCountersTest {
         statCounters.startLogReport(testDelay);
         Assert.assertTrue("Wrong - logRepoter is not running", statCounters.isRunLogReport());
         Assert.assertEquals("Wrong - bad logReportPeriod", testDelay, statCounters.getLogReportPeriod());
-        statCounters.startLogReport();
-        Assert.assertTrue("Wrong - logRepoter is not running", statCounters.isRunLogReport());
-        Assert.assertEquals("Wrong - bad logReportPeriod", testDelay, statCounters.getLogReportPeriod());
         statCounters.stopLogReport();
         Assert.assertFalse("Wrong - logRepoter is running", statCounters.isRunLogReport());
         statCounters.startLogReport(statCounters.MINIMAL_LOG_REPORT_PERIOD / 2);
@@ -118,7 +115,7 @@ public class StatisticsCountersTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void testLogReportBadPeriod(){
-        statCounters.startLogReport(-1);
+        statCounters.startLogReport(0);
     }
 
     /**

@@ -17,4 +17,11 @@ module openflow-switch-connection-provider {
          base "config:service-type";
          config:java-class "org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider";
     }
+
+    identity statistics-collection-service {
+        description
+            "StatisticsHandlerService interface as a StatisticsCollection interface identity";
+        base config:service-type;
+        config:java-class "org.opendaylight.openflowjava.protocol.spi.statistics.StatisticsHandler";
+    }
 }

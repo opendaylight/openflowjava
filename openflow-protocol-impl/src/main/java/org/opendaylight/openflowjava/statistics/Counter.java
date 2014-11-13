@@ -73,8 +73,10 @@ public class Counter {
         counterLastReadValue.set(0l);
     }
 
-    @Override
-    public String toString() {
+    /**
+     * @return last and current count for specified statistic
+     */
+    public String getStat() {
         long cntPrevVal = getCounterLastReadValue();
         long cntCurValue = getCounterValue();
         return String.format("+%d | %d",cntCurValue-cntPrevVal,cntCurValue);

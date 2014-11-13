@@ -23,7 +23,7 @@
               <configuration>
                 <instructions>
                     <Export-Package>
-                      org.opendaylight.openflowjava.protocol.spi.connection*,
+                      org.opendaylight.openflowjava.protocol.spi*,
                       org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow._switch.connection.provider.*
                     </Export-Package>
                 </instructions>
