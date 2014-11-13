@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  * @author madamjak
  *
  */
-public final class StatisticsCounters {
+public final class StatisticsCounters implements StatisticsHandler {
 
     /**
      * Default delay between two writings into log (milliseconds)
@@ -67,41 +67,26 @@ public final class StatisticsCounters {
             countersMap.put(cet, new Counter());
         }
         runCounting = false;
-        this.logReportPeriod = -1;
+        this.logReportPeriod = 0;
         this.runLogReport = false;
         LOGGER.debug("StaticsCounters has been created");
     }
 
     /**
-     * Start counting
-     * @param resetCounters - true = statistics counters will be reset before start counting
-     * @param reportToLogs - true = statistics counters will periodically write to log
-     * @param logReportDelay - delay between two writings into logs in milliseconds (for details see startLogReport(int logReportDelay))
-     */
-    public void startCounting(boolean resetCounters, boolean reportToLogs, int logReportDelay){
-        if (runCounting) {
-            return;
-        }
-        LOGGER.debug("Start counting...");
-        if(reportToLogs){
-            startLogReport(logReportDelay);
-        }
-        if(resetCounters){
-            resetCounters();
-        }
-        runCounting = true;
-    }
-
-    /**
-     * Start counting (counters are set to 0 before start counting)
-     * @param reportToLogs - true = statistics counters will periodically write to log
-     * @param logReportDelay - delay between two writings into logs in milliseconds (for details see startLogReport(int logReportDelay))
+     * Start counting (counters are set to 0 before counting starts)
+     * @param reportToLogs - true = statistic counters will periodically log
+     * @param logReportDelay - delay between two logs (in milliseconds)
      */
     public void startCounting(boolean reportToLogs, int logReportDelay){
         if (runCounting) {
             return;
         }
-        startCounting(true,reportToLogs,logReportDelay);
+        resetCounters();
+        LOGGER.debug("Counting started...");
+        if(reportToLogs){
+            startLogReport(logReportDelay);
+        }
+        runCounting = true;
     }
 
     /**
@@ -122,49 +107,30 @@ public final class StatisticsCounters {
     }
 
     /**
-     * Start write statistics into logs, if writing is run calling has no effect. 
-     * If method is called without previous setting of report delay than DEFAULT_LOG_REPORT_PERIOD will be used.
-     */
-    public void startLogReport(){
-        if(runLogReport){
-            return;
-        }
-        if(this.logReportPeriod <= 0){
-            this.logReportPeriod = DEFAULT_LOG_REPORT_PERIOD;
-        }
-        if(this.logReportPeriod <= MINIMAL_LOG_REPORT_PERIOD){
-            this.logReportPeriod = MINIMAL_LOG_REPORT_PERIOD;
-        }
-        logReporter = new Timer("SC_Timer");
-        logReporter.schedule(new LogReporterTask(this), this.logReportPeriod,this.logReportPeriod);
-        runLogReport = true;
-        LOGGER.debug("Statistics log reporter has been scheduled with period {} ms", this.logReportPeriod);
-    }
-
-    /**
-     * Start write statistics into logs with given delay between writings, if writing is run calling has no effect.
-     * @param logReportDelay - delay between two writings into logs (milliseconds). 
-     *            It is mandatory if reportToLogs is true, value have to be greater than 0 (zero)
-     *            If value is smaller than MINIMAL_LOG_REPORT_PERIOD, the value MINIMAL_LOG_REPORT_PERIOD will be used.
-     * @exception IllegalArgumentException if logReportDelay is not greater than 0 (zero)
+     * Prints statistics with given delay between logs
+     * @param logReportDelay - delay between two logs (in milliseconds)
+     * @exception IllegalArgumentException if logReportDelay is less than 0
      */
     public void startLogReport(int logReportDelay){
         if(runLogReport){
             return;
         }
         if(logReportDelay <= 0){
-            throw new IllegalArgumentException("logReportPeriod have to bee greater than 0 zero");
+            throw new IllegalArgumentException("logReportDelay has to be greater than 0");
         }
         if(logReportDelay < MINIMAL_LOG_REPORT_PERIOD){
             this.logReportPeriod = MINIMAL_LOG_REPORT_PERIOD;
         } else {
             this.logReportPeriod = logReportDelay;
         }
-        startLogReport();
+        logReporter = new Timer("SC_Timer");
+        logReporter.schedule(new LogReporterTask(this, LOGGER), this.logReportPeriod, this.logReportPeriod);
+        runLogReport = true;
+        LOGGER.debug("Statistics log reporter has been scheduled with period {} ms", this.logReportPeriod);
     }
 
     /**
-     * Stop  write statistics into logs, counting does not stop
+     * Stops logging, counting continues
      */
     public void stopLogReport(){
         if(runLogReport){
@@ -217,7 +183,7 @@ public final class StatisticsCounters {
     }
 
     /**
-     * Get counter by counter event type
+     * Get counter by CounterEventType
      * @param counterEventKey key to identify counter (can not be null)
      * @return - Counter object or null if counter has not been enabled
      * @exception - IllegalArgumentException if counterEventKey is null
@@ -241,14 +207,21 @@ public final class StatisticsCounters {
         }
     }
 
-    /**
-     * Set values of all counter to 0 (zero)
-     */
+    @Override
     public void resetCounters() {
         for(CounterEventTypes cet : enabledCounters){
             countersMap.get(cet).reset();
         }
         LOGGER.debug("StaticsCounters has been reset");
+    }
+
+    @Override
+    public String printStatistics() {
+        StringBuilder strBuilder = new StringBuilder();
+        for(CounterEventTypes cet : getEnabledCounters()){
+            strBuilder.append(cet.toString() + ": " + getCountersMap().get(cet).toString() + "\n");
+        }
+        return strBuilder.toString();
     }
 
     /**
@@ -257,18 +230,19 @@ public final class StatisticsCounters {
      *
      */
     private static class LogReporterTask extends TimerTask {
-        private static final Logger LOG = LoggerFactory.getLogger(LogReporterTask.class);
+        private static Logger LOG;
 
         private StatisticsCounters sc;
-        public LogReporterTask(StatisticsCounters sc) {
+        public LogReporterTask(StatisticsCounters sc, Logger logger) {
             this.sc = sc;
+            LOG = logger;
         }
 
         @Override
         public void run() {
-                for(CounterEventTypes cet : sc.getEnabledCounters()){
-                    LOG.debug(cet.toString() + ": " + sc.getCountersMap().get(cet).toString());
-                }
+            for(CounterEventTypes cet : sc.getEnabledCounters()){
+                LOG.debug(cet.toString() + ": " + sc.getCountersMap().get(cet).toString());
+            }
         }
     }
 }

@@ -13,11 +13,9 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
-import org.opendaylight.openflowjava.protocol.api.connection.StatisticsConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.ThreadConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
 import org.opendaylight.openflowjava.protocol.impl.core.SwitchConnectionProviderImpl;
-import org.opendaylight.openflowjava.statistics.StatisticsCounters;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.KeystoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.TransportProtocol;
@@ -63,18 +61,15 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
     public java.lang.AutoCloseable createInstance() {
         LOG.info("SwitchConnectionProvider started.");
         SwitchConnectionProviderImpl switchConnectionProviderImpl = new SwitchConnectionProviderImpl();
-        StatisticsCounters sc = StatisticsCounters.getInstance();
         try {
             ConnectionConfiguration connConfiguration = createConnectionConfiguration();
             switchConnectionProviderImpl.setConfiguration(connConfiguration);
-            startStatistics(sc, connConfiguration.getStatisticsConfiguration());
         } catch (UnknownHostException e) {
             throw new IllegalArgumentException(e.getMessage(), e);
         }
         return switchConnectionProviderImpl;
     }
 
-    
     /**
      * @return instance configuration object
      * @throws UnknownHostException 
@@ -86,8 +81,7 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
         final Tls tlsConfig = getTls();
         final Threads threads = getThreads();
         final TransportProtocol transportProtocol = getTransportProtocol();
-        final Statistics statistics = getStatistics();
-        
+
         return new ConnectionConfiguration() {
             @Override
             public InetAddress getAddress() {
@@ -172,31 +166,6 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
                     }
                 };
             }
-            @Override
-            public StatisticsConfiguration getStatisticsConfiguration(){
-               return new StatisticsConfiguration() {
-                @Override
-                public Boolean getStatisticsCollect() {
-                    if(statistics == null){
-                        return false;
-                    }
-                    if (statistics.getStatisticsCollect() == null){
-                        return false;
-                    }
-                    return statistics.getStatisticsCollect();
-                }
-                @Override
-                public Integer getLogReportDelay() {
-                    if(statistics == null){
-                        return -1;
-                    }
-                    if(statistics.getLogReportDelay() == null){
-                        return -1;
-                    };
-                    return statistics.getLogReportDelay();
-                }
-            };
-            }
         };
     }
 
@@ -222,37 +191,6 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
         }
     }
 
-    /**
-     * Configure and start Statistics Counters by configuration parameters. 
-     *      No operations is performed if:
-     *      - statisticsConfig is null
-     *      - sc is null
-     *      - sc is not null and if counting is running
-     * @param sc - statistic counter to configure and start
-     * @param statisticsConfig - configuration parameters
-     */
-    private static void startStatistics(StatisticsCounters sc, StatisticsConfiguration statisticsConfig){
-        if(statisticsConfig == null){
-            return;
-        }
-        if(sc == null || sc.isRunCounting()){
-            return;
-        }
-        Boolean toCollectStats = statisticsConfig.getStatisticsCollect();
-        Integer logDelay = statisticsConfig.getLogReportDelay();
-        if(toCollectStats != null && toCollectStats.booleanValue()){
-            int logPeriod = -1;
-            if(logDelay != null){
-                logPeriod = logDelay.intValue();
-            }
-            if(logPeriod >0){
-                sc.startCounting(true, logPeriod);
-            } else {
-                sc.startCounting(false, 0);
-            }
-        }
-    }
-    
     /**
      * @param value
      * @return

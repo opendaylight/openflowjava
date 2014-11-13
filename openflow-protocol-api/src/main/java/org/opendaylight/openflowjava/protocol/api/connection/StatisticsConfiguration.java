@@ -5,13 +5,23 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
+
 package org.opendaylight.openflowjava.protocol.api.connection;
 
 /**
+ * Used for StatisticsCounter configuration
+ * 
  * @author madamjak
- *
  */
 public interface StatisticsConfiguration {
-    Boolean getStatisticsCollect();
-    Integer getLogReportDelay();
+
+    /**
+     * @return true if statistics are / will be collected, false otherwise
+     */
+    boolean getStatisticsCollect();
+
+    /**
+     * @return delay between two statistics logs (in milliseconds)
+     */
+    int getLogReportDelay();
 }
