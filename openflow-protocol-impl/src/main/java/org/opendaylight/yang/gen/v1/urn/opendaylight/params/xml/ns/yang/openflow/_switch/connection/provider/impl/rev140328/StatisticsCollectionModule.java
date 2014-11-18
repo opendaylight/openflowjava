@@ -50,10 +50,7 @@ public class StatisticsCollectionModule extends org.opendaylight.yang.gen.v1.urn
                     return 0;
                 }
             };
-        } else {
-            LOGGER.error("STATISTICS ARE NULL");
         }
-        LOGGER.error("config " + statsConfig);
         if (statsConfig != null) {
             statsCounter.startCounting(statsConfig.getStatisticsCollect(), statsConfig.getLogReportDelay());
         } else {

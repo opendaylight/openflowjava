@@ -6,6 +6,7 @@
     <version>0.6.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
+        <module>openflowjava-config</module>
         <module>openflow-protocol-api</module>
         <module>openflow-protocol-spi</module>
         <module>util</module>
@@ -13,7 +14,7 @@
         <module>openflow-protocol-it</module>
         <module>features</module>
         <module>simple-client</module>
-    </modules>
+  </modules>
     <scm>
         <connection>scm:git:ssh://git.opendaylight.org:29418/openflowjava.git</connection>
         <developerConnection>scm:git:ssh://git.opendaylight.org:29418/openflowjava.git</developerConnection>
@@ -434,7 +435,7 @@
                             </goals>
                           </pluginExecutionFilter>
                           <action>
-                            <ignore></ignore>
+                            <ignore/>
                           </action>
                         </pluginExecution>
                         <pluginExecution>
@@ -447,7 +448,7 @@
                             </goals>
                           </pluginExecutionFilter>
                           <action>
-                            <ignore></ignore>
+                            <ignore/>
                           </action>
                         </pluginExecution>
                         <pluginExecution>
@@ -462,7 +463,7 @@
                             </goals>
                           </pluginExecutionFilter>
                           <action>
-                            <ignore></ignore>
+                            <ignore/>
                           </action>
                         </pluginExecution>
                         <pluginExecution>
@@ -490,7 +491,7 @@
                             </goals>
                           </pluginExecutionFilter>
                           <action>
-                            <ignore></ignore>
+                            <ignore/>
                           </action>
                         </pluginExecution>
                         <pluginExecution>
@@ -503,7 +504,7 @@
                             </goals>
                           </pluginExecutionFilter>
                           <action>
-                            <execute></execute>
+                            <execute/>
                           </action>
                         </pluginExecution>
                         <pluginExecution>
@@ -516,7 +517,7 @@
                             </goals>
                           </pluginExecutionFilter>
                           <action>
-                            <ignore></ignore>
+                            <ignore/>
                           </action>
                         </pluginExecution>
                         <pluginExecution>
@@ -529,7 +530,7 @@
                             </goals>
                           </pluginExecutionFilter>
                           <action>
-                            <ignore></ignore>
+                            <ignore/>
                           </action>
                         </pluginExecution>
                       </pluginExecutions>
