@@ -24,4 +24,8 @@
         <bundle>mvn:org.opendaylight.openflowjava/openflow-protocol-impl/${project.version}</bundle>
         <bundle>mvn:org.opendaylight.openflowjava/util/${project.version}</bundle>
     </feature>
+    <feature name='odl-openflowjava-stats' description="OpenDaylight :: Openflow Java :: Stats">
+        <feature version='${project.version}'>odl-openflowjava-protocol</feature>
+        <configfile finalname="etc/opendaylight/karaf/45-openflowjava-stats.xml">mvn:org.opendaylight.openflowjava/openflowjava-config/${project.version}/xml/configstats</configfile>
+    </feature>
 </features>
