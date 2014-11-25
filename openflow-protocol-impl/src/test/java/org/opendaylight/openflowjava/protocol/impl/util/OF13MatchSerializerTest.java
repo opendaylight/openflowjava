@@ -112,7 +112,7 @@ public class OF13MatchSerializerTest {
     /**
      * Test for correct serialization of Ipv6Address match entry
      */
-    @Test(expected=IllegalStateException.class)
+    @Test
     public void testIpv6Various() {
         MatchBuilder builder = new MatchBuilder();
         builder.setType(OxmMatchType.class);
@@ -160,24 +160,6 @@ public class OF13MatchSerializerTest {
         entriesBuilder.setHasMask(false);
         addressBuilder = new Ipv6AddressMatchEntryBuilder();
         addressBuilder.setIpv6Address(new Ipv6Address("::"));
-        entriesBuilder.addAugmentation(Ipv6AddressMatchEntry.class, addressBuilder.build());
-        entries.add(entriesBuilder.build());
-        // ipv6 match entry with incorrect Ipv6 address (longer)
-        entriesBuilder = new MatchEntriesBuilder();
-        entriesBuilder.setOxmClass(OpenflowBasicClass.class);
-        entriesBuilder.setOxmMatchField(Ipv6Dst.class);
-        entriesBuilder.setHasMask(false);
-        addressBuilder = new Ipv6AddressMatchEntryBuilder();
-        addressBuilder.setIpv6Address(new Ipv6Address("1:2:3:4:5:6:7:8:9"));
-        entriesBuilder.addAugmentation(Ipv6AddressMatchEntry.class, addressBuilder.build());
-        entries.add(entriesBuilder.build());
-        // ipv6 match entry with too abbreviated Ipv6 address
-        entriesBuilder = new MatchEntriesBuilder();
-        entriesBuilder.setOxmClass(OpenflowBasicClass.class);
-        entriesBuilder.setOxmMatchField(Ipv6NdTarget.class);
-        entriesBuilder.setHasMask(false);
-        addressBuilder = new Ipv6AddressMatchEntryBuilder();
-        addressBuilder.setIpv6Address(new Ipv6Address("1:2::::8"));
         entriesBuilder.addAugmentation(Ipv6AddressMatchEntry.class, addressBuilder.build());
         entries.add(entriesBuilder.build());
         builder.setMatchEntries(entries);
@@ -242,19 +224,31 @@ public class OF13MatchSerializerTest {
         Assert.assertEquals("Wrong ipv6 address", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong ipv6 address", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong ipv6 address", 0, out.readUnsignedShort());
-        Assert.assertEquals("Wrong class", 0x8000, out.readUnsignedShort());
-        Assert.assertEquals("Wrong field and mask", 54, out.readUnsignedByte());
-        Assert.assertEquals("Wrong entry length", 16, out.readUnsignedByte());
-        Assert.assertEquals("Wrong ipv6 address", 1, out.readUnsignedShort());
-        Assert.assertEquals("Wrong ipv6 address", 2, out.readUnsignedShort());
-        Assert.assertEquals("Wrong ipv6 address", 3, out.readUnsignedShort());
-        Assert.assertEquals("Wrong ipv6 address", 4, out.readUnsignedShort());
-        Assert.assertEquals("Wrong ipv6 address", 5, out.readUnsignedShort());
-        Assert.assertEquals("Wrong ipv6 address", 6, out.readUnsignedShort());
-        Assert.assertEquals("Wrong ipv6 address", 7, out.readUnsignedShort());
-        Assert.assertEquals("Wrong ipv6 address", 8, out.readUnsignedShort());
     }
-    
+
+    /**
+     * Test for correct serialization of incorrect Ipv6Address match entry
+     */
+    @Test(expected=IllegalStateException.class)
+    public void testIpv6Incorrect() {
+        MatchBuilder builder = new MatchBuilder();
+        builder.setType(OxmMatchType.class);
+        List<MatchEntries> entries = new ArrayList<>();
+        // ipv6 match entry with incorrect Ipv6 address
+        MatchEntriesBuilder entriesBuilder = new MatchEntriesBuilder();
+        entriesBuilder.setOxmClass(OpenflowBasicClass.class);
+        entriesBuilder.setOxmMatchField(Ipv6Src.class);
+        entriesBuilder.setHasMask(false);
+        Ipv6AddressMatchEntryBuilder addressBuilder = new Ipv6AddressMatchEntryBuilder();
+        addressBuilder.setIpv6Address(new Ipv6Address("1:2::::8"));
+        entriesBuilder.addAugmentation(Ipv6AddressMatchEntry.class, addressBuilder.build());
+        entries.add(entriesBuilder.build());
+        builder.setMatchEntries(entries);
+        Match match = builder.build();
+        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+        matchSerializer.serialize(match, out);
+    }
+
     /**
      * Test for correct serialization of Ipv4Address match entry
      */
