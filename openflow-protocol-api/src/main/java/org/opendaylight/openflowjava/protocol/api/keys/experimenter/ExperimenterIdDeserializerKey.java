@@ -16,7 +16,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * @author michal.polkorab
  *
  */
-public final class ExperimenterIdDeserializerKey extends MessageCodeKey 
+public final class ExperimenterIdDeserializerKey extends MessageCodeKey
         implements ExperimenterDeserializerKey {
 
     private Long experimenterId;
@@ -32,7 +32,7 @@ public final class ExperimenterIdDeserializerKey extends MessageCodeKey
         this.experimenterId = experimenterId;
     }
 
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;

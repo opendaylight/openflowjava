@@ -40,7 +40,7 @@ public class OxmVlanVidDeserializerTest {
         Assert.assertEquals("Wrong entry hasMask", false, entry.isHasMask());
         Assert.assertEquals("Wrong entry value", 10,
                 entry.getAugmentation(VlanVidMatchEntry.class).getVlanVid().intValue());
-        Assert.assertEquals("Wrong entry value", false, 
+        Assert.assertEquals("Wrong entry value", false,
                 entry.getAugmentation(VlanVidMatchEntry.class).isCfiBit());
     }
 }

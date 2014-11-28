@@ -54,7 +54,7 @@ public class OF10PortStatusMessageFactoryTest {
                 + "00 10 01 01 05 01 04 02 41 4C 4F 48 41 00 00 00 00 00 00 00 00 00 00 "
                 + "00 00 00 00 15 00 00 00 01 00 00 00 31 00 00 04 42 00 00 03 0C 00 00 08 88");
         PortStatusMessage builtByFactory = BufferHelper.deserialize(statusFactory, bb);
-        
+
         BufferHelper.checkHeaderV10(builtByFactory);
         Assert.assertEquals("Wrong reason", PortReason.OFPPRADD, builtByFactory.getReason());
         Assert.assertEquals("Wrong port - port-no", 16, builtByFactory.getPortNo().intValue());

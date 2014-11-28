@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Class representing sleep (wait) event
- * 
+ *
  * @author michal.polkorab
  */
 public class SleepEvent implements ClientEvent {
@@ -22,7 +22,7 @@ public class SleepEvent implements ClientEvent {
     private long sleepTime;
 
     /**
-     * 
+     *
      * @param sleepTime time of {@link Thread#sleep(long)} in milliseconds
      */
     public SleepEvent(long sleepTime) {

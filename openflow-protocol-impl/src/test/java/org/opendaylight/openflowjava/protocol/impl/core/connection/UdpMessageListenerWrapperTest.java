@@ -22,7 +22,7 @@ import org.opendaylight.openflowjava.protocol.impl.core.connection.UdpMessageLis
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 
 /**
- * 
+ *
  * @author madamjak
  *
  */
@@ -30,7 +30,7 @@ public class UdpMessageListenerWrapperTest {
 
     @Mock GenericFutureListener<Future<Void>> listener;
     @Mock OfHeader msg;
-    
+
     @Before
     public void startUp(){
         MockitoAnnotations.initMocks(this);

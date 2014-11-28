@@ -45,14 +45,14 @@ public final class ClientSslContextFactory {
 
             KeyManagerFactory kmf = KeyManagerFactory.getInstance(algorithm);
             kmf.init(ks, ClientSslKeyStore.getCertificatePassword());
-            
+
             KeyStore ts = KeyStore.getInstance("JKS");
             ts.load(ClientSslTrustStore.asInputStream(),
                     ClientSslTrustStore.getKeyStorePassword());
-            
+
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(algorithm);
             tmf.init(ts);
-            
+
             clientContext = SSLContext.getInstance(PROTOCOL);
             clientContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
         } catch (Exception e) {

@@ -36,7 +36,7 @@ public class OxmArpOpSerializerTest {
     @Test
     public void testSerialize() {
         MatchEntriesBuilder builder = prepareArpOpMatchEntry(1402);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -51,7 +51,7 @@ public class OxmArpOpSerializerTest {
     @Test
     public void testSerializeHeader() {
         MatchEntriesBuilder builder = prepareArpOpHeader(false);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 

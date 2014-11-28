@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.TypeToClassKey;
 /**
- * 
+ *
  * @author madamjak
  *
  */

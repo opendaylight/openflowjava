@@ -21,14 +21,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 /**
- * 
+ *
  * @author madamjak
  *
  */
 public class ConnectionAdapterFactoryImplTest {
 
     @Mock ChannelPipeline channnelPipe;
-    @Mock Channel channel; 
+    @Mock Channel channel;
     @Mock InetSocketAddress address;
 
     @Before

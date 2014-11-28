@@ -19,7 +19,7 @@ public class MessageTypeKey<E> {
 
     private final Class<? extends E> msgType;
     private final short msgVersion;
-    
+
     /**
      * @param msgVersion protocol version
      * @param msgType type of message - class of serialized object
@@ -28,7 +28,7 @@ public class MessageTypeKey<E> {
         this.msgType = msgType;
         this.msgVersion = msgVersion;
     }
-    
+
     @Override
     public String toString() {
         return "msgVersion: " + msgVersion + " objectType: " + msgType.getName();

@@ -17,7 +17,7 @@ import java.util.concurrent.Future;
 public interface ListeningStatusProvider {
 
     /**
-     * @return future holding startup result of all library instances under plugin's control 
+     * @return future holding startup result of all library instances under plugin's control
      */
     Future<Boolean> isOnline();
 

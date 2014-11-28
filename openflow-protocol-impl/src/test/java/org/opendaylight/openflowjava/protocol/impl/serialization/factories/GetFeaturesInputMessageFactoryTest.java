@@ -45,14 +45,14 @@ public class GetFeaturesInputMessageFactoryTest {
 
     /**
      * Testing of {@link GetFeaturesInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testV13() throws Exception {
         GetFeaturesInputBuilder gfib = new GetFeaturesInputBuilder();
         BufferHelper.setupHeader(gfib, EncodeConstants.OF13_VERSION_ID);
         GetFeaturesInput gfi = gfib.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         featuresFactory.serialize(gfi, out);
 
@@ -61,14 +61,14 @@ public class GetFeaturesInputMessageFactoryTest {
 
     /**
      * Testing of {@link GetFeaturesInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testV10() throws Exception {
         GetFeaturesInputBuilder gfib = new GetFeaturesInputBuilder();
         BufferHelper.setupHeader(gfib, EncodeConstants.OF10_VERSION_ID);
         GetFeaturesInput gfi = gfib.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         featuresFactory.serialize(gfi, out);
 

@@ -10,7 +10,7 @@ package org.opendaylight.openflowjava.protocol.impl.core;
 
 /**
  * Stores names of handlers used in pipeline.
- * 
+ *
  * @author michal.polkorab
  */
 public enum PipelineHandlers {

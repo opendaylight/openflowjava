@@ -44,17 +44,17 @@ public class OF10HelloInputMessageFactoryTest {
 
     /**
      * Testing of {@link OF10HelloInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testWithoutElementsSet() throws Exception {
         HelloInputBuilder hib = new HelloInputBuilder();
         BufferHelper.setupHeader(hib, EncodeConstants.OF10_VERSION_ID);
         HelloInput hi = hib.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         helloFactory.serialize(hi, out);
-        
+
         BufferHelper.checkHeaderV10(out, (byte) 0, 8);
     }
 

@@ -13,13 +13,13 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
  * @author michal.polkorab
- * @param <E> 
+ * @param <E>
  */
 public interface HeaderDeserializer<E extends DataObject> extends OFGeneralDeserializer {
 
     /**
      * Deserializes byte message headers
-     * 
+     *
      * @param rawMessage message as bytes in ByteBuf
      * @return POJO/DTO
      */

@@ -50,7 +50,7 @@ public class MultipartRequestPortDescTest {
 
     /**
      * Tests {@link MultipartRequestInputFactory} - PortDesc case
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void test() throws Exception {

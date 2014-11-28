@@ -36,7 +36,7 @@ public class OxmIcmpv6CodeSerializerTest {
     @Test
     public void testSerialize() {
         MatchEntriesBuilder builder = prepareIcmpv6CodeMatchEntry((short) 101);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -51,7 +51,7 @@ public class OxmIcmpv6CodeSerializerTest {
     @Test
     public void testSerializeHeader() {
         MatchEntriesBuilder builder = prepareIcmpv6CodeHeader(false);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 

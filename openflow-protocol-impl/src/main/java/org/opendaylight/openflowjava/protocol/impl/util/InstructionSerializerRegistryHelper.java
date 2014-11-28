@@ -31,7 +31,7 @@ public class InstructionSerializerRegistryHelper {
 
     /**
      * Registers given serializer
-     * @param instructionType 
+     * @param instructionType
      * @param serializer
      */
     public <TYPE extends InstructionBase> void registerSerializer(Class<TYPE> instructionType,

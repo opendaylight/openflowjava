@@ -19,11 +19,11 @@ import javax.net.ssl.SSLEngine;
 import com.google.common.util.concurrent.SettableFuture;
 
 /** Initializes secured {@link SimpleClient} pipeline
- * 
+ *
  * @author michal.polkorab
  */
 public class SimpleClientInitializer extends ChannelInitializer<NioSocketChannel> {
-    
+
     private SettableFuture<Boolean> isOnlineFuture;
     private boolean secured;
     private ScenarioHandler scenarioHandler;

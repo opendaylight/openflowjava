@@ -41,7 +41,7 @@ public class DelegatingInboundHandlerTest {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void testChannelReadSuccess()   {
@@ -51,7 +51,7 @@ public class DelegatingInboundHandlerTest {
         verify( mockMsgConsumer, times(1)).consume(mockDataObject);
     }
     /**
-     * 
+     *
      */
     @Test
     public void testChannelInactive()   {

@@ -12,7 +12,7 @@
         <url>https://wiki.opendaylight.org/view/Openflow_Protocol_Library:Main</url>
       <tag>HEAD</tag>
   </scm>
-    
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>

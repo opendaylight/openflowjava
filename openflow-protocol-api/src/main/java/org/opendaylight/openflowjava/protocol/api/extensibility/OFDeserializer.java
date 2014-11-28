@@ -22,7 +22,7 @@ public interface OFDeserializer<E extends DataObject> extends OFGeneralDeseriali
 
     /**
      * Transforms byte message into POJO/DTO (of type E).
-     * 
+     *
      * @param message message as bytes in ByteBuf
      * @return POJO/DTO
      */

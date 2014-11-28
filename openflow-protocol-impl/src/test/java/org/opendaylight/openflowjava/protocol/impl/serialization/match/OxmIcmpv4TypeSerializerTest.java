@@ -36,7 +36,7 @@ public class OxmIcmpv4TypeSerializerTest {
     @Test
     public void testSerialize() {
         MatchEntriesBuilder builder = prepareIcmpv4TypeMatchEntry((short) 128);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -51,7 +51,7 @@ public class OxmIcmpv4TypeSerializerTest {
     @Test
     public void testSerializeHeader() {
         MatchEntriesBuilder builder = prepareIcmpv4TypeHeader(false);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 
@@ -83,7 +83,7 @@ public class OxmIcmpv4TypeSerializerTest {
         assertEquals("Wrong value length", EncodeConstants.SIZE_OF_BYTE_IN_BYTES, serializer.getValueLength());
     }
 
-    
+
     private static MatchEntriesBuilder prepareIcmpv4TypeMatchEntry(short value) {
         MatchEntriesBuilder builder = prepareIcmpv4TypeHeader(false);
         Icmpv4TypeMatchEntryBuilder icmpv4Builder = new Icmpv4TypeMatchEntryBuilder();

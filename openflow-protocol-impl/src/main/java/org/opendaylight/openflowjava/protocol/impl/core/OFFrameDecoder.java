@@ -72,10 +72,10 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
             }
             return;
         }
-        
+
         int length = bb.getUnsignedShort(bb.readerIndex() + LENGTH_INDEX_IN_HEADER);
         LOGGER.debug("length of actual message: {}", length);
-        
+
         if (readableBytes < length) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("skipping bytebuf - too few bytes for msg: " +
@@ -85,7 +85,7 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
             return;
         }
         LOGGER.debug("OF Protocol message received, type:{}", bb.getByte(bb.readerIndex() + 1));
-        
+
         ByteBuf messageBuffer = bb.slice(bb.readerIndex(), length);
         list.add(messageBuffer);
         messageBuffer.retain();

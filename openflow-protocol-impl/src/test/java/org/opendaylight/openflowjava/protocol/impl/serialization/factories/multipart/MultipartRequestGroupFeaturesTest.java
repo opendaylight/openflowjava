@@ -50,7 +50,7 @@ public class MultipartRequestGroupFeaturesTest {
 
     /**
      * Tests {@link MultipartRequestInputFactory} - GroupFeatures case
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void test() throws Exception {

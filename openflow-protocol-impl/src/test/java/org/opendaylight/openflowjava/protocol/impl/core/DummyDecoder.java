@@ -25,7 +25,7 @@ public class DummyDecoder extends ByteToMessageDecoder {
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(DummyDecoder.class);
-    
+
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in,
             List<Object> out) throws Exception {

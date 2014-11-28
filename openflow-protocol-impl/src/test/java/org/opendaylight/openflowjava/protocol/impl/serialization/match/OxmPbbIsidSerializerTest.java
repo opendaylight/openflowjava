@@ -39,7 +39,7 @@ public class OxmPbbIsidSerializerTest {
     @Test
     public void testSerializeWithMask() {
         MatchEntriesBuilder builder = preparePbbIsidMatchEntry(false, 12345);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -54,7 +54,7 @@ public class OxmPbbIsidSerializerTest {
     @Test
     public void testSerializeWithoutMask() {
         MatchEntriesBuilder builder = preparePbbIsidMatchEntry(true, 6789);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -72,7 +72,7 @@ public class OxmPbbIsidSerializerTest {
     @Test
     public void testSerializeHeaderWithoutMask() {
         MatchEntriesBuilder builder = preparePbbIsidHeader(false);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 
@@ -86,7 +86,7 @@ public class OxmPbbIsidSerializerTest {
     @Test
     public void testSerializeHeaderWithMask() {
         MatchEntriesBuilder builder = preparePbbIsidHeader(true);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 
@@ -118,7 +118,7 @@ public class OxmPbbIsidSerializerTest {
         assertEquals("Wrong value length", EncodeConstants.SIZE_OF_3_BYTES, serializer.getValueLength());
     }
 
-    
+
     private static MatchEntriesBuilder preparePbbIsidMatchEntry(boolean hasMask, long value) {
         MatchEntriesBuilder builder = preparePbbIsidHeader(hasMask);
         if (hasMask) {

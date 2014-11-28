@@ -49,8 +49,8 @@ public class GetConfigReplyMessageFactoryTest {
         GetConfigOutput builtByFactory = BufferHelper.deserialize(configFactory, bb);
 
         BufferHelper.checkHeaderV13(builtByFactory);
-        Assert.assertEquals("Wrong switchConfigFlag", 0x01, builtByFactory.getFlags().getIntValue()); 
+        Assert.assertEquals("Wrong switchConfigFlag", 0x01, builtByFactory.getFlags().getIntValue());
         Assert.assertEquals("Wrong missSendLen", 0x03, builtByFactory.getMissSendLen().intValue());
     }
-    
+
 }

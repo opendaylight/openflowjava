@@ -50,7 +50,7 @@ public class PortStatusMessageFactoryTest {
      */
     @Test
     public void test(){
-        ByteBuf bb = BufferHelper.buildBuffer("01 " + //reason 
+        ByteBuf bb = BufferHelper.buildBuffer("01 " + //reason
                                               "00 00 00 00 00 00 00 " + //padding
                                               "00 01 02 03 " + //port no
                                               "00 00 00 00 " + //padding in ofp_port1
@@ -66,9 +66,9 @@ public class PortStatusMessageFactoryTest {
                                               "00 00 00 81 " + //curr speed
                                               "00 00 00 80" //max speed
                                               );
-        
+
         PortStatusMessage builtByFactory = BufferHelper.deserialize(statusFactory, bb);
-        
+
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong reason", 0x01, builtByFactory.getReason().getIntValue());
         Assert.assertEquals("Wrong portNumber", 66051L, builtByFactory.getPortNo().longValue());

@@ -64,7 +64,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
 
 /**
  * @author michal.polkorab
- * 
+ *
  */
 public class OF13ActionsSerializerTest {
 
@@ -175,11 +175,11 @@ public class OF13ActionsSerializerTest {
         actionBuilder = new ActionBuilder();
         actionBuilder.setType(PopPbb.class);
         actions.add(actionBuilder.build());
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         ListSerializer.serializeList(actions, TypeKeyMakerFactory
                 .createActionKeyMaker(EncodeConstants.OF13_VERSION_ID), registry, out);
-        
+
         Assert.assertEquals("Wrong action type", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 16, out.readUnsignedShort());
         Assert.assertEquals("Wrong action port", 42, out.readUnsignedInt());

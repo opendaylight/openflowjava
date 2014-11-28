@@ -45,7 +45,7 @@ public class OF10QueueGetConfigInputMessageFactoryTest {
 
     /**
      * Testing of {@link OF10QueueGetConfigInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void test() throws Exception {
@@ -53,10 +53,10 @@ public class OF10QueueGetConfigInputMessageFactoryTest {
         BufferHelper.setupHeader(builder, EncodeConstants.OF10_VERSION_ID);
         builder.setPort(new PortNumber(6653L));
         GetQueueConfigInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         queueFactory.serialize(message, out);
-        
+
         BufferHelper.checkHeaderV10(out, (byte) 20, 12);
         Assert.assertEquals("Wrong port", 6653L, out.readUnsignedShort());
         out.skipBytes(2);

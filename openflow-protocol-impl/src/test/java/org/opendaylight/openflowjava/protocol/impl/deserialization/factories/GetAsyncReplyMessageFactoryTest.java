@@ -57,7 +57,7 @@ public class GetAsyncReplyMessageFactoryTest {
      */
     @Test
     public void testGetAsyncReplyMessage() {
-        ByteBuf bb = BufferHelper.buildBuffer("00 00 00 07 "+ 
+        ByteBuf bb = BufferHelper.buildBuffer("00 00 00 07 "+
                                               "00 00 00 00 "+
                                               "00 00 00 07 "+
                                               "00 00 00 00 "+

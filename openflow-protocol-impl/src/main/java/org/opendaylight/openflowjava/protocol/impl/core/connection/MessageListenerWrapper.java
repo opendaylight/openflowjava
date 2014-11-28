@@ -16,7 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 /**
  * Wraps outgoing message and includes listener attached to this message. This object
  * is sent to OFEncoder. When OFEncoder fails to serialize the message,
- * listener is filled with exception. The exception is then delegated to upper ODL layers. 
+ * listener is filled with exception. The exception is then delegated to upper ODL layers.
  * @author michal.polkorab
  */
 public class MessageListenerWrapper {
@@ -40,7 +40,7 @@ public class MessageListenerWrapper {
         return msg;
     }
 
-    
+
     /**
      * @return listener listening on message sending success / failure
      */

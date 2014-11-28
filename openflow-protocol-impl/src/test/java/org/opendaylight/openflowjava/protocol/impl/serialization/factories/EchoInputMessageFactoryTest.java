@@ -46,7 +46,7 @@ public class EchoInputMessageFactoryTest {
 
     /**
      * Testing of {@link EchoInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testV13() throws Exception {
@@ -57,10 +57,10 @@ public class EchoInputMessageFactoryTest {
         echoFactory.serialize(ei, out);
         BufferHelper.checkHeaderV13(out, ECHO_REQUEST_MESSAGE_CODE_TYPE, 8);
     }
-    
+
     /**
      * Testing of {@link EchoInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testV10() throws Exception {
@@ -74,7 +74,7 @@ public class EchoInputMessageFactoryTest {
 
     /**
      * Testing of {@link EchoInputMessageFactory} for correct data serialization
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testData() throws Exception{

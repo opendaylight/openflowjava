@@ -42,7 +42,7 @@ public class KeysTest {
                 EncodeConstants.OF13_VERSION_ID, 1L);
         Assert.assertEquals(instructionDeserializerKey, experimenterInstructionDeserializerKey);
         Assert.assertEquals(instructionDeserializerKey.hashCode(), experimenterInstructionDeserializerKey.hashCode());
-        
+
         MatchEntryDeserializerKey matchKey = new MatchEntryDeserializerKey(EncodeConstants.OF13_VERSION_ID,
                 OxmMatchConstants.OPENFLOW_BASIC_CLASS, OxmMatchConstants.ARP_OP);
         MatchEntryDeserializerKey matchKey2 = new MatchEntryDeserializerKey(EncodeConstants.OF13_VERSION_ID,
@@ -78,7 +78,7 @@ public class KeysTest {
         Assert.assertEquals(matchKey, matchKey2);
         Assert.assertEquals(matchKey.hashCode(), matchKey2.hashCode());
     }
-    
+
     private static class ExpSubType extends ExperimenterActionSubType {
         // empty class - only used in test for comparation
     }

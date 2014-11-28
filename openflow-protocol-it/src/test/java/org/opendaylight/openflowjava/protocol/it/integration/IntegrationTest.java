@@ -47,7 +47,7 @@ public class IntegrationTest {
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(IntegrationTest.class);
-    
+
     private static int port;
     private TlsConfiguration tlsConfiguration;
     private static final int SWITCH_IDLE_TIMEOUT = 2000;
@@ -63,7 +63,7 @@ public class IntegrationTest {
      */
     public void setUp(TransportProtocol protocol) throws Exception {
         LOGGER.debug("\n starting test -------------------------------");
-        
+
         String currentDir = System.getProperty("user.dir");
         LOGGER.debug("Current dir using System:" +currentDir);
         startupAddress = InetAddress.getLocalHost();
@@ -76,7 +76,7 @@ public class IntegrationTest {
         connConfig = new ConnectionConfigurationImpl(startupAddress, 0, tlsConfiguration, SWITCH_IDLE_TIMEOUT);
         connConfig.setTransferProtocol(protocol);
         mockPlugin = new MockPlugin();
-        
+
         switchConnectionProvider = new SwitchConnectionProviderImpl();
         switchConnectionProvider.setSwitchConnectionHandler(mockPlugin);
         switchConnectionProvider.setConfiguration(connConfig);
@@ -101,7 +101,7 @@ public class IntegrationTest {
 
     /**
      * Library integration and communication test with handshake
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testHandshake() throws Exception {
@@ -113,13 +113,13 @@ public class IntegrationTest {
         OFClient firstClient = clients.get(0);
         firstClient.getScenarioDone().get();
         Thread.sleep(1000);
-        
+
         LOGGER.debug("testHandshake() Finished") ;
     }
 
     /**
      * Library integration and secured communication test with handshake
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testTlsHandshake() throws Exception {
@@ -131,13 +131,13 @@ public class IntegrationTest {
         OFClient firstClient = clients.get(0);
         firstClient.getScenarioDone().get();
         Thread.sleep(1000);
-        
+
         LOGGER.debug("testTlsHandshake() Finished") ;
     }
 
     /**
      * Library integration and communication test with handshake + echo exchange
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testHandshakeAndEcho() throws Exception {
@@ -158,7 +158,7 @@ public class IntegrationTest {
 
     /**
      * Library integration and secured communication test with handshake + echo exchange
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testTlsHandshakeAndEcho() throws Exception {
@@ -179,7 +179,7 @@ public class IntegrationTest {
 
     /**
      * Library udp integration and communication test with handshake + echo exchange
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testUdpHandshakeAndEcho() throws Exception {
@@ -208,7 +208,7 @@ public class IntegrationTest {
     }
 
     /**
-     * @param amountOfCLients 
+     * @param amountOfCLients
      * @param protocol true if encrypted connection should be used
      * @return new clients up and running
      * @throws ExecutionException if some client could not start

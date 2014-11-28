@@ -15,7 +15,7 @@ import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
  * @author michal.polkorab
  *
  */
-public final class ExperimenterActionDeserializerKey extends ActionDeserializerKey 
+public final class ExperimenterActionDeserializerKey extends ActionDeserializerKey
         implements ExperimenterDeserializerKey {
 
     /**

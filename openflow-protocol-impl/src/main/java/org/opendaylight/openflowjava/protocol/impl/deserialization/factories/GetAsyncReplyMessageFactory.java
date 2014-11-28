@@ -46,18 +46,18 @@ public class GetAsyncReplyMessageFactory implements OFDeserializer<GetAsyncOutpu
         builder.setFlowRemovedMask(decodeFlowRemovedMask(rawMessage));
         return builder.build();
     }
-    
+
     private static List<PacketInMask> decodePacketInMask(ByteBuf input) {
         List<PacketInMask> inMasks = new ArrayList<>();
         PacketInMaskBuilder maskBuilder;
         for (int i = 0; i < SEPARATE_ROLES; i++) {
             maskBuilder = new PacketInMaskBuilder();
             maskBuilder.setMask(decodePacketInReasons(input.readUnsignedInt()));
-            inMasks.add(maskBuilder.build()); 
+            inMasks.add(maskBuilder.build());
         }
         return inMasks;
     }
-    
+
     private static List<PortStatusMask> decodePortStatusMask(ByteBuf input) {
         List<PortStatusMask> inMasks = new ArrayList<>();
         PortStatusMaskBuilder maskBuilder;
@@ -68,7 +68,7 @@ public class GetAsyncReplyMessageFactory implements OFDeserializer<GetAsyncOutpu
         }
         return inMasks;
     }
-    
+
     private static List<FlowRemovedMask> decodeFlowRemovedMask(ByteBuf input) {
         List<FlowRemovedMask> inMasks = new ArrayList<>();
         FlowRemovedMaskBuilder maskBuilder;
@@ -79,7 +79,7 @@ public class GetAsyncReplyMessageFactory implements OFDeserializer<GetAsyncOutpu
         }
         return inMasks;
     }
-    
+
     private static List<PacketInReason> decodePacketInReasons(long input) {
         List<PacketInReason> reasons = new ArrayList<>();
         if ((input & (1 << 0)) != 0) {
@@ -93,7 +93,7 @@ public class GetAsyncReplyMessageFactory implements OFDeserializer<GetAsyncOutpu
         }
         return reasons;
     }
-    
+
     private static List<PortReason> decodePortReasons(long input) {
         List<PortReason> reasons = new ArrayList<>();
         if ((input & (1 << 0)) != 0) {
@@ -107,7 +107,7 @@ public class GetAsyncReplyMessageFactory implements OFDeserializer<GetAsyncOutpu
         }
         return reasons;
     }
-    
+
     private static List<FlowRemovedReason> decodeFlowRemovedReasons(long input) {
         List<FlowRemovedReason> reasons = new ArrayList<>();
         if ((input & (1 << 0)) != 0) {

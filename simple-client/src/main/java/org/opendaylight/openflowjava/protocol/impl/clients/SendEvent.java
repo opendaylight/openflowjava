@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Class representing sending message event
- * 
+ *
  * @author michal.polkorab
  */
 public class SendEvent implements ClientEvent {

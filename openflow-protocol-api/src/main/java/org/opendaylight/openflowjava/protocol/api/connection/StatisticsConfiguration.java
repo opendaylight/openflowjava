@@ -10,7 +10,7 @@ package org.opendaylight.openflowjava.protocol.api.connection;
 
 /**
  * Used for StatisticsCounter configuration
- * 
+ *
  * @author madamjak
  */
 public interface StatisticsConfiguration {

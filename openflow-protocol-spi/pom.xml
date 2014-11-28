@@ -7,13 +7,13 @@
     </parent>
     <artifactId>openflow-protocol-spi</artifactId>
     <packaging>bundle</packaging>
-    
+
     <name>Openflow Protocol Library - SPI</name>
     <scm>
         <url>https://wiki.opendaylight.org/view/Openflow_Protocol_Library:Main</url>
       <tag>HEAD</tag>
   </scm>
-  
+
   <build>
         <plugins>
             <plugin>
@@ -81,7 +81,7 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <dependencies>
     	<dependency>
     	    <groupId>${project.groupId}</groupId>

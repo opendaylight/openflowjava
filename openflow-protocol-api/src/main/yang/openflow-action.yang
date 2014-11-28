@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
- 
+
  module openflow-action {
     namespace "urn:opendaylight:openflow:common:action";
     prefix "ofaction";
@@ -92,7 +92,7 @@
     container actions-container {
         uses actions-grouping;
     }
-    
+
     grouping actions-grouping {
         list action {
             config false;
@@ -103,7 +103,7 @@
             }
         }
     }
-    
+
     // OF1.0 structures
     identity set_vlan_vid {
         description "Set the 802.1q VLAN id (OF v1.0).";

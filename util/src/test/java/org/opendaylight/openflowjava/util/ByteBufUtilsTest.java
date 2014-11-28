@@ -31,7 +31,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class ByteBufUtilsTest {
 
     private byte[] expected = new byte[]{0x01, 0x02, 0x03, 0x04, 0x05, (byte) 0xff};
-    
+
     /**
      * Test of {@link org.opendaylight.openflowjava.util.ByteBufUtils#hexStringToBytes(String)}
      */
@@ -58,10 +58,10 @@ public class ByteBufUtilsTest {
     @Test
     public void testHexStringToByteBuf() {
         ByteBuf bb = ByteBufUtils.hexStringToByteBuf("01 02 03 04 05 ff");
-        
+
         Assert.assertArrayEquals(expected, byteBufToByteArray(bb));
     }
-    
+
     /**
      * Test of {@link ByteBufUtils#hexStringToByteBuf(String, ByteBuf)}
      */
@@ -72,13 +72,13 @@ public class ByteBufUtilsTest {
 
         Assert.assertArrayEquals(expected, byteBufToByteArray(buffer));
     }
-    
+
     private static byte[] byteBufToByteArray(ByteBuf bb) {
         byte[] result = new byte[bb.readableBytes()];
         bb.readBytes(result);
         return result;
     }
-    
+
     /**
      * Test of {@link ByteBufUtils#fillBitMaskFromMap(java.util.Map)}
      */
@@ -87,15 +87,15 @@ public class ByteBufUtilsTest {
         Map<Integer, Boolean> emptyMap = new HashMap<>();
         String expectedBinaryString = "00000000000000000000000000000000";
         String bitmaskInBinaryString = toBinaryString(emptyMap, 32);
-        
+
         Assert.assertEquals("Not null string", expectedBinaryString, bitmaskInBinaryString);
     }
 
     private static String toBinaryString(Map<Integer, Boolean> emptyMap, int length) {
-        String binaryString = Integer.toBinaryString(ByteBufUtils.fillBitMaskFromMap(emptyMap)); 
+        String binaryString = Integer.toBinaryString(ByteBufUtils.fillBitMaskFromMap(emptyMap));
         return String.format("%"+length+"s", binaryString).replaceAll(" ", "0");
     }
-    
+
     /**
      * Test of {@link ByteBufUtils#fillBitMaskFromMap(java.util.Map)}
      */
@@ -110,7 +110,7 @@ public class ByteBufUtilsTest {
         bitmaskValueInBinarySytring = toBinaryString(fullMap, 32);
         Assert.assertEquals("Strings does not match", expectedBinaryString, bitmaskValueInBinarySytring);
     }
-    
+
     /**
      * Test of {@link ByteBufUtils#fillBitMaskFromMap(java.util.Map)}
      */
@@ -125,7 +125,7 @@ public class ByteBufUtilsTest {
         bitmaskValueInBinarySytring = toBinaryString(zeroMap, 32);
         Assert.assertEquals("Strings does not match", expectedBinaryString, bitmaskValueInBinarySytring);
     }
-    
+
     /**
      * Test of {@link ByteBufUtils#fillBitMaskFromMap(java.util.Map)}
      */
@@ -145,7 +145,7 @@ public class ByteBufUtilsTest {
         bitmaskValueInBinarySytring = toBinaryString(randomMap, 32);
         Assert.assertEquals("Strings does not match", expectedBinaryString, bitmaskValueInBinarySytring);
     }
-    
+
     /**
      * Test of {@link ByteBufUtils#fillBitMaskFromList(List)}
      */
@@ -155,17 +155,17 @@ public class ByteBufUtilsTest {
         emptyList.add(null);
         String expectedBinaryString = "00000000000000000000000000000000";
         String bitmaskInBinaryString = listToBinaryString(emptyList, 32);
-        
+
         Assert.assertEquals("Not null string", expectedBinaryString, bitmaskInBinaryString);
     }
 
     private static String listToBinaryString(List<Boolean> emptyList, int length) {
         int[] bitMaskArray;
         bitMaskArray = ByteBufUtils.fillBitMaskFromList(emptyList);
-        String binaryString = Integer.toBinaryString(bitMaskArray[0]); 
+        String binaryString = Integer.toBinaryString(bitMaskArray[0]);
         return String.format("%"+length+"s", binaryString).replaceAll(" ", "0");
     }
-    
+
     /**
      * Test of {@link ByteBufUtils#fillBitMaskFromList(List)}
      */
@@ -180,7 +180,7 @@ public class ByteBufUtilsTest {
         bitmaskValueInBinarySytring = listToBinaryString(fullList, 32);
         Assert.assertEquals("Strings does not match", expectedBinaryString, bitmaskValueInBinarySytring);
     }
-    
+
     /**
      * Test of {@link ByteBufUtils#fillBitMaskFromList(List)}
      */
@@ -195,7 +195,7 @@ public class ByteBufUtilsTest {
         bitmaskValueInBinarySytring = listToBinaryString(zeroList, 32);
         Assert.assertEquals("Strings does not match", expectedBinaryString, bitmaskValueInBinarySytring);
     }
-    
+
     /**
      * Test of {@link ByteBufUtils#fillBitMaskFromList(List)}
      */
@@ -323,7 +323,7 @@ public class ByteBufUtilsTest {
     public void testDecodeString() {
         ByteBuf buf = ByteBufUtils.hexStringToByteBuf("4A 41 4D 45 53 20 42 4F 4E 44 00 00 00 00 00 00");
         Assert.assertEquals("Wrong string decoded", "JAMES BOND", ByteBufUtils.decodeNullTerminatedString(buf, 16));
-        
+
         ByteBuf buf2 = ByteBufUtils.hexStringToByteBuf("53 50 49 44 45 52 4D 41 4E 00 00 00 00 00 00");
         Assert.assertEquals("Wrong string decoded", "SPIDERMAN", ByteBufUtils.decodeNullTerminatedString(buf2, 15));
     }
@@ -409,7 +409,7 @@ public class ByteBufUtilsTest {
         String ipv4Address = ByteBufUtils.readIpv4Address(buffer);
         Assert.assertEquals("Wrong conversion", "10.20.30.40", ipv4Address);
         Assert.assertTrue("Unexpected data", buffer.readableBytes() == 0);
-        
+
         ByteBuf buffer2 = PooledByteBufAllocator.DEFAULT.buffer();
         buffer.writeByte(10);
         ipv4Address = ByteBufUtils.readIpv4Address(buffer2);
@@ -432,7 +432,7 @@ public class ByteBufUtilsTest {
         String ipv4Address = ByteBufUtils.readIpv6Address(buffer);
         Assert.assertEquals("Wrong conversion", "000A:FFFF:1000:0000:0400:002A:0A08:B279", ipv4Address);
         Assert.assertTrue("Unexpected data", buffer.readableBytes() == 0);
-        
+
         ByteBuf buffer2 = PooledByteBufAllocator.DEFAULT.buffer();
         buffer.writeShort(10);
         ipv4Address = ByteBufUtils.readIpv6Address(buffer2);

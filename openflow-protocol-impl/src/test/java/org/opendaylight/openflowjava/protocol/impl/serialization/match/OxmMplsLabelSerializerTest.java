@@ -36,7 +36,7 @@ public class OxmMplsLabelSerializerTest {
     @Test
     public void testSerialize() {
         MatchEntriesBuilder builder = prepareMplsLabelMatchEntry(168535);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -51,7 +51,7 @@ public class OxmMplsLabelSerializerTest {
     @Test
     public void testSerializeHeader() {
         MatchEntriesBuilder builder = prepareMplsLabelHeader(false);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 

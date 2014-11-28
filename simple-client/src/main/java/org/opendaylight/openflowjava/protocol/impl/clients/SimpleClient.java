@@ -37,7 +37,7 @@ public class SimpleClient implements OFClient {
     private SettableFuture<Boolean> isOnlineFuture;
     private SettableFuture<Boolean> scenarioDone;
     private ScenarioHandler scenarioHandler;
-    
+
     /**
      * Constructor of class
      *
@@ -54,7 +54,7 @@ public class SimpleClient implements OFClient {
         isOnlineFuture = SettableFuture.create();
         scenarioDone = SettableFuture.create();
     }
-    
+
     /**
      * Starting class of {@link SimpleClient}
      */

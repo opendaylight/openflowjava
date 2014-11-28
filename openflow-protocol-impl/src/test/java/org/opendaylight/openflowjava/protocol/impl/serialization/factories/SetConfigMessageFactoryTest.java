@@ -47,7 +47,7 @@ public class SetConfigMessageFactoryTest {
 
     /**
      * Testing of {@link SetConfigMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testSetConfigMessageV13() throws Exception {
@@ -57,18 +57,18 @@ public class SetConfigMessageFactoryTest {
         builder.setFlags(flag);
         builder.setMissSendLen(10);
         SetConfigInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         setConfigFactory.serialize(message, out);
-        
+
         BufferHelper.checkHeaderV13(out, MESSAGE_TYPE, MESSAGE_LENGTH);
         Assert.assertEquals("Wrong flags", SwitchConfigFlag.FRAGNORMAL.getIntValue(), out.readUnsignedShort());
         Assert.assertEquals("Wrong missSendLen", 10, out.readUnsignedShort());
     }
-    
+
     /**
      * Testing of {@link SetConfigMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testSetConfigMessageV10() throws Exception {
@@ -78,10 +78,10 @@ public class SetConfigMessageFactoryTest {
         builder.setFlags(flag);
         builder.setMissSendLen(85);
         SetConfigInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         setConfigFactory.serialize(message, out);
-        
+
         BufferHelper.checkHeaderV10(out, MESSAGE_TYPE, MESSAGE_LENGTH);
         Assert.assertEquals("Wrong flags", SwitchConfigFlag.OFPCFRAGDROP.getIntValue(), out.readUnsignedShort());
         Assert.assertEquals("Wrong missSendLen", 85, out.readUnsignedShort());

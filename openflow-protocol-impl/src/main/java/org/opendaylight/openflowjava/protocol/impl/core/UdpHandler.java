@@ -28,7 +28,7 @@ import com.google.common.util.concurrent.SettableFuture;
 
 /**
  * Class implementing server over UDP for handling incoming connections.
- * 
+ *
  * @author michal.polkorab
  */
 public final class UdpHandler implements ServerFacade {

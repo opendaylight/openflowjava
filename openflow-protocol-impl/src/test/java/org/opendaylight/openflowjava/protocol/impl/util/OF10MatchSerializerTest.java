@@ -70,7 +70,7 @@ public class OF10MatchSerializerTest {
         builder.setTpDst(4096);
         MatchV10 match = builder.build();
         matchSerializer.serialize(match, out);
-        
+
         Assert.assertEquals("Wrong wildcards", 2361553, out.readUnsignedInt());
         Assert.assertEquals("Wrong in-port", 6653, out.readUnsignedShort());
         byte[] dlSrc = new byte[6];
@@ -91,7 +91,7 @@ public class OF10MatchSerializerTest {
         Assert.assertEquals("Wrong tp-src", 2048, out.readUnsignedShort());
         Assert.assertEquals("Wrong tp-dst", 4096, out.readUnsignedShort());
     }
-    
+
     /**
      * Testing correct serialization of ofp_match
      */
@@ -117,7 +117,7 @@ public class OF10MatchSerializerTest {
         builder.setTpDst(4096);
         MatchV10 match = builder.build();
         matchSerializer.serialize(match, out);
-        
+
         Assert.assertEquals("Wrong wildcards", 3678463, out.readUnsignedInt());
         Assert.assertEquals("Wrong in-port", 6653, out.readUnsignedShort());
         byte[] dlSrc = new byte[6];

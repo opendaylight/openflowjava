@@ -152,15 +152,15 @@ public class OF13MatchSerializer02Test {
         MatchBuilder builder = new MatchBuilder();
         builder.setType(OxmMatchType.class);
         Match match = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         matchSerializer.serialize(match, out);
-        
+
         Assert.assertEquals("Wrong match type", 1, out.readUnsignedShort());
         Assert.assertEquals("Wrong match length", 4, out.readUnsignedShort());
         Assert.assertTrue("Wrong padding", out.readableBytes() == 4);
     }
-    
+
     /**
      * Testing serialization of match
      */
@@ -510,7 +510,7 @@ public class OF13MatchSerializer02Test {
         bosBuilder.setBos(true);
         entryBuilder.addAugmentation(BosMatchEntry.class, bosBuilder.build());
         entries.add(entryBuilder.build());
-        
+
         entryBuilder = new MatchEntriesBuilder();
         entryBuilder.setOxmClass(OpenflowBasicClass.class);
         entryBuilder.setOxmMatchField(PbbIsid.class);
@@ -522,7 +522,7 @@ public class OF13MatchSerializer02Test {
         maskBuilder.setMask(new byte[]{0,1,2});
         entryBuilder.addAugmentation(MaskMatchEntry.class, maskBuilder.build());
         entries.add(entryBuilder.build());
-        
+
         entryBuilder = new MatchEntriesBuilder();
         entryBuilder.setOxmClass(OpenflowBasicClass.class);
         entryBuilder.setOxmMatchField(TunnelId.class);
@@ -534,7 +534,7 @@ public class OF13MatchSerializer02Test {
         maskBuilder.setMask(new byte[]{0,0,0,0,0,0,0,2});
         entryBuilder.addAugmentation(MaskMatchEntry.class, maskBuilder.build());
         entries.add(entryBuilder.build());
-        
+
         entryBuilder = new MatchEntriesBuilder();
         entryBuilder.setOxmClass(OpenflowBasicClass.class);
         entryBuilder.setOxmMatchField(Ipv6Exthdr.class);
@@ -546,15 +546,15 @@ public class OF13MatchSerializer02Test {
         maskBuilder.setMask(new byte[]{0,2});
         entryBuilder.addAugmentation(MaskMatchEntry.class, maskBuilder.build());
         entries.add(entryBuilder.build());
-        
-        
-        
+
+
+
         builder.setMatchEntries(entries);
         Match match = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         matchSerializer.serialize(match, out);
-        
+
         Assert.assertEquals("Wrong match type", 1, out.readUnsignedShort());
         Assert.assertEquals("Wrong match length", 428, out.readUnsignedShort());
         Assert.assertEquals("Wrong match entry class", 0x8000, out.readUnsignedShort());

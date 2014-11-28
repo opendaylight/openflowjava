@@ -56,7 +56,7 @@ public class SetAsyncInputMessageFactoryTest {
     }
 
     /**
-     * @throws Exception 
+     * @throws Exception
      * Testing of {@link SetAsyncInputMessageFactory} for correct translation from POJO
      */
     @Test
@@ -78,7 +78,7 @@ public class SetAsyncInputMessageFactoryTest {
         Assert.assertEquals("Wrong portStatusMask", 0, out.readUnsignedInt());
         Assert.assertEquals("Wrong flowRemovedMask", 15, out.readUnsignedInt());
         Assert.assertEquals("Wrong flowRemovedMask", 0, out.readUnsignedInt());
-        
+
     }
 
     private static List<PacketInMask> createPacketInMask() {
@@ -140,7 +140,7 @@ public class SetAsyncInputMessageFactoryTest {
     }
 
     /**
-     * @throws Exception 
+     * @throws Exception
      * Testing of {@link SetAsyncInputMessageFactory} for correct translation from POJO
      */
     @Test

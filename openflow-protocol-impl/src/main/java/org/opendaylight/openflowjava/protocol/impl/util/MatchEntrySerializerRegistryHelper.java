@@ -37,8 +37,8 @@ public class MatchEntrySerializerRegistryHelper<OXM_CLASS extends OxmClassBase> 
 
     /**
      * Registers given serializer
-     * @param specificClass 
-     * @param serializer 
+     * @param specificClass
+     * @param serializer
      */
     public <OXM_FIELD extends MatchField> void registerSerializer(
             Class<OXM_FIELD> specificClass, OFGeneralSerializer serializer) {

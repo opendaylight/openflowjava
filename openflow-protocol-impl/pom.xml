@@ -18,7 +18,7 @@
         <yangtools.generator.version>0.7.0-SNAPSHOT</yangtools.generator.version>
         <yangtools.binding.version>0.7.0-SNAPSHOT</yangtools.binding.version>
     </properties>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -98,7 +98,7 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>

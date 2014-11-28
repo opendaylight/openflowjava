@@ -39,7 +39,7 @@ public class OxmVlanVidSerializerTest {
     @Test
     public void testSerializeWithCfiBitSet() {
         MatchEntriesBuilder builder = prepareVlanVidMatchEntry(false, true);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -54,7 +54,7 @@ public class OxmVlanVidSerializerTest {
     @Test
     public void testSerializeWithoutCfiBitSet() {
         MatchEntriesBuilder builder = prepareVlanVidMatchEntry(true, false);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -72,7 +72,7 @@ public class OxmVlanVidSerializerTest {
     @Test
     public void testSerializeHeaderWithoutMask() {
         MatchEntriesBuilder builder = prepareVlanVidHeader(false);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 
@@ -86,7 +86,7 @@ public class OxmVlanVidSerializerTest {
     @Test
     public void testSerializeHeaderWithMask() {
         MatchEntriesBuilder builder = prepareVlanVidHeader(true);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 

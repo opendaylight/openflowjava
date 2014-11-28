@@ -20,7 +20,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 /**
  * Serializes list items and their headers
  * @author michal.polkorab
- * @param <E> 
+ * @param <E>
  */
 public abstract class ListSerializer {
 

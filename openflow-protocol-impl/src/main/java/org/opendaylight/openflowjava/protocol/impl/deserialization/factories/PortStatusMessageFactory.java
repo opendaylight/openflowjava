@@ -34,7 +34,7 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
 
     @Override
     public PortStatusMessage deserialize(ByteBuf rawMessage) {
-        PortStatusMessageBuilder builder = new PortStatusMessageBuilder(); 
+        PortStatusMessageBuilder builder = new PortStatusMessageBuilder();
         builder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
         builder.setXid(rawMessage.readUnsignedInt());
         builder.setReason(PortReason.forValue(rawMessage.readUnsignedByte()));
@@ -77,14 +77,14 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
         return new PortFeatures(pf100gbFd, pf100mbFd, pf100mbHd, pf10gbFd, pf10mbFd, pf10mbHd, pf1gbFd,
                 pf1gbHd, pf1tbFd, pf40gbFd, pfAutoneg, pfCopper, pfFiber, pfOther, pfPause, pfPauseAsym);
     }
-    
+
     private static PortState createPortState(long input){
         final Boolean psLinkDown = ((input) & (1<<0)) != 0;
         final Boolean psBblocked  = ((input) & (1<<1)) != 0;
         final Boolean psLive     = ((input) & (1<<2)) != 0;
         return new PortState(psBblocked, psLinkDown, psLive);
     }
-    
+
     private static PortConfig createPortConfig(long input){
         final Boolean pcPortDown   = ((input) & (1<<0)) != 0;
         final Boolean pcNoRecv    = ((input) & (1<<2)) != 0;

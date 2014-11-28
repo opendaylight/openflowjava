@@ -50,7 +50,7 @@ public class MultipartRequestMeterFeaturesTest {
 
     /**
      * Tests {@link MultipartRequestInputFactory} - MeterFeatures case
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void test() throws Exception {

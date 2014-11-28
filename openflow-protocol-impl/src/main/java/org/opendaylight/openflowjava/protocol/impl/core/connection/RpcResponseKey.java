@@ -15,7 +15,7 @@ package org.opendaylight.openflowjava.protocol.impl.core.connection;
  * @author mirehak
  */
 public class RpcResponseKey {
-    
+
     private final long xid;
     private final String outputClazz;
     /**
@@ -26,7 +26,7 @@ public class RpcResponseKey {
         this.xid = xid;
         this.outputClazz = outputClazz;
     }
-    
+
     /**
      * @return the xid
      */
@@ -40,7 +40,7 @@ public class RpcResponseKey {
     public String getOutputClazz() {
         return outputClazz;
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;

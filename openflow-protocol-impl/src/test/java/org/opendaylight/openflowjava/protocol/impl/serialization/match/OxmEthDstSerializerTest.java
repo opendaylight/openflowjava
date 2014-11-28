@@ -40,7 +40,7 @@ public class OxmEthDstSerializerTest {
     @Test
     public void testSerializeWithoutMask() {
         MatchEntriesBuilder builder = prepareMatchEntry(false, "00:01:02:03:04:05");
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -57,12 +57,12 @@ public class OxmEthDstSerializerTest {
     @Test
     public void testSerializeWithMask() {
         MatchEntriesBuilder builder = prepareMatchEntry(true, "00:01:02:03:04:0A");
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
         checkHeader(buffer, true);
-        
+
         byte[] address = new byte[6];
         buffer.readBytes(address);
         Assert.assertArrayEquals("Wrong address", new byte[]{0, 1, 2, 3, 4, 10}, address);
@@ -78,7 +78,7 @@ public class OxmEthDstSerializerTest {
     @Test
     public void testSerializeHeaderWithoutMask() {
         MatchEntriesBuilder builder = prepareHeader(false);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 
@@ -92,7 +92,7 @@ public class OxmEthDstSerializerTest {
     @Test
     public void testSerializeHeaderWithMask() {
         MatchEntriesBuilder builder = prepareHeader(true);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 

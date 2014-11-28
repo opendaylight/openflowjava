@@ -30,9 +30,9 @@ public class ConnectionConfigurationImpl implements ConnectionConfiguration {
 
     /**
      * Creates {@link ConnectionConfigurationImpl}
-     * @param address 
+     * @param address
      * @param port
-     * @param tlsConfig 
+     * @param tlsConfig
      * @param switchIdleTimeout
      */
     public ConnectionConfigurationImpl(InetAddress address, int port, TlsConfiguration tlsConfig, long switchIdleTimeout) {

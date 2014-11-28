@@ -12,7 +12,7 @@ import com.google.common.util.concurrent.SettableFuture;
 
 /**
  * Unifying interface for simple clients / switch simulators
- * 
+ *
  * @author michal.polkorab
  */
 public interface OFClient extends Runnable {

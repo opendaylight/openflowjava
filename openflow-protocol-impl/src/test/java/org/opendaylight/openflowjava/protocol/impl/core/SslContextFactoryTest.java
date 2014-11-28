@@ -41,7 +41,7 @@ public class SslContextFactoryTest {
     }
 
     /**
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testGetServerContext() throws Exception {

@@ -66,7 +66,7 @@ public class PublishingChannelInitializerTest {
 
     /**
      * Sets up test environment
-     * @throws Exception 
+     * @throws Exception
      */
     @Before
     public void setUp() throws Exception {
@@ -89,7 +89,7 @@ public class PublishingChannelInitializerTest {
         when(mockSocketCh.remoteAddress()).thenReturn(inetSockAddr) ;
         when(mockSwConnHandler.accept(eq(InetAddress.getLocalHost()))).thenReturn(true) ;
         when(mockSocketCh.pipeline()).thenReturn(mockChPipeline) ;
-        
+
         tlsConfiguration = new TlsConfigurationImpl(KeystoreType.JKS, "/selfSignedSwitch", PathType.CLASSPATH,
                 KeystoreType.JKS, "/selfSignedController", PathType.CLASSPATH);
     }

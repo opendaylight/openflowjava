@@ -56,9 +56,9 @@ public class MatchEntrySerializerKeyTest {
         key2.setExperimenterId(42L);
         Assert.assertFalse("Wrong hashCode", key1.hashCode() == key2.hashCode());
     }
-    
+
     /**
-     * Test MatchEntrySerializerKey equals - additional test 
+     * Test MatchEntrySerializerKey equals - additional test
      */
     @Test
     public void testEquals(){
@@ -68,10 +68,10 @@ public class MatchEntrySerializerKeyTest {
         key2 = new MatchEntrySerializerKey<>(EncodeConstants.OF13_VERSION_ID, OpenflowBasicClass.class, InPort.class);
         Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
         Assert.assertFalse("Wrong equal to different class.", key1.equals(new Object()));
-        
+
         Long expId1 = 987654331L;
         Long expId2 = 123456789L;
-        
+
         key1.setExperimenterId(null);
         key2.setExperimenterId(expId2);
         Assert.assertFalse("Wrong equal by experimenterId", key1.equals(key2));

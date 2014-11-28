@@ -80,7 +80,7 @@ public class HelloMessageFactoryTest {
         Assert.assertEquals("Wrong type", element.get(0).getType(), builtByFactory.getElements().get(0).getType());
         Assert.assertEquals("Wrong versionBitmap", element.get(0).getVersionBitmap(), builtByFactory.getElements().get(0).getVersionBitmap());
     }
- 
+
     /**
      * Testing {@link HelloMessageFactory} if incorrect version is set
      */

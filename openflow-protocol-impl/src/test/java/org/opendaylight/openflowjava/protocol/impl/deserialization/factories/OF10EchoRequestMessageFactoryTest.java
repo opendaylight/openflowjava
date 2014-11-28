@@ -50,7 +50,7 @@ public class OF10EchoRequestMessageFactoryTest {
 
         BufferHelper.checkHeaderV10(builtByFactory);
     }
-    
+
     /**
      * Testing {@link OF10EchoReplyMessageFactoryTest} for correct translation into POJO
      */

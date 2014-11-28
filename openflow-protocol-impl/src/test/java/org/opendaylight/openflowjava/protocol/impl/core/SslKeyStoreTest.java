@@ -33,7 +33,7 @@ public class SslKeyStoreTest {
 
     /**
      * Test keystore file access - via classpath
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testAsInputStream() throws Exception {
@@ -44,7 +44,7 @@ public class SslKeyStoreTest {
 
     /**
      * Test keystore file access - via relative path
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testAsInputStream2() throws Exception {

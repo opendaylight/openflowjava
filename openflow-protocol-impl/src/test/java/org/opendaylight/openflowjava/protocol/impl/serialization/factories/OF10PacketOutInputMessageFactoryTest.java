@@ -58,7 +58,7 @@ public class OF10PacketOutInputMessageFactoryTest {
 
     /**
      * Testing of {@link OF10PacketOutInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testPacketOutInputMessage() throws Exception {
@@ -83,10 +83,10 @@ public class OF10PacketOutInputMessageFactoryTest {
         builder.setAction(actions);
         builder.setData(ByteBufUtils.hexStringToBytes("00 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14"));
         PacketOutInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         packetOutFactory.serialize(message, out);
-        
+
         BufferHelper.checkHeaderV10(out, (byte) 13, 48);
         Assert.assertEquals("Wrong BufferId", 256, out.readUnsignedInt());
         Assert.assertEquals("Wrong PortNumber", 257, out.readUnsignedShort());
@@ -104,7 +104,7 @@ public class OF10PacketOutInputMessageFactoryTest {
 
     /**
      * Testing of {@link OF10PacketOutInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testPacketOutInputWithNoData() throws Exception {

@@ -11,7 +11,7 @@ package org.opendaylight.openflowjava.statistics;
 import java.util.concurrent.atomic.AtomicLong;
 /**
  * Counts statistics
- * 
+ *
  * @author madamjak
  */
 public class Counter {
@@ -35,7 +35,7 @@ public class Counter {
     }
 
     /**
-     * return the last read value of counter. This value can be set during the reading of current counter value, 
+     * return the last read value of counter. This value can be set during the reading of current counter value,
      *      for detail see method getCounterValue(boolean modifyLastReadValue).
      * @return the counterLastReadValue
      */

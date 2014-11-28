@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  * @author michal.polkorab
  */
 public class WaitForMessageEvent implements ClientEvent {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(WaitForMessageEvent.class);
     private byte[] headerExpected;
     private byte[] headerReceived;

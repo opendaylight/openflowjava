@@ -63,7 +63,7 @@ public class QueueGetConfigReplyMessageFactoryTest {
         Assert.assertEquals("Wrong port", 3L, builtByFactory.getPort().getValue().longValue());
         Assert.assertEquals("Wrong queues", builtByFactory.getQueues(), createQueuesList());
     }
-    
+
     private static List<Queues> createQueuesList(){
         List<Queues> queuesList = new ArrayList<>();
         QueuesBuilder qb = new QueuesBuilder();
@@ -71,10 +71,10 @@ public class QueueGetConfigReplyMessageFactoryTest {
         qb.setPort(new PortNumber(3L));
         qb.setQueueProperty(createPropertiesList());
         queuesList.add(qb.build());
-        
+
         return queuesList;
     }
-    
+
     private static List<QueueProperty> createPropertiesList(){
         List<QueueProperty> propertiesList = new ArrayList<>();
         QueuePropertyBuilder pb = new QueuePropertyBuilder();

@@ -351,7 +351,7 @@ public class ErrorMessageFactoryTest {
         Assert.assertEquals("Wrong code string", "EPERM", builtByFactory.getCodeString());
         Assert.assertArrayEquals("Wrong data", new byte[]{0x00, 0x01, 0x02, 0x03}, builtByFactory.getData());
     }
-    
+
     /**
      * Test of {@link ErrorMessageFactory} for correct translation into POJO
      */
@@ -367,7 +367,7 @@ public class ErrorMessageFactoryTest {
         Assert.assertEquals("Wrong code string", "UNKNOWN_CODE", builtByFactory.getCodeString());
         Assert.assertArrayEquals("Wrong data", new byte[]{0x00, 0x01, 0x02, 0x03}, builtByFactory.getData());
     }
-    
+
     /**
      * Test of {@link ErrorMessageFactory} for correct translation into POJO
      */

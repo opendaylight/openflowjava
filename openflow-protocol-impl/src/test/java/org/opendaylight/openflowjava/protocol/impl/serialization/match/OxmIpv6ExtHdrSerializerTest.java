@@ -41,7 +41,7 @@ public class OxmIpv6ExtHdrSerializerTest {
     public void testSerializeWithMask() {
         MatchEntriesBuilder builder = prepareIpv6ExtHdrMatchEntry(false,
                 new Ipv6ExthdrFlags(true, false, true, false, true, false, true, false, true));
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -57,7 +57,7 @@ public class OxmIpv6ExtHdrSerializerTest {
     public void testSerializeWithoutMask() {
         MatchEntriesBuilder builder = prepareIpv6ExtHdrMatchEntry(true,
                 new Ipv6ExthdrFlags(false, true, false, true, false, true, false, true, false));
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -75,7 +75,7 @@ public class OxmIpv6ExtHdrSerializerTest {
     @Test
     public void testSerializeHeaderWithoutMask() {
         MatchEntriesBuilder builder = prepareIpv6ExtHdrHeader(false);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 
@@ -89,7 +89,7 @@ public class OxmIpv6ExtHdrSerializerTest {
     @Test
     public void testSerializeHeaderWithMask() {
         MatchEntriesBuilder builder = prepareIpv6ExtHdrHeader(true);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 
@@ -121,7 +121,7 @@ public class OxmIpv6ExtHdrSerializerTest {
         assertEquals("Wrong value length", EncodeConstants.SIZE_OF_SHORT_IN_BYTES, serializer.getValueLength());
     }
 
-    
+
     private static MatchEntriesBuilder prepareIpv6ExtHdrMatchEntry(boolean hasMask, Ipv6ExthdrFlags flags) {
         MatchEntriesBuilder builder = prepareIpv6ExtHdrHeader(hasMask);
         if (hasMask) {

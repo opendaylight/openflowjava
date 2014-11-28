@@ -57,7 +57,7 @@ public class MeterModInputMessageFactoryTest {
     }
 
     /**
-     * @throws Exception 
+     * @throws Exception
      * Testing of {@link MeterModInputMessageFactory} for correct translation from POJO
      */
     @Test
@@ -69,25 +69,25 @@ public class MeterModInputMessageFactoryTest {
         builder.setMeterId(new MeterId(2248L));
         builder.setBands(createBandsList());
         MeterModInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         meterModFactory.serialize(message, out);
-        
+
         BufferHelper.checkHeaderV13(out, (byte) 29, 48);
         Assert.assertEquals("Wrong meterModCommand", message.getCommand().getIntValue(), out.readUnsignedShort());
         Assert.assertEquals("Wrong meterFlags", message.getFlags(), decodeMeterModFlags(out.readShort()));
         Assert.assertEquals("Wrong meterId", message.getMeterId().getValue().intValue(), out.readUnsignedInt());
         Assert.assertEquals("Wrong bands", message.getBands(), decodeBandsList(out));
     }
-    
+
     private static MeterFlags decodeMeterModFlags(short input){
         final Boolean _oFPMFKBPS = (input & (1 << 0)) > 0;
         final Boolean _oFPMFPKTPS = (input & (1 << 1)) > 0;
-        final Boolean _oFPMFBURST = (input & (1 << 2)) > 0; 
+        final Boolean _oFPMFBURST = (input & (1 << 2)) > 0;
         final Boolean _oFPMFSTATS = (input & (1 << 3)) > 0;
         return new MeterFlags(_oFPMFBURST, _oFPMFKBPS, _oFPMFPKTPS, _oFPMFSTATS);
     }
-    
+
     private static List<Bands> createBandsList(){
         List<Bands> bandsList = new ArrayList<>();
         BandsBuilder bandsBuilder = new BandsBuilder();
@@ -108,7 +108,7 @@ public class MeterModInputMessageFactoryTest {
         bandsList.add(bandsBuilder.setMeterBand(dscpCaseBuilder.build()).build());
         return bandsList;
     }
-    
+
     private static List<Bands> decodeBandsList(ByteBuf input){
         List<Bands> bandsList = new ArrayList<>();
         BandsBuilder bandsBuilder = new BandsBuilder();
@@ -135,7 +135,7 @@ public class MeterModInputMessageFactoryTest {
     }
 
     /**
-     * @throws Exception 
+     * @throws Exception
      * Testing of {@link MeterModInputMessageFactory} for correct translation from POJO
      */
     @Test
@@ -147,10 +147,10 @@ public class MeterModInputMessageFactoryTest {
         builder.setMeterId(new MeterId(2248L));
         builder.setBands(null);
         MeterModInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         meterModFactory.serialize(message, out);
-        
+
         BufferHelper.checkHeaderV13(out, (byte) 29, 16);
         Assert.assertEquals("Wrong meterModCommand", message.getCommand().getIntValue(), out.readUnsignedShort());
         Assert.assertEquals("Wrong meterFlags", message.getFlags(), decodeMeterModFlags(out.readShort()));

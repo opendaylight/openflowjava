@@ -94,10 +94,10 @@ public class OF13MatchSerializerTest {
         entries.add(entriesBuilder.build());
         builder.setMatchEntries(entries);
         Match match = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         matchSerializer.serialize(match, out);
-        
+
         Assert.assertEquals("Wrong type", 1, out.readUnsignedShort());
         out.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         Assert.assertEquals("Wrong class", 0x8000, out.readUnsignedShort());
@@ -108,7 +108,7 @@ public class OF13MatchSerializerTest {
         Assert.assertEquals("Wrong ip address (third number)", 3, out.readUnsignedByte());
         Assert.assertEquals("Wrong ip address (fourth number)", 4, out.readUnsignedByte());
     }
-    
+
     /**
      * Test for correct serialization of Ipv6Address match entry
      */
@@ -166,7 +166,7 @@ public class OF13MatchSerializerTest {
         Match match = builder.build();
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         matchSerializer.serialize(match, out);
-        
+
         Assert.assertEquals("Wrong type", 1, out.readUnsignedShort());
         out.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         Assert.assertEquals("Wrong class", 0x8000, out.readUnsignedShort());
@@ -255,10 +255,10 @@ public class OF13MatchSerializerTest {
     @Test
     public void testIpv6Flabel() {
         Match match = buildIpv6FLabelMatch(0x0f9e8dL, false, null);
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         matchSerializer.serialize(match, out);
-        
+
         Assert.assertEquals("Wrong type", 1, out.readUnsignedShort());
         out.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         Assert.assertEquals("Wrong class", 0x8000, out.readUnsignedShort());
@@ -266,21 +266,21 @@ public class OF13MatchSerializerTest {
         out.skipBytes(EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
         byte[] label = new byte[4];
         out.readBytes(label);
-        
+
         LOG.debug("label: "+ ByteBufUtils.bytesToHexString(label));
         Assert.assertArrayEquals("Wrong ipv6FLabel", new byte[]{0, 0x0f, (byte) 0x9e, (byte) 0x8d}, label);
     }
-    
+
     /**
      * Test for correct serialization of Ipv4Address match entry with mask
      */
     @Test
     public void testIpv6FlabelWithMask() {
         Match match = buildIpv6FLabelMatch(0x0f9e8dL, true, new byte[]{0, 0x0c, 0x7b, 0x6a});
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         matchSerializer.serialize(match, out);
-        
+
         Assert.assertEquals("Wrong type", 1, out.readUnsignedShort());
         out.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         Assert.assertEquals("Wrong class", 0x8000, out.readUnsignedShort());
@@ -288,20 +288,20 @@ public class OF13MatchSerializerTest {
         out.skipBytes(EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
         byte[] labelAndMask = new byte[8];
         out.readBytes(labelAndMask);
-        
+
         LOG.debug("label: "+ByteBufUtils.bytesToHexString(labelAndMask));
         Assert.assertArrayEquals("Wrong ipv6FLabel", new byte[]{0, 0x0f, (byte) 0x9e, (byte) 0x8d, 0, 0x0c, 0x7b, 0x6a}, labelAndMask);
     }
-    
+
     /**
      * Test for correct serialization of Ipv4Address match entry with wrong mask
      */
     @Test
     public void testIpv6FlabelWithMaskBad() {
         Match match = buildIpv6FLabelMatch(0x0f9e8dL, true, new byte[]{0x0c, 0x7b, 0x6a});
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        
+
         try {
             matchSerializer.serialize(match, out);
             Assert.fail("incorrect length of mask ignored");

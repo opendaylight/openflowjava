@@ -14,7 +14,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 
 /**
  * Used for common structures translation / conversion
- * 
+ *
  * @author michal.polkorab
  */
 public abstract class OpenflowUtils {

@@ -50,7 +50,7 @@ public class RoleRequestInputMessageFactoryTest {
 
     /**
      * Testing of {@link RoleRequestInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testRoleRequestInputMessage() throws Exception {
@@ -60,10 +60,10 @@ public class RoleRequestInputMessageFactoryTest {
         byte[] generationId = new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01};
         builder.setGenerationId(new BigInteger(1, generationId));
         RoleRequestInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         roleFactory.serialize(message, out);
-        
+
         BufferHelper.checkHeaderV13(out, MESSAGE_TYPE, MESSAGE_LENGTH);
         Assert.assertEquals("Wrong role", message.getRole().getIntValue(), ControllerRole.forValue((int) out.readUnsignedInt()).getIntValue());
         out.skipBytes(PADDING_IN_ROLE_REQUEST_MESSAGE);

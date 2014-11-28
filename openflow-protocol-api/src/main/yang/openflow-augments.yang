@@ -5,11 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
- 
+
  module openflow-augments {
     namespace "urn:opendaylight:openflow:augments";
     prefix "aug";
-    
+
     import yang-ext {prefix ext;}
     import ietf-inet-types {prefix inet;}
     import ietf-yang-types {prefix yang;}
@@ -21,8 +21,8 @@
     import openflow-extensible-match {prefix oxm;}
 
     revision "2013-10-02" {
-        description "OpenFlow 1.3 - augments model. 
-                    Please visit 
+        description "OpenFlow 1.3 - augments model.
+                    Please visit
                     https://wiki.opendaylight.org/view/File:OpenFlow_Protocol_Library_-_Project_documentation.pdf
                      - Augmentation Tables chapter";
     }
@@ -354,7 +354,7 @@
              type oft:experimenter-id;
          }
      }
-     
+
 // OFP_QUEUE_PROP AUGMENTS
      augment "/ofproto:queue-prop-container/ofproto:queue-property" {
          ext:augment-identifier "rate-queue-property";
@@ -368,7 +368,7 @@
              type oft:experimenter-id;
          }
      }
-     
+
 // OFP_ERROR_AUGMENTS (only experimenter till OpenFlow v1.3)
      augment "/ofproto:error-message" {
          ext:augment-identifier "experimenter-id-error";

@@ -21,7 +21,7 @@ public abstract class BinContent {
     public static long intToUnsignedLong(int value) {
         return value & 0x00000000ffffffffL;
     }
-    
+
     /**
      * @param value
      * @return long cut into int
