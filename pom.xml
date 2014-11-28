@@ -252,7 +252,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${compiler.version}</version>
                 <inherited>true</inherited>
                 <configuration>
                     <source>1.7</source>
@@ -285,7 +284,6 @@
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-checkstyle-plugin</artifactId>
-              <version>2.12</version>
               <configuration>
                 <failOnViolation>false</failOnViolation>
                 <configLocation>checkstyle-logging.xml</configLocation>
