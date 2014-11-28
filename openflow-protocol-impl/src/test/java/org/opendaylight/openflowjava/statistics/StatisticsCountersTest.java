@@ -103,9 +103,9 @@ public class StatisticsCountersTest {
         Assert.assertEquals("Wrong - bad logReportPeriod", testDelay, statCounters.getLogReportPeriod());
         statCounters.stopLogReport();
         Assert.assertFalse("Wrong - logRepoter is running", statCounters.isRunLogReport());
-        statCounters.startLogReport(statCounters.MINIMAL_LOG_REPORT_PERIOD / 2);
+        statCounters.startLogReport(StatisticsCounters.MINIMAL_LOG_REPORT_PERIOD / 2);
         Assert.assertTrue("Wrong - logRepoter is not running", statCounters.isRunLogReport());
-        Assert.assertEquals("Wrong - bad logReportPeriod", statCounters.MINIMAL_LOG_REPORT_PERIOD, statCounters.getLogReportPeriod());
+        Assert.assertEquals("Wrong - bad logReportPeriod", StatisticsCounters.MINIMAL_LOG_REPORT_PERIOD, statCounters.getLogReportPeriod());
         statCounters.stopCounting();
         Assert.assertFalse("Wrong - logRepoter is running", statCounters.isRunLogReport());
     }
