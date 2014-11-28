@@ -8,8 +8,7 @@
 
 package org.opendaylight.openflowjava.protocol.api.util;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -60,5 +59,5 @@ public class BinContentTest {
         Assert.assertEquals("Wrong conversion", -591724836, BinContent.longToSignedInt(h));
         Assert.assertEquals("Wrong conversion", Integer.MIN_VALUE, BinContent.longToSignedInt(i));
     }
-    
+
 }
