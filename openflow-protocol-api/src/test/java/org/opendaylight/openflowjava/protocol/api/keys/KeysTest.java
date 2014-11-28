@@ -1,7 +1,6 @@
 package org.opendaylight.openflowjava.protocol.api.keys;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.keys.ActionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ActionSerializerKey;
