@@ -15,12 +15,12 @@ import org.opendaylight.openflowjava.protocol.impl.util.OF13MatchSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
 
 /**
- * 
+ *
  * @author madamjak
  *
  */
 public class SerializerRegistryImplTest {
-    
+
     private static final short OF13 = EncodeConstants.OF13_VERSION_ID;
     private static final short OF10 = EncodeConstants.OF10_VERSION_ID;
 
@@ -46,7 +46,7 @@ public class SerializerRegistryImplTest {
     }
 
     /**
-     * Test - unregister serializer 
+     * Test - unregister serializer
      */
     @Test
     public void testUnRegisterSerializer(){

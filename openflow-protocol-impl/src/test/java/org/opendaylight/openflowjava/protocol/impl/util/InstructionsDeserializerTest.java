@@ -57,9 +57,9 @@ public class InstructionsDeserializerTest {
                 + "00 00 00 00 00 00 00 20 00 00 00 00 00 00 00 30 00 05 00 08 00 00 00 00 00 06 00 08 "
                 + "00 01 02 03 00 03 00 20 00 00 00 00 00 00 00 10 00 00 00 25 00 35 00 00 00 00 00 00 "
                 + "00 16 00 08 00 00 00 50 00 04 00 18 00 00 00 00 00 15 00 08 00 00 00 25 00 0F 00 08 05 00 00 00");
-        
+
         message.skipBytes(4); // skip XID
-        
+
         CodeKeyMaker keyMaker = CodeKeyMakerFactory.createInstructionsKeyMaker(EncodeConstants.OF13_VERSION_ID);
         List<Instruction> instructions = ListDeserializer.deserializeList(EncodeConstants.OF13_VERSION_ID,
                 message.readableBytes(), message, keyMaker, registry);

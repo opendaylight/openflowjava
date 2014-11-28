@@ -45,17 +45,17 @@ public class GetaAsyncRequestMessageFactoryTest {
 
     /**
      * Testing of {@link GetAsyncRequestMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testGetAsyncReques() throws Exception {
         GetAsyncInputBuilder builder = new GetAsyncInputBuilder();
         BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         GetAsyncInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         getAsyncFactory.serialize(message, out);
-        
+
         BufferHelper.checkHeaderV13(out, MESSAGE_TYPE, MESSAGE_LENGTH);
     }
 }

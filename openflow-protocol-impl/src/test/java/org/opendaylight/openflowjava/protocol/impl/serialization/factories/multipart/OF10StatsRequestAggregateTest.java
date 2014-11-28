@@ -54,7 +54,7 @@ public class OF10StatsRequestAggregateTest {
 
     /**
      * Tests {@link OF10StatsRequestInputFactory} for correct serialization
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void test() throws Exception {

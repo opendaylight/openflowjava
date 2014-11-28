@@ -23,7 +23,7 @@ public class TypeToClassInitHelper {
      * @param version protocol wire version
      * @param messageClassMap map which stores type to class mapping
      */
-    public TypeToClassInitHelper(short version, Map<TypeToClassKey, 
+    public TypeToClassInitHelper(short version, Map<TypeToClassKey,
             Class<?>> messageClassMap) {
         this.version = version;
         this.messageClassMap = messageClassMap;

@@ -50,7 +50,7 @@ public class EchoRequestMessageFactoryTest {
 
         BufferHelper.checkHeaderV13(builtByFactory);
     }
-    
+
     /**
      * Testing {@link EchoRequestMessageFactory} for correct translation into POJO
      */

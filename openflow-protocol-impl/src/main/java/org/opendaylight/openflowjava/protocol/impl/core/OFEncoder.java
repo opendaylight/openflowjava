@@ -31,7 +31,7 @@ public class OFEncoder extends MessageToByteEncoder<MessageListenerWrapper> {
     private static final Logger LOGGER = LoggerFactory.getLogger(OFEncoder.class);
     private SerializationFactory serializationFactory;
     private StatisticsCounters statisticsCounters;
-    
+
     /** Constructor of class */
     public OFEncoder() {
         statisticsCounters = StatisticsCounters.getInstance();

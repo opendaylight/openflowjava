@@ -141,7 +141,7 @@ public class ChannelOutboundQueue02Test {
     }
 
     /**
-     * Class for testing - channel can change state to read only or writable 
+     * Class for testing - channel can change state to read only or writable
      * @author madamjak
      *
      */

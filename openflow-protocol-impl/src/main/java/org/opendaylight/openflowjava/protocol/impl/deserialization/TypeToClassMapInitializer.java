@@ -44,7 +44,7 @@ public final class TypeToClassMapInitializer {
      */
     public static void initializeTypeToClassMap(Map<TypeToClassKey, Class<?>> messageClassMap) {
         // init OF v1.0 mapping
-        TypeToClassInitHelper helper = 
+        TypeToClassInitHelper helper =
                 new TypeToClassInitHelper(EncodeConstants.OF10_VERSION_ID, messageClassMap);
         helper.registerTypeToClass((short) 0, HelloMessage.class);
         helper.registerTypeToClass((short) 1, ErrorMessage.class);

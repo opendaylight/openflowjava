@@ -14,7 +14,7 @@ import java.net.InetSocketAddress;
 
 /**
  * Wraps received messages (includes version) and sender address
- 
+
  * @author michal.polkorab
  */
 public class VersionMessageUdpWrapper extends VersionMessageWrapper {

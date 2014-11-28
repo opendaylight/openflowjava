@@ -50,7 +50,7 @@ public class MultipartRequestGroupDescTest {
 
     /**
      * Tests {@link MultipartRequestInputFactory} - GroupDesc case
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void test() throws Exception {

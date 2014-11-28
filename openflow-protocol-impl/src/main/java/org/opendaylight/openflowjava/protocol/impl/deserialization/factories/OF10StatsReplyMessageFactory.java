@@ -95,19 +95,19 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         case OFPMPAGGREGATE:  builder.setMultipartReplyBody(setAggregate(rawMessage));
             break;
         case OFPMPTABLE:  builder.setMultipartReplyBody(setTable(rawMessage));
-            break;         
+            break;
         case OFPMPPORTSTATS:  builder.setMultipartReplyBody(setPortStats(rawMessage));
             break;
         case OFPMPQUEUE:  builder.setMultipartReplyBody(setQueue(rawMessage));
-            break;         
+            break;
         case OFPMPEXPERIMENTER: builder.setMultipartReplyBody(setExperimenter(rawMessage));
             break;
-        default: 
+        default:
             break;
         }
         return builder.build();
     }
-    
+
     private static MultipartReplyDescCase setDesc(ByteBuf input) {
         MultipartReplyDescCaseBuilder caseBuilder = new MultipartReplyDescCaseBuilder();
         MultipartReplyDescBuilder descBuilder = new MultipartReplyDescBuilder();
@@ -134,7 +134,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         caseBuilder.setMultipartReplyDesc(descBuilder.build());
         return caseBuilder.build();
     }
-    
+
     private MultipartReplyFlowCase setFlow(ByteBuf input) {
         MultipartReplyFlowCaseBuilder caseBuilder = new MultipartReplyFlowCaseBuilder();
         MultipartReplyFlowBuilder flowBuilder = new MultipartReplyFlowBuilder();
@@ -172,7 +172,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         caseBuilder.setMultipartReplyFlow(flowBuilder.build());
         return caseBuilder.build();
     }
-    
+
     private static MultipartReplyAggregateCase setAggregate(ByteBuf input) {
         MultipartReplyAggregateCaseBuilder caseBuilder = new MultipartReplyAggregateCaseBuilder();
         MultipartReplyAggregateBuilder builder = new MultipartReplyAggregateBuilder();
@@ -187,7 +187,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         caseBuilder.setMultipartReplyAggregate(builder.build());
         return caseBuilder.build();
     }
-    
+
     private static MultipartReplyTableCase setTable(ByteBuf input) {
         MultipartReplyTableCaseBuilder caseBuilder = new MultipartReplyTableCaseBuilder();
         MultipartReplyTableBuilder builder = new MultipartReplyTableBuilder();
@@ -217,7 +217,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         caseBuilder.setMultipartReplyTable(builder.build());
         return caseBuilder.build();
     }
-    
+
     private static MultipartReplyPortStatsCase setPortStats(ByteBuf input) {
         MultipartReplyPortStatsCaseBuilder caseBuilder = new MultipartReplyPortStatsCaseBuilder();
         MultipartReplyPortStatsBuilder builder = new MultipartReplyPortStatsBuilder();
@@ -268,7 +268,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         caseBuilder.setMultipartReplyPortStats(builder.build());
         return caseBuilder.build();
     }
-    
+
     private static MultipartReplyQueueCase setQueue(ByteBuf input) {
         MultipartReplyQueueCaseBuilder caseBuilder = new MultipartReplyQueueCaseBuilder();
         MultipartReplyQueueBuilder builder = new MultipartReplyQueueBuilder();
@@ -293,7 +293,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         caseBuilder.setMultipartReplyQueue(builder.build());
         return caseBuilder.build();
     }
-    
+
     private MultipartReplyExperimenterCase setExperimenter(ByteBuf input) {
         return registry.getDeserializer(ExperimenterDeserializerKeyFactory.createMultipartReplyMessageDeserializerKey(
                 EncodeConstants.OF10_VERSION_ID, input.readUnsignedInt()));

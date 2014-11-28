@@ -22,17 +22,17 @@ public interface TlsConfiguration {
      * @return keystore location
      */
     String getTlsKeystore();
-    
+
     /**
      * @return keystore type
      */
     KeystoreType getTlsKeystoreType();
-    
+
     /**
      * @return truststore location
      */
     String getTlsTruststore();
-    
+
     /**
      * @return truststore type
      */

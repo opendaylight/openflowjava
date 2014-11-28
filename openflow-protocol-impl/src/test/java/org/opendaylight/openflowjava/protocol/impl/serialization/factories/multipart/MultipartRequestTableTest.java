@@ -50,7 +50,7 @@ public class MultipartRequestTableTest {
 
     /**
      * Tests {@link MultipartRequestInputFactory} - Table case
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void test() throws Exception {

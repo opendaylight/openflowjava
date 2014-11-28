@@ -142,11 +142,11 @@ public class OF13InstructionsSerializerTest {
         actionsBuilder.setAction(actions);
         builder.addAugmentation(ActionsInstruction.class, actionsBuilder.build());
         instructions.add(builder.build());
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         ListSerializer.serializeList(instructions, TypeKeyMakerFactory
                 .createInstructionKeyMaker(EncodeConstants.OF13_VERSION_ID), registry, out);
-        
+
         Assert.assertEquals("Wrong instruction type", 1, out.readUnsignedShort());
         Assert.assertEquals("Wrong instruction length", 8, out.readUnsignedShort());
         Assert.assertEquals("Wrong instruction table-id", 5, out.readUnsignedByte());

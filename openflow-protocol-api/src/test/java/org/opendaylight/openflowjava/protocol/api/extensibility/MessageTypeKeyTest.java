@@ -48,7 +48,7 @@ public class MessageTypeKeyTest {
     @Test
     public void testEquals() {
          MessageTypeKey<?> key1;
-         MessageTypeKey<?> key2; 
+         MessageTypeKey<?> key2;
          key1 = new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, BarrierInput.class);
 
          Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));

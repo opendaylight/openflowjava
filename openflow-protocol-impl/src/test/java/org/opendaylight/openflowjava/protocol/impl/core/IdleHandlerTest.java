@@ -34,7 +34,7 @@ public class IdleHandlerTest {
 
     /**
      * Sets up test environment
-     * 
+     *
      */
     @Before
     public void setUp() {
@@ -96,15 +96,15 @@ public class IdleHandlerTest {
         try {
             idleHandler.readTimedOut(mockChHndlrCtx);
             verify(mockChHndlrCtx, times(1)).fireChannelRead(any(Object.class)) ;
-    
+
             idleHandler.channelRead(mockChHndlrCtx, new String() );
             verify(mockChHndlrCtx, times(2)).fireChannelRead(any(Object.class)) ;
-    
+
             idleHandler.readTimedOut(mockChHndlrCtx);
             verify(mockChHndlrCtx, times(3)).fireChannelRead(any(Object.class)) ;
         } catch (Exception e) {
             Assert.fail();
         }
     }
-    
+
 }

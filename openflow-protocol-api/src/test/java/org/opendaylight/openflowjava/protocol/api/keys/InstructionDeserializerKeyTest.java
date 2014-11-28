@@ -40,7 +40,7 @@ public class InstructionDeserializerKeyTest {
         Assert.assertFalse("Wrong equals", key1.equals(key2));
         Assert.assertFalse("Wrong hashcode", key1.hashCode() == key2.hashCode());
     }
-    
+
     /**
      * Test InstructionDeserializerKey equals - additional test
      */

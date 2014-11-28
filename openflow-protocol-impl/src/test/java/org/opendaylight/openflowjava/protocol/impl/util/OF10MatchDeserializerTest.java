@@ -69,7 +69,7 @@ public class OF10MatchDeserializerTest {
         Assert.assertEquals("Wrong tp-src", 20560, match.getTpSrc().shortValue());
         Assert.assertEquals("Wrong tp-dst", 8224, match.getTpDst().shortValue());
     }
-    
+
     /**
      * Testing correct deserialization of ofp_match
      */

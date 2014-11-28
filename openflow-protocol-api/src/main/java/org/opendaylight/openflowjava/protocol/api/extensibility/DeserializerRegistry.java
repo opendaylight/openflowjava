@@ -30,10 +30,10 @@ public interface DeserializerRegistry {
      * Registers deserializer.
      * Throws IllegalStateException when there is
      * a deserializer already registered under given key.
-     * 
+     *
      * If the deserializer implements {@link DeserializerRegistryInjector} interface,
      * the deserializer is injected with DeserializerRegistry instance.
-     * 
+     *
      * @param key used for deserializer lookup
      * @param deserializer deserializer instance
      */

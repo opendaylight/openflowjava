@@ -36,7 +36,7 @@ public class OxmMplsTcSerializerTest {
     @Test
     public void testSerialize() {
         MatchEntriesBuilder builder = prepareMplsTcMatchEntry((short) 16);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -51,7 +51,7 @@ public class OxmMplsTcSerializerTest {
     @Test
     public void testSerializeHeader() {
         MatchEntriesBuilder builder = prepareMplsTcHeader(false);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 

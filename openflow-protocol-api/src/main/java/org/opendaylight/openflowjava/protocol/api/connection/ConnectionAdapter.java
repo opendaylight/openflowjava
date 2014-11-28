@@ -27,12 +27,12 @@ public interface ConnectionAdapter extends OpenflowProtocolService {
      * @return future set to true, when disconnect completed
      */
     Future<Boolean> disconnect();
-    
+
     /**
      * @return true, if connection to switch is alive
      */
     boolean isAlive();
-    
+
     /**
      * @return address of the remote end - address of a switch if connected
      */
@@ -41,7 +41,7 @@ public interface ConnectionAdapter extends OpenflowProtocolService {
      * @param messageListener here will be pushed all messages from switch
      */
     void setMessageListener(OpenflowProtocolListener messageListener);
-    
+
     /**
      * @param systemListener here will be pushed all system messages from library
      */
@@ -58,7 +58,7 @@ public interface ConnectionAdapter extends OpenflowProtocolService {
     void fireConnectionReadyNotification();
 
     /**
-     * set listener for connection became ready-to-use event  
+     * set listener for connection became ready-to-use event
      * @param connectionReadyListener
      */
     void setConnectionReadyListener(ConnectionReadyListener connectionReadyListener);

@@ -39,7 +39,7 @@ public class OxmMetadataSerializerTest {
     @Test
     public void testSerializeWithoutMask() {
         MatchEntriesBuilder builder = prepareMatchEntry(false, new byte[]{0, 1, 2, 3, 4, 5, 6, 7});
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -56,12 +56,12 @@ public class OxmMetadataSerializerTest {
     @Test
     public void testSerializeWithMask() {
         MatchEntriesBuilder builder = prepareMatchEntry(true, new byte[]{8, 9, 10, 11, 12, 13, 14, 15});
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
         checkHeader(buffer, true);
-        
+
         byte[] address = new byte[8];
         buffer.readBytes(address);
         Assert.assertArrayEquals("Wrong address", new byte[]{8, 9, 10, 11, 12, 13, 14, 15}, address);
@@ -77,7 +77,7 @@ public class OxmMetadataSerializerTest {
     @Test
     public void testSerializeHeaderWithoutMask() {
         MatchEntriesBuilder builder = prepareHeader(false);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 
@@ -91,7 +91,7 @@ public class OxmMetadataSerializerTest {
     @Test
     public void testSerializeHeaderWithMask() {
         MatchEntriesBuilder builder = prepareHeader(true);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 

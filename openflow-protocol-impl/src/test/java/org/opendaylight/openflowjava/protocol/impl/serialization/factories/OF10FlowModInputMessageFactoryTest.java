@@ -64,7 +64,7 @@ public class OF10FlowModInputMessageFactoryTest {
     }
 
     /**
-     * @throws Exception 
+     * @throws Exception
      * Testing of {@link OF10FlowModInputMessageFactory} for correct translation from POJO
      */
     @Test
@@ -112,10 +112,10 @@ public class OF10FlowModInputMessageFactoryTest {
         actions.add(actionBuilder.build());
         builder.setAction(actions);
         FlowModInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         flowModFactory.serialize(message, out);
-        
+
         BufferHelper.checkHeaderV10(out, (byte) 14, 88);
         Assert.assertEquals("Wrong wildcards", 3678463, out.readUnsignedInt());
         Assert.assertEquals("Wrong inPort", 58, out.readUnsignedShort());

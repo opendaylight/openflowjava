@@ -96,7 +96,7 @@ public class MultipartReplyMessageFactoryTest {
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(MultipartReplyMessageFactoryTest.class);
-    
+
     /**
      * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
      */
@@ -105,39 +105,39 @@ public class MultipartReplyMessageFactoryTest {
         final int DESC_STR_LEN = 256;
         final int SERIAL_NUM_LEN = 32;
         ByteBuf bb = BufferHelper.buildBuffer("00 00 00 01 00 00 00 00");
-        
+
         String mfrDesc = "Manufacturer description";
         byte[] mfrDescBytes = new byte[256];
         mfrDescBytes = mfrDesc.getBytes();
         bb.writeBytes(mfrDescBytes);
         bb.writeZero(DESC_STR_LEN - mfrDescBytes.length);
-        
+
         String hwDesc = "Hardware description";
         byte[] hwDescBytes = new byte[256];
         hwDescBytes = hwDesc.getBytes();
         bb.writeBytes(hwDescBytes);
         bb.writeZero(DESC_STR_LEN - hwDescBytes.length);
-        
+
         String swDesc = "Software description";
         byte[] swDescBytes = new byte[256];
         swDescBytes = swDesc.getBytes();
         bb.writeBytes(swDescBytes);
         bb.writeZero(DESC_STR_LEN - swDescBytes.length);
-        
+
         String serialNum = "SN0123456789";
         byte[] serialNumBytes = new byte[32];
         serialNumBytes = serialNum.getBytes();
         bb.writeBytes(serialNumBytes);
         bb.writeZero(SERIAL_NUM_LEN - serialNumBytes.length);
-        
+
         String dpDesc = "switch3 in room 3120";
         byte[] dpDescBytes = new byte[256];
         dpDescBytes = dpDesc.getBytes();
         bb.writeBytes(dpDescBytes);
         bb.writeZero(DESC_STR_LEN - dpDescBytes.length);
-        
+
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
-        
+
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x00, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
@@ -161,25 +161,25 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 08 "+//flowCount
                                               "00 00 00 00"//pad
                                               );
-        
+
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
-        
+
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x02, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyAggregateCase messageCase = (MultipartReplyAggregateCase) builtByFactory.getMultipartReplyBody();
         MultipartReplyAggregate message = messageCase.getMultipartReplyAggregate();
-        Assert.assertEquals("Wrong packetCount", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong packetCount",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getPacketCount());
-        Assert.assertEquals("Wrong byteCount", 
-                new BigInteger(1, new byte[]{(byte) 0x0F, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong byteCount",
+                new BigInteger(1, new byte[]{(byte) 0x0F, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getByteCount());
-        Assert.assertEquals("Wrong flowCount", 
-                8, 
+        Assert.assertEquals("Wrong flowCount",
+                8,
                 message.getFlowCount().intValue());
     }
-    
+
     /**
      * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
      */
@@ -192,25 +192,25 @@ public class MultipartReplyMessageFactoryTest {
                                               "FF 01 01 01 01 01 01 01 "+//lookupCount
                                               "AF 01 01 01 01 01 01 01"//matchedCount
                                               );
-        
+
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
-        
+
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x03, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        
+
         MultipartReplyTableCase messageCase = (MultipartReplyTableCase) builtByFactory.getMultipartReplyBody();
         MultipartReplyTable message = messageCase.getMultipartReplyTable();
         Assert.assertEquals("Wrong tableId", 8, message.getTableStats().get(0).getTableId().intValue());
         Assert.assertEquals("Wrong activeCount", 16, message.getTableStats().get(0).getActiveCount().longValue());
-        Assert.assertEquals("Wrong lookupCount", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong lookupCount",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getTableStats().get(0).getLookupCount());
-        Assert.assertEquals("Wrong matchedCount", 
-                new BigInteger(1, new byte[]{(byte) 0xAF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong matchedCount",
+                new BigInteger(1, new byte[]{(byte) 0xAF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getTableStats().get(0).getMatchedCount());
     }
-    
+
     /**
      * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
      */
@@ -234,55 +234,55 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 02 "+//durationSec
                                               "00 00 00 04"//durationNsec
                                               );
-        
+
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
-        
+
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x04, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyPortStatsCase messageCase = (MultipartReplyPortStatsCase) builtByFactory.getMultipartReplyBody();
         MultipartReplyPortStats message = messageCase.getMultipartReplyPortStats();
         Assert.assertEquals("Wrong portNo", 255, message.getPortStats().get(0).getPortNo().intValue());
-        Assert.assertEquals("Wrong rxPackets", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong rxPackets",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getPortStats().get(0).getRxPackets());
-        Assert.assertEquals("Wrong txPackets", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}), 
+        Assert.assertEquals("Wrong txPackets",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}),
                 message.getPortStats().get(0).getTxPackets());
-        Assert.assertEquals("Wrong rxBytes", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+        Assert.assertEquals("Wrong rxBytes",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}),
                 message.getPortStats().get(0).getRxBytes());
-        Assert.assertEquals("Wrong txBytes", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+        Assert.assertEquals("Wrong txBytes",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}),
                 message.getPortStats().get(0).getTxBytes());
-        Assert.assertEquals("Wrong rxDropped", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+        Assert.assertEquals("Wrong rxDropped",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}),
                 message.getPortStats().get(0).getRxDropped());
-        Assert.assertEquals("Wrong txDropped", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+        Assert.assertEquals("Wrong txDropped",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}),
                 message.getPortStats().get(0).getTxDropped());
-        Assert.assertEquals("Wrong rxErrors", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+        Assert.assertEquals("Wrong rxErrors",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}),
                 message.getPortStats().get(0).getRxErrors());
-        Assert.assertEquals("Wrong txErrors", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+        Assert.assertEquals("Wrong txErrors",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}),
                 message.getPortStats().get(0).getTxErrors());
-        Assert.assertEquals("Wrong rxFrameErr", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+        Assert.assertEquals("Wrong rxFrameErr",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}),
                 message.getPortStats().get(0).getRxFrameErr());
-        Assert.assertEquals("Wrong rxOverErr", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+        Assert.assertEquals("Wrong rxOverErr",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}),
                 message.getPortStats().get(0).getRxOverErr());
-        Assert.assertEquals("Wrong rxCrcErr", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+        Assert.assertEquals("Wrong rxCrcErr",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}),
                 message.getPortStats().get(0).getRxCrcErr());
-        Assert.assertEquals("Wrong collisions", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+        Assert.assertEquals("Wrong collisions",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}),
                 message.getPortStats().get(0).getCollisions());
         Assert.assertEquals("Wrong durationSec", 2, message.getPortStats().get(0).getDurationSec().intValue());
         Assert.assertEquals("Wrong durationNsec", 4, message.getPortStats().get(0).getDurationNsec().intValue());
     }
-    
+
     /**
      * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
      */
@@ -297,9 +297,9 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 02 "+//durationSec
                                               "00 00 00 04"//durationNsec
                                               );
-        
+
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
-        
+
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x05, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
@@ -307,19 +307,19 @@ public class MultipartReplyMessageFactoryTest {
         MultipartReplyQueue message = messageCase.getMultipartReplyQueue();
         Assert.assertEquals("Wrong portNo", 255, message.getQueueStats().get(0).getPortNo().intValue());
         Assert.assertEquals("Wrong queueId", 16, message.getQueueStats().get(0).getQueueId().intValue());
-        Assert.assertEquals("Wrong txBytes", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+        Assert.assertEquals("Wrong txBytes",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}),
                 message.getQueueStats().get(0).getTxBytes());
-        Assert.assertEquals("Wrong txPackets", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}), 
+        Assert.assertEquals("Wrong txPackets",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}),
                 message.getQueueStats().get(0).getTxPackets());
-        Assert.assertEquals("Wrong txErrors", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}), 
+        Assert.assertEquals("Wrong txErrors",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x03, 0x02, 0x03, 0x02, 0x03, 0x02}),
                 message.getQueueStats().get(0).getTxErrors());
         Assert.assertEquals("Wrong durationSec", 2, message.getQueueStats().get(0).getDurationSec().intValue());
         Assert.assertEquals("Wrong durationNsec", 4, message.getQueueStats().get(0).getDurationNsec().intValue());
     }
-    
+
     /**
      * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
      */
@@ -353,9 +353,9 @@ public class MultipartReplyMessageFactoryTest {
                                               "FF 02 02 02 02 02 02 02 "+//packetCountBucket_2.2
                                               "FF 02 02 02 02 02 02 02"//byteCountBucket_2.2
                                               );
-        
+
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
-        
+
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x06, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
@@ -363,48 +363,48 @@ public class MultipartReplyMessageFactoryTest {
         MultipartReplyGroup message = messageCase.getMultipartReplyGroup();
         Assert.assertEquals("Wrong groupId", 16, message.getGroupStats().get(0).getGroupId().getValue().intValue());
         Assert.assertEquals("Wrong refCount", 18, message.getGroupStats().get(0).getRefCount().intValue());
-        Assert.assertEquals("Wrong packetCount", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong packetCount",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getGroupStats().get(0).getPacketCount());
-        Assert.assertEquals("Wrong byteCount", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong byteCount",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getGroupStats().get(0).getByteCount());
         Assert.assertEquals("Wrong durationSec", 8, message.getGroupStats().get(0).getDurationSec().intValue());
         Assert.assertEquals("Wrong durationNsec", 9, message.getGroupStats().get(0).getDurationNsec().intValue());
-        Assert.assertEquals("Wrong packetCountBucket", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong packetCountBucket",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getGroupStats().get(0).getBucketStats().get(0).getPacketCount());
-        Assert.assertEquals("Wrong byteCountBucket", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong byteCountBucket",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getGroupStats().get(0).getBucketStats().get(0).getByteCount());
-        Assert.assertEquals("Wrong packetCountBucket_2", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}), 
+        Assert.assertEquals("Wrong packetCountBucket_2",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}),
                 message.getGroupStats().get(0).getBucketStats().get(1).getPacketCount());
-        Assert.assertEquals("Wrong byteCountBucket_2", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}), 
+        Assert.assertEquals("Wrong byteCountBucket_2",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}),
                 message.getGroupStats().get(0).getBucketStats().get(1).getByteCount());
-        
+
         Assert.assertEquals("Wrong groupId_2", 16, message.getGroupStats().get(1).getGroupId().getValue().intValue());
         Assert.assertEquals("Wrong refCount_2", 18, message.getGroupStats().get(1).getRefCount().intValue());
-        Assert.assertEquals("Wrong packetCount_2", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong packetCount_2",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getGroupStats().get(1).getPacketCount());
-        Assert.assertEquals("Wrong byteCount_2", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong byteCount_2",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getGroupStats().get(1).getByteCount());
         Assert.assertEquals("Wrong durationSec_2", 8, message.getGroupStats().get(1).getDurationSec().intValue());
         Assert.assertEquals("Wrong durationNsec_2", 9, message.getGroupStats().get(1).getDurationNsec().intValue());
-        Assert.assertEquals("Wrong packetCountBucket_1.2", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong packetCountBucket_1.2",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getGroupStats().get(1).getBucketStats().get(0).getPacketCount());
-        Assert.assertEquals("Wrong byteCountBucket_1.2", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong byteCountBucket_1.2",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getGroupStats().get(1).getBucketStats().get(0).getByteCount());
-        Assert.assertEquals("Wrong packetCountBucket_2.2", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}), 
+        Assert.assertEquals("Wrong packetCountBucket_2.2",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}),
                 message.getGroupStats().get(1).getBucketStats().get(1).getPacketCount());
-        Assert.assertEquals("Wrong byteCountBucket_2.2", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}), 
+        Assert.assertEquals("Wrong byteCountBucket_2.2",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}),
                 message.getGroupStats().get(1).getBucketStats().get(1).getByteCount());
     }
 
@@ -429,48 +429,48 @@ public class MultipartReplyMessageFactoryTest {
                                               "FF 03 03 03 03 03 03 03 "+//packetBandCount_03
                                               "FF 03 03 03 03 03 03 03"//byteBandCount_03
                                               );
-        
+
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
-        
+
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 9, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyMeterCase messageCase = (MultipartReplyMeterCase) builtByFactory.getMultipartReplyBody();
         MultipartReplyMeter message = messageCase.getMultipartReplyMeter();
-        Assert.assertEquals("Wrong meterId", 9, 
+        Assert.assertEquals("Wrong meterId", 9,
                              message.getMeterStats().get(0).getMeterId().getValue().intValue());
-        Assert.assertEquals("Wrong flowCount", 7, 
+        Assert.assertEquals("Wrong flowCount", 7,
                             message.getMeterStats().get(0).getFlowCount().intValue());
-        Assert.assertEquals("Wrong packetInCount", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong packetInCount",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getMeterStats().get(0).getPacketInCount());
-        Assert.assertEquals("Wrong byteInCount", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong byteInCount",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getMeterStats().get(0).getByteInCount());
-        Assert.assertEquals("Wrong durationSec", 5, 
+        Assert.assertEquals("Wrong durationSec", 5,
                 message.getMeterStats().get(0).getDurationSec().intValue());
-        Assert.assertEquals("Wrong durationNsec", 5, 
+        Assert.assertEquals("Wrong durationNsec", 5,
                 message.getMeterStats().get(0).getDurationNsec().intValue());
-        Assert.assertEquals("Wrong packetBandCount_01", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong packetBandCount_01",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getMeterStats().get(0).getMeterBandStats().get(0).getPacketBandCount());
-        Assert.assertEquals("Wrong byteBandCount_01", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong byteBandCount_01",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getMeterStats().get(0).getMeterBandStats().get(0).getByteBandCount());
-        Assert.assertEquals("Wrong packetBandCount_02", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}), 
+        Assert.assertEquals("Wrong packetBandCount_02",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}),
                 message.getMeterStats().get(0).getMeterBandStats().get(1).getPacketBandCount());
-        Assert.assertEquals("Wrong byteBandCount_02", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}), 
+        Assert.assertEquals("Wrong byteBandCount_02",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}),
                 message.getMeterStats().get(0).getMeterBandStats().get(1).getByteBandCount());
-        Assert.assertEquals("Wrong packetBandCount_03", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03}), 
+        Assert.assertEquals("Wrong packetBandCount_03",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03}),
                 message.getMeterStats().get(0).getMeterBandStats().get(2).getPacketBandCount());
-        Assert.assertEquals("Wrong byteBandCount_03", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03}), 
+        Assert.assertEquals("Wrong byteBandCount_03",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03}),
                 message.getMeterStats().get(0).getMeterBandStats().get(2).getByteBandCount());
     }
-    
+
     /**
      * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
      */
@@ -506,81 +506,81 @@ public class MultipartReplyMessageFactoryTest {
                                               "FF 03 03 03 03 03 03 03 "+//packetBandCount_13
                                               "FF 03 03 03 03 03 03 03"//byteBandCount_13
                                               );
-        
+
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
-        
+
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 9, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyMeterCase messageCase = (MultipartReplyMeterCase) builtByFactory.getMultipartReplyBody();
-        MultipartReplyMeter message = messageCase.getMultipartReplyMeter();        
-        Assert.assertEquals("Wrong meterId", 9, 
+        MultipartReplyMeter message = messageCase.getMultipartReplyMeter();
+        Assert.assertEquals("Wrong meterId", 9,
                              message.getMeterStats().get(0).getMeterId().getValue().intValue());
-        Assert.assertEquals("Wrong flowCount", 7, 
+        Assert.assertEquals("Wrong flowCount", 7,
                             message.getMeterStats().get(0).getFlowCount().intValue());
-        Assert.assertEquals("Wrong packetInCount", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong packetInCount",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getMeterStats().get(0).getPacketInCount());
-        Assert.assertEquals("Wrong byteInCount", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong byteInCount",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getMeterStats().get(0).getByteInCount());
-        Assert.assertEquals("Wrong durationSec", 5, 
+        Assert.assertEquals("Wrong durationSec", 5,
                 message.getMeterStats().get(0).getDurationSec().intValue());
-        Assert.assertEquals("Wrong durationNsec", 5, 
+        Assert.assertEquals("Wrong durationNsec", 5,
                 message.getMeterStats().get(0).getDurationNsec().intValue());
-        Assert.assertEquals("Wrong packetBandCount_01", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong packetBandCount_01",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getMeterStats().get(0).getMeterBandStats().get(0).getPacketBandCount());
-        Assert.assertEquals("Wrong byteBandCount_01", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong byteBandCount_01",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getMeterStats().get(0).getMeterBandStats().get(0).getByteBandCount());
-        Assert.assertEquals("Wrong packetBandCount_02", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}), 
+        Assert.assertEquals("Wrong packetBandCount_02",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}),
                 message.getMeterStats().get(0).getMeterBandStats().get(1).getPacketBandCount());
-        Assert.assertEquals("Wrong byteBandCount_02", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}), 
+        Assert.assertEquals("Wrong byteBandCount_02",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}),
                 message.getMeterStats().get(0).getMeterBandStats().get(1).getByteBandCount());
-        Assert.assertEquals("Wrong packetBandCount_03", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03}), 
+        Assert.assertEquals("Wrong packetBandCount_03",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03}),
                 message.getMeterStats().get(0).getMeterBandStats().get(2).getPacketBandCount());
-        Assert.assertEquals("Wrong byteBandCount_03", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03}), 
+        Assert.assertEquals("Wrong byteBandCount_03",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03}),
                 message.getMeterStats().get(0).getMeterBandStats().get(2).getByteBandCount());
-        
-        Assert.assertEquals("Wrong meterId", 8, 
+
+        Assert.assertEquals("Wrong meterId", 8,
                 message.getMeterStats().get(1).getMeterId().getValue().intValue());
-        Assert.assertEquals("Wrong flowCount", 7, 
+        Assert.assertEquals("Wrong flowCount", 7,
                 message.getMeterStats().get(1).getFlowCount().intValue());
-        Assert.assertEquals("Wrong packetInCount", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong packetInCount",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getMeterStats().get(1).getPacketInCount());
-        Assert.assertEquals("Wrong byteInCount", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong byteInCount",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getMeterStats().get(1).getByteInCount());
-        Assert.assertEquals("Wrong durationSec", 5, 
+        Assert.assertEquals("Wrong durationSec", 5,
                 message.getMeterStats().get(1).getDurationSec().intValue());
-        Assert.assertEquals("Wrong durationNsec", 5, 
+        Assert.assertEquals("Wrong durationNsec", 5,
                 message.getMeterStats().get(1).getDurationNsec().intValue());
-        Assert.assertEquals("Wrong packetBandCount_01", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong packetBandCount_01",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getMeterStats().get(1).getMeterBandStats().get(0).getPacketBandCount());
-        Assert.assertEquals("Wrong byteBandCount_01", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}), 
+        Assert.assertEquals("Wrong byteBandCount_01",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01}),
                 message.getMeterStats().get(1).getMeterBandStats().get(0).getByteBandCount());
-        Assert.assertEquals("Wrong packetBandCount_02", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}), 
+        Assert.assertEquals("Wrong packetBandCount_02",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}),
                 message.getMeterStats().get(1).getMeterBandStats().get(1).getPacketBandCount());
-        Assert.assertEquals("Wrong byteBandCount_02", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}), 
+        Assert.assertEquals("Wrong byteBandCount_02",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02}),
                 message.getMeterStats().get(1).getMeterBandStats().get(1).getByteBandCount());
-        Assert.assertEquals("Wrong packetBandCount_03", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03}), 
+        Assert.assertEquals("Wrong packetBandCount_03",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03}),
                 message.getMeterStats().get(1).getMeterBandStats().get(2).getPacketBandCount());
-        Assert.assertEquals("Wrong byteBandCount_03", 
-                new BigInteger(1, new byte[]{(byte) 0xFF, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03}), 
+        Assert.assertEquals("Wrong byteBandCount_03",
+                new BigInteger(1, new byte[]{(byte) 0xFF, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03}),
                 message.getMeterStats().get(1).getMeterBandStats().get(2).getByteBandCount());
     }
-    
+
     /**
      * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
      */
@@ -601,33 +601,33 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 20 "+//meterBandDscp.burstSize
                                               "04 "+//meterBandDscp.precLevel
                                               "00 00 00");//meterBandDscp.pad
-        
+
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
-        
+
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 10, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyMeterConfigCase messageCase = (MultipartReplyMeterConfigCase) builtByFactory.getMultipartReplyBody();
-        MultipartReplyMeterConfig message = messageCase.getMultipartReplyMeterConfig();        
+        MultipartReplyMeterConfig message = messageCase.getMultipartReplyMeterConfig();
         Assert.assertEquals("Wrong flags", new MeterFlags(false, false, true, true),
                              message.getMeterConfig().get(0).getFlags());
-        Assert.assertEquals("Wrong meterId", 9, 
+        Assert.assertEquals("Wrong meterId", 9,
                              message.getMeterConfig().get(0).getMeterId().getValue().intValue());
-        
-        MeterBandDropCase dropCase = (MeterBandDropCase) message.getMeterConfig().get(0).getBands().get(0).getMeterBand(); 
+
+        MeterBandDropCase dropCase = (MeterBandDropCase) message.getMeterConfig().get(0).getBands().get(0).getMeterBand();
         MeterBandDrop meterBandDrop = dropCase.getMeterBandDrop();
-        Assert.assertEquals("Wrong meterBandDrop.type", 1, meterBandDrop.getType().getIntValue()); 
+        Assert.assertEquals("Wrong meterBandDrop.type", 1, meterBandDrop.getType().getIntValue());
         Assert.assertEquals("Wrong meterBandDrop.rate", 17, meterBandDrop.getRate().intValue());
         Assert.assertEquals("Wrong meterBandDrop.burstSize", 32, meterBandDrop.getBurstSize().intValue());
-        
-        MeterBandDscpRemarkCase dscpCase = (MeterBandDscpRemarkCase) message.getMeterConfig().get(0).getBands().get(1).getMeterBand(); 
+
+        MeterBandDscpRemarkCase dscpCase = (MeterBandDscpRemarkCase) message.getMeterConfig().get(0).getBands().get(1).getMeterBand();
         MeterBandDscpRemark meterBandDscp = dscpCase.getMeterBandDscpRemark();
-        Assert.assertEquals("Wrong meterBandDscp.type", 2, meterBandDscp.getType().getIntValue()); 
+        Assert.assertEquals("Wrong meterBandDscp.type", 2, meterBandDscp.getType().getIntValue());
         Assert.assertEquals("Wrong meterBandDscp.rate", 17, meterBandDscp.getRate().intValue());
         Assert.assertEquals("Wrong meterBandDscp.burstSize", 32, meterBandDscp.getBurstSize().intValue());
         Assert.assertEquals("Wrong meterBandDscp.precLevel", 4, meterBandDscp.getPrecLevel().intValue());
     }
-    
+
     /**
      * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
      */
@@ -648,7 +648,7 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 20 "+//meterBandDscp.burstSize
                                               "04 "+//meterBandDscp.precLevel
                                               "00 00 00 "+//meterBandDscp.pad
-                                              
+
                                               "00 18 "+//len01
                                               "00 03 "+//flags01
                                               "00 00 00 07 "+//meterId01
@@ -659,45 +659,45 @@ public class MultipartReplyMessageFactoryTest {
                                               "04 "+//meterBandDscp01.precLevel
                                               "00 00 00"//meterBandDscp01.pad
                                               );
-        
+
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
-        
+
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 10, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyMeterConfigCase messageCase = (MultipartReplyMeterConfigCase) builtByFactory.getMultipartReplyBody();
-        MultipartReplyMeterConfig message = messageCase.getMultipartReplyMeterConfig();        
-        Assert.assertEquals("Wrong flags", new MeterFlags(true, false, true, false), 
+        MultipartReplyMeterConfig message = messageCase.getMultipartReplyMeterConfig();
+        Assert.assertEquals("Wrong flags", new MeterFlags(true, false, true, false),
                              message.getMeterConfig().get(0).getFlags());
-        Assert.assertEquals("Wrong meterId", 9, 
+        Assert.assertEquals("Wrong meterId", 9,
                              message.getMeterConfig().get(0).getMeterId().getValue().intValue());
-        
-        MeterBandDropCase dropCase = (MeterBandDropCase) message.getMeterConfig().get(0).getBands().get(0).getMeterBand(); 
-        MeterBandDrop meterBandDrop = dropCase.getMeterBandDrop(); 
-        Assert.assertEquals("Wrong meterBandDrop.type", 1, meterBandDrop.getType().getIntValue()); 
+
+        MeterBandDropCase dropCase = (MeterBandDropCase) message.getMeterConfig().get(0).getBands().get(0).getMeterBand();
+        MeterBandDrop meterBandDrop = dropCase.getMeterBandDrop();
+        Assert.assertEquals("Wrong meterBandDrop.type", 1, meterBandDrop.getType().getIntValue());
         Assert.assertEquals("Wrong meterBandDrop.rate", 17, meterBandDrop.getRate().intValue());
         Assert.assertEquals("Wrong meterBandDrop.burstSize", 32, meterBandDrop.getBurstSize().intValue());
-        
-        MeterBandDscpRemarkCase dscpCase = (MeterBandDscpRemarkCase) message.getMeterConfig().get(0).getBands().get(1).getMeterBand(); 
+
+        MeterBandDscpRemarkCase dscpCase = (MeterBandDscpRemarkCase) message.getMeterConfig().get(0).getBands().get(1).getMeterBand();
         MeterBandDscpRemark meterBandDscp = dscpCase.getMeterBandDscpRemark();
-        Assert.assertEquals("Wrong meterBandDscp.type", 2, meterBandDscp.getType().getIntValue()); 
+        Assert.assertEquals("Wrong meterBandDscp.type", 2, meterBandDscp.getType().getIntValue());
         Assert.assertEquals("Wrong meterBandDscp.rate", 17, meterBandDscp.getRate().intValue());
         Assert.assertEquals("Wrong meterBandDscp.burstSize", 32, meterBandDscp.getBurstSize().intValue());
         Assert.assertEquals("Wrong meterBandDscp.precLevel", 4, meterBandDscp.getPrecLevel().intValue());
-        
+
         LOGGER.info(message.getMeterConfig().get(0).getFlags().toString());
         Assert.assertEquals("Wrong flags01", new MeterFlags(false, true, true, false),
                              message.getMeterConfig().get(1).getFlags());
-        Assert.assertEquals("Wrong meterId01", 7, 
+        Assert.assertEquals("Wrong meterId01", 7,
                              message.getMeterConfig().get(1).getMeterId().getValue().intValue());
-        
-        MeterBandDscpRemarkCase dscpCase01 = (MeterBandDscpRemarkCase) message.getMeterConfig().get(1).getBands().get(0).getMeterBand(); 
+
+        MeterBandDscpRemarkCase dscpCase01 = (MeterBandDscpRemarkCase) message.getMeterConfig().get(1).getBands().get(0).getMeterBand();
         MeterBandDscpRemark meterBandDscp01 = dscpCase01.getMeterBandDscpRemark();
-        Assert.assertEquals("Wrong meterBandDscp01.type", 2, meterBandDscp01.getType().getIntValue()); 
+        Assert.assertEquals("Wrong meterBandDscp01.type", 2, meterBandDscp01.getType().getIntValue());
         Assert.assertEquals("Wrong meterBandDscp01.rate", 17, meterBandDscp01.getRate().intValue());
         Assert.assertEquals("Wrong meterBandDscp01.burstSize", 32, meterBandDscp01.getBurstSize().intValue());
         Assert.assertEquals("Wrong meterBandDscp01.precLevel", 4, meterBandDscp01.getPrecLevel().intValue());
-        
+
     }
 
     /**
@@ -729,47 +729,47 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 00"//copyTTLInPad
                                               );
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
-        
+
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyGroupDescCase messageCase = (MultipartReplyGroupDescCase) builtByFactory.getMultipartReplyBody();
         MultipartReplyGroupDesc message = messageCase.getMultipartReplyGroupDesc();
-        Assert.assertEquals("Wrong type", 1, 
+        Assert.assertEquals("Wrong type", 1,
                              message.getGroupDesc().get(0).getType().getIntValue());
-        Assert.assertEquals("Wrong groupId", 8, 
+        Assert.assertEquals("Wrong groupId", 8,
                              message.getGroupDesc().get(0).getGroupId().getValue().intValue());
-        Assert.assertEquals("Wrong bucketWeight", 6, 
+        Assert.assertEquals("Wrong bucketWeight", 6,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWeight().intValue());
-        Assert.assertEquals("Wrong bucketWatchPort", 5, 
+        Assert.assertEquals("Wrong bucketWatchPort", 5,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWatchPort().
                                                                         getValue().intValue());
-        Assert.assertEquals("Wrong bucketWatchGroup", 4, 
+        Assert.assertEquals("Wrong bucketWatchGroup", 4,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWatchGroup().intValue());
-        
-        Assert.assertEquals("Wrong outputType", Output.class, 
+
+        Assert.assertEquals("Wrong outputType", Output.class,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(0)
                 .getType());
-        
-        Assert.assertEquals("Wrong outputPort", 4351, 
+
+        Assert.assertEquals("Wrong outputPort", 4351,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(0)
                 .getAugmentation(PortAction.class).
                 getPort().getValue().intValue());
-        
-        Assert.assertEquals("Wrong outputMaxLen", 65535, 
+
+        Assert.assertEquals("Wrong outputMaxLen", 65535,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(0)
                 .getAugmentation(MaxLengthAction.class).
                 getMaxLength().intValue());
-        
-        Assert.assertEquals("Wrong copyTtlOutType", CopyTtlOut.class, 
+
+        Assert.assertEquals("Wrong copyTtlOutType", CopyTtlOut.class,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(1)
                 .getType());
-        
-        Assert.assertEquals("Wrong copyTtlInType", CopyTtlIn.class, 
+
+        Assert.assertEquals("Wrong copyTtlInType", CopyTtlIn.class,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(2)
                 .getType());
     }
-    
+
     /**
      * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
      * Test covers bodies of actions Set MPLS TTL , Dec MPLS TTL, Push VLAN. Push MPLS, Push PBB
@@ -806,57 +806,57 @@ public class MultipartReplyMessageFactoryTest {
                                               "0F FF "+//pushPbbEthertype
                                               "00 00"//pushPbbPad
                                               );
-        
+
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
-        
+
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyGroupDescCase messageCase = (MultipartReplyGroupDescCase) builtByFactory.getMultipartReplyBody();
-        MultipartReplyGroupDesc message = messageCase.getMultipartReplyGroupDesc();        
-        Assert.assertEquals("Wrong type", 1, 
+        MultipartReplyGroupDesc message = messageCase.getMultipartReplyGroupDesc();
+        Assert.assertEquals("Wrong type", 1,
                              message.getGroupDesc().get(0).getType().getIntValue());
-        Assert.assertEquals("Wrong groupId", 8, 
+        Assert.assertEquals("Wrong groupId", 8,
                              message.getGroupDesc().get(0).getGroupId().getValue().intValue());
-        Assert.assertEquals("Wrong bucketWeight", 6, 
+        Assert.assertEquals("Wrong bucketWeight", 6,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWeight().intValue());
-        Assert.assertEquals("Wrong bucketWatchPort", 5, 
+        Assert.assertEquals("Wrong bucketWatchPort", 5,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWatchPort().getValue().intValue());
-        Assert.assertEquals("Wrong bucketWatchGroup", 4, 
+        Assert.assertEquals("Wrong bucketWatchGroup", 4,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWatchGroup().intValue());
-        Assert.assertEquals("Wrong setMplsTtlType", SetMplsTtl.class, 
+        Assert.assertEquals("Wrong setMplsTtlType", SetMplsTtl.class,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(0)
                 .getType());
-        Assert.assertEquals("Wrong setMplsTtlMPLS_TTL", 9, 
+        Assert.assertEquals("Wrong setMplsTtlMPLS_TTL", 9,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(0)
                 .getAugmentation(MplsTtlAction.class).
                 getMplsTtl().intValue());
-        Assert.assertEquals("Wrong decMplsTtlType", DecMplsTtl.class, 
+        Assert.assertEquals("Wrong decMplsTtlType", DecMplsTtl.class,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(1)
                 .getType());
-        Assert.assertEquals("Wrong pushVlanType", PushVlan.class, 
+        Assert.assertEquals("Wrong pushVlanType", PushVlan.class,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(2)
                 .getType());
-        Assert.assertEquals("Wrong pushVlanEthertype", 32, 
+        Assert.assertEquals("Wrong pushVlanEthertype", 32,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(2)
                 .getAugmentation(EthertypeAction.class).
                 getEthertype().getValue().intValue());
-        Assert.assertEquals("Wrong pushMplsType", PushMpls.class, 
+        Assert.assertEquals("Wrong pushMplsType", PushMpls.class,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(3)
                 .getType());
-        Assert.assertEquals("Wrong pushMplsEthertype", 255, 
+        Assert.assertEquals("Wrong pushMplsEthertype", 255,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(3).
                 getAugmentation(EthertypeAction.class).
                 getEthertype().getValue().intValue());
-        Assert.assertEquals("Wrong pushPbbType", PushPbb.class, 
+        Assert.assertEquals("Wrong pushPbbType", PushPbb.class,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(4)
                 .getType());
-        Assert.assertEquals("Wrong pushPbbEthertype", 4095, 
+        Assert.assertEquals("Wrong pushPbbEthertype", 4095,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(4)
                 .getAugmentation(EthertypeAction.class).
                 getEthertype().getValue().intValue());
     }
-    
+
     /**
      * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
      * Test covers bodies of actions Pop VLAN, Pop PBB, Pop MPLS, Group, Dec NW TTL
@@ -893,54 +893,54 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 08 "+//decNwTtlLen
                                               "00 00 00 00"//decNwTtlPad
                                               );
-        
+
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
-        
+
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyGroupDescCase messageCase = (MultipartReplyGroupDescCase) builtByFactory.getMultipartReplyBody();
-        MultipartReplyGroupDesc message = messageCase.getMultipartReplyGroupDesc();        
+        MultipartReplyGroupDesc message = messageCase.getMultipartReplyGroupDesc();
         Assert.assertEquals("Wrong type", 1, message.getGroupDesc().get(0).getType().getIntValue());
         Assert.assertEquals("Wrong groupId", 8, message.getGroupDesc().get(0).getGroupId().getValue().intValue());
-        Assert.assertEquals("Wrong bucketWeight", 6, 
+        Assert.assertEquals("Wrong bucketWeight", 6,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWeight().intValue());
-        Assert.assertEquals("Wrong bucketWatchPort", 5, 
+        Assert.assertEquals("Wrong bucketWatchPort", 5,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWatchPort().getValue().intValue());
-        Assert.assertEquals("Wrong bucketWatchGroup", 4, 
+        Assert.assertEquals("Wrong bucketWatchGroup", 4,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWatchGroup().intValue());
-        Assert.assertEquals("Wrong popVlanType", PopVlan.class, 
+        Assert.assertEquals("Wrong popVlanType", PopVlan.class,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(0)
                 .getType());
-        Assert.assertEquals("Wrong popPbbType", PopPbb.class, 
+        Assert.assertEquals("Wrong popPbbType", PopPbb.class,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(1)
                 .getType());
-        Assert.assertEquals("Wrong popMplsType", PopMpls.class, 
+        Assert.assertEquals("Wrong popMplsType", PopMpls.class,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(2)
                 .getType());
-        Assert.assertEquals("Wrong popMplsEthertype", 207, 
+        Assert.assertEquals("Wrong popMplsEthertype", 207,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(2)
                 .getAugmentation(EthertypeAction.class).
                 getEthertype().getValue().intValue());
-        Assert.assertEquals("Wrong setQueueType", SetQueue.class, 
+        Assert.assertEquals("Wrong setQueueType", SetQueue.class,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(3)
                 .getType());
-        Assert.assertEquals("Wrong setQueueQueueId", 13565952, 
+        Assert.assertEquals("Wrong setQueueQueueId", 13565952,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(3)
                 .getAugmentation(QueueIdAction.class).
                 getQueueId().intValue());
-        Assert.assertEquals("Wrong groupType", Group.class, 
+        Assert.assertEquals("Wrong groupType", Group.class,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(4)
                 .getType());
-        Assert.assertEquals("Wrong groupGroupId", 13565952, 
+        Assert.assertEquals("Wrong groupGroupId", 13565952,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(4)
                 .getAugmentation(GroupIdAction.class).
                 getGroupId().intValue());
-        Assert.assertEquals("Wrong decNwTtlType", DecNwTtl.class, 
+        Assert.assertEquals("Wrong decNwTtlType", DecNwTtl.class,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(5)
                 .getType());
     }
-    
+
     /**
      * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
      * Test covers bodies of actions NW TTL, Experimenter
@@ -969,47 +969,47 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 FF "+ //setFieldPort
                                               "00 00 00 00"
                 );
-        
+
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
-        
+
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyGroupDescCase messageCase = (MultipartReplyGroupDescCase) builtByFactory.getMultipartReplyBody();
         MultipartReplyGroupDesc message = messageCase.getMultipartReplyGroupDesc();
-        Assert.assertEquals("Wrong type", 1, 
+        Assert.assertEquals("Wrong type", 1,
                              message.getGroupDesc().get(0).getType().getIntValue());
-        Assert.assertEquals("Wrong groupId", 8, 
+        Assert.assertEquals("Wrong groupId", 8,
                              message.getGroupDesc().get(0).getGroupId().getValue().intValue());
-        Assert.assertEquals("Wrong bucketWeight", 6, 
+        Assert.assertEquals("Wrong bucketWeight", 6,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWeight().intValue());
-        Assert.assertEquals("Wrong bucketWatchPort", 5, 
+        Assert.assertEquals("Wrong bucketWatchPort", 5,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWatchPort().
                                                                         getValue().intValue());
-        Assert.assertEquals("Wrong bucketWatchGroup", 4, 
+        Assert.assertEquals("Wrong bucketWatchGroup", 4,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getWatchGroup().intValue());
-        
-        Assert.assertEquals("Wrong nwTTlType", SetNwTtl.class, 
+
+        Assert.assertEquals("Wrong nwTTlType", SetNwTtl.class,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(0)
                 .getType());
-        
-        Assert.assertEquals("Wrong nwTTlnwTTL", 14, 
+
+        Assert.assertEquals("Wrong nwTTlnwTTL", 14,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(0)
                 .getAugmentation(NwTtlAction.class).getNwTtl().intValue());
-        
-        Assert.assertEquals("Wrong setFieldType", SetField.class, 
+
+        Assert.assertEquals("Wrong setFieldType", SetField.class,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(1)
                 .getType());
-        
-        Assert.assertEquals("Wrong setFieldOXMClass", OpenflowBasicClass.class, 
+
+        Assert.assertEquals("Wrong setFieldOXMClass", OpenflowBasicClass.class,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(1)
                 .getAugmentation(OxmFieldsAction.class).getMatchEntries().get(0).getOxmClass());
-        
-        Assert.assertEquals("Wrong setFieldOXMField", InPort.class, 
+
+        Assert.assertEquals("Wrong setFieldOXMField", InPort.class,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(1)
                 .getAugmentation(OxmFieldsAction.class).getMatchEntries().get(0).getOxmMatchField());
-        
-        Assert.assertEquals("Wrong setFieldOXMValue", 255, 
+
+        Assert.assertEquals("Wrong setFieldOXMValue", 255,
                 message.getGroupDesc().get(0).getBucketsList().get(0).getAction().get(1)
                 .getAugmentation(OxmFieldsAction.class).getMatchEntries().get(0).
                 getAugmentation(PortNumberMatchEntry.class).getPortNumber().getValue().intValue());

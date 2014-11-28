@@ -31,7 +31,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  */
 public class OF10FeaturesReplyMessageFactory implements OFDeserializer<GetFeaturesOutput> {
-    
+
     private static final byte PADDING_IN_FEATURES_REPLY_HEADER = 3;
 
     @Override
@@ -67,7 +67,7 @@ public class OF10FeaturesReplyMessageFactory implements OFDeserializer<GetFeatur
         return new CapabilitiesV10(arpMatchIp, flowStats, ipReasm,
                 portStats, queueStats, reserved, stp, tableStats);
     }
-    
+
     private static ActionTypeV10 createActionsV10(long input) {
         final Boolean output = (input & (1 << 0)) != 0;
         final Boolean setVLANvid = (input & (1 << 1)) != 0;

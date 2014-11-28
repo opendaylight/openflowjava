@@ -45,7 +45,7 @@ public class OF10ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
         }
         return builder.build();
     }
-    
+
     private static void decodeType(ErrorMessageBuilder builder, ErrorTypeV10 type, int readValue) {
         if (type != null) {
             builder.setType(type.getIntValue());
@@ -129,12 +129,12 @@ public class OF10ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
     		setUnknownCode(builder, code);
     	}
     }
-    
+
     private static void setUnknownCode(ErrorMessageBuilder builder, int readValue) {
     	builder.setCode(readValue);
 		builder.setCodeString(UNKNOWN_CODE);
     }
-    
+
     private static void setCode(ErrorMessageBuilder builder, int code, String codeString) {
     	builder.setCode(code);
 		builder.setCodeString(codeString);

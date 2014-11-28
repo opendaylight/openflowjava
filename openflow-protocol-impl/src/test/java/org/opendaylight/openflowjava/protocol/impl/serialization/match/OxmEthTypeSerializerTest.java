@@ -37,7 +37,7 @@ public class OxmEthTypeSerializerTest {
     @Test
     public void testSerialize() {
         MatchEntriesBuilder builder = prepareEthTypeMatchEntry(65535);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -52,7 +52,7 @@ public class OxmEthTypeSerializerTest {
     @Test
     public void testSerializeHeader() {
         MatchEntriesBuilder builder = prepareEthTypeHeader(false);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 
@@ -84,7 +84,7 @@ public class OxmEthTypeSerializerTest {
         assertEquals("Wrong value length", EncodeConstants.SIZE_OF_SHORT_IN_BYTES, serializer.getValueLength());
     }
 
-    
+
     private static MatchEntriesBuilder prepareEthTypeMatchEntry(int type) {
         MatchEntriesBuilder builder = prepareEthTypeHeader(false);
         EthTypeMatchEntryBuilder typeBuilder = new EthTypeMatchEntryBuilder();

@@ -16,11 +16,11 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import com.google.common.util.concurrent.SettableFuture;
 
 /** Initializes udp pipeline
- * 
+ *
  * @author michal.polkorab
  */
 public class UdpSimpleClientInitializer extends ChannelInitializer<NioDatagramChannel> {
-    
+
     private SettableFuture<Boolean> isOnlineFuture;
     private ScenarioHandler scenarioHandler;
 

@@ -60,7 +60,7 @@ public class ExperimenterActionSerializerKeyTest {
         Assert.assertFalse("Wrong equal by actionSubType.", key1.equals(key2));
     }
 
- 
+
     private static class TestSubType extends ExperimenterActionSubType {
         // empty class - only used in test for comparation
     }
@@ -68,6 +68,6 @@ public class ExperimenterActionSerializerKeyTest {
     private static class TestSubType2 extends ExperimenterActionSubType {
         // empty class - only used in test for comparation
     }
-    
+
 
 }

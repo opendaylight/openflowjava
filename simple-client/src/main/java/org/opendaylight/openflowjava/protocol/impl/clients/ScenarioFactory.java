@@ -14,7 +14,7 @@ import org.opendaylight.openflowjava.util.ByteBufUtils;
 
 /**
  * Class for providing prepared handshake scenario
- * 
+ *
  * @author michal.polkorab
  */
 public final class ScenarioFactory {

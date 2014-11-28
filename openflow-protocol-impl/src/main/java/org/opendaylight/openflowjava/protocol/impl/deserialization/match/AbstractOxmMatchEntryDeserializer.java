@@ -40,7 +40,7 @@ public abstract class AbstractOxmMatchEntryDeserializer implements HeaderDeseria
 
     /**
      * Prepares match entry header - sets oxm_class, oxm_field, hasMask
-     *  + sets the buffer.readerIndex() to the end of match entry 
+     *  + sets the buffer.readerIndex() to the end of match entry
      *  - where augmentation starts
      * @param oxmClass oxm class type
      * @param oxmField oxm field type
@@ -60,5 +60,5 @@ public abstract class AbstractOxmMatchEntryDeserializer implements HeaderDeseria
         input.skipBytes(EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
         return builder;
     }
-    
+
 }

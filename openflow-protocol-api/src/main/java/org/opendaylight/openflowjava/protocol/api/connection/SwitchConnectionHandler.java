@@ -17,12 +17,12 @@ import java.net.InetAddress;
  *
  */
 public interface SwitchConnectionHandler {
-    
+
     /**
      * @param connection to switch proving message sending/receiving, connection management
      */
     void onSwitchConnected(ConnectionAdapter connection);
-    
+
     /**
      * @param switchAddress
      * @return true, if connection from switch having given address shell be accepted; false otherwise

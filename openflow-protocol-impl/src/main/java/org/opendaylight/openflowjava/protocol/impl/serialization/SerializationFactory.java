@@ -22,7 +22,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 public class SerializationFactory {
 
     private SerializerRegistry registry;
-    
+
     /**
      * Transforms POJO message into ByteBuf
      * @param version version used for encoding received message

@@ -37,7 +37,7 @@ public class OxmUdpSrcSerializerTest {
     @Test
     public void testSerialize() {
         MatchEntriesBuilder builder = prepareMatchEntry(1024);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -52,7 +52,7 @@ public class OxmUdpSrcSerializerTest {
     @Test
     public void testSerializeHeader() {
         MatchEntriesBuilder builder = prepareHeader(false);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 

@@ -49,7 +49,7 @@ public class OF10PortModInputMessageFactoryTest {
 
     /**
      * Testing of {@link OF10PortModInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testPortModInput() throws Exception {
@@ -62,10 +62,10 @@ public class OF10PortModInputMessageFactoryTest {
         builder.setAdvertiseV10(new PortFeaturesV10(true, true, false, false, false, false,
                 false, true, true, false, false, false));
         PortModInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         portModFactory.serialize(message, out);
-        
+
         BufferHelper.checkHeaderV10(out, (byte) 15, 32);
         Assert.assertEquals("Wrong PortNo", message.getPortNo().getValue().longValue(), out.readUnsignedShort());
         byte[] address = new byte[6];

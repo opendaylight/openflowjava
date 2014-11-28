@@ -56,7 +56,7 @@ public final class ActionDeserializerInitializer {
      */
     public static void registerDeserializers(DeserializerRegistry registry) {
         // register OF v1.0 action deserializers
-        ActionDeserializerRegistryHelper helper = 
+        ActionDeserializerRegistryHelper helper =
                 new ActionDeserializerRegistryHelper(EncodeConstants.OF10_VERSION_ID, registry);
         helper.registerDeserializer(0, new OF10OutputActionDeserializer());
         helper.registerDeserializer(1, new OF10SetVlanVidActionDeserializer());

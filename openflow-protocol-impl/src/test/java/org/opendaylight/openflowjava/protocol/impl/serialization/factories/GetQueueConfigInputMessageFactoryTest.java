@@ -46,7 +46,7 @@ public class GetQueueConfigInputMessageFactoryTest {
 
     /**
      * Testing of {@link GetQueueConfigInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testGetQueueConfigInputMessage() throws Exception {
@@ -54,7 +54,7 @@ public class GetQueueConfigInputMessageFactoryTest {
         BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setPort(new PortNumber(0x00010203L));
         GetQueueConfigInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         getQueueFactory.serialize(message, out);
 

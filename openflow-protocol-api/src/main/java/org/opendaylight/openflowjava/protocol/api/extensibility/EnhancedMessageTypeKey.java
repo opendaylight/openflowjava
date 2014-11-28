@@ -35,7 +35,7 @@ public class EnhancedMessageTypeKey<E, F> extends MessageTypeKey<E> {
         result = prime * result + ((msgType2 == null) ? 0 : msgType2.hashCode());
         return result;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

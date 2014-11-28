@@ -17,7 +17,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 /**
- * 
+ *
  * @author madamjak
  *
  */
@@ -29,7 +29,7 @@ public class VersionMessageUdpWrapperTest {
     public void startUp(){
         MockitoAnnotations.initMocks(this);
     }
-    
+
     @Test
     public void test(){
         short version = 35;

@@ -47,7 +47,7 @@ public class InstructionSerializerKeyTest {
         Assert.assertFalse("Wrong equals", key1.equals(key2));
         Assert.assertFalse("Wrong hashCode", key1.hashCode() == key2.hashCode());
     }
-    
+
     /**
      * Test InstructionSerializerKey equals  - additional test
      */

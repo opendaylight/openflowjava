@@ -40,7 +40,7 @@ public class OxmIpv4DstSerializerTest {
     @Test
     public void testSerializeWithoutMask() {
         MatchEntriesBuilder builder = prepareMatchEntry(false, "10.0.0.1");
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -57,12 +57,12 @@ public class OxmIpv4DstSerializerTest {
     @Test
     public void testSerializeWithMask() {
         MatchEntriesBuilder builder = prepareMatchEntry(true, "120.121.122.0");
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
         checkHeader(buffer, true);
-        
+
         byte[] address = new byte[4];
         buffer.readBytes(address);
         Assert.assertArrayEquals("Wrong address", new byte[]{120, 121, 122, 0}, address);
@@ -78,7 +78,7 @@ public class OxmIpv4DstSerializerTest {
     @Test
     public void testSerializeHeaderWithoutMask() {
         MatchEntriesBuilder builder = prepareHeader(false);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 
@@ -92,7 +92,7 @@ public class OxmIpv4DstSerializerTest {
     @Test
     public void testSerializeHeaderWithMask() {
         MatchEntriesBuilder builder = prepareHeader(true);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 

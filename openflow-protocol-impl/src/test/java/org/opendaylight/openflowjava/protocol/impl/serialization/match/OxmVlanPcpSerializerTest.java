@@ -36,7 +36,7 @@ public class OxmVlanPcpSerializerTest {
     @Test
     public void testSerialize() {
         MatchEntriesBuilder builder = prepareVlanPcpMatchEntry((short) 42);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -51,7 +51,7 @@ public class OxmVlanPcpSerializerTest {
     @Test
     public void testSerializeHeader() {
         MatchEntriesBuilder builder = prepareVlanPcpHeader(false);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 

@@ -11,7 +11,7 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 
 /**
  * @author michal.polkorab
- * @param <T> type the key maker is based on 
+ * @param <T> type the key maker is based on
  */
 public abstract class AbstractTypeKeyMaker<T> implements TypeKeyMaker<T> {
 
@@ -22,7 +22,7 @@ public abstract class AbstractTypeKeyMaker<T> implements TypeKeyMaker<T> {
      */
     public AbstractTypeKeyMaker(short version) {
         this.version = version;
-        
+
     }
 
     /**

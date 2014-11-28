@@ -48,7 +48,7 @@ public class ExperimenterMessageFactoryTest {
     public void test() {
         when(registry.getDeserializer(any(ExperimenterIdDeserializerKey.class))).thenReturn(deserializer);
         when(deserializer.deserialize(any(ByteBuf.class))).thenReturn(message);
-        
+
         ByteBuf buffer = ByteBufUtils.hexStringToByteBuf("00 01 02 03 00 00 00 10");
         ExperimenterMessageFactory factory = new ExperimenterMessageFactory();
         factory.injectDeserializerRegistry(registry);

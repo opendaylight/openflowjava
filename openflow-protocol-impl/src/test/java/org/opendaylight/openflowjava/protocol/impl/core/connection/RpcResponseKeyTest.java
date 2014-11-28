@@ -13,7 +13,7 @@ import org.junit.Assert;
 import org.opendaylight.openflowjava.protocol.impl.core.connection.RpcResponseKey;
 
 /**
- * 
+ *
  * @author madamjak
  *
  */
@@ -24,7 +24,7 @@ public class RpcResponseKeyTest {
      */
     @Test
     public void testEquals(){
-        
+
         long xid1 = 12L;
         long xid2 = 66L;
         String outputClazz1 = "Clazz01";
@@ -48,7 +48,7 @@ public class RpcResponseKeyTest {
      */
     @Test
     public void testGetters(){
-        
+
         long xid1 = 12L;
         String outputClazz1 = "Clazz01";
         RpcResponseKey key1 = new RpcResponseKey(xid1, outputClazz1);

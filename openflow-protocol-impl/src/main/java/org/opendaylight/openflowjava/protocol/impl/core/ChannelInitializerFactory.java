@@ -24,7 +24,7 @@ public class ChannelInitializerFactory {
     private SerializationFactory serializationFactory;
     private TlsConfiguration tlsConfig;
     private SwitchConnectionHandler switchConnectionHandler;
-    
+
     /**
      * @return PublishingChannelInitializer that initializes new channels
      */

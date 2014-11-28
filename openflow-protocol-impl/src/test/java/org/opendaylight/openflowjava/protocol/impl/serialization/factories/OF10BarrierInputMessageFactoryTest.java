@@ -44,17 +44,17 @@ public class OF10BarrierInputMessageFactoryTest {
 
     /**
      * Testing of {@link OF10BarrierInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void test() throws Exception {
         BarrierInputBuilder bib = new BarrierInputBuilder();
         BufferHelper.setupHeader(bib, EncodeConstants.OF10_VERSION_ID);
         BarrierInput bi = bib.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         barrierFactory.serialize(bi, out);
-        
+
         BufferHelper.checkHeaderV10(out, (byte) 18, 8);
     }
 

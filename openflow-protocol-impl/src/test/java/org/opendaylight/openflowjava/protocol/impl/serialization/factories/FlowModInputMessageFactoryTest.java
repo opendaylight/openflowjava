@@ -81,7 +81,7 @@ public class FlowModInputMessageFactoryTest {
     }
 
     /**
-     * @throws Exception 
+     * @throws Exception
      * Testing of {@link FlowModInputMessageFactory} for correct translation from POJO
      */
     @Test
@@ -211,11 +211,11 @@ public class FlowModInputMessageFactoryTest {
         out.skipBytes(6);
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
     }
-    
+
     private static FlowModFlags createFlowModFlagsFromBitmap(int input){
         final Boolean _oFPFFSENDFLOWREM = (input & (1 << 0)) > 0;
         final Boolean _oFPFFCHECKOVERLAP = (input & (1 << 1)) > 0;
-        final Boolean _oFPFFRESETCOUNTS = (input & (1 << 2)) > 0; 
+        final Boolean _oFPFFRESETCOUNTS = (input & (1 << 2)) > 0;
         final Boolean _oFPFFNOPKTCOUNTS = (input & (1 << 3)) > 0;
         final Boolean _oFPFFNOBYTCOUNTS = (input & (1 << 4)) > 0;
         return new FlowModFlags(_oFPFFCHECKOVERLAP, _oFPFFNOBYTCOUNTS, _oFPFFNOPKTCOUNTS, _oFPFFRESETCOUNTS, _oFPFFSENDFLOWREM);

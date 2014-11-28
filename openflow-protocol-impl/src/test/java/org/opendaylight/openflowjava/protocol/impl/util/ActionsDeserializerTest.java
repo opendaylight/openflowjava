@@ -72,10 +72,10 @@ public class ActionsDeserializerTest {
                 + "00 19 00 10 80 00 02 04 00 00 00 0B 00 00 00 00 "
                 + "00 1A 00 08 00 0A 00 00 "
                 + "00 1B 00 08 00 00 00 00");
-        
+
         message.skipBytes(4); // skip XID
         LOGGER.info("bytes: " + message.readableBytes());
-        
+
         CodeKeyMaker keyMaker = CodeKeyMakerFactory.createActionsKeyMaker(EncodeConstants.OF13_VERSION_ID);
         List<Action> actions = ListDeserializer.deserializeList(EncodeConstants.OF13_VERSION_ID,
                 message.readableBytes(), message, keyMaker, registry);
@@ -132,7 +132,7 @@ public class ActionsDeserializerTest {
         Assert.assertEquals("Wrong match entry field", "org.opendaylight.yang.gen.v1.urn.opendaylight.openflow."
                 + "oxm.rev130731.InPhyPort", entries.get(0).getOxmMatchField().getName());
         Assert.assertEquals("Wrong match entry mask", false, entries.get(0).isHasMask());
-        Assert.assertEquals("Wrong match entry value", 11, 
+        Assert.assertEquals("Wrong match entry value", 11,
                 entries.get(0).getAugmentation(PortNumberMatchEntry.class).getPortNumber().getValue().intValue());
         Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
                 + "openflow.common.action.rev130731.PushPbb", actions.get(14).getType().getName());

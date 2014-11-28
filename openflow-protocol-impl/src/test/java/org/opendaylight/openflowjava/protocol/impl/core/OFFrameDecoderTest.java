@@ -27,7 +27,7 @@ import org.opendaylight.openflowjava.util.ByteBufUtils;
 
 /**
  * Testing class of {@link OFFrameDecoder}
- * 
+ *
  * @author michal.polkorab
  */
 @RunWith(MockitoJUnitRunner.class)

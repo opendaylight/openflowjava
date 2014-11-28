@@ -29,7 +29,7 @@ import com.google.common.base.Objects;
 */
 public final class SwitchConnectionProviderModule extends org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow._switch.connection.provider.impl.rev140328.AbstractSwitchConnectionProviderModule
  {
-    
+
     private static Logger LOG = LoggerFactory
             .getLogger(SwitchConnectionProviderModule.class);
 
@@ -72,7 +72,7 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
 
     /**
      * @return instance configuration object
-     * @throws UnknownHostException 
+     * @throws UnknownHostException
      */
     private ConnectionConfiguration createConnectionConfiguration() throws UnknownHostException {
         final InetAddress address = extractIpAddressBin(getAddress());
@@ -154,12 +154,12 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
                     return null;
                 }
                 return new ThreadConfiguration() {
-                    
+
                     @Override
                     public int getWorkerThreadCount() {
                         return threads.getWorkerThreads();
                     }
-                    
+
                     @Override
                     public int getBossThreadCount() {
                         return threads.getBossThreads();
@@ -172,7 +172,7 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
     /**
      * @param address
      * @return
-     * @throws UnknownHostException 
+     * @throws UnknownHostException
      */
     private static InetAddress extractIpAddressBin(IpAddress address) throws UnknownHostException {
         byte[] addressBin = null;
@@ -183,7 +183,7 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
                 addressBin = address2bin(address.getIpv6Address().getValue());
             }
         }
-        
+
         if (addressBin == null) {
             return null;
         } else {

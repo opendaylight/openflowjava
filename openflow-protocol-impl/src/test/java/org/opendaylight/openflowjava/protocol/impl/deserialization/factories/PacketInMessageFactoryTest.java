@@ -50,10 +50,10 @@ public class PacketInMessageFactoryTest {
     public void test(){
         ByteBuf bb = BufferHelper.buildBuffer("00 01 02 03 01 02 01 04 00 01 02 03 04 05 06 07 00 01 00 0C"
                 + " 80 00 02 04 00 00 00 01 00 00 00 00 00 00 01 02 03 04");
-        PacketInMessage builtByFactory = BufferHelper.deserialize(packetInFactory, bb); 
-        
+        PacketInMessage builtByFactory = BufferHelper.deserialize(packetInFactory, bb);
+
         BufferHelper.checkHeaderV13(builtByFactory);
-        
+
         Assert.assertEquals("Wrong bufferID", 0x00010203L, builtByFactory.getBufferId().longValue());
         Assert.assertEquals("Wrong totalLength", 0x0102, builtByFactory.getTotalLen().intValue());
         Assert.assertEquals("Wrong reason", PacketInReason.OFPRACTION, builtByFactory.getReason());

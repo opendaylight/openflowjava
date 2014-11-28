@@ -36,7 +36,7 @@ public class OxmMplsBosSerializerTest {
     @Test
     public void testSerialize() {
         MatchEntriesBuilder builder = prepareMplsBosMatchEntry(true);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -51,7 +51,7 @@ public class OxmMplsBosSerializerTest {
     @Test
     public void testSerializeHeader() {
         MatchEntriesBuilder builder = prepareMplsBosHeader(false);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 
@@ -83,7 +83,7 @@ public class OxmMplsBosSerializerTest {
         assertEquals("Wrong value length", EncodeConstants.SIZE_OF_BYTE_IN_BYTES, serializer.getValueLength());
     }
 
-    
+
     private static MatchEntriesBuilder prepareMplsBosMatchEntry(boolean bos) {
         MatchEntriesBuilder builder = prepareMplsBosHeader(false);
         BosMatchEntryBuilder bosBuilder = new BosMatchEntryBuilder();

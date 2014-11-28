@@ -41,14 +41,14 @@ public final class StatisticsCounters implements StatisticsHandler {
     private boolean runCounting;
     // array to hold enabled counter types
     private CounterEventTypes[] enabledCounters = {
-                    CounterEventTypes.DS_ENCODE_FAIL, 
+                    CounterEventTypes.DS_ENCODE_FAIL,
                     CounterEventTypes.DS_ENCODE_SUCCESS,
                     CounterEventTypes.DS_ENTERED_OFJAVA,
                     CounterEventTypes.DS_FLOW_MODS_ENTERED,
                     CounterEventTypes.DS_FLOW_MODS_SENT,
-                    CounterEventTypes.US_DECODE_FAIL, 
-                    CounterEventTypes.US_DECODE_SUCCESS, 
-                    CounterEventTypes.US_MESSAGE_PASS, 
+                    CounterEventTypes.US_DECODE_FAIL,
+                    CounterEventTypes.US_DECODE_SUCCESS,
+                    CounterEventTypes.US_MESSAGE_PASS,
                     CounterEventTypes.US_RECEIVED_IN_OFJAVA};
 
     /**

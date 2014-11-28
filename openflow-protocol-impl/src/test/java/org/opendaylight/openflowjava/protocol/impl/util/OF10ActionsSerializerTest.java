@@ -72,7 +72,7 @@ public class OF10ActionsSerializerTest {
     }
 
     /**
-     * Testing correct serialization of actions (OF v1.0) 
+     * Testing correct serialization of actions (OF v1.0)
      */
     @Test
     public void test() {
@@ -152,11 +152,11 @@ public class OF10ActionsSerializerTest {
         queueBuilder.setQueueId(400L);
         actionBuilder.addAugmentation(QueueIdAction.class, queueBuilder.build());
         actions.add(actionBuilder.build());
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         ListSerializer.serializeList(actions, TypeKeyMakerFactory
                 .createActionKeyMaker(EncodeConstants.OF10_VERSION_ID), registry, out);
-        
+
         Assert.assertEquals("Wrong action type", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         Assert.assertEquals("Wrong port", 42, out.readUnsignedShort());
@@ -215,5 +215,5 @@ public class OF10ActionsSerializerTest {
         Assert.assertEquals("Wrong queue-id", 400, out.readUnsignedInt());
         Assert.assertTrue("Written more bytes than needed", out.readableBytes() == 0);
     }
-    
+
 }

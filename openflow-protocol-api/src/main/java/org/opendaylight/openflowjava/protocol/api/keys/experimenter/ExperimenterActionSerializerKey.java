@@ -15,7 +15,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 /**
  * @author michal.polkorab
  */
-public final class ExperimenterActionSerializerKey extends ActionSerializerKey<Experimenter> 
+public final class ExperimenterActionSerializerKey extends ActionSerializerKey<Experimenter>
         implements ExperimenterSerializerKey {
 
     private Class<? extends ExperimenterActionSubType> actionSubType;

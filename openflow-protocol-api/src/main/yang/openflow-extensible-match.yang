@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
- 
+
  module openflow-extensible-match {
     namespace "urn:opendaylight:openflow:oxm";
     prefix "oxm";
@@ -19,12 +19,12 @@
     }
 
     identity oxm-match-type {
-        description 
+        description
            "The OpenFlow Extensible Match type must be supported by all OpenFlow
             switches.";
         base oft:match-type-base;
     }
-    
+
     // oxm classes
         identity oxm-class-base {
             description "Base identity for OXM classes";
@@ -43,7 +43,7 @@
             base oxm-class-base;
         }
         identity experimenter-class {
-            description 
+            description
                 "Marks Experimenter match type class.
                 All experimenter match classes MUST use this class as a base.";
             base oxm-class-base;
@@ -229,7 +229,7 @@
         container oxm-container {
             uses oxm-fields-grouping;
         }
-        
+
         grouping oxm-fields-grouping {
             list match-entries {
                 description "OXM TLV-structures (Type Length Value)";
@@ -246,7 +246,7 @@
                 }
                 leaf has-mask {
                     type boolean;
-                } 
+                }
             }
         }
 
@@ -330,5 +330,5 @@
                 }
             }
         }
-        
+
 }

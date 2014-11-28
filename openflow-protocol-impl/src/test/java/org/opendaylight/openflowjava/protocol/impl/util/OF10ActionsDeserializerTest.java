@@ -63,7 +63,7 @@ public class OF10ActionsDeserializerTest {
                 + "00 09 00 08 00 02 00 00 "
                 + "00 0A 00 08 00 03 00 00 "
                 + "00 0B 00 10 00 04 00 00 00 00 00 00 00 00 00 30");
-        
+
         message.skipBytes(4); // skip XID
         CodeKeyMaker keyMaker = CodeKeyMakerFactory.createActionsKeyMaker(EncodeConstants.OF10_VERSION_ID);
         List<Action> actions = ListDeserializer.deserializeList(EncodeConstants.OF10_VERSION_ID,
@@ -97,7 +97,7 @@ public class OF10ActionsDeserializerTest {
         Action action6 = actions.get(5);
         Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight"
                 + ".openflow.common.action.rev130731.SetDlDst", action6.getType().getName());
-        Assert.assertArrayEquals("Wrong dl-dst", ByteBufUtils.macAddressToBytes("02:03:04:05:06:07"), 
+        Assert.assertArrayEquals("Wrong dl-dst", ByteBufUtils.macAddressToBytes("02:03:04:05:06:07"),
                 ByteBufUtils.macAddressToBytes(action6.getAugmentation(DlAddressAction.class).getDlAddress().getValue()));
         Action action7 = actions.get(6);
         Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight"

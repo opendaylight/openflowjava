@@ -23,32 +23,32 @@ public interface ConnectionConfiguration {
      * @return address to bind, if null, all available interfaces will be used
      */
     InetAddress getAddress();
-    
+
     /**
      * @return port to bind
      */
     int getPort();
-    
+
     /**
      * @return transport protocol to use
      */
     Object getTransferProtocol();
-    
+
     /**
      * @return TLS configuration object
      */
     TlsConfiguration getTlsConfiguration();
-    
+
     /**
-     * @return silence time (in milliseconds) - after this time {@link SwitchIdleEvent} message is sent upstream 
+     * @return silence time (in milliseconds) - after this time {@link SwitchIdleEvent} message is sent upstream
      */
     long getSwitchIdleTimeout();
-    
+
     /**
      * @return seed for {@link SSLEngine}
      */
     Object getSslContext();
-    
+
     /**
      * @return thread numbers for TcpHandler's eventloopGroups
      */

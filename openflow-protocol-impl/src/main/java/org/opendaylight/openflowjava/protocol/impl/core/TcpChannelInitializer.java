@@ -45,13 +45,13 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
 
     /**
      * Testing Constructor
-     * 
+     *
      */
     protected TcpChannelInitializer( DefaultChannelGroup channelGroup, ConnectionAdapterFactory connAdaptorFactory ) {
     	allChannels = channelGroup ;
     	connectionAdapterFactory = connAdaptorFactory ;
     }
-    
+
     @Override
     protected void initChannel(final SocketChannel ch) {
         InetAddress switchAddress = ch.remoteAddress().getAddress();

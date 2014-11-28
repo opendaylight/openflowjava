@@ -12,13 +12,13 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.MessageTypeKey;
 
 /**
  * @author michal.polkorab
- * @param <T> 
+ * @param <T>
  */
 public interface TypeKeyMaker<T> {
 
     /**
      * @param entry
-     * @return key that will be used for serializer lookup in 
+     * @return key that will be used for serializer lookup in
      * the serializer registry
      */
     abstract MessageTypeKey<?> make(T entry);

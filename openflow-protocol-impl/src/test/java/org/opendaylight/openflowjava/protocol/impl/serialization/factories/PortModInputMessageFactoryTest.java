@@ -53,7 +53,7 @@ public class PortModInputMessageFactoryTest {
 
     /**
      * Testing of {@link PortModInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testPortModInput() throws Exception {
@@ -64,14 +64,14 @@ public class PortModInputMessageFactoryTest {
         builder.setConfig(new PortConfig(true, false, true, false));
         builder.setMask(new PortConfig(false, true, false, true));
         builder.setAdvertise(new PortFeatures(true, false, false, false,
-                                              false, false, false, true, 
-                                              false, false, false, false, 
+                                              false, false, false, true,
+                                              false, false, false, false,
                                               false, false, false, false));
         PortModInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         portModFactory.serialize(message, out);
-        
+
         BufferHelper.checkHeaderV13(out, MESSAGE_TYPE, MESSAGE_LENGTH);
         Assert.assertEquals("Wrong PortNo", message.getPortNo().getValue().longValue(), out.readUnsignedInt());
         out.skipBytes(PADDING_IN_PORT_MOD_MESSAGE_01);
@@ -93,7 +93,7 @@ public class PortModInputMessageFactoryTest {
         final Boolean _noPacketIn = ((input) & (1<<6)) > 0;
         return new PortConfig(_noFwd, _noPacketIn, _noRecv, _portDown);
     }
-    
+
     private static PortFeatures createPortFeatures(long input){
         final Boolean _10mbHd = ((input) & (1<<0)) > 0;
         final Boolean _10mbFd = ((input) & (1<<1)) > 0;
@@ -111,8 +111,8 @@ public class PortModInputMessageFactoryTest {
         final Boolean _autoneg = ((input) & (1<<13)) > 0;
         final Boolean _pause = ((input) & (1<<14)) > 0;
         final Boolean _pauseAsym = ((input) & (1<<15)) > 0;
-        return new PortFeatures(_100gbFd, _100mbFd,  _100mbHd, _10gbFd, _10mbFd, _10mbHd, 
+        return new PortFeatures(_100gbFd, _100mbFd,  _100mbHd, _10gbFd, _10mbFd, _10mbHd,
                 _1gbFd, _1gbHd, _1tbFd, _40gbFd, _autoneg, _copper, _fiber, _other, _pause, _pauseAsym);
     }
-    
+
 }

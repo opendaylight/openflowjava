@@ -31,7 +31,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 /**
  * Test to count decoder events (counters US_DECODE_SUCCESS, US_DECODE_FAIL and
  * US_RECEIVED_IN_OFJAVA have to be enabled)
- * 
+ *
  * @author madamjak
  *
  */
@@ -100,7 +100,7 @@ public class OFDecoderStatisticsTest {
         Assert.assertEquals(
                 "Wrong - different between RECEIVED_IN_OFJAVA and (US_DECODE_SUCCESS + US_DECODE_FAIL)",
                 statCounters.getCounter(CounterEventTypes.US_RECEIVED_IN_OFJAVA).getCounterValue(),
-                statCounters.getCounter(CounterEventTypes.US_DECODE_SUCCESS).getCounterValue() 
+                statCounters.getCounter(CounterEventTypes.US_DECODE_SUCCESS).getCounterValue()
                 + statCounters.getCounter(CounterEventTypes.US_DECODE_FAIL).getCounterValue());
     }
 

@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Class for setting up TLS connection.
- * 
+ *
  * @author michal.polkorab
  */
 public class SslContextFactory {

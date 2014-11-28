@@ -29,7 +29,7 @@ public class OF10PortStatusMessageFactory implements OFDeserializer<PortStatusMe
 
     @Override
     public PortStatusMessage deserialize(ByteBuf rawMessage) {
-        PortStatusMessageBuilder builder = new PortStatusMessageBuilder(); 
+        PortStatusMessageBuilder builder = new PortStatusMessageBuilder();
         builder.setVersion((short) EncodeConstants.OF10_VERSION_ID);
         builder.setXid(rawMessage.readUnsignedInt());
         builder.setReason(PortReason.forValue(rawMessage.readUnsignedByte()));

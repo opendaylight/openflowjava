@@ -55,23 +55,23 @@ public class HelloInputMessageFactoryTest {
 
     /**
      * Testing of {@link HelloInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testWithoutElementsSet() throws Exception {
         HelloInputBuilder hib = new HelloInputBuilder();
         BufferHelper.setupHeader(hib, EncodeConstants.OF13_VERSION_ID);
         HelloInput hi = hib.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         helloFactory.serialize(hi, out);
-        
+
         BufferHelper.checkHeaderV13(out,(byte) 0, EncodeConstants.OFHEADER_SIZE);
     }
-    
+
     /**
      * Testing of {@link HelloInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testWith4BitVersionBitmap() throws Exception {
@@ -81,21 +81,21 @@ public class HelloInputMessageFactoryTest {
         List<Elements> expectedElement = createElement(lengthOfBitmap);
         builder.setElements(expectedElement);
         HelloInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         helloFactory.serialize(message, out);
         LOGGER.debug("bytebuf: " + ByteBufUtils.byteBufToHexString(out));
-        
+
         BufferHelper.checkHeaderV13(out, (byte) 0, 16);
         Elements element = readElement(out).get(0);
         Assert.assertEquals("Wrong element type", expectedElement.get(0).getType(), element.getType());
         Elements comparation = createComparationElement(lengthOfBitmap).get(0);
         Assert.assertArrayEquals("Wrong element bitmap", comparation.getVersionBitmap().toArray(), element.getVersionBitmap().toArray());
     }
-    
+
     /**
      * Testing of {@link HelloInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testWith64BitVersionBitmap() throws Exception {
@@ -105,18 +105,18 @@ public class HelloInputMessageFactoryTest {
         List<Elements> expectedElement = createElement(lengthOfBitmap);
         builder.setElements(expectedElement);
         HelloInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         helloFactory.serialize(message, out);
         LOGGER.debug("bytebuf: " + ByteBufUtils.byteBufToHexString(out));
-        
+
         BufferHelper.checkHeaderV13(out, (byte) 0, 24);
         Elements element = readElement(out).get(0);
         Assert.assertEquals("Wrong element type", expectedElement.get(0).getType(), element.getType());
         Elements comparation = createComparationElement(lengthOfBitmap).get(0);
         Assert.assertArrayEquals("Wrong element bitmap", comparation.getVersionBitmap().toArray(), element.getVersionBitmap().toArray());
     }
-    
+
     private static List<Elements> createElement(int lengthOfBitmap) {
         ElementsBuilder elementsBuilder = new ElementsBuilder();
         List<Elements> elementsList = new ArrayList<>();
@@ -129,7 +129,7 @@ public class HelloInputMessageFactoryTest {
         elementsList.add(elementsBuilder.build());
         return elementsList;
     }
-    
+
     private static List<Elements> createComparationElement(int lengthOfBitmap) {
         ElementsBuilder elementsBuilder = new ElementsBuilder();
         List<Elements> elementsList = new ArrayList<>();
@@ -148,7 +148,7 @@ public class HelloInputMessageFactoryTest {
         elementsList.add(elementsBuilder.build());
         return elementsList;
     }
-    
+
     private static List<Elements> readElement(ByteBuf input) {
         List<Elements> elementsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
@@ -171,7 +171,7 @@ public class HelloInputMessageFactoryTest {
         }
         return elementsList;
     }
-    
+
     private static List<Boolean> readVersionBitmap(int[] input){
         List<Boolean> versionBitmapList = new ArrayList<>();
         for (int i = 0; i < input.length; i++) {

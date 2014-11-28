@@ -62,7 +62,7 @@ public class SetAsyncInputMessageFactory implements OFSerializer<SetAsyncInput> 
             }
         }
     }
-    
+
     private static void serializePortStatusMask(List<PortStatusMask> portStatusMask, ByteBuf outBuffer) {
         if (portStatusMask != null) {
             for (PortStatusMask currentPortStatusMask : portStatusMask) {
@@ -83,7 +83,7 @@ public class SetAsyncInputMessageFactory implements OFSerializer<SetAsyncInput> 
             }
         }
     }
-    
+
     private static void serializerFlowRemovedMask(List<FlowRemovedMask> flowRemovedMask, ByteBuf outBuffer) {
         if (flowRemovedMask != null) {
             for (FlowRemovedMask currentFlowRemovedMask : flowRemovedMask) {

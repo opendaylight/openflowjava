@@ -40,7 +40,7 @@ public class OxmIpv6NdSllSerializerTest {
     @Test
     public void testSerialize() {
         MatchEntriesBuilder builder = prepareMatchEntry(false, "00:01:02:03:04:05");
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -57,7 +57,7 @@ public class OxmIpv6NdSllSerializerTest {
     @Test
     public void testSerializeHeader() {
         MatchEntriesBuilder builder = prepareHeader(false);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 

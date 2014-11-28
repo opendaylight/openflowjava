@@ -83,7 +83,7 @@ public class OF10FeaturesReplyMessageFactoryTest {
         Assert.assertEquals("Wrong port - peer", new PortFeaturesV10(true, false, false, false, false, false, false,
                 false, true, false, false, true), port.getPeerFeaturesV10());
     }
-    
+
     /**
      * Testing {@link OF10FeaturesReplyMessageFactory} for correct translation into POJO
      */

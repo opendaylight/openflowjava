@@ -47,7 +47,7 @@ public class TableModInputMessageFactoryTest {
 
     /**
      * Testing of {@link TableModInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testTableModInput() throws Exception {
@@ -56,14 +56,14 @@ public class TableModInputMessageFactoryTest {
         builder.setTableId(new TableId(9L));
         builder.setConfig(new TableConfig(true));
         TableModInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         tableModFactory.serialize(message, out);
-        
+
         BufferHelper.checkHeaderV13(out, MESSAGE_TYPE, 16);
         Assert.assertEquals("Wrong TableID", message.getTableId().getValue().intValue(), out.readUnsignedByte());
         out.skipBytes(PADDING_IN_TABLE_MOD_MESSAGE);
         Assert.assertEquals("Wrong TableConfig", 8, out.readUnsignedInt());
     }
-    
+
 }

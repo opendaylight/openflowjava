@@ -51,7 +51,7 @@ public class FlowRemovedMessageFactoryTest {
         FlowRemovedMessage builtByFactory = BufferHelper.deserialize(flowFactory, bb);
 
         BufferHelper.checkHeaderV13(builtByFactory);
-        
+
         Assert.assertTrue(builtByFactory.getCookie().longValue() == 0x0001020304050607L);
         Assert.assertTrue(builtByFactory.getPriority() == 0x03);
         Assert.assertEquals("Wrong reason", 0x02, builtByFactory.getReason().getIntValue());
@@ -63,5 +63,5 @@ public class FlowRemovedMessageFactoryTest {
         Assert.assertEquals("Wrong packetCount", 0x0001020304050607L, builtByFactory.getPacketCount().longValue());
         Assert.assertEquals("Wrong byteCount", 0x0001020304050607L, builtByFactory.getByteCount().longValue());
     }
-    
+
 }

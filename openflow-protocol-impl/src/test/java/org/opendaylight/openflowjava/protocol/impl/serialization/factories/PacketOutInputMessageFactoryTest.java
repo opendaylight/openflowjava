@@ -59,7 +59,7 @@ public class PacketOutInputMessageFactoryTest {
 
     /**
      * Testing of {@link PacketOutInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testPacketOutInputMessage() throws Exception {
@@ -80,10 +80,10 @@ public class PacketOutInputMessageFactoryTest {
         builder.setAction(actions);
         builder.setData(ByteBufUtils.hexStringToBytes("00 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14"));
         PacketOutInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         packetOutFactory.serialize(message, out);
-        
+
         BufferHelper.checkHeaderV13(out, MESSAGE_TYPE, 56);
         Assert.assertEquals("Wrong BufferId", message.getBufferId().longValue(), out.readUnsignedInt());
         Assert.assertEquals("Wrong PortNumber", message.getInPort().getValue().longValue(), out.readUnsignedInt());
@@ -101,7 +101,7 @@ public class PacketOutInputMessageFactoryTest {
 
     /**
      * Testing of {@link PacketOutInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testPacketOutInputWithNoData() throws Exception {

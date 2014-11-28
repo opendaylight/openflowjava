@@ -39,7 +39,7 @@ public class HelloMessageFactory implements OFDeserializer<HelloMessage> {
         }
         return builder.build();
     }
-    
+
     private static List<Elements> readElement(ByteBuf input) {
         List<Elements> elementsList = new ArrayList<>();
         while (input.readableBytes() > 0) {
@@ -64,7 +64,7 @@ public class HelloMessageFactory implements OFDeserializer<HelloMessage> {
         }
         return elementsList;
     }
-    
+
     private static List<Boolean> readVersionBitmap(int[] input){
         List<Boolean> versionBitmapList = new ArrayList<>();
         for (int i = 0; i < input.length; i++) {

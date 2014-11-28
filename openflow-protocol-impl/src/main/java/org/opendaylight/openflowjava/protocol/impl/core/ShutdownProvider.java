@@ -18,7 +18,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 public interface ShutdownProvider {
 
     /**
-     * @return shutdown future 
+     * @return shutdown future
      */
     ListenableFuture<Boolean> shutdown();
 

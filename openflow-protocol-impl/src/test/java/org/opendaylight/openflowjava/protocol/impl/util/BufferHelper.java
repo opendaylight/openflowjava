@@ -23,12 +23,12 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
  * @author michal.polkorab
- * 
+ *
  */
 public abstract class BufferHelper {
 
     /**
-     * 
+     *
      */
     public static final Long DEFAULT_XID = 0x01020304L;
     private static final byte[] XID = new byte[] { 0x01, 0x02, 0x03, 0x04 };
@@ -44,7 +44,7 @@ public abstract class BufferHelper {
         bb.writeBytes(payload);
         return bb;
     }
-    
+
     /**
      * @param payload String in hex format
      * @return ByteBuf filled with OpenFlow protocol message without first 4
@@ -53,7 +53,7 @@ public abstract class BufferHelper {
     public static ByteBuf buildBuffer(String payload) {
         return buildBuffer(ByteBufUtils.hexStringToBytes(payload));
     }
-    
+
     /**
      * @return ByteBuf filled with OpenFlow protocol header message without first 4
      *         bytes
@@ -74,7 +74,7 @@ public abstract class BufferHelper {
     public static void checkHeaderV13(ByteBuf input, byte msgType, int length) {
         checkHeader(input, msgType, length, (short) EncodeConstants.OF13_VERSION_ID);
     }
-    
+
     /**
      * Use version 1.0 for encoded message
      * @param input ByteBuf to be checked for correct OpenFlow Protocol header
@@ -84,14 +84,14 @@ public abstract class BufferHelper {
     public static void checkHeaderV10(ByteBuf input, byte msgType, int length) {
         checkHeader(input, msgType, length, (short) EncodeConstants.OF10_VERSION_ID);
     }
-    
+
     private static void checkHeader(ByteBuf input, byte msgType, int length, Short version) {
         Assert.assertEquals("Wrong version", version, Short.valueOf(input.readByte()));
         Assert.assertEquals("Wrong type", msgType, input.readByte());
         Assert.assertEquals("Wrong length", length, input.readUnsignedShort());
         Assert.assertEquals("Wrong Xid", DEFAULT_XID, Long.valueOf(input.readUnsignedInt()));
     }
-    
+
 
     /**
      * @param ofHeader OpenFlow protocol header
@@ -99,19 +99,19 @@ public abstract class BufferHelper {
     public static void checkHeaderV13(OfHeader ofHeader) {
         checkHeader(ofHeader, (short) EncodeConstants.OF13_VERSION_ID);
     }
-    
+
     /**
      * @param ofHeader OpenFlow protocol header
      */
     public static void checkHeaderV10(OfHeader ofHeader) {
         checkHeader(ofHeader, (short) EncodeConstants.OF10_VERSION_ID);
     }
-    
+
     private static void checkHeader(OfHeader ofHeader, Short version) {
         Assert.assertEquals("Wrong version", version, ofHeader.getVersion());
         Assert.assertEquals("Wrong Xid", DEFAULT_XID, ofHeader.getXid());
     }
-    
+
     /**
      * @param builder
      * @param version wire protocol number used

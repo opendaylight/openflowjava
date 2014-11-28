@@ -56,7 +56,7 @@ public class ExperimenterInputMessageFactoryTest {
     /**
      * Testing of {@link ExperimenterInputMessageFactory} for correct serializer
      * lookup and serialization
-     * @throws Exception 
+     * @throws Exception
      */
     @Test(expected=IllegalStateException.class)
     public void testV10Real() throws Exception {
@@ -65,7 +65,7 @@ public class ExperimenterInputMessageFactoryTest {
         BufferHelper.setupHeader(builder, EncodeConstants.OF10_VERSION_ID);
         builder.setExperimenter(new ExperimenterId(42L));
         ExperimenterInput input = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         expFactory.serialize(input, out);
     }
@@ -73,7 +73,7 @@ public class ExperimenterInputMessageFactoryTest {
     /**
      * Testing of {@link ExperimenterInputMessageFactory} for correct serializer
      * lookup and serialization
-     * @throws Exception 
+     * @throws Exception
      */
     @Test(expected=IllegalStateException.class)
     public void testV13Real() throws Exception {
@@ -82,7 +82,7 @@ public class ExperimenterInputMessageFactoryTest {
         BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setExperimenter(new ExperimenterId(42L));
         ExperimenterInput input = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         expFactory.serialize(input, out);
     }
@@ -90,7 +90,7 @@ public class ExperimenterInputMessageFactoryTest {
     /**
      * Testing of {@link ExperimenterInputMessageFactory} for correct serializer
      * lookup and serialization
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testV10() throws Exception {
@@ -110,7 +110,7 @@ public class ExperimenterInputMessageFactoryTest {
     /**
      * Testing of {@link ExperimenterInputMessageFactory} for correct serializer
      * lookup and serialization
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testV13() throws Exception {

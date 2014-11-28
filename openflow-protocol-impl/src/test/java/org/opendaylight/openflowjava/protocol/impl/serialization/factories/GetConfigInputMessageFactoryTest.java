@@ -45,33 +45,33 @@ public class GetConfigInputMessageFactoryTest {
 
     /**
      * Testing of {@link GetConfigInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testV13() throws Exception {
         GetConfigInputBuilder gcib = new GetConfigInputBuilder();
         BufferHelper.setupHeader(gcib, EncodeConstants.OF13_VERSION_ID);
         GetConfigInput gci = gcib.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         getConfigFactory.serialize(gci, out);
 
         BufferHelper.checkHeaderV13(out, GET_CONFIG_REQUEST_MESSAGE_CODE_TYPE, 8);
     }
-    
+
     /**
      * Testing of {@link GetConfigInputMessageFactory} for correct translation from POJO
-     * @throws Exception 
+     * @throws Exception
      */
     @Test
     public void testV10() throws Exception {
         GetConfigInputBuilder gcib = new GetConfigInputBuilder();
         BufferHelper.setupHeader(gcib, EncodeConstants.OF10_VERSION_ID);
         GetConfigInput gci = gcib.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         getConfigFactory.serialize(gci, out);
-        
+
         BufferHelper.checkHeaderV10(out, GET_CONFIG_REQUEST_MESSAGE_CODE_TYPE, 8);
     }
 

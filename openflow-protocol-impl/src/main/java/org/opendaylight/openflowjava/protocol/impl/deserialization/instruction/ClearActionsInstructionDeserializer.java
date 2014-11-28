@@ -32,7 +32,7 @@ public class ClearActionsInstructionDeserializer extends AbstractInstructionDese
         InstructionBuilder builder = super.processHeader(input);
         input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         input.skipBytes(InstructionConstants.PADDING_IN_ACTIONS_INSTRUCTION);
-        ActionsInstructionBuilder actionsBuilder = 
+        ActionsInstructionBuilder actionsBuilder =
                 new ActionsInstructionBuilder();
         List<Action> actions = new ArrayList<>();
         actionsBuilder.setAction(actions);

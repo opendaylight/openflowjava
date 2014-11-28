@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * General tests for StatisticsCounters class 
+ * General tests for StatisticsCounters class
  * @author madamjak
  *
  */
@@ -54,7 +54,7 @@ public class StatisticsCountersTest {
             } else {
                 Assert.assertNull("Wrong - not enabled counter give not null value", statCounters.getCounter(cet));
             }
-            
+
         }
         statCounters.resetCounters();
         for(CounterEventTypes cet : CounterEventTypes.values()){

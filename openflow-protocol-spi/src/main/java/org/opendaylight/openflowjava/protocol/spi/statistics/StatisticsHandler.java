@@ -10,7 +10,7 @@ package org.opendaylight.openflowjava.protocol.spi.statistics;
 
 /**
  * Used for JConsole service
- * 
+ *
  * @author michal.polkorab
  */
 public interface StatisticsHandler {

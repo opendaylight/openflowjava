@@ -79,7 +79,7 @@ public class OFDatagramPacketHandler extends MessageToMessageDecoder<DatagramPac
 
         int length = bb.getUnsignedShort(bb.readerIndex() + LENGTH_INDEX_IN_HEADER);
         LOGGER.debug("length of actual message: {}", length);
-        
+
         if (readableBytes < length) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("skipping bytebuf - too few bytes for msg: " +
@@ -90,7 +90,7 @@ public class OFDatagramPacketHandler extends MessageToMessageDecoder<DatagramPac
         }
         LOGGER.debug("OF Protocol message received, type:{}", bb.getByte(bb.readerIndex() + 1));
 
-        
+
         byte version = bb.readByte();
         if ((version == EncodeConstants.OF13_VERSION_ID) || (version == EncodeConstants.OF10_VERSION_ID)) {
             LOGGER.debug("detected version: " + version);

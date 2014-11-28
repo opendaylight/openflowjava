@@ -24,7 +24,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 
 /**
- * 
+ *
  * @author michal.polkorab
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -49,7 +49,7 @@ public class OFVersionDetectorTest {
      * Test of decode
      * {@link OFVersionDetector#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)
      * }
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -94,12 +94,12 @@ public class OFVersionDetectorTest {
 		assertEquals( 0, byteBuffer.refCnt() ) ;
 		
     }
-    
+
     /**
      * Test of decode
      * {@link OFVersionDetector#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)
      * }
-     * 
+     *
      * @throws Exception
      */
     @Test

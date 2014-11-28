@@ -67,7 +67,7 @@ public class GroupModInputMessageFactoryTest {
         List<BucketsList> exp = createBucketsList();
         builder.setBucketsList(exp);
         GroupModInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         groupModFactory.serialize(message, out);
 
@@ -79,7 +79,7 @@ public class GroupModInputMessageFactoryTest {
         List<BucketsList> rec = createBucketsListFromBufer(out);
         Assert.assertArrayEquals("Wrong bucketList", exp.toArray(), rec.toArray());
     }
-    
+
     private static List<BucketsList> createBucketsList(){
         List<BucketsList> bucketsList = new ArrayList<>();
         BucketsListBuilder bucketsBuilder = new BucketsListBuilder();
@@ -91,7 +91,7 @@ public class GroupModInputMessageFactoryTest {
         bucketsList.add(bucket);
         return bucketsList;
     }
-    
+
     private static List<BucketsList> createBucketsListFromBufer(ByteBuf out){
         List<BucketsList> bucketsList = new ArrayList<>();
         BucketsListBuilder bucketsBuilder = new BucketsListBuilder();

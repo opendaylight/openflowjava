@@ -26,7 +26,7 @@ public abstract class EncodeConstants {
     public static final int OFHEADER_SIZE = 8;
     /** Zero length - used when the length is updated later */
     public static final int EMPTY_LENGTH = 0;
-    
+
     /** Length of mac address */
     public static final byte MAC_ADDRESS_LENGTH = 6;
     /** Number of groups in ipv4 address */

@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author michal.polkorab
  *
  */
@@ -33,7 +33,7 @@ public class ScenarioHandler extends Thread {
     private boolean scenarioFinished = false;
 
     /**
-     * 
+     *
      * @param scenario
      */
     public ScenarioHandler(Stack<ClientEvent> scenario) {
@@ -84,7 +84,7 @@ public class ScenarioHandler extends Thread {
             this.notify();
         }
     }
-    
+
     /**
      * @return true if scenario is done / empty
      */

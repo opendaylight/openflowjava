@@ -46,7 +46,7 @@ public class HelloInputMessageFactory implements OFSerializer<HelloInput>{
                     output.writeZero(padding);
                     output.setShort(elementLengthIndex, output.writerIndex() - elementStartIndex);
                 }
-            } 
+            }
         }
     }
 

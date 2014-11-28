@@ -37,7 +37,7 @@ public class OxmIpDscpSerializerTest {
     @Test
     public void testSerialize() {
         MatchEntriesBuilder builder = prepareIpDscpMatchEntry((short) 58);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
 
@@ -52,7 +52,7 @@ public class OxmIpDscpSerializerTest {
     @Test
     public void testSerializeHeader() {
         MatchEntriesBuilder builder = prepareIpDscpHeader(false);
-        
+
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
 

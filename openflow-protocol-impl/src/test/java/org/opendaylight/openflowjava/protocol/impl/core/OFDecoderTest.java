@@ -44,7 +44,7 @@ public class OFDecoderTest {
 
     /**
      * Sets up test environment
-     * 
+     *
      */
     @Before
     public void setUp() {
@@ -57,7 +57,7 @@ public class OFDecoderTest {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void testDecode() {
@@ -74,7 +74,7 @@ public class OFDecoderTest {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void testDecodeDeserializeException() {
@@ -93,7 +93,7 @@ public class OFDecoderTest {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void testDecodeDeserializeNull() {

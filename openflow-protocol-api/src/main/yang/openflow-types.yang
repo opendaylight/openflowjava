@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
- 
+
  module openflow-types {
     namespace "urn:opendaylight:openflow:common:types";
     prefix "oft";
@@ -19,7 +19,7 @@
          supports special / reserved values (in OF v1.3)";
         type uint32;
     }
-    
+
     typedef port-number-values {
         description "Reserved OpenFlow Port (fake output \"ports\") (OF v1.3).";
         type enumeration {
@@ -38,20 +38,20 @@
                 description "Submit the packet to the first flow table
                             NB: This destination port can only be
                             used in packet-out messages.";
-                value -7; // 0xfffffff9 
+                value -7; // 0xfffffff9
             }
             enum NORMAL {
                 description "Process with normal L2/L3 switching.";
-                value -6; // 0xfffffffa 
+                value -6; // 0xfffffffa
             }
             enum FLOOD {
                 description "All physical ports in VLAN, except input
                             port and those blocked or link down.";
-                value -5; // 0xfffffffb 
+                value -5; // 0xfffffffb
             }
             enum ALL {
                 description "All physical ports except input port.";
-                value -4; // 0xfffffffc 
+                value -4; // 0xfffffffc
             }
             enum CONTROLLER {
                 description "Send to controller.";
@@ -63,7 +63,7 @@
             }
             enum ANY {
                 description "Wildcard port used only for flow mod
-                            (delete) and flow stats requests. Selects 
+                            (delete) and flow stats requests. Selects
                             all flows regardless of output port
                             (including flows with no output port).";
                 value -1; // 0xffffffff
@@ -74,67 +74,67 @@
     typedef port-features {
         description "Features of ports available in datapath.";
         type bits {
-            bit _10mb_hd { 
+            bit _10mb_hd {
                 position 0;
                 description "10 Mb half-duplex rate support.";
             }
-            bit _10mb-fd { 
+            bit _10mb-fd {
                 position 1;
                 description "10 Mb full-duplex rate support.";
             }
-            bit _100mb-hd { 
+            bit _100mb-hd {
                 position 2;
                 description "100 Mb half-duplex rate support.";
             }
-            bit _100mb-fd { 
+            bit _100mb-fd {
                 position 3;
                 description "100 Mb full-duplex rate support.";
             }
-            bit _1gb-hd { 
+            bit _1gb-hd {
                 position 4;
                 description "1 Gb half-duplex rate support.";
             }
-            bit _1gb-fd { 
+            bit _1gb-fd {
                 position 5;
                 description "1 Gb full-duplex rate support.";
             }
-            bit _10gb-fd { 
+            bit _10gb-fd {
                 position 6;
                 description "10 Gb full-duplex rate support.";
             }
-            bit _40gb-fd { 
+            bit _40gb-fd {
                 position 7;
                 description "40 Gb full-duplex rate support.";
             }
-            bit _100gb-fd { 
+            bit _100gb-fd {
                 position 8;
                 description "100 Gb full-duplex rate support.";
             }
-            bit _1tb-fd { 
+            bit _1tb-fd {
                 position 9;
                 description "1 Tb full-duplex rate support.";
             }
-            bit other { 
+            bit other {
                 position 10;
                 description "Other rate, not in the list.";
             }
-            bit copper { 
+            bit copper {
                 position 11;
                 description "Copper medium.";
             }
-            bit fiber { 
+            bit fiber {
                 position 12;
                 description "Fiber medium.";
             }
-            bit autoneg { 
+            bit autoneg {
                 position 13;
                 description "Auto-negotiation.";
             }
-            bit pause { 
+            bit pause {
                 position 14;
                 description "Pause.";
             }
-            bit pause-asym { 
+            bit pause-asym {
                 position 15;
                 description "Asymmetric pause.";
             }
@@ -142,24 +142,24 @@
     }
 
     typedef port-config {
-        description 
+        description
            "Flags to indicate behavior of the physical port. These flags are
-            describe the current configuration and used port_mod message 
+            describe the current configuration and used port_mod message
             to configure the port's behavior.";
         type bits {
-            bit port-down { 
+            bit port-down {
                 //description " Port is administratively down.";
                 position 0;
             }
-            bit no-recv { 
+            bit no-recv {
                 //description " Drop all packets received by port.";
                 position 2;
             }
-            bit no-fwd { 
+            bit no-fwd {
                 //description " Drop packets forwarded to port.";
                 position 5;
             }
-            bit no-packet-in { 
+            bit no-packet-in {
                 //description "Do not send packet-in msgs for port.";
                 position 6;
             }
@@ -167,7 +167,7 @@
     }
 
     typedef port-state {
-        description 
+        description
             "Current state of the physical port. These are not configurable from
             the controller.";
         type bits {
@@ -187,10 +187,10 @@
     }
 
     identity match-type-base {
-        description 
+        description
            "The match type indicates the match structure (set of fields that compose the
             match) in use. The match type is placed in the type field at the beginning
-            of all match structures.Extensions that define match types may be 
+            of all match structures.Extensions that define match types may be
             published on the ONF wiki. Support for extensions is optional.";
     }
 
@@ -236,363 +236,363 @@
     typedef error-type {
         type enumeration {
             enum HELLO_FAILED {
-                value 0; 
+                value 0;
                 description "Hello Protocol failed.";
             }
             enum BAD_REQUEST {
-                value 1; 
+                value 1;
                 description "Request was not understood.";
             }
             enum BAD_ACTION {
-                value 2; 
+                value 2;
                 description "Error in action description.";
             }
             enum BAD_INSTRUCTION {
-                value 3; 
+                value 3;
                 description "Error in instruction list.";
             }
             enum BAD_MATCH {
-                value 4; 
+                value 4;
                 description "Error in match.";
             }
             enum FLOW_MOD_FAILED {
-                value 5; 
+                value 5;
                 description "Problem modifying flow entry.";
             }
             enum GROUP_MOD_FAILED {
-                value 6; 
+                value 6;
                 description "Problem modifying group entry.";
             }
             enum PORT_MOD_FAILED {
-                value 7; 
+                value 7;
                 description "Port mod request failed.";
             }
             enum TABLE_MOD_FAILED {
-                value 8; 
+                value 8;
                 description "Table mod request failed.";
             }
             enum QUEUE_OP_FAILED {
-                value 9; 
+                value 9;
                 description "Queue operation failed.";
             }
             enum SWITCH_CONFIG_FAILED {
-                value 10; 
+                value 10;
                 description "Switch config request failed.";
             }
             enum ROLE_REQUEST_FAILED {
-                value 11; 
+                value 11;
                 description "Controller Role request failed.";
             }
             enum METER_MOD_FAILED {
-                value 12; 
+                value 12;
                 description "Error in meter.";
             }
             enum TABLE_FEATURES_FAILED {
-                value 13; 
+                value 13;
                 description "Setting table features failed.";
             }
             enum EXPERIMENTER {
-                value 65535; //0xffff 
+                value 65535; //0xffff
                 description "Experimenter error messages.";
             }
         }
     }
-    
+
     typedef hello-failed-code {
         type enumeration {
             enum INCOMPATIBLE {
-                value 0; 
+                value 0;
                 description "Hello Protocol failed.";
             }
             enum EPERM {
-                value 1; 
+                value 1;
                 description "Request was not understood.";
             }
         }
     }
-    
+
     typedef bad-request-code {
         type enumeration {
             enum BAD_VERSION {
-                value 0; 
+                value 0;
             }
             enum BAD_TYPE {
-                value 1; 
+                value 1;
             }
             enum BAD_MULTIPART {
-                value 2; 
+                value 2;
             }
             enum BAD_EXPERIMENTER {
-                value 3; 
+                value 3;
             }
             enum BAD_EXP_TYPE {
-                value 4; 
+                value 4;
             }
             enum EPERM {
-                value 5; 
+                value 5;
             }
             enum BAD_LEN {
-                value 6; 
+                value 6;
             }
             enum BUFFER_EMPTY {
-                value 7; 
+                value 7;
             }
             enum BUFFER_UNKNOWN {
-                value 8; 
+                value 8;
             }
             enum BAD_TABLE_ID {
-                value 9; 
+                value 9;
             }
             enum IS_SLAVE {
-                value 10; 
+                value 10;
             }
             enum BAD_PORT {
-                value 11; 
+                value 11;
             }
             enum BAD_PACKET {
-                value 12; 
+                value 12;
             }
             enum MULTIPART_BUFFER_OVERFLOW {
-                value 13; 
+                value 13;
             }
         }
     }
-    
+
     typedef bad-action-code {
         type enumeration {
             enum BAD_TYPE {
-                value 0; 
+                value 0;
             }
             enum BAD_LEN {
-                value 1; 
+                value 1;
             }
             enum BAD_EXPERIMENTER {
-                value 2; 
+                value 2;
             }
             enum BAD_EXP_TYPE {
-                value 3; 
+                value 3;
             }
             enum BAD_OUT_PORT {
-                value 4; 
+                value 4;
             }
             enum BAD_ARGUMENT {
-                value 5; 
+                value 5;
             }
             enum EPERM {
-                value 6; 
+                value 6;
             }
             enum TOO_MANY {
-                value 7; 
+                value 7;
             }
             enum BAD_QUEUE {
-                value 8; 
+                value 8;
             }
             enum BAD_OUT_GROUP {
-                value 9; 
+                value 9;
             }
             enum MATCH_INCONSISTENT {
-                value 10; 
+                value 10;
             }
             enum UNSUPPORTED_ORDER {
-                value 11; 
+                value 11;
             }
             enum BAD_TAG {
-                value 12; 
+                value 12;
             }
             enum BAD_SET_TYPE {
-                value 13; 
+                value 13;
             }
             enum BAD_SET_LEN {
-                value 14; 
+                value 14;
             }
             enum BAD_SET_ARGUMENT {
-                value 15; 
+                value 15;
             }
         }
     }
-    
+
     typedef bad-instruction-code {
         type enumeration {
             enum UNKNOWN_INST {
-                value 0; 
+                value 0;
             }
             enum UNSUP_INST {
-                value 1; 
+                value 1;
             }
             enum BAD_TABLE_ID {
-                value 2; 
+                value 2;
             }
             enum UNSUP_METADATA {
-                value 3; 
+                value 3;
             }
             enum UNSUP_METADATA_MASK {
-                value 4; 
+                value 4;
             }
             enum BAD_EXPERIMENTER {
-                value 5; 
+                value 5;
             }
             enum BAD_EXP_TYPE {
-                value 6; 
+                value 6;
             }
             enum BAD_LEN {
-                value 7; 
+                value 7;
             }
             enum EPERM {
-                value 8; 
+                value 8;
             }
         }
     }
-    
+
     typedef bad-match-code {
         type enumeration {
             enum BAD_TYPE {
-                value 0; 
+                value 0;
             }
             enum BAD_LEN {
-                value 1; 
+                value 1;
             }
             enum BAD_TAG {
-                value 2; 
+                value 2;
             }
             enum BAD_DL_ADDR_MASK {
-                value 3; 
+                value 3;
             }
             enum BAD_NW_ADDR_MASK {
-                value 4; 
+                value 4;
             }
             enum BAD_WILDCARDS {
-                value 5; 
+                value 5;
             }
             enum BAD_FIELD {
-                value 6; 
+                value 6;
             }
             enum BAD_VALUE {
-                value 7; 
+                value 7;
             }
             enum BAD_MASK {
-                value 8; 
+                value 8;
             }
             enum BAD_PREREQ {
-                value 9; 
+                value 9;
             }
             enum DUP_FIELD {
-                value 10; 
+                value 10;
             }
             enum EPERM {
-                value 11; 
+                value 11;
             }
         }
     }
-    
+
     typedef flow-mod-failed-code {
         type enumeration {
             enum UNKNOWN {
-                value 0; 
+                value 0;
             }
             enum TABLE_FULL {
-                value 1; 
+                value 1;
             }
             enum BAD_TABLE_ID {
-                value 2; 
+                value 2;
             }
             enum OVERLAP {
-                value 3; 
+                value 3;
             }
             enum EPERM {
-                value 4; 
+                value 4;
             }
             enum BAD_TIMEOUT {
-                value 5; 
+                value 5;
             }
             enum BAD_COMMAND {
-                value 6; 
+                value 6;
             }
             enum BAD_FLAGS {
-                value 7; 
+                value 7;
             }
         }
     }
-    
+
     typedef group-mod-failed-code {
         type enumeration {
             enum GROUP_EXISTS {
-                value 0; 
+                value 0;
             }
             enum INVALID_GROUP {
-                value 1; 
+                value 1;
             }
             enum WEIGHT_UNSUPPORTED {
-                value 2; 
+                value 2;
             }
             enum OUT_OF_GROUPS {
-                value 3; 
+                value 3;
             }
             enum OUT_OF_BUCKETS {
-                value 4; 
+                value 4;
             }
             enum CHAINING_UNSUPPORTED {
-                value 5; 
+                value 5;
             }
             enum WATCH_UNSUPPORTED {
-                value 6; 
+                value 6;
             }
             enum LOOP {
-                value 7; 
+                value 7;
             }
             enum UNKNOWN_GROUP {
-                value 8; 
+                value 8;
             }
             enum CHAINED_GROUP {
-                value 9; 
+                value 9;
             }
             enum BAD_TYPE {
-                value 10; 
+                value 10;
             }
             enum BAD_COMMAND {
-                value 11; 
+                value 11;
             }
             enum BAD_BUCKET {
-                value 12; 
+                value 12;
             }
             enum BAD_WATCH {
-                value 13; 
+                value 13;
             }
             enum EPERM {
-                value 14; 
+                value 14;
             }
         }
     }
-    
+
     typedef port-mod-failed-code {
         type enumeration {
             enum BAD_PORT {
-                value 0; 
+                value 0;
             }
             enum BAD_HW_ADDR {
-                value 1; 
+                value 1;
             }
             enum BAD_CONFIG {
-                value 2; 
+                value 2;
             }
             enum BAD_ADVERTISE {
-                value 3; 
+                value 3;
             }
             enum EPERM {
-                value 4; 
+                value 4;
             }
         }
     }
-    
+
     typedef table-mod-failed-code {
         type enumeration {
             enum BAD_TABLE {
-                value 0; 
+                value 0;
             }
             enum BAD_CONFIG {
-                value 1; 
+                value 1;
             }
             enum EPERM {
-                value 2; 
+                value 2;
             }
         }
     }
@@ -600,125 +600,125 @@
     typedef queue-op-failed-code {
         type enumeration {
             enum BAD_PORT {
-                value 0; 
+                value 0;
             }
             enum BAD_QUEUE {
-                value 1; 
+                value 1;
             }
             enum EPERM {
-                value 2; 
+                value 2;
             }
         }
     }
-    
+
     typedef switch-config-failed-code {
         type enumeration {
             enum BAD_FLAGS {
-                value 0; 
+                value 0;
             }
             enum BAD_LEN {
-                value 1; 
+                value 1;
             }
             enum EPERM {
-                value 2; 
+                value 2;
             }
         }
     }
-    
+
     typedef role-request-failed-code {
         type enumeration {
             enum STALE {
-                value 0; 
+                value 0;
             }
             enum UNSUP {
-                value 1; 
+                value 1;
             }
             enum BAD_ROLE {
-                value 2; 
+                value 2;
             }
         }
     }
-    
+
     typedef meter-mod-failed-code {
         type enumeration {
             enum UNKNOWN {
-                value 0; 
+                value 0;
             }
             enum METER_EXISTS {
-                value 1; 
+                value 1;
             }
             enum INVALID_METER {
-                value 2; 
+                value 2;
             }
             enum UNKNOWN_METER {
-                value 3; 
+                value 3;
             }
             enum BAD_COMMAND {
-                value 4; 
+                value 4;
             }
             enum BAD_FLAGS {
-                value 5; 
+                value 5;
             }
             enum BAD_RATE {
-                value 6; 
+                value 6;
             }
             enum BAD_BURST {
-                value 7; 
+                value 7;
             }
             enum BAD_BAND {
-                value 8; 
+                value 8;
             }
             enum BAD_BAND_VALUE {
-                value 9; 
+                value 9;
             }
             enum OUT_OF_METERS {
-                value 10; 
+                value 10;
             }
             enum OUT_OF_BANDS {
-                value 11; 
+                value 11;
             }
         }
     }
-    
+
     typedef table-features-failed-code {
         type enumeration {
             enum BAD_TABLE {
-                value 0; 
+                value 0;
             }
             enum BAD_METADATA {
-                value 1; 
+                value 1;
             }
             enum BAD_TYPE {
-                value 2; 
+                value 2;
             }
             enum BAD_LEN {
-                value 3; 
+                value 3;
             }
             enum BAD_ARGUMENT {
-                value 4; 
+                value 4;
             }
             enum EPERM {
-                value 5; 
+                value 5;
             }
         }
     }
-    
+
     typedef hello-element-type {
         type enumeration {
             enum VERSIONBITMAP {
-                value 1; 
+                value 1;
                 description "Bitmap of version supported.";
             }
         }
     }
-    
+
     typedef capabilities {
         description "Capabilities supported by the datapath.";
         type bits {
             bit OFPC_FLOW_STATS {
                 position 0;
                 /* Flow statistics. */
-            } 
+            }
             bit OFPC_TABLE_STATS {
                 position 1;
                 /* Table statistics. */
@@ -750,19 +750,19 @@
         description " Handling of IP fragments. ";
         type enumeration {
             enum FRAG_NORMAL {
-                value 0; 
+                value 0;
                 description "No special handling for fragments.";
             }
             enum OFPC_FRAG_DROP {
-                value 1; 
+                value 1;
                 description "Drop fragments.";
             }
             enum OFPC_FRAG_REASM {
-                value 2; 
+                value 2;
                 description "Reassemble (only if OFPC_IP_REASM set).";
             }
             enum OFPC_FRAG_MASK {
-                value 3; 
+                value 3;
             }
         }
     }
@@ -908,7 +908,7 @@
             }
             enum OFPTT_ALL {
               value 255; // 0xff
-              description "Wildcard table used for table config, 
+              description "Wildcard table used for table config,
                            flow stats and flow deletes.";
             }
         }
@@ -928,7 +928,7 @@
             }
             enum OFPG_ANY {
                 value -1; //0xffffffff
-                description "Wildcard group used only for flow stats requests. 
+                description "Wildcard group used only for flow stats requests.
                             Selects all flows regardless of group (including flows with no group)";
             }
         }
@@ -1059,7 +1059,7 @@
                 description "Maximum datarate.";
             }
             enum OFPQT_EXPERIMENTER {
-                value 65535; // 0xffff 
+                value 65535; // 0xffff
                 description "Experimenter defined property.";
             }
         }
@@ -1104,7 +1104,7 @@
             }
         }
     }
-    
+
     typedef action-type {
         /* ofp_action_type */
         type bits {
@@ -1232,7 +1232,7 @@
             }
         }
     }
-    
+
     typedef meter-band-type-bitmap {
         /* ofp_meter_band_type */
         type bits {
@@ -1283,67 +1283,67 @@
     typedef table-features-prop-type {
         type enumeration {
             enum OFPTFPT_INSTRUCTIONS {
-                value 0; 
+                value 0;
                 description "Instructions property.";
             }
             enum OFPTFPT_INSTRUCTIONS_MISS {
-                value 1; 
+                value 1;
                 description "Instructions for table-miss.";
             }
             enum OFPTFPT_NEXT_TABLES {
-                value 2; 
+                value 2;
                 description "Next Table property.";
             }
             enum OFPTFPT_NEXT_TABLES_MISS {
-                value 3; 
+                value 3;
                 description "Next Table for table-miss.";
             }
             enum OFPTFPT_WRITE_ACTIONS {
-                value 4; 
+                value 4;
                 description "Write Actions property.";
             }
             enum OFPTFPT_WRITE_ACTIONS_MISS {
-                value 5; 
+                value 5;
                 description "Write Actions for table-miss.";
             }
             enum OFPTFPT_APPLY_ACTIONS {
-                value 6; 
+                value 6;
                 description "Apply Actions property.";
             }
             enum OFPTFPT_APPLY_ACTIONS_MISS {
-                value 7; 
+                value 7;
                 description "Apply Actions for table-miss.";
             }
             enum OFPTFPT_MATCH {
-                value 8; 
+                value 8;
                 description "Match property.";
             }
             enum OFPTFPT_WILDCARDS {
-                value 10; 
+                value 10;
                 description "Wildcards property.";
             }
             enum OFPTFPT_WRITE_SETFIELD {
-                value 12; 
+                value 12;
                 description "Write Set-Field property.";
             }
             enum OFPTFPT_WRITE_SETFIELD_MISS {
-                value 13; 
+                value 13;
                 description "Write Set-Field for table-miss.";
             }
             enum OFPTFPT_APPLY_SETFIELD {
-                value 14; 
+                value 14;
                 description "Apply Set-Field property.";
             }
             enum OFPTFPT_APPLY_SETFIELD_MISS {
-                value 15; 
+                value 15;
                 description "Apply Set-Field for table-miss.";
             }
             enum OFPTFPT_EXPERIMENTER {
-                value 65534; 
+                value 65534;
                 description "Experimenter property.";
             }
             enum OFPTFPT_EXPERIMENTER_MISS {
-                value 65535; //0xffff 
+                value 65535; //0xffff
                 description "Experimenter for table-miss.";
             }
         }
@@ -1392,7 +1392,7 @@
             }
         }
     }
-    
+
     typedef ipv6-exthdr-flags {
         description "Bit definitions for IPv6 Extension Header pseudo-field.";
         type bits {
@@ -1434,170 +1434,170 @@
             }
         }
     }
-    
+
 // OPENFLOW v1.0 STRUCTURES
-    // Structures under this line are needed to support OpenFlow version 1.0 
+    // Structures under this line are needed to support OpenFlow version 1.0
     // wire protocol 0x01;
-    
+
     typedef error-type-v10 {
         type enumeration {
             enum HELLO_FAILED {
-                value 0; 
+                value 0;
                 description "Hello Protocol failed.";
             }
             enum BAD_REQUEST {
-                value 1; 
+                value 1;
                 description "Request was not understood.";
             }
             enum BAD_ACTION {
-                value 2; 
+                value 2;
                 description "Error in action description.";
             }
             enum FLOW_MOD_FAILED {
-                value 3; 
+                value 3;
                 description "Problem modifying flow entry.";
             }
             enum PORT_MOD_FAILED {
-                value 4; 
+                value 4;
                 description "Port mod request failed.";
             }
             enum QUEUE_OP_FAILED {
-                value 5; 
+                value 5;
                 description "Queue operation failed.";
             }
         }
     }
-    
+
     typedef hello-failed-code-v10 {
         type enumeration {
             enum INCOMPATIBLE {
-                value 0; 
+                value 0;
                 description "Hello Protocol failed.";
             }
             enum EPERM {
-                value 1; 
+                value 1;
                 description "Request was not understood.";
             }
         }
     }
-    
+
     typedef bad-request-code-v10 {
         type enumeration {
             enum BAD_VERSION {
-                value 0; 
+                value 0;
             }
             enum BAD_TYPE {
-                value 1; 
+                value 1;
             }
             enum BAD_STAT {
-                value 2; 
+                value 2;
             }
             enum BAD_VENDOR {
-                value 3; 
+                value 3;
             }
             enum BAD_SUBTYPE {
-                value 4; 
+                value 4;
             }
             enum EPERM {
-                value 5; 
+                value 5;
             }
             enum BAD_LEN {
-                value 6; 
+                value 6;
             }
             enum BUFFER_EMPTY {
-                value 7; 
+                value 7;
             }
             enum BUFFER_UNKNOWN {
-                value 8; 
+                value 8;
             }
         }
     }
-    
+
     typedef bad-action-code-v10 {
         type enumeration {
             enum BAD_TYPE {
-                value 0; 
+                value 0;
             }
             enum BAD_LEN {
-                value 1; 
+                value 1;
             }
             enum VENDOR {
-                value 2; 
+                value 2;
             }
             enum BAD_VENDOR_TYPE {
-                value 3; 
+                value 3;
             }
             enum BAD_OUT_PORT {
-                value 4; 
+                value 4;
             }
             enum BAD_ARGUMENT {
-                value 5; 
+                value 5;
             }
             enum EPERM {
-                value 6; 
+                value 6;
             }
             enum TOO_MANY {
-                value 7; 
+                value 7;
             }
             enum BAD_QUEUE {
-                value 8; 
+                value 8;
             }
         }
     }
-    
+
     typedef flow-mod-failed-code-v10 {
         type enumeration {
             enum ALL_TABLES_FULL {
-                value 0; 
+                value 0;
             }
             enum OVERLAP {
-                value 1; 
+                value 1;
             }
             enum EPERM {
-                value 2; 
+                value 2;
             }
             enum BAD_EMERG_TIMEOUT {
-                value 3; 
+                value 3;
             }
             enum BAD_COMMAND {
-                value 4; 
+                value 4;
             }
             enum UNSUPPORTED {
-                value 5; 
+                value 5;
             }
         }
     }
-    
+
     typedef port-mod-failed-code-v10 {
         type enumeration {
             enum BAD_PORT {
-                value 0; 
+                value 0;
             }
             enum BAD_HW_ADDR {
-                value 1; 
+                value 1;
             }
         }
     }
-    
+
     typedef queue-op-failed-code-v10 {
         type enumeration {
             enum BAD_PORT {
-                value 0; 
+                value 0;
             }
             enum BAD_QUEUE {
-                value 1; 
+                value 1;
             }
             enum EPERM {
-                value 2; 
+                value 2;
             }
         }
     }
-    
+
     typedef port-number-values-v10 {
         description "Port numbering. Physical ports are numbered starting from 1.";
         type enumeration {
             enum MAX {
-                value 65280; // 0xff00 
+                value 65280; // 0xff00
             }
             enum IN_PORT {
                 description "Send the packet out the input port. This
@@ -1610,20 +1610,20 @@
                 description "Perform actions in flow table.
                             NB: This can only be the destination
                             port for packet-out messages.";
-                value 65529; // 0xfff9 
+                value 65529; // 0xfff9
             }
             enum NORMAL {
                 description "Process with normal L2/L3 switching.";
-                value 65530; // 0xfffa 
+                value 65530; // 0xfffa
             }
             enum FLOOD {
                 description "All physical ports except input port and
                             those disabled by STP.";
-                value 65531; // 0xfffb 
+                value 65531; // 0xfffb
             }
             enum ALL {
                 description "All physical ports except input port.";
-                value 65532; // 0xfffc 
+                value 65532; // 0xfffc
             }
             enum CONTROLLER {
                 description "Send to controller.";
@@ -1639,14 +1639,14 @@
             }
         }
     }
-    
+
     typedef port-config-v10 {
-        description 
+        description
            "Flags to indicate behavior of the physical port. These flags are
-            describe the current configuration and used port_mod message 
+            describe the current configuration and used port_mod message
             to configure the port's behavior.";
         type bits {
-            bit port-down { 
+            bit port-down {
                 description " Port is administratively down.";
                 position 0;
             }
@@ -1654,29 +1654,29 @@
                 description "Disable 802.1D spanning tree on port.";
                 position 1;
             }
-            bit no-recv { 
+            bit no-recv {
                 description " Drop all packets received by port.";
                 position 2;
             }
-            bit no-recv-stp { 
+            bit no-recv-stp {
                 description " Drop received 802.1D STP packets.";
                 position 3;
             }
-            bit no-flood { 
+            bit no-flood {
                 description " Do not include this port when flooding.";
                 position 4;
             }
-            bit no-fwd { 
+            bit no-fwd {
                 description " Drop packets forwarded to port.";
                 position 5;
             }
-            bit no-packet-in { 
+            bit no-packet-in {
                 description "Do not send packet-in msgs for port.";
                 position 6;
             }
         }
     }
-    
+
     typedef port-state-v10 {
         description "Current state of the physical port. These are not configurable from
                     the controller.";
@@ -1710,68 +1710,68 @@
             }
         }
     }
-    
+
     typedef port-features-v10 {
         description "Features of ports available in datapath.";
         reference "ofp_port_features";
         type bits {
-            bit _10mb-hd { 
+            bit _10mb-hd {
                 position 0;
                 description "10 Mb half-duplex rate support.";
             }
-            bit _10mb-fd { 
+            bit _10mb-fd {
                 position 1;
                 description "10 Mb full-duplex rate support.";
             }
-            bit _100mb-hd { 
+            bit _100mb-hd {
                 position 2;
                 description "100 Mb half-duplex rate support.";
             }
-            bit _100mb-fd { 
+            bit _100mb-fd {
                 position 3;
                 description "100 Mb full-duplex rate support.";
             }
-            bit _1gb-hd { 
+            bit _1gb-hd {
                 position 4;
                 description "1 Gb half-duplex rate support.";
             }
-            bit _1gb-fd { 
+            bit _1gb-fd {
                 position 5;
                 description "1 Gb full-duplex rate support.";
             }
-            bit _10gb-fd { 
+            bit _10gb-fd {
                 position 6;
                 description "10 Gb full-duplex rate support.";
             }
-            bit copper { 
+            bit copper {
                 position 7;
                 description "Copper medium.";
             }
-            bit fiber { 
+            bit fiber {
                 position 8;
                 description "Fiber medium.";
             }
-            bit autoneg { 
+            bit autoneg {
                 position 9;
                 description "Auto-negotiation.";
             }
-            bit pause { 
+            bit pause {
                 position 10;
                 description "Pause.";
             }
-            bit pause-asym { 
+            bit pause-asym {
                 position 11;
                 description "Asymmetric pause.";
             }
         }
     }
-    
+
     typedef capabilities-v10 {
         type bits {
             bit OFPC_FLOW_STATS {
                 position 0;
                 description "Flow statistics.";
-            } 
+            }
             bit OFPC_TABLE_STATS {
                 position 1;
                 description "Table statistics.";
@@ -1802,7 +1802,7 @@
             }
         }
     }
-    
+
     typedef flow-mod-flags-v10 {
         /* ofp_flow_mod_flags */
         type bits {
@@ -1820,7 +1820,7 @@
             }
         }
     }
-    
+
     typedef action-type-v10 {
         /* ofp_action_type */
         type bits {
@@ -1878,7 +1878,7 @@
             }
         }
     }
-    
+
     typedef flow-wildcards-v10 {
         /* ofp_flow_wildcards */
         description "Flow wildcards - NW_SRC_MASK & NW_DST_MASK are handled separately";
@@ -1925,5 +1925,5 @@
             }
         }
     }
-    
+
 }

@@ -20,7 +20,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  */
 public class OF10QueueGetConfigInputMessageFactory implements OFSerializer<GetQueueConfigInput> {
-    
+
     private static final byte MESSAGE_TYPE = 20;
     private static final byte PADDING_IN_GET_QUEUE_CONFIG_MESSAGE = 2;
 

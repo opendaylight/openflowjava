@@ -49,7 +49,7 @@ public class RoleReplyMessageFactoryTest {
         RoleRequestOutput builtByFactory = BufferHelper.deserialize(roleFactory, bb);
 
         BufferHelper.checkHeaderV13(builtByFactory);
-       
+
         Assert.assertEquals("Wrong role", 0x02, builtByFactory.getRole().getIntValue());
         Assert.assertEquals("Wrong generationId", 0x01020304050607L, builtByFactory.getGenerationId().longValue());
     }

@@ -38,7 +38,7 @@ public class OxmIpv6FlabelDeserializerTest {
         Assert.assertEquals("Wrong entry class", OpenflowBasicClass.class, entry.getOxmClass());
         Assert.assertEquals("Wrong entry field", Ipv6Flabel.class, entry.getOxmMatchField());
         Assert.assertEquals("Wrong entry hasMask", false, entry.isHasMask());
-        Assert.assertEquals("Wrong entry value", 2, 
+        Assert.assertEquals("Wrong entry value", 2,
                 entry.getAugmentation(Ipv6FlabelMatchEntry.class).getIpv6Flabel().getValue().intValue());
     }
 }

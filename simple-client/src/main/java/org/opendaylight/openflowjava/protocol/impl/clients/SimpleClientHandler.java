@@ -62,7 +62,7 @@ public class SimpleClientHandler extends ChannelInboundHandlerAdapter {
         }
         scenarioHandler.setCtx(ctx);
         scenarioHandler.start();
-        
+
     }
 
     /**

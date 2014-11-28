@@ -74,16 +74,16 @@ public class OF10StatsRequestInputFactoryTest {
         caseBuilder.setMultipartRequestDesc(descBuilder.build());
         builder.setMultipartRequestBody(caseBuilder.build());
         MultipartRequestInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         multipartFactory.serialize(message, out);
-        
+
         BufferHelper.checkHeaderV10(out, (byte) 16, 12);
         Assert.assertEquals("Wrong type", 0, out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", 0, out.readUnsignedShort());
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
     }
-    
+
     /**
      * Testing OF10StatsRequestInputFactory (Flow) for correct serialization
      * @throws Exception
@@ -119,10 +119,10 @@ public class OF10StatsRequestInputFactoryTest {
         caseBuilder.setMultipartRequestFlow(flowBuilder.build());
         builder.setMultipartRequestBody(caseBuilder.build());
         MultipartRequestInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         multipartFactory.serialize(message, out);
-        
+
         BufferHelper.checkHeaderV10(out, (byte) 16, 56);
         Assert.assertEquals("Wrong type", 1, out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", 0, out.readUnsignedShort());
@@ -150,7 +150,7 @@ public class OF10StatsRequestInputFactoryTest {
         Assert.assertEquals("Wrong out-port", 42, out.readUnsignedShort());
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
     }
-    
+
     /**
      * Testing OF10StatsRequestInputFactory (Aggregate) for correct serialization
      * @throws Exception
@@ -186,10 +186,10 @@ public class OF10StatsRequestInputFactoryTest {
         caseBuilder.setMultipartRequestFlow(flowBuilder.build());
         builder.setMultipartRequestBody(caseBuilder.build());
         MultipartRequestInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         multipartFactory.serialize(message, out);
-        
+
         BufferHelper.checkHeaderV10(out, (byte) 16, 56);
         Assert.assertEquals("Wrong type", 2, out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", 0, out.readUnsignedShort());
@@ -217,7 +217,7 @@ public class OF10StatsRequestInputFactoryTest {
         Assert.assertEquals("Wrong out-port", 6653, out.readUnsignedShort());
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
     }
-    
+
     /**
      * Testing OF10StatsRequestInputFactory (Table) for correct serialization
      * @throws Exception
@@ -233,16 +233,16 @@ public class OF10StatsRequestInputFactoryTest {
         caseBuilder.setMultipartRequestTable(tableBuilder.build());
         builder.setMultipartRequestBody(caseBuilder.build());
         MultipartRequestInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         multipartFactory.serialize(message, out);
-        
+
         BufferHelper.checkHeaderV10(out, (byte) 16, 12);
         Assert.assertEquals("Wrong type", 3, out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", 0, out.readUnsignedShort());
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
     }
-    
+
     /**
      * Testing OF10StatsRequestInputFactory (Port) for correct serialization
      * @throws Exception
@@ -259,10 +259,10 @@ public class OF10StatsRequestInputFactoryTest {
         caseBuilder.setMultipartRequestPortStats(portBuilder.build());
         builder.setMultipartRequestBody(caseBuilder.build());
         MultipartRequestInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         multipartFactory.serialize(message, out);
-        
+
         BufferHelper.checkHeaderV10(out, (byte) 16, 20);
         Assert.assertEquals("Wrong type", 4, out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", 0, out.readUnsignedShort());
@@ -288,10 +288,10 @@ public class OF10StatsRequestInputFactoryTest {
         caseBuilder.setMultipartRequestQueue(queueBuilder.build());
         builder.setMultipartRequestBody(caseBuilder.build());
         MultipartRequestInput message = builder.build();
-        
+
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         multipartFactory.serialize(message, out);
-        
+
         BufferHelper.checkHeaderV10(out, (byte) 16, 20);
         Assert.assertEquals("Wrong type", 5, out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", 0, out.readUnsignedShort());

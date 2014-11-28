@@ -11,7 +11,7 @@ package org.opendaylight.openflowjava.protocol.api.extensibility;
 
 
 /**
- * Stores and handles serializers 
+ * Stores and handles serializers
  * @author michal.polkorab
  *
  */
@@ -26,17 +26,17 @@ public interface SerializerRegistry {
      * @param msgTypeKey lookup key
      * @return serializer or NullPointerException if no serializer was found
      */
-    <KEYTYPE, SERIALIZERTYPE extends OFGeneralSerializer> SERIALIZERTYPE 
+    <KEYTYPE, SERIALIZERTYPE extends OFGeneralSerializer> SERIALIZERTYPE
         getSerializer(MessageTypeKey<KEYTYPE> msgTypeKey);
 
     /**
      * Registers serializer
      * Throws IllegalStateException when there is
      * a serializer already registered under given key.
-     * 
+     *
      * If the serializer implements {@link SerializerRegistryInjector} interface,
      * the serializer is injected with SerializerRegistry instance.
-     * 
+     *
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */
