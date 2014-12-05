@@ -71,6 +71,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalCause;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -100,10 +101,13 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     private static final String TAG = "OPENFLOW";
     private static final RemovalListener<RpcResponseKey, ResponseExpectedRpcListener<?>> REMOVAL_LISTENER =
             new RemovalListener<RpcResponseKey, ResponseExpectedRpcListener<?>>() {
+
         @Override
         public void onRemoval(
                 final RemovalNotification<RpcResponseKey, ResponseExpectedRpcListener<?>> notification) {
-            notification.getValue().discard();
+            if (! notification.getCause().equals(RemovalCause.EXPLICIT)) {
+                notification.getValue().discard();
+            }
         }
     };
 
