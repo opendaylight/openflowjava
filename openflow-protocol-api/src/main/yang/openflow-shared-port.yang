@@ -1,0 +1,296 @@
+/*
+ * Copyright (c) 2014 Pantheon Technologies s.r.o. and others. All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+
+module openflow-shared-port {
+    namespace "urn:opendaylight:openflow:shared:port";
+    prefix "ofsport";
+
+    revision "2014-11-19" {
+        description "OpenFlow common model - used by both openflowjava and openflowplugin";
+    }
+
+    typedef port-reason {
+        description "What changed about the physical port";
+        type enumeration {
+            enum OFPPR_ADD {
+                value 0;
+                description "The port was added.";
+            }
+            enum OFPPR_DELETE {
+                value 1;
+                description "The port was removed.";
+            }
+            enum OFPPR_MODIFY {
+                value 2;
+                description "Some attribute of the port has changed.";
+            }
+        }
+    }
+
+    typedef port-features-v13 {
+        description "Features of ports available in datapath.";
+        type bits {
+            bit _10mb_hd { 
+                position 0;
+                description "10 Mb half-duplex rate support.";
+            }
+            bit _10mb-fd { 
+                position 1;
+                description "10 Mb full-duplex rate support.";
+            }
+            bit _100mb-hd { 
+                position 2;
+                description "100 Mb half-duplex rate support.";
+            }
+            bit _100mb-fd { 
+                position 3;
+                description "100 Mb full-duplex rate support.";
+            }
+            bit _1gb-hd { 
+                position 4;
+                description "1 Gb half-duplex rate support.";
+            }
+            bit _1gb-fd { 
+                position 5;
+                description "1 Gb full-duplex rate support.";
+            }
+            bit _10gb-fd { 
+                position 6;
+                description "10 Gb full-duplex rate support.";
+            }
+            bit _40gb-fd { 
+                position 7;
+                description "40 Gb full-duplex rate support.";
+            }
+            bit _100gb-fd { 
+                position 8;
+                description "100 Gb full-duplex rate support.";
+            }
+            bit _1tb-fd { 
+                position 9;
+                description "1 Tb full-duplex rate support.";
+            }
+            bit other { 
+                position 10;
+                description "Other rate, not in the list.";
+            }
+            bit copper { 
+                position 11;
+                description "Copper medium.";
+            }
+            bit fiber { 
+                position 12;
+                description "Fiber medium.";
+            }
+            bit autoneg { 
+                position 13;
+                description "Auto-negotiation.";
+            }
+            bit pause { 
+                position 14;
+                description "Pause.";
+            }
+            bit pause-asym { 
+                position 15;
+                description "Asymmetric pause.";
+            }
+        }
+    }
+
+    typedef port-features-v10 {
+        description "Features of ports available in datapath.";
+        reference "ofp_port_features";
+        type bits {
+            bit _10mb-hd { 
+                position 0;
+                description "10 Mb half-duplex rate support.";
+            }
+            bit _10mb-fd { 
+                position 1;
+                description "10 Mb full-duplex rate support.";
+            }
+            bit _100mb-hd { 
+                position 2;
+                description "100 Mb half-duplex rate support.";
+            }
+            bit _100mb-fd { 
+                position 3;
+                description "100 Mb full-duplex rate support.";
+            }
+            bit _1gb-hd { 
+                position 4;
+                description "1 Gb half-duplex rate support.";
+            }
+            bit _1gb-fd { 
+                position 5;
+                description "1 Gb full-duplex rate support.";
+            }
+            bit _10gb-fd { 
+                position 6;
+                description "10 Gb full-duplex rate support.";
+            }
+            bit copper { 
+                position 7;
+                description "Copper medium.";
+            }
+            bit fiber { 
+                position 8;
+                description "Fiber medium.";
+            }
+            bit autoneg { 
+                position 9;
+                description "Auto-negotiation.";
+            }
+            bit pause { 
+                position 10;
+                description "Pause.";
+            }
+            bit pause-asym { 
+                position 11;
+                description "Asymmetric pause.";
+            }
+        }
+    }
+
+    typedef port-config-v13 {
+        description 
+           "Flags to indicate behavior of the physical port. These flags are
+            describe the current configuration and used port_mod message 
+            to configure the port's behavior.";
+        type bits {
+            bit port-down { 
+                //description " Port is administratively down.";
+                position 0;
+            }
+            bit no-recv { 
+                //description " Drop all packets received by port.";
+                position 2;
+            }
+            bit no-fwd { 
+                //description " Drop packets forwarded to port.";
+                position 5;
+            }
+            bit no-packet-in { 
+                //description "Do not send packet-in msgs for port.";
+                position 6;
+            }
+        }
+    }
+
+    typedef port-config-v10 {
+        description 
+           "Flags to indicate behavior of the physical port. These flags are
+            describe the current configuration and used port_mod message 
+            to configure the port's behavior.";
+        type bits {
+            bit port-down { 
+                description " Port is administratively down.";
+                position 0;
+            }
+            bit no-stp {
+                description "Disable 802.1D spanning tree on port.";
+                position 1;
+            }
+            bit no-recv { 
+                description " Drop all packets received by port.";
+                position 2;
+            }
+            bit no-recv-stp { 
+                description " Drop received 802.1D STP packets.";
+                position 3;
+            }
+            bit no-flood { 
+                description " Do not include this port when flooding.";
+                position 4;
+            }
+            bit no-fwd { 
+                description " Drop packets forwarded to port.";
+                position 5;
+            }
+            bit no-packet-in { 
+                description "Do not send packet-in msgs for port.";
+                position 6;
+            }
+        }
+    }
+
+    typedef port-state-v13 {
+        description 
+            "Current state of the physical port. These are not configurable from
+            the controller.";
+        type bits {
+            bit link_down {
+                //description "No physical link present.";
+                position 0;
+            }
+            bit blocked {
+                //description "Port is blocked";
+                position 1;
+            }
+            bit live {
+                //description "Live for Fast Failover Group.";
+                position 2;
+            }
+        }
+    }
+
+    typedef port-state-v10 {
+        description "Current state of the physical port. These are not configurable from
+                    the controller.";
+        type bits {
+            bit link_down {
+                description "No physical link present.";
+                position 0;
+            }
+            bit blocked {
+                description "Port is blocked";
+                position 1;
+            }
+            bit live {
+                description "Live for Fast Failover Group.";
+                position 2;
+            }
+            bit stp_listen {
+                description "Not learning or relaying frames.";
+            }
+            bit stp_learn {
+                description "Learning but not relaying frames.";
+            }
+            bit stp_forward {
+                description "Learning and relaying frames.";
+            }
+            bit stp_block {
+                description "Not part of spanning tree.";
+            }
+            bit stp_mask {
+                description "Bit mask for OFPPS_STP_* values.";
+            }
+        }
+    }
+
+    typedef port-features {
+        type union {
+            type port-features-v10;
+            type port-features-v13;
+        }
+    }
+
+    typedef port-config {
+        type union {
+            type port-config-v10;
+            type port-config-v13;
+        }
+    }
+
+    typedef port-state {
+        type union {
+            type port-state-v10;
+            type port-state-v13;
+        }
+    }
+}

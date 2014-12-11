@@ -14,11 +14,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeatures;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortModInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.shared.port.rev141119.PortConfigV13;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.shared.port.rev141119.PortFeaturesV13;
 
 /**
  * Translates PortMod messages
@@ -38,9 +38,9 @@ public class PortModInputMessageFactory implements OFSerializer<PortModInput> {
         outBuffer.writeZero(PADDING_IN_PORT_MOD_MESSAGE_01);
         outBuffer.writeBytes(ByteBufUtils.macAddressToBytes(message.getHwAddress().getValue()));
         outBuffer.writeZero(PADDING_IN_PORT_MOD_MESSAGE_02);
-        outBuffer.writeInt(createPortConfigBitmask(message.getConfig()));
-        outBuffer.writeInt(createPortConfigBitmask(message.getMask()));
-        outBuffer.writeInt(createPortFeaturesBitmask(message.getAdvertise()));
+        outBuffer.writeInt(createPortConfigBitmask(message.getConfig().getPortConfigV13()));
+        outBuffer.writeInt(createPortConfigBitmask(message.getMask().getPortConfigV13()));
+        outBuffer.writeInt(createPortFeaturesBitmask(message.getAdvertise().getPortFeaturesV13()));
         outBuffer.writeZero(PADDING_IN_PORT_MOD_MESSAGE_03);
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
@@ -49,7 +49,7 @@ public class PortModInputMessageFactory implements OFSerializer<PortModInput> {
      * @param config
      * @return port config bitmask
      */
-    private static int createPortConfigBitmask(final PortConfig config) {
+    private static int createPortConfigBitmask(final PortConfigV13 config) {
         int configBitmask = 0;
         Map<Integer, Boolean> portConfigMap = new HashMap<>();
         portConfigMap.put(0, config.isPortDown());
@@ -61,7 +61,7 @@ public class PortModInputMessageFactory implements OFSerializer<PortModInput> {
         return configBitmask;
     }
 
-    private static int createPortFeaturesBitmask(final PortFeatures feature) {
+    private static int createPortFeaturesBitmask(final PortFeaturesV13 feature) {
         return ByteBufUtils.fillBitMask(0, feature.is_10mbHd(),
                 feature.is_10mbFd(),
                 feature.is_100mbHd(),

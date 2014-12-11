@@ -15,9 +15,9 @@ import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.OpenflowUtils;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortStatusMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortStatusMessageBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.shared.port.rev141119.PortReason;
 
 /**
  * Translates PortStatus messages (OpenFlow v1.0)
@@ -44,11 +44,17 @@ public class OF10PortStatusMessageFactory implements OFDeserializer<PortStatusMe
         rawMessage.readBytes(address);
         builder.setHwAddr(new MacAddress(ByteBufUtils.macAddressToString(address)));
         builder.setName(ByteBufUtils.decodeNullTerminatedString(rawMessage, EncodeConstants.MAX_PORT_NAME_LENGTH));
-        builder.setConfigV10(OpenflowUtils.createPortConfig(rawMessage.readUnsignedInt()));
-        builder.setStateV10(OpenflowUtils.createPortState(rawMessage.readUnsignedInt()));
-        builder.setCurrentFeaturesV10(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt()));
-        builder.setAdvertisedFeaturesV10(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt()));
-        builder.setSupportedFeaturesV10(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt()));
-        builder.setPeerFeaturesV10(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt()));
+        builder.setConfig(OpenflowUtils.createPortConfig(rawMessage.readUnsignedInt(),
+                EncodeConstants.OF10_VERSION_ID));
+        builder.setState(OpenflowUtils.createPortState(rawMessage.readUnsignedInt(),
+                EncodeConstants.OF10_VERSION_ID));
+        builder.setCurrentFeatures(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt(),
+                EncodeConstants.OF10_VERSION_ID));
+        builder.setAdvertisedFeatures(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt(),
+                EncodeConstants.OF10_VERSION_ID));
+        builder.setSupportedFeatures(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt(),
+                EncodeConstants.OF10_VERSION_ID));
+        builder.setPeerFeatures(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt(),
+                EncodeConstants.OF10_VERSION_ID));
     }
 }

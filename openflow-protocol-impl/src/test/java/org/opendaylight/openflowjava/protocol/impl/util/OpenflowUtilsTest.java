@@ -10,9 +10,10 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfigV10;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeaturesV10;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortStateV10;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.shared.port.rev141119.PortConfigV10;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.shared.port.rev141119.PortFeaturesV10;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.shared.port.rev141119.PortStateV10;
 
 /**
  * @author michal.polkorab
@@ -21,47 +22,50 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 public class OpenflowUtilsTest {
 
     /**
-     * Tests {@link OpenflowUtils#createPortState(long)}
+     * Tests {@link OpenflowUtils#createPortState(long, byte)}
      */
     @Test
     public void testPortState() {
-        PortStateV10 state = OpenflowUtils.createPortState(512L);
+        PortStateV10 state = OpenflowUtils.createPortState(512L, EncodeConstants.OF10_VERSION_ID)
+                .getPortStateV10();
         Assert.assertEquals("Wrong port state",
                 new PortStateV10(false, false, false, false, true, false, true, false), state);
 
-        state = OpenflowUtils.createPortState(1793L);
+        state = OpenflowUtils.createPortState(1793L, EncodeConstants.OF10_VERSION_ID).getPortStateV10();
         Assert.assertEquals("Wrong port state",
                 new PortStateV10(false, true, false, true, true, true, false, true), state);
 
-        state = OpenflowUtils.createPortState(1L);
+        state = OpenflowUtils.createPortState(1L, EncodeConstants.OF10_VERSION_ID).getPortStateV10();
         Assert.assertEquals("Wrong port state",
                 new PortStateV10(false, true, false, false, false, false, true, false), state);
     }
 
     /**
-     * Tests {@link OpenflowUtils#createPortConfig(long)}
+     * Tests {@link OpenflowUtils#createPortConfig(long, byte)}
      */
     @Test
     public void testPortConfig() {
-        PortConfigV10 config = OpenflowUtils.createPortConfig(127L);
+        PortConfigV10 config = OpenflowUtils.createPortConfig(127L, EncodeConstants.OF10_VERSION_ID)
+                .getPortConfigV10();
         Assert.assertEquals("Wrong port config",
                 new PortConfigV10(true, true, true, true, true, true, true), config);
 
-        config = OpenflowUtils.createPortConfig(0L);
+        config = OpenflowUtils.createPortConfig(0L, EncodeConstants.OF10_VERSION_ID).getPortConfigV10();
         Assert.assertEquals("Wrong port config",
                 new PortConfigV10(false, false, false, false, false, false, false), config);
     }
 
     /**
-     * Tests {@link OpenflowUtils#createPortFeatures(long)}
+     * Tests {@link OpenflowUtils#createPortFeatures(long, byte)}
      */
     @Test
     public void testPortFeatures() {
-        PortFeaturesV10 features = OpenflowUtils.createPortFeatures(4095L);
+        PortFeaturesV10 features = OpenflowUtils.createPortFeatures(4095L, EncodeConstants.OF10_VERSION_ID)
+                .getPortFeaturesV10();
         Assert.assertEquals("Wrong port features", new PortFeaturesV10(true, true, true, true, true, true, true,
                 true, true, true, true, true), features);
 
-        features = OpenflowUtils.createPortFeatures(0L);
+        features = OpenflowUtils.createPortFeatures(0L, EncodeConstants.OF10_VERSION_ID).getPortFeaturesV10();
         Assert.assertEquals("Wrong port features", new PortFeaturesV10(false, false, false, false, false, false,
                 false, false, false, false, false, false), features);
     }
