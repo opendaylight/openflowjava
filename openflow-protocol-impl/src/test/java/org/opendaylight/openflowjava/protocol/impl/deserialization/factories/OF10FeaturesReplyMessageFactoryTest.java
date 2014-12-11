@@ -16,17 +16,17 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionTypeV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.CapabilitiesV10;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfigV10;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeaturesV10;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortStateV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.features.reply.PhyPort;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.shared.port.rev141119.PortConfigV10;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.shared.port.rev141119.PortFeaturesV10;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.shared.port.rev141119.PortStateV10;
 
 /**
  * @author michal.polkorab
@@ -70,18 +70,18 @@ public class OF10FeaturesReplyMessageFactoryTest {
         Assert.assertEquals("Wrong port - port-no", 16, port.getPortNo().intValue());
         Assert.assertEquals("Wrong port - hw-addr", new MacAddress("01:01:05:01:04:02"), port.getHwAddr());
         Assert.assertEquals("Wrong port - name", new String("ALOHA"), port.getName());
-        Assert.assertEquals("Wrong port - config", new PortConfigV10(true, true, true, true, true, true, true),
-                port.getConfigV10());
+        Assert.assertEquals("Wrong port - config", new PortConfigV10(true, true, true, true, true,
+                true, true), port.getConfig().getPortConfigV10());
         Assert.assertEquals("Wrong port - state",  new PortStateV10(false, false, false, false, true, false, true, false),
-                port.getStateV10());
+                port.getState().getPortStateV10());
         Assert.assertEquals("Wrong port - curr", new PortFeaturesV10(true, true, true, true, true, true, true,
-                true, true, true, true, true), port.getCurrentFeaturesV10());
+                true, true, true, true, true), port.getCurrentFeatures().getPortFeaturesV10());
         Assert.assertEquals("Wrong port - advertised", new PortFeaturesV10(false, false, false, false, false, false,
-                false, false, false, false, false, false), port.getAdvertisedFeaturesV10());
+                false, false, false, false, false, false), port.getAdvertisedFeatures().getPortFeaturesV10());
         Assert.assertEquals("Wrong port - supported", new PortFeaturesV10(true, true, false, false, false, false,
-                false, true, false, true, false, false), port.getSupportedFeaturesV10());
+                false, true, false, true, false, false), port.getSupportedFeatures().getPortFeaturesV10());
         Assert.assertEquals("Wrong port - peer", new PortFeaturesV10(true, false, false, false, false, false, false,
-                false, true, false, false, true), port.getPeerFeaturesV10());
+                false, true, false, false, true), port.getPeerFeatures().getPortFeaturesV10());
     }
 
     /**
@@ -104,12 +104,12 @@ public class OF10FeaturesReplyMessageFactoryTest {
         Assert.assertEquals("Wrong port - hw-addr", new MacAddress("01:01:05:01:04:02"), port.getHwAddr());
         Assert.assertEquals("Wrong port - name", new String("ALOHA"), port.getName());
         Assert.assertEquals("Wrong port - config", new PortConfigV10(false, false, false, false, false, false, false),
-                port.getConfigV10());
+                port.getConfig().getPortConfigV10());
         Assert.assertEquals("Wrong port - state",  new PortStateV10(false, true, false, true, true, true, false, true),
-                port.getStateV10());
+                port.getState().getPortStateV10());
         port = builtByFactory.getPhyPort().get(1);
         Assert.assertEquals("Wrong port - state",  new PortStateV10(false, false, false, false, false, false, true, false),
-                port.getStateV10());
+                port.getState().getPortStateV10());
     }
 
     /**

@@ -94,12 +94,12 @@ public class OF10FeaturesReplyMessageFactory implements OFDeserializer<GetFeatur
         rawMessage.readBytes(address);
         builder.setHwAddr(new MacAddress(ByteBufUtils.macAddressToString(address)));
         builder.setName(ByteBufUtils.decodeNullTerminatedString(rawMessage, EncodeConstants.MAX_PORT_NAME_LENGTH));
-        builder.setConfigV10(OpenflowUtils.createPortConfig(rawMessage.readUnsignedInt()));
-        builder.setStateV10(OpenflowUtils.createPortState(rawMessage.readUnsignedInt()));
-        builder.setCurrentFeaturesV10(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt()));
-        builder.setAdvertisedFeaturesV10(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt()));
-        builder.setSupportedFeaturesV10(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt()));
-        builder.setPeerFeaturesV10(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt()));
+        builder.setConfig(OpenflowUtils.createPortConfig(rawMessage.readUnsignedInt(), EncodeConstants.OF10_VERSION_ID));
+        builder.setState(OpenflowUtils.createPortState(rawMessage.readUnsignedInt(), EncodeConstants.OF10_VERSION_ID));
+        builder.setCurrentFeatures(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt(), EncodeConstants.OF10_VERSION_ID));
+        builder.setAdvertisedFeatures(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt(), EncodeConstants.OF10_VERSION_ID));
+        builder.setSupportedFeatures(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt(), EncodeConstants.OF10_VERSION_ID));
+        builder.setPeerFeatures(OpenflowUtils.createPortFeatures(rawMessage.readUnsignedInt(), EncodeConstants.OF10_VERSION_ID));
         return builder.build();
     }
 }

@@ -17,14 +17,14 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeatures;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortStatusMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.shared.port.rev141119.PortConfigV13;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.shared.port.rev141119.PortFeaturesV13;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.shared.port.rev141119.PortStateV13;
 
 /**
  * @author timotej.kubas
@@ -74,20 +74,21 @@ public class PortStatusMessageFactoryTest {
         Assert.assertEquals("Wrong portNumber", 66051L, builtByFactory.getPortNo().longValue());
         Assert.assertEquals("Wrong macAddress", new MacAddress("08:00:27:00:B0:EB"), builtByFactory.getHwAddr());
         Assert.assertEquals("Wrong name", "s1-eth1", builtByFactory.getName());
-        Assert.assertEquals("Wrong portConfig", new PortConfig(false, true, false, true), builtByFactory.getConfig());
-        Assert.assertEquals("Wrong portState", new PortState(false, true, true), builtByFactory.getState());
-        Assert.assertEquals("Wrong currentFeatures", new PortFeatures(false, false, false, false,
+        Assert.assertEquals("Wrong portConfig", new PortConfigV13(false, true, false, true),
+                builtByFactory.getConfig().getPortConfigV13());
+        Assert.assertEquals("Wrong portState", new PortStateV13(false, true, true), builtByFactory.getState().getPortStateV13());
+        Assert.assertEquals("Wrong currentFeatures", new PortFeaturesV13(false, false, false, false,
                                              false, true, false, false, false, true, false, false,
-                                             false, false, false, false), builtByFactory.getCurrentFeatures());
-        Assert.assertEquals("Wrong advertisedFeatures", new PortFeatures(false, false, false, false,
+                                             false, false, false, false), builtByFactory.getCurrentFeatures().getPortFeaturesV13());
+        Assert.assertEquals("Wrong advertisedFeatures", new PortFeaturesV13(false, false, false, false,
                                              false, true, true, false, false, true, false, false,
-                                             false, false, false, false), builtByFactory.getAdvertisedFeatures());
-        Assert.assertEquals("Wrong supportedFeatures", new PortFeatures(false, false, false, false,
+                                             false, false, false, false), builtByFactory.getAdvertisedFeatures().getPortFeaturesV13());
+        Assert.assertEquals("Wrong supportedFeatures", new PortFeaturesV13(false, false, false, false,
                                              false, true, true, true, false, true, false, false,
-                                             false, false, false, false), builtByFactory.getSupportedFeatures());
-        Assert.assertEquals("Wrong peerFeatures", new PortFeatures(false, false, false, false,
+                                             false, false, false, false), builtByFactory.getSupportedFeatures().getPortFeaturesV13());
+        Assert.assertEquals("Wrong peerFeatures", new PortFeaturesV13(false, false, false, false,
                                                   false, true, false, false, false, true, false, false,
-                                                  false, false, false, false), builtByFactory.getPeerFeatures());
+                                                  false, false, false, false), builtByFactory.getPeerFeatures().getPortFeaturesV13());
         Assert.assertEquals("Wrong currSpeed", 129L, builtByFactory.getCurrSpeed().longValue());
         Assert.assertEquals("Wrong maxSpeed", 128L, builtByFactory.getMaxSpeed().longValue());
     }
@@ -109,13 +110,15 @@ public class PortStatusMessageFactoryTest {
                                               );
         PortStatusMessage message = BufferHelper.deserialize(statusFactory, bb);
 
-        Assert.assertEquals("Wrong portConfig", new PortConfig(true, false, true, false), message.getConfig());
-        Assert.assertEquals("Wrong portState", new PortState(true, false, false), message.getState());
-        Assert.assertEquals("Wrong supportedFeatures", new PortFeatures(true, true, true, true,
+        Assert.assertEquals("Wrong portConfig", new PortConfigV13(true, false, true, false),
+                message.getConfig().getPortConfigV13());
+        Assert.assertEquals("Wrong portState", new PortStateV13(true, false, false),
+                message.getState().getPortStateV13());
+        Assert.assertEquals("Wrong supportedFeatures", new PortFeaturesV13(true, true, true, true,
                      true, true, true, true, true, true, true, true, true, true, true, true),
-                     message.getSupportedFeatures());
-        Assert.assertEquals("Wrong peerFeatures", new PortFeatures(false, false, false, false,
+                     message.getSupportedFeatures().getPortFeaturesV13());
+        Assert.assertEquals("Wrong peerFeatures", new PortFeaturesV13(false, false, false, false,
                      false, false, false, false, false, false, false, false, false, false,
-                     false, false), message.getPeerFeatures());
+                     false, false), message.getPeerFeatures().getPortFeaturesV13());
     }
 }

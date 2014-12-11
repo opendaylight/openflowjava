@@ -11,11 +11,11 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfigV10;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeaturesV10;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortModInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.shared.port.rev141119.PortConfigV10;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.shared.port.rev141119.PortFeaturesV10;
 
 /**
  * Translates PortMod messages
@@ -31,9 +31,9 @@ public class OF10PortModInputMessageFactory implements OFSerializer<PortModInput
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeShort(message.getPortNo().getValue().intValue());
         outBuffer.writeBytes(ByteBufUtils.macAddressToBytes(message.getHwAddress().getValue()));
-        outBuffer.writeInt(createPortConfigBitmask(message.getConfigV10()));
-        outBuffer.writeInt(createPortConfigBitmask(message.getMaskV10()));
-        outBuffer.writeInt(createPortFeaturesBitmask(message.getAdvertiseV10()));
+        outBuffer.writeInt(createPortConfigBitmask(message.getConfig().getPortConfigV10()));
+        outBuffer.writeInt(createPortConfigBitmask(message.getMask().getPortConfigV10()));
+        outBuffer.writeInt(createPortFeaturesBitmask(message.getAdvertise().getPortFeaturesV10()));
         outBuffer.writeZero(PADDING_IN_PORT_MOD_MESSAGE);
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
