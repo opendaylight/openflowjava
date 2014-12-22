@@ -15,6 +15,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,16 +31,29 @@ public class OFVersionDetector extends ByteToMessageDecoder {
     private static final byte OF13_VERSION_ID = EncodeConstants.OF13_VERSION_ID;
     private static final Logger LOGGER = LoggerFactory.getLogger(OFVersionDetector.class);
 
+    private ConnectionFacade connectionFacade;
+    private boolean firstTlsPass = false;
+
     /**
      * Constructor of class.
      */
-    public OFVersionDetector() {
+    public OFVersionDetector(ConnectionFacade connectionFacade, boolean tlsPresent) {
+        this.connectionFacade = connectionFacade;
+        if (tlsPresent) {
+            firstTlsPass = true;
+        }
         LOGGER.trace("Creating OFVersionDetector");
     }
 
     @Override
     protected void decode(ChannelHandlerContext chc, ByteBuf bb, List<Object> list) throws Exception {
+        /* Moved upstream, used to be in OFFrameDecoder */
+        if (firstTlsPass) {
+            connectionFacade.fireConnectionReadyNotification();
+            firstTlsPass = false;
+        }
         if (bb.readableBytes() == 0) {
+            /* Belt and braces - should not occur when using LengthFieldBasedDecoder */
             LOGGER.debug("not enough data");
             bb.release();
             return;

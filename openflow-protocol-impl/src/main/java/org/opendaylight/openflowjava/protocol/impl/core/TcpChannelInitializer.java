@@ -48,8 +48,8 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
      *
      */
     protected TcpChannelInitializer( DefaultChannelGroup channelGroup, ConnectionAdapterFactory connAdaptorFactory ) {
-    	allChannels = channelGroup ;
-    	connectionAdapterFactory = connAdaptorFactory ;
+        allChannels = channelGroup ;
+        connectionAdapterFactory = connAdaptorFactory ;
     }
 
     @Override
@@ -85,8 +85,8 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
                 ch.pipeline().addLast(PipelineHandlers.SSL_HANDLER.name(), new SslHandler(engine));
             }
             ch.pipeline().addLast(PipelineHandlers.OF_FRAME_DECODER.name(),
-                    new OFFrameDecoder(connectionFacade, tlsPresent));
-            ch.pipeline().addLast(PipelineHandlers.OF_VERSION_DETECTOR.name(), new OFVersionDetector());
+                    new OFFrameDecoder());
+            ch.pipeline().addLast(PipelineHandlers.OF_VERSION_DETECTOR.name(), new OFVersionDetector(connectionFacade, tlsPresent));
             OFDecoder ofDecoder = new OFDecoder();
             ofDecoder.setDeserializationFactory(getDeserializationFactory());
             ch.pipeline().addLast(PipelineHandlers.OF_DECODER.name(), ofDecoder);
