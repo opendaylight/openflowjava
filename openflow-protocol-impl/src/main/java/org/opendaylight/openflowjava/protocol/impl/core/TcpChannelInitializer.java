@@ -8,22 +8,9 @@
 
 package org.opendaylight.openflowjava.protocol.impl.core;
 
-import io.netty.channel.Channel;
-import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.ssl.SslHandler;
-
-import java.net.InetAddress;
-import java.util.Iterator;
-import java.util.concurrent.TimeUnit;
-
-import javax.net.ssl.SSLEngine;
-
-import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionAdapterFactory;
-import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionAdapterFactoryImpl;
-import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionFacade;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import src.main.java.org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionAdapterFactory;
+import src.main.java.org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionAdapterFactoryImpl;
+import src.main.java.org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionFacade;
 
 /**
  * Initializes TCP / TLS channel
@@ -85,8 +72,8 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
                 ch.pipeline().addLast(PipelineHandlers.SSL_HANDLER.name(), new SslHandler(engine));
             }
             ch.pipeline().addLast(PipelineHandlers.OF_FRAME_DECODER.name(),
-                    new OFFrameDecoder(connectionFacade, tlsPresent));
-            ch.pipeline().addLast(PipelineHandlers.OF_VERSION_DETECTOR.name(), new OFVersionDetector());
+                    new OFFrameDecoder());
+            ch.pipeline().addLast(PipelineHandlers.OF_VERSION_DETECTOR.name(), new OFVersionDetector(connectionFacade, tlsPresent));
             OFDecoder ofDecoder = new OFDecoder();
             ofDecoder.setDeserializationFactory(getDeserializationFactory());
             ch.pipeline().addLast(PipelineHandlers.OF_DECODER.name(), ofDecoder);
