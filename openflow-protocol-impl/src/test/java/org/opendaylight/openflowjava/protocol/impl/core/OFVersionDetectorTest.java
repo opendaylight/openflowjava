@@ -8,6 +8,7 @@
 
 package org.opendaylight.openflowjava.protocol.impl.core;
 
+import static org.junit.Assert.assertEquals;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -15,12 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionFacade;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 
 /**
@@ -32,6 +33,7 @@ public class OFVersionDetectorTest {
 
     @Mock
     ChannelHandlerContext channelHandlerContext;
+    ConnectionFacade connectionFacade;
 
     private OFVersionDetector detector;
     private List<Object> list = new ArrayList<>();
@@ -42,7 +44,7 @@ public class OFVersionDetectorTest {
     @Before
     public void setUp() {
         list.clear();
-        detector = new OFVersionDetector();
+        detector = new OFVersionDetector(connectionFacade, false);
     }
 
     /**
@@ -87,12 +89,12 @@ public class OFVersionDetectorTest {
     @Test
     public void testDecodeEmptyProtocolMessage() throws Exception {
         ByteBuf byteBuffer = ByteBufUtils.hexStringToByteBuf("01 00 00 08 00 00 00 01").skipBytes(8);
-		detector.decode(channelHandlerContext,
+        detector.decode(channelHandlerContext,
                 byteBuffer,
                 list);
 
-		assertEquals( 0, byteBuffer.refCnt() ) ;
-		
+        assertEquals( 0, byteBuffer.refCnt() ) ;
+
     }
 
     /**
