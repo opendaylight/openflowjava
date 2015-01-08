@@ -9,8 +9,9 @@
 package org.opendaylight.openflowjava.protocol.impl.core;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.embedded.EmbeddedChannel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +34,8 @@ import org.opendaylight.openflowjava.util.ByteBufUtils;
 @RunWith(MockitoJUnitRunner.class)
 public class OFFrameDecoderTest {
 
-    @Mock
-    ChannelHandlerContext channelHandlerContext;
 
     @Mock
-    ConnectionFacade connectionFacade;
-    private OFFrameDecoder decoder;
     private List<Object> list = new ArrayList<>();
 
     /**
@@ -47,7 +44,6 @@ public class OFFrameDecoderTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        decoder = new OFFrameDecoder(connectionFacade, false);
         list.clear();
 
     }
@@ -58,15 +54,18 @@ public class OFFrameDecoderTest {
      */
     @Test
     public void testDecode8BMessage() {
+        OFFrameDecoder decoder = new OFFrameDecoder();
+        EmbeddedChannel Channel = new EmbeddedChannel(decoder);
+        ByteBuf byteBuffer = ByteBufUtils.hexStringToByteBuf("04 00 00 08 00 00 00 01");
         try {
-            decoder.decode(channelHandlerContext,
-                    ByteBufUtils.hexStringToByteBuf("04 00 00 08 00 00 00 01"),
-                    list);
+            Assert.assertTrue(Channel.writeInbound(byteBuffer));
+            Assert.assertTrue(Channel.finish());
         } catch (Exception e) {
             Assert.fail();
         }
-
-        assertEquals(8, ((ByteBuf) list.get(0)).readableBytes());
+        byteBuffer = (ByteBuf) (Channel.readInbound());
+        assertNotNull(byteBuffer);
+        assertEquals(8, byteBuffer.readableBytes());
     }
 
     /**
@@ -75,93 +74,23 @@ public class OFFrameDecoderTest {
      */
     @Test
     public void testDecode16BMessage() {
+        OFFrameDecoder decoder = new OFFrameDecoder();
+        EmbeddedChannel Channel = new  EmbeddedChannel(decoder);
         ByteBuf byteBuffer = ByteBufUtils
                 .hexStringToByteBuf("04 00 00 10 00 00 00 00 00 00 00 00 00 00 00 42");
         try {
-            decoder.decode(channelHandlerContext, byteBuffer, list);
+            Assert.assertTrue(Channel.writeInbound(byteBuffer));
+            Assert.assertTrue(Channel.finish());
         } catch (Exception e) {
             Assert.fail();
         }
-
-        assertEquals(16, ((ByteBuf) list.get(0)).readableBytes());
-        assertEquals(0, byteBuffer.readableBytes());
-    }
-
-    /**
-     * Test of decoding
-     * {@link OFFrameDecoder#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)}
-     */
-    @Test
-    public void testDecode5BIncompleteMessage() {
-        ByteBuf byteBuffer = ByteBufUtils.hexStringToByteBuf("04 00 00 08 00");
-        try {
-            decoder.decode(channelHandlerContext, byteBuffer, list);
-        } catch (Exception e) {
-            Assert.fail();
-        }
-
-        Assert.assertEquals("List is not empty", 0, list.size());
-        assertEquals(5, byteBuffer.readableBytes());
-    }
-
-    /**
-     * Test of decoding
-     * {@link OFFrameDecoder#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)}
-     */
-    @Test
-    public void testDecode16BIncompleteMessage() {
-        ByteBuf byteBuffer = ByteBufUtils
-                .hexStringToByteBuf("04 00 00 11 00 00 00 00 00 00 00 00 00 00 00 42");
-        try {
-            decoder.decode(channelHandlerContext, byteBuffer, list);
-        } catch (Exception e) {
-            Assert.fail();
-        }
-
-        Assert.assertEquals("List is not empty", 0, list.size());
+        byteBuffer = (ByteBuf) (Channel.readInbound());
+        assertNotNull(byteBuffer);
         assertEquals(16, byteBuffer.readableBytes());
     }
 
     /**
-     * Test of decoding
-     * {@link OFFrameDecoder#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)}
+     * There is no benefit in testing partial frames, corrupt frames, etc - this is all caught by
+     * netty core tests for the LengthFieldBasedFrameDecoder.
      */
-    @Test
-    public void testDecodeCompleteAndPartialMessage() {
-        ByteBuf byteBuffer = ByteBufUtils
-                .hexStringToByteBuf("04 00 00 08 00 00 00 01 04 00 00 08 00");
-        try {
-            decoder.decode(channelHandlerContext, byteBuffer, list);
-        } catch (Exception e) {
-            Assert.fail();
-        }
-
-        Assert.assertEquals(8, ((ByteBuf) list.get(0)).readableBytes());
-        Assert.assertEquals(1, list.size());
-        assertEquals(5, byteBuffer.readableBytes());
-
-    }
-
-    @Test
-    public void testExceptionCaught() throws Exception {
-        decoder.exceptionCaught(channelHandlerContext, new Throwable());
-    }
-
-    /**
-     * Test of decoding
-     * {@link OFFrameDecoder#decode(io.netty.channel.ChannelHandlerContext, io.netty.buffer.ByteBuf, java.util.List)}
-     */
-    @Test
-    public void testDecode8BMessageWithTls() {
-        decoder = new OFFrameDecoder(connectionFacade, true);
-        try {
-            decoder.decode(channelHandlerContext,
-                    ByteBufUtils.hexStringToByteBuf("04 00 00 08 00 00 00 01"),
-                    list);
-        } catch (Exception e) {
-            Assert.fail();
-        }
-
-        assertEquals(8, ((ByteBuf) list.get(0)).readableBytes());
-    }
 }
