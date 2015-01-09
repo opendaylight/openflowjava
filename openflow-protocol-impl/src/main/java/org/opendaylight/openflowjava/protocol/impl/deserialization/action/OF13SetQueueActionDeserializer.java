@@ -11,12 +11,11 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.action;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.QueueIdAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.QueueIdActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetQueue;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.ActionChoice;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetQueueCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.set.queue._case.SetQueueActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.ActionBuilder;
 
 /**
  * @author michal.polkorab
@@ -27,17 +26,18 @@ public class OF13SetQueueActionDeserializer extends AbstractActionDeserializer {
     @Override
     public Action deserialize(ByteBuf input) {
         ActionBuilder builder = new ActionBuilder();
-        builder.setType(getType());
         input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-        QueueIdActionBuilder queueId = new QueueIdActionBuilder();
-        queueId.setQueueId(input.readUnsignedInt());
-        builder.addAugmentation(QueueIdAction.class, queueId.build());
+        SetQueueCaseBuilder caseBuilder = new SetQueueCaseBuilder();
+        SetQueueActionBuilder actionBuilder = new SetQueueActionBuilder();
+        actionBuilder.setQueueId(input.readUnsignedInt());
+        caseBuilder.setSetQueueAction(actionBuilder.build());
+        builder.setActionChoice(caseBuilder.build());
         return builder.build();
     }
 
     @Override
-    protected Class<? extends ActionBase> getType() {
-        return SetQueue.class;
+    protected ActionChoice getType() {
+        return new SetQueueCaseBuilder().build();
     }
 
 }

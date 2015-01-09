@@ -8,14 +8,28 @@
 
 package org.opendaylight.openflowjava.protocol.impl.serialization.action;
 
+import io.netty.buffer.ByteBuf;
+
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
 
 
 /**
  * @author michal.polkorab
  *
  */
-public class OF10StripVlanActionSerializer extends AbstractHeaderActionSerializer {
+public class OF10StripVlanActionSerializer extends AbstractActionSerializer {
+
+    @Override
+    public void serialize(Action action, ByteBuf outBuffer) {
+        super.serialize(action, outBuffer);
+        outBuffer.writeZero(ActionConstants.PADDING_IN_ACTION_HEADER);
+    }
+
+    @Override
+    protected int getLength() {
+        return ActionConstants.GENERAL_ACTION_LENGTH;
+    }
 
     @Override
     protected int getType() {

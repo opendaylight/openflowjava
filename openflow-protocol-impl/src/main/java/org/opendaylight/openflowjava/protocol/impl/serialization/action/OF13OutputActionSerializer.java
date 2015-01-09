@@ -11,9 +11,8 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.action;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MaxLengthAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.PortAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.OutputActionCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
 
 /**
  * @author michal.polkorab
@@ -24,10 +23,9 @@ public class OF13OutputActionSerializer extends AbstractActionSerializer {
     @Override
     public void serialize(Action action, ByteBuf outBuffer) {
         super.serialize(action, outBuffer);
-        PortAction port = action.getAugmentation(PortAction.class);
-        outBuffer.writeInt(port.getPort().getValue().intValue());
-        MaxLengthAction maxlength = action.getAugmentation(MaxLengthAction.class);
-        outBuffer.writeShort(maxlength.getMaxLength());
+        outBuffer.writeInt(((OutputActionCase) action.getActionChoice()).getOutputAction()
+                .getPort().getValue().intValue());
+        outBuffer.writeShort(((OutputActionCase) action.getActionChoice()).getOutputAction().getMaxLength());
         outBuffer.writeZero(ActionConstants.OUTPUT_PADDING);
     }
 

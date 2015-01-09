@@ -18,15 +18,23 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegi
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.action.AbstractActionDeserializer;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.EthertypeAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.GroupIdAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MaxLengthAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MplsTtlAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.NwTtlAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.OxmFieldsAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.PortAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.QueueIdAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.CopyTtlInCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.CopyTtlOutCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.DecMplsTtlCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.DecNwTtlCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.GroupCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.OutputActionCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.PopMplsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.PopPbbCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.PopVlanCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.PushMplsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.PushPbbCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.PushVlanCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetFieldCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetMplsTtlCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetNwTtlCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetQueueCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.InPhyPortCase;
 import org.slf4j.Logger;
@@ -79,53 +87,47 @@ public class ActionsDeserializerTest {
         CodeKeyMaker keyMaker = CodeKeyMakerFactory.createActionsKeyMaker(EncodeConstants.OF13_VERSION_ID);
         List<Action> actions = ListDeserializer.deserializeList(EncodeConstants.OF13_VERSION_ID,
                 message.readableBytes(), message, keyMaker, registry);
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
-                + "openflow.common.action.rev130731.Output", actions.get(0).getType().getName());
+        Assert.assertTrue("Wrong action type", actions.get(0).getActionChoice() instanceof OutputActionCase);
         Assert.assertEquals("Wrong action port", 1,
-                actions.get(0).getAugmentation(PortAction.class).getPort().getValue().intValue());
+                ((OutputActionCase) actions.get(0).getActionChoice()).getOutputAction()
+                .getPort().getValue().intValue());
         Assert.assertEquals("Wrong action max-length", 2,
-                actions.get(0).getAugmentation(MaxLengthAction.class).getMaxLength().intValue());
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
-                + "openflow.common.action.rev130731.CopyTtlOut", actions.get(1).getType().getName());
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
-                + "openflow.common.action.rev130731.CopyTtlIn", actions.get(2).getType().getName());
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
-                + "openflow.common.action.rev130731.SetMplsTtl", actions.get(3).getType().getName());
+                ((OutputActionCase) actions.get(0).getActionChoice()).getOutputAction()
+                .getMaxLength().intValue());
+        Assert.assertTrue("Wrong action type", actions.get(1).getActionChoice() instanceof CopyTtlOutCase);
+        Assert.assertTrue("Wrong action type", actions.get(2).getActionChoice() instanceof CopyTtlInCase);
+        Assert.assertTrue("Wrong action type", actions.get(3).getActionChoice() instanceof SetMplsTtlCase);
         Assert.assertEquals("Wrong action value", 3,
-                actions.get(3).getAugmentation(MplsTtlAction.class).getMplsTtl().shortValue());
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
-                + "openflow.common.action.rev130731.DecMplsTtl", actions.get(4).getType().getName());
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
-                + "openflow.common.action.rev130731.PushVlan", actions.get(5).getType().getName());
+                ((SetMplsTtlCase) actions.get(3).getActionChoice()).getSetMplsTtlAction()
+                .getMplsTtl().shortValue());
+        Assert.assertTrue("Wrong action type", actions.get(4).getActionChoice() instanceof DecMplsTtlCase);
+        Assert.assertTrue("Wrong action type", actions.get(5).getActionChoice() instanceof PushVlanCase);
         Assert.assertEquals("Wrong action value", 4,
-                actions.get(5).getAugmentation(EthertypeAction.class).getEthertype().getValue().intValue());
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
-                + "openflow.common.action.rev130731.PopVlan", actions.get(6).getType().getName());
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
-                + "openflow.common.action.rev130731.PushMpls", actions.get(7).getType().getName());
+                ((PushVlanCase) actions.get(5).getActionChoice()).getPushVlanAction()
+                .getEthertype().getValue().intValue());
+        Assert.assertTrue("Wrong action type", actions.get(6).getActionChoice() instanceof PopVlanCase);
+        Assert.assertTrue("Wrong action type", actions.get(7).getActionChoice() instanceof PushMplsCase);
         Assert.assertEquals("Wrong action value", 5,
-                actions.get(7).getAugmentation(EthertypeAction.class).getEthertype().getValue().intValue());
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
-                + "openflow.common.action.rev130731.PopMpls", actions.get(8).getType().getName());
+                ((PushMplsCase) actions.get(7).getActionChoice()).getPushMplsAction()
+                .getEthertype().getValue().intValue());
+        Assert.assertTrue("Wrong action type", actions.get(8).getActionChoice() instanceof PopMplsCase);
         Assert.assertEquals("Wrong action value", 6,
-                actions.get(8).getAugmentation(EthertypeAction.class).getEthertype().getValue().intValue());
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
-                + "openflow.common.action.rev130731.SetQueue", actions.get(9).getType().getName());
+                ((PopMplsCase) actions.get(8).getActionChoice()).getPopMplsAction()
+                .getEthertype().getValue().intValue());
+        Assert.assertTrue("Wrong action type", actions.get(9).getActionChoice() instanceof SetQueueCase);
         Assert.assertEquals("Wrong action value", 7,
-                actions.get(9).getAugmentation(QueueIdAction.class).getQueueId().intValue());
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
-                + "openflow.common.action.rev130731.Group", actions.get(10).getType().getName());
+                ((SetQueueCase) actions.get(9).getActionChoice()).getSetQueueAction()
+                .getQueueId().intValue());
+        Assert.assertTrue("Wrong action type", actions.get(10).getActionChoice() instanceof GroupCase);
         Assert.assertEquals("Wrong action value", 8,
-                actions.get(10).getAugmentation(GroupIdAction.class).getGroupId().intValue());
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
-                + "openflow.common.action.rev130731.SetNwTtl", actions.get(11).getType().getName());
+                ((GroupCase) actions.get(10).getActionChoice()).getGroupAction().getGroupId().intValue());
+        Assert.assertTrue("Wrong action type", actions.get(11).getActionChoice() instanceof SetNwTtlCase);
         Assert.assertEquals("Wrong action value", 9,
-                actions.get(11).getAugmentation(NwTtlAction.class).getNwTtl().intValue());
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
-                + "openflow.common.action.rev130731.DecNwTtl", actions.get(12).getType().getName());
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
-                + "openflow.common.action.rev130731.SetField", actions.get(13).getType().getName());
-        List<MatchEntry> entries = actions.get(13).getAugmentation(OxmFieldsAction.class).getMatchEntry();
+                ((SetNwTtlCase) actions.get(11).getActionChoice()).getSetNwTtlAction().getNwTtl().intValue());
+        Assert.assertTrue("Wrong action type", actions.get(12).getActionChoice() instanceof DecNwTtlCase);
+        Assert.assertTrue("Wrong action type", actions.get(13).getActionChoice() instanceof SetFieldCase);
+        List<MatchEntry> entries = ((SetFieldCase) actions.get(13).getActionChoice())
+                .getSetFieldAction().getMatchEntry();
         Assert.assertEquals("Wrong number of fields", 1, entries.size());
         Assert.assertEquals("Wrong match entry class", "org.opendaylight.yang.gen.v1.urn.opendaylight.openflow."
                 + "oxm.rev150225.OpenflowBasicClass", entries.get(0).getOxmClass().getName());
@@ -135,12 +137,11 @@ public class ActionsDeserializerTest {
         Assert.assertEquals("Wrong match entry value", 11,
                 ((InPhyPortCase) entries.get(0).getMatchEntryValue()).getInPhyPort().getPortNumber()
                 .getValue().intValue());
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
-                + "openflow.common.action.rev130731.PushPbb", actions.get(14).getType().getName());
+        Assert.assertTrue("Wrong action type", actions.get(14).getActionChoice() instanceof PushPbbCase);
         Assert.assertEquals("Wrong action value", 10,
-                actions.get(14).getAugmentation(EthertypeAction.class).getEthertype().getValue().intValue());
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
-                + "openflow.common.action.rev130731.PopPbb", actions.get(15).getType().getName());
+                ((PushPbbCase) actions.get(14).getActionChoice()).getPushPbbAction()
+                .getEthertype().getValue().intValue());
+        Assert.assertTrue("Wrong action type", actions.get(15).getActionChoice() instanceof PopPbbCase);
         Assert.assertTrue("Unread data in message", message.readableBytes() == 0);
     }
 
@@ -156,12 +157,10 @@ public class ActionsDeserializerTest {
         List<Action> actions = ListDeserializer.deserializeHeaders(EncodeConstants.OF13_VERSION_ID,
                 message.readableBytes(), message, keyMaker, registry);
 
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
-                + "openflow.common.action.rev130731.Output", actions.get(0).getType().getName());
-        Assert.assertEquals("Wrong action port", null, actions.get(0).getAugmentation(PortAction.class));
-        Assert.assertEquals("Wrong action max-length", null, actions.get(0).getAugmentation(MaxLengthAction.class));
-        Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
-                + "openflow.common.action.rev130731.SetField", actions.get(1).getType().getName());
-        Assert.assertEquals("Wrong action oxm field", null, actions.get(1).getAugmentation(OxmFieldsAction.class));
+        Assert.assertEquals("Wrong action type", actions.get(0).getActionChoice() instanceof OutputActionCase);
+        Assert.assertNull("Wrong action port", ((OutputActionCase) actions.get(0).getActionChoice()).getOutputAction());
+        Assert.assertNull("Wrong action max-length", ((OutputActionCase) actions.get(0).getActionChoice()).getOutputAction());
+        Assert.assertEquals("Wrong action type", actions.get(1).getActionChoice() instanceof SetFieldCase);
+        Assert.assertNull("Wrong action oxm field", ((SetFieldCase) actions.get(1).getActionChoice()).getSetFieldAction());
     }
 }

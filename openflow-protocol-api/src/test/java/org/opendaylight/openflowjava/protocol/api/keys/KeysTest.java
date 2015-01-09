@@ -4,8 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.ExperimenterActionSubType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.action.container.action.choice.ExperimenterIdCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.ExperimenterActionSubType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.InPort;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
 
@@ -46,8 +46,8 @@ public class KeysTest {
      */
     @Test
     public void testEqualsAndHashcodeOfActionDeserializerKeys() {
-        ActionSerializerKey<Experimenter> actionSerializerKey = new ActionSerializerKey<>(
-                EncodeConstants.OF13_VERSION_ID, Experimenter.class, 1L);
+        ActionSerializerKey<ExperimenterIdCase> actionSerializerKey = new ActionSerializerKey<>(
+                EncodeConstants.OF13_VERSION_ID, ExperimenterIdCase.class, 1L);
         ExperimenterActionSerializerKey experimenterActionSerializerKey = new ExperimenterActionSerializerKey(
                 EncodeConstants.OF13_VERSION_ID, 1L, ExpSubType.class);
         Assert.assertFalse(actionSerializerKey.equals(experimenterActionSerializerKey));

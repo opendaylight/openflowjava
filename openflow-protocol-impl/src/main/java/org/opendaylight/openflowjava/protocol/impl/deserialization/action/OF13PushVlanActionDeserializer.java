@@ -8,18 +8,39 @@
 
 package org.opendaylight.openflowjava.protocol.impl.deserialization.action;
 
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.PushVlan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionBase;
+import io.netty.buffer.ByteBuf;
+
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.ActionChoice;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.PushVlanCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.push.vlan._case.PushVlanActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.ActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.EtherType;
 
 /**
  * @author michal.polkorab
  *
  */
-public class OF13PushVlanActionDeserializer extends AbstractEthertypeActionDeserializer {
+public class OF13PushVlanActionDeserializer extends AbstractActionDeserializer {
 
     @Override
-    protected Class<? extends ActionBase> getType() {
-        return PushVlan.class;
+    public Action deserialize(ByteBuf input) {
+        ActionBuilder builder = new ActionBuilder();
+        input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+        PushVlanCaseBuilder caseBuilder = new PushVlanCaseBuilder();
+        PushVlanActionBuilder mplsBuilder = new PushVlanActionBuilder();
+        mplsBuilder.setEthertype(new EtherType(input.readUnsignedShort()));
+        caseBuilder.setPushVlanAction(mplsBuilder.build());
+        builder.setActionChoice(caseBuilder.build());
+        input.skipBytes(ActionConstants.ETHERTYPE_ACTION_PADDING);
+        return builder.build();
+    }
+
+    @Override
+    protected ActionChoice getType() {
+        return new PushVlanCaseBuilder().build();
     }
 
 }

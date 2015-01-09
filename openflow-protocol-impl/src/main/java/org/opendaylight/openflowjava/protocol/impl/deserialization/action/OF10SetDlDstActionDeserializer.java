@@ -8,18 +8,39 @@
 
 package org.opendaylight.openflowjava.protocol.impl.deserialization.action;
 
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetDlDst;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionBase;
+import io.netty.buffer.ByteBuf;
+
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.ActionChoice;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetDlDstCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.set.dl.dst._case.SetDlDstActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.ActionBuilder;
 
 /**
  * @author michal.polkorab
  *
  */
-public class OF10SetDlDstActionDeserializer extends OF10AbstractMacAddressActionDeserializer {
+public class OF10SetDlDstActionDeserializer extends AbstractActionDeserializer {
 
     @Override
-    protected Class<? extends ActionBase> getType() {
-        return SetDlDst.class;
+    public Action deserialize(ByteBuf input) {
+        ActionBuilder builder = new ActionBuilder();
+        input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+        SetDlDstCaseBuilder caseBuilder = new SetDlDstCaseBuilder();
+        SetDlDstActionBuilder actionBuilder = new SetDlDstActionBuilder();
+        byte[] address = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
+        input.readBytes(address);
+        actionBuilder.setDlDstAddress(new MacAddress(ByteBufUtils.macAddressToString(address)));
+        caseBuilder.setSetDlDstAction(actionBuilder.build());
+        return builder.build();
+    }
+
+    @Override
+    protected ActionChoice getType() {
+        return new SetDlDstCaseBuilder().build();
     }
 
 }

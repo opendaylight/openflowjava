@@ -12,12 +12,11 @@ import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.NwTosAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.NwTosActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetNwTos;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.ActionChoice;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetNwTosCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.set.nw.tos._case.SetNwTosActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.ActionBuilder;
 
 /**
  * @author michal.polkorab
@@ -28,19 +27,20 @@ public class OF10SetNwTosActionDeserializer extends AbstractActionDeserializer {
     @Override
     public Action deserialize(ByteBuf input) {
         ActionBuilder builder = new ActionBuilder();
+        input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-        builder.setType(getType());
-        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-        NwTosActionBuilder tosBuilder = new NwTosActionBuilder();
+        SetNwTosCaseBuilder caseBuilder = new SetNwTosCaseBuilder();
+        SetNwTosActionBuilder tosBuilder = new SetNwTosActionBuilder();
         tosBuilder.setNwTos(input.readUnsignedByte());
-        builder.addAugmentation(NwTosAction.class, tosBuilder.build());
+        caseBuilder.setSetNwTosAction(tosBuilder.build());
+        builder.setActionChoice(caseBuilder.build());
         input.skipBytes(ActionConstants.PADDING_IN_SET_NW_TOS_ACTION);
         return builder.build();
     }
 
     @Override
-    protected Class<? extends ActionBase> getType() {
-        return SetNwTos.class;
+    protected ActionChoice getType() {
+        return new SetNwTosCaseBuilder().build();
     }
 
 }

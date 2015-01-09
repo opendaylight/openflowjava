@@ -17,9 +17,9 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegist
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.OxmFieldsAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.oxm.container.match.entry.value.ExperimenterIdCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetFieldCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.ExperimenterClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
 
@@ -38,8 +38,8 @@ public class OF13SetFieldActionSerializer implements OFSerializer<Action>,
         outBuffer.writeShort(ActionConstants.SET_FIELD_CODE);
         int lengthIndex = outBuffer.writerIndex();
         outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
-        OxmFieldsAction oxmField = action.getAugmentation(OxmFieldsAction.class);
-        MatchEntry entry = oxmField.getMatchEntry().get(0);
+        MatchEntry entry = ((SetFieldCase) action.getActionChoice()).getSetFieldAction()
+                .getMatchEntry().get(0);
         MatchEntrySerializerKey<?, ?> key = new MatchEntrySerializerKey<>(
                 EncodeConstants.OF13_VERSION_ID, entry.getOxmClass(), entry.getOxmMatchField());
         if (entry.getOxmClass().equals(ExperimenterClass.class)) {

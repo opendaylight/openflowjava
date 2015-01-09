@@ -40,92 +40,19 @@
      }
 
 // OFP_ACTION AUGMENTS
-     augment "/ofaction:actions-container/ofaction:action" {
-         ext:augment-identifier "port-action";
-         leaf port {
-             type oft:port-number;
-         }
-     }
-     augment "/ofaction:actions-container/ofaction:action" {
-         ext:augment-identifier "max-length-action";
-         leaf max-length {
-             type uint16;
-         }
-     }
-     augment "/ofaction:actions-container/ofaction:action" {
-         ext:augment-identifier "mpls-ttl-action";
-         leaf mpls-ttl {
-             type uint8;
-         }
-     }
-     augment "/ofaction:actions-container/ofaction:action" {
-         ext:augment-identifier "ethertype-action";
-         leaf ethertype {
-             type oft:ether-type;
-         }
-     }
-     augment "/ofaction:actions-container/ofaction:action" {
-         ext:augment-identifier "queue-id-action";
-         leaf queue-id {
-             type uint32;
-         }
-     }
-     augment "/ofaction:actions-container/ofaction:action" {
-         ext:augment-identifier "group-id-action";
-         leaf group-id {
-             type uint32;
-         }
-     }
-     augment "/ofaction:actions-container/ofaction:action" {
-         ext:augment-identifier "nw-ttl-action";
-         leaf nw-ttl {
-             type uint8;
-         }
-     }
-     augment "/ofaction:actions-container/ofaction:action" {
-         ext:augment-identifier "oxm-fields-action";
-         uses oxm:match-entries-grouping;
-     }
-     augment "/ofaction:actions-container/ofaction:action" {
+     augment "/ofaction:action-container/ofaction:action-choice" {
          ext:augment-identifier "experimenter-id-action";
-         leaf experimenter {
-             type oft:experimenter-id;
-         }
-         leaf sub-type {
-            type identityref {
-                base ofaction:experimenter-action-sub-type;
-            }
-         }
-     }
-     // OF1.0 structures
-     augment "/ofaction:actions-container/ofaction:action" {
-         ext:augment-identifier "vlan-vid-action";
-         leaf vlan-vid {
-             type uint16;
-         }
-     }
-     augment "/ofaction:actions-container/ofaction:action" {
-         ext:augment-identifier "vlan-pcp-action";
-         leaf vlan-pcp {
-             type uint8;
-         }
-     }
-     augment "/ofaction:actions-container/ofaction:action" {
-         ext:augment-identifier "dl-address-action";
-         leaf dl-address {
-             type yang:mac-address;
-         }
-     }
-     augment "/ofaction:actions-container/ofaction:action" {
-         ext:augment-identifier "nw-tos-action";
-         leaf nw-tos {
-             type uint8;
-         }
-     }
-     augment "/ofaction:actions-container/ofaction:action" {
-         ext:augment-identifier "ip-address-action";
-         leaf ip-address {
-             type inet:ipv4-address;
+         case experimenter-id-case {
+             container experimenter {
+                 leaf experimenter {
+                     type oft:experimenter-id;
+                 }
+                 leaf sub-type {
+                     type identityref {
+                         base ofaction:experimenter-action-sub-type;
+                     }
+                 }
+             }
          }
      }
 
