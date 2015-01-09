@@ -8,13 +8,25 @@
 
 package org.opendaylight.openflowjava.protocol.impl.serialization.action;
 
+import io.netty.buffer.ByteBuf;
+
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetTpSrcCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
 
 /**
  * @author michal.polkorab
  *
  */
-public class OF10SetTpSrcActionSerializer extends OF10AbstractPortActionSerializer {
+public class OF10SetTpSrcActionSerializer extends AbstractActionSerializer {
+
+    @Override
+    public void serialize(Action action, ByteBuf outBuffer) {
+        super.serialize(action, outBuffer);
+        outBuffer.writeShort(((SetTpSrcCase) action.getActionChoice()).getSetTpSrcAction()
+                .getPort().getValue().intValue());
+        outBuffer.writeZero(ActionConstants.PADDING_IN_TP_PORT_ACTION);
+    }
 
     @Override
     protected int getType() {

@@ -11,12 +11,11 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.action;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.GroupIdAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.GroupIdActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Group;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.ActionChoice;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.GroupCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.group._case.GroupActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.ActionBuilder;
 
 /**
  * @author michal.polkorab
@@ -26,18 +25,19 @@ public class OF13GroupActionDeserializer extends AbstractActionDeserializer {
 
     @Override
     public Action deserialize(ByteBuf input) {
-        ActionBuilder builder = new ActionBuilder();
-        builder.setType(getType());
+        org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.ActionBuilder builder = new ActionBuilder();
         input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-        GroupIdActionBuilder group = new GroupIdActionBuilder();
-        group.setGroupId(input.readUnsignedInt());
-        builder.addAugmentation(GroupIdAction.class, group.build());
+        GroupCaseBuilder caseBuilder = new GroupCaseBuilder();
+        GroupActionBuilder actionBuilder = new GroupActionBuilder();
+        actionBuilder.setGroupId(input.readUnsignedInt());
+        caseBuilder.setGroupAction(actionBuilder.build());
+        builder.setActionChoice(caseBuilder.build());
         return builder.build();
     }
 
     @Override
-    protected Class<? extends ActionBase> getType() {
-        return Group.class;
+    protected ActionChoice getType() {
+        return new GroupCaseBuilder().build();
     }
 
 }

@@ -13,9 +13,9 @@ import io.netty.buffer.ByteBuf;
 import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderDeserializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.ActionChoice;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.ActionBuilder;
 
 /**
  * @author michal.polkorab
@@ -27,12 +27,11 @@ public abstract class AbstractActionDeserializer implements OFDeserializer<Actio
     @Override
     public Action deserializeHeader(ByteBuf input) {
         ActionBuilder actionBuilder = new ActionBuilder();
-        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-        actionBuilder.setType(getType());
-        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+        input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+        actionBuilder.setActionChoice(getType());
         return actionBuilder.build();
     }
 
-    protected abstract Class<? extends ActionBase> getType();
+    protected abstract ActionChoice getType();
 
 }

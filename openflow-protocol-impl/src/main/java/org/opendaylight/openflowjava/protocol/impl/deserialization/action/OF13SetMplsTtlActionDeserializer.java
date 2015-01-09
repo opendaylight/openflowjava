@@ -12,12 +12,11 @@ import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MplsTtlAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MplsTtlActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetMplsTtl;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.ActionChoice;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetMplsTtlCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.set.mpls.ttl._case.SetMplsTtlActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.ActionBuilder;
 
 /**
  * @author michal.polkorab
@@ -28,18 +27,19 @@ public class OF13SetMplsTtlActionDeserializer extends AbstractActionDeserializer
     @Override
     public Action deserialize(ByteBuf input) {
         ActionBuilder builder = new ActionBuilder();
-        builder.setType(getType());
         input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-        MplsTtlActionBuilder mplsTtl = new MplsTtlActionBuilder();
-        mplsTtl.setMplsTtl(input.readUnsignedByte());
-        builder.addAugmentation(MplsTtlAction.class, mplsTtl.build());
+        SetMplsTtlCaseBuilder caseBuilder = new SetMplsTtlCaseBuilder();
+        SetMplsTtlActionBuilder actionBuilder = new SetMplsTtlActionBuilder();
+        actionBuilder.setMplsTtl(input.readUnsignedByte());
+        caseBuilder.setSetMplsTtlAction(actionBuilder.build());
+        builder.setActionChoice(caseBuilder.build());
         input.skipBytes(ActionConstants.SET_MPLS_TTL_PADDING);
         return builder.build();
     }
 
     @Override
-    protected Class<? extends ActionBase> getType() {
-        return SetMplsTtl.class;
+    protected ActionChoice getType() {
+        return new SetMplsTtlCaseBuilder().build();
     }
 
 }

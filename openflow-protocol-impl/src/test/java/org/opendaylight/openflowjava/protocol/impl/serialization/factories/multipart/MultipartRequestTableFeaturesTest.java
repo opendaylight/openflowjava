@@ -43,9 +43,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.OxmRelatedTableFeaturePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.table.features.properties.container.table.feature.properties.NextTableIds;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.table.features.properties.container.table.feature.properties.NextTableIdsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Output;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.OutputActionCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.ApplyActions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.ClearActions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.GotoTable;
@@ -192,7 +192,7 @@ public class MultipartRequestTableFeaturesTest {
         ActionRelatedTableFeaturePropertyBuilder actBuilder = new ActionRelatedTableFeaturePropertyBuilder();
         List<Action> actions = new ArrayList<>();
         ActionBuilder actionBuilder = new ActionBuilder();
-        actionBuilder.setType(Output.class);
+        actionBuilder.setActionChoice(new OutputActionCaseBuilder().build());
         actions.add(actionBuilder.build());
         actBuilder.setAction(actions);
         propBuilder.addAugmentation(ActionRelatedTableFeatureProperty.class, actBuilder.build());

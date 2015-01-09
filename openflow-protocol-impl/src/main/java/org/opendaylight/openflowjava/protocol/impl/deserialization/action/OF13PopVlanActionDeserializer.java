@@ -8,18 +8,33 @@
 
 package org.opendaylight.openflowjava.protocol.impl.deserialization.action;
 
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.PopVlan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionBase;
+import io.netty.buffer.ByteBuf;
+
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.ActionChoice;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.PopVlanCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.ActionBuilder;
 
 /**
  * @author michal.polkorab
  *
  */
-public class OF13PopVlanActionDeserializer extends AbstractHeaderActionDeserializer {
+public class OF13PopVlanActionDeserializer extends AbstractActionDeserializer {
 
     @Override
-    protected Class<? extends ActionBase> getType() {
-        return PopVlan.class;
+    public Action deserialize(ByteBuf input) {
+        ActionBuilder builder = new ActionBuilder();
+        input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+        builder.setActionChoice(getType());
+        input.skipBytes(ActionConstants.PADDING_IN_ACTION_HEADER);
+        return builder.build();
+    }
+
+    @Override
+    protected ActionChoice getType() {
+        return new PopVlanCaseBuilder().build();
     }
 
 }

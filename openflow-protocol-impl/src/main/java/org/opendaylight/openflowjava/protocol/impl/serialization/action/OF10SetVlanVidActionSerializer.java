@@ -11,8 +11,8 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.action;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.VlanVidAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetVlanVidCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
 
 /**
  * @author michal.polkorab
@@ -23,7 +23,7 @@ public class OF10SetVlanVidActionSerializer extends AbstractActionSerializer {
     @Override
     public void serialize(Action action, ByteBuf outBuffer) {
         super.serialize(action, outBuffer);
-        outBuffer.writeShort(action.getAugmentation(VlanVidAction.class).getVlanVid());
+        outBuffer.writeShort(((SetVlanVidCase) action.getActionChoice()).getSetVlanVidAction().getVlanVid());
         outBuffer.writeZero(ActionConstants.PADDING_IN_SET_VLAN_VID_ACTION);
     }
 
