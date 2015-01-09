@@ -386,7 +386,6 @@
                 uses ofHeader;
 
                 uses ofaction:actions-grouping;
-
                 leaf data {
                     type binary;
                 }

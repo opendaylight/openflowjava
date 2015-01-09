@@ -13,11 +13,12 @@ import io.netty.buffer.ByteBuf;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMakerFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.ListSerializer;
+import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMakerFactory;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketOutInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.shared.action.rev141218.action.grouping.action._new.OutputActionCase;
 
 /**
  * Translates PacketOut messages
@@ -43,6 +44,13 @@ public class PacketOutInputMessageFactory implements OFSerializer<PacketOutInput
         ListSerializer.serializeList(message.getAction(), TypeKeyMakerFactory
                 .createActionKeyMaker(EncodeConstants.OF13_VERSION_ID), registry, outBuffer);
         outBuffer.setShort(actionsLengthIndex, outBuffer.writerIndex() - actionsStartIndex);
+        OutputActionCase action = (OutputActionCase) message.getActions().get(0).getActionNew();
+
+        outBuffer.writeShort(0);
+        outBuffer.writeShort(16);
+        outBuffer.writeInt(action.getPort().getValue().intValue());
+        outBuffer.writeShort(action.getMaxLength().intValue());
+        
         byte[] data = message.getData();
         if (data != null) {
             outBuffer.writeBytes(data);
