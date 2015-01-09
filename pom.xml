@@ -57,6 +57,7 @@
         <releaseplugin.version>2.3.2</releaseplugin.version>
         <yangtools.version>0.7.0-SNAPSHOT</yangtools.version>
         <yangtools.generator.version>0.7.0-SNAPSHOT</yangtools.generator.version>
+        <mdsal.version>1.2.0-SNAPSHOT</mdsal.version>
 	<config.version>0.3.0-SNAPSHOT</config.version>
 
         <!-- Sonar config -->
