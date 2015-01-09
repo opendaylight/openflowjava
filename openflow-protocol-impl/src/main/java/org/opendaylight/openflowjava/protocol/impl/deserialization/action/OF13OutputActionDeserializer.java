@@ -12,14 +12,11 @@ import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MaxLengthAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MaxLengthActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.PortAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.PortActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Output;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.ActionChoice;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.OutputActionCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.output.action._case.OutputActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
 
 /**
@@ -30,22 +27,21 @@ public class OF13OutputActionDeserializer extends AbstractActionDeserializer {
 
     @Override
     public Action deserialize(ByteBuf input) {
-        ActionBuilder builder = new ActionBuilder();
-        builder.setType(getType());
+        org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.ActionBuilder builder = new ActionBuilder();
         input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-        PortActionBuilder port = new PortActionBuilder();
-        port.setPort(new PortNumber(input.readUnsignedInt()));
-        builder.addAugmentation(PortAction.class, port.build());
-        MaxLengthActionBuilder maxLen = new MaxLengthActionBuilder();
-        maxLen.setMaxLength(input.readUnsignedShort());
-        builder.addAugmentation(MaxLengthAction.class, maxLen.build());
+        OutputActionCaseBuilder caseBuilder = new OutputActionCaseBuilder();
+        OutputActionBuilder actionBuilder = new OutputActionBuilder();
+        actionBuilder.setPort(new PortNumber(input.readUnsignedInt()));
+        actionBuilder.setMaxLength(input.readUnsignedShort());
+        caseBuilder.setOutputAction(actionBuilder.build());
+        builder.setActionChoice(caseBuilder.build());
         input.skipBytes(ActionConstants.OUTPUT_PADDING);
         return builder.build();
     }
 
     @Override
-    protected Class<? extends ActionBase> getType() {
-        return Output.class;
+    protected ActionChoice getType() {
+        return new OutputActionCaseBuilder().build();
     }
 
 }

@@ -11,35 +11,35 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.action;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MaxLengthAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MaxLengthActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Output;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.ActionChoice;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.OutputActionCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.output.action._case.OutputActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.ActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
 
 /**
  * @author michal.polkorab
  *
  */
-public class OF10OutputActionDeserializer extends OF10AbstractPortActionDeserializer {
+public class OF10OutputActionDeserializer extends AbstractActionDeserializer {
 
     @Override
     public Action deserialize(ByteBuf input) {
         ActionBuilder builder = new ActionBuilder();
-        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-        builder.setType(getType());
-        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-        createPortAugmentation(input, builder);
-        MaxLengthActionBuilder maxLen = new MaxLengthActionBuilder();
-        maxLen.setMaxLength(input.readUnsignedShort());
-        builder.addAugmentation(MaxLengthAction.class, maxLen.build());
+        input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+        OutputActionCaseBuilder caseBuilder = new OutputActionCaseBuilder();
+        OutputActionBuilder actionBuilder = new OutputActionBuilder();
+        actionBuilder.setPort(new PortNumber((long) input.readUnsignedShort()));
+        actionBuilder.setMaxLength(input.readUnsignedShort());
+        caseBuilder.setOutputAction(actionBuilder.build());
+        builder.setActionChoice(caseBuilder.build());
         return builder.build();
     }
 
     @Override
-    protected Class<? extends ActionBase> getType() {
-        return Output.class;
+    protected ActionChoice getType() {
+        return new OutputActionCaseBuilder().build();
     }
 
 }

@@ -12,7 +12,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterActionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.ExperimenterActionSubType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.ExperimenterActionSubType;
 
 /**
  * @author michal.polkorab
@@ -49,6 +49,9 @@ public class ExperimenterActionSerializerKeyTest {
         Assert.assertFalse("Wrong hashcode", key1.hashCode() == key2.hashCode());
     }
 
+    /**
+     * Test ExperimenterActionSerializerKey equals
+     */
     @Test
     public void testEquals() {
         ExperimenterActionSerializerKey key1;

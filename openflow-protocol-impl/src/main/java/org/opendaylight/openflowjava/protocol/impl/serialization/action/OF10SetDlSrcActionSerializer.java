@@ -8,13 +8,26 @@
 
 package org.opendaylight.openflowjava.protocol.impl.serialization.action;
 
+import io.netty.buffer.ByteBuf;
+
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetDlSrcCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
 
 /**
  * @author michal.polkorab
  *
  */
-public class OF10SetDlSrcActionSerializer extends OF10AbstractMacAddressActionSerializer {
+public class OF10SetDlSrcActionSerializer extends AbstractActionSerializer {
+
+    @Override
+    public void serialize(Action action, ByteBuf outBuffer) {
+        super.serialize(action, outBuffer);
+        outBuffer.writeBytes(ByteBufUtils.macAddressToBytes(((SetDlSrcCase) action.getActionChoice())
+                .getSetDlSrcAction().getDlSrcAddress().getValue()));
+        outBuffer.writeZero(ActionConstants.PADDING_IN_DL_ADDRESS_ACTION);
+    }
 
     @Override
     protected int getType() {

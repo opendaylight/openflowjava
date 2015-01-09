@@ -11,8 +11,8 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.action;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.GroupIdAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.GroupCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
 
 /**
  * @author michal.polkorab
@@ -23,8 +23,7 @@ public class OF13GroupActionSerializer extends AbstractActionSerializer {
     @Override
     public void serialize(Action action, ByteBuf outBuffer) {
         super.serialize(action, outBuffer);
-        GroupIdAction groupId = action.getAugmentation(GroupIdAction.class);
-        outBuffer.writeInt(groupId.getGroupId().intValue());
+        outBuffer.writeInt(((GroupCase) action.getActionChoice()).getGroupAction().getGroupId().intValue());
     }
 
     @Override

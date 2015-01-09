@@ -10,7 +10,7 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.keys.ActionSerializerKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.ActionChoice;
 
 /**
  * @author michal.polkorab
@@ -35,7 +35,7 @@ public class ActionSerializerRegistryHelper {
      * @param actionType
      * @param serializer
      */
-    public <T extends ActionBase> void registerSerializer(Class<T> actionType,
+    public <T extends ActionChoice> void registerSerializer(Class<T> actionType,
             OFGeneralSerializer serializer) {
         serializerRegistry.registerSerializer(new ActionSerializerKey<>(version,
                 actionType, null), serializer);
