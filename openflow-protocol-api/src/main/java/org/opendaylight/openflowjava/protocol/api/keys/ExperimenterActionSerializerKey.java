@@ -8,13 +8,13 @@
 
 package org.opendaylight.openflowjava.protocol.api.keys;
 
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.ExperimenterActionSubType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.action.container.action.choice.ExperimenterIdCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.ExperimenterActionSubType;
 
 /**
  * @author michal.polkorab
  */
-public final class ExperimenterActionSerializerKey extends ActionSerializerKey<Experimenter>
+public final class ExperimenterActionSerializerKey extends ActionSerializerKey<ExperimenterIdCase>
         implements ExperimenterSerializerKey {
 
     private Class<? extends ExperimenterActionSubType> actionSubType;
@@ -25,7 +25,7 @@ public final class ExperimenterActionSerializerKey extends ActionSerializerKey<E
      * @param actionSubType vendor defined subtype
      */
     public ExperimenterActionSerializerKey(short msgVersion, Long experimenterId, Class<? extends ExperimenterActionSubType> actionSubType) {
-        super(msgVersion, Experimenter.class, experimenterId);
+        super(msgVersion, ExperimenterIdCase.class, experimenterId);
         this.actionSubType = actionSubType;
     }
 

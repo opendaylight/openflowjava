@@ -20,12 +20,9 @@ import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MaxLengthAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.PortAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.VlanVidAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Output;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetVlanVid;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.OutputActionCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetVlanVidCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowWildcardsV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyAggregateCase;
@@ -149,15 +146,15 @@ public class OF10StatsReplyMessageFactoryTest {
                 new BigInteger(1, new byte[]{(byte) 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20}),
                 message.getFlowStats().get(0).getByteCount());
         Action action1 = message.getFlowStats().get(0).getAction().get(0);
-        Assert.assertEquals("Wrong action type", Output.class, action1.getType());
-        Assert.assertEquals("Wrong action port", 1, action1.getAugmentation(PortAction.class)
-                .getPort().getValue().intValue());
-        Assert.assertEquals("Wrong action port", 2, action1.getAugmentation(MaxLengthAction.class)
-                .getMaxLength().intValue());
+        Assert.assertTrue("Wrong action type", action1.getActionChoice() instanceof OutputActionCase);
+        Assert.assertEquals("Wrong action port", 1, ((OutputActionCase) action1.getActionChoice())
+                .getOutputAction().getPort().getValue().intValue());
+        Assert.assertEquals("Wrong action port", 2, ((OutputActionCase) action1.getActionChoice())
+                .getOutputAction().getMaxLength().intValue());
         Action action2 = message.getFlowStats().get(0).getAction().get(1);
-        Assert.assertEquals("Wrong action type", SetVlanVid.class, action2.getType());
-        Assert.assertEquals("Wrong action port", 3, action2.getAugmentation(VlanVidAction.class)
-                .getVlanVid().intValue());
+        Assert.assertTrue("Wrong action type",action2.getActionChoice() instanceof SetVlanVidCase);
+        Assert.assertEquals("Wrong action port", 3, ((SetVlanVidCase) action2.getActionChoice())
+                .getSetVlanVidAction().getVlanVid().intValue());
         Assert.assertTrue("Unread data", bb.readableBytes() == 0);
     }
 

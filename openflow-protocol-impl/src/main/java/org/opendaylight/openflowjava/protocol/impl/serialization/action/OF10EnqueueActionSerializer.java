@@ -11,9 +11,8 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.action;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.PortAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.QueueIdAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.EnqueueCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
 
 /**
  * @author michal.polkorab
@@ -24,11 +23,11 @@ public class OF10EnqueueActionSerializer extends AbstractActionSerializer {
     @Override
     public void serialize(Action action, ByteBuf outBuffer) {
         super.serialize(action, outBuffer);
-        PortAction port = action.getAugmentation(PortAction.class);
-        outBuffer.writeShort(port.getPort().getValue().intValue());
+        outBuffer.writeShort(((EnqueueCase) action.getActionChoice()).getEnqueueAction()
+                .getPort().getValue().intValue());
         outBuffer.writeZero(ActionConstants.PADDING_IN_ENQUEUE_ACTION);
-        QueueIdAction queueId = action.getAugmentation(QueueIdAction.class);
-        outBuffer.writeInt(queueId.getQueueId().intValue());
+        outBuffer.writeInt(((EnqueueCase) action.getActionChoice()).getEnqueueAction()
+                .getQueueId().getValue().intValue());
     }
 
     @Override

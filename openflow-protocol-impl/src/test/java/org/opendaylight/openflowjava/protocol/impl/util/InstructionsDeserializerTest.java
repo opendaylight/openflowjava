@@ -19,15 +19,14 @@ import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ActionsInstruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.GroupIdAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MaxLengthAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MetadataInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MeterIdInstruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MplsTtlAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.PortAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.QueueIdAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.TableIdInstruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.GroupCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.OutputActionCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetMplsTtlCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetQueueCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 
 /**
@@ -87,26 +86,26 @@ public class InstructionsDeserializerTest {
                 + "opendaylight.openflow.common.instruction.rev130731.WriteActions", i5.getType().getName());
         Assert.assertEquals("Wrong instructions - i5", 2, i5.getAugmentation(ActionsInstruction.class).getAction().size());
         Action action1 = i5.getAugmentation(ActionsInstruction.class).getAction().get(0);
-        Assert.assertEquals("Wrong action", "org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Output",
-                action1.getType().getName());
-        Assert.assertEquals("Wrong action", 37, action1.getAugmentation(PortAction.class).getPort().getValue().intValue());
-        Assert.assertEquals("Wrong action", 53, action1.getAugmentation(MaxLengthAction.class).getMaxLength().intValue());
+        Assert.assertTrue("Wrong action", action1.getActionChoice() instanceof OutputActionCase);
+        Assert.assertEquals("Wrong action", 37, ((OutputActionCase) action1.getActionChoice()).getOutputAction()
+                .getPort().getValue().intValue());
+        Assert.assertEquals("Wrong action", 53, ((OutputActionCase) action1.getActionChoice()).getOutputAction()
+                .getMaxLength().intValue());
         Action action2 = i5.getAugmentation(ActionsInstruction.class).getAction().get(1);
-        Assert.assertEquals("Wrong action", "org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Group",
-                action2.getType().getName());
-        Assert.assertEquals("Wrong action", 80, action2.getAugmentation(GroupIdAction.class).getGroupId().intValue());
+        Assert.assertTrue("Wrong action", action2.getActionChoice() instanceof GroupCase);
+        Assert.assertEquals("Wrong action", 80, ((GroupCase) action2.getActionChoice()).getGroupAction().getGroupId().intValue());
         Instruction i6 = instructions.get(5);
         Assert.assertEquals("Wrong type - i6", "org.opendaylight.yang.gen.v1.urn."
                 + "opendaylight.openflow.common.instruction.rev130731.ApplyActions", i6.getType().getName());
         Assert.assertEquals("Wrong instructions - i6", 2, i6.getAugmentation(ActionsInstruction.class).getAction().size());
         action1 = i6.getAugmentation(ActionsInstruction.class).getAction().get(0);
-        Assert.assertEquals("Wrong action", "org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetQueue",
-                action1.getType().getName());
-        Assert.assertEquals("Wrong action", 37, action1.getAugmentation(QueueIdAction.class).getQueueId().intValue());
+        Assert.assertTrue("Wrong action", action1.getActionChoice() instanceof SetQueueCase);
+        Assert.assertEquals("Wrong action", 37, ((SetQueueCase) action1.getActionChoice()).getSetQueueAction()
+                .getQueueId().intValue());
         action2 = i6.getAugmentation(ActionsInstruction.class).getAction().get(1);
-        Assert.assertEquals("Wrong action", "org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetMplsTtl",
-                action2.getType().getName());
-        Assert.assertEquals("Wrong action", 5, action2.getAugmentation(MplsTtlAction.class).getMplsTtl().intValue());
+        Assert.assertTrue("Wrong action", action2.getActionChoice() instanceof SetMplsTtlCase);
+        Assert.assertEquals("Wrong action", 5, ((SetMplsTtlCase) action2.getActionChoice()).getSetMplsTtlAction()
+                .getMplsTtl().shortValue());
     }
 
 }

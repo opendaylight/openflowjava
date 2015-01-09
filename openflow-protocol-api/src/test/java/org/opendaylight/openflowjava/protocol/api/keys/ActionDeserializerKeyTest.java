@@ -64,7 +64,7 @@ public class ActionDeserializerKeyTest {
         ActionDeserializerKey key1 = new ActionDeserializerKey(EncodeConstants.OF10_VERSION_ID, 11, null);
 
         Assert.assertEquals("Wrong toString()", "msgVersion: 1 objectClass: org.opendaylight.yang.gen.v1.urn"
-                + ".opendaylight.openflow.common.action.rev130731.actions.grouping.Action msgType: 11"
+                + ".opendaylight.openflow.common.action.rev150203.actions.grouping.Action msgType: 11"
                 + " experimenterID: null", key1.toString());
     }
 }

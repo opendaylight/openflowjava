@@ -12,36 +12,38 @@ import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.QueueIdAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.QueueIdActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Enqueue;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.ActionChoice;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.EnqueueCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.OutputActionCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.enqueue._case.EnqueueActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.ActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.QueueId;
 
 /**
  * @author michal.polkorab
  *
  */
-public class OF10EnqueueActionDeserializer extends OF10AbstractPortActionDeserializer {
+public class OF10EnqueueActionDeserializer extends AbstractActionDeserializer {
 
     @Override
     public Action deserialize(ByteBuf input) {
         ActionBuilder builder = new ActionBuilder();
-        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-        builder.setType(getType());
-        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-        createPortAugmentation(input, builder);
+        input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+        EnqueueCaseBuilder caseBuilder = new EnqueueCaseBuilder();
+        EnqueueActionBuilder actionBuilder = new EnqueueActionBuilder();
+        actionBuilder.setPort(new PortNumber((long) input.readUnsignedShort()));
         input.skipBytes(ActionConstants.PADDING_IN_ENQUEUE_ACTION);
-        QueueIdActionBuilder queueBuilder = new QueueIdActionBuilder();
-        queueBuilder.setQueueId(input.readUnsignedInt());
-        builder.addAugmentation(QueueIdAction.class, queueBuilder.build());
+        actionBuilder.setQueueId(new QueueId(input.readUnsignedInt()));
+        caseBuilder.setEnqueueAction(actionBuilder.build());
+        builder.setActionChoice(caseBuilder.build());
         return builder.build();
     }
 
     @Override
-    protected Class<? extends ActionBase> getType() {
-        return Enqueue.class;
+    protected ActionChoice getType() {
+        return new OutputActionCaseBuilder().build();
     }
 
 }

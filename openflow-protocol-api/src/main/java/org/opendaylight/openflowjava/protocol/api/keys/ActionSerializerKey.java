@@ -8,14 +8,14 @@
 
 package org.opendaylight.openflowjava.protocol.api.keys;
 
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.ActionChoice;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
 
 /**
  * @author michal.polkorab
  * @param <T> action type
  */
-public class ActionSerializerKey<T extends ActionBase> extends MessageTypeKey<Action> {
+public class ActionSerializerKey<T extends ActionChoice> extends MessageTypeKey<Action> {
 
     private Class<T> actionType;
     private Long experimenterId;
