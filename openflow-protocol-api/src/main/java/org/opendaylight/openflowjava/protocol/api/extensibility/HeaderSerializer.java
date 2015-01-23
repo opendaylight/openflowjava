@@ -14,14 +14,14 @@ import io.netty.buffer.ByteBuf;
 /**
  * Does only-header serialization (such as oxm_ids, action_ids, instruction_ids)
  * @author michal.polkorab
- * @param <SERIALIZER_TYPE>
+ * @param <T>
  */
-public interface HeaderSerializer<SERIALIZER_TYPE extends DataObject> extends OFGeneralSerializer {
+public interface HeaderSerializer<T extends DataObject> extends OFGeneralSerializer {
 
     /**
      * Serializes object headers (e.g. for Multipart message - Table Features)
      * @param input object whose headers should be serialized
      * @param outBuffer output buffer
      */
-    void serializeHeader(SERIALIZER_TYPE input, ByteBuf outBuffer);
+    void serializeHeader(T input, ByteBuf outBuffer);
 }

@@ -14,11 +14,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 
 /**
  * @author michal.polkorab
- * @param <TYPE> action type
+ * @param <T> action type
  */
-public class ActionSerializerKey<TYPE extends ActionBase> extends MessageTypeKey<Action> {
+public class ActionSerializerKey<T extends ActionBase> extends MessageTypeKey<Action> {
 
-    private Class<TYPE> actionType;
+    private Class<T> actionType;
     private Long experimenterId;
 
     /**
@@ -26,7 +26,7 @@ public class ActionSerializerKey<TYPE extends ActionBase> extends MessageTypeKey
      * @param actionType type of action
      * @param experimenterId experimenter / vendor ID
      */
-    public ActionSerializerKey(short msgVersion, Class<TYPE> actionType,
+    public ActionSerializerKey(short msgVersion, Class<T> actionType,
             Long experimenterId) {
         super(msgVersion, Action.class);
         this.actionType = actionType;

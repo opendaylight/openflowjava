@@ -24,7 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Stores and handles serializers
+ * Stores and handles serializers <br/>
+ * K - {@link MessageTypeKey} type <br/>
+ * S - returned serializer type
  * @author michal.polkorab
  * @author timotej.kubas
  */
@@ -60,20 +62,20 @@ public class SerializerRegistryImpl implements SerializerRegistry {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public <KEY_TYPE, SERIALIZER_TYPE extends OFGeneralSerializer> SERIALIZER_TYPE getSerializer(
-            MessageTypeKey<KEY_TYPE> msgTypeKey) {
+    public <K, S extends OFGeneralSerializer> S getSerializer(
+            MessageTypeKey<K> msgTypeKey) {
         OFGeneralSerializer serializer = registry.get(msgTypeKey);
         if (serializer == null) {
             throw new IllegalStateException("Serializer for key: " + msgTypeKey
                     + " was not found - please verify that you are using correct message"
                     + " combination (e.g. OF v1.0 message to OF v1.0 device)");
         }
-        return (SERIALIZER_TYPE) serializer;
+        return (S) serializer;
     }
 
     @Override
-    public <KEY_TYPE> void registerSerializer(
-            MessageTypeKey<KEY_TYPE> msgTypeKey, OFGeneralSerializer serializer) {
+    public <K> void registerSerializer(
+            MessageTypeKey<K> msgTypeKey, OFGeneralSerializer serializer) {
         if ((msgTypeKey == null) || (serializer == null)) {
             throw new IllegalArgumentException("MessageTypeKey or Serializer is null");
         }
@@ -89,7 +91,7 @@ public class SerializerRegistryImpl implements SerializerRegistry {
     }
 
     @Override
-    public <KEY_TYPE> boolean unregisterSerializer(MessageTypeKey<KEY_TYPE> msgTypeKey) {
+    public <K> boolean unregisterSerializer(MessageTypeKey<K> msgTypeKey) {
         if (msgTypeKey == null) {
             throw new IllegalArgumentException("MessageTypeKey is null");
         }

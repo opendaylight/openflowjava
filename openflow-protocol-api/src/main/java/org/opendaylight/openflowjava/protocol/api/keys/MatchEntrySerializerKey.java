@@ -16,14 +16,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
 
 /**
  * @author michal.polkorab
- * @param <OXM_CLASS> oxm_class (see specification)
- * @param <OXM_FIELD> oxm_field (see specification)
+ * @param <C> oxm_class (see specification)
+ * @param <F> oxm_field (see specification)
  */
-public final class MatchEntrySerializerKey<OXM_CLASS extends OxmClassBase, OXM_FIELD extends MatchField>
+public final class MatchEntrySerializerKey<C extends OxmClassBase, F extends MatchField>
         extends MessageTypeKey<MatchEntries> implements ExperimenterSerializerKey {
 
-    private Class<OXM_CLASS> oxmClass;
-    private Class<OXM_FIELD> oxmField;
+    private Class<C> oxmClass;
+    private Class<F> oxmField;
     private Long experimenterId;
 
     /**
@@ -32,8 +32,8 @@ public final class MatchEntrySerializerKey<OXM_CLASS extends OxmClassBase, OXM_F
      * @param oxmClass oxm_class (see specification)
      * @param oxmField oxm_field (see specification)
      */
-    public MatchEntrySerializerKey(short msgVersion, Class<OXM_CLASS> oxmClass,
-            Class<OXM_FIELD> oxmField) {
+    public MatchEntrySerializerKey(short msgVersion, Class<C> oxmClass,
+            Class<F> oxmField) {
         super(msgVersion, MatchEntries.class);
         this.oxmClass = oxmClass;
         this.oxmField = oxmField;

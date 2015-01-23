@@ -52,7 +52,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
 /**
- * Exposed class for server handling
+ * Exposed class for server handling <br/>
+ * C - {@link MatchEntrySerializerKey} parameter representing oxm_class (see specification) <br/>
+ * F - {@link MatchEntrySerializerKey} parameter representing oxm_field (see specification)
  * @author mirehak
  * @author michal.polkorab
  */
@@ -193,7 +195,7 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     }
 
     @Override
-    public <OXM_CLASS extends OxmClassBase, OXM_TYPE extends MatchField> void registerMatchEntrySerializer(MatchEntrySerializerKey<OXM_CLASS, OXM_TYPE> key,
+    public <C extends OxmClassBase, F extends MatchField> void registerMatchEntrySerializer(MatchEntrySerializerKey<C, F> key,
             OFGeneralSerializer serializer) {
         serializerRegistry.registerSerializer(key, serializer);
     }
