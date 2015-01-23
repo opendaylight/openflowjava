@@ -14,12 +14,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 
 /**
  * @author michal.polkorab
- * @param <TYPE> action type
+ * @param <T> action type
  */
-public class InstructionSerializerKey<TYPE extends InstructionBase>
+public class InstructionSerializerKey<T extends InstructionBase>
         extends MessageTypeKey<Instruction>{
 
-    private Class<TYPE> instructionType;
+    private Class<T> instructionType;
     private Long experimenterId;
 
     /**
@@ -28,7 +28,7 @@ public class InstructionSerializerKey<TYPE extends InstructionBase>
      * @param instructionType type of instruction
      * @param experimenterId experimenter / vendor ID
      */
-    public InstructionSerializerKey(short msgVersion, Class<TYPE> instructionType,
+    public InstructionSerializerKey(short msgVersion, Class<T> instructionType,
             Long experimenterId) {
         super(msgVersion, Instruction.class);
         this.instructionType = instructionType;

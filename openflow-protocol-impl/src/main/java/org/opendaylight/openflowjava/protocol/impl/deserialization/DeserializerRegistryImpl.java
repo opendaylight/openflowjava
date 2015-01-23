@@ -57,14 +57,14 @@ public class DeserializerRegistryImpl implements DeserializerRegistry {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <DESERIALIZER_TYPE extends OFGeneralDeserializer> DESERIALIZER_TYPE getDeserializer(
+    public <T extends OFGeneralDeserializer> T getDeserializer(
             MessageCodeKey key) {
         OFGeneralDeserializer deserializer = registry.get(key);
         if (deserializer == null) {
             throw new IllegalStateException("Deserializer for key: " + key
                     + " was not found - please verify that all needed deserializers ale loaded correctly");
         }
-        return (DESERIALIZER_TYPE) deserializer;
+        return (T) deserializer;
     }
 
     @Override

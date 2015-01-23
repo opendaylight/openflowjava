@@ -17,11 +17,11 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.Deserializati
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 
 /**
- * @param <CHANNEL_TYPE> Channel type
+ * @param <C> Channel type
  * @author michal.polkorab
  */
-public abstract class ProtocolChannelInitializer<CHANNEL_TYPE extends Channel>
-        extends ChannelInitializer<CHANNEL_TYPE> {
+public abstract class ProtocolChannelInitializer<C extends Channel>
+        extends ChannelInitializer<C> {
 
     private SwitchConnectionHandler switchConnectionHandler;
     private long switchIdleTimeout;
