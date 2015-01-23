@@ -471,4 +471,14 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     public void setResponseCache(Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> cache) {
         this.responseCache = cache;
     }
+
+	@Override
+    public boolean isAutoRead() {
+    	return channel.config().isAutoRead();
+    }
+    
+	@Override
+    public void setAutoRead(boolean autoRead) {
+    	channel.config().setAutoRead(autoRead);
+    }
 }
