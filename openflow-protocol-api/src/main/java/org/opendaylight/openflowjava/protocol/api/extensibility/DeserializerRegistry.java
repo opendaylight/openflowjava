@@ -23,8 +23,8 @@ public interface DeserializerRegistry {
      * @param key used for deserializer lookup
      * @return deserializer found
      */
-    <SERIALIZERTYPE extends OFGeneralDeserializer>
-            SERIALIZERTYPE getDeserializer(MessageCodeKey key);
+    <T extends OFGeneralDeserializer>
+            T getDeserializer(MessageCodeKey key);
 
     /**
      * Registers deserializer.

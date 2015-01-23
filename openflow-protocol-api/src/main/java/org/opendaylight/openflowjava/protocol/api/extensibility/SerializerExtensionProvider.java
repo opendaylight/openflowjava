@@ -63,8 +63,8 @@ public interface SerializerExtensionProvider {
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */
-    <OXMCLASS extends OxmClassBase, OXMTYPE extends MatchField> void registerMatchEntrySerializer(
-            MatchEntrySerializerKey<OXMCLASS, OXMTYPE> key,OFGeneralSerializer serializer);
+    <C extends OxmClassBase, F extends MatchField> void registerMatchEntrySerializer(
+            MatchEntrySerializerKey<C, F> key,OFGeneralSerializer serializer);
 
     /**
      * Registers experimenter (vendor) message serializer
