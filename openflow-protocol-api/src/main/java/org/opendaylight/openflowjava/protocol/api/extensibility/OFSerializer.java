@@ -16,15 +16,15 @@ import io.netty.buffer.ByteBuf;
  * Uniform interface for serializers
  * @author michal.polkorab
  * @author timotej.kubas
- * @param <SERIALIZER_TYPE> message type
+ * @param <T> message type
  */
-public interface OFSerializer <SERIALIZER_TYPE extends DataObject> extends OFGeneralSerializer {
+public interface OFSerializer <T extends DataObject> extends OFGeneralSerializer {
 
     /**
      * Transforms POJO/DTO into byte message (ByteBuf).
      * @param input object to be serialized
      * @param outBuffer output buffer
      */
-    void serialize(SERIALIZER_TYPE input, ByteBuf outBuffer);
+    void serialize(T input, ByteBuf outBuffer);
 
 }

@@ -15,12 +15,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmC
 
 /**
  * @author michal.polkorab
- * @param <OXM_CLASS> OXM class
+ * @param <C> OXM class
  */
-public class MatchEntrySerializerRegistryHelper<OXM_CLASS extends OxmClassBase> {
+public class MatchEntrySerializerRegistryHelper<C extends OxmClassBase> {
 
     private short version;
-    private Class<OXM_CLASS> generalClass;
+    private Class<C> generalClass;
     private SerializerRegistry serializerRegistry;
 
     /**
@@ -28,7 +28,7 @@ public class MatchEntrySerializerRegistryHelper<OXM_CLASS extends OxmClassBase> 
      * @param generalClass
      * @param serializerRegistry
      */
-    public MatchEntrySerializerRegistryHelper(short version, Class<OXM_CLASS> generalClass,
+    public MatchEntrySerializerRegistryHelper(short version, Class<C> generalClass,
             SerializerRegistry serializerRegistry) {
         this.version = version;
         this.generalClass = generalClass;
@@ -40,8 +40,8 @@ public class MatchEntrySerializerRegistryHelper<OXM_CLASS extends OxmClassBase> 
      * @param specificClass
      * @param serializer
      */
-    public <OXM_FIELD extends MatchField> void registerSerializer(
-            Class<OXM_FIELD> specificClass, OFGeneralSerializer serializer) {
+    public <F extends MatchField> void registerSerializer(
+            Class<F> specificClass, OFGeneralSerializer serializer) {
         MatchEntrySerializerKey<?, ?> key = new MatchEntrySerializerKey<>(version, generalClass, specificClass);
         key.setExperimenterId(null);
         serializerRegistry.registerSerializer(key, serializer);
