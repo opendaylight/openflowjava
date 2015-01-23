@@ -34,7 +34,7 @@ public class InstructionSerializerRegistryHelper {
      * @param instructionType
      * @param serializer
      */
-    public <TYPE extends InstructionBase> void registerSerializer(Class<TYPE> instructionType,
+    public <T extends InstructionBase> void registerSerializer(Class<T> instructionType,
             OFGeneralSerializer serializer) {
         serializerRegistry.registerSerializer(new InstructionSerializerKey<>(version,
                 instructionType, null), serializer);

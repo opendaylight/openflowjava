@@ -35,7 +35,7 @@ public class ActionSerializerRegistryHelper {
      * @param actionType
      * @param serializer
      */
-    public <TYPE extends ActionBase> void registerSerializer(Class<TYPE> actionType,
+    public <T extends ActionBase> void registerSerializer(Class<T> actionType,
             OFGeneralSerializer serializer) {
         serializerRegistry.registerSerializer(new ActionSerializerKey<>(version,
                 actionType, null), serializer);
