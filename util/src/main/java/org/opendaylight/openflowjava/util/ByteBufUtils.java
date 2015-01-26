@@ -45,7 +45,7 @@ public abstract class ByteBufUtils {
      * @return String
      */
     public static String byteBufToHexString(final ByteBuf bb) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = bb.readerIndex(); i < (bb.readerIndex() + bb.readableBytes()); i++) {
             sb.append(String.format(" %02x", bb.getUnsignedByte(i)));
         }
@@ -204,7 +204,7 @@ public abstract class ByteBufUtils {
      * @return String
      */
     public static String bytesToHexString(final byte[] array) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (byte element : array) {
             sb.append(String.format(" %02x", element));
         }
