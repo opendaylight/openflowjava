@@ -35,6 +35,10 @@ public abstract class ByteBufUtils {
     public static final Splitter COLON_SPLITTER = Splitter.on(':');
     private static final char[] HEX_CHARS = "0123456789ABCDEF".toCharArray();
 
+    private ByteBufUtils() {
+        //not called
+    }
+
     /**
      * Converts ByteBuf into String
      * @param bb input ByteBuf

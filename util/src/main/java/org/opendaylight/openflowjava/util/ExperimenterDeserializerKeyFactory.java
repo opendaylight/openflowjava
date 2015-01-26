@@ -22,6 +22,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public abstract class ExperimenterDeserializerKeyFactory {
 
+    private ExperimenterDeserializerKeyFactory() {
+        //not called
+    }
+    
     /**
      * @param version openflow wire version
      * @param experimenterId experimenter / vendor ID

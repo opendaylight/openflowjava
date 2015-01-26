@@ -24,6 +24,10 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  */
 public abstract class ListSerializer {
 
+    private ListSerializer() {
+        //not called
+    }
+    
     /**
      * Serializes item list
      * @param list list of items to be serialized

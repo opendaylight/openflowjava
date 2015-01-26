@@ -24,6 +24,9 @@ import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
  */
 public abstract class CodeKeyMakerFactory {
 
+    private CodeKeyMakerFactory() {
+        //not called
+    }
     /**
      * @param version
      * @return

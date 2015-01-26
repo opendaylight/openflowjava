@@ -19,6 +19,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
  */
 public abstract class OpenflowUtils {
 
+    private OpenflowUtils() {
+        //not called
+    }
+    
     /**
      * Creates PortState (OF v1.0) from input
      * @param input value read from buffer

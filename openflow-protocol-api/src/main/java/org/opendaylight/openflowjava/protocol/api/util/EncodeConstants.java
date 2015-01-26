@@ -58,4 +58,7 @@ public abstract class EncodeConstants {
     /** OF v1.3 lenght of experimenter_ids - see Multipart TableFeatures (properties) message */
     public static final byte EXPERIMENTER_IDS_LENGTH = 8;
 
+    private EncodeConstants() {
+        //not called
+    }
 }

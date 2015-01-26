@@ -29,6 +29,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
  */
 public abstract class TypeKeyMakerFactory {
 
+    private TypeKeyMakerFactory() {
+        //not called
+    }
+    
     /**
      * @param version openflow wire version that shall be used
      *  in lookup key
