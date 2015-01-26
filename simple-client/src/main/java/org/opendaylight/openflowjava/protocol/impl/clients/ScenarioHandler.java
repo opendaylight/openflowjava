@@ -10,7 +10,7 @@ package org.opendaylight.openflowjava.protocol.impl.clients;
 
 import io.netty.channel.ChannelHandlerContext;
 
-import java.util.Stack;
+import java.util.Deque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 public class ScenarioHandler extends Thread {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioHandler.class);
-    private Stack<ClientEvent> scenario;
+    private Deque<ClientEvent> scenario;
     private BlockingQueue<byte[]> ofMsg;
     private ChannelHandlerContext ctx;
     private int eventNumber;
@@ -36,7 +36,7 @@ public class ScenarioHandler extends Thread {
      *
      * @param scenario
      */
-    public ScenarioHandler(Stack<ClientEvent> scenario) {
+    public ScenarioHandler(Deque<ClientEvent> scenario) {
         this.scenario = scenario;
         ofMsg = new LinkedBlockingQueue<>();
     }
@@ -46,7 +46,7 @@ public class ScenarioHandler extends Thread {
         int freezeCounter = 0;
         while (!scenario.isEmpty()) {
             LOGGER.debug("Running event #" + eventNumber);
-            ClientEvent peek = scenario.peek();
+            ClientEvent peek = scenario.peekLast();
             if (peek instanceof WaitForMessageEvent) {
                 LOGGER.debug("WaitForMessageEvent");
                 try {
@@ -62,7 +62,7 @@ public class ScenarioHandler extends Thread {
                 event.setCtx(ctx);
             }
             if (peek.eventExecuted()) {
-                scenario.pop();
+                scenario.removeLast();
                 eventNumber++;
                 freezeCounter = 0;
             } else {
@@ -95,14 +95,14 @@ public class ScenarioHandler extends Thread {
     /**
      * @return scenario
      */
-    public Stack<ClientEvent> getScenario() {
+    public Deque<ClientEvent> getScenario() {
         return scenario;
     }
 
     /**
      * @param scenario scenario filled with desired events
      */
-    public void setScenario(Stack<ClientEvent> scenario) {
+    public void setScenario(Deque<ClientEvent> scenario) {
         this.scenario = scenario;
     }
 

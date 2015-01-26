@@ -10,8 +10,9 @@ package org.opendaylight.openflowjava.protocol.it.integration;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
-import java.util.Stack;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -107,7 +108,7 @@ public class IntegrationTest {
     public void testHandshake() throws Exception {
         setUp(TransportProtocol.TCP);
         int amountOfCLients = 1;
-        Stack<ClientEvent> scenario = ScenarioFactory.createHandshakeScenario();
+        Deque<ClientEvent> scenario = ScenarioFactory.createHandshakeScenario();
         ScenarioHandler handler = new ScenarioHandler(scenario);
         List<OFClient> clients = createAndStartClient(amountOfCLients, handler, TransportProtocol.TCP);
         OFClient firstClient = clients.get(0);
@@ -125,7 +126,7 @@ public class IntegrationTest {
     public void testTlsHandshake() throws Exception {
         setUp(TransportProtocol.TLS);
         int amountOfCLients = 1;
-        Stack<ClientEvent> scenario = ScenarioFactory.createHandshakeScenario();
+        Deque<ClientEvent> scenario = ScenarioFactory.createHandshakeScenario();
         ScenarioHandler handler = new ScenarioHandler(scenario);
         List<OFClient> clients = createAndStartClient(amountOfCLients, handler, TransportProtocol.TLS);
         OFClient firstClient = clients.get(0);
@@ -143,11 +144,11 @@ public class IntegrationTest {
     public void testHandshakeAndEcho() throws Exception {
         setUp(TransportProtocol.TCP);
         int amountOfCLients = 1;
-        Stack<ClientEvent> scenario = ScenarioFactory.createHandshakeScenario();
-        scenario.add(0, new SleepEvent(1000));
-        scenario.add(0, new SendEvent(ByteBufUtils.hexStringToBytes("04 02 00 08 00 00 00 04")));
-        scenario.add(0, new SleepEvent(1000));
-        scenario.add(0, new WaitForMessageEvent(ByteBufUtils.hexStringToBytes("04 03 00 08 00 00 00 04")));
+        Deque<ClientEvent> scenario = ScenarioFactory.createHandshakeScenario();
+        scenario.addFirst(new SleepEvent(1000));
+        scenario.addFirst(new SendEvent(ByteBufUtils.hexStringToBytes("04 02 00 08 00 00 00 04")));
+        scenario.addFirst(new SleepEvent(1000));
+        scenario.addFirst(new WaitForMessageEvent(ByteBufUtils.hexStringToBytes("04 03 00 08 00 00 00 04")));
         ScenarioHandler handler = new ScenarioHandler(scenario);
         List<OFClient> clients = createAndStartClient(amountOfCLients, handler, TransportProtocol.TCP);
         OFClient firstClient = clients.get(0);
@@ -164,11 +165,11 @@ public class IntegrationTest {
     public void testTlsHandshakeAndEcho() throws Exception {
         setUp(TransportProtocol.TLS);
         int amountOfCLients = 1;
-        Stack<ClientEvent> scenario = ScenarioFactory.createHandshakeScenario();
-        scenario.add(0, new SleepEvent(1000));
-        scenario.add(0, new SendEvent(ByteBufUtils.hexStringToBytes("04 02 00 08 00 00 00 04")));
-        scenario.add(0, new SleepEvent(1000));
-        scenario.add(0, new WaitForMessageEvent(ByteBufUtils.hexStringToBytes("04 03 00 08 00 00 00 04")));
+        Deque<ClientEvent> scenario = ScenarioFactory.createHandshakeScenario();
+        scenario.addFirst(new SleepEvent(1000));
+        scenario.addFirst(new SendEvent(ByteBufUtils.hexStringToBytes("04 02 00 08 00 00 00 04")));
+        scenario.addFirst(new SleepEvent(1000));
+        scenario.addFirst(new WaitForMessageEvent(ByteBufUtils.hexStringToBytes("04 03 00 08 00 00 00 04")));
         ScenarioHandler handler = new ScenarioHandler(scenario);
         List<OFClient> clients = createAndStartClient(amountOfCLients, handler, TransportProtocol.TLS);
         OFClient firstClient = clients.get(0);
@@ -185,11 +186,11 @@ public class IntegrationTest {
     public void testUdpHandshakeAndEcho() throws Exception {
         setUp(TransportProtocol.UDP);
         int amountOfCLients = 1;
-        Stack<ClientEvent> scenario = ScenarioFactory.createHandshakeScenario();
-        scenario.add(0, new SleepEvent(1000));
-        scenario.add(0, new SendEvent(ByteBufUtils.hexStringToBytes("04 02 00 08 00 00 00 04")));
-        scenario.add(0, new SleepEvent(1000));
-        scenario.add(0, new WaitForMessageEvent(ByteBufUtils.hexStringToBytes("04 03 00 08 00 00 00 04")));
+        Deque<ClientEvent> scenario = ScenarioFactory.createHandshakeScenario();
+        scenario.addFirst(new SleepEvent(1000));
+        scenario.addFirst(new SendEvent(ByteBufUtils.hexStringToBytes("04 02 00 08 00 00 00 04")));
+        scenario.addFirst(new SleepEvent(1000));
+        scenario.addFirst(new WaitForMessageEvent(ByteBufUtils.hexStringToBytes("04 03 00 08 00 00 00 04")));
         ScenarioHandler handler = new ScenarioHandler(scenario);
         List<OFClient> clients = createAndStartClient(amountOfCLients, handler, TransportProtocol.UDP);
         OFClient firstClient = clients.get(0);
