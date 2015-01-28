@@ -68,8 +68,6 @@ public class RpcResponseKey {
             }
         } else if (!outputClazz.equals(other.outputClazz)) {
             return false;
-//        if (xid != other.xid)
-//            return false;
         }
         return true;
     }

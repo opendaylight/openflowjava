@@ -27,6 +27,5 @@ public class UdpChannelInitializer extends ProtocolChannelInitializer<NioDatagra
         OFDatagramPacketEncoder ofDatagramPacketEncoder = new OFDatagramPacketEncoder();
         ofDatagramPacketEncoder.setSerializationFactory(getSerializationFactory());
         ch.pipeline().addLast(PipelineHandlers.OF_ENCODER.name(), ofDatagramPacketEncoder);
-//        connectionFacade.fireConnectionReadyNotification();
     }
 }

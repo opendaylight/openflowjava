@@ -70,7 +70,7 @@ public abstract class ByteBufUtils {
         }
         Iterable<String> tmp = Splitter.onPattern(splitPattern)
                 .omitEmptyStrings().split(hexSrc);
-        ArrayList<String> byteChips = Lists.newArrayList(tmp);
+        List<String> byteChips = Lists.newArrayList(tmp);
         byte[] result = new byte[byteChips.size()];
         int i = 0;
         for (String chip : byteChips) {

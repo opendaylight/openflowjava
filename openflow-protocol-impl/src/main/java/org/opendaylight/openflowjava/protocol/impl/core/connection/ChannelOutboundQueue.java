@@ -236,7 +236,7 @@ final class ChannelOutboundQueue extends ChannelInboundHandlerAdapter {
     }
 
     private void conditionalFlush(final ChannelHandlerContext ctx) {
-        Preconditions.checkState(ctx.channel() == channel, "Inconsistent channel %s with context %s", channel, ctx);
+        Preconditions.checkState(ctx.channel().equals(channel), "Inconsistent channel %s with context %s", channel, ctx);
         conditionalFlush();
     }
 
