@@ -55,7 +55,7 @@ public final class StatisticsCounters implements StatisticsHandler {
      * Get instance of statistics counters, first created object does not start counting and log reporting
      * @return an instance
      */
-    public synchronized static StatisticsCounters getInstance() {
+    public static synchronized StatisticsCounters getInstance() {
         if (instanceHolder == null) {
             instanceHolder = new StatisticsCounters();
         }

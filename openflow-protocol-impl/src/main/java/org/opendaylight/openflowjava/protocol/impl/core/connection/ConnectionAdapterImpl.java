@@ -95,8 +95,6 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     private static final Exception QUEUE_FULL_EXCEPTION =
             new RejectedExecutionException("Output queue is full");
 
-    private static final String APPLICATION_TAG = "OPENFLOW_LIBRARY";
-    private static final String TAG = "OPENFLOW";
     private static final RemovalListener<RpcResponseKey, ResponseExpectedRpcListener<?>> REMOVAL_LISTENER =
             new RemovalListener<RpcResponseKey, ResponseExpectedRpcListener<?>>() {
         @Override
