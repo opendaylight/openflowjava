@@ -8,9 +8,6 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.match.NxmTcpFlagDeserializer;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.match.NxmTunnelIpv4DstDeserializer;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.match.NxmTunnelIpv4SrcDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpOpDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpShaDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpSpaDeserializer;
@@ -114,14 +111,5 @@ public final class MatchEntryDeserializerInitializer {
         helper.register(OxmMatchConstants.PBB_ISID, new OxmPbbIsidDeserializer());
         helper.register(OxmMatchConstants.TUNNEL_ID, new OxmTunnelIdDeserializer());
         helper.register(OxmMatchConstants.IPV6_EXTHDR, new OxmIpv6ExtHdrDeserializer());
-
-        // Register NXM1Class match entry deserializers
-        MatchEntryDeserializerRegistryHelper nxm1helper =
-                new MatchEntryDeserializerRegistryHelper(EncodeConstants.OF13_VERSION_ID,
-                        OxmMatchConstants.NXM_1_CLASS, registry);
-        nxm1helper.register(OxmMatchConstants.NXM_NX_TUN_IPV4_SRC, new NxmTunnelIpv4SrcDeserializer());
-        nxm1helper.register(OxmMatchConstants.NXM_NX_TUN_IPV4_DST, new NxmTunnelIpv4DstDeserializer());
-        nxm1helper.register(OxmMatchConstants.NXM_NX_TCP_FLAG, new NxmTcpFlagDeserializer());
-
     }
 }
