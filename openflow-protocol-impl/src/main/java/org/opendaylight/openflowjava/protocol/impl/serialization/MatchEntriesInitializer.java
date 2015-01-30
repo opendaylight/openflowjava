@@ -9,9 +9,6 @@ package org.opendaylight.openflowjava.protocol.impl.serialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.impl.serialization.match.NxmTcpFlagSerializer;
-import org.opendaylight.openflowjava.protocol.impl.serialization.match.NxmTunnelIpv4DstSerializer;
-import org.opendaylight.openflowjava.protocol.impl.serialization.match.NxmTunnelIpv4SrcSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpOpSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpShaSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpSpaSerializer;
@@ -159,14 +156,5 @@ public final class MatchEntriesInitializer {
         helper.registerSerializer(PbbIsid.class, new OxmPbbIsidSerializer());
         helper.registerSerializer(TunnelId.class, new OxmTunnelIdSerializer());
         helper.registerSerializer(Ipv6Exthdr.class, new OxmIpv6ExtHdrSerializer());
-
-        // Register OpenFlow NXM1Class match entry serializer
-        Class<Nxm1Class> nxm1Class = Nxm1Class.class;
-        MatchEntrySerializerRegistryHelper<Nxm1Class> nxm1RegistryHelper =
-                new MatchEntrySerializerRegistryHelper<>(EncodeConstants.OF13_VERSION_ID,
-                        nxm1Class, serializerRegistry);
-        nxm1RegistryHelper.registerSerializer(TunnelIpv4Dst.class, new NxmTunnelIpv4DstSerializer());
-        nxm1RegistryHelper.registerSerializer(TunnelIpv4Src.class, new NxmTunnelIpv4SrcSerializer());
-        nxm1RegistryHelper.registerSerializer(TcpFlag.class, new NxmTcpFlagSerializer());
     }
 }
