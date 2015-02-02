@@ -19,6 +19,8 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionReadyListener;
+import org.opendaylight.openflowjava.protocol.impl.core.IdleHandler;
+import org.opendaylight.openflowjava.protocol.impl.core.PipelineHandlers;
 import org.opendaylight.openflowjava.statistics.CounterEventTypes;
 import org.opendaylight.openflowjava.statistics.StatisticsCounters;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
@@ -119,6 +121,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     private SystemNotificationsListener systemListener;
     private boolean disconnectOccured = false;
     private StatisticsCounters statisticsCounters;
+    private long idleTimeout = 0;
 
     /**
      * default ctor
@@ -470,5 +473,20 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
      */
     public void setResponseCache(Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> cache) {
         this.responseCache = cache;
+    }
+
+    @Override
+    public void setIdleTimeout(long idleTimeout) {
+        this.idleTimeout = idleTimeout;
+        if (channel.pipeline().get(PipelineHandlers.IDLE_HANDLER.name()) != null) {
+            channel.pipeline().replace(PipelineHandlers.IDLE_HANDLER.name(),
+                                       PipelineHandlers.IDLE_HANDLER.name(),
+                                       new IdleHandler(idleTimeout, TimeUnit.MILLISECONDS));
+        }
+    }
+
+    @Override
+    public long getIdleTimeout() {
+        return idleTimeout;
     }
 }

@@ -71,8 +71,10 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
         try {
             LOGGER.debug("calling plugin: " + getSwitchConnectionHandler());
             getSwitchConnectionHandler().onSwitchConnected(connectionFacade);
+            connectionFacade.setIdleTimeout(getSwitchIdleTimeout());
             connectionFacade.checkListeners();
-            ch.pipeline().addLast(PipelineHandlers.IDLE_HANDLER.name(), new IdleHandler(getSwitchIdleTimeout(), TimeUnit.MILLISECONDS));
+            ch.pipeline().addLast(PipelineHandlers.IDLE_HANDLER.name(),
+                    new IdleHandler(connectionFacade.getIdleTimeout(), TimeUnit.MILLISECONDS));
             boolean tlsPresent = false;
 
             // If this channel is configured to support SSL it will only support SSL

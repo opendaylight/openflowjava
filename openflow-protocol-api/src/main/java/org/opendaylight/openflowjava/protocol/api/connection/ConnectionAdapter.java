@@ -14,6 +14,7 @@ import java.util.concurrent.Future;
 
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OpenflowProtocolListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OpenflowProtocolService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SwitchIdleEvent;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SystemNotificationsListener;
 
 /**
@@ -63,4 +64,15 @@ public interface ConnectionAdapter extends OpenflowProtocolService {
      */
     void setConnectionReadyListener(ConnectionReadyListener connectionReadyListener);
 
+    /**
+     * Sets idle timeout (in milliseconds). If there is no message received
+     * over the idle timeout duration, openflowjava sends {@link SwitchIdleEvent}
+     * @param idleTimeout time after which the {@link SwitchIdleEvent} is sent
+     */
+    void setIdleTimeout(long idleTimeout);
+
+    /**
+     * @return switch idle timeout
+     */
+    long getIdleTimeout();
 }
