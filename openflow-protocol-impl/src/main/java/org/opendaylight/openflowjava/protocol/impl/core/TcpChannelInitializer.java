@@ -54,15 +54,21 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
 
     @Override
     protected void initChannel(final SocketChannel ch) {
-        InetAddress switchAddress = ch.remoteAddress().getAddress();
-        int port = ch.localAddress().getPort();
-        int remotePort = ch.remoteAddress().getPort();
-        LOGGER.debug("Incoming connection from (remote address): " + switchAddress.toString()
-                + ":" + remotePort + " --> :" + port);
-        if (!getSwitchConnectionHandler().accept(switchAddress)) {
-            ch.disconnect();
-            LOGGER.debug("Incoming connection rejected");
-            return;
+        InetAddress switchAddress = null;
+        int port = 0;
+        int remotePort = 0;
+        if (ch.remoteAddress() != null) {
+            switchAddress = ch.remoteAddress().getAddress();
+            port = ch.localAddress().getPort();
+            remotePort = ch.remoteAddress().getPort();
+            LOGGER.debug("Incoming connection from (remote address): " + switchAddress.toString()
+                    + ":" + remotePort + " --> :" + port);
+            
+            if (!getSwitchConnectionHandler().accept(switchAddress)) {
+                ch.disconnect();
+                LOGGER.debug("Incoming connection rejected");
+                return;
+            }
         }
         LOGGER.debug("Incoming connection accepted - building pipeline");
         allChannels.add(ch);

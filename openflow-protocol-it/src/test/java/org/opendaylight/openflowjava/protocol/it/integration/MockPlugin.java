@@ -18,6 +18,8 @@ import java.util.concurrent.TimeoutException;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionAdapter;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionReadyListener;
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
+import org.opendaylight.openflowjava.protocol.impl.core.SwitchConnectionProviderImpl;
+import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoReplyInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoReplyInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoRequestMessage;
@@ -231,5 +233,12 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
         LOGGER.trace("MockPlugin().onConnectionReady()");
     }
 
-
+    /**
+     * Initiates connection to device
+     * @param switchConnectionProvider 
+     */
+    public void initiateConnection(SwitchConnectionProvider switchConnectionProvider) {
+        LOGGER.trace("MockPlugin().initiateConnection()");
+        switchConnectionProvider.initiateConnection("localhost", 6633);
+    }
 }

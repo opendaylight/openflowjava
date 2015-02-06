@@ -47,4 +47,11 @@ public interface SwitchConnectionProvider extends AutoCloseable,
      */
     void setSwitchConnectionHandler(SwitchConnectionHandler switchConHandler);
 
+    /**
+     * Initiates connection to device
+     * @param host address of device
+     * @param port port of device
+     */
+    public void initiateConnection(String host, int port);
+
 }
