@@ -9,6 +9,8 @@
 
 package org.opendaylight.openflowjava.protocol.impl.core;
 
+import io.netty.channel.nio.NioEventLoopGroup;
+
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
@@ -29,6 +31,7 @@ import org.opendaylight.openflowjava.protocol.api.keys.MatchEntryDeserializerKey
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageTypeKey;
+import org.opendaylight.openflowjava.protocol.impl.TcpConnectionInitializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
@@ -69,6 +72,7 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
     private SerializerRegistry serializerRegistry;
     private DeserializerRegistry deserializerRegistry;
     private DeserializationFactory deserializationFactory;
+    private TcpConnectionInitializer connectionInitializer;
 
     /** Constructor */
     public SwitchConnectionProviderImpl() {
@@ -138,6 +142,11 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
         if (transportProtocol.equals(TransportProtocol.TCP) || transportProtocol.equals(TransportProtocol.TLS)) {
             server = new TcpHandler(connConfig.getAddress(), connConfig.getPort());
             ((TcpHandler) server).setChannelInitializer(factory.createPublishingChannelInitializer());
+            ((TcpHandler) server).initiateWorkerGroup();
+            
+            NioEventLoopGroup workerGroupFromTcpHandler = ((TcpHandler) server).getWorkerGroup();
+            connectionInitializer = new TcpConnectionInitializer(workerGroupFromTcpHandler);
+            connectionInitializer.setChannelInitializer(factory.createPublishingChannelInitializer());
         } else if (transportProtocol.equals(TransportProtocol.UDP)){
             server = new UdpHandler(connConfig.getAddress(), connConfig.getPort());
             ((UdpHandler) server).setChannelInitializer(factory.createUdpChannelInitializer());
@@ -265,4 +274,10 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
             OFSerializer<MeterBandExperimenterCase> serializer) {
         serializerRegistry.registerSerializer(key, serializer);
     }
+
+    @Override
+    public void initiateConnection(String host, int port) {
+        connectionInitializer.initiateConnection(host, port);
+    }
+
 }
