@@ -46,5 +46,4 @@ public interface SwitchConnectionProvider extends AutoCloseable,
      * @param switchConHandler instance being informed when new switch connects
      */
     void setSwitchConnectionHandler(SwitchConnectionHandler switchConHandler);
-
 }
