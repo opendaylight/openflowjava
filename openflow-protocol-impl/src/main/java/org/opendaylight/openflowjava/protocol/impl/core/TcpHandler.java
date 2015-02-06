@@ -82,14 +82,6 @@ public class TcpHandler implements ServerFacade {
      */
     @Override
     public void run() {
-        if (threadConfig != null) {
-            bossGroup = new NioEventLoopGroup(threadConfig.getBossThreadCount());
-            workerGroup = new NioEventLoopGroup(threadConfig.getWorkerThreadCount());
-        } else {
-            bossGroup = new NioEventLoopGroup();
-            workerGroup = new NioEventLoopGroup();
-        }
-
         /*
          * We generally do not perform IO-unrelated tasks, so we want to have
          * all outstanding tasks completed before the executing thread goes
@@ -204,4 +196,26 @@ public class TcpHandler implements ServerFacade {
     public void setThreadConfig(ThreadConfiguration threadConfig) {
         this.threadConfig = threadConfig;
     }
+
+    /**
+     * Initiate event loop groups
+     * @param threadConfiguration number of threads to be created, if not specified in threadConfig
+     */
+    public void initiateEventLoopGroups(ThreadConfiguration threadConfiguration) {
+        if (threadConfiguration != null) {
+            bossGroup = new NioEventLoopGroup(threadConfiguration.getBossThreadCount());
+            workerGroup = new NioEventLoopGroup(threadConfiguration.getWorkerThreadCount());
+        } else {
+            bossGroup = new NioEventLoopGroup();
+            workerGroup = new NioEventLoopGroup();
+        }
+    }
+
+    /**
+     * @return workerGroup
+     */
+    public NioEventLoopGroup getWorkerGroup() {
+        return workerGroup;
+    }
+
 }

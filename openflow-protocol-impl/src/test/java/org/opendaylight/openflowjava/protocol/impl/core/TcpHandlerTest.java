@@ -123,6 +123,7 @@ public class TcpHandlerTest {
         try {
             tcpHandler = new TcpHandler(serverAddress, serverPort);
             tcpHandler.setChannelInitializer(mockChannelInitializer);
+            tcpHandler.initiateEventLoopGroups(null);
             tcpHandler.run();
         } catch (Exception e) {
             if (e instanceof BindException) {
@@ -150,7 +151,7 @@ public class TcpHandlerTest {
      */
     private Boolean startupServer() throws InterruptedException, IOException, ExecutionException {
         ListenableFuture<Boolean> online = tcpHandler.getIsOnlineFuture();
-
+        tcpHandler.initiateEventLoopGroups(null);
             (new Thread(tcpHandler)).start();
             int retry = 0;
             while (online.isDone() != true && retry++ < 20) {
