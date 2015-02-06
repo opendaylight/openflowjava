@@ -204,4 +204,12 @@ public class TcpHandler implements ServerFacade {
     public void setThreadConfig(ThreadConfiguration threadConfig) {
         this.threadConfig = threadConfig;
     }
+    
+    /**
+     * @return worker group
+     */
+    public NioEventLoopGroup getWorkerGroup() {
+        return workerGroup;
+    }
+
 }
