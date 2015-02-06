@@ -84,10 +84,12 @@ public class TcpHandler implements ServerFacade {
     public void run() {
         if (threadConfig != null) {
             bossGroup = new NioEventLoopGroup(threadConfig.getBossThreadCount());
-            workerGroup = new NioEventLoopGroup(threadConfig.getWorkerThreadCount());
         } else {
             bossGroup = new NioEventLoopGroup();
-            workerGroup = new NioEventLoopGroup();
+        }
+
+        if (workerGroup == null) {
+            this.initiateWorkerGroup(0);
         }
 
         /*
@@ -204,4 +206,21 @@ public class TcpHandler implements ServerFacade {
     public void setThreadConfig(ThreadConfiguration threadConfig) {
         this.threadConfig = threadConfig;
     }
+
+    /**
+     * Initiate worker group
+     * @param numberOfThreads number of threads to be created, if not specified in threadConfig
+     * @return multithreaded event loop that handles I/O operation
+     */
+    public NioEventLoopGroup initiateWorkerGroup(int numberOfThreads) {
+        if (threadConfig != null) {
+            workerGroup = new NioEventLoopGroup(threadConfig.getWorkerThreadCount());
+        } else if (numberOfThreads == 0) {
+            workerGroup = new NioEventLoopGroup();
+        } else {
+            workerGroup = new NioEventLoopGroup(numberOfThreads);
+        }
+        return workerGroup;
+    }
+
 }
