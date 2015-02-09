@@ -35,28 +35,15 @@
         <sonar.host.url>https://sonar.opendaylight.org/</sonar.host.url>
         <nexusproxy>http://nexus.opendaylight.org/content</nexusproxy>
         <sitedeploy>dav:http://nexus.opendaylight.org/content/sites/site</sitedeploy>
-        <siteplugin>3.2</siteplugin>
-        <projectinfo>2.6</projectinfo>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <compiler.version>2.3.2</compiler.version>
-        <surefire.version>2.13</surefire.version>
-        <exam.version>3.0.0</exam.version>
-        <url.version>1.5.0</url.version>
-        <enunciate.version>1.26.2</enunciate.version>
         <jmxGeneratorPath>${project.build.directory}/yang-gen-config</jmxGeneratorPath>
         <karaf.distro.empty.version>1.5.0-SNAPSHOT</karaf.distro.empty.version>
         <salGeneratorPath>${project.build.directory}/yang-gen-sal</salGeneratorPath>
         <sonar.branch>${user.name}-private-view</sonar.branch>
         <sonar.skippedModules>org.openflow.openflowj,net.sf.jung2</sonar.skippedModules>
-        <logback.version>1.0.9</logback.version>
-        <slf4j.version>1.7.2</slf4j.version>
         <yang.prototype.version>1.2.0-SNAPSHOT</yang.prototype.version>
         <ietf.model.version>2010.09.24.7-SNAPSHOT</ietf.model.version>
         <yang.ext.version>2013.09.07.7-SNAPSHOT</yang.ext.version>
-        <maven.bundle.version>2.4.0</maven.bundle.version>
-        <guava.version>14.0.1</guava.version>
-        <netty.version>4.0.23.Final</netty.version>
-        <releaseplugin.version>2.3.2</releaseplugin.version>
         <yangtools.version>0.7.0-SNAPSHOT</yangtools.version>
         <yangtools.generator.version>0.7.0-SNAPSHOT</yangtools.generator.version>
         <mdsal.version>1.2.0-SNAPSHOT</mdsal.version>
@@ -348,34 +335,9 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>2.2.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.7</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.4</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>${releaseplugin.version}</version>
-                </plugin>
-                <plugin>
                     <groupId>org.opendaylight.yangtools</groupId>
                     <artifactId>yang-maven-plugin</artifactId>
                     <version>${yangtools.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>maven-bundle-plugin</artifactId>
-                    <version>${maven.bundle.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
