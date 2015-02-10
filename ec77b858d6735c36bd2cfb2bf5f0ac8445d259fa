@@ -1,0 +1,182 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a96c907_a3077817",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/TcpConnectionInitializer.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-02-10T10:57:18Z",
+      "side": 1,
+      "message": "fix javadoc",
+      "range": {
+        "startLine": 47,
+        "startChar": 25,
+        "endLine": 47,
+        "endChar": 54
+      },
+      "revId": "ec77b858d6735c36bd2cfb2bf5f0ac8445d259fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a96c907_03074c1a",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/TcpConnectionInitializer.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-02-10T10:57:18Z",
+      "side": 1,
+      "message": "fix javadoc",
+      "range": {
+        "startLine": 68,
+        "startChar": 18,
+        "endLine": 68,
+        "endChar": 36
+      },
+      "revId": "ec77b858d6735c36bd2cfb2bf5f0ac8445d259fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a96c907_c30c043e",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/TcpConnectionInitializer.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-02-10T10:57:18Z",
+      "side": 1,
+      "message": "use this method for connecting directly ... do not call run() and don\u0027t store host and port",
+      "range": {
+        "startLine": 88,
+        "startChar": 16,
+        "endLine": 88,
+        "endChar": 34
+      },
+      "revId": "ec77b858d6735c36bd2cfb2bf5f0ac8445d259fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a96c907_6315f03e",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/ConnectionInitializer.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-02-10T10:57:18Z",
+      "side": 1,
+      "message": "Provide javadoc",
+      "revId": "ec77b858d6735c36bd2cfb2bf5f0ac8445d259fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a96c907_a31e985d",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/TcpChannelInitializer.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-02-10T10:57:18Z",
+      "side": 1,
+      "message": "move this code inside if statement",
+      "range": {
+        "startLine": 57,
+        "startChar": 8,
+        "endLine": 59,
+        "endChar": 27
+      },
+      "revId": "ec77b858d6735c36bd2cfb2bf5f0ac8445d259fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a96c907_6343b042",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/TcpHandler.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-02-10T10:57:18Z",
+      "side": 1,
+      "message": "change this method to public NioEventLoopGroup initiateWorkerGroup(int numberOfThreads) + corresponding code adjustments",
+      "range": {
+        "startLine": 220,
+        "startChar": 4,
+        "endLine": 220,
+        "endChar": 39
+      },
+      "revId": "ec77b858d6735c36bd2cfb2bf5f0ac8445d259fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a96c907_432f9488",
+        "filename": "openflow-protocol-it/src/test/java/org/opendaylight/openflowjava/protocol/it/integration/IntegrationTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-02-10T10:57:18Z",
+      "side": 1,
+      "message": "port number has to be 0 - so that we are sure that we connect to free port. Then we must ask which port is the ListeningSimpleClient listening on and delegate this information. It is probably worth to create a separate method for ListeningSimpleClient",
+      "range": {
+        "startLine": 237,
+        "startChar": 47,
+        "endLine": 237,
+        "endChar": 51
+      },
+      "revId": "ec77b858d6735c36bd2cfb2bf5f0ac8445d259fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a96c907_e34fc069",
+        "filename": "openflow-protocol-spi/src/main/java/org/opendaylight/openflowjava/protocol/spi/connection/SwitchConnectionProvider.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-02-10T10:57:18Z",
+      "side": 1,
+      "message": "please do not duplicate existing code - let SwitchConnectionProviderImpl implement ConnectionInitializer interface",
+      "range": {
+        "startLine": 50,
+        "startChar": 4,
+        "endLine": 55,
+        "endChar": 58
+      },
+      "revId": "ec77b858d6735c36bd2cfb2bf5f0ac8445d259fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
