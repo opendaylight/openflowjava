@@ -1,0 +1,188 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a96c907_239da866",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/SwitchConnectionProviderImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-02-11T09:03:55Z",
+      "side": 1,
+      "message": "void initiateEventLoopGroups(connConfig.getThreadConfiguration()) + .getWorkerGroup()",
+      "range": {
+        "startLine": 144,
+        "startChar": 100,
+        "endLine": 144,
+        "endChar": 101
+      },
+      "revId": "dc4e1ffbb4f335be0b0b5ac7d5e264fbe4086675",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a96c907_d5383b3f",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/TcpConnectionInitializer.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-02-11T09:03:55Z",
+      "side": 1,
+      "message": "no need for javadoc",
+      "range": {
+        "startLine": 45,
+        "startChar": 4,
+        "endLine": 47,
+        "endChar": 7
+      },
+      "revId": "dc4e1ffbb4f335be0b0b5ac7d5e264fbe4086675",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a96c907_75fa8776",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/TcpConnectionInitializer.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-02-11T09:03:55Z",
+      "side": 1,
+      "message": "no need for javadoc here",
+      "range": {
+        "startLine": 65,
+        "startChar": 0,
+        "endLine": 67,
+        "endChar": 7
+      },
+      "revId": "dc4e1ffbb4f335be0b0b5ac7d5e264fbe4086675",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a96c907_b5332f61",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/TcpConnectionInitializer.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-02-11T09:03:55Z",
+      "side": 1,
+      "message": "move to constructor - you can use Preconditions.checkNotNull(workerGroup, \"WorkerGroup can\u0027t be null\");",
+      "range": {
+        "startLine": 70,
+        "startChar": 8,
+        "endLine": 72,
+        "endChar": 9
+      },
+      "revId": "dc4e1ffbb4f335be0b0b5ac7d5e264fbe4086675",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a96c907_35f07f90",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/TcpConnectionInitializer.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-02-11T09:03:55Z",
+      "side": 1,
+      "message": "make this variable field",
+      "range": {
+        "startLine": 75,
+        "startChar": 11,
+        "endLine": 75,
+        "endChar": 23
+      },
+      "revId": "dc4e1ffbb4f335be0b0b5ac7d5e264fbe4086675",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a96c907_55ed0bb6",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/TcpConnectionInitializer.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-02-11T09:03:55Z",
+      "side": 1,
+      "message": "move this to run()",
+      "range": {
+        "startLine": 76,
+        "startChar": 12,
+        "endLine": 77,
+        "endChar": 49
+      },
+      "revId": "dc4e1ffbb4f335be0b0b5ac7d5e264fbe4086675",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a96c907_f52d37ff",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/TcpConnectionInitializer.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-02-11T09:03:55Z",
+      "side": 1,
+      "message": "\"Unable to initiate connection\"",
+      "range": {
+        "startLine": 81,
+        "startChar": 25,
+        "endLine": 81,
+        "endChar": 40
+      },
+      "revId": "dc4e1ffbb4f335be0b0b5ac7d5e264fbe4086675",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a96c907_b50a4f77",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/TcpHandler.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-02-11T09:03:55Z",
+      "side": 1,
+      "message": "move to void initiateEventLoopGroups(threadConfig)",
+      "range": {
+        "startLine": 85,
+        "startChar": 8,
+        "endLine": 93,
+        "endChar": 9
+      },
+      "revId": "dc4e1ffbb4f335be0b0b5ac7d5e264fbe4086675",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
