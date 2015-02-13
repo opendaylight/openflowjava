@@ -15,14 +15,15 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>artifacts</module>
+        <module>features</module>
         <module>openflowjava-config</module>
         <module>openflow-protocol-api</module>
-        <module>openflow-protocol-spi</module>
-        <module>util</module>
         <module>openflow-protocol-impl</module>
         <module>openflow-protocol-it</module>
-        <module>features</module>
+        <module>openflow-protocol-spi</module>
         <module>simple-client</module>
+        <module>util</module>
     </modules>
     <scm>
         <connection>scm:git:ssh://git.opendaylight.org:29418/openflowjava.git</connection>
@@ -55,6 +56,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+              <groupId>org.opendaylight.openflowjava</groupId>
+              <artifactId>openflowjava-artifacts</artifactId>
+              <version>${project.version}</version>
+              <type>pom</type>
+              <scope>import</scope>
+            </dependency>
             <dependency>
               <groupId>org.opendaylight.yangtools</groupId>
               <artifactId>yangtools-artifacts</artifactId>
