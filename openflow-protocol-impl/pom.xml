@@ -13,12 +13,6 @@
       <tag>HEAD</tag>
   </scm>
 
-    <properties>
-        <yangtools.version>0.7.0-SNAPSHOT</yangtools.version>
-        <yangtools.generator.version>0.7.0-SNAPSHOT</yangtools.generator.version>
-        <yangtools.binding.version>0.7.0-SNAPSHOT</yangtools.binding.version>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
@@ -79,7 +73,7 @@
                     <dependency>
                         <groupId>org.opendaylight.yangtools</groupId>
                         <artifactId>maven-sal-api-gen-plugin</artifactId>
-                        <version>${yangtools.generator.version}</version>
+                        <version>${yangtools.version}</version>
                         <type>jar</type>
                     </dependency>
                 </dependencies>
@@ -115,7 +109,6 @@
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-common-util</artifactId>
-            <version>${yang.prototype.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.opendaylight.controller</groupId>
