@@ -80,6 +80,12 @@
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>openflowjava-config</artifactId>
+      <type>xml</type>
+      <classifier>configstats</classifier>
+    </dependency>
     <!-- test the features.xml -->
     <dependency>
       <groupId>org.opendaylight.yangtools</groupId>
