@@ -58,42 +58,17 @@
             <!-- feature dependencies -->
             <dependency>
               <groupId>org.opendaylight.yangtools</groupId>
-              <artifactId>features-yangtools</artifactId>
+              <artifactId>yangtools-artifacts</artifactId>
               <version>${yangtools.version}</version>
-              <classifier>features</classifier>
-              <type>xml</type>
+              <type>pom</type>
+              <scope>import</scope>
             </dependency>
             <dependency>
               <groupId>org.opendaylight.controller</groupId>
-              <artifactId>features-config</artifactId>
+              <artifactId>config-artifacts</artifactId>
               <version>${config.version}</version>
-              <classifier>features</classifier>
-              <type>xml</type>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.yangtools.model</groupId>
-                <artifactId>ietf-inet-types</artifactId>
-                <version>${ietf.model.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.yangtools.model</groupId>
-                <artifactId>ietf-yang-types</artifactId>
-                <version>${ietf.model.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.yangtools.model</groupId>
-                <artifactId>yang-ext</artifactId>
-                <version>${yang.ext.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.controller</groupId>
-                <artifactId>config-api</artifactId>
-                <version>0.3.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-              <groupId>org.opendaylight.yangtools</groupId>
-              <artifactId>features-test</artifactId>
-              <version>${yangtools.version}</version>
+              <type>pom</type>
+              <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
