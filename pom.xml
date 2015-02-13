@@ -38,10 +38,7 @@
         <jmxGeneratorPath>${project.build.directory}/yang-gen-config</jmxGeneratorPath>
         <karaf.distro.empty.version>1.5.0-SNAPSHOT</karaf.distro.empty.version>
         <salGeneratorPath>${project.build.directory}/yang-gen-sal</salGeneratorPath>
-        <sonar.skippedModules>org.openflow.openflowj,net.sf.jung2</sonar.skippedModules>
         <yang.prototype.version>1.2.0-SNAPSHOT</yang.prototype.version>
-        <ietf.model.version>2010.09.24.7-SNAPSHOT</ietf.model.version>
-        <yang.ext.version>2013.09.07.7-SNAPSHOT</yang.ext.version>
         <yangtools.version>0.7.0-SNAPSHOT</yangtools.version>
         <yangtools.generator.version>0.7.0-SNAPSHOT</yangtools.generator.version>
         <mdsal.version>1.2.0-SNAPSHOT</mdsal.version>
