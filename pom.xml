@@ -38,11 +38,10 @@
         <jmxGeneratorPath>${project.build.directory}/yang-gen-config</jmxGeneratorPath>
         <karaf.distro.empty.version>1.5.0-SNAPSHOT</karaf.distro.empty.version>
         <salGeneratorPath>${project.build.directory}/yang-gen-sal</salGeneratorPath>
-        <yang.prototype.version>1.2.0-SNAPSHOT</yang.prototype.version>
-        <yangtools.version>0.7.0-SNAPSHOT</yangtools.version>
-        <yangtools.generator.version>0.7.0-SNAPSHOT</yangtools.generator.version>
+
+        <config.version>0.3.0-SNAPSHOT</config.version>
         <mdsal.version>1.2.0-SNAPSHOT</mdsal.version>
-	<config.version>0.3.0-SNAPSHOT</config.version>
+        <yangtools.version>0.7.0-SNAPSHOT</yangtools.version>
 
         <!-- Sonar config -->
         <sonar-jacoco-listeners.version>2.4</sonar-jacoco-listeners.version>

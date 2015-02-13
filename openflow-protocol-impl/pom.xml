@@ -115,7 +115,6 @@
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-common-util</artifactId>
-            <version>${yang.prototype.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.opendaylight.controller</groupId>
