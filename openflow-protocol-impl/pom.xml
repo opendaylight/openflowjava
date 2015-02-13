@@ -103,17 +103,14 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>openflow-protocol-api</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>openflow-protocol-spi</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.openflowjava</groupId>
             <artifactId>util</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
