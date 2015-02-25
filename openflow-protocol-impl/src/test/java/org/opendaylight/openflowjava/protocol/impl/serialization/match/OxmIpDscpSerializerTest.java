@@ -17,11 +17,11 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Dscp;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.DscpMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.DscpMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.IpDscp;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.IpDscp;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.IpDscpCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ip.dscp._case.IpDscpBuilder;
 
 /**
  * @author michal.polkorab
@@ -36,7 +36,7 @@ public class OxmIpDscpSerializerTest {
      */
     @Test
     public void testSerialize() {
-        MatchEntriesBuilder builder = prepareIpDscpMatchEntry((short) 58);
+        MatchEntryBuilder builder = prepareIpDscpMatchEntry((short) 58);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
@@ -51,7 +51,7 @@ public class OxmIpDscpSerializerTest {
      */
     @Test
     public void testSerializeHeader() {
-        MatchEntriesBuilder builder = prepareIpDscpHeader(false);
+        MatchEntryBuilder builder = prepareIpDscpHeader(false);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
@@ -84,16 +84,18 @@ public class OxmIpDscpSerializerTest {
         assertEquals("Wrong value length", EncodeConstants.SIZE_OF_BYTE_IN_BYTES, serializer.getValueLength());
     }
 
-    private static MatchEntriesBuilder prepareIpDscpMatchEntry(short value) {
-        MatchEntriesBuilder builder = prepareIpDscpHeader(false);
-        DscpMatchEntryBuilder dscpBuilder = new DscpMatchEntryBuilder();
+    private static MatchEntryBuilder prepareIpDscpMatchEntry(short value) {
+        MatchEntryBuilder builder = prepareIpDscpHeader(false);
+        IpDscpCaseBuilder casebuilder = new IpDscpCaseBuilder();
+        IpDscpBuilder dscpBuilder = new IpDscpBuilder();
         dscpBuilder.setDscp(new Dscp(value));
-        builder.addAugmentation(DscpMatchEntry.class, dscpBuilder.build());
+        casebuilder.setIpDscp(dscpBuilder.build());
+        builder.setMatchEntryValue(casebuilder.build());
         return builder;
     }
 
-    private static MatchEntriesBuilder prepareIpDscpHeader(boolean hasMask) {
-        MatchEntriesBuilder builder = new MatchEntriesBuilder();
+    private static MatchEntryBuilder prepareIpDscpHeader(boolean hasMask) {
+        MatchEntryBuilder builder = new MatchEntryBuilder();
         builder.setOxmClass(OpenflowBasicClass.class);
         builder.setOxmMatchField(IpDscp.class);
         builder.setHasMask(hasMask);

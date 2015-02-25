@@ -13,10 +13,10 @@ import io.netty.buffer.ByteBuf;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IsidMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.PbbIsid;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.PbbIsid;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.PbbIsidCase;
 
 /**
  * @author michal.polkorab
@@ -33,11 +33,12 @@ public class OxmPbbIsidDeserializerTest {
 
         buffer.skipBytes(4); // skip XID
         OxmPbbIsidDeserializer deserializer = new OxmPbbIsidDeserializer();
-        MatchEntries entry = deserializer.deserialize(buffer);
+        MatchEntry entry = deserializer.deserialize(buffer);
 
         Assert.assertEquals("Wrong entry class", OpenflowBasicClass.class, entry.getOxmClass());
         Assert.assertEquals("Wrong entry field", PbbIsid.class, entry.getOxmMatchField());
         Assert.assertEquals("Wrong entry hasMask", false, entry.isHasMask());
-        Assert.assertEquals("Wrong entry value", 2, entry.getAugmentation(IsidMatchEntry.class).getIsid().intValue());
+        Assert.assertEquals("Wrong entry value", 2, ((PbbIsidCase) entry.getMatchEntryValue())
+                .getPbbIsid().getIsid().intValue());
     }
 }

@@ -17,13 +17,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MetadataMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MetadataMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.TunnelId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.TunnelId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.TunnelIdCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.tunnel.id._case.TunnelIdBuilder;
 
 /**
  * @author michal.polkorab
@@ -38,7 +36,7 @@ public class OxmTunnelIdSerializerTest {
      */
     @Test
     public void testSerializeWithoutMask() {
-        MatchEntriesBuilder builder = prepareMatchEntry(false, new byte[]{0, 1, 2, 3, 4, 5, 6, 7});
+        MatchEntryBuilder builder = prepareMatchEntry(false, new byte[]{0, 1, 2, 3, 4, 5, 6, 7});
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
@@ -55,7 +53,7 @@ public class OxmTunnelIdSerializerTest {
      */
     @Test
     public void testSerializeWithMask() {
-        MatchEntriesBuilder builder = prepareMatchEntry(true, new byte[]{8, 9, 10, 11, 12, 13, 14, 15});
+        MatchEntryBuilder builder = prepareMatchEntry(true, new byte[]{8, 9, 10, 11, 12, 13, 14, 15});
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
@@ -76,7 +74,7 @@ public class OxmTunnelIdSerializerTest {
      */
     @Test
     public void testSerializeHeaderWithoutMask() {
-        MatchEntriesBuilder builder = prepareHeader(false);
+        MatchEntryBuilder builder = prepareHeader(false);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
@@ -90,7 +88,7 @@ public class OxmTunnelIdSerializerTest {
      */
     @Test
     public void testSerializeHeaderWithMask() {
-        MatchEntriesBuilder builder = prepareHeader(true);
+        MatchEntryBuilder builder = prepareHeader(true);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
@@ -123,21 +121,21 @@ public class OxmTunnelIdSerializerTest {
         assertEquals("Wrong value length", EncodeConstants.SIZE_OF_LONG_IN_BYTES, serializer.getValueLength());
     }
 
-    private static MatchEntriesBuilder prepareMatchEntry(boolean hasMask, byte[] value) {
-        MatchEntriesBuilder builder = prepareHeader(hasMask);
+    private static MatchEntryBuilder prepareMatchEntry(boolean hasMask, byte[] value) {
+        MatchEntryBuilder builder = prepareHeader(hasMask);
+        TunnelIdCaseBuilder casebuilder = new TunnelIdCaseBuilder();
+        TunnelIdBuilder valueBuilder = new TunnelIdBuilder();
         if (hasMask) {
-            MaskMatchEntryBuilder maskBuilder = new MaskMatchEntryBuilder();
-            maskBuilder.setMask(new byte[]{30, 30, 25, 25, 15, 15, 0, 0});
-            builder.addAugmentation(MaskMatchEntry.class, maskBuilder.build());
+            valueBuilder.setMask(new byte[]{30, 30, 25, 25, 15, 15, 0, 0});
         }
-        MetadataMatchEntryBuilder metadataBuilder = new MetadataMatchEntryBuilder();
-        metadataBuilder.setMetadata(value);
-        builder.addAugmentation(MetadataMatchEntry.class, metadataBuilder.build());
+        valueBuilder.setTunnelId(value);
+        casebuilder.setTunnelId(valueBuilder.build());
+        builder.setMatchEntryValue(casebuilder.build());
         return builder;
     }
 
-    private static MatchEntriesBuilder prepareHeader(boolean hasMask) {
-        MatchEntriesBuilder builder = new MatchEntriesBuilder();
+    private static MatchEntryBuilder prepareHeader(boolean hasMask) {
+        MatchEntryBuilder builder = new MatchEntryBuilder();
         builder.setOxmClass(OpenflowBasicClass.class);
         builder.setOxmMatchField(TunnelId.class);
         builder.setHasMask(hasMask);

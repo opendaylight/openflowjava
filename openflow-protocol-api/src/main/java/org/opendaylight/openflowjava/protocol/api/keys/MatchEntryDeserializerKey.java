@@ -8,7 +8,7 @@
 
 package org.opendaylight.openflowjava.protocol.api.keys;
 
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
 
 /**
  * @author michal.polkorab
@@ -27,7 +27,7 @@ public final class MatchEntryDeserializerKey extends MessageCodeKey
      */
     public MatchEntryDeserializerKey(short version,
             int oxmClass, int oxmField) {
-        super(version, oxmClass, MatchEntries.class);
+        super(version, oxmClass, MatchEntry.class);
         this.oxmField = oxmField;
     }
 

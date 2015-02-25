@@ -12,37 +12,39 @@ import io.netty.buffer.ByteBuf;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6FlowLabel;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv6FlabelMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv6FlabelMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6Flabel;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmClassBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Ipv6Flabel;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OxmClassBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Ipv6FlabelCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ipv6.flabel._case.Ipv6FlabelBuilder;
 
 /**
  * @author michal.polkorab
  *
  */
 public class OxmIpv6FlabelDeserializer extends AbstractOxmMatchEntryDeserializer
-        implements OFDeserializer<MatchEntries> {
+        implements OFDeserializer<MatchEntry> {
 
     @Override
-    public MatchEntries deserialize(ByteBuf input) {
-        MatchEntriesBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
-        addIpv6FlabelAugmentation(input, builder);
-        if (builder.isHasMask()) {
-            OxmMaskDeserializer.addMaskAugmentation(builder, input, EncodeConstants.SIZE_OF_INT_IN_BYTES);
-        }
+    public MatchEntry deserialize(ByteBuf input) {
+        MatchEntryBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
+        addIpv6FlabelValue(input, builder);
         return builder.build();
     }
 
-    private static void addIpv6FlabelAugmentation(ByteBuf input,
-            MatchEntriesBuilder builder) {
-        Ipv6FlabelMatchEntryBuilder ipv6FlabelBuilder = new Ipv6FlabelMatchEntryBuilder();
-        ipv6FlabelBuilder.setIpv6Flabel(new Ipv6FlowLabel(input.readUnsignedInt()));
-        builder.addAugmentation(Ipv6FlabelMatchEntry.class, ipv6FlabelBuilder.build());
+    private static void addIpv6FlabelValue(ByteBuf input, MatchEntryBuilder builder) {
+        Ipv6FlabelCaseBuilder caseBuilder = new Ipv6FlabelCaseBuilder();
+        Ipv6FlabelBuilder labelBuilder = new Ipv6FlabelBuilder();
+        labelBuilder.setIpv6Flabel(new Ipv6FlowLabel(input.readUnsignedInt()));
+        if (builder.isHasMask()) {
+            labelBuilder.setMask(OxmDeserializerHelper.convertMask(input,
+                    EncodeConstants.SIZE_OF_INT_IN_BYTES));
+        }
+        caseBuilder.setIpv6Flabel(labelBuilder.build());
+        builder.setMatchEntryValue(caseBuilder.build());
     }
 
     @Override

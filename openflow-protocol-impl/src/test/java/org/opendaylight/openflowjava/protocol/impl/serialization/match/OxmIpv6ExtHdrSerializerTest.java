@@ -17,14 +17,12 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PseudoFieldMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PseudoFieldMatchEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.Ipv6ExthdrFlags;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6Exthdr;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Ipv6Exthdr;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Ipv6ExthdrCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ipv6.exthdr._case.Ipv6ExthdrBuilder;
 
 /**
  * @author michal.polkorab
@@ -38,8 +36,8 @@ public class OxmIpv6ExtHdrSerializerTest {
      * Test correct serialization
      */
     @Test
-    public void testSerializeWithMask() {
-        MatchEntriesBuilder builder = prepareIpv6ExtHdrMatchEntry(false,
+    public void testSerializeWithoutMask() {
+        MatchEntryBuilder builder = prepareIpv6ExtHdrMatchEntry(false,
                 new Ipv6ExthdrFlags(true, false, true, false, true, false, true, false, true));
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
@@ -54,8 +52,8 @@ public class OxmIpv6ExtHdrSerializerTest {
      * Test correct serialization
      */
     @Test
-    public void testSerializeWithoutMask() {
-        MatchEntriesBuilder builder = prepareIpv6ExtHdrMatchEntry(true,
+    public void testSerializeWithMask() {
+        MatchEntryBuilder builder = prepareIpv6ExtHdrMatchEntry(true,
                 new Ipv6ExthdrFlags(false, true, false, true, false, true, false, true, false));
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
@@ -74,7 +72,7 @@ public class OxmIpv6ExtHdrSerializerTest {
      */
     @Test
     public void testSerializeHeaderWithoutMask() {
-        MatchEntriesBuilder builder = prepareIpv6ExtHdrHeader(false);
+        MatchEntryBuilder builder = prepareIpv6ExtHdrHeader(false);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
@@ -88,7 +86,7 @@ public class OxmIpv6ExtHdrSerializerTest {
      */
     @Test
     public void testSerializeHeaderWithMask() {
-        MatchEntriesBuilder builder = prepareIpv6ExtHdrHeader(true);
+        MatchEntryBuilder builder = prepareIpv6ExtHdrHeader(true);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
@@ -121,22 +119,21 @@ public class OxmIpv6ExtHdrSerializerTest {
         assertEquals("Wrong value length", EncodeConstants.SIZE_OF_SHORT_IN_BYTES, serializer.getValueLength());
     }
 
-
-    private static MatchEntriesBuilder prepareIpv6ExtHdrMatchEntry(boolean hasMask, Ipv6ExthdrFlags flags) {
-        MatchEntriesBuilder builder = prepareIpv6ExtHdrHeader(hasMask);
+    private static MatchEntryBuilder prepareIpv6ExtHdrMatchEntry(boolean hasMask, Ipv6ExthdrFlags flags) {
+        MatchEntryBuilder builder = prepareIpv6ExtHdrHeader(hasMask);
+        Ipv6ExthdrCaseBuilder casebuilder = new Ipv6ExthdrCaseBuilder();
+        Ipv6ExthdrBuilder valueBuilder = new Ipv6ExthdrBuilder();
         if (hasMask) {
-            MaskMatchEntryBuilder maskBuilder = new MaskMatchEntryBuilder();
-            maskBuilder.setMask(new byte[]{0, 15});
-            builder.addAugmentation(MaskMatchEntry.class, maskBuilder.build());
+            valueBuilder.setMask(new byte[]{0, 15});
         }
-        PseudoFieldMatchEntryBuilder pseudoBuilder = new PseudoFieldMatchEntryBuilder();
-        pseudoBuilder.setPseudoField(flags);
-        builder.addAugmentation(PseudoFieldMatchEntry.class, pseudoBuilder.build());
+        valueBuilder.setPseudoField(flags);
+        casebuilder.setIpv6Exthdr(valueBuilder.build());
+        builder.setMatchEntryValue(casebuilder.build());
         return builder;
     }
 
-    private static MatchEntriesBuilder prepareIpv6ExtHdrHeader(boolean hasMask) {
-        MatchEntriesBuilder builder = new MatchEntriesBuilder();
+    private static MatchEntryBuilder prepareIpv6ExtHdrHeader(boolean hasMask) {
+        MatchEntryBuilder builder = new MatchEntryBuilder();
         builder.setOxmClass(OpenflowBasicClass.class);
         builder.setOxmMatchField(Ipv6Exthdr.class);
         builder.setHasMask(hasMask);
