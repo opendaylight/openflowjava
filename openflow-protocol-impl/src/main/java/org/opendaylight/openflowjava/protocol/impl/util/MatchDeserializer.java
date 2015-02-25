@@ -17,10 +17,10 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegi
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.StandardMatchType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmMatchType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.MatchBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OxmMatchType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.grouping.Match;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.grouping.MatchBuilder;
 
 /**
  * Deserializes ofp_match (OpenFlow v1.3) and its oxm_fields structures
@@ -50,9 +50,9 @@ public class MatchDeserializer implements OFDeserializer<Match>,
             }
             CodeKeyMaker keyMaker = CodeKeyMakerFactory
                     .createMatchEntriesKeyMaker(EncodeConstants.OF13_VERSION_ID);
-            List<MatchEntries> entries = ListDeserializer.deserializeList(EncodeConstants.OF13_VERSION_ID,
+            List<MatchEntry> entries = ListDeserializer.deserializeList(EncodeConstants.OF13_VERSION_ID,
                     length - 2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES, input, keyMaker, registry);
-            builder.setMatchEntries(entries);
+            builder.setMatchEntry(entries);
             int paddingRemainder = length % EncodeConstants.PADDING;
             if (paddingRemainder != 0) {
                 input.skipBytes(EncodeConstants.PADDING - paddingRemainder);

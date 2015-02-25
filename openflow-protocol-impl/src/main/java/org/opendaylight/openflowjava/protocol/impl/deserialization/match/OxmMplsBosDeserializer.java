@@ -10,39 +10,39 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.match;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.BosMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.BosMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MplsBos;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmClassBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MplsBos;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OxmClassBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.MplsBosCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.mpls.bos._case.MplsBosBuilder;
 
 /**
  * @author michal.polkorab
  *
  */
 public class OxmMplsBosDeserializer extends AbstractOxmMatchEntryDeserializer
-        implements OFDeserializer<MatchEntries> {
+        implements OFDeserializer<MatchEntry> {
 
     @Override
-    public MatchEntries deserialize(ByteBuf input) {
-        MatchEntriesBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
-        addMplsBosDeserializer(input, builder);
+    public MatchEntry deserialize(ByteBuf input) {
+        MatchEntryBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
+        addMplsBosValue(input, builder);
         return builder.build();
     }
 
-
-    private static void addMplsBosDeserializer(ByteBuf input,
-            MatchEntriesBuilder builder) {
-        BosMatchEntryBuilder bosBuilder = new BosMatchEntryBuilder();
+    private static void addMplsBosValue(ByteBuf input, MatchEntryBuilder builder) {
+        MplsBosCaseBuilder caseBuilder = new MplsBosCaseBuilder();
+        MplsBosBuilder bosBuilder = new MplsBosBuilder();
         if (input.readUnsignedByte() != 0) {
             bosBuilder.setBos(true);
         } else {
             bosBuilder.setBos(false);
         }
-        builder.addAugmentation(BosMatchEntry.class, bosBuilder.build());
+        caseBuilder.setMplsBos(bosBuilder.build());
+        builder.setMatchEntryValue(caseBuilder.build());
     }
 
     @Override

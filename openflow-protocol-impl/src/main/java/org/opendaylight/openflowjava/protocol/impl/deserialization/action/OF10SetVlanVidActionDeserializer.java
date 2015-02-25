@@ -10,10 +10,10 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.action;
 
 import io.netty.buffer.ByteBuf;
 
-import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidActionBuilder;
+import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.VlanVidAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.VlanVidActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetVlanVid;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;

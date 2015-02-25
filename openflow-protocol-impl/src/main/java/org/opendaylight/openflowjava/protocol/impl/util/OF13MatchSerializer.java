@@ -17,12 +17,12 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegist
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdMatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.oxm.container.match.entry.value.ExperimenterIdCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.StandardMatchType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ExperimenterClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmMatchType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.ExperimenterClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OxmMatchType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.grouping.Match;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +47,7 @@ public class OF13MatchSerializer implements OFSerializer<Match>, SerializerRegis
         serializeType(match, outBuffer);
         int matchLengthIndex = outBuffer.writerIndex();
         outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
-        serializeMatchEntries(match.getMatchEntries(), outBuffer);
+        serializeMatchEntries(match.getMatchEntry(), outBuffer);
         // Length of ofp_match (excluding padding)
         int matchLength = outBuffer.writerIndex() - matchStartIndex;
         outBuffer.setShort(matchLengthIndex, matchLength);
@@ -70,22 +70,22 @@ public class OF13MatchSerializer implements OFSerializer<Match>, SerializerRegis
      * @param matchEntries list of match entries (oxm_fields)
      * @param out output ByteBuf
      */
-    public void serializeMatchEntries(List<MatchEntries> matchEntries, ByteBuf out) {
+    public void serializeMatchEntries(List<MatchEntry> matchEntries, ByteBuf out) {
         if (matchEntries == null) {
             LOGGER.debug("Match entries are null");
             return;
         }
-        for (MatchEntries entry : matchEntries) {
+        for (MatchEntry entry : matchEntries) {
 
             MatchEntrySerializerKey<?, ?> key = new MatchEntrySerializerKey<>(
                     EncodeConstants.OF13_VERSION_ID, entry.getOxmClass(), entry.getOxmMatchField());
             if (entry.getOxmClass().equals(ExperimenterClass.class)) {
-                key.setExperimenterId(entry.getAugmentation(ExperimenterIdMatchEntry.class)
-                        .getExperimenter().getValue());
+                ExperimenterIdCase entryValue = (ExperimenterIdCase) entry.getMatchEntryValue();
+                key.setExperimenterId(entryValue.getExperimenter().getExperimenter().getValue());
             } else {
                 key.setExperimenterId(null);
             }
-            OFSerializer<MatchEntries> entrySerializer = registry.getSerializer(key);
+            OFSerializer<MatchEntry> entrySerializer = registry.getSerializer(key);
             entrySerializer.serialize(entry, out);
         }
     }

@@ -10,8 +10,7 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.match;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.util.ByteBufUtils;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MacAddressMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 
 /**
  * Parent for MAC address based match entry serializers
@@ -19,11 +18,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
  */
 public abstract class AbstractOxmMacAddressSerializer extends AbstractOxmMatchEntrySerializer {
 
-    @Override
-    public void serialize(MatchEntries entry, ByteBuf outBuffer) {
-        super.serialize(entry, outBuffer);
-        String macAddress = entry.getAugmentation(MacAddressMatchEntry.class).getMacAddress().getValue();
-        outBuffer.writeBytes(ByteBufUtils.macAddressToBytes(macAddress)); // 48 b + mask [OF 1.3.2 spec]
-        writeMask(entry, outBuffer, getValueLength());
+    protected void writeMacAddress(MacAddress address, ByteBuf outBuffer) {
+        outBuffer.writeBytes(ByteBufUtils.macAddressToBytes(address.getValue())); // 48 b + mask [OF 1.3.2 spec]
     }
 }

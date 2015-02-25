@@ -11,38 +11,40 @@ import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IsidMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IsidMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmClassBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.PbbIsid;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OxmClassBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.PbbIsid;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.PbbIsidCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.pbb.isid._case.PbbIsidBuilder;
 
 /**
  * @author michal.polkorab
  *
  */
 public class OxmPbbIsidDeserializer extends AbstractOxmMatchEntryDeserializer
-        implements OFDeserializer<MatchEntries> {
+        implements OFDeserializer<MatchEntry> {
 
     @Override
-    public MatchEntries deserialize(ByteBuf input) {
-        MatchEntriesBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
-        addPbbIsidAugmentation(input, builder);
-        if (builder.isHasMask()) {
-            OxmMaskDeserializer.addMaskAugmentation(builder, input, EncodeConstants.SIZE_OF_3_BYTES);
-        }
+    public MatchEntry deserialize(ByteBuf input) {
+        MatchEntryBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
+        addPbbIsidValue(input, builder);
         return builder.build();
     }
 
-    private static void addPbbIsidAugmentation(ByteBuf input,
-            MatchEntriesBuilder builder) {
-        IsidMatchEntryBuilder isidBuilder = new IsidMatchEntryBuilder();
+    private static void addPbbIsidValue(ByteBuf input, MatchEntryBuilder builder) {
+        PbbIsidCaseBuilder caseBuilder = new PbbIsidCaseBuilder();
+        PbbIsidBuilder isidBuilder = new PbbIsidBuilder();
         Integer isid = input.readUnsignedMedium();
         isidBuilder.setIsid(isid.longValue());
-        builder.addAugmentation(IsidMatchEntry.class, isidBuilder.build());
+        if (builder.isHasMask()) {
+            isidBuilder.setMask(OxmDeserializerHelper
+                    .convertMask(input, EncodeConstants.SIZE_OF_3_BYTES));
+        }
+        caseBuilder.setPbbIsid(isidBuilder.build());
+        builder.setMatchEntryValue(caseBuilder.build());
     }
 
     @Override

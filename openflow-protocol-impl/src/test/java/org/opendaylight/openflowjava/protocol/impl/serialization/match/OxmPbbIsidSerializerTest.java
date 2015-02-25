@@ -17,13 +17,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IsidMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IsidMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.PbbIsid;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.PbbIsid;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.PbbIsidCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.pbb.isid._case.PbbIsidBuilder;
 
 /**
  * @author michal.polkorab
@@ -38,7 +36,7 @@ public class OxmPbbIsidSerializerTest {
      */
     @Test
     public void testSerializeWithMask() {
-        MatchEntriesBuilder builder = preparePbbIsidMatchEntry(false, 12345);
+        MatchEntryBuilder builder = preparePbbIsidMatchEntry(false, 12345);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
@@ -53,7 +51,7 @@ public class OxmPbbIsidSerializerTest {
      */
     @Test
     public void testSerializeWithoutMask() {
-        MatchEntriesBuilder builder = preparePbbIsidMatchEntry(true, 6789);
+        MatchEntryBuilder builder = preparePbbIsidMatchEntry(true, 6789);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
@@ -71,7 +69,7 @@ public class OxmPbbIsidSerializerTest {
      */
     @Test
     public void testSerializeHeaderWithoutMask() {
-        MatchEntriesBuilder builder = preparePbbIsidHeader(false);
+        MatchEntryBuilder builder = preparePbbIsidHeader(false);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
@@ -85,7 +83,7 @@ public class OxmPbbIsidSerializerTest {
      */
     @Test
     public void testSerializeHeaderWithMask() {
-        MatchEntriesBuilder builder = preparePbbIsidHeader(true);
+        MatchEntryBuilder builder = preparePbbIsidHeader(true);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
@@ -118,22 +116,21 @@ public class OxmPbbIsidSerializerTest {
         assertEquals("Wrong value length", EncodeConstants.SIZE_OF_3_BYTES, serializer.getValueLength());
     }
 
-
-    private static MatchEntriesBuilder preparePbbIsidMatchEntry(boolean hasMask, long value) {
-        MatchEntriesBuilder builder = preparePbbIsidHeader(hasMask);
+    private static MatchEntryBuilder preparePbbIsidMatchEntry(boolean hasMask, long value) {
+        MatchEntryBuilder builder = preparePbbIsidHeader(false);
+        PbbIsidCaseBuilder casebuilder = new PbbIsidCaseBuilder();
+        PbbIsidBuilder valueBuilder = new PbbIsidBuilder();
         if (hasMask) {
-            MaskMatchEntryBuilder maskBuilder = new MaskMatchEntryBuilder();
-            maskBuilder.setMask(new byte[]{0, 15, 10});
-            builder.addAugmentation(MaskMatchEntry.class, maskBuilder.build());
+            valueBuilder.setMask(new byte[]{0, 15, 10});
         }
-        IsidMatchEntryBuilder isidBuilder = new IsidMatchEntryBuilder();
-        isidBuilder.setIsid(value);
-        builder.addAugmentation(IsidMatchEntry.class, isidBuilder.build());
+        valueBuilder.setIsid(value);
+        casebuilder.setPbbIsid(valueBuilder.build());
+        builder.setMatchEntryValue(casebuilder.build());
         return builder;
     }
 
-    private static MatchEntriesBuilder preparePbbIsidHeader(boolean hasMask) {
-        MatchEntriesBuilder builder = new MatchEntriesBuilder();
+    private static MatchEntryBuilder preparePbbIsidHeader(boolean hasMask) {
+        MatchEntryBuilder builder = new MatchEntryBuilder();
         builder.setOxmClass(OpenflowBasicClass.class);
         builder.setOxmMatchField(PbbIsid.class);
         builder.setHasMask(hasMask);

@@ -17,13 +17,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.VlanVid;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.VlanVid;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.VlanVidCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.vlan.vid._case.VlanVidBuilder;
 
 /**
  * @author michal.polkorab
@@ -38,7 +36,7 @@ public class OxmVlanVidSerializerTest {
      */
     @Test
     public void testSerializeWithCfiBitSet() {
-        MatchEntriesBuilder builder = prepareVlanVidMatchEntry(false, true);
+        MatchEntryBuilder builder = prepareVlanVidMatchEntry(false, true);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
@@ -53,7 +51,7 @@ public class OxmVlanVidSerializerTest {
      */
     @Test
     public void testSerializeWithoutCfiBitSet() {
-        MatchEntriesBuilder builder = prepareVlanVidMatchEntry(true, false);
+        MatchEntryBuilder builder = prepareVlanVidMatchEntry(true, false);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
@@ -71,7 +69,7 @@ public class OxmVlanVidSerializerTest {
      */
     @Test
     public void testSerializeHeaderWithoutMask() {
-        MatchEntriesBuilder builder = prepareVlanVidHeader(false);
+        MatchEntryBuilder builder = prepareVlanVidHeader(false);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
@@ -85,7 +83,7 @@ public class OxmVlanVidSerializerTest {
      */
     @Test
     public void testSerializeHeaderWithMask() {
-        MatchEntriesBuilder builder = prepareVlanVidHeader(true);
+        MatchEntryBuilder builder = prepareVlanVidHeader(true);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
@@ -118,22 +116,22 @@ public class OxmVlanVidSerializerTest {
         assertEquals("Wrong value length", EncodeConstants.SIZE_OF_SHORT_IN_BYTES, serializer.getValueLength());
     }
 
-    private static MatchEntriesBuilder prepareVlanVidMatchEntry(boolean hasMask, boolean cfiBit) {
-        MatchEntriesBuilder builder = prepareVlanVidHeader(hasMask);
+    private static MatchEntryBuilder prepareVlanVidMatchEntry(boolean hasMask, boolean cfiBit) {
+        MatchEntryBuilder builder = prepareVlanVidHeader(false);
+        VlanVidCaseBuilder casebuilder = new VlanVidCaseBuilder();
+        VlanVidBuilder valueBuilder = new VlanVidBuilder();
         if (hasMask) {
-            MaskMatchEntryBuilder maskBuilder = new MaskMatchEntryBuilder();
-            maskBuilder.setMask(new byte[]{15, 15});
-            builder.addAugmentation(MaskMatchEntry.class, maskBuilder.build());
+            valueBuilder.setMask(new byte[]{15, 15});
         }
-        VlanVidMatchEntryBuilder vlanBuilder = new VlanVidMatchEntryBuilder();
-        vlanBuilder.setVlanVid(500);
-        vlanBuilder.setCfiBit(cfiBit);
-        builder.addAugmentation(VlanVidMatchEntry.class, vlanBuilder.build());
+        valueBuilder.setVlanVid(500);
+        valueBuilder.setCfiBit(cfiBit);
+        casebuilder.setVlanVid(valueBuilder.build());
+        builder.setMatchEntryValue(casebuilder.build());
         return builder;
     }
 
-    private static MatchEntriesBuilder prepareVlanVidHeader(boolean hasMask) {
-        MatchEntriesBuilder builder = new MatchEntriesBuilder();
+    private static MatchEntryBuilder prepareVlanVidHeader(boolean hasMask) {
+        MatchEntryBuilder builder = new MatchEntryBuilder();
         builder.setOxmClass(OpenflowBasicClass.class);
         builder.setOxmMatchField(VlanVid.class);
         builder.setHasMask(hasMask);

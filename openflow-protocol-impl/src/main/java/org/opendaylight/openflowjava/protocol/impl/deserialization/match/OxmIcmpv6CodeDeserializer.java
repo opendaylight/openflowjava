@@ -10,34 +10,35 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.match;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Icmpv6CodeMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Icmpv6CodeMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Icmpv6Code;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmClassBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Icmpv6Code;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OxmClassBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Icmpv6CodeCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.icmpv6.code._case.Icmpv6CodeBuilder;
 
 /**
  * @author michal.polkorab
  *
  */
 public class OxmIcmpv6CodeDeserializer extends AbstractOxmMatchEntryDeserializer
-        implements OFDeserializer<MatchEntries> {
+        implements OFDeserializer<MatchEntry> {
 
     @Override
-    public MatchEntries deserialize(ByteBuf input) {
-        MatchEntriesBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
-        addIcmpv6CodeAugmentation(input, builder);
+    public MatchEntry deserialize(ByteBuf input) {
+        MatchEntryBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
+        addIcmpv6CodeValue(input, builder);
         return builder.build();
     }
 
-    private static void addIcmpv6CodeAugmentation(ByteBuf input,
-            MatchEntriesBuilder builder) {
-        Icmpv6CodeMatchEntryBuilder icmpv6CodeBuilder = new Icmpv6CodeMatchEntryBuilder();
-        icmpv6CodeBuilder.setIcmpv6Code(input.readUnsignedByte());
-        builder.addAugmentation(Icmpv6CodeMatchEntry.class, icmpv6CodeBuilder.build());
+    private static void addIcmpv6CodeValue(ByteBuf input, MatchEntryBuilder builder) {
+        Icmpv6CodeCaseBuilder caseBuilder = new Icmpv6CodeCaseBuilder();
+        Icmpv6CodeBuilder icmpBuilder = new Icmpv6CodeBuilder();
+        icmpBuilder.setIcmpv6Code(input.readUnsignedByte());
+        caseBuilder.setIcmpv6Code(icmpBuilder.build());
+        builder.setMatchEntryValue(caseBuilder.build());
     }
 
     @Override

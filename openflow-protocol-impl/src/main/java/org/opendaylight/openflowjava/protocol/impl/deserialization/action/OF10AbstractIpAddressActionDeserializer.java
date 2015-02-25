@@ -10,11 +10,11 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.action;
 
 import io.netty.buffer.ByteBuf;
 
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IpAddressAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.IpAddressActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.IpAddressAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.IpAddressActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
