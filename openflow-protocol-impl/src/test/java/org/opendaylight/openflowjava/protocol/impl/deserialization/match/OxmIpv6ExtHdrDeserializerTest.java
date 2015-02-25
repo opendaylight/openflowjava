@@ -13,12 +13,11 @@ import io.netty.buffer.ByteBuf;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PseudoFieldMatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.Ipv6ExthdrFlags;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6Exthdr;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Ipv6Exthdr;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Ipv6ExthdrCase;
 
 /**
  * @author michal.polkorab
@@ -35,15 +34,16 @@ public class OxmIpv6ExtHdrDeserializerTest {
 
         buffer.skipBytes(4); // skip XID
         OxmIpv6ExtHdrDeserializer deserializer = new OxmIpv6ExtHdrDeserializer();
-        MatchEntries entry = deserializer.deserialize(buffer);
+        MatchEntry entry = deserializer.deserialize(buffer);
 
         Assert.assertEquals("Wrong entry class", OpenflowBasicClass.class, entry.getOxmClass());
         Assert.assertEquals("Wrong entry field", Ipv6Exthdr.class, entry.getOxmMatchField());
         Assert.assertEquals("Wrong entry hasMask", false, entry.isHasMask());
         Assert.assertEquals("Wrong entry value",
                 new Ipv6ExthdrFlags(true, true, true, true, true, true, true, true, true),
-                entry.getAugmentation(PseudoFieldMatchEntry.class).getPseudoField());
-        Assert.assertEquals("Wrong entry mask", null, entry.getAugmentation(MaskMatchEntry.class));
+                ((Ipv6ExthdrCase) entry.getMatchEntryValue()).getIpv6Exthdr().getPseudoField());
+        Assert.assertEquals("Wrong entry mask", null, ((Ipv6ExthdrCase) entry.getMatchEntryValue())
+                .getIpv6Exthdr().getMask());
         Assert.assertTrue("Unread data", buffer.readableBytes() == 0);
     }
 }

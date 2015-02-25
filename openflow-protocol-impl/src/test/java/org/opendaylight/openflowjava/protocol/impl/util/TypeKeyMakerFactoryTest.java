@@ -17,12 +17,12 @@ import org.opendaylight.openflowjava.protocol.api.keys.InstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdInstruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdInstructionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdMatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ExperimenterIdAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ExperimenterIdActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ExperimenterIdInstruction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ExperimenterIdInstructionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.oxm.container.match.entry.value.ExperimenterIdCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.oxm.container.match.entry.value.experimenter.id._case.ExperimenterBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.ExperimenterActionSubType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Output;
@@ -32,12 +32,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.InstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ExperimenterId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ExperimenterClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.InPort;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.ExperimenterClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.InPort;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
 
 /**
  * @author michal.polkorab
@@ -130,14 +130,14 @@ public class TypeKeyMakerFactoryTest {
      */
     @Test
     public void testMatchEntriesKeyMaker() {
-        TypeKeyMaker<MatchEntries> keyMaker = TypeKeyMakerFactory.createMatchEntriesKeyMaker(EncodeConstants.OF13_VERSION_ID);
+        TypeKeyMaker<MatchEntry> keyMaker = TypeKeyMakerFactory.createMatchEntriesKeyMaker(EncodeConstants.OF13_VERSION_ID);
         Assert.assertNotNull("Null keyMaker", keyMaker);
 
-        MatchEntriesBuilder builder = new MatchEntriesBuilder();
+        MatchEntryBuilder builder = new MatchEntryBuilder();
         builder.setOxmClass(OpenflowBasicClass.class);
         builder.setOxmMatchField(InPort.class);
         builder.setHasMask(true);
-        MatchEntries entry = builder.build();
+        MatchEntry entry = builder.build();
         MessageTypeKey<?> key = keyMaker.make(entry);
 
         Assert.assertNotNull("Null key", key);
@@ -151,17 +151,19 @@ public class TypeKeyMakerFactoryTest {
      */
     @Test
     public void testExperimenterMatchEntriesKeyMaker() {
-        TypeKeyMaker<MatchEntries> keyMaker = TypeKeyMakerFactory.createMatchEntriesKeyMaker(EncodeConstants.OF13_VERSION_ID);
+        TypeKeyMaker<MatchEntry> keyMaker = TypeKeyMakerFactory.createMatchEntriesKeyMaker(EncodeConstants.OF13_VERSION_ID);
         Assert.assertNotNull("Null keyMaker", keyMaker);
 
-        MatchEntriesBuilder builder = new MatchEntriesBuilder();
+        MatchEntryBuilder builder = new MatchEntryBuilder();
         builder.setOxmClass(ExperimenterClass.class);
         builder.setOxmMatchField(OxmMatchFieldClass.class);
         builder.setHasMask(true);
-        ExperimenterIdMatchEntryBuilder expIdBuilder = new ExperimenterIdMatchEntryBuilder();
-        expIdBuilder.setExperimenter(new ExperimenterId(42L));
-        builder.addAugmentation(ExperimenterIdMatchEntry.class, expIdBuilder.build());
-        MatchEntries entry = builder.build();
+        ExperimenterIdCaseBuilder caseBuilder = new ExperimenterIdCaseBuilder();
+        ExperimenterBuilder expBuilder = new ExperimenterBuilder();
+        expBuilder.setExperimenter(new ExperimenterId(42L));
+        caseBuilder.setExperimenter(expBuilder.build());
+        builder.setMatchEntryValue(caseBuilder.build());
+        MatchEntry entry = builder.build();
         MessageTypeKey<?> key = keyMaker.make(entry);
 
         Assert.assertNotNull("Null key", key);

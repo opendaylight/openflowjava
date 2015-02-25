@@ -10,33 +10,35 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.match;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EcnMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EcnMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.IpEcn;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmClassBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.IpEcn;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OxmClassBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.IpEcnCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ip.ecn._case.IpEcnBuilder;
 
 /**
  * @author michal.polkorab
  *
  */
 public class OxmIpEcnDeserializer extends AbstractOxmMatchEntryDeserializer
-        implements OFDeserializer<MatchEntries> {
+        implements OFDeserializer<MatchEntry> {
 
     @Override
-    public MatchEntries deserialize(ByteBuf input) {
-        MatchEntriesBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
-        addIpEcnAugmentation(input, builder);
+    public MatchEntry deserialize(ByteBuf input) {
+        MatchEntryBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
+        addIpEcnValue(input, builder);
         return builder.build();
     }
 
-    private static void addIpEcnAugmentation(ByteBuf input, MatchEntriesBuilder builder) {
-        EcnMatchEntryBuilder ecnBuilder = new EcnMatchEntryBuilder();
+    private static void addIpEcnValue(ByteBuf input, MatchEntryBuilder builder) {
+        IpEcnCaseBuilder caseBuilder = new IpEcnCaseBuilder();
+        IpEcnBuilder ecnBuilder = new IpEcnBuilder();
         ecnBuilder.setEcn(input.readUnsignedByte());
-        builder.addAugmentation(EcnMatchEntry.class, ecnBuilder.build());
+        caseBuilder.setIpEcn(ecnBuilder.build());
+        builder.setMatchEntryValue(caseBuilder.build());
     }
 
     @Override

@@ -26,31 +26,33 @@ import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6FlowLabel;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv4AddressMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv4AddressMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv6AddressMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv6AddressMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv6FlabelMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv6FlabelMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.oxm.container.match.entry.value.ExperimenterIdCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.oxm.container.match.entry.value.experimenter.id._case.ExperimenterBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ExperimenterId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.StandardMatchType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ExperimenterClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv4Src;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6Dst;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6Flabel;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6NdTarget;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6Src;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmMatchType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.Match;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.match.grouping.MatchBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.ExperimenterClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Ipv4Src;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Ipv6Dst;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Ipv6Flabel;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Ipv6NdTarget;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Ipv6Src;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OxmMatchType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Ipv4SrcCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Ipv6DstCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Ipv6FlabelCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Ipv6NdTargetCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Ipv6SrcCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ipv4.src._case.Ipv4SrcBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ipv6.dst._case.Ipv6DstBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ipv6.flabel._case.Ipv6FlabelBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ipv6.nd.target._case.Ipv6NdTargetBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ipv6.src._case.Ipv6SrcBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.grouping.Match;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.grouping.MatchBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,16 +85,18 @@ public class OF13MatchSerializerTest {
     public void testIpv4Src() {
         MatchBuilder builder = new MatchBuilder();
         builder.setType(OxmMatchType.class);
-        List<MatchEntries> entries = new ArrayList<>();
-        MatchEntriesBuilder entriesBuilder = new MatchEntriesBuilder();
+        List<MatchEntry> entries = new ArrayList<>();
+        MatchEntryBuilder entriesBuilder = new MatchEntryBuilder();
         entriesBuilder.setOxmClass(OpenflowBasicClass.class);
         entriesBuilder.setOxmMatchField(Ipv4Src.class);
         entriesBuilder.setHasMask(false);
-        Ipv4AddressMatchEntryBuilder addressBuilder = new Ipv4AddressMatchEntryBuilder();
-        addressBuilder.setIpv4Address(new Ipv4Address("1.2.3.4"));
-        entriesBuilder.addAugmentation(Ipv4AddressMatchEntry.class, addressBuilder.build());
+        Ipv4SrcCaseBuilder ipv4SrcCaseBuilder = new Ipv4SrcCaseBuilder();
+        Ipv4SrcBuilder ipv4SrcBuilder = new Ipv4SrcBuilder();
+        ipv4SrcBuilder.setIpv4Address(new Ipv4Address("1.2.3.4"));
+        ipv4SrcCaseBuilder.setIpv4Src(ipv4SrcBuilder.build());
+        entriesBuilder.setMatchEntryValue(ipv4SrcCaseBuilder.build());
         entries.add(entriesBuilder.build());
-        builder.setMatchEntries(entries);
+        builder.setMatchEntry(entries);
         Match match = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
@@ -116,53 +120,63 @@ public class OF13MatchSerializerTest {
     public void testIpv6Various() {
         MatchBuilder builder = new MatchBuilder();
         builder.setType(OxmMatchType.class);
-        List<MatchEntries> entries = new ArrayList<>();
+        List<MatchEntry> entries = new ArrayList<>();
         // ipv6 match entry with correct Ipv6 address
-        MatchEntriesBuilder entriesBuilder = new MatchEntriesBuilder();
+        MatchEntryBuilder entriesBuilder = new MatchEntryBuilder();
         entriesBuilder.setOxmClass(OpenflowBasicClass.class);
         entriesBuilder.setOxmMatchField(Ipv6Src.class);
         entriesBuilder.setHasMask(false);
-        Ipv6AddressMatchEntryBuilder addressBuilder = new Ipv6AddressMatchEntryBuilder();
-        addressBuilder.setIpv6Address(new Ipv6Address("1:2:3:4:5:6:7:8"));
-        entriesBuilder.addAugmentation(Ipv6AddressMatchEntry.class, addressBuilder.build());
+        Ipv6SrcCaseBuilder ipv6SrcCaseBuilder = new Ipv6SrcCaseBuilder();
+        Ipv6SrcBuilder ipv6SrcBuilder = new Ipv6SrcBuilder();
+        ipv6SrcBuilder.setIpv6Address(new Ipv6Address("1:2:3:4:5:6:7:8"));
+        ipv6SrcCaseBuilder.setIpv6Src(ipv6SrcBuilder.build());
+        entriesBuilder.setMatchEntryValue(ipv6SrcCaseBuilder.build());
         entries.add(entriesBuilder.build());
         // ipv6 match entry with abbreviated Ipv6 address
-        entriesBuilder = new MatchEntriesBuilder();
+        entriesBuilder = new MatchEntryBuilder();
         entriesBuilder.setOxmClass(OpenflowBasicClass.class);
         entriesBuilder.setOxmMatchField(Ipv6NdTarget.class);
         entriesBuilder.setHasMask(false);
-        addressBuilder = new Ipv6AddressMatchEntryBuilder();
-        addressBuilder.setIpv6Address(new Ipv6Address("1:2::6:7:8"));
-        entriesBuilder.addAugmentation(Ipv6AddressMatchEntry.class, addressBuilder.build());
+        Ipv6NdTargetCaseBuilder ipv6NdTargetCaseBuilder = new Ipv6NdTargetCaseBuilder();
+        Ipv6NdTargetBuilder ipv6NdTargetBuilder = new Ipv6NdTargetBuilder();
+        ipv6NdTargetBuilder.setIpv6Address(new Ipv6Address("1:2::6:7:8"));
+        ipv6NdTargetCaseBuilder.setIpv6NdTarget(ipv6NdTargetBuilder.build());
+        entriesBuilder.setMatchEntryValue(ipv6NdTargetCaseBuilder.build());
         entries.add(entriesBuilder.build());
         // ipv6 match entry with abbreviated Ipv6 address
-        entriesBuilder = new MatchEntriesBuilder();
+        entriesBuilder = new MatchEntryBuilder();
         entriesBuilder.setOxmClass(OpenflowBasicClass.class);
         entriesBuilder.setOxmMatchField(Ipv6Dst.class);
         entriesBuilder.setHasMask(false);
-        addressBuilder = new Ipv6AddressMatchEntryBuilder();
-        addressBuilder.setIpv6Address(new Ipv6Address("1::8"));
-        entriesBuilder.addAugmentation(Ipv6AddressMatchEntry.class, addressBuilder.build());
+        Ipv6DstCaseBuilder ipv6DstCaseBuilder = new Ipv6DstCaseBuilder();
+        Ipv6DstBuilder ipv6DstBuilder = new Ipv6DstBuilder();
+        ipv6DstBuilder.setIpv6Address(new Ipv6Address("1::8"));
+        ipv6DstCaseBuilder.setIpv6Dst(ipv6DstBuilder.build());
+        entriesBuilder.setMatchEntryValue(ipv6DstCaseBuilder.build());
         entries.add(entriesBuilder.build());
         // ipv6 match entry with abbreviated Ipv6 address
-        entriesBuilder = new MatchEntriesBuilder();
+        entriesBuilder = new MatchEntryBuilder();
         entriesBuilder.setOxmClass(OpenflowBasicClass.class);
         entriesBuilder.setOxmMatchField(Ipv6Dst.class);
         entriesBuilder.setHasMask(false);
-        addressBuilder = new Ipv6AddressMatchEntryBuilder();
-        addressBuilder.setIpv6Address(new Ipv6Address("::1"));
-        entriesBuilder.addAugmentation(Ipv6AddressMatchEntry.class, addressBuilder.build());
+        ipv6DstCaseBuilder = new Ipv6DstCaseBuilder();
+        ipv6DstBuilder = new Ipv6DstBuilder();
+        ipv6DstBuilder.setIpv6Address(new Ipv6Address("::1"));
+        ipv6DstCaseBuilder.setIpv6Dst(ipv6DstBuilder.build());
+        entriesBuilder.setMatchEntryValue(ipv6DstCaseBuilder.build());
         entries.add(entriesBuilder.build());
         // ipv6 match entry with abbreviated Ipv6 address
-        entriesBuilder = new MatchEntriesBuilder();
+        entriesBuilder = new MatchEntryBuilder();
         entriesBuilder.setOxmClass(OpenflowBasicClass.class);
         entriesBuilder.setOxmMatchField(Ipv6Dst.class);
         entriesBuilder.setHasMask(false);
-        addressBuilder = new Ipv6AddressMatchEntryBuilder();
-        addressBuilder.setIpv6Address(new Ipv6Address("::"));
-        entriesBuilder.addAugmentation(Ipv6AddressMatchEntry.class, addressBuilder.build());
+        ipv6DstCaseBuilder = new Ipv6DstCaseBuilder();
+        ipv6DstBuilder = new Ipv6DstBuilder();
+        ipv6DstBuilder.setIpv6Address(new Ipv6Address("::"));
+        ipv6DstCaseBuilder.setIpv6Dst(ipv6DstBuilder.build());
+        entriesBuilder.setMatchEntryValue(ipv6DstCaseBuilder.build());
         entries.add(entriesBuilder.build());
-        builder.setMatchEntries(entries);
+        builder.setMatchEntry(entries);
         Match match = builder.build();
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         matchSerializer.serialize(match, out);
@@ -233,17 +247,19 @@ public class OF13MatchSerializerTest {
     public void testIpv6Incorrect() {
         MatchBuilder builder = new MatchBuilder();
         builder.setType(OxmMatchType.class);
-        List<MatchEntries> entries = new ArrayList<>();
+        List<MatchEntry> entries = new ArrayList<>();
         // ipv6 match entry with incorrect Ipv6 address
-        MatchEntriesBuilder entriesBuilder = new MatchEntriesBuilder();
+        MatchEntryBuilder entriesBuilder = new MatchEntryBuilder();
         entriesBuilder.setOxmClass(OpenflowBasicClass.class);
         entriesBuilder.setOxmMatchField(Ipv6Src.class);
         entriesBuilder.setHasMask(false);
-        Ipv6AddressMatchEntryBuilder addressBuilder = new Ipv6AddressMatchEntryBuilder();
-        addressBuilder.setIpv6Address(new Ipv6Address("1:2::::8"));
-        entriesBuilder.addAugmentation(Ipv6AddressMatchEntry.class, addressBuilder.build());
+        Ipv6SrcCaseBuilder ipv6SrcCaseBuilder = new Ipv6SrcCaseBuilder();
+        Ipv6SrcBuilder ipv6SrcBuilder = new Ipv6SrcBuilder();
+        ipv6SrcBuilder.setIpv6Address(new Ipv6Address("1:2::::8"));
+        ipv6SrcCaseBuilder.setIpv6Src(ipv6SrcBuilder.build());
+        entriesBuilder.setMatchEntryValue(ipv6SrcCaseBuilder.build());
         entries.add(entriesBuilder.build());
-        builder.setMatchEntries(entries);
+        builder.setMatchEntry(entries);
         Match match = builder.build();
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         matchSerializer.serialize(match, out);
@@ -272,45 +288,6 @@ public class OF13MatchSerializerTest {
     }
 
     /**
-     * Test for correct serialization of Ipv4Address match entry with mask
-     */
-    @Test
-    public void testIpv6FlabelWithMask() {
-        Match match = buildIpv6FLabelMatch(0x0f9e8dL, true, new byte[]{0, 0x0c, 0x7b, 0x6a});
-
-        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-        matchSerializer.serialize(match, out);
-
-        Assert.assertEquals("Wrong type", 1, out.readUnsignedShort());
-        out.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-        Assert.assertEquals("Wrong class", 0x8000, out.readUnsignedShort());
-        Assert.assertEquals("Wrong field and mask", 28<<1 | 1, out.readUnsignedByte());
-        out.skipBytes(EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
-        byte[] labelAndMask = new byte[8];
-        out.readBytes(labelAndMask);
-
-        LOG.debug("label: "+ByteBufUtils.bytesToHexString(labelAndMask));
-        Assert.assertArrayEquals("Wrong ipv6FLabel", new byte[]{0, 0x0f, (byte) 0x9e, (byte) 0x8d, 0, 0x0c, 0x7b, 0x6a}, labelAndMask);
-    }
-
-    /**
-     * Test for correct serialization of Ipv4Address match entry with wrong mask
-     */
-    @Test
-    public void testIpv6FlabelWithMaskBad() {
-        Match match = buildIpv6FLabelMatch(0x0f9e8dL, true, new byte[]{0x0c, 0x7b, 0x6a});
-
-        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
-
-        try {
-            matchSerializer.serialize(match, out);
-            Assert.fail("incorrect length of mask ignored");
-        } catch (IllegalArgumentException e) {
-            //expected
-        }
-    }
-
-    /**
      * @param labelValue ipv6 flow label
      * @param hasMask
      * @param mask ipv6 flow label mask
@@ -319,19 +296,18 @@ public class OF13MatchSerializerTest {
     private static Match buildIpv6FLabelMatch(long labelValue, boolean hasMask, byte[] mask) {
         MatchBuilder builder = new MatchBuilder();
         builder.setType(OxmMatchType.class);
-        List<MatchEntries> entries = new ArrayList<>();
-        MatchEntriesBuilder entriesBuilder = new MatchEntriesBuilder();
+        List<MatchEntry> entries = new ArrayList<>();
+        MatchEntryBuilder entriesBuilder = new MatchEntryBuilder();
         entriesBuilder.setOxmClass(OpenflowBasicClass.class);
         entriesBuilder.setOxmMatchField(Ipv6Flabel.class);
         entriesBuilder.setHasMask(hasMask);
-        Ipv6FlabelMatchEntryBuilder ip6FLabelBuilder = new Ipv6FlabelMatchEntryBuilder();
-        ip6FLabelBuilder.setIpv6Flabel(new Ipv6FlowLabel(labelValue));
-        entriesBuilder.addAugmentation(Ipv6FlabelMatchEntry.class, ip6FLabelBuilder.build());
-        MaskMatchEntryBuilder maskBuilder = new MaskMatchEntryBuilder();
-        maskBuilder.setMask(mask);
-        entriesBuilder.addAugmentation(MaskMatchEntry.class, maskBuilder.build());
+        Ipv6FlabelCaseBuilder ipv6FlabelCaseBuilder = new Ipv6FlabelCaseBuilder();
+        Ipv6FlabelBuilder ipv6FlabelBuilder = new Ipv6FlabelBuilder();
+        ipv6FlabelBuilder.setIpv6Flabel(new Ipv6FlowLabel(labelValue));
+        ipv6FlabelCaseBuilder.setIpv6Flabel(ipv6FlabelBuilder.build());
+        entriesBuilder.setMatchEntryValue(ipv6FlabelCaseBuilder.build());
         entries.add(entriesBuilder.build());
-        builder.setMatchEntries(entries);
+        builder.setMatchEntry(entries);
         Match match = builder.build();
         return match;
     }
@@ -360,14 +336,16 @@ public class OF13MatchSerializerTest {
      */
     @Test(expected=IllegalStateException.class)
     public void testSerializeExperimenterMatchEntry() {
-        List<MatchEntries> entries = new ArrayList<>();
-        MatchEntriesBuilder builder = new MatchEntriesBuilder();
+        List<MatchEntry> entries = new ArrayList<>();
+        MatchEntryBuilder builder = new MatchEntryBuilder();
         builder.setOxmClass(ExperimenterClass.class);
         builder.setOxmMatchField(OxmMatchFieldClass.class);
         builder.setHasMask(true);
-        ExperimenterIdMatchEntryBuilder expIdBuilder = new ExperimenterIdMatchEntryBuilder();
-        expIdBuilder.setExperimenter(new ExperimenterId(42L));
-        builder.addAugmentation(ExperimenterIdMatchEntry.class, expIdBuilder.build());
+        ExperimenterIdCaseBuilder caseBuilder = new ExperimenterIdCaseBuilder();
+        ExperimenterBuilder expBuilder = new ExperimenterBuilder();
+        expBuilder.setExperimenter(new ExperimenterId(42L));
+        caseBuilder.setExperimenter(expBuilder.build());
+        builder.setMatchEntryValue(caseBuilder.build());
         entries.add(builder.build());
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
 

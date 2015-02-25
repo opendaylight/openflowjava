@@ -7,14 +7,25 @@
  */
 package org.opendaylight.openflowjava.protocol.impl.serialization.match;
 
+import io.netty.buffer.ByteBuf;
+
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Ipv6NdTargetCase;
 
 /**
  * @author michal.polkorab
  *
  */
 public class OxmIpv6NdTargetSerializer extends AbstractOxmIpv6AddressSerializer {
+
+    @Override
+    public void serialize(MatchEntry entry, ByteBuf outBuffer) {
+        super.serialize(entry, outBuffer);
+        Ipv6NdTargetCase entryValue = (Ipv6NdTargetCase) entry.getMatchEntryValue();
+        writeIpv6Address(entryValue.getIpv6NdTarget().getIpv6Address().getValue(), outBuffer);
+    }
 
     @Override
     protected int getOxmClassCode() {

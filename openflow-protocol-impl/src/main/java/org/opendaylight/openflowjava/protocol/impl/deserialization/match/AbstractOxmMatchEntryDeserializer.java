@@ -11,20 +11,20 @@ import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmClassBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OxmClassBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
 
 /**
  * @author michal.polkorab
  *
  */
-public abstract class AbstractOxmMatchEntryDeserializer implements HeaderDeserializer<MatchEntries> {
+public abstract class AbstractOxmMatchEntryDeserializer implements HeaderDeserializer<MatchEntry> {
 
     @Override
-    public MatchEntries deserializeHeader(ByteBuf input) {
-        MatchEntriesBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
+    public MatchEntry deserializeHeader(ByteBuf input) {
+        MatchEntryBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
         return builder.build();
     }
 
@@ -47,9 +47,9 @@ public abstract class AbstractOxmMatchEntryDeserializer implements HeaderDeseria
      * @param input input bytebuf
      * @return MatchEntriesBuilder which can be filled with MatchEntry augmentation
      */
-    protected MatchEntriesBuilder processHeader(Class<? extends OxmClassBase> oxmClass,
+    protected MatchEntryBuilder processHeader(Class<? extends OxmClassBase> oxmClass,
             Class<? extends MatchField> oxmField, ByteBuf input) {
-        MatchEntriesBuilder builder = new MatchEntriesBuilder();
+        MatchEntryBuilder builder = new MatchEntryBuilder();
         builder.setOxmClass(oxmClass);
         // skip oxm_class (provided)
         input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);

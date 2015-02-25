@@ -16,12 +16,12 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegist
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdMatchEntry;
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OxmFieldsAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.OxmFieldsAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.oxm.container.match.entry.value.ExperimenterIdCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ExperimenterClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.ExperimenterClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
 
 /**
  * @author michal.polkorab
@@ -39,16 +39,16 @@ public class OF13SetFieldActionSerializer implements OFSerializer<Action>,
         int lengthIndex = outBuffer.writerIndex();
         outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
         OxmFieldsAction oxmField = action.getAugmentation(OxmFieldsAction.class);
-        MatchEntries entry = oxmField.getMatchEntries().get(0);
+        MatchEntry entry = oxmField.getMatchEntry().get(0);
         MatchEntrySerializerKey<?, ?> key = new MatchEntrySerializerKey<>(
                 EncodeConstants.OF13_VERSION_ID, entry.getOxmClass(), entry.getOxmMatchField());
         if (entry.getOxmClass().equals(ExperimenterClass.class)) {
-            key.setExperimenterId(entry.getAugmentation(ExperimenterIdMatchEntry.class)
-                    .getExperimenter().getValue());
+            ExperimenterIdCase experimenterIdCase = (ExperimenterIdCase) entry.getMatchEntryValue();
+            key.setExperimenterId(experimenterIdCase.getExperimenter().getExperimenter().getValue());
         } else {
             key.setExperimenterId(null);
         }
-        OFSerializer<MatchEntries> serializer = registry.getSerializer(key);
+        OFSerializer<MatchEntry> serializer = registry.getSerializer(key);
         serializer.serialize(entry, outBuffer);
         int paddingRemainder = (outBuffer.writerIndex() - startIndex) % EncodeConstants.PADDING;
         if (paddingRemainder != 0) {

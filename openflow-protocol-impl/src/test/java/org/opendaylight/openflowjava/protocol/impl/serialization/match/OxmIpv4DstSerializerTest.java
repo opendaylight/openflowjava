@@ -18,13 +18,11 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv4AddressMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Ipv4AddressMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv4Dst;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Ipv4Dst;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Ipv4DstCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ipv4.dst._case.Ipv4DstBuilder;
 
 /**
  * @author michal.polkorab
@@ -39,7 +37,7 @@ public class OxmIpv4DstSerializerTest {
      */
     @Test
     public void testSerializeWithoutMask() {
-        MatchEntriesBuilder builder = prepareMatchEntry(false, "10.0.0.1");
+        MatchEntryBuilder builder = prepareMatchEntry(false, "10.0.0.1");
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
@@ -56,7 +54,7 @@ public class OxmIpv4DstSerializerTest {
      */
     @Test
     public void testSerializeWithMask() {
-        MatchEntriesBuilder builder = prepareMatchEntry(true, "120.121.122.0");
+        MatchEntryBuilder builder = prepareMatchEntry(true, "120.121.122.0");
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
@@ -77,7 +75,7 @@ public class OxmIpv4DstSerializerTest {
      */
     @Test
     public void testSerializeHeaderWithoutMask() {
-        MatchEntriesBuilder builder = prepareHeader(false);
+        MatchEntryBuilder builder = prepareHeader(false);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
@@ -91,7 +89,7 @@ public class OxmIpv4DstSerializerTest {
      */
     @Test
     public void testSerializeHeaderWithMask() {
-        MatchEntriesBuilder builder = prepareHeader(true);
+        MatchEntryBuilder builder = prepareHeader(true);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
@@ -124,21 +122,21 @@ public class OxmIpv4DstSerializerTest {
         assertEquals("Wrong value length", EncodeConstants.SIZE_OF_INT_IN_BYTES, serializer.getValueLength());
     }
 
-    private static MatchEntriesBuilder prepareMatchEntry(boolean hasMask, String value) {
-        MatchEntriesBuilder builder = prepareHeader(hasMask);
+    private static MatchEntryBuilder prepareMatchEntry(boolean hasMask, String value) {
+        MatchEntryBuilder builder = prepareHeader(hasMask);
+        Ipv4DstCaseBuilder casebuilder = new Ipv4DstCaseBuilder();
+        Ipv4DstBuilder valueBuilder = new Ipv4DstBuilder();
         if (hasMask) {
-            MaskMatchEntryBuilder maskBuilder = new MaskMatchEntryBuilder();
-            maskBuilder.setMask(new byte[]{15, 15, 0, 0});
-            builder.addAugmentation(MaskMatchEntry.class, maskBuilder.build());
+            valueBuilder.setMask(new byte[]{15, 15, 0, 0});
         }
-        Ipv4AddressMatchEntryBuilder addressBuilder = new Ipv4AddressMatchEntryBuilder();
-        addressBuilder.setIpv4Address(new Ipv4Address(value));
-        builder.addAugmentation(Ipv4AddressMatchEntry.class, addressBuilder.build());
+        valueBuilder.setIpv4Address(new Ipv4Address(value));
+        casebuilder.setIpv4Dst(valueBuilder.build());
+        builder.setMatchEntryValue(casebuilder.build());
         return builder;
     }
 
-    private static MatchEntriesBuilder prepareHeader(boolean hasMask) {
-        MatchEntriesBuilder builder = new MatchEntriesBuilder();
+    private static MatchEntryBuilder prepareHeader(boolean hasMask) {
+        MatchEntryBuilder builder = new MatchEntryBuilder();
         builder.setOxmClass(OpenflowBasicClass.class);
         builder.setOxmMatchField(Ipv4Dst.class);
         builder.setHasMask(hasMask);

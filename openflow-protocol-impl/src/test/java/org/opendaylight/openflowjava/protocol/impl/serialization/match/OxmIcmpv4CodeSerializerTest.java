@@ -16,11 +16,11 @@ import io.netty.buffer.PooledByteBufAllocator;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Icmpv4CodeMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Icmpv4CodeMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Icmpv4Code;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Icmpv4Code;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Icmpv4CodeCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.icmpv4.code._case.Icmpv4CodeBuilder;
 
 /**
  * @author michal.polkorab
@@ -35,7 +35,7 @@ public class OxmIcmpv4CodeSerializerTest {
      */
     @Test
     public void testSerialize() {
-        MatchEntriesBuilder builder = prepareIcmpv4CodeMatchEntry((short) 200);
+        MatchEntryBuilder builder = prepareIcmpv4CodeMatchEntry((short) 200);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
@@ -50,7 +50,7 @@ public class OxmIcmpv4CodeSerializerTest {
      */
     @Test
     public void testSerializeHeader() {
-        MatchEntriesBuilder builder = prepareIcmpv4CodeHeader(false);
+        MatchEntryBuilder builder = prepareIcmpv4CodeHeader(false);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
@@ -83,17 +83,18 @@ public class OxmIcmpv4CodeSerializerTest {
         assertEquals("Wrong value length", EncodeConstants.SIZE_OF_BYTE_IN_BYTES, serializer.getValueLength());
     }
 
-
-    private static MatchEntriesBuilder prepareIcmpv4CodeMatchEntry(short value) {
-        MatchEntriesBuilder builder = prepareIcmpv4CodeHeader(false);
-        Icmpv4CodeMatchEntryBuilder icmpv4Builder = new Icmpv4CodeMatchEntryBuilder();
-        icmpv4Builder.setIcmpv4Code(value);
-        builder.addAugmentation(Icmpv4CodeMatchEntry.class, icmpv4Builder.build());
+    private static MatchEntryBuilder prepareIcmpv4CodeMatchEntry(short value) {
+        MatchEntryBuilder builder = prepareIcmpv4CodeHeader(false);
+        Icmpv4CodeCaseBuilder casebuilder = new Icmpv4CodeCaseBuilder();
+        Icmpv4CodeBuilder valueBuilder = new Icmpv4CodeBuilder();
+        valueBuilder.setIcmpv4Code(value);
+        casebuilder.setIcmpv4Code(valueBuilder.build());
+        builder.setMatchEntryValue(casebuilder.build());
         return builder;
     }
 
-    private static MatchEntriesBuilder prepareIcmpv4CodeHeader(boolean hasMask) {
-        MatchEntriesBuilder builder = new MatchEntriesBuilder();
+    private static MatchEntryBuilder prepareIcmpv4CodeHeader(boolean hasMask) {
+        MatchEntryBuilder builder = new MatchEntryBuilder();
         builder.setOxmClass(OpenflowBasicClass.class);
         builder.setOxmMatchField(Icmpv4Code.class);
         builder.setHasMask(hasMask);
