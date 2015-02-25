@@ -16,11 +16,11 @@ import io.netty.buffer.PooledByteBufAllocator;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanPcpMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanPcpMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.VlanPcp;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.VlanPcp;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.VlanPcpCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.vlan.pcp._case.VlanPcpBuilder;
 
 /**
  * @author michal.polkorab
@@ -35,7 +35,7 @@ public class OxmVlanPcpSerializerTest {
      */
     @Test
     public void testSerialize() {
-        MatchEntriesBuilder builder = prepareVlanPcpMatchEntry((short) 42);
+        MatchEntryBuilder builder = prepareVlanPcpMatchEntry((short) 42);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
@@ -50,7 +50,7 @@ public class OxmVlanPcpSerializerTest {
      */
     @Test
     public void testSerializeHeader() {
-        MatchEntriesBuilder builder = prepareVlanPcpHeader(false);
+        MatchEntryBuilder builder = prepareVlanPcpHeader(false);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
@@ -83,16 +83,18 @@ public class OxmVlanPcpSerializerTest {
         assertEquals("Wrong value length", EncodeConstants.SIZE_OF_BYTE_IN_BYTES, serializer.getValueLength());
     }
 
-    private static MatchEntriesBuilder prepareVlanPcpMatchEntry(short value) {
-        MatchEntriesBuilder builder = prepareVlanPcpHeader(false);
-        VlanPcpMatchEntryBuilder pcpBuilder = new VlanPcpMatchEntryBuilder();
-        pcpBuilder.setVlanPcp(value);
-        builder.addAugmentation(VlanPcpMatchEntry.class, pcpBuilder.build());
+    private static MatchEntryBuilder prepareVlanPcpMatchEntry(short value) {
+        MatchEntryBuilder builder = prepareVlanPcpHeader(false);
+        VlanPcpCaseBuilder casebuilder = new VlanPcpCaseBuilder();
+        VlanPcpBuilder valueBuilder = new VlanPcpBuilder();
+        valueBuilder.setVlanPcp(value);
+        casebuilder.setVlanPcp(valueBuilder.build());
+        builder.setMatchEntryValue(casebuilder.build());
         return builder;
     }
 
-    private static MatchEntriesBuilder prepareVlanPcpHeader(boolean hasMask) {
-        MatchEntriesBuilder builder = new MatchEntriesBuilder();
+    private static MatchEntryBuilder prepareVlanPcpHeader(boolean hasMask) {
+        MatchEntryBuilder builder = new MatchEntryBuilder();
         builder.setOxmClass(OpenflowBasicClass.class);
         builder.setOxmMatchField(VlanPcp.class);
         builder.setHasMask(hasMask);

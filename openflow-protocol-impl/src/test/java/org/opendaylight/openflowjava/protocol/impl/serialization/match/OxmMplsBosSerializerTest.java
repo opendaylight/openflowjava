@@ -16,11 +16,11 @@ import io.netty.buffer.PooledByteBufAllocator;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.BosMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.BosMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MplsBos;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MplsBos;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.MplsBosCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.mpls.bos._case.MplsBosBuilder;
 
 /**
  * @author michal.polkorab
@@ -35,7 +35,7 @@ public class OxmMplsBosSerializerTest {
      */
     @Test
     public void testSerialize() {
-        MatchEntriesBuilder builder = prepareMplsBosMatchEntry(true);
+        MatchEntryBuilder builder = prepareMplsBosMatchEntry(true);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
@@ -50,7 +50,7 @@ public class OxmMplsBosSerializerTest {
      */
     @Test
     public void testSerializeHeader() {
-        MatchEntriesBuilder builder = prepareMplsBosHeader(false);
+        MatchEntryBuilder builder = prepareMplsBosHeader(false);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
@@ -83,17 +83,18 @@ public class OxmMplsBosSerializerTest {
         assertEquals("Wrong value length", EncodeConstants.SIZE_OF_BYTE_IN_BYTES, serializer.getValueLength());
     }
 
-
-    private static MatchEntriesBuilder prepareMplsBosMatchEntry(boolean bos) {
-        MatchEntriesBuilder builder = prepareMplsBosHeader(false);
-        BosMatchEntryBuilder bosBuilder = new BosMatchEntryBuilder();
-        bosBuilder.setBos(bos);
-        builder.addAugmentation(BosMatchEntry.class, bosBuilder.build());
+    private static MatchEntryBuilder prepareMplsBosMatchEntry(boolean bos) {
+        MatchEntryBuilder builder = prepareMplsBosHeader(false);
+        MplsBosCaseBuilder casebuilder = new MplsBosCaseBuilder();
+        MplsBosBuilder valueBuilder = new MplsBosBuilder();
+        valueBuilder.setBos(bos);
+        casebuilder.setMplsBos(valueBuilder.build());
+        builder.setMatchEntryValue(casebuilder.build());
         return builder;
     }
 
-    private static MatchEntriesBuilder prepareMplsBosHeader(boolean hasMask) {
-        MatchEntriesBuilder builder = new MatchEntriesBuilder();
+    private static MatchEntryBuilder prepareMplsBosHeader(boolean hasMask) {
+        MatchEntryBuilder builder = new MatchEntryBuilder();
         builder.setOxmClass(OpenflowBasicClass.class);
         builder.setOxmMatchField(MplsBos.class);
         builder.setHasMask(hasMask);

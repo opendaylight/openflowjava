@@ -11,8 +11,8 @@ import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.Icmpv6TypeMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Icmpv6TypeCase;
 
 /**
  * @author michal.polkorab
@@ -21,9 +21,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
 public class OxmIcmpv6TypeSerializer extends AbstractOxmMatchEntrySerializer {
 
     @Override
-    public void serialize(MatchEntries entry, ByteBuf outBuffer) {
+    public void serialize(MatchEntry entry, ByteBuf outBuffer) {
         super.serialize(entry, outBuffer);
-        outBuffer.writeByte(entry.getAugmentation(Icmpv6TypeMatchEntry.class).getIcmpv6Type());
+        Icmpv6TypeCase entryValue = (Icmpv6TypeCase) entry.getMatchEntryValue();
+        outBuffer.writeByte(entryValue.getIcmpv6Type().getIcmpv6Type());
     }
 
     @Override

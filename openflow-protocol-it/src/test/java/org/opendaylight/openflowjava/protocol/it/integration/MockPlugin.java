@@ -19,7 +19,6 @@ import org.opendaylight.openflowjava.protocol.api.connection.ConnectionAdapter;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionReadyListener;
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
 import org.opendaylight.openflowjava.protocol.impl.core.SwitchConnectionProviderImpl;
-import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoReplyInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoReplyInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoRequestMessage;
@@ -192,8 +191,8 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
         LOGGER.debug("Reason: " + notification.getReason());
         LOGGER.debug("TableId: " + notification.getTableId());
         LOGGER.debug("Cookie: " + notification.getCookie());
-        LOGGER.debug("Class: " + notification.getMatch().getMatchEntries().get(0).getOxmClass());
-        LOGGER.debug("Field: " + notification.getMatch().getMatchEntries().get(0).getOxmMatchField());
+        LOGGER.debug("Class: " + notification.getMatch().getMatchEntry().get(0).getOxmClass());
+        LOGGER.debug("Field: " + notification.getMatch().getMatchEntry().get(0).getOxmMatchField());
         LOGGER.debug("Datasize: " + notification.getData().length);
     }
 

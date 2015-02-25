@@ -8,9 +8,9 @@
 
 package org.opendaylight.openflowjava.protocol.api.keys;
 
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmClassBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OxmClassBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
 
 /**
  * @author michal.polkorab
@@ -18,7 +18,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
  * @param <F> oxm_field (see specification)
  */
 public final class MatchEntrySerializerKey<C extends OxmClassBase, F extends MatchField>
-        extends MessageTypeKey<MatchEntries> implements ExperimenterSerializerKey {
+        extends MessageTypeKey<MatchEntry> implements ExperimenterSerializerKey {
 
     private Class<C> oxmClass;
     private Class<F> oxmField;
@@ -32,7 +32,7 @@ public final class MatchEntrySerializerKey<C extends OxmClassBase, F extends Mat
      */
     public MatchEntrySerializerKey(short msgVersion, Class<C> oxmClass,
             Class<F> oxmField) {
-        super(msgVersion, MatchEntries.class);
+        super(msgVersion, MatchEntry.class);
         this.oxmClass = oxmClass;
         this.oxmField = oxmField;
     }

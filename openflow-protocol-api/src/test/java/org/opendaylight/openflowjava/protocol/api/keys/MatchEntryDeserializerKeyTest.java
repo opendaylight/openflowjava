@@ -76,8 +76,8 @@ public class MatchEntryDeserializerKeyTest {
     public void testToString(){
         MatchEntryDeserializerKey key1 = new MatchEntryDeserializerKey(EncodeConstants.OF13_VERSION_ID, 0x8000, 42);
 
-        Assert.assertEquals("Wrong toString()", "msgVersion: 4 objectClass: org.opendaylight.yang.gen.v1.urn.opendaylight"
-                + ".openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries msgType: 32768 oxm_field: 42"
-                + " experimenterID: null", key1.toString());
+        Assert.assertEquals("Wrong toString()", "msgVersion: 4 objectClass: org.opendaylight.yang.gen.v1.urn"
+                + ".opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry"
+                + " msgType: 32768 oxm_field: 42 experimenterID: null", key1.toString());
     }
 }
