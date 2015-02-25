@@ -11,8 +11,9 @@ import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.VlanVidCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.vlan.vid._case.VlanVid;
 
 /**
  * @author michal.polkorab
@@ -21,17 +22,18 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
 public class OxmVlanVidSerializer extends AbstractOxmMatchEntrySerializer {
 
     @Override
-    public void serialize(MatchEntries entry, ByteBuf outBuffer) {
+    public void serialize(MatchEntry entry, ByteBuf outBuffer) {
         super.serialize(entry, outBuffer);
-        VlanVidMatchEntry vlanVid = entry.getAugmentation(VlanVidMatchEntry.class);
+        VlanVid vlanVid = ((VlanVidCase) entry.getMatchEntryValue()).getVlanVid();
         int vlanVidValue = vlanVid.getVlanVid();
         if (vlanVid.isCfiBit()) {
             short cfi = 1 << 12; // 13-th bit
             vlanVidValue = vlanVidValue | cfi;
         }
-
         outBuffer.writeShort(vlanVidValue);
-        writeMask(entry, outBuffer, getValueLength());
+        if (entry.isHasMask()) {
+            writeMask(vlanVid.getMask(), outBuffer, getValueLength());
+        }
     }
 
     @Override

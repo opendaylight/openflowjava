@@ -14,14 +14,14 @@ import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterInstructionSe
 import org.opendaylight.openflowjava.protocol.api.keys.InstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageTypeKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdInstruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdMatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ExperimenterIdAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ExperimenterIdInstruction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.oxm.container.match.entry.value.ExperimenterIdCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.Experimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ExperimenterClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.ExperimenterClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
 
 /**
  * Creates KeyMakers
@@ -38,16 +38,16 @@ public abstract class TypeKeyMakerFactory {
      *  in lookup key
      * @return lookup key
      */
-    public static TypeKeyMaker<MatchEntries> createMatchEntriesKeyMaker(short version) {
-        return new AbstractTypeKeyMaker<MatchEntries>(version) {
+    public static TypeKeyMaker<MatchEntry> createMatchEntriesKeyMaker(short version) {
+        return new AbstractTypeKeyMaker<MatchEntry>(version) {
             @Override
-            public MatchEntrySerializerKey<?, ?> make(MatchEntries entry) {
+            public MatchEntrySerializerKey<?, ?> make(MatchEntry entry) {
                 MatchEntrySerializerKey<?, ?> key;
                 key = new MatchEntrySerializerKey<>(getVersion(), entry.getOxmClass(),
                         entry.getOxmMatchField());
                 if (entry.getOxmClass().equals(ExperimenterClass.class)) {
-                    key.setExperimenterId(entry.getAugmentation(ExperimenterIdMatchEntry.class)
-                            .getExperimenter().getValue());
+                    ExperimenterIdCase entryValue = (ExperimenterIdCase) entry.getMatchEntryValue();
+                    key.setExperimenterId(entryValue.getExperimenter().getExperimenter().getValue());
                     return key;
                 }
                 key.setExperimenterId(null);

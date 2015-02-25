@@ -18,13 +18,11 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MacAddressMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MacAddressMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6NdTll;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Ipv6NdTll;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Ipv6NdTllCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ipv6.nd.tll._case.Ipv6NdTllBuilder;
 
 /**
  * @author michal.polkorab
@@ -39,7 +37,7 @@ public class OxmIpv6NdTllSerializerTest {
      */
     @Test
     public void testSerialize() {
-        MatchEntriesBuilder builder = prepareMatchEntry(false, "00:01:02:03:04:05");
+        MatchEntryBuilder builder = prepareMatchEntry("00:01:02:03:04:05");
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
@@ -56,7 +54,7 @@ public class OxmIpv6NdTllSerializerTest {
      */
     @Test
     public void testSerializeHeader() {
-        MatchEntriesBuilder builder = prepareHeader(false);
+        MatchEntryBuilder builder = prepareHeader(false);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
@@ -89,21 +87,18 @@ public class OxmIpv6NdTllSerializerTest {
         assertEquals("Wrong value length", EncodeConstants.MAC_ADDRESS_LENGTH, serializer.getValueLength());
     }
 
-    private static MatchEntriesBuilder prepareMatchEntry(boolean hasMask, String value) {
-        MatchEntriesBuilder builder = prepareHeader(hasMask);
-        if (hasMask) {
-            MaskMatchEntryBuilder maskBuilder = new MaskMatchEntryBuilder();
-            maskBuilder.setMask(new byte[]{15, 15, 0, 0, 10, 10});
-            builder.addAugmentation(MaskMatchEntry.class, maskBuilder.build());
-        }
-        MacAddressMatchEntryBuilder macBuilder = new MacAddressMatchEntryBuilder();
-        macBuilder.setMacAddress(new MacAddress(value));
-        builder.addAugmentation(MacAddressMatchEntry.class, macBuilder.build());
+    private static MatchEntryBuilder prepareMatchEntry(String value) {
+        MatchEntryBuilder builder = prepareHeader(false);
+        Ipv6NdTllCaseBuilder casebuilder = new Ipv6NdTllCaseBuilder();
+        Ipv6NdTllBuilder valueBuilder = new Ipv6NdTllBuilder();
+        valueBuilder.setMacAddress(new MacAddress(value));
+        casebuilder.setIpv6NdTll(valueBuilder.build());
+        builder.setMatchEntryValue(casebuilder.build());
         return builder;
     }
 
-    private static MatchEntriesBuilder prepareHeader(boolean hasMask) {
-        MatchEntriesBuilder builder = new MatchEntriesBuilder();
+    private static MatchEntryBuilder prepareHeader(boolean hasMask) {
+        MatchEntryBuilder builder = new MatchEntryBuilder();
         builder.setOxmClass(OpenflowBasicClass.class);
         builder.setOxmMatchField(Ipv6NdTll.class);
         builder.setHasMask(hasMask);

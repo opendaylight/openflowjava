@@ -16,12 +16,12 @@ import io.netty.buffer.PooledByteBufAllocator;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthTypeMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthTypeMatchEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.EtherType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.EthType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.EthType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.EthTypeCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.eth.type._case.EthTypeBuilder;
 
 /**
  * @author michal.polkorab
@@ -36,7 +36,7 @@ public class OxmEthTypeSerializerTest {
      */
     @Test
     public void testSerialize() {
-        MatchEntriesBuilder builder = prepareEthTypeMatchEntry(65535);
+        MatchEntryBuilder builder = prepareEthTypeMatchEntry(65535);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
@@ -51,7 +51,7 @@ public class OxmEthTypeSerializerTest {
      */
     @Test
     public void testSerializeHeader() {
-        MatchEntriesBuilder builder = prepareEthTypeHeader(false);
+        MatchEntryBuilder builder = prepareEthTypeHeader(false);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
@@ -84,17 +84,18 @@ public class OxmEthTypeSerializerTest {
         assertEquals("Wrong value length", EncodeConstants.SIZE_OF_SHORT_IN_BYTES, serializer.getValueLength());
     }
 
-
-    private static MatchEntriesBuilder prepareEthTypeMatchEntry(int type) {
-        MatchEntriesBuilder builder = prepareEthTypeHeader(false);
-        EthTypeMatchEntryBuilder typeBuilder = new EthTypeMatchEntryBuilder();
-        typeBuilder.setEthType(new EtherType(type));
-        builder.addAugmentation(EthTypeMatchEntry.class, typeBuilder.build());
+    private static MatchEntryBuilder prepareEthTypeMatchEntry(int type) {
+        MatchEntryBuilder builder = prepareEthTypeHeader(false);
+        EthTypeCaseBuilder casebuilder = new EthTypeCaseBuilder();
+        EthTypeBuilder valueBuilder = new EthTypeBuilder();
+        valueBuilder.setEthType(new EtherType(type));
+        casebuilder.setEthType(valueBuilder.build());
+        builder.setMatchEntryValue(casebuilder.build());
         return builder;
     }
 
-    private static MatchEntriesBuilder prepareEthTypeHeader(boolean hasMask) {
-        MatchEntriesBuilder builder = new MatchEntriesBuilder();
+    private static MatchEntryBuilder prepareEthTypeHeader(boolean hasMask) {
+        MatchEntryBuilder builder = new MatchEntryBuilder();
         builder.setOxmClass(OpenflowBasicClass.class);
         builder.setOxmMatchField(EthType.class);
         builder.setHasMask(hasMask);

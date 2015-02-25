@@ -11,6 +11,7 @@ package org.opendaylight.openflowjava.protocol.api.connection;
 import java.net.InetAddress;
 
 import javax.net.ssl.SSLEngine;
+
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SwitchIdleEvent;
 
 /**

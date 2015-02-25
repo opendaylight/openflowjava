@@ -9,12 +9,12 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.match;
 
 import io.netty.buffer.ByteBuf;
 
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PseudoFieldMatchEntry;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.Ipv6ExthdrFlags;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Ipv6ExthdrCase;
 
 /**
  * @author michal.polkorab
@@ -23,9 +23,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
 public class OxmIpv6ExtHdrSerializer extends AbstractOxmMatchEntrySerializer {
 
     @Override
-    public void serialize(final MatchEntries entry, final ByteBuf outBuffer) {
+    public void serialize(MatchEntry entry, ByteBuf outBuffer) {
         super.serialize(entry, outBuffer);
-        Ipv6ExthdrFlags pseudoField = entry.getAugmentation(PseudoFieldMatchEntry.class).getPseudoField();
+        Ipv6ExthdrCase entryValue = (Ipv6ExthdrCase) entry.getMatchEntryValue();
+        Ipv6ExthdrFlags pseudoField = entryValue.getIpv6Exthdr().getPseudoField();
         int bitmap = ByteBufUtils.fillBitMask(0,
                 pseudoField.isNonext(),
                 pseudoField.isEsp(),
@@ -37,7 +38,9 @@ public class OxmIpv6ExtHdrSerializer extends AbstractOxmMatchEntrySerializer {
                 pseudoField.isUnrep(),
                 pseudoField.isUnseq());
         outBuffer.writeShort(bitmap);
-        writeMask(entry, outBuffer, getValueLength());
+        if (entry.isHasMask()) {
+            outBuffer.writeBytes(entryValue.getIpv6Exthdr().getMask());
+        }
     }
 
     @Override

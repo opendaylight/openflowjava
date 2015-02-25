@@ -11,38 +11,41 @@ import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.VlanVidMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmClassBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.VlanVid;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OxmClassBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.VlanVid;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.VlanVidCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.vlan.vid._case.VlanVidBuilder;
 
 /**
  * @author michal.polkorab
  *
  */
 public class OxmVlanVidDeserializer extends AbstractOxmMatchEntryDeserializer
-        implements OFDeserializer<MatchEntries> {
+        implements OFDeserializer<MatchEntry> {
 
     @Override
-    public MatchEntries deserialize(ByteBuf input) {
-        MatchEntriesBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
-        addVlanVidAugmentation(input, builder);
-        if (builder.isHasMask()) {
-            OxmMaskDeserializer.addMaskAugmentation(builder, input, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-        }
+    public MatchEntry deserialize(ByteBuf input) {
+        MatchEntryBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
+        addVlanVidValue(input, builder);
         return builder.build();
     }
 
-    private static void addVlanVidAugmentation(ByteBuf input, MatchEntriesBuilder builder) {
-        VlanVidMatchEntryBuilder vlanVidBuilder = new VlanVidMatchEntryBuilder();
+    private static void addVlanVidValue(ByteBuf input, MatchEntryBuilder builder) {
+        VlanVidCaseBuilder caseBuilder = new VlanVidCaseBuilder();
+        VlanVidBuilder vlanBuilder = new VlanVidBuilder();
         int vidEntryValue = input.readUnsignedShort();
-        vlanVidBuilder.setCfiBit((vidEntryValue & (1 << 12)) != 0); // cfi is 13-th bit
-        vlanVidBuilder.setVlanVid(vidEntryValue & ((1 << 12) - 1)); // value without 13-th bit
-        builder.addAugmentation(VlanVidMatchEntry.class, vlanVidBuilder.build());
+        vlanBuilder.setCfiBit((vidEntryValue & (1 << 12)) != 0); // cfi is 13-th bit
+        vlanBuilder.setVlanVid(vidEntryValue & ((1 << 12) - 1)); // value without 13-th bit
+        if (builder.isHasMask()) {
+            vlanBuilder.setMask(OxmDeserializerHelper
+                    .convertMask(input, EncodeConstants.SIZE_OF_SHORT_IN_BYTES));
+        }
+        caseBuilder.setVlanVid(vlanBuilder.build());
+        builder.setMatchEntryValue(caseBuilder.build());
     }
 
     @Override

@@ -24,17 +24,17 @@ import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ExperimenterIdMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OxmFieldsAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OxmFieldsActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.OxmFieldsAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.OxmFieldsActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.oxm.container.match.entry.value.ExperimenterIdCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.oxm.container.match.entry.value.experimenter.id._case.ExperimenterBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ExperimenterId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ExperimenterClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.ExperimenterClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
 
 /**
  * @author madamjak
@@ -43,7 +43,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.
 public class OF13SetFieldActionSerializerTest {
 
     private SerializerRegistry registry;
-    @Mock OFSerializer<MatchEntries> serializerMock;
+    @Mock OFSerializer<MatchEntry> serializerMock;
 
     /**
      * Initialize registry and mock
@@ -64,17 +64,19 @@ public class OF13SetFieldActionSerializerTest {
         ser.injectSerializerRegistry(registry);
         ActionBuilder actionBuilder = new ActionBuilder();
         long experimenterId = 12L;
-        ExperimenterIdMatchEntryBuilder expIdMatchBuilder = new ExperimenterIdMatchEntryBuilder();
-        expIdMatchBuilder.setExperimenter(new ExperimenterId(experimenterId));
-        MatchEntriesBuilder meb = new MatchEntriesBuilder();
+        ExperimenterIdCaseBuilder expCaseBuilder = new ExperimenterIdCaseBuilder();
+        ExperimenterBuilder expBuilder = new ExperimenterBuilder();
+        expBuilder.setExperimenter(new ExperimenterId(experimenterId));
+        expCaseBuilder.setExperimenter(expBuilder.build());
+        MatchEntryBuilder meb = new MatchEntryBuilder();
         meb.setOxmClass(ExperimenterClass.class);
         meb.setOxmMatchField(OxmMatchFieldClass.class);
-        meb.addAugmentation(ExperimenterIdMatchEntry.class, expIdMatchBuilder.build());
-        List<MatchEntries> matchEntries = new ArrayList<>();
-        MatchEntries me = meb.build();
-        matchEntries.add(me);
+        meb.setMatchEntryValue(expCaseBuilder.build());
+        List<MatchEntry> MatchEntry = new ArrayList<>();
+        MatchEntry me = meb.build();
+        MatchEntry.add(me);
         OxmFieldsActionBuilder oxmActBuilder = new OxmFieldsActionBuilder();
-        oxmActBuilder.setMatchEntries(matchEntries);
+        oxmActBuilder.setMatchEntry(MatchEntry);
         actionBuilder.addAugmentation(OxmFieldsAction.class, oxmActBuilder.build());
         actionBuilder.setType(SetField.class);
         MatchEntrySerializerKey<?, ?> key = new MatchEntrySerializerKey<>(
@@ -83,7 +85,7 @@ public class OF13SetFieldActionSerializerTest {
         registry.registerSerializer(key, serializerMock);
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         ser.serialize(actionBuilder.build(), out);
-        Mockito.verify(serializerMock, Mockito.times(1)).serialize((MatchEntries)Mockito.anyObject(), (ByteBuf)Mockito.anyObject());
+        Mockito.verify(serializerMock, Mockito.times(1)).serialize((MatchEntry)Mockito.anyObject(), (ByteBuf)Mockito.anyObject());
         int lenght = out.readableBytes();
         Assert.assertEquals("Wrong - bad field code", ActionConstants.SET_FIELD_CODE, out.readUnsignedShort());
         Assert.assertEquals("Wrong - bad lenght", lenght, out.readUnsignedShort());

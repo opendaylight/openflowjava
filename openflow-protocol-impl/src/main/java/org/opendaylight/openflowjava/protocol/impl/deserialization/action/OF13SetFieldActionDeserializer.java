@@ -18,13 +18,13 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegi
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntryDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OxmFieldsAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OxmFieldsActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.OxmFieldsAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.OxmFieldsActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.SetField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
 
 /**
  * @author michal.polkorab
@@ -53,10 +53,10 @@ public class OF13SetFieldActionDeserializer extends AbstractActionDeserializer
                     + 2 * EncodeConstants.SIZE_OF_BYTE_IN_BYTES);
             key.setExperimenterId(expId);
         }
-        OFDeserializer<MatchEntries> matchDeserializer = registry.getDeserializer(key);
-        List<MatchEntries> entry = new ArrayList<>();
+        OFDeserializer<MatchEntry> matchDeserializer = registry.getDeserializer(key);
+        List<MatchEntry> entry = new ArrayList<>();
         entry.add(matchDeserializer.deserialize(input));
-        matchEntries.setMatchEntries(entry);
+        matchEntries.setMatchEntry(entry);
         builder.addAugmentation(OxmFieldsAction.class, matchEntries.build());
         int paddingRemainder = (input.readerIndex() - startIndex) % EncodeConstants.PADDING;
         if (paddingRemainder != 0) {

@@ -11,36 +11,43 @@ import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PseudoFieldMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PseudoFieldMatchEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.Ipv6ExthdrFlags;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6Exthdr;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmClassBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Ipv6Exthdr;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OxmClassBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Ipv6ExthdrCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ipv6.exthdr._case.Ipv6ExthdrBuilder;
 
 /**
  * @author michal.polkorab
  *
  */
 public class OxmIpv6ExtHdrDeserializer extends AbstractOxmMatchEntryDeserializer
-        implements OFDeserializer<MatchEntries> {
+        implements OFDeserializer<MatchEntry> {
 
     @Override
-    public MatchEntries deserialize(ByteBuf input) {
-        MatchEntriesBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
-        addIpv6ExtHdrAugmentation(input, builder);
-        if (builder.isHasMask()) {
-            OxmMaskDeserializer.addMaskAugmentation(builder, input, EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-        }
+    public MatchEntry deserialize(ByteBuf input) {
+        MatchEntryBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
+        addIpv6ExtHdrValue(input, builder);
         return builder.build();
     }
 
-    private static void addIpv6ExtHdrAugmentation(ByteBuf input,
-            MatchEntriesBuilder builder) {
-        PseudoFieldMatchEntryBuilder pseudoBuilder = new PseudoFieldMatchEntryBuilder();
+    private static void addIpv6ExtHdrValue(ByteBuf input, MatchEntryBuilder builder) {
+        Ipv6ExthdrCaseBuilder caseBuilder = new Ipv6ExthdrCaseBuilder();
+        Ipv6ExthdrBuilder extHdrBuilder = new Ipv6ExthdrBuilder();
+        extHdrBuilder.setPseudoField(convertPseudofields(input));
+        if (builder.isHasMask()) {
+            extHdrBuilder.setMask(OxmDeserializerHelper
+                    .convertMask(input, EncodeConstants.SIZE_OF_SHORT_IN_BYTES));
+        }
+        caseBuilder.setIpv6Exthdr(extHdrBuilder.build());
+        builder.setMatchEntryValue(caseBuilder.build());
+    }
+
+    private static Ipv6ExthdrFlags convertPseudofields(ByteBuf input) {
         int bitmap = input.readUnsignedShort();
         final Boolean nonext = ((bitmap) & (1<<0)) != 0;
         final Boolean esp = ((bitmap) & (1<<1)) != 0;
@@ -51,8 +58,7 @@ public class OxmIpv6ExtHdrDeserializer extends AbstractOxmMatchEntryDeserializer
         final Boolean hop = ((bitmap) & (1<<6)) != 0;
         final Boolean unrep = ((bitmap) & (1<<7)) != 0;
         final Boolean unseq = ((bitmap) & (1<<8)) != 0;
-        pseudoBuilder.setPseudoField(new Ipv6ExthdrFlags(auth, dest, esp, frag, hop, nonext, router, unrep, unseq));
-        builder.addAugmentation(PseudoFieldMatchEntry.class, pseudoBuilder.build());
+        return new Ipv6ExthdrFlags(auth, dest, esp, frag, hop, nonext, router, unrep, unseq);
     }
 
     @Override

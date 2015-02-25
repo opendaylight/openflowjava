@@ -11,37 +11,33 @@ import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaskMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
 
 /**
  * Parent for all match entry serializers
  * @author michal.polkorab
  */
 public abstract class AbstractOxmMatchEntrySerializer
-    implements OFSerializer<MatchEntries>, HeaderSerializer<MatchEntries>{
+    implements OFSerializer<MatchEntry>, HeaderSerializer<MatchEntry>{
 
     @Override
-    public void serialize(MatchEntries entry, ByteBuf outBuffer) {
+    public void serialize(MatchEntry entry, ByteBuf outBuffer) {
         serializeHeader(entry, outBuffer);
     }
 
     @Override
-    public void serializeHeader(MatchEntries entry, ByteBuf outBuffer) {
+    public void serializeHeader(MatchEntry entry, ByteBuf outBuffer) {
         outBuffer.writeShort(getOxmClassCode());
         writeOxmFieldAndLength(outBuffer, getOxmFieldCode(), entry.isHasMask(),
                 getValueLength());
     }
 
-    protected static void writeMask(MatchEntries entry, ByteBuf out, int length) {
-        if (entry.isHasMask()) {
-            byte[] mask = entry.getAugmentation(MaskMatchEntry.class).getMask();
-            if (mask != null && mask.length != length) {
-                throw new IllegalArgumentException("incorrect length of mask: "+
-                        mask.length + ", expected: " + length);
-            }
-            out.writeBytes(mask);
+    protected static void writeMask(byte[] mask, ByteBuf out, int length) {
+        if (mask != null && mask.length != length) {
+            throw new IllegalArgumentException("incorrect length of mask: "+
+                    mask.length + ", expected: " + length);
         }
+        out.writeBytes(mask);
     }
 
     protected static void writeOxmFieldAndLength(ByteBuf out, int fieldValue, boolean hasMask, int lengthArg) {
