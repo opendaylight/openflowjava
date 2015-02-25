@@ -17,11 +17,11 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.PortNumber;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.UdpSrc;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.UdpSrc;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.UdpSrcCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.udp.src._case.UdpSrcBuilder;
 
 /**
  * @author michal.polkorab
@@ -36,7 +36,7 @@ public class OxmUdpSrcSerializerTest {
      */
     @Test
     public void testSerialize() {
-        MatchEntriesBuilder builder = prepareMatchEntry(1024);
+        MatchEntryBuilder builder = prepareMatchEntry(1024);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
@@ -51,7 +51,7 @@ public class OxmUdpSrcSerializerTest {
      */
     @Test
     public void testSerializeHeader() {
-        MatchEntriesBuilder builder = prepareHeader(false);
+        MatchEntryBuilder builder = prepareHeader(false);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
@@ -84,16 +84,18 @@ public class OxmUdpSrcSerializerTest {
         assertEquals("Wrong value length", EncodeConstants.SIZE_OF_SHORT_IN_BYTES, serializer.getValueLength());
     }
 
-    private static MatchEntriesBuilder prepareMatchEntry(int value) {
-        MatchEntriesBuilder builder = prepareHeader(false);
-        PortMatchEntryBuilder portBuilder = new PortMatchEntryBuilder();
-        portBuilder.setPort(new PortNumber(value));
-        builder.addAugmentation(PortMatchEntry.class, portBuilder.build());
+    private static MatchEntryBuilder prepareMatchEntry(int value) {
+        MatchEntryBuilder builder = prepareHeader(false);
+        UdpSrcCaseBuilder casebuilder = new UdpSrcCaseBuilder();
+        UdpSrcBuilder valueBuilder = new UdpSrcBuilder();
+        valueBuilder.setPort(new PortNumber(value));
+        casebuilder.setUdpSrc(valueBuilder.build());
+        builder.setMatchEntryValue(casebuilder.build());
         return builder;
     }
 
-    private static MatchEntriesBuilder prepareHeader(boolean hasMask) {
-        MatchEntriesBuilder builder = new MatchEntriesBuilder();
+    private static MatchEntryBuilder prepareHeader(boolean hasMask) {
+        MatchEntryBuilder builder = new MatchEntryBuilder();
         builder.setOxmClass(OpenflowBasicClass.class);
         builder.setOxmMatchField(UdpSrc.class);
         builder.setHasMask(hasMask);

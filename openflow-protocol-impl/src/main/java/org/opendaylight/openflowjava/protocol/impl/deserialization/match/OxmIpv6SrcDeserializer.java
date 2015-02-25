@@ -7,16 +7,45 @@
  */
 package org.opendaylight.openflowjava.protocol.impl.deserialization.match;
 
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Ipv6Src;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.MatchField;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OxmClassBase;
+import io.netty.buffer.ByteBuf;
+
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6Address;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Ipv6Src;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OxmClassBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Ipv6SrcCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ipv6.src._case.Ipv6SrcBuilder;
 
 /**
  * @author michal.polkorab
  *
  */
-public class OxmIpv6SrcDeserializer extends AbstractOxmIpv6AddressDeserializer {
+public class OxmIpv6SrcDeserializer extends AbstractOxmMatchEntryDeserializer
+        implements OFDeserializer<MatchEntry> {
+
+    @Override
+    public MatchEntry deserialize(ByteBuf input) {
+        MatchEntryBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
+        addIpv6SrcValue(input, builder);
+        return builder.build();
+    }
+
+    private static void addIpv6SrcValue(ByteBuf input, MatchEntryBuilder builder) {
+        Ipv6SrcCaseBuilder caseBuilder = new Ipv6SrcCaseBuilder();
+        Ipv6SrcBuilder ipv6Builder = new Ipv6SrcBuilder();
+        ipv6Builder.setIpv6Address(new Ipv6Address(ByteBufUtils.readIpv6Address(input)));
+        if (builder.isHasMask()) {
+            ipv6Builder.setMask(OxmDeserializerHelper.convertMask(input, EncodeConstants.SIZE_OF_IPV6_ADDRESS_IN_BYTES));
+        }
+        caseBuilder.setIpv6Src(ipv6Builder.build());
+        builder.setMatchEntryValue(caseBuilder.build());
+    }
 
     @Override
     protected Class<? extends MatchField> getOxmField() {

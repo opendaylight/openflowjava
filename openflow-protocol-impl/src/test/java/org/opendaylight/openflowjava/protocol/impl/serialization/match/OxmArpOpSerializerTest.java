@@ -16,11 +16,11 @@ import io.netty.buffer.PooledByteBufAllocator;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OpCodeMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OpCodeMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.ArpOp;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.ArpOp;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ArpOpCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.arp.op._case.ArpOpBuilder;
 
 /**
  * @author michal.polkorab
@@ -35,7 +35,7 @@ public class OxmArpOpSerializerTest {
      */
     @Test
     public void testSerialize() {
-        MatchEntriesBuilder builder = prepareArpOpMatchEntry(1402);
+        MatchEntryBuilder builder = prepareArpOpMatchEntry(1402);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
@@ -50,7 +50,7 @@ public class OxmArpOpSerializerTest {
      */
     @Test
     public void testSerializeHeader() {
-        MatchEntriesBuilder builder = prepareArpOpHeader(false);
+        MatchEntryBuilder builder = prepareArpOpHeader(false);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
@@ -83,16 +83,18 @@ public class OxmArpOpSerializerTest {
         assertEquals("Wrong value length", EncodeConstants.SIZE_OF_SHORT_IN_BYTES, serializer.getValueLength());
     }
 
-    private static MatchEntriesBuilder prepareArpOpMatchEntry(int value) {
-        MatchEntriesBuilder builder = prepareArpOpHeader(false);
-        OpCodeMatchEntryBuilder opBuilder = new OpCodeMatchEntryBuilder();
-        opBuilder.setOpCode(value);
-        builder.addAugmentation(OpCodeMatchEntry.class, opBuilder.build());
+    private static MatchEntryBuilder prepareArpOpMatchEntry(int value) {
+        MatchEntryBuilder builder = prepareArpOpHeader(false);
+        ArpOpCaseBuilder casebuilder = new ArpOpCaseBuilder();
+        ArpOpBuilder valueBuilder = new ArpOpBuilder();
+        valueBuilder.setOpCode(value);
+        casebuilder.setArpOp(valueBuilder.build());
+        builder.setMatchEntryValue(casebuilder.build());
         return builder;
     }
 
-    private static MatchEntriesBuilder prepareArpOpHeader(boolean hasMask) {
-        MatchEntriesBuilder builder = new MatchEntriesBuilder();
+    private static MatchEntryBuilder prepareArpOpHeader(boolean hasMask) {
+        MatchEntryBuilder builder = new MatchEntryBuilder();
         builder.setOxmClass(OpenflowBasicClass.class);
         builder.setOxmMatchField(ArpOp.class);
         builder.setHasMask(hasMask);

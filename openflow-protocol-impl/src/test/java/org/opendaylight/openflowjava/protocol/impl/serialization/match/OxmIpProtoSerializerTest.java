@@ -16,11 +16,11 @@ import io.netty.buffer.PooledByteBufAllocator;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ProtocolNumberMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.ProtocolNumberMatchEntryBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.IpProto;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.IpProto;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.IpProtoCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ip.proto._case.IpProtoBuilder;
 
 /**
  * @author michal.polkorab
@@ -35,7 +35,7 @@ public class OxmIpProtoSerializerTest {
      */
     @Test
     public void testSerialize() {
-        MatchEntriesBuilder builder = prepareMatchEntry((short) 123);
+        MatchEntryBuilder builder = prepareMatchEntry((short) 123);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serialize(builder.build(), buffer);
@@ -50,7 +50,7 @@ public class OxmIpProtoSerializerTest {
      */
     @Test
     public void testSerializeHeader() {
-        MatchEntriesBuilder builder = prepareHeader(false);
+        MatchEntryBuilder builder = prepareHeader(false);
 
         ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
         serializer.serializeHeader(builder.build(), buffer);
@@ -83,16 +83,18 @@ public class OxmIpProtoSerializerTest {
         assertEquals("Wrong value length", EncodeConstants.SIZE_OF_BYTE_IN_BYTES, serializer.getValueLength());
     }
 
-    private static MatchEntriesBuilder prepareMatchEntry(short value) {
-        MatchEntriesBuilder builder = prepareHeader(false);
-        ProtocolNumberMatchEntryBuilder protoBuilder = new ProtocolNumberMatchEntryBuilder();
+    private static MatchEntryBuilder prepareMatchEntry(short value) {
+        MatchEntryBuilder builder = prepareHeader(false);
+        IpProtoCaseBuilder casebuilder = new IpProtoCaseBuilder();
+        IpProtoBuilder protoBuilder = new IpProtoBuilder();
         protoBuilder.setProtocolNumber(value);
-        builder.addAugmentation(ProtocolNumberMatchEntry.class, protoBuilder.build());
+        casebuilder.setIpProto(protoBuilder.build());
+        builder.setMatchEntryValue(casebuilder.build());
         return builder;
     }
 
-    private static MatchEntriesBuilder prepareHeader(boolean hasMask) {
-        MatchEntriesBuilder builder = new MatchEntriesBuilder();
+    private static MatchEntryBuilder prepareHeader(boolean hasMask) {
+        MatchEntryBuilder builder = new MatchEntryBuilder();
         builder.setOxmClass(OpenflowBasicClass.class);
         builder.setOxmMatchField(IpProto.class);
         builder.setHasMask(hasMask);

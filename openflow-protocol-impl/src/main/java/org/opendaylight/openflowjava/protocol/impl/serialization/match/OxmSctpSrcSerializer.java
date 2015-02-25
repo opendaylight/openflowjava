@@ -7,14 +7,25 @@
  */
 package org.opendaylight.openflowjava.protocol.impl.serialization.match;
 
+import io.netty.buffer.ByteBuf;
+
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.SctpSrcCase;
 
 /**
  * @author michal.polkorab
  *
  */
-public class OxmSctpSrcSerializer extends AbstractOxmPortSerializer {
+public class OxmSctpSrcSerializer extends AbstractOxmMatchEntrySerializer {
+
+    @Override
+    public void serialize(MatchEntry entry, ByteBuf outBuffer) {
+        super.serialize(entry, outBuffer);
+        SctpSrcCase entryValue = (SctpSrcCase) entry.getMatchEntryValue();
+        outBuffer.writeShort(entryValue.getSctpSrc().getPort().getValue().intValue());
+    }
 
     @Override
     protected int getOxmClassCode() {

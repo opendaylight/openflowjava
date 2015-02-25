@@ -11,10 +11,10 @@ package org.opendaylight.openflowjava.protocol.api.keys;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.InPhyPort;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.InPort;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Nxm0Class;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.InPhyPort;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.InPort;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Nxm0Class;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
 
 /**
  * @author michal.polkorab
@@ -99,9 +99,10 @@ public class MatchEntrySerializerKeyTest {
         MatchEntrySerializerKey<?, ?> key1;
         key1 = new MatchEntrySerializerKey<>(EncodeConstants.OF13_VERSION_ID, OpenflowBasicClass.class, InPort.class);
 
-        Assert.assertEquals("Wrong toString()", "msgVersion: 4 objectType: org.opendaylight.yang.gen.v1.urn.opendaylight"
-                + ".openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries oxm_class: org.opendaylight.yang.gen.v1.urn"
-                + ".opendaylight.openflow.oxm.rev130731.OpenflowBasicClass oxm_field: org.opendaylight.yang.gen.v1.urn"
-                + ".opendaylight.openflow.oxm.rev130731.InPort experimenterID: null", key1.toString());
+        Assert.assertEquals("Wrong toString()", "msgVersion: 4 objectType: org.opendaylight.yang.gen.v1.urn"
+                + ".opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry"
+                + " oxm_class: org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225"
+                + ".OpenflowBasicClass oxm_field: org.opendaylight.yang.gen.v1.urn.opendaylight.openflow"
+                + ".oxm.rev150225.InPort experimenterID: null", key1.toString());
     }
 }

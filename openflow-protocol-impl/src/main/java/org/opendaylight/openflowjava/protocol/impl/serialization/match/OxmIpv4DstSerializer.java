@@ -7,14 +7,29 @@
  */
 package org.opendaylight.openflowjava.protocol.impl.serialization.match;
 
+import io.netty.buffer.ByteBuf;
+
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Ipv4DstCase;
 
 /**
  * @author michal.polkorab
  *
  */
 public class OxmIpv4DstSerializer extends AbstractOxmIpv4AddressSerializer {
+
+    @Override
+    public void serialize(MatchEntry entry, ByteBuf outBuffer) {
+        super.serialize(entry, outBuffer);
+        Ipv4DstCase entryValue = (Ipv4DstCase) entry.getMatchEntryValue();
+        writeIpv4Address(entryValue.getIpv4Dst().getIpv4Address().getValue(), outBuffer);
+        if (entry.isHasMask()) {
+            writeMask(entryValue.getIpv4Dst().getMask(), outBuffer,
+                    EncodeConstants.GROUPS_IN_IPV4_ADDRESS);
+        }
+    }
 
     @Override
     protected int getOxmClassCode() {

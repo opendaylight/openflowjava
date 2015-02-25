@@ -20,7 +20,7 @@
     import openflow-instruction {prefix ofinstruction;}
     import openflow-extensible-match {prefix oxm;}
 
-    revision "2013-10-02" {
+    revision "2015-02-25" {
         description "OpenFlow 1.3 - augments model.
                     Please visit
                     https://wiki.opendaylight.org/view/File:OpenFlow_Protocol_Library_-_Project_documentation.pdf
@@ -28,175 +28,14 @@
     }
 
 // OFP_MATCH AUGMENTS
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "port-number-match-entry";
-         leaf port-number {
-             type oft:port-number;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "metadata-match-entry";
-         leaf metadata {
-             type binary;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "mask-match-entry";
-         leaf mask {
-             type binary;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "mac-address-match-entry";
-         leaf mac-address {
-             type yang:mac-address;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "eth-type-match-entry";
-         leaf eth-type {
-             type oft:ether-type;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "vlan-vid-match-entry";
-         leaf vlan-vid {
-             type uint16;
-         }
-         leaf cfi-bit {
-             type boolean;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "vlan-pcp-match-entry";
-         leaf vlan-pcp {
-             type uint8;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "dscp-match-entry";
-         leaf dscp {
-             type inet:dscp;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "ecn-match-entry";
-         leaf ecn {
-             type uint8;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "protocol-number-match-entry";
-         leaf protocol-number {
-             type uint8;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "port-match-entry";
-         leaf port {
-             type inet:port-number;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "icmpv4-type-match-entry";
-         leaf icmpv4-type {
-             type uint8;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "icmpv4-code-match-entry";
-         leaf icmpv4-code {
-             type uint8;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "op-code-match-entry";
-         leaf op-code {
-             type uint16;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "ipv6-flabel-match-entry";
-         leaf ipv6-flabel {
-             type inet:ipv6-flow-label;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "icmpv6-type-match-entry";
-         leaf icmpv6-type {
-             type uint8;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "icmpv6-code-match-entry";
-         leaf icmpv6-code {
-             type uint8;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "ipv6-address-match-entry";
-         leaf ipv6-address {
-             type inet:ipv6-address;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "ipv4-address-match-entry";
-         leaf ipv4-address {
-             type inet:ipv4-address;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "mpls-label-match-entry";
-         leaf mpls-label {
-             type uint32;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "tc-match-entry";
-         leaf tc {
-             type uint8;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "bos-match-entry";
-         leaf bos {
-             type boolean;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "isid-match-entry";
-         leaf isid {
-             type uint32;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "pseudo-field-match-entry";
-         leaf pseudo-field {
-             type oft:ipv6-exthdr-flags;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
+     augment "/oxm:oxm-container/oxm:match-entry-value" {
          ext:augment-identifier "experimenter-id-match-entry";
-         leaf experimenter {
-             type oft:experimenter-id;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "tcp-flag-match-entry";
-         leaf tcp-flag {
-             type uint16;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "tunnel-ipv4-dst-match-entry";
-         leaf tunnel-ipv4-dst {
-             type inet:ipv4-address;
-         }
-     }
-     augment "/oxm:oxm-container/oxm:match-entries" {
-         ext:augment-identifier "tunnel-ipv4-src-match-entry";
-         leaf tunnel-ipv4-src {
-             type inet:ipv4-address;
+         case experimenter-id-case {
+             container experimenter {
+                 leaf experimenter {
+                     type oft:experimenter-id;
+                 }
+             }
          }
      }
 
@@ -245,7 +84,7 @@
      }
      augment "/ofaction:actions-container/ofaction:action" {
          ext:augment-identifier "oxm-fields-action";
-         uses oxm:oxm-fields-grouping;
+         uses oxm:match-entries-grouping;
      }
      augment "/ofaction:actions-container/ofaction:action" {
          ext:augment-identifier "experimenter-id-action";
@@ -310,7 +149,7 @@
      }
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          ext:augment-identifier "oxm-related-table-feature-property";
-         uses oxm:oxm-fields-grouping;
+         uses oxm:match-entries-grouping;
      }
      augment "/ofproto:table-features-properties-container/ofproto:table-feature-properties" {
          ext:augment-identifier "experimenter-id-table-feature-property";

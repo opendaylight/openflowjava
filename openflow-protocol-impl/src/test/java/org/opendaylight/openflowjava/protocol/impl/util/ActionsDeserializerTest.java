@@ -18,17 +18,17 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegi
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.action.AbstractActionDeserializer;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.EthertypeAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.GroupIdAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MaxLengthAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MplsTtlAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.NwTtlAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.OxmFieldsAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortAction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.PortNumberMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.QueueIdAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.EthertypeAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.GroupIdAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MaxLengthAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MplsTtlAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.NwTtlAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.OxmFieldsAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.PortAction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.QueueIdAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev130731.actions.grouping.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.InPhyPortCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,15 +125,16 @@ public class ActionsDeserializerTest {
                 + "openflow.common.action.rev130731.DecNwTtl", actions.get(12).getType().getName());
         Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
                 + "openflow.common.action.rev130731.SetField", actions.get(13).getType().getName());
-        List<MatchEntries> entries = actions.get(13).getAugmentation(OxmFieldsAction.class).getMatchEntries();
+        List<MatchEntry> entries = actions.get(13).getAugmentation(OxmFieldsAction.class).getMatchEntry();
         Assert.assertEquals("Wrong number of fields", 1, entries.size());
         Assert.assertEquals("Wrong match entry class", "org.opendaylight.yang.gen.v1.urn.opendaylight.openflow."
-                + "oxm.rev130731.OpenflowBasicClass", entries.get(0).getOxmClass().getName());
+                + "oxm.rev150225.OpenflowBasicClass", entries.get(0).getOxmClass().getName());
         Assert.assertEquals("Wrong match entry field", "org.opendaylight.yang.gen.v1.urn.opendaylight.openflow."
-                + "oxm.rev130731.InPhyPort", entries.get(0).getOxmMatchField().getName());
+                + "oxm.rev150225.InPhyPort", entries.get(0).getOxmMatchField().getName());
         Assert.assertEquals("Wrong match entry mask", false, entries.get(0).isHasMask());
         Assert.assertEquals("Wrong match entry value", 11,
-                entries.get(0).getAugmentation(PortNumberMatchEntry.class).getPortNumber().getValue().intValue());
+                ((InPhyPortCase) entries.get(0).getMatchEntryValue()).getInPhyPort().getPortNumber()
+                .getValue().intValue());
         Assert.assertEquals("Wrong action type", "org.opendaylight.yang.gen.v1.urn.opendaylight."
                 + "openflow.common.action.rev130731.PushPbb", actions.get(14).getType().getName());
         Assert.assertEquals("Wrong action value", 10,

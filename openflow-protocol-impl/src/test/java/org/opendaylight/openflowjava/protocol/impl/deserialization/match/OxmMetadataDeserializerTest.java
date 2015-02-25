@@ -14,10 +14,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev131002.MetadataMatchEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.Metadata;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.OpenflowBasicClass;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev130731.oxm.fields.grouping.MatchEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Metadata;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.MetadataCase;
 
 /**
  * @author michal.polkorab
@@ -34,12 +34,12 @@ public class OxmMetadataDeserializerTest {
 
         buffer.skipBytes(4); // skip XID
         OxmMetadataDeserializer deserializer = new OxmMetadataDeserializer();
-        MatchEntries entry = deserializer.deserialize(buffer);
+        MatchEntry entry = deserializer.deserialize(buffer);
 
         Assert.assertEquals("Wrong entry class", OpenflowBasicClass.class, entry.getOxmClass());
         Assert.assertEquals("Wrong entry field", Metadata.class, entry.getOxmMatchField());
         Assert.assertEquals("Wrong entry hasMask", false, entry.isHasMask());
         Assert.assertArrayEquals("Wrong entry value", ByteBufUtils.hexStringToBytes("00 00 00 00 00 00 00 03"),
-                entry.getAugmentation(MetadataMatchEntry.class).getMetadata());
+                ((MetadataCase) entry.getMatchEntryValue()).getMetadata().getMetadata());
     }
 }
