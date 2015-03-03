@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a96c907_9dd5ca1d",
+        "filename": "openflow-protocol-api/src/main/java/org/opendaylight/openflowjava/protocol/api/connection/ConnectionConfiguration.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2774
+      },
+      "writtenOn": "2015-03-03T11:52:59Z",
+      "side": 1,
+      "message": "Idling - whitespace",
+      "revId": "350b140931c99c2e69b1ae65d3415b4dbaceb320",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a96c907_bdda064a",
+        "filename": "openflow-protocol-api/src/main/java/org/opendaylight/openflowjava/protocol/api/keys/MatchEntryDeserializerKey.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2774
+      },
+      "writtenOn": "2015-03-03T11:52:59Z",
+      "side": 1,
+      "message": "Again - half of the changeset is whitespace, should not be there",
+      "revId": "350b140931c99c2e69b1ae65d3415b4dbaceb320",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a96c907_ddd83220",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/deserialization/match/OxmDeserializerHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 2774
+      },
+      "writtenOn": "2015-03-03T11:52:59Z",
+      "side": 1,
+      "message": "MacAddress if I read the code right already has two constructor forms one of which will consume a byte array directy",
+      "revId": "350b140931c99c2e69b1ae65d3415b4dbaceb320",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
