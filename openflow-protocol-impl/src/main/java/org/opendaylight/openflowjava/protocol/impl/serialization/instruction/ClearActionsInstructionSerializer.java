@@ -8,13 +8,23 @@
 
 package org.opendaylight.openflowjava.protocol.impl.serialization.instruction;
 
+import io.netty.buffer.ByteBuf;
+
 import org.opendaylight.openflowjava.protocol.impl.util.InstructionConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 
 /**
  * @author michal.polkorab
  *
  */
-public class ClearActionsInstructionSerializer extends AbstractActionInstructionSerializer {
+public class ClearActionsInstructionSerializer extends AbstractInstructionSerializer {
+
+    @Override
+    public void serialize(final Instruction instruction, final ByteBuf outBuffer) {
+        outBuffer.writeShort(getType());
+        outBuffer.writeShort(InstructionConstants.STANDARD_INSTRUCTION_LENGTH);
+        outBuffer.writeZero(InstructionConstants.PADDING_IN_ACTIONS_INSTRUCTION);
+    }
 
     @Override
     protected int getType() {

@@ -18,15 +18,17 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegi
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ActionsInstruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MetadataInstruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MeterIdInstruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.TableIdInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.GroupCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.OutputActionCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetMplsTtlCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetQueueCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.ApplyActionsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.ClearActionsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.GotoTableCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.MeterCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.WriteActionsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.WriteMetadataCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 
 /**
@@ -63,46 +65,43 @@ public class InstructionsDeserializerTest {
         List<Instruction> instructions = ListDeserializer.deserializeList(EncodeConstants.OF13_VERSION_ID,
                 message.readableBytes(), message, keyMaker, registry);
         Instruction i1 = instructions.get(0);
-        Assert.assertEquals("Wrong type - i1", "org.opendaylight.yang.gen.v1.urn."
-                + "opendaylight.openflow.common.instruction.rev130731.GotoTable", i1.getType().getName());
-        Assert.assertEquals("Wrong table-id - i1", 10, i1.getAugmentation(TableIdInstruction.class).getTableId().intValue());
+        Assert.assertTrue("Wrong type - i1", i1.getInstructionChoice() instanceof GotoTableCase);
+        Assert.assertEquals("Wrong table-id - i1", 10, ((GotoTableCase) i1.getInstructionChoice())
+                .getGotoTable().getTableId().intValue());
         Instruction i2 = instructions.get(1);
-        Assert.assertEquals("Wrong type - i2", "org.opendaylight.yang.gen.v1.urn."
-                + "opendaylight.openflow.common.instruction.rev130731.WriteMetadata", i2.getType().getName());
+        Assert.assertTrue("Wrong type - i2", i2.getInstructionChoice() instanceof WriteMetadataCase);
         Assert.assertArrayEquals("Wrong metadata - i2", ByteBufUtils.hexStringToBytes("00 00 00 00 00 00 00 20"),
-                i2.getAugmentation(MetadataInstruction.class).getMetadata());
+                ((WriteMetadataCase) i2.getInstructionChoice()).getWriteMetadata().getMetadata());
         Assert.assertArrayEquals("Wrong metadata-mask - i2", ByteBufUtils.hexStringToBytes("00 00 00 00 00 00 00 30"),
-                i2.getAugmentation(MetadataInstruction.class).getMetadataMask());
+                ((WriteMetadataCase) i2.getInstructionChoice()).getWriteMetadata().getMetadataMask());
         Instruction i3 = instructions.get(2);
-        Assert.assertEquals("Wrong type - i3", "org.opendaylight.yang.gen.v1.urn."
-                + "opendaylight.openflow.common.instruction.rev130731.ClearActions", i3.getType().getName());
-        Assert.assertEquals("Wrong instructions - i3", 0, i3.getAugmentation(ActionsInstruction.class).getAction().size());
+        Assert.assertTrue("Wrong type - i3", i3.getInstructionChoice() instanceof ClearActionsCase);
         Instruction i4 = instructions.get(3);
-        Assert.assertEquals("Wrong type - i4", "org.opendaylight.yang.gen.v1.urn."
-                + "opendaylight.openflow.common.instruction.rev130731.Meter", i4.getType().getName());
-        Assert.assertEquals("Wrong meterId - i4", 66051, i4.getAugmentation(MeterIdInstruction.class).getMeterId().intValue());
+        Assert.assertTrue("Wrong type - i4", i4.getInstructionChoice() instanceof MeterCase);
+        Assert.assertEquals("Wrong meterId - i4", 66051, ((MeterCase) i4.getInstructionChoice())
+                .getMeter().getMeterId().intValue());
         Instruction i5 = instructions.get(4);
-        Assert.assertEquals("Wrong type - i5", "org.opendaylight.yang.gen.v1.urn."
-                + "opendaylight.openflow.common.instruction.rev130731.WriteActions", i5.getType().getName());
-        Assert.assertEquals("Wrong instructions - i5", 2, i5.getAugmentation(ActionsInstruction.class).getAction().size());
-        Action action1 = i5.getAugmentation(ActionsInstruction.class).getAction().get(0);
+        Assert.assertTrue("Wrong type - i5", i5.getInstructionChoice() instanceof WriteActionsCase);
+        Assert.assertEquals("Wrong instructions - i5", 2, ((WriteActionsCase) i5.getInstructionChoice())
+                .getWriteActions().getAction().size());
+        Action action1 = ((WriteActionsCase) i5.getInstructionChoice()).getWriteActions().getAction().get(0);
         Assert.assertTrue("Wrong action", action1.getActionChoice() instanceof OutputActionCase);
         Assert.assertEquals("Wrong action", 37, ((OutputActionCase) action1.getActionChoice()).getOutputAction()
                 .getPort().getValue().intValue());
         Assert.assertEquals("Wrong action", 53, ((OutputActionCase) action1.getActionChoice()).getOutputAction()
                 .getMaxLength().intValue());
-        Action action2 = i5.getAugmentation(ActionsInstruction.class).getAction().get(1);
+        Action action2 = ((WriteActionsCase) i5.getInstructionChoice()).getWriteActions().getAction().get(1);
         Assert.assertTrue("Wrong action", action2.getActionChoice() instanceof GroupCase);
         Assert.assertEquals("Wrong action", 80, ((GroupCase) action2.getActionChoice()).getGroupAction().getGroupId().intValue());
         Instruction i6 = instructions.get(5);
-        Assert.assertEquals("Wrong type - i6", "org.opendaylight.yang.gen.v1.urn."
-                + "opendaylight.openflow.common.instruction.rev130731.ApplyActions", i6.getType().getName());
-        Assert.assertEquals("Wrong instructions - i6", 2, i6.getAugmentation(ActionsInstruction.class).getAction().size());
-        action1 = i6.getAugmentation(ActionsInstruction.class).getAction().get(0);
+        Assert.assertTrue("Wrong type - i6", i6.getInstructionChoice() instanceof ApplyActionsCase);
+        Assert.assertEquals("Wrong instructions - i6", 2, ((ApplyActionsCase) i6.getInstructionChoice())
+                .getApplyActions().getAction().size());
+        action1 = ((ApplyActionsCase) i6.getInstructionChoice()).getApplyActions().getAction().get(0);
         Assert.assertTrue("Wrong action", action1.getActionChoice() instanceof SetQueueCase);
         Assert.assertEquals("Wrong action", 37, ((SetQueueCase) action1.getActionChoice()).getSetQueueAction()
                 .getQueueId().intValue());
-        action2 = i6.getAugmentation(ActionsInstruction.class).getAction().get(1);
+        action2 = ((ApplyActionsCase) i6.getInstructionChoice()).getApplyActions().getAction().get(1);
         Assert.assertTrue("Wrong action", action2.getActionChoice() instanceof SetMplsTtlCase);
         Assert.assertEquals("Wrong action", 5, ((SetMplsTtlCase) action2.getActionChoice()).getSetMplsTtlAction()
                 .getMplsTtl().shortValue());

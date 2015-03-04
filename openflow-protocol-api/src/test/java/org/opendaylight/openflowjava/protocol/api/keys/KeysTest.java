@@ -53,10 +53,11 @@ public class KeysTest {
         Assert.assertFalse(actionSerializerKey.equals(experimenterActionSerializerKey));
         Assert.assertFalse(experimenterActionSerializerKey.equals(actionSerializerKey));
 
-        InstructionSerializerKey<org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.Experimenter> instructionSerializerKey = new InstructionSerializerKey<>(
-                EncodeConstants.OF13_VERSION_ID,
-                org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.Experimenter.class,
-                1L);
+        InstructionSerializerKey<org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225
+        .instruction.container.instruction.choice.ExperimenterIdCase> instructionSerializerKey =
+                new InstructionSerializerKey<>(EncodeConstants.OF13_VERSION_ID, org.opendaylight.yang.gen.v1.urn
+                        .opendaylight.openflow.augments.rev150225.instruction.container.instruction.choice
+                        .ExperimenterIdCase.class, 1L);
         ExperimenterInstructionSerializerKey experimenterInstructionSerializerKey = new ExperimenterInstructionSerializerKey(EncodeConstants.OF13_VERSION_ID, 1L);
         Assert.assertEquals(instructionSerializerKey, experimenterInstructionSerializerKey);
         Assert.assertEquals(instructionSerializerKey.hashCode(), experimenterInstructionSerializerKey.hashCode());

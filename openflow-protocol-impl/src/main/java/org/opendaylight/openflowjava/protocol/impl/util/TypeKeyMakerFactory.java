@@ -14,10 +14,10 @@ import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterInstructionSe
 import org.opendaylight.openflowjava.protocol.api.keys.InstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageTypeKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ExperimenterIdInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.oxm.container.match.entry.value.ExperimenterIdCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.ActionChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.InstructionChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.ExperimenterClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
@@ -74,7 +74,8 @@ public abstract class TypeKeyMakerFactory {
                             expIdCase.getExperimenter().getExperimenter().getValue(),
                             expIdCase.getExperimenter().getSubType());
                 }
-                return new ActionSerializerKey<>(getVersion(), (Class<ActionChoice>) entry.getActionChoice().getImplementedInterface(), null);
+                return new ActionSerializerKey<>(getVersion(),
+                        (Class<ActionChoice>) entry.getActionChoice().getImplementedInterface(), null);
             }
         };
     }
@@ -88,13 +89,15 @@ public abstract class TypeKeyMakerFactory {
         return new AbstractTypeKeyMaker<Instruction>(version) {
             @Override
             public MessageTypeKey<?> make(Instruction entry) {
-                if (entry.getType().equals(org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common
-                        .instruction.rev130731.Experimenter.class)) {
+                if (entry.getInstructionChoice() instanceof org.opendaylight.yang.gen.v1.urn.opendaylight.openflow
+                        .augments.rev150225.instruction.container.instruction.choice.ExperimenterIdCase) {
                     return new ExperimenterInstructionSerializerKey(getVersion(),
-                            entry.getAugmentation(ExperimenterIdInstruction.class)
-                            .getExperimenter().getValue());
+                            ((org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.instruction
+                                    .container.instruction.choice.ExperimenterIdCase) entry.getInstructionChoice())
+                                    .getExperimenter().getExperimenterId().getValue());
                 }
-                return new InstructionSerializerKey<>(getVersion(), entry.getType(), null);
+                return new InstructionSerializerKey<>(getVersion(),
+                        (Class<InstructionChoice>) entry.getInstructionChoice().getImplementedInterface(), null);
             }
         };
     }

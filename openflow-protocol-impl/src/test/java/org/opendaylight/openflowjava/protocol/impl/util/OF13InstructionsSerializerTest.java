@@ -20,14 +20,6 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegist
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ActionsInstruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ActionsInstructionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MetadataInstruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MetadataInstructionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MeterIdInstruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MeterIdInstructionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.TableIdInstruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.TableIdInstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.OutputActionCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.PopPbbCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.PushVlanCaseBuilder;
@@ -37,12 +29,17 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.set.nw.ttl._case.SetNwTtlActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.ActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.ApplyActions;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.ClearActions;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.GotoTable;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.Meter;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.WriteActions;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.WriteMetadata;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.ApplyActionsCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.ClearActionsCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.GotoTableCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.MeterCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.WriteActionsCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.WriteMetadataCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice._goto.table._case.GotoTableBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.apply.actions._case.ApplyActionsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.meter._case.MeterBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.write.actions._case.WriteActionsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.write.metadata._case.WriteMetadataBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.InstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.EtherType;
@@ -73,34 +70,37 @@ public class OF13InstructionsSerializerTest {
         List<Instruction> instructions = new ArrayList<>();
         // Goto_table instruction
         InstructionBuilder builder = new InstructionBuilder();
-        builder.setType(GotoTable.class);
-        TableIdInstructionBuilder tableIdBuilder = new TableIdInstructionBuilder();
-        tableIdBuilder.setTableId((short) 5);
-        builder.addAugmentation(TableIdInstruction.class, tableIdBuilder.build());
+        GotoTableCaseBuilder gotoCaseBuilder = new GotoTableCaseBuilder();
+        GotoTableBuilder instructionBuilder = new GotoTableBuilder();
+        instructionBuilder.setTableId((short) 5);
+        gotoCaseBuilder.setGotoTable(instructionBuilder.build());
+        builder.setInstructionChoice(gotoCaseBuilder.build());
         instructions.add(builder.build());
-        builder = new InstructionBuilder();
         // Write_metadata instruction
-        builder.setType(WriteMetadata.class);
-        MetadataInstructionBuilder metaBuilder = new MetadataInstructionBuilder();
-        metaBuilder.setMetadata(ByteBufUtils.hexStringToBytes("00 01 02 03 04 05 06 07"));
-        metaBuilder.setMetadataMask(ByteBufUtils.hexStringToBytes("07 06 05 04 03 02 01 00"));
-        builder.addAugmentation(MetadataInstruction.class, metaBuilder.build());
+        builder = new InstructionBuilder();
+        WriteMetadataCaseBuilder metadataCaseBuilder = new WriteMetadataCaseBuilder();
+        WriteMetadataBuilder metadataBuilder = new WriteMetadataBuilder();
+        metadataBuilder.setMetadata(ByteBufUtils.hexStringToBytes("00 01 02 03 04 05 06 07"));
+        metadataBuilder.setMetadataMask(ByteBufUtils.hexStringToBytes("07 06 05 04 03 02 01 00"));
+        metadataCaseBuilder.setWriteMetadata(metadataBuilder.build());
+        builder.setInstructionChoice(metadataCaseBuilder.build());
         instructions.add(builder.build());
         // Clear_actions instruction
         builder = new InstructionBuilder();
-        builder.setType(ClearActions.class);
+        builder.setInstructionChoice(new ClearActionsCaseBuilder().build());
         instructions.add(builder.build());
         // Meter instruction
         builder = new InstructionBuilder();
-        builder.setType(Meter.class);
-        MeterIdInstructionBuilder meterBuilder = new MeterIdInstructionBuilder();
+        MeterCaseBuilder meterCaseBuilder = new MeterCaseBuilder();
+        MeterBuilder meterBuilder = new MeterBuilder();
         meterBuilder.setMeterId(42L);
-        builder.addAugmentation(MeterIdInstruction.class, meterBuilder.build());
+        meterCaseBuilder.setMeter(meterBuilder.build());
+        builder.setInstructionChoice(meterCaseBuilder.build());
         instructions.add(builder.build());
         // Write_actions instruction
         builder = new InstructionBuilder();
-        builder.setType(WriteActions.class);
-        ActionsInstructionBuilder actionsBuilder = new ActionsInstructionBuilder();
+        WriteActionsCaseBuilder writeActionsCaseBuilder = new WriteActionsCaseBuilder();
+        WriteActionsBuilder writeActionsBuilder = new WriteActionsBuilder();
         List<Action> actions = new ArrayList<>();
         ActionBuilder actionBuilder = new ActionBuilder();
         OutputActionCaseBuilder caseBuilder = new OutputActionCaseBuilder();
@@ -117,13 +117,14 @@ public class OF13InstructionsSerializerTest {
         ttlCaseBuilder.setSetNwTtlAction(ttlActionBuilder.build());
         actionBuilder.setActionChoice(ttlCaseBuilder.build());
         actions.add(actionBuilder.build());
-        actionsBuilder.setAction(actions);
-        builder.addAugmentation(ActionsInstruction.class, actionsBuilder.build());
+        writeActionsBuilder.setAction(actions);
+        writeActionsCaseBuilder.setWriteActions(writeActionsBuilder.build());
+        builder.setInstructionChoice(writeActionsCaseBuilder.build());
         instructions.add(builder.build());
         // Apply_actions instruction
         builder = new InstructionBuilder();
-        builder.setType(ApplyActions.class);
-        actionsBuilder = new ActionsInstructionBuilder();
+        ApplyActionsCaseBuilder applyActionsCaseBuilder = new ApplyActionsCaseBuilder();
+        ApplyActionsBuilder applyActionsBuilder = new ApplyActionsBuilder();
         actions = new ArrayList<>();
         actionBuilder = new ActionBuilder();
         PushVlanCaseBuilder vlanCaseBuilder = new PushVlanCaseBuilder();
@@ -135,8 +136,9 @@ public class OF13InstructionsSerializerTest {
         actionBuilder = new ActionBuilder();
         actionBuilder.setActionChoice(new PopPbbCaseBuilder().build());
         actions.add(actionBuilder.build());
-        actionsBuilder.setAction(actions);
-        builder.addAugmentation(ActionsInstruction.class, actionsBuilder.build());
+        applyActionsBuilder.setAction(actions);
+        applyActionsCaseBuilder.setApplyActions(applyActionsBuilder.build());
+        builder.setInstructionChoice(applyActionsCaseBuilder.build());
         instructions.add(builder.build());
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();

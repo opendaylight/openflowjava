@@ -89,35 +89,13 @@
      }
 
 // OFP_INSTRUCTION AUGMENTS
-     augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
-         ext:augment-identifier "table-id-instruction";
-         leaf table-id {
-             type uint8;
-         }
-     }
-     augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
-         ext:augment-identifier "metadata-instruction";
-         leaf metadata {
-             type binary;
-         }
-         leaf metadata-mask {
-             type binary;
-         }
-     }
-     augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
-         ext:augment-identifier "actions-instruction";
-         uses ofaction:actions-grouping;
-     }
-     augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
-         ext:augment-identifier "meter-id-instruction";
-         leaf meter-id {
-             type uint32;
-         }
-     }
-     augment "/ofinstruction:instruction-container/ofinstruction:instruction" {
-         ext:augment-identifier "experimenter-id-instruction";
-         leaf experimenter {
-             type oft:experimenter-id;
+     augment "/ofinstruction:instruction-container/ofinstruction:instruction-choice" {
+         case experimenter-id-case {
+             container experimenter {
+                 leaf experimenter-id {
+                     type oft:experimenter-id;
+                 }
+             }
          }
      }
 

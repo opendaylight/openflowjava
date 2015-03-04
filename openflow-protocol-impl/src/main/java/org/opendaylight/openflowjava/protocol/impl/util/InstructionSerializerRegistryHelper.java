@@ -10,7 +10,7 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.keys.InstructionSerializerKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.InstructionBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.InstructionChoice;
 
 /**
  * @author michal.polkorab
@@ -34,7 +34,7 @@ public class InstructionSerializerRegistryHelper {
      * @param instructionType
      * @param serializer
      */
-    public <T extends InstructionBase> void registerSerializer(Class<T> instructionType,
+    public <T extends InstructionChoice> void registerSerializer(Class<T> instructionType,
             OFGeneralSerializer serializer) {
         serializerRegistry.registerSerializer(new InstructionSerializerKey<>(version,
                 instructionType, null), serializer);
