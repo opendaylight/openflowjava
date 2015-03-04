@@ -19,9 +19,7 @@ import org.opendaylight.openflowjava.protocol.impl.util.InstructionConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.ListSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMaker;
 import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMakerFactory;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ActionsInstruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 
 /**
  * @author michal.polkorab
@@ -35,22 +33,13 @@ public abstract class AbstractActionInstructionSerializer extends AbstractInstru
 
     private SerializerRegistry registry;
 
-    @Override
-    public void serialize(final Instruction instruction, final ByteBuf outBuffer) {
-        int startIndex = outBuffer.writerIndex();
-        outBuffer.writeShort(getType());
-        if (instruction.getAugmentation(ActionsInstruction.class) != null) {
-            List<Action> actions = instruction.getAugmentation(ActionsInstruction.class).getAction();
-            int lengthIndex = outBuffer.writerIndex();
-            outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
-            outBuffer.writeZero(InstructionConstants.PADDING_IN_ACTIONS_INSTRUCTION);
-            ListSerializer.serializeList(actions, ACTION_KEY_MAKER, getRegistry(), outBuffer);
-            int instructionLength = outBuffer.writerIndex() - startIndex;
-            outBuffer.setShort(lengthIndex, instructionLength);
-        } else {
-            outBuffer.writeShort(InstructionConstants.STANDARD_INSTRUCTION_LENGTH);
-            outBuffer.writeZero(InstructionConstants.PADDING_IN_ACTIONS_INSTRUCTION);
-        }
+    protected void writeActions(final List<Action> actions, final ByteBuf outBuffer, int startIndex) {
+        int lengthIndex = outBuffer.writerIndex();
+        outBuffer.writeShort(EncodeConstants.EMPTY_LENGTH);
+        outBuffer.writeZero(InstructionConstants.PADDING_IN_ACTIONS_INSTRUCTION);
+        ListSerializer.serializeList(actions, ACTION_KEY_MAKER, getRegistry(), outBuffer);
+        int instructionLength = outBuffer.writerIndex() - startIndex;
+        outBuffer.setShort(lengthIndex, instructionLength);
     }
 
     protected SerializerRegistry getRegistry() {

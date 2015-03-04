@@ -8,12 +8,12 @@
 
 package org.opendaylight.openflowjava.protocol.api.keys;
 
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.Experimenter;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.instruction.container.instruction.choice.ExperimenterIdCase;
 
 /**
  * @author michal.polkorab
  */
-public final class ExperimenterInstructionSerializerKey extends InstructionSerializerKey<Experimenter>
+public final class ExperimenterInstructionSerializerKey extends InstructionSerializerKey<ExperimenterIdCase>
         implements ExperimenterSerializerKey {
 
     /**
@@ -21,7 +21,7 @@ public final class ExperimenterInstructionSerializerKey extends InstructionSeria
      * @param experimenterId experimenter / vendor ID
      */
     public ExperimenterInstructionSerializerKey(short msgVersion, Long experimenterId) {
-        super(msgVersion, Experimenter.class, experimenterId);
+        super(msgVersion, ExperimenterIdCase.class, experimenterId);
     }
 
 }
