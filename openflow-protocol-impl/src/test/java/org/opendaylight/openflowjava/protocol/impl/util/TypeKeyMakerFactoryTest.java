@@ -17,8 +17,6 @@ import org.opendaylight.openflowjava.protocol.api.keys.InstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ExperimenterIdInstruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ExperimenterIdInstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.oxm.container.match.entry.value.ExperimenterIdCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.oxm.container.match.entry.value.experimenter.id._case.ExperimenterBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.ExperimenterActionSubType;
@@ -26,7 +24,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.OutputActionCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.ActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.GotoTable;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.GotoTableCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.GotoTableCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.InstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ExperimenterId;
@@ -97,13 +96,13 @@ public class TypeKeyMakerFactoryTest {
         Assert.assertNotNull("Null keyMaker", keyMaker);
 
         InstructionBuilder builder = new InstructionBuilder();
-        builder.setType(GotoTable.class);
+        builder.setInstructionChoice(new GotoTableCaseBuilder().build());
         Instruction instruction = builder.build();
         MessageTypeKey<?> key = keyMaker.make(instruction);
 
         Assert.assertNotNull("Null key", key);
         Assert.assertEquals("Wrong key", new InstructionSerializerKey<>(EncodeConstants.OF13_VERSION_ID,
-                        GotoTable.class, null), key);
+                        GotoTableCase.class, null), key);
     }
 
     /**
@@ -115,11 +114,16 @@ public class TypeKeyMakerFactoryTest {
         Assert.assertNotNull("Null keyMaker", keyMaker);
 
         InstructionBuilder builder = new InstructionBuilder();
-        builder.setType(org.opendaylight.yang.gen.v1.urn.opendaylight.openflow
-                .common.instruction.rev130731.Experimenter.class);
-        ExperimenterIdInstructionBuilder expIdBuilder = new ExperimenterIdInstructionBuilder();
-        expIdBuilder.setExperimenter(new ExperimenterId(42L));
-        builder.addAugmentation(ExperimenterIdInstruction.class, expIdBuilder.build());
+        org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.instruction.container
+        .instruction.choice.ExperimenterIdCaseBuilder caseBuilder = new org.opendaylight.yang.gen.v1.urn
+        .opendaylight.openflow.augments.rev150225.instruction.container.instruction.choice.ExperimenterIdCaseBuilder();
+        org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.instruction.container
+        .instruction.choice.experimenter.id._case.ExperimenterBuilder expIdBuilder = new org.opendaylight.yang.gen
+        .v1.urn.opendaylight.openflow.augments.rev150225.instruction.container.instruction.choice.experimenter.id
+        ._case.ExperimenterBuilder();
+        expIdBuilder.setExperimenterId(new ExperimenterId(42L));
+        caseBuilder.setExperimenter(expIdBuilder.build());
+        builder.setInstructionChoice(caseBuilder.build());
         Instruction instruction = builder.build();
         MessageTypeKey<?> key = keyMaker.make(instruction);
 

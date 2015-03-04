@@ -17,12 +17,12 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.instruction.Met
 import org.opendaylight.openflowjava.protocol.impl.serialization.instruction.WriteActionsInstructionSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.instruction.WriteMetadataInstructionSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.InstructionSerializerRegistryHelper;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.ApplyActions;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.ClearActions;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.GotoTable;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.Meter;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.WriteActions;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.WriteMetadata;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.ApplyActionsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.ClearActionsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.GotoTableCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.MeterCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.WriteActionsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.WriteMetadataCase;
 
 /**
  * @author michal.polkorab
@@ -42,11 +42,11 @@ public final class InstructionsInitializer {
         // register OF v1.3 instruction serializers
         InstructionSerializerRegistryHelper helper= new InstructionSerializerRegistryHelper(
                 EncodeConstants.OF13_VERSION_ID, serializerRegistry);
-        helper.registerSerializer(GotoTable.class, new GoToTableInstructionSerializer());
-        helper.registerSerializer(WriteMetadata.class, new WriteMetadataInstructionSerializer());
-        helper.registerSerializer(WriteActions.class, new WriteActionsInstructionSerializer());
-        helper.registerSerializer(ApplyActions.class, new ApplyActionsInstructionSerializer());
-        helper.registerSerializer(ClearActions.class, new ClearActionsInstructionSerializer());
-        helper.registerSerializer(Meter.class, new MeterInstructionSerializer());
+        helper.registerSerializer(GotoTableCase.class, new GoToTableInstructionSerializer());
+        helper.registerSerializer(WriteMetadataCase.class, new WriteMetadataInstructionSerializer());
+        helper.registerSerializer(WriteActionsCase.class, new WriteActionsInstructionSerializer());
+        helper.registerSerializer(ApplyActionsCase.class, new ApplyActionsInstructionSerializer());
+        helper.registerSerializer(ClearActionsCase.class, new ClearActionsInstructionSerializer());
+        helper.registerSerializer(MeterCase.class, new MeterInstructionSerializer());
     }
 }

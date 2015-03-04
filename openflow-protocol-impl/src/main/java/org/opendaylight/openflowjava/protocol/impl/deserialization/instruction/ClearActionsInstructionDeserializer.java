@@ -10,14 +10,11 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.instruction;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.InstructionConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ActionsInstruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ActionsInstructionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.ClearActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.InstructionBuilder;
 
@@ -25,18 +22,23 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction
  * @author michal.polkorab
  *
  */
-public class ClearActionsInstructionDeserializer extends AbstractInstructionDeserializer {
+public class ClearActionsInstructionDeserializer implements OFDeserializer<Instruction>,
+        HeaderDeserializer<Instruction> {
 
     @Override
     public Instruction deserialize(ByteBuf input) {
-        InstructionBuilder builder = super.processHeader(input);
-        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+        InstructionBuilder builder =  new InstructionBuilder();
+        input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         input.skipBytes(InstructionConstants.PADDING_IN_ACTIONS_INSTRUCTION);
-        ActionsInstructionBuilder actionsBuilder =
-                new ActionsInstructionBuilder();
-        List<Action> actions = new ArrayList<>();
-        actionsBuilder.setAction(actions);
-        builder.addAugmentation(ActionsInstruction.class, actionsBuilder.build());
+        builder.setInstructionChoice(new ClearActionsCaseBuilder().build());
+        return builder.build();
+    }
+
+    @Override
+    public Instruction deserializeHeader(ByteBuf input) {
+        InstructionBuilder builder = new InstructionBuilder();
+        input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+        builder.setInstructionChoice(new ClearActionsCaseBuilder().build());
         return builder.build();
     }
 }

@@ -10,11 +10,12 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization.instruction;
 
 import io.netty.buffer.ByteBuf;
 
+import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.InstructionConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MetadataInstruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MetadataInstructionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.WriteMetadata;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.WriteMetadataCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.write.metadata._case.WriteMetadataBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.InstructionBuilder;
 
@@ -22,23 +23,32 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction
  * @author michal.polkorab
  *
  */
-public class WriteMetadataInstructionDeserializer extends AbstractInstructionDeserializer {
+public class WriteMetadataInstructionDeserializer implements OFDeserializer<Instruction>,
+        HeaderDeserializer<Instruction> {
 
     @Override
     public Instruction deserialize(ByteBuf input) {
         InstructionBuilder builder = new InstructionBuilder();
-        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-        builder.setType(WriteMetadata.class);
-        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+        input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         input.skipBytes(InstructionConstants.PADDING_IN_WRITE_METADATA);
-        MetadataInstructionBuilder metadataBuilder = new MetadataInstructionBuilder();
+        WriteMetadataCaseBuilder caseBuilder = new WriteMetadataCaseBuilder();
+        WriteMetadataBuilder metadataBuilder = new WriteMetadataBuilder();
         byte[] metadata = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         input.readBytes(metadata);
         metadataBuilder.setMetadata(metadata);
         byte[] metadataMask = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         input.readBytes(metadataMask);
         metadataBuilder.setMetadataMask(metadataMask);
-        builder.addAugmentation(MetadataInstruction.class, metadataBuilder.build());
+        caseBuilder.setWriteMetadata(metadataBuilder.build());
+        builder.setInstructionChoice(caseBuilder.build());
+        return builder.build();
+    }
+
+    @Override
+    public Instruction deserializeHeader(ByteBuf input) {
+        InstructionBuilder builder = new InstructionBuilder();
+        input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
+        builder.setInstructionChoice(new WriteMetadataCaseBuilder().build());
         return builder.build();
     }
 }

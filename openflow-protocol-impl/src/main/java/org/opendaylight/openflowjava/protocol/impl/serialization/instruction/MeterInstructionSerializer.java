@@ -11,7 +11,7 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.instruction;
 import io.netty.buffer.ByteBuf;
 
 import org.opendaylight.openflowjava.protocol.impl.util.InstructionConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.MeterIdInstruction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.MeterCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 
 /**
@@ -24,8 +24,8 @@ public class MeterInstructionSerializer extends AbstractInstructionSerializer {
     public void serialize(Instruction instruction, ByteBuf outBuffer) {
         outBuffer.writeShort(getType());
         outBuffer.writeShort(InstructionConstants.STANDARD_INSTRUCTION_LENGTH);
-        outBuffer.writeInt(instruction.
-                getAugmentation(MeterIdInstruction.class).getMeterId().intValue());
+        outBuffer.writeInt(((MeterCase) instruction.getInstructionChoice())
+                .getMeter().getMeterId().intValue());
     }
 
     @Override

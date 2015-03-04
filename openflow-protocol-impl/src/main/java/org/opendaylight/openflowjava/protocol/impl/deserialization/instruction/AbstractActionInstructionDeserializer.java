@@ -14,45 +14,31 @@ import java.util.List;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.CodeKeyMaker;
 import org.opendaylight.openflowjava.protocol.impl.util.CodeKeyMakerFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.InstructionConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.ListDeserializer;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ActionsInstruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ActionsInstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.InstructionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.InstructionBase;
 
 /**
  * @author michal.polkorab
  *
  */
-public abstract class AbstractActionInstructionDeserializer extends AbstractInstructionDeserializer
-        implements DeserializerRegistryInjector {
+public abstract class AbstractActionInstructionDeserializer implements OFDeserializer<Instruction>,
+        DeserializerRegistryInjector {
 
     private DeserializerRegistry registry;
 
-    @Override
-    public Instruction deserialize(ByteBuf input) {
-        InstructionBuilder builder = new InstructionBuilder();
-        input.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-        builder.setType(getType());
-        int instructionLength = input.readUnsignedShort();
-        input.skipBytes(InstructionConstants.PADDING_IN_ACTIONS_INSTRUCTION);
-        ActionsInstructionBuilder actionsBuilder = new ActionsInstructionBuilder();
+    protected List<Action> deserializeActions(ByteBuf input, int instructionLength) {
         int length = instructionLength - InstructionConstants.STANDARD_INSTRUCTION_LENGTH;
         CodeKeyMaker keyMaker = CodeKeyMakerFactory.createActionsKeyMaker(EncodeConstants.OF13_VERSION_ID);
         List<Action> actions = ListDeserializer.deserializeList(
                 EncodeConstants.OF13_VERSION_ID, length, input, keyMaker, getRegistry());
-        actionsBuilder.setAction(actions);
-        builder.addAugmentation(ActionsInstruction.class, actionsBuilder.build());
-        return builder.build();
+        return actions;
     }
-
-    protected abstract Class<? extends InstructionBase> getType();
 
     protected DeserializerRegistry getRegistry() {
         return registry;

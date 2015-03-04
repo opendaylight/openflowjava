@@ -8,13 +8,34 @@
 
 package org.opendaylight.openflowjava.protocol.impl.serialization.instruction;
 
+import io.netty.buffer.ByteBuf;
+
+import java.util.List;
+
 import org.opendaylight.openflowjava.protocol.impl.util.InstructionConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.ApplyActionsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 
 /**
  * @author michal.polkorab
  *
  */
 public class ApplyActionsInstructionSerializer extends AbstractActionInstructionSerializer {
+
+    @Override
+    public void serialize(final Instruction instruction, final ByteBuf outBuffer) {
+        int startIndex = outBuffer.writerIndex();
+        outBuffer.writeShort(getType());
+        ApplyActionsCase actionsCase = (ApplyActionsCase) instruction.getInstructionChoice();
+        if (actionsCase != null) {
+            List<Action> actions = actionsCase.getApplyActions().getAction();
+            writeActions(actions, outBuffer, startIndex);
+        } else {
+            outBuffer.writeShort(InstructionConstants.STANDARD_INSTRUCTION_LENGTH);
+            outBuffer.writeZero(InstructionConstants.PADDING_IN_ACTIONS_INSTRUCTION);
+        }
+    }
 
     @Override
     protected int getType() {
