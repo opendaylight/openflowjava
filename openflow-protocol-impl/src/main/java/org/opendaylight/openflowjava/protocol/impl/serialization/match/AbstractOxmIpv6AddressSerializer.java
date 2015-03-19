@@ -70,9 +70,18 @@ public abstract class AbstractOxmIpv6AddressSerializer extends AbstractOxmMatchE
             break;
         case 2:
             String[] tmp = new String[EncodeConstants.GROUPS_IN_IPV6_ADDRESS];
-            Arrays.fill(tmp, "0");
-            tmp[EncodeConstants.GROUPS_IN_IPV6_ADDRESS - 1] =
-                    addressGroups.get(addressGroups.size() - 1);
+            if (addressGroups.get(addressGroups.size() - 1).isEmpty()) {
+                int index = 0;
+                while (! addressGroups.get(index).isEmpty()) {
+                    tmp[index] = addressGroups.get(index);
+                    index++;
+                }
+                Arrays.fill(tmp, index, EncodeConstants.GROUPS_IN_IPV6_ADDRESS, "0");
+            } else {
+                Arrays.fill(tmp, "0");
+                tmp[EncodeConstants.GROUPS_IN_IPV6_ADDRESS - 1] =
+                        addressGroups.get(addressGroups.size() - 1);
+            }
             ready = Arrays.asList(tmp);
             break;
         default:
