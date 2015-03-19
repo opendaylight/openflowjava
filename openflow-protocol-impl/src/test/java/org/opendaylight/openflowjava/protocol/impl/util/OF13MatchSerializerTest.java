@@ -229,7 +229,7 @@ public class OF13MatchSerializerTest {
     /**
      * Test for correct serialization of incorrect Ipv6Address match entry
      */
-    @Test(expected=IllegalStateException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void testIpv6Incorrect() {
         MatchBuilder builder = new MatchBuilder();
         builder.setType(OxmMatchType.class);
