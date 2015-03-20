@@ -1,0 +1,7 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+2: Michal Polkorab <michal.polkorab@pantheon.sk>
+Submitted-by: Michal Polkorab <michal.polkorab@pantheon.sk>
+Submitted-at: Fri, 20 Mar 2015 17:53:35 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/16866
+Project: openflowjava
+Branch: refs/heads/stable/helium
