@@ -11,7 +11,6 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.keys.ActionSerializerKey;
-import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterActionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterInstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.InstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
@@ -20,6 +19,8 @@ import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.oxm.container.match.entry.value.ExperimenterIdCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.oxm.container.match.entry.value.experimenter.id._case.ExperimenterBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.ExperimenterActionSubType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.CopyTtlInCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.CopyTtlInCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.OutputActionCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.OutputActionCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
@@ -69,22 +70,14 @@ public class TypeKeyMakerFactoryTest {
         Assert.assertNotNull("Null keyMaker", keyMaker);
 
         org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.ActionBuilder builder = new ActionBuilder();
-        org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.action.container.action.choice
-        .ExperimenterIdCaseBuilder caseBuilder = new org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments
-        .rev150225.action.container.action.choice.ExperimenterIdCaseBuilder();
-        org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.action.container.action.choice
-        .experimenter.id._case.ExperimenterBuilder expIdBuilder = new org.opendaylight.yang.gen.v1.urn.opendaylight
-        .openflow.augments.rev150225.action.container.action.choice.experimenter.id._case.ExperimenterBuilder();
-        expIdBuilder.setExperimenter(new ExperimenterId(42L));
-        expIdBuilder.setSubType(ActionSubtypeClass.class);
-        caseBuilder.setExperimenter(expIdBuilder.build());
-        builder.setActionChoice(caseBuilder.build());
+        builder.setExperimenterId(new ExperimenterId(42L));
+        builder.setActionChoice(new CopyTtlInCaseBuilder().build());
         Action action = builder.build();
         MessageTypeKey<?> key = keyMaker.make(action);
 
         Assert.assertNotNull("Null key", key);
-        Assert.assertEquals("Wrong key", new ExperimenterActionSerializerKey(EncodeConstants.OF13_VERSION_ID, 42L,
-                ActionSubtypeClass.class), key);
+        Assert.assertEquals("Wrong key", new ActionSerializerKey(EncodeConstants.OF13_VERSION_ID,
+                CopyTtlInCase.class, 42L), key);
     }
 
     /**
