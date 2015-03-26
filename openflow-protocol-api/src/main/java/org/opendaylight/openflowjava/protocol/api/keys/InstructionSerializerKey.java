@@ -16,7 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction
  * @param <T> instruction type
  */
 public class InstructionSerializerKey<T extends InstructionChoice>
-        extends MessageTypeKey<Instruction>{
+        extends MessageTypeKey<Instruction> implements ExperimenterSerializerKey {
 
     private Class<T> instructionType;
     private Long experimenterId;
