@@ -8,10 +8,10 @@
 
 package org.opendaylight.openflowjava.protocol.api.extensibility;
 
-import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterActionSerializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.ActionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdSerializerKey;
-import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterInstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterSerializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.InstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OxmClassBase;
@@ -47,7 +47,7 @@ public interface SerializerExtensionProvider {
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */
-    void registerActionSerializer(ExperimenterActionSerializerKey key,
+    void registerActionSerializer(ActionSerializerKey<?> key,
             OFGeneralSerializer serializer);
 
     /**
@@ -55,7 +55,7 @@ public interface SerializerExtensionProvider {
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */
-    void registerInstructionSerializer(ExperimenterInstructionSerializerKey key,
+    void registerInstructionSerializer(InstructionSerializerKey<?> key,
             OFGeneralSerializer serializer);
 
     /**

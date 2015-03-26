@@ -9,7 +9,6 @@
 package org.opendaylight.openflowjava.protocol.impl.util;
 
 import org.opendaylight.openflowjava.protocol.api.keys.ActionSerializerKey;
-import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterInstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.InstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageTypeKey;
@@ -83,12 +82,10 @@ public abstract class TypeKeyMakerFactory {
         return new AbstractTypeKeyMaker<Instruction>(version) {
             @Override
             public MessageTypeKey<?> make(Instruction entry) {
-                if (entry.getInstructionChoice() instanceof org.opendaylight.yang.gen.v1.urn.opendaylight.openflow
-                        .augments.rev150225.instruction.container.instruction.choice.ExperimenterIdCase) {
-                    return new ExperimenterInstructionSerializerKey(getVersion(),
-                            ((org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.instruction
-                                    .container.instruction.choice.ExperimenterIdCase) entry.getInstructionChoice())
-                                    .getExperimenter().getExperimenterId().getValue());
+                if (entry.getExperimenterId() != null) {
+                    return new InstructionSerializerKey<>(getVersion(),
+                            (Class<InstructionChoice>) entry.getInstructionChoice().getImplementedInterface(),
+                            entry.getExperimenterId().getValue());
                 }
                 return new InstructionSerializerKey<>(getVersion(),
                         (Class<InstructionChoice>) entry.getInstructionChoice().getImplementedInterface(), null);
