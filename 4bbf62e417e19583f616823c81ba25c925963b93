@@ -1,0 +1,8 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+1: Tomas Cechvala <tcechval@cisco.com>
+Code-Review+2: Michal Polkorab <michal.polkorab@pantheon.sk>
+Submitted-by: Michal Polkorab <michal.polkorab@pantheon.sk>
+Submitted-at: Thu, 26 Mar 2015 08:21:26 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/16810
+Project: openflowjava
+Branch: refs/heads/master
