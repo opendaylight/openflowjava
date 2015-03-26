@@ -15,7 +15,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
  * @author michal.polkorab
  * @param <T> action type
  */
-public class ActionSerializerKey<T extends ActionChoice> extends MessageTypeKey<Action> {
+public class ActionSerializerKey<T extends ActionChoice> extends MessageTypeKey<Action>
+        implements ExperimenterSerializerKey {
 
     private Class<T> actionType;
     private Long experimenterId;
