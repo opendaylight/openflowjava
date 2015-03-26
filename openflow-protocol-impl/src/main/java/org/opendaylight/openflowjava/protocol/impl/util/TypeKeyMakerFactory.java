@@ -9,7 +9,6 @@
 package org.opendaylight.openflowjava.protocol.impl.util;
 
 import org.opendaylight.openflowjava.protocol.api.keys.ActionSerializerKey;
-import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterActionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterInstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.InstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
@@ -64,15 +63,10 @@ public abstract class TypeKeyMakerFactory {
         return new AbstractTypeKeyMaker<Action>(version) {
             @Override
             public MessageTypeKey<?> make(Action entry) {
-                if (entry.getActionChoice() instanceof org.opendaylight.yang.gen.v1.urn.opendaylight.openflow
-                        .augments.rev150225.action.container.action.choice.ExperimenterIdCase) {
-                    org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.action
-                    .container.action.choice.ExperimenterIdCase expIdCase = (org.opendaylight.yang.gen.v1.urn
-                    .opendaylight.openflow.augments.rev150225.action.container.action.choice
-                    .ExperimenterIdCase) entry.getActionChoice();
-                    return new ExperimenterActionSerializerKey(getVersion(),
-                            expIdCase.getExperimenter().getExperimenter().getValue(),
-                            expIdCase.getExperimenter().getSubType());
+                if (entry.getExperimenterId() != null) {
+                    return new ActionSerializerKey<>(getVersion(),
+                            (Class<ActionChoice>) entry.getActionChoice().getImplementedInterface(),
+                            entry.getExperimenterId().getValue());
                 }
                 return new ActionSerializerKey<>(getVersion(),
                         (Class<ActionChoice>) entry.getActionChoice().getImplementedInterface(), null);
