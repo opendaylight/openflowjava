@@ -32,8 +32,6 @@ public class InstructionDeserializerRegistryHelper {
     /**
      * @param code code / value to distinguish between deserializers
      * @param deserializer deserializer instance
-     * @param deserializedObjectClass class of object that will be deserialized
-     *  by given deserializer
      */
     public void registerDeserializer(int code, OFGeneralDeserializer deserializer) {
         registry.registerDeserializer(new InstructionDeserializerKey(version, code,

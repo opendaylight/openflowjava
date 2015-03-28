@@ -22,7 +22,6 @@ public class ActionSerializerRegistryHelper {
 
     /**
      * @param version Openflow wire version
-     * @param objectType
      * @param serializerRegistry
      */
     public ActionSerializerRegistryHelper(short version, SerializerRegistry serializerRegistry) {

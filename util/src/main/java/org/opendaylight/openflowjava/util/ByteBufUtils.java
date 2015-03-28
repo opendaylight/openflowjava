@@ -224,10 +224,11 @@ public abstract class ByteBufUtils {
     }
 
     /**
-     * Converts macAddress to byte array
+     * Converts macAddress to byte array.
+     * See also {@link org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress}.
+     *
      * @param macAddress
      * @return byte representation of mac address
-     * @see {@link org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress}
      */
     public static byte[] macAddressToBytes(final String macAddress) {
         final byte[] result = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
@@ -279,10 +280,11 @@ public abstract class ByteBufUtils {
     }
 
     /**
-     * Converts a MAC address represented in bytes to String
+     * Converts a MAC address represented in bytes to String.
+     * See also {@link org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress}.
+     *
      * @param address
      * @return String representation of a MAC address
-     * @see {@link MacAddress}
      */
     public static String macAddressToString(final byte[] address) {
         Preconditions.checkArgument(address.length == EncodeConstants.MAC_ADDRESS_LENGTH);

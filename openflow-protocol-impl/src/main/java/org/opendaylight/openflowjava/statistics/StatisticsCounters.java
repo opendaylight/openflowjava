@@ -186,8 +186,8 @@ public final class StatisticsCounters implements StatisticsHandler {
     /**
      * Get counter by CounterEventType
      * @param counterEventKey key to identify counter (can not be null)
-     * @return - Counter object or null if counter has not been enabled
-     * @exception - IllegalArgumentException if counterEventKey is null
+     * @return Counter object or null if counter has not been enabled
+     * @throws IllegalArgumentException if counterEventKey is null
      */
     public Counter getCounter(CounterEventTypes counterEventKey) {
         if (counterEventKey == null) {

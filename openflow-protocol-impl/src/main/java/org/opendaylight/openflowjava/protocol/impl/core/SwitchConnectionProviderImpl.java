@@ -54,8 +54,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
 /**
- * Exposed class for server handling <br/>
- * C - {@link MatchEntrySerializerKey} parameter representing oxm_class (see specification) <br/>
+ * Exposed class for server handling<br>
+ * C - {@link MatchEntrySerializerKey} parameter representing oxm_class (see specification)<br>
  * F - {@link MatchEntrySerializerKey} parameter representing oxm_field (see specification)
  * @author mirehak
  * @author michal.polkorab
