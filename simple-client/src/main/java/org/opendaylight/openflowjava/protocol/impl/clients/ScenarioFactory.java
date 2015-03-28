@@ -25,8 +25,8 @@ public final class ScenarioFactory {
     }
 
     /**
-     * Creates stack with handshake needed messages.
-     * <ol> XID of messages:
+     * Creates stack with handshake needed messages. XID of messages:
+     * <ol>
      *   <li> hello sent - 00000001
      *   <li> hello waiting - 00000002
      *   <li> featuresrequest waiting - 00000003
@@ -45,8 +45,8 @@ public final class ScenarioFactory {
     }
 
     /**
-     * Creates stack with handshake needed messages.
-     * <ol> XID of messages:
+     * Creates stack with handshake needed messages. XID of messages:
+     * <ol>
      *   <li> hello sent - 00000001
      *   <li> hello waiting - 00000002
      *   <li> featuresrequest waiting - 00000003

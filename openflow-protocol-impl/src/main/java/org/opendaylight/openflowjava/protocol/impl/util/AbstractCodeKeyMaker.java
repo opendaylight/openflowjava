@@ -5,13 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.openflowjava.protocol.impl.util;
-
 
 /**
  * @author michal.polkorab
- * @param <T> type the key maker is based on
  */
 public abstract class AbstractCodeKeyMaker implements CodeKeyMaker {
 

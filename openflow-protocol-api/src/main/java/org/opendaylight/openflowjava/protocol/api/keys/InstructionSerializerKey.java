@@ -23,7 +23,6 @@ public class InstructionSerializerKey<T extends InstructionChoice>
 
     /**
      * @param msgVersion protocol wire version
-     * @param objectType class of serialized object (Instruction.class)
      * @param instructionType type of instruction
      * @param experimenterId experimenter / vendor ID
      */

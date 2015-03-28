@@ -32,7 +32,7 @@ public class TypeToClassInitHelper {
     /**
      * Registers Class int the type to class mapping
      * @param type code value for message type / class
-     * @param clazz corresponding code -> class
+     * @param clazz class corresponding to the code
      */
     public void registerTypeToClass(short type, Class<?> clazz) {
         messageClassMap.put(new TypeToClassKey(version, type), clazz);

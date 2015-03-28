@@ -45,7 +45,6 @@ public interface DeserializerRegistry {
     /**
      * Unregisters deserializer
      * @param key used for deserializer lookup
-     * @param deserializer deserializer instance
      * @return true if deserializer was removed,
      *  false if no deserializer was found under specified key
      */
