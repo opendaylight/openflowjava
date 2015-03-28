@@ -236,7 +236,7 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
      * Initiates connection to device
      * @param switchConnectionProvider
      * @param host - host IP
-     * @param port - port number 
+     * @param port - port number
      */
     public void initiateConnection(SwitchConnectionProviderImpl switchConnectionProvider, String host, int port) {
         LOGGER.trace("MockPlugin().initiateConnection()");

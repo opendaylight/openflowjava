@@ -87,12 +87,9 @@ public class OFVersionDetectorTest {
     @Test
     public void testDecodeEmptyProtocolMessage() throws Exception {
         ByteBuf byteBuffer = ByteBufUtils.hexStringToByteBuf("01 00 00 08 00 00 00 01").skipBytes(8);
-		detector.decode(channelHandlerContext,
-                byteBuffer,
-                list);
+        detector.decode(channelHandlerContext, byteBuffer, list);
 
-		assertEquals( 0, byteBuffer.refCnt() ) ;
-		
+        assertEquals( 0, byteBuffer.refCnt() ) ;
     }
 
     /**
@@ -104,9 +101,7 @@ public class OFVersionDetectorTest {
      */
     @Test
     public void testDecodeNotSupportedVersionProtocolMessage() throws Exception {
-        detector.decode(channelHandlerContext,
-                ByteBufUtils.hexStringToByteBuf("02 00 00 08 00 00 00 01"),
-                list);
+        detector.decode(channelHandlerContext, ByteBufUtils.hexStringToByteBuf("02 00 00 08 00 00 00 01"), list);
 
         Assert.assertEquals("List is not empty", 0, list.size());
     }

@@ -12,13 +12,11 @@ package org.opendaylight.openflowjava.util;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 
 import com.google.common.base.Preconditions;
@@ -229,7 +227,7 @@ public abstract class ByteBufUtils {
      * Converts macAddress to byte array
      * @param macAddress
      * @return byte representation of mac address
-     * @see {@link MacAddress}
+     * @see {@link org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress}
      */
     public static byte[] macAddressToBytes(final String macAddress) {
         final byte[] result = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];

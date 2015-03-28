@@ -78,9 +78,9 @@ public class EnhancedMessageTypeKeyTest {
         EnhancedMessageTypeKey<?,?> key1 = new EnhancedMessageTypeKey<>(EncodeConstants.OF10_VERSION_ID,
                 Action.class, OutputActionCase.class);
 
-         Assert.assertEquals("Wrong toString()", "msgVersion: 1 objectType: org.opendaylight.yang.gen.v1.urn"
-                 + ".opendaylight.openflow.common.action.rev150203.actions.grouping.Action msgType2:"
-                 + " org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action"
-                 + ".grouping.action.choice.OutputActionCase", key1.toString());
+        Assert.assertEquals("Wrong toString()", "msgVersion: 1 objectType: org.opendaylight.yang.gen.v1.urn"
+                + ".opendaylight.openflow.common.action.rev150203.actions.grouping.Action msgType2:"
+                + " org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action"
+                + ".grouping.action.choice.OutputActionCase", key1.toString());
     }
 }

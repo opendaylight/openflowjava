@@ -114,7 +114,7 @@ public abstract class OxmMatchConstants {
     public static final int NXM_NX_TUN_IPV4_DST = 32;
     /** NXM TCP_Flag value */
     public static final int NXM_NX_TCP_FLAG = 34;
-    
+
     private OxmMatchConstants() {
         //not called
     }

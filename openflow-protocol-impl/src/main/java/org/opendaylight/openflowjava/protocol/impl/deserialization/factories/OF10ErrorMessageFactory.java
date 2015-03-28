@@ -59,85 +59,85 @@ public class OF10ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
     private static void decodeCode(ByteBuf rawMessage, ErrorMessageBuilder builder,
             ErrorTypeV10 type) {
         int code = rawMessage.readUnsignedShort();
-    	if (type != null) {
-    		switch (type) {
-    		case HELLOFAILED:
-    		{
-    			HelloFailedCodeV10 errorCode = HelloFailedCodeV10.forValue(code);
-    			if (errorCode != null) {
-    				setCode(builder, errorCode.getIntValue(), errorCode.name());
-    			} else {
-    				setUnknownCode(builder, code);
-    			}
-    			break;
-    		}
-    		case BADREQUEST:
-    		{
-    			BadRequestCodeV10 errorCode = BadRequestCodeV10.forValue(code);
-    			if (errorCode != null) {
-    				setCode(builder, errorCode.getIntValue(), errorCode.name());
-    			} else {
-    				setUnknownCode(builder, code);
-    			}
-    			break;
-    		}
-    		case BADACTION:
-    		{
-    			BadActionCodeV10 errorCode = BadActionCodeV10.forValue(code);
-    			if (errorCode != null) {
-    				setCode(builder, errorCode.getIntValue(), errorCode.name());
-    			} else {
-    				setUnknownCode(builder, code);
-    			}
-    			break;
-    		}
-    		case FLOWMODFAILED:
-    		{
-    			FlowModFailedCodeV10 errorCode = FlowModFailedCodeV10.forValue(code);
-    			if (errorCode != null) {
-    				setCode(builder, errorCode.getIntValue(), errorCode.name());
-    			} else {
-    				setUnknownCode(builder, code);
-    			}
-    			break;
-    		}
-    		case PORTMODFAILED:
-    		{
-    			PortModFailedCodeV10 errorCode = PortModFailedCodeV10.forValue(code);
-    			if (errorCode != null) {
-    				setCode(builder, errorCode.getIntValue(), errorCode.name());
-    			} else {
-    				setUnknownCode(builder, code);
-    			}
-    			break;
-    		}
-    		case QUEUEOPFAILED:
-    		{
-    			QueueOpFailedCodeV10 errorCode = QueueOpFailedCodeV10.forValue(code);
-    			if (errorCode != null) {
-    				setCode(builder, errorCode.getIntValue(), errorCode.name());
-    			} else {
-    				setUnknownCode(builder, code);
-    			}
-    			break;
-    		}
-    		default:
-    			setUnknownCode(builder, code);
-    			break;
-    		}
-    	} else {
-    		setUnknownCode(builder, code);
-    	}
+        if (type != null) {
+            switch (type) {
+            case HELLOFAILED:
+            {
+                HelloFailedCodeV10 errorCode = HelloFailedCodeV10.forValue(code);
+                if (errorCode != null) {
+                    setCode(builder, errorCode.getIntValue(), errorCode.name());
+                } else {
+                    setUnknownCode(builder, code);
+                }
+                break;
+            }
+            case BADREQUEST:
+            {
+                BadRequestCodeV10 errorCode = BadRequestCodeV10.forValue(code);
+                if (errorCode != null) {
+                    setCode(builder, errorCode.getIntValue(), errorCode.name());
+                } else {
+                    setUnknownCode(builder, code);
+                }
+                break;
+            }
+            case BADACTION:
+            {
+                BadActionCodeV10 errorCode = BadActionCodeV10.forValue(code);
+                if (errorCode != null) {
+                    setCode(builder, errorCode.getIntValue(), errorCode.name());
+                } else {
+                    setUnknownCode(builder, code);
+                }
+                break;
+            }
+            case FLOWMODFAILED:
+            {
+                FlowModFailedCodeV10 errorCode = FlowModFailedCodeV10.forValue(code);
+                if (errorCode != null) {
+                    setCode(builder, errorCode.getIntValue(), errorCode.name());
+                } else {
+                    setUnknownCode(builder, code);
+                }
+                break;
+            }
+            case PORTMODFAILED:
+            {
+                PortModFailedCodeV10 errorCode = PortModFailedCodeV10.forValue(code);
+                if (errorCode != null) {
+                    setCode(builder, errorCode.getIntValue(), errorCode.name());
+                } else {
+                    setUnknownCode(builder, code);
+                }
+                break;
+            }
+            case QUEUEOPFAILED:
+            {
+                QueueOpFailedCodeV10 errorCode = QueueOpFailedCodeV10.forValue(code);
+                if (errorCode != null) {
+                    setCode(builder, errorCode.getIntValue(), errorCode.name());
+                } else {
+                    setUnknownCode(builder, code);
+                }
+                break;
+            }
+            default:
+                setUnknownCode(builder, code);
+                break;
+            }
+        } else {
+            setUnknownCode(builder, code);
+        }
     }
 
     private static void setUnknownCode(ErrorMessageBuilder builder, int readValue) {
-    	builder.setCode(readValue);
-		builder.setCodeString(UNKNOWN_CODE);
+        builder.setCode(readValue);
+        builder.setCodeString(UNKNOWN_CODE);
     }
 
     private static void setCode(ErrorMessageBuilder builder, int code, String codeString) {
-    	builder.setCode(code);
-		builder.setCodeString(codeString);
+        builder.setCode(code);
+        builder.setCodeString(codeString);
     }
 
 }

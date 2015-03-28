@@ -51,7 +51,7 @@ public class OF10HelloMessageFactoryTest {
         BufferHelper.checkHeaderV10(builtByFactory);
         Assert.assertNull("Wrong elements", builtByFactory.getElements());
     }
-	
+
 	/**
      * Testing {@link OF10HelloMessageFactory} for correct translation into POJO
      */

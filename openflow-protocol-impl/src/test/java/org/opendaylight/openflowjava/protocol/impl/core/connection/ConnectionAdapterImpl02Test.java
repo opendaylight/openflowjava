@@ -106,7 +106,7 @@ public class ConnectionAdapterImpl02Test {
         }
     }
     /**
-     * Test Rpc Calls 
+     * Test Rpc Calls
      */
     @Test
     public void testRcp() {

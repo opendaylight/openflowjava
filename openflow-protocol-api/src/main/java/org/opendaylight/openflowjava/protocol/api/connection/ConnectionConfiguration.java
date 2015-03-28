@@ -5,17 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.openflowjava.protocol.api.connection;
 
 import java.net.InetAddress;
 
-import javax.net.ssl.SSLEngine;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SwitchIdleEvent;
-
 /**
  * @author mirehak
- *
  */
 public interface ConnectionConfiguration {
 
@@ -40,12 +35,14 @@ public interface ConnectionConfiguration {
     TlsConfiguration getTlsConfiguration();
 
     /**
-     * @return silence time (in milliseconds) - after this time {@link SwitchIdleEvent} message is sent upstream
+     * @return silence time (in milliseconds) - after this time
+     *         {@link org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SwitchIdleEvent}
+     *         message is sent upstream
      */
     long getSwitchIdleTimeout();
 
     /**
-     * @return seed for {@link SSLEngine}
+     * @return seed for {@link javax.net.ssl.SSLEngine}
      */
     Object getSslContext();
 
