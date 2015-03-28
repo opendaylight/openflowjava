@@ -14,7 +14,7 @@ package org.opendaylight.openflowjava.protocol.impl.util;
  */
 public final class ActionConstants {
 
-    /** Openflow v1.0 & v1.3 OFPAT_OUTPUT code */
+    /** Openflow v1.0 and v1.3 OFPAT_OUTPUT code */
     public static final byte OUTPUT_CODE = 0;
     /** Openflow v1.0 OFPAT_SET_VLAN_VID code */
     public static final byte SET_VLAN_VID_CODE = 1;
@@ -96,7 +96,7 @@ public final class ActionConstants {
     /** Most common action length */
     public static final byte GENERAL_ACTION_LENGTH = 8;
     /** Action larger than GENERAL_ACTION_LENGTH - currently
-     *  only 16 bytes long actions for both OF v1.0 & v1.3*/
+     *  only 16 bytes long actions for both OF v1.0 and v1.3*/
     public static final byte LARGER_ACTION_LENGTH = 16;
     /** Action header size */
     public static final byte ACTION_IDS_LENGTH = 4;

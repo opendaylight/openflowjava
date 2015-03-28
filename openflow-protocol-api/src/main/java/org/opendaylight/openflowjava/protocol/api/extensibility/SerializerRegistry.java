@@ -9,22 +9,18 @@ package org.opendaylight.openflowjava.protocol.api.extensibility;
 
 import org.opendaylight.openflowjava.protocol.api.keys.MessageTypeKey;
 
-
-
-
 /**
- * Stores and handles serializers <br/>
- * K - {@link MessageTypeKey} parameter type,<br/>
+ * Stores and handles serializers<br>
+ * K - {@link MessageTypeKey} parameter type,<br>
  * S - returned serializer type
  * @author michal.polkorab
- *
  */
 public interface SerializerRegistry {
 
     /**
      * Serializer registry provisioning
      */
-    public void init();
+    void init();
 
     /**
      * @param msgTypeKey lookup key
@@ -49,7 +45,6 @@ public interface SerializerRegistry {
     /**
      * Unregisters serializer
      * @param key used for serializer lookup
-     * @param serializer serializer implementation
      * @return true if serializer was removed,
      *  false if no serializer was found under specified key
      */

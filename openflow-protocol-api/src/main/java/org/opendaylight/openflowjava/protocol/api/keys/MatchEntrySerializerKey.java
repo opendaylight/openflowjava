@@ -26,7 +26,6 @@ public final class MatchEntrySerializerKey<C extends OxmClassBase, F extends Mat
 
     /**
      * @param msgVersion protocol wire version
-     * @param objectType class of serialized object
      * @param oxmClass oxm_class (see specification)
      * @param oxmField oxm_field (see specification)
      */

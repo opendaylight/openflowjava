@@ -24,8 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Stores and handles serializers <br/>
- * K - {@link MessageTypeKey} type <br/>
+ * Stores and handles serializers<br>
+ * K - {@link MessageTypeKey} type<br>
  * S - returned serializer type
  * @author michal.polkorab
  * @author timotej.kubas

@@ -24,7 +24,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * In case of handling multiple multiple structures of same type (actions,
  * instructions, match entries, ... ) which are differentiated by
  * vendor / experimenter subtype, vendor has to switch / choose between
- * these subtypes. <br />
+ * these subtypes.<br>
  *
  * This has to be done in this way because of experimenter headers, which
  * provide only vendor / experimenter ID. Subtype position may be different
