@@ -55,14 +55,14 @@ public class ExperimenterIdDeserializerKeyTest {
      */
     @Test
     public void testEquals() {
-         ExperimenterIdDeserializerKey key1 =
-                 new ExperimenterIdDeserializerKey(EncodeConstants.OF10_VERSION_ID, null, ExperimenterMessage.class);
-         Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
-         MessageCodeKey mk = new MessageCodeKey(EncodeConstants.OF10_VERSION_ID,EncodeConstants.EXPERIMENTER_VALUE, ExperimenterMessage.class);
-         Assert.assertFalse("Wrong equal to different class.", key1.equals(mk));
-         ExperimenterIdDeserializerKey key2 =
-                 new ExperimenterIdDeserializerKey(EncodeConstants.OF10_VERSION_ID, 42L, ExperimenterMessage.class);
-         Assert.assertFalse("Wrong equal by experimenterId.", key1.equals(key2));
+        ExperimenterIdDeserializerKey key1 =
+                new ExperimenterIdDeserializerKey(EncodeConstants.OF10_VERSION_ID, null, ExperimenterMessage.class);
+        Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
+        MessageCodeKey mk = new MessageCodeKey(EncodeConstants.OF10_VERSION_ID,EncodeConstants.EXPERIMENTER_VALUE, ExperimenterMessage.class);
+        Assert.assertFalse("Wrong equal to different class.", key1.equals(mk));
+        ExperimenterIdDeserializerKey key2 =
+                new ExperimenterIdDeserializerKey(EncodeConstants.OF10_VERSION_ID, 42L, ExperimenterMessage.class);
+        Assert.assertFalse("Wrong equal by experimenterId.", key1.equals(key2));
     }
 
 }

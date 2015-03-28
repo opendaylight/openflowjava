@@ -48,20 +48,20 @@ public class MessageTypeKeyTest {
      */
     @Test
     public void testEquals() {
-         MessageTypeKey<?> key1;
-         MessageTypeKey<?> key2;
-         key1 = new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, BarrierInput.class);
+        MessageTypeKey<?> key1;
+        MessageTypeKey<?> key2;
+        key1 = new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, BarrierInput.class);
 
-         Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
-         Assert.assertFalse("Wrong equal to null.", key1.equals(null));
-         Assert.assertFalse("Wrong equal to different class.", key1.equals(new Object()));
+        Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
+        Assert.assertFalse("Wrong equal to null.", key1.equals(null));
+        Assert.assertFalse("Wrong equal to different class.", key1.equals(new Object()));
 
-         key1 = new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, null);
-         key2 = new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, BarrierInput.class);
-         Assert.assertFalse("Wrong equal by msgType.", key1.equals(key2));
+        key1 = new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, null);
+        key2 = new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, BarrierInput.class);
+        Assert.assertFalse("Wrong equal by msgType.", key1.equals(key2));
 
-         key2 = new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, null);
-         Assert.assertTrue("Wrong equal by msgType.", key1.equals(key2));
+        key2 = new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, null);
+        Assert.assertTrue("Wrong equal by msgType.", key1.equals(key2));
     }
 
     /**
@@ -69,9 +69,9 @@ public class MessageTypeKeyTest {
      */
     @Test
     public void testToString() {
-         MessageTypeKey<?> key1 = new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, BarrierInput.class);
+        MessageTypeKey<?> key1 = new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID, BarrierInput.class);
 
-         Assert.assertEquals("Wrong toString()", "msgVersion: 1 objectType: org.opendaylight.yang.gen.v1.urn"
+        Assert.assertEquals("Wrong toString()", "msgVersion: 1 objectType: org.opendaylight.yang.gen.v1.urn"
                  + ".opendaylight.openflow.protocol.rev130731.BarrierInput", key1.toString());
     }
 }

@@ -474,7 +474,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     public boolean isAutoRead() {
     	return channel.config().isAutoRead();
     }
-    
+
 	@Override
     public void setAutoRead(boolean autoRead) {
     	channel.config().setAutoRead(autoRead);

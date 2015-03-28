@@ -5,14 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.openflowjava.protocol.api.keys;
 
-import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
-
-
 /**
- * Class used as a key in {@link SerializerRegistry}
+ * Class used as a key in {@link org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry}
  * @author michal.polkorab
  * @author timotej.kubas
  * @param <E> message type (class)

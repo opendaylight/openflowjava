@@ -25,7 +25,7 @@ public abstract class ExperimenterDeserializerKeyFactory {
     private ExperimenterDeserializerKeyFactory() {
         //not called
     }
-    
+
     /**
      * @param version openflow wire version
      * @param experimenterId experimenter / vendor ID

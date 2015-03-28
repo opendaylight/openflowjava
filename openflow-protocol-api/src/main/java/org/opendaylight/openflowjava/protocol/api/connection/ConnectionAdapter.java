@@ -65,13 +65,12 @@ public interface ConnectionAdapter extends OpenflowProtocolService {
 
     /**
      * sets option for automatic channel reading;
-     * if set to false, incoming messages won't be read 
+     * if set to false, incoming messages won't be read
      */
-	void setAutoRead(boolean autoRead);
+    void setAutoRead(boolean autoRead);
 
-	/**
+    /**
      * @return true, if channel is configured to autoread
      */
-	boolean isAutoRead();
-
+    boolean isAutoRead();
 }

@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  */
 public class StatisticsCountersTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsCounters.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsCountersTest.class);
     private StatisticsCounters statCounters;
 
     /**

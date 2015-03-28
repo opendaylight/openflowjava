@@ -53,19 +53,19 @@ public class ActionSerializerKeyTest {
      */
     @Test
     public void testEquals(){
-         ActionSerializerKey<?> key1 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, null, 42L);
-         ActionSerializerKey<?> key2 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID,
-                 CopyTtlInCase.class, 42L);
+        ActionSerializerKey<?> key1 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, null, 42L);
+        ActionSerializerKey<?> key2 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID,
+                CopyTtlInCase.class, 42L);
 
-         Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
-         Assert.assertFalse("Wrong equal by actionType", key1.equals(key2));
+        Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
+        Assert.assertFalse("Wrong equal by actionType", key1.equals(key2));
 
-         key2 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, null, 42L);
-         Assert.assertTrue("Wrong equal by action type", key1.equals(key2));
-         key1 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID,  CopyTtlInCase.class, null);
-         Assert.assertFalse("Wrong equal by experimenterId", key1.equals(key2));
-         key2 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, CopyTtlInCase.class, null);
-         Assert.assertTrue("Wrong equal by experimenterId", key1.equals(key2));
+        key2 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, null, 42L);
+        Assert.assertTrue("Wrong equal by action type", key1.equals(key2));
+        key1 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID,  CopyTtlInCase.class, null);
+        Assert.assertFalse("Wrong equal by experimenterId", key1.equals(key2));
+        key2 = new ActionSerializerKey<>(EncodeConstants.OF10_VERSION_ID, CopyTtlInCase.class, null);
+        Assert.assertTrue("Wrong equal by experimenterId", key1.equals(key2));
     }
 
     /**

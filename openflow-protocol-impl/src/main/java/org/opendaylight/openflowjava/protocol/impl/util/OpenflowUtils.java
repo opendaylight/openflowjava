@@ -22,7 +22,7 @@ public abstract class OpenflowUtils {
     private OpenflowUtils() {
         //not called
     }
-    
+
     /**
      * Creates PortState (OF v1.0) from input
      * @param input value read from buffer

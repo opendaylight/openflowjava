@@ -17,7 +17,7 @@ public abstract class BinContent {
     private BinContent() {
         //not called
     }
-    
+
     /**
      * @param value
      * @return int part wrapped in long

@@ -170,53 +170,53 @@ public class OF10ErrorMessageFactoryTest {
         Assert.assertEquals("Wrong code string", "UNKNOWN_CODE", builtByFactory.getCodeString());
         Assert.assertNull("Data is not null", builtByFactory.getData());
     }
-	
-	/**
+
+    /**
      * Test of {@link OF10ErrorMessageFactory} for correct translation into POJO
      */
-	@Test
-	public void testWithData() {
-		ByteBuf bb = BufferHelper.buildBuffer("00 00 00 01 00 01 02 03");
-		ErrorMessage builtByFactory = BufferHelper.deserialize(errorFactory, bb);
+    @Test
+    public void testWithData() {
+        ByteBuf bb = BufferHelper.buildBuffer("00 00 00 01 00 01 02 03");
+        ErrorMessage builtByFactory = BufferHelper.deserialize(errorFactory, bb);
 
-		BufferHelper.checkHeaderV10(builtByFactory);
-		Assert.assertEquals("Wrong type", 0, builtByFactory.getType().intValue());
-		Assert.assertEquals("Wrong code", 1, builtByFactory.getCode().intValue());
-		Assert.assertEquals("Wrong type string", "HELLOFAILED", builtByFactory.getTypeString());
-		Assert.assertEquals("Wrong code string", "EPERM", builtByFactory.getCodeString());
-		Assert.assertArrayEquals("Wrong data", new byte[]{0x00, 0x01, 0x02, 0x03}, builtByFactory.getData());
-	}
-	
-	/**
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 0, builtByFactory.getType().intValue());
+        Assert.assertEquals("Wrong code", 1, builtByFactory.getCode().intValue());
+        Assert.assertEquals("Wrong type string", "HELLOFAILED", builtByFactory.getTypeString());
+        Assert.assertEquals("Wrong code string", "EPERM", builtByFactory.getCodeString());
+        Assert.assertArrayEquals("Wrong data", new byte[]{0x00, 0x01, 0x02, 0x03}, builtByFactory.getData());
+    }
+
+    /**
      * Test of {@link OF10ErrorMessageFactory} for correct translation into POJO
      */
-	@Test
-	public void testWithIncorrectTypeEnum() {
-		ByteBuf bb = BufferHelper.buildBuffer("00 0A 00 05 00 01 02 03");
-		ErrorMessage builtByFactory = BufferHelper.deserialize(errorFactory, bb);
+    @Test
+    public void testWithIncorrectTypeEnum() {
+        ByteBuf bb = BufferHelper.buildBuffer("00 0A 00 05 00 01 02 03");
+        ErrorMessage builtByFactory = BufferHelper.deserialize(errorFactory, bb);
 
-		BufferHelper.checkHeaderV10(builtByFactory);
-		Assert.assertEquals("Wrong type", 10, builtByFactory.getType().intValue());
-		Assert.assertEquals("Wrong code", 5, builtByFactory.getCode().intValue());
-		Assert.assertEquals("Wrong type string", "UNKNOWN_TYPE", builtByFactory.getTypeString());
-		Assert.assertEquals("Wrong code string", "UNKNOWN_CODE", builtByFactory.getCodeString());
-		Assert.assertArrayEquals("Wrong data", new byte[]{0x00, 0x01, 0x02, 0x03}, builtByFactory.getData());
-	}
-	
-	/**
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 10, builtByFactory.getType().intValue());
+        Assert.assertEquals("Wrong code", 5, builtByFactory.getCode().intValue());
+        Assert.assertEquals("Wrong type string", "UNKNOWN_TYPE", builtByFactory.getTypeString());
+        Assert.assertEquals("Wrong code string", "UNKNOWN_CODE", builtByFactory.getCodeString());
+        Assert.assertArrayEquals("Wrong data", new byte[]{0x00, 0x01, 0x02, 0x03}, builtByFactory.getData());
+    }
+
+    /**
      * Test of {@link OF10ErrorMessageFactory} for correct translation into POJO
      */
-	@Test
-	public void testWithIncorrectCodeEnum() {
-		ByteBuf bb = BufferHelper.buildBuffer("00 03 00 06 00 01 02 03");
-		ErrorMessage builtByFactory = BufferHelper.deserialize(errorFactory, bb);
+    @Test
+    public void testWithIncorrectCodeEnum() {
+        ByteBuf bb = BufferHelper.buildBuffer("00 03 00 06 00 01 02 03");
+        ErrorMessage builtByFactory = BufferHelper.deserialize(errorFactory, bb);
 
-		BufferHelper.checkHeaderV10(builtByFactory);
-		Assert.assertEquals("Wrong type", 3, builtByFactory.getType().intValue());
-		Assert.assertEquals("Wrong code", 6, builtByFactory.getCode().intValue());
-		Assert.assertEquals("Wrong type string", "FLOWMODFAILED", builtByFactory.getTypeString());
-		Assert.assertEquals("Wrong code string", "UNKNOWN_CODE", builtByFactory.getCodeString());
-		Assert.assertArrayEquals("Wrong data", new byte[]{0x00, 0x01, 0x02, 0x03}, builtByFactory.getData());
-	}
+        BufferHelper.checkHeaderV10(builtByFactory);
+        Assert.assertEquals("Wrong type", 3, builtByFactory.getType().intValue());
+        Assert.assertEquals("Wrong code", 6, builtByFactory.getCode().intValue());
+        Assert.assertEquals("Wrong type string", "FLOWMODFAILED", builtByFactory.getTypeString());
+        Assert.assertEquals("Wrong code string", "UNKNOWN_CODE", builtByFactory.getCodeString());
+        Assert.assertArrayEquals("Wrong data", new byte[]{0x00, 0x01, 0x02, 0x03}, builtByFactory.getData());
+    }
 
 }
