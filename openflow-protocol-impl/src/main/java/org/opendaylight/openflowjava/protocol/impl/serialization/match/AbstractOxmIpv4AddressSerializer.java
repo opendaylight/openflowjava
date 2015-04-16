@@ -27,11 +27,7 @@ public abstract class AbstractOxmIpv4AddressSerializer extends AbstractOxmMatchE
     }
 
     private static void writeIpv4Address(final MatchEntries entry, final ByteBuf out) {
-        Iterable<String> addressGroups = ByteBufUtils.DOT_SPLITTER
-                .split(entry.getAugmentation(Ipv4AddressMatchEntry.class).getIpv4Address().getValue());
-        for (String group : addressGroups) {
-            out.writeByte(Short.parseShort(group));
-        }
+        out.writeBytes(entry.getAugmentation(Ipv4AddressMatchEntry.class).getIpv4Address().getBinaryForm(), 0, 4);
     }
 
 }

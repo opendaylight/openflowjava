@@ -44,10 +44,10 @@ public class OF10MatchDeserializer implements OFDeserializer<MatchV10> {
         builder.setInPort(input.readUnsignedShort());
         byte[] dlSrc = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
         input.readBytes(dlSrc);
-        builder.setDlSrc(new MacAddress(ByteBufUtils.macAddressToString(dlSrc)));
+        builder.setDlSrc(new MacAddress(dlSrc));
         byte[] dlDst = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
         input.readBytes(dlDst);
-        builder.setDlDst(new MacAddress(ByteBufUtils.macAddressToString(dlDst)));
+        builder.setDlDst(new MacAddress(dlDst));
 
         builder.setDlVlan(input.readUnsignedShort());
         builder.setDlVlanPcp(input.readUnsignedByte());
@@ -56,8 +56,15 @@ public class OF10MatchDeserializer implements OFDeserializer<MatchV10> {
         builder.setNwTos(input.readUnsignedByte());
         builder.setNwProto(input.readUnsignedByte());
         input.skipBytes(PADDING_IN_MATCH_2);
-        builder.setNwSrc(new Ipv4Address(ByteBufUtils.readIpv4Address(input)));
-        builder.setNwDst(new Ipv4Address(ByteBufUtils.readIpv4Address(input)));
+
+        byte [] srcipv4address = new byte[4];
+        input.readBytes(srcipv4address);
+        builder.setNwSrc(new Ipv4Address(srcipv4address));
+
+        byte [] dstipv4address = new byte[4];
+        input.readBytes(dstipv4address);
+        builder.setNwDst(new Ipv4Address(dstipv4address));
+
         builder.setTpSrc(input.readUnsignedShort());
         builder.setTpDst(input.readUnsignedShort());
         return builder.build();

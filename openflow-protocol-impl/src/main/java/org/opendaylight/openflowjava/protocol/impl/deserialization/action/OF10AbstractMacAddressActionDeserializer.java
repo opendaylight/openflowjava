@@ -39,7 +39,7 @@ public abstract class OF10AbstractMacAddressActionDeserializer extends AbstractA
         DlAddressActionBuilder dlBuilder = new DlAddressActionBuilder();
         byte[] address = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
         input.readBytes(address);
-        dlBuilder.setDlAddress(new MacAddress(ByteBufUtils.macAddressToString(address)));
+        dlBuilder.setDlAddress(new MacAddress(address));
         input.skipBytes(ActionConstants.PADDING_IN_DL_ADDRESS_ACTION);
         return dlBuilder.build();
     }

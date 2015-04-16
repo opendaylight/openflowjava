@@ -39,7 +39,7 @@ public abstract class AbstractOxmMacAddressDeserializer extends AbstractOxmMatch
         MacAddressMatchEntryBuilder macAddress = new MacAddressMatchEntryBuilder();
         byte[] address = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
         input.readBytes(address);
-        macAddress.setMacAddress(new MacAddress(ByteBufUtils.macAddressToString(address)));
+        macAddress.setMacAddress(new MacAddress(address));
         builder.addAugmentation(MacAddressMatchEntry.class, macAddress.build());
     }
 }

@@ -94,7 +94,7 @@ public class OF10FeaturesReplyMessageFactory implements OFDeserializer<GetFeatur
         builder.setPortNo((long) rawMessage.readUnsignedShort());
         byte[] address = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
         rawMessage.readBytes(address);
-        builder.setHwAddr(new MacAddress(ByteBufUtils.macAddressToString(address)));
+        builder.setHwAddr(new MacAddress(address));
         builder.setName(ByteBufUtils.decodeNullTerminatedString(rawMessage, EncodeConstants.MAX_PORT_NAME_LENGTH));
         builder.setConfigV10(createPortConfig(rawMessage.readUnsignedInt()));
         builder.setStateV10(createPortState(rawMessage.readUnsignedInt()));

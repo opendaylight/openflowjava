@@ -37,8 +37,10 @@ public abstract class OF10AbstractIpAddressActionDeserializer extends AbstractAc
     }
 
     private static Augmentation<Action> createNwAddressAugmentationAndPad(final ByteBuf input) {
+        byte [] ipv4address = new byte[4];
         IpAddressActionBuilder ipBuilder = new IpAddressActionBuilder();
-        ipBuilder.setIpAddress(new Ipv4Address(ByteBufUtils.readIpv4Address(input)));
+        input.readBytes(ipv4address);
+        ipBuilder.setIpAddress(new Ipv4Address(ipv4address));
         return ipBuilder.build();
     }
 

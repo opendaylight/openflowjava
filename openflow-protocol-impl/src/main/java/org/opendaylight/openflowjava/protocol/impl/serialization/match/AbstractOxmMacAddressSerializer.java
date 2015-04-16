@@ -22,8 +22,8 @@ public abstract class AbstractOxmMacAddressSerializer extends AbstractOxmMatchEn
     @Override
     public void serialize(MatchEntries entry, ByteBuf outBuffer) {
         super.serialize(entry, outBuffer);
-        String macAddress = entry.getAugmentation(MacAddressMatchEntry.class).getMacAddress().getValue();
-        outBuffer.writeBytes(ByteBufUtils.macAddressToBytes(macAddress)); // 48 b + mask [OF 1.3.2 spec]
+        byte [] macAddress = entry.getAugmentation(MacAddressMatchEntry.class).getMacAddress().getBinaryForm();
+        outBuffer.writeBytes(macAddress); // 48 b + mask [OF 1.3.2 spec]
         writeMask(entry, outBuffer, getValueLength());
     }
 }

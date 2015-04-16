@@ -43,7 +43,7 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
         rawMessage.skipBytes(PADDING_IN_OFP_PORT_HEADER_1);
         byte[] hwAddress = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
         rawMessage.readBytes(hwAddress);
-        builder.setHwAddr(new MacAddress(ByteBufUtils.macAddressToString(hwAddress)));
+        builder.setHwAddr(new MacAddress(hwAddress));
         rawMessage.skipBytes(PADDING_IN_OFP_PORT_HEADER_2);
         builder.setName(ByteBufUtils.decodeNullTerminatedString(rawMessage, EncodeConstants.MAX_PORT_NAME_LENGTH));
         builder.setConfig(createPortConfig(rawMessage.readUnsignedInt()));

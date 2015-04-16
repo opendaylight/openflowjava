@@ -36,8 +36,10 @@ public abstract class AbstractOxmIpv4AddressDeserializer extends AbstractOxmMatc
     }
 
     private static void addIpv4AddressAugmentation(final MatchEntriesBuilder builder, final ByteBuf input) {
+        byte [] ipv4address = new byte[4];
         Ipv4AddressMatchEntryBuilder ipv4AddressBuilder = new Ipv4AddressMatchEntryBuilder();
-        ipv4AddressBuilder.setIpv4Address(new Ipv4Address(ByteBufUtils.readIpv4Address(input)));
+        input.readBytes(ipv4address);
+        ipv4AddressBuilder.setIpv4Address(new Ipv4Address(ipv4address));
         builder.addAugmentation(Ipv4AddressMatchEntry.class, ipv4AddressBuilder.build());
     }
 }

@@ -708,7 +708,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             input.skipBytes(PADDING_IN_PORT_DESC_HEADER_01);
             byte[] hwAddress = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
             input.readBytes(hwAddress);
-            portsBuilder.setHwAddr(new MacAddress(ByteBufUtils.macAddressToString(hwAddress)));
+            portsBuilder.setHwAddr(new MacAddress(hwAddress));
             input.skipBytes(PADDING_IN_PORT_DESC_HEADER_02);
             portsBuilder.setName(ByteBufUtils.decodeNullTerminatedString(input, EncodeConstants.MAX_PORT_NAME_LENGTH));
             portsBuilder.setConfig(createPortConfig(input.readUnsignedInt()));
