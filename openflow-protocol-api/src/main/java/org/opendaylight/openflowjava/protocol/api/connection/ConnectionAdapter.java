@@ -11,7 +11,6 @@ package org.opendaylight.openflowjava.protocol.api.connection;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.Future;
-
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OpenflowProtocolListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OpenflowProtocolService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SystemNotificationsListener;
@@ -73,4 +72,13 @@ public interface ConnectionAdapter extends OpenflowProtocolService {
      * @return true, if channel is configured to autoread
      */
     boolean isAutoRead();
+
+    /**
+     * Request a new message slot. The returned slot has an XID associated with it
+     * and needs to be completed using a message.
+     *
+     * @return {@link RequestSlot} instance, or null if a slot cannot be reserved
+     *         because the underlying connection is being terminated.
+     */
+    RequestSlot reserveRequest();
 }

@@ -9,16 +9,24 @@
 
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalCause;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.util.concurrent.GenericFutureListener;
-
 import java.net.InetSocketAddress;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
-
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionReadyListener;
+import org.opendaylight.openflowjava.protocol.api.connection.RequestSlot;
 import org.opendaylight.openflowjava.statistics.CounterEventTypes;
 import org.opendaylight.openflowjava.statistics.StatisticsCounters;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
@@ -66,15 +74,6 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalCause;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
-
 /**
  * Handles messages (notifications + rpcs) and connections
  * @author mirehak
@@ -116,7 +115,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     private OpenflowProtocolListener messageListener;
     private SystemNotificationsListener systemListener;
     private boolean disconnectOccured = false;
-    private StatisticsCounters statisticsCounters;
+    private final StatisticsCounters statisticsCounters;
 
     /**
      * default ctor
@@ -466,7 +465,8 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
      * Used only for testing purposes
      * @param cache
      */
-    public void setResponseCache(Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> cache) {
+    @VisibleForTesting
+    public void setResponseCache(final Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> cache) {
         this.responseCache = cache;
     }
 
@@ -476,7 +476,13 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     }
 
 	@Override
-    public void setAutoRead(boolean autoRead) {
+    public void setAutoRead(final boolean autoRead) {
     	channel.config().setAutoRead(autoRead);
+    }
+
+    @Override
+    public RequestSlot reserveRequest() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
