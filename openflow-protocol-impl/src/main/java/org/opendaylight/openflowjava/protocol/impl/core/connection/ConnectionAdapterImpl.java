@@ -9,16 +9,24 @@
 
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
+import com.google.common.base.Preconditions;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalCause;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.util.concurrent.GenericFutureListener;
-
 import java.net.InetSocketAddress;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
-
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionReadyListener;
+import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueHandler;
+import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueHandlerRegistration;
 import org.opendaylight.openflowjava.statistics.CounterEventTypes;
 import org.opendaylight.openflowjava.statistics.StatisticsCounters;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
@@ -66,15 +74,6 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalCause;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
-
 /**
  * Handles messages (notifications + rpcs) and connections
  * @author mirehak
@@ -115,8 +114,10 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     private ConnectionReadyListener connectionReadyListener;
     private OpenflowProtocolListener messageListener;
     private SystemNotificationsListener systemListener;
+    private OutboundQueueManager<?> outputManager;
     private boolean disconnectOccured = false;
-    private StatisticsCounters statisticsCounters;
+    private final StatisticsCounters statisticsCounters;
+    private final InetSocketAddress address;
 
     /**
      * default ctor
@@ -131,6 +132,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 .removalListener(REMOVAL_LISTENER).build();
         this.channel = Preconditions.checkNotNull(channel);
         this.output = new ChannelOutboundQueue(channel, DEFAULT_QUEUE_DEPTH, address);
+        this.address = address;
         channel.pipeline().addLast(output);
         statisticsCounters = StatisticsCounters.getInstance();
         LOG.debug("ConnectionAdapter created");
@@ -285,6 +287,9 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else if (message instanceof ExperimenterMessage) {
                 messageListener.onExperimenterMessage((ExperimenterMessage) message);
+                if (outputManager != null) {
+                    outputManager.onMessage((OfHeader) message);
+                }
                 statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else if (message instanceof FlowRemovedMessage) {
                 messageListener.onFlowRemovedMessage((FlowRemovedMessage) message);
@@ -295,6 +300,9 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else if (message instanceof MultipartReplyMessage) {
                 messageListener.onMultipartReplyMessage((MultipartReplyMessage) message);
+                if (outputManager != null) {
+                    outputManager.onMessage((OfHeader) message);
+                }
                 statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else if (message instanceof PacketInMessage) {
                 messageListener.onPacketInMessage((PacketInMessage) message);
@@ -305,23 +313,26 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
             } else {
                 LOG.warn("message listening not supported for type: {}", message.getClass());
             }
-        } else {
-            if (message instanceof OfHeader) {
-                LOG.debug("OFheader msg received");
-                RpcResponseKey key = createRpcResponseKey((OfHeader) message);
-                final ResponseExpectedRpcListener<?> listener = findRpcResponse(key);
-                if (listener != null) {
-                    LOG.debug("corresponding rpcFuture found");
-                    listener.completed((OfHeader)message);
-                    statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
-                    LOG.debug("after setting rpcFuture");
-                    responseCache.invalidate(key);
-                } else {
-                    LOG.warn("received unexpected rpc response: {}", key);
-                }
-            } else {
-                LOG.warn("message listening not supported for type: {}", message.getClass());
+        } else if (message instanceof OfHeader) {
+            LOG.debug("OFheader msg received");
+
+            if (outputManager != null) {
+                outputManager.onMessage((OfHeader) message);
             }
+
+            RpcResponseKey key = createRpcResponseKey((OfHeader) message);
+            final ResponseExpectedRpcListener<?> listener = findRpcResponse(key);
+            if (listener != null) {
+                LOG.debug("corresponding rpcFuture found");
+                listener.completed((OfHeader)message);
+                statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
+                LOG.debug("after setting rpcFuture");
+                responseCache.invalidate(key);
+            } else {
+                LOG.warn("received unexpected rpc response: {}", key);
+            }
+        } else {
+            LOG.warn("message listening not supported for type: {}", message.getClass());
         }
     }
 
@@ -466,7 +477,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
      * Used only for testing purposes
      * @param cache
      */
-    public void setResponseCache(Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> cache) {
+    public void setResponseCache(final Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> cache) {
         this.responseCache = cache;
     }
 
@@ -476,7 +487,30 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     }
 
 	@Override
-    public void setAutoRead(boolean autoRead) {
+    public void setAutoRead(final boolean autoRead) {
     	channel.config().setAutoRead(autoRead);
+    }
+
+    @Override
+    public <T extends OutboundQueueHandler> OutboundQueueHandlerRegistration<T> registerOutboundQueueHandler(
+            final T handler, final int maxQueueDepth, final long maxBarrierNanos) {
+        Preconditions.checkState(outputManager == null, "Manager %s already registered", outputManager);
+
+        final OutboundQueueManager<T> ret = new OutboundQueueManager<>(this, address, handler, maxQueueDepth, maxBarrierNanos);
+        outputManager = ret;
+        channel.pipeline().addLast(outputManager);
+
+        return new OutboundQueueHandlerRegistrationImpl<T>(handler) {
+            @Override
+            protected void removeRegistration() {
+                outputManager.close();
+                channel.pipeline().remove(outputManager);
+                outputManager = null;
+            }
+        };
+    }
+
+    Channel getChannel() {
+        return channel;
     }
 }
