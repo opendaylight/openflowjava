@@ -5,13 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
-
 package org.opendaylight.openflowjava.protocol.api.connection;
 
+import com.google.common.annotations.Beta;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Future;
-
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OpenflowProtocolListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OpenflowProtocolService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SystemNotificationsListener;
@@ -73,4 +71,15 @@ public interface ConnectionAdapter extends OpenflowProtocolService {
      * @return true, if channel is configured to autoread
      */
     boolean isAutoRead();
+
+    /**
+     * Registers a new bypass outbound queue
+     * @param handler
+     * @param maxQueueDepth
+     * @param maxBarrierNanos
+     * @return An {@link OutboundQueueHandlerRegistration}
+     */
+    @Beta
+    <T extends OutboundQueueHandler> OutboundQueueHandlerRegistration<T> registerOutboundQueueHandler(OutboundQueueHandler handler,
+        int maxQueueDepth, long maxBarrierNanos);
 }
