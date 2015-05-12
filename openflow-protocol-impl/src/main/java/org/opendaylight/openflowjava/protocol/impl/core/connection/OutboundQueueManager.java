@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLong;
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueHandler;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,12 +52,17 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     private final Queue<OutboundQueueImpl> queueCache = new ArrayDeque<>(QUEUE_CACHE_SIZE);
     private final Queue<OutboundQueueImpl> activeQueues = new LinkedList<>();
     private final AtomicLong lastXid = new AtomicLong();
+    private final SerializationFactory serialiationFactory;
     private final ConnectionAdapterImpl parent;
     private final InetSocketAddress address;
-    private final long maxBarrierNanos;
-    private final long maxWorkTime;
+    private final long maxPeriodicBarrierNanos;
+    private final long maxFlushNanos;
     private final int queueSize;
     private final T handler;
+
+    private long lastBarrierNanos = System.nanoTime();
+    private OutboundQueueImpl currentQueue;
+    private int nonBarrierMessages;
 
     /*
      * Instead of using an AtomicBoolean object, we use these two. It saves us
@@ -67,10 +72,6 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     private static final AtomicIntegerFieldUpdater<OutboundQueueManager> FLUSH_SCHEDULED_UPDATER =
             AtomicIntegerFieldUpdater.newUpdater(OutboundQueueManager.class, "flushScheduled");
     private volatile int flushScheduled = 0;
-
-    private long lastBarrierNanos = System.nanoTime();
-    private OutboundQueueImpl currentQueue;
-    private int nonBarrierMessages;
 
     // Passed to executor to request triggering of flush
     private final Runnable flushRunnable = new Runnable() {
@@ -93,9 +94,9 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
         Preconditions.checkArgument(queueSize > 0);
         this.queueSize = queueSize;
         Preconditions.checkArgument(maxBarrierNanos > 0);
-        this.maxBarrierNanos = maxBarrierNanos;
+        this.maxFlushNanos = TimeUnit.MICROSECONDS.toNanos(DEFAULT_WORKTIME_MICROS);
+        this.maxPeriodicBarrierNanos = maxBarrierNanos;
         this.address = address;
-        this.maxWorkTime = TimeUnit.MICROSECONDS.toNanos(DEFAULT_WORKTIME_MICROS);
 
         createQueue();
         scheduleBarrierTimer(lastBarrierNanos);
@@ -103,6 +104,10 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
 
     T getHandler() {
         return handler;
+    }
+
+    SerializationFactory getSerializationFactory() {
+        return serialiationFactory;
     }
 
     @Override
@@ -137,7 +142,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     }
 
     private void scheduleBarrierTimer(final long now) {
-        long next = lastBarrierNanos + maxBarrierNanos;
+        long next = lastBarrierNanos + maxPeriodicBarrierNanos;
         if (next < now) {
             next = now;
         }
@@ -174,28 +179,28 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
      *
      * @return Entry which was flushed, null if no entry is ready.
      */
-    OfHeader flushEntry(final long now) {
+    OutboundQueueEntry flushEntry(final long now) {
         if (currentQueue.isFlushed()) {
             LOG.debug("Queue {} is fully flushed", currentQueue);
             createQueue();
         }
 
-        final OfHeader message = currentQueue.flushEntry();
-        if (message == null) {
+        final OutboundQueueEntry entry = currentQueue.flushEntry();
+        if (entry == null) {
             return null;
         }
 
-        if (message instanceof BarrierInput) {
-            nonBarrierMessages = 0;
-            lastBarrierNanos = now;
-        } else {
+        if (!entry.isBarrier()) {
             nonBarrierMessages++;
             if (nonBarrierMessages >= queueSize) {
                 scheduleBarrierMessage();
             }
+        } else {
+            nonBarrierMessages = 0;
+            lastBarrierNanos = now;
         }
 
-        return message;
+        return entry;
     }
 
     /**
@@ -279,7 +284,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
 
         final long now = System.nanoTime();
         final long sinceLast = now - lastBarrierNanos;
-        if (sinceLast >= maxBarrierNanos) {
+        if (sinceLast >= maxPeriodicBarrierNanos) {
             scheduleBarrierMessage();
         }
 
@@ -291,9 +296,11 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
      */
     protected void flush() {
         final long start = System.nanoTime();
-        final long deadline = start + maxWorkTime;
+        final long deadline = start + maxFlushNanos;
 
         LOG.debug("Dequeuing messages to channel {}", parent.getChannel());
+
+        final ChannelHandlerContext ctx = null;
 
         long messages = 0;
         for (;; ++messages) {
@@ -302,19 +309,13 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
                 break;
             }
 
-            final OfHeader message = flushEntry(start);
-            if (message == null) {
+            final OutboundQueueEntry entry = flushEntry(start);
+            if (entry == null) {
                 LOG.trace("The queue is completely drained");
                 break;
             }
 
-            final Object wrapper;
-            if (address == null) {
-                wrapper = new MessageListenerWrapper(message, null);
-            } else {
-                wrapper = new UdpMessageListenerWrapper(message, null, address);
-            }
-            parent.getChannel().write(wrapper);
+            ctx.write(entry.getPdu());
 
             /*
              * Check every WORKTIME_RECHECK_MSGS for exceeded time.
@@ -325,7 +326,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
              */
             if ((messages % WORKTIME_RECHECK_MSGS) == 0 && System.nanoTime() >= deadline) {
                 LOG.trace("Exceeded allotted work time {}us",
-                        TimeUnit.NANOSECONDS.toMicros(maxWorkTime));
+                        TimeUnit.NANOSECONDS.toMicros(maxFlushNanos));
                 break;
             }
         }
@@ -410,5 +411,9 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     @Override
     public String toString() {
         return String.format("Channel %s queue [flushing=%s]", parent.getChannel(), flushScheduled);
+    }
+
+    InetSocketAddress getAddress() {
+        return address;
     }
 }
