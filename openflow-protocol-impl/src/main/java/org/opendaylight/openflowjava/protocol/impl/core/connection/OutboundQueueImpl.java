@@ -95,7 +95,10 @@ final class OutboundQueueImpl implements OutboundQueue {
             Preconditions.checkArgument(xid.equals(message.getXid()), "Message %s has wrong XID %s, expected %s", message, message.getXid(), xid);
         }
 
-        queue[offset].commit(message, callback);
+        final OutboundQueueEntry entry = queue[offset];
+        Preconditions.checkArgument(!entry.isCommitted(), "XID %s is already committed", xid);
+
+        entry.commit(manager.getSerializationFactory(), manager.getAddress(), message, callback);
         LOG.debug("Queue {} XID {} at offset {} (of {}) committed", this, xid, offset, reserveOffset);
 
         manager.ensureFlushing(this);
@@ -123,7 +126,7 @@ final class OutboundQueueImpl implements OutboundQueue {
         return flushOffset >= queue.length;
     }
 
-    OfHeader flushEntry() {
+    OutboundQueueEntry flushEntry() {
         for (;;) {
             // No message ready
             if (isEmpty()) {
@@ -143,10 +146,12 @@ final class OutboundQueueImpl implements OutboundQueue {
                 retry = false;
             }
 
-            final OfHeader msg = queue[flushOffset++].getMessage();
-            if (msg != null) {
-                return msg;
+            final OutboundQueueEntry ret = queue[flushOffset++];
+            if (ret.getPdu() != null) {
+                return ret;
             }
+
+            // Skip over null entries
         }
     }
 
