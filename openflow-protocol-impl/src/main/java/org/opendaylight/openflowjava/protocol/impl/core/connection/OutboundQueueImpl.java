@@ -94,7 +94,9 @@ final class OutboundQueueImpl implements OutboundQueue {
         Preconditions.checkArgument(offset < ro, "Unexpected commit to offset %s reserved %s message %s", offset, ro, message);
 
         final OutboundQueueEntry entry = queue[offset];
-        entry.commit(message, callback);
+        Preconditions.checkArgument(!entry.isCommitted(), "XID %s is already committed", xid);
+
+        entry.commit(manager.getSerializationFactory(), manager.getAddress(), message, callback);
         LOG.debug("Queue {} XID {} at offset {} (of {}) committed", this, xid, offset, ro);
 
         if (entry.isBarrier()) {
@@ -220,7 +222,7 @@ final class OutboundQueueImpl implements OutboundQueue {
         return false;
     }
 
-    OfHeader flushEntry() {
+    OutboundQueueEntry flushEntry() {
         for (;;) {
             // No message ready
             if (isEmpty()) {
@@ -234,10 +236,9 @@ final class OutboundQueueImpl implements OutboundQueue {
                 return null;
             }
 
-            final OfHeader msg = entry.takeMessage();
             flushOffset++;
-            if (msg != null) {
-                return msg;
+            if (!entry.isEmpty()) {
+                return entry;
             }
 
             LOG.trace("Null message, skipping to offset {}", flushOffset);

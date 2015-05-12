@@ -7,27 +7,68 @@
  */
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FutureCallback;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.channel.socket.DatagramPacket;
+import java.net.InetSocketAddress;
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueException;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
+import org.opendaylight.openflowjava.statistics.CounterEventTypes;
+import org.opendaylight.openflowjava.statistics.StatisticsCounters;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 final class OutboundQueueEntry {
+    private static final StatisticsCounters COUNTERS = StatisticsCounters.getInstance();
     private static final Logger LOG = LoggerFactory.getLogger(OutboundQueueEntry.class);
+    private static final ByteBufAllocator BUFFER_ALLOCATOR = new PooledByteBufAllocator(false);
+    private final ByteBuf buffer = BUFFER_ALLOCATOR.buffer();
     private FutureCallback<OfHeader> callback;
-    private OfHeader message;
+    private Object pdu;
     private boolean completed;
     private boolean barrier;
     private volatile boolean committed;
 
-    void commit(final OfHeader message, final FutureCallback<OfHeader> callback) {
-        this.message = message;
+    void commit(final SerializationFactory factory, final InetSocketAddress address, final OfHeader message, final FutureCallback<OfHeader> callback) {
+        if (message == null) {
+            committed = true;
+            return;
+        }
+
+        try {
+            factory.messageToBuffer(message.getVersion(), buffer, message);
+        } catch (Exception e) {
+            LOG.info("Failed to serialize message {}", message, e);
+            COUNTERS.incrementCounter(CounterEventTypes.DS_ENCODE_FAIL);
+            callback.onFailure(e);
+            buffer.clear();
+            committed = true;
+            return;
+        }
+
+        if (message instanceof FlowModInput){
+            COUNTERS.incrementCounter(CounterEventTypes.DS_FLOW_MODS_SENT);
+        }
+        COUNTERS.incrementCounter(CounterEventTypes.DS_ENCODE_SUCCESS);
+
+        final Object encoded;
+        if (address == null) {
+            encoded = buffer;
+        } else {
+            encoded = new DatagramPacket(buffer, address);
+        }
+
         this.callback = callback;
         this.barrier = message instanceof BarrierInput;
+        pdu = encoded;
 
         // Volatile write, needs to be last
         committed = true;
@@ -35,12 +76,19 @@ final class OutboundQueueEntry {
 
     void reset() {
         barrier = false;
+        buffer.clear();
         callback = null;
         completed = false;
-        message = null;
+        pdu = null;
 
-        // Volatile write, needs to be last
+        // volatile, needs to be last for safety reasons
         committed = false;
+    }
+
+    Object takePdu() {
+        final Object ret = pdu;
+	pdu = null;
+        return ret;
     }
 
     boolean isBarrier() {
@@ -55,10 +103,8 @@ final class OutboundQueueEntry {
         return completed;
     }
 
-    OfHeader takeMessage() {
-        final OfHeader ret = message;
-        message = null;
-        return ret;
+    boolean isEmpty() {
+        return pdu == null;
     }
 
     boolean complete(final OfHeader response) {
@@ -93,4 +139,8 @@ final class OutboundQueueEntry {
         }
     }
 
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).add("pdu", pdu).toString();
+    }
 }

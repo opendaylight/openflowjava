@@ -19,16 +19,22 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.GenericFutureListener;
 import java.net.InetSocketAddress;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionReadyListener;
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueHandler;
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueHandlerRegistration;
+import org.opendaylight.openflowjava.protocol.impl.core.OFEncoder;
 import org.opendaylight.openflowjava.protocol.impl.core.OFVersionDetector;
 import org.opendaylight.openflowjava.protocol.impl.core.PipelineHandlers;
+import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.opendaylight.openflowjava.statistics.CounterEventTypes;
 import org.opendaylight.openflowjava.statistics.StatisticsCounters;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
@@ -508,7 +514,30 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
             final T handler, final int maxQueueDepth, final long maxBarrierNanos) {
         Preconditions.checkState(outputManager == null, "Manager %s already registered", outputManager);
 
-        final OutboundQueueManager<T> ret = new OutboundQueueManager<>(this, address, handler, OutboundQueueCache.getInstance().getSlice(maxQueueDepth), maxBarrierNanos);
+        SerializationFactory factory = null;
+        ChannelHandlerContext context = null;
+
+        final Iterator<Entry<String, ChannelHandler>> it = channel.pipeline().iterator();
+        while (it.hasNext()) {
+            final Entry<String, ChannelHandler> e = it.next();
+            if (PipelineHandlers.OF_ENCODER.name().equals(e.getKey())) {
+                factory = ((OFEncoder)e.getValue()).getSerializationFactory();
+                LOG.debug("Found serialization factory {} on encoder {}", factory, e.getValue());
+
+                Preconditions.checkState(it.hasNext(), "Expected a handler after encoder, but found none");
+                final Entry<String, ChannelHandler> next = it.next();
+                LOG.debug("Outbound is {} handler {}", next.getKey(), next.getValue());
+
+                context = channel.pipeline().context(next.getValue());
+                LOG.debug("Found outbound context {}", context);
+                break;
+            }
+        }
+
+        Preconditions.checkState(factory != null, "Failed to find serialization factory");
+        Preconditions.checkState(context != null, "Failed to find outbound context");
+
+        final OutboundQueueManager<T> ret = new OutboundQueueManager<>(context, factory, address, handler, OutboundQueueCache.getInstance().getSlice(maxQueueDepth), maxBarrierNanos);
         outputManager = ret;
         channel.pipeline().addLast(outputManager);
 
@@ -520,10 +549,6 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 outputManager = null;
             }
         };
-    }
-
-    Channel getChannel() {
-        return channel;
     }
 
     @Override
