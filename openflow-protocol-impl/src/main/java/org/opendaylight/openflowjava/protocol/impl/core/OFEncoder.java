@@ -12,7 +12,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import io.netty.util.concurrent.Future;
-
 import org.opendaylight.openflowjava.protocol.impl.core.connection.MessageListenerWrapper;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.opendaylight.openflowjava.statistics.CounterEventTypes;
@@ -30,7 +29,7 @@ public class OFEncoder extends MessageToByteEncoder<MessageListenerWrapper> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OFEncoder.class);
     private SerializationFactory serializationFactory;
-    private StatisticsCounters statisticsCounters;
+    private final StatisticsCounters statisticsCounters;
 
     /** Constructor of class */
     public OFEncoder() {
@@ -39,7 +38,7 @@ public class OFEncoder extends MessageToByteEncoder<MessageListenerWrapper> {
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, MessageListenerWrapper wrapper, ByteBuf out)
+    protected void encode(final ChannelHandlerContext ctx, final MessageListenerWrapper wrapper, final ByteBuf out)
             throws Exception {
         LOGGER.trace("Encoding");
         try {
@@ -59,10 +58,16 @@ public class OFEncoder extends MessageToByteEncoder<MessageListenerWrapper> {
     }
 
     /**
-     * @param serializationFactory
+     * @return serializationFactory
      */
-    public void setSerializationFactory(SerializationFactory serializationFactory) {
-        this.serializationFactory = serializationFactory;
+    public SerializationFactory getSerializationFactory() {
+        return serializationFactory;
     }
 
+    /**
+     * @param serializationFactory
+     */
+    public void setSerializationFactory(final SerializationFactory serializationFactory) {
+        this.serializationFactory = serializationFactory;
+    }
 }
