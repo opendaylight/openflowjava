@@ -8,6 +8,7 @@
 
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
+import com.google.common.base.Preconditions;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -15,18 +16,14 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-
 import java.net.InetSocketAddress;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Preconditions;
 
 /**
  * Channel handler which bypasses wraps on top of normal Netty pipeline, allowing
@@ -215,9 +212,11 @@ final class ChannelOutboundQueue extends ChannelInboundHandlerAdapter {
             channel.flush();
         }
 
-        final long stop = System.nanoTime();
-        LOG.debug("Flushed {} messages in {}us to channel {}",
+        if (LOG.isDebugEnabled()) {
+            final long stop = System.nanoTime();
+            LOG.debug("Flushed {} messages in {}us to channel {}",
                 messages, TimeUnit.NANOSECONDS.toMicros(stop - start), channel);
+        }
 
         /*
          * We are almost ready to terminate. This is a bit tricky, because
