@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.locks.LockSupport;
 import javax.annotation.Nonnull;
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueue;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,14 +95,14 @@ final class OutboundQueueImpl implements OutboundQueue {
             Preconditions.checkArgument(xid.equals(message.getXid()), "Message %s has wrong XID %s, expected %s", message, message.getXid(), xid);
         }
 
-        queue[offset].commit(message, callback);
+        queue[offset].commit(manager.getSerializationFactory(), manager.getAddress(), message, callback);
         LOG.debug("Queue {} XID {} at offset {} (of {}) committed", this, xid, offset, reserveOffset);
 
         manager.ensureFlushing(this);
     }
 
     boolean isBarrier(final int offset) {
-        return queue[offset].getMessage() instanceof BarrierInput;
+        return queue[offset].isBarrier();
     }
 
     /**
@@ -128,7 +127,7 @@ final class OutboundQueueImpl implements OutboundQueue {
         return flushOffset >= queue.length;
     }
 
-    OfHeader flushEntry() {
+    OutboundQueueEntry flushEntry() {
         for (;;) {
             // No message ready
             if (isEmpty()) {
@@ -148,10 +147,12 @@ final class OutboundQueueImpl implements OutboundQueue {
                 retry = false;
             }
 
-            final OfHeader msg = queue[flushOffset++].getMessage();
-            if (msg != null) {
-                return msg;
+            final OutboundQueueEntry ret = queue[flushOffset++];
+            if (ret != null) {
+                return ret;
             }
+
+            // Skip over null entries
         }
     }
 
