@@ -22,7 +22,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
             <type xmlns:stats="urn:opendaylight:params:xml:ns:yang:openflow:switch:connection:provider:impl">stats:statistics-collection-service-impl</type>
             <name>statistics-collection-service-impl</name>
             <statistics>
-                <statistics-collect>true</statistics-collect>
+                <statistics-collect>false</statistics-collect>
                 <log-report-delay>10000</log-report-delay>
             </statistics>
             <openflow-switch-connection-provider>
