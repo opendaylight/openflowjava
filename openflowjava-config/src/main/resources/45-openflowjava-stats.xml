@@ -25,14 +25,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
                 <statistics-collect>true</statistics-collect>
                 <log-report-delay>10000</log-report-delay>
             </statistics>
-            <openflow-switch-connection-provider>
-                <type xmlns:ofSwitch="urn:opendaylight:params:xml:ns:yang:openflow:switch:connection:provider">ofSwitch:openflow-switch-connection-provider</type>
-                <name>openflow-switch-connection-provider-default</name>
-            </openflow-switch-connection-provider>
-            <openflow-switch-connection-provider>
-                <type xmlns:ofSwitch="urn:opendaylight:params:xml:ns:yang:openflow:switch:connection:provider">ofSwitch:openflow-switch-connection-provider</type>
-                <name>openflow-switch-connection-provider-legacy</name>
-            </openflow-switch-connection-provider>
         </module>
       </modules>
     </data>
