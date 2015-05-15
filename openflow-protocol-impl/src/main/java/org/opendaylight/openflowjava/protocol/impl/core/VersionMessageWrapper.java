@@ -8,6 +8,7 @@
 
 package org.opendaylight.openflowjava.protocol.impl.core;
 
+import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -15,18 +16,18 @@ import io.netty.buffer.ByteBuf;
  * @author michal.polkorab
  */
 public class VersionMessageWrapper {
-
-    private short version;
-    private ByteBuf messageBuffer;
+    private final short version;
+    private final ByteBuf messageBuffer;
 
     /**
      * Constructor
      * @param version version decoded in {@link OFVersionDetector}
      * @param messageBuffer message received from {@link OFFrameDecoder}
      */
-    public VersionMessageWrapper(short version, ByteBuf messageBuffer) {
+    public VersionMessageWrapper(final short version, final ByteBuf messageBuffer) {
         this.version = version;
-        this.messageBuffer = messageBuffer;
+        this.messageBuffer = Preconditions.checkNotNull(messageBuffer);
+        this.recycler = null;
     }
 
     /**
@@ -42,6 +43,4 @@ public class VersionMessageWrapper {
     public ByteBuf getMessageBuffer() {
         return messageBuffer;
     }
-
-
 }
