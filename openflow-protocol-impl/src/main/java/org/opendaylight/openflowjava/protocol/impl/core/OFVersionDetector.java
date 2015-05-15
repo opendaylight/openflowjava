@@ -11,9 +11,7 @@ package org.opendaylight.openflowjava.protocol.impl.core;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-
 import java.util.List;
-
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +36,7 @@ public class OFVersionDetector extends ByteToMessageDecoder {
     }
 
     @Override
-    protected void decode(ChannelHandlerContext chc, ByteBuf bb, List<Object> list) throws Exception {
+    protected void decode(final ChannelHandlerContext chc, final ByteBuf bb, final List<Object> list) throws Exception {
         if (bb.readableBytes() == 0) {
             LOGGER.debug("not enough data");
             bb.release();
@@ -46,12 +44,12 @@ public class OFVersionDetector extends ByteToMessageDecoder {
         }
         byte version = bb.readByte();
         if ((version == OF13_VERSION_ID) || (version == OF10_VERSION_ID)) {
-            LOGGER.debug("detected version: " + version);
+            LOGGER.debug("detected version: {}", version);
             ByteBuf messageBuffer = bb.slice();
             list.add(new VersionMessageWrapper(version, messageBuffer));
             messageBuffer.retain();
         } else {
-            LOGGER.warn("detected version: " + version + " - currently not supported");
+            LOGGER.warn("detected version: {} - currently not supported", version);
         }
         bb.skipBytes(bb.readableBytes());
     }
