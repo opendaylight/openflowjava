@@ -8,11 +8,10 @@
 
 package org.opendaylight.openflowjava.protocol.impl.deserialization;
 
+import com.google.common.collect.ImmutableMap;
 import io.netty.buffer.ByteBuf;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
@@ -26,15 +25,16 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  */
 public class DeserializationFactory {
 
+    private final Map<TypeToClassKey, Class<?>> messageClassMap;
     private DeserializerRegistry registry;
-    private Map<TypeToClassKey, Class<?>> messageClassMap;
 
     /**
      * Constructor
      */
     public DeserializationFactory() {
-        messageClassMap = new HashMap<>();
-        TypeToClassMapInitializer.initializeTypeToClassMap(messageClassMap);
+        final Map<TypeToClassKey, Class<?>> temp = new HashMap<>();
+        TypeToClassMapInitializer.initializeTypeToClassMap(temp);
+        messageClassMap = ImmutableMap.copyOf(temp);
     }
 
     /**
@@ -43,7 +43,7 @@ public class DeserializationFactory {
      * @param version version decoded from OpenFlow protocol message
      * @return correct POJO as DataObject
      */
-    public DataObject deserialize(ByteBuf rawMessage, short version) {
+    public DataObject deserialize(final ByteBuf rawMessage, final short version) {
         DataObject dataObject = null;
         int type = rawMessage.readUnsignedByte();
         Class<?> clazz = messageClassMap.get(new TypeToClassKey(version, type));
@@ -57,7 +57,7 @@ public class DeserializationFactory {
     /**
      * @param registry
      */
-    public void setRegistry(DeserializerRegistry registry) {
+    public void setRegistry(final DeserializerRegistry registry) {
         this.registry = registry;
     }
 
