@@ -59,5 +59,9 @@ public enum PipelineHandlers {
     /**
      * Transforms POJOs into OpenFlow Protocol datagrams
      */
-    OF_DATAGRAMPACKET_ENCODER
+    OF_DATAGRAMPACKET_ENCODER,
+    /**
+     * Pre-decoder handler which filters PacketIn messages.
+     */
+    OF_PACKETIN_FILTER,
 }

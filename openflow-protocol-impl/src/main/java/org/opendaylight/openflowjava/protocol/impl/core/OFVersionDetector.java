@@ -26,7 +26,9 @@ public class OFVersionDetector extends ByteToMessageDecoder {
     private static final byte OF10_VERSION_ID = EncodeConstants.OF10_VERSION_ID;
     /** Version number of OpenFlow 1.3 protocol */
     private static final byte OF13_VERSION_ID = EncodeConstants.OF13_VERSION_ID;
+    private static final short OF_PACKETIN = 10;
     private static final Logger LOGGER = LoggerFactory.getLogger(OFVersionDetector.class);
+    private volatile boolean filterPacketIns;
 
     /**
      * Constructor of class.
@@ -35,23 +37,31 @@ public class OFVersionDetector extends ByteToMessageDecoder {
         LOGGER.trace("Creating OFVersionDetector");
     }
 
+    public void setFilterPacketIns(final boolean enabled) {
+        filterPacketIns = enabled;
+    }
+
     @Override
-    protected void decode(final ChannelHandlerContext chc, final ByteBuf bb, final List<Object> list) throws Exception {
-        if (bb.readableBytes() == 0) {
+    protected void decode(final ChannelHandlerContext ctx, final ByteBuf in, final List<Object> out) throws Exception {
+        if (!in.isReadable()) {
             LOGGER.debug("not enough data");
-            bb.release();
+            in.release();
             return;
         }
-        byte version = bb.readByte();
-        if ((version == OF13_VERSION_ID) || (version == OF10_VERSION_ID)) {
+
+        final byte version = in.readByte();
+        if (version == OF13_VERSION_ID || version == OF10_VERSION_ID) {
             LOGGER.debug("detected version: {}", version);
-            ByteBuf messageBuffer = bb.slice();
-            list.add(new VersionMessageWrapper(version, messageBuffer));
-            messageBuffer.retain();
+            if (!filterPacketIns || OF_PACKETIN != in.getUnsignedByte(in.readerIndex())) {
+                ByteBuf messageBuffer = in.slice();
+                out.add(new VersionMessageWrapper(version, messageBuffer));
+                messageBuffer.retain();
+            } else {
+                LOGGER.debug("dropped packetin");
+            }
         } else {
             LOGGER.warn("detected version: {} - currently not supported", version);
         }
-        bb.skipBytes(bb.readableBytes());
+        in.skipBytes(in.readableBytes());
     }
-
 }
