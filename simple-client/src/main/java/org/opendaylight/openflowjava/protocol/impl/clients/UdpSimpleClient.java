@@ -111,8 +111,7 @@ public class UdpSimpleClient implements OFClient {
         int port;
         UdpSimpleClient sc;
         if (args.length != 2) {
-            LOGGER.error("Usage: " + UdpSimpleClient.class.getSimpleName()
-                    + " <host> <port>");
+            LOGGER.error("Usage: {} <host> <port>", UdpSimpleClient.class.getSimpleName());
             LOGGER.error("Trying to use default setting.");
             InetAddress ia = InetAddress.getLocalHost();
             InetAddress[] all = InetAddress.getAllByName(ia.getHostName());

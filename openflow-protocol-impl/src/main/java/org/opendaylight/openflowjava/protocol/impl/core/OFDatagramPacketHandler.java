@@ -71,8 +71,8 @@ public class OFDatagramPacketHandler extends MessageToMessageDecoder<DatagramPac
         int readableBytes = bb.readableBytes();
         if (readableBytes < LENGTH_OF_HEADER) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("skipping bytebuf - too few bytes for header: " + readableBytes + " < " + LENGTH_OF_HEADER );
-                LOGGER.debug("bb: " + ByteBufUtils.byteBufToHexString(bb));
+                LOGGER.debug("skipping bytebuf - too few bytes for header: {} < {}", readableBytes, LENGTH_OF_HEADER);
+                LOGGER.debug("bb: {}", ByteBufUtils.byteBufToHexString(bb));
             }
             return;
         }
@@ -82,9 +82,8 @@ public class OFDatagramPacketHandler extends MessageToMessageDecoder<DatagramPac
 
         if (readableBytes < length) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("skipping bytebuf - too few bytes for msg: " +
-                        readableBytes + " < " + length);
-                LOGGER.debug("bytebuffer: " + ByteBufUtils.byteBufToHexString(bb));
+                LOGGER.debug("skipping bytebuf - too few bytes for msg: {} < {}", readableBytes, length);
+                LOGGER.debug("bytebuffer: {}", ByteBufUtils.byteBufToHexString(bb));
             }
             return;
         }
@@ -93,12 +92,12 @@ public class OFDatagramPacketHandler extends MessageToMessageDecoder<DatagramPac
 
         byte version = bb.readByte();
         if ((version == EncodeConstants.OF13_VERSION_ID) || (version == EncodeConstants.OF10_VERSION_ID)) {
-            LOGGER.debug("detected version: " + version);
+            LOGGER.debug("detected version: {}", version);
             ByteBuf messageBuffer = bb.slice();
             out.add(new VersionMessageUdpWrapper(version, messageBuffer, msg.sender()));
             messageBuffer.retain();
         } else {
-            LOGGER.warn("detected version: " + version + " - currently not supported");
+            LOGGER.warn("detected version: {} - currently not supported", version);
         }
         bb.skipBytes(bb.readableBytes());
     }

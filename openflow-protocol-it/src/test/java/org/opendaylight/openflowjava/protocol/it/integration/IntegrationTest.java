@@ -69,7 +69,7 @@ public class IntegrationTest {
         LOGGER.debug("\n starting test -------------------------------");
 
         String currentDir = System.getProperty("user.dir");
-        LOGGER.debug("Current dir using System:" +currentDir);
+        LOGGER.debug("Current dir using System: {}", currentDir);
         startupAddress = InetAddress.getLocalHost();
         tlsConfiguration = null;
         if (protocol.equals(TransportProtocol.TLS)) {
@@ -221,7 +221,7 @@ public class IntegrationTest {
             TransportProtocol protocol, ClientType clientType) throws ExecutionException {
         List<OFClient> clientsHorde = new ArrayList<>();
         for (int i = 0; i < amountOfCLients; i++) {
-            LOGGER.debug("startup address in createclient: " + startupAddress.getHostAddress());
+            LOGGER.debug("startup address in createclient: {}", startupAddress.getHostAddress());
             OFClient sc = null;
             if (clientType == ClientType.SIMPLE) {
                 if (protocol.equals(TransportProtocol.TCP)) {

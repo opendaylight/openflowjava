@@ -40,8 +40,10 @@ public class WaitForMessageEvent implements ClientEvent {
             return false;
         }
         if (!Arrays.equals(headerExpected, headerReceived)) {
-            LOGGER.debug("expected msg: " + ByteBufUtils.bytesToHexString(headerExpected));
-            LOGGER.debug("received msg: " + ByteBufUtils.bytesToHexString(headerReceived));
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("expected msg: {}", ByteBufUtils.bytesToHexString(headerExpected));
+                LOGGER.debug("received msg: {}", ByteBufUtils.bytesToHexString(headerReceived));
+            }
             return false;
         }
         LOGGER.debug("Headers OK");

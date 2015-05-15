@@ -45,7 +45,7 @@ public class ScenarioHandler extends Thread {
     public void run() {
         int freezeCounter = 0;
         while (!scenario.isEmpty()) {
-            LOGGER.debug("Running event #" + eventNumber);
+            LOGGER.debug("Running event #{}", eventNumber);
             ClientEvent peek = scenario.peekLast();
             if (peek instanceof WaitForMessageEvent) {
                 LOGGER.debug("WaitForMessageEvent");
@@ -69,7 +69,7 @@ public class ScenarioHandler extends Thread {
                 freezeCounter++;
             }
             if (freezeCounter > 2) {
-                LOGGER.warn("Scenario freezed: " + freezeCounter);
+                LOGGER.warn("Scenario frozen: {}", freezeCounter);
                 break;
             }
             try {

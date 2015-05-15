@@ -58,8 +58,8 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
             InetAddress switchAddress = ch.remoteAddress().getAddress();
             int port = ch.localAddress().getPort();
             int remotePort = ch.remoteAddress().getPort();
-            LOGGER.debug("Incoming connection from (remote address): " + switchAddress.toString()
-                    + ":" + remotePort + " --> :" + port);
+            LOGGER.debug("Incoming connection from (remote address): {}:{} --> :{}",
+			    switchAddress.toString(), remotePort, port);
 
             if (!getSwitchConnectionHandler().accept(switchAddress)) {
                 ch.disconnect();
@@ -72,7 +72,7 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
         ConnectionFacade connectionFacade = null;
         connectionFacade = connectionAdapterFactory.createConnectionFacade(ch, null);
         try {
-            LOGGER.debug("calling plugin: " + getSwitchConnectionHandler());
+            LOGGER.debug("calling plugin: {}", getSwitchConnectionHandler());
             getSwitchConnectionHandler().onSwitchConnected(connectionFacade);
             connectionFacade.checkListeners();
             ch.pipeline().addLast(PipelineHandlers.IDLE_HANDLER.name(), new IdleHandler(getSwitchIdleTimeout(), TimeUnit.MILLISECONDS));
