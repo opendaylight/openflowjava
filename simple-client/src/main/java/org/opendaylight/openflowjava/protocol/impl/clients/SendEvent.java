@@ -43,8 +43,11 @@ public class SendEvent implements ClientEvent {
         ByteBuf buffer = ctx.alloc().buffer();
         buffer.writeBytes(msgToSend);
         ctx.writeAndFlush(buffer);
-        LOGGER.debug(">> " + ByteBufUtils.bytesToHexString(msgToSend));
-        LOGGER.debug("message sent");
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(">> {}", ByteBufUtils.bytesToHexString(msgToSend));
+            LOGGER.debug("message sent");
+        }
         return true;
     }
 

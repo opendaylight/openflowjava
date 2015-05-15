@@ -46,14 +46,13 @@ public class SimpleClientFramer extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext chc, ByteBuf bb, List<Object> list) throws Exception {
         if (bb.readableBytes() < LENGTH_OF_HEADER) {
-            LOGGER.debug("skipping bb - too few data for header: " + bb.readableBytes());
+            LOGGER.debug("skipping bb - too few data for header: {}", bb.readableBytes());
             return;
         }
 
         int length = bb.getUnsignedShort(bb.readerIndex() + LENGTH_INDEX_IN_HEADER);
         if (bb.readableBytes() < length) {
-            LOGGER.debug("skipping bb - too few data for msg: " +
-                    bb.readableBytes() + " < " + length);
+            LOGGER.debug("skipping bb - too few data for msg: {} < {}", bb.readableBytes(), length);
             return;
         }
         LOGGER.debug("OF Protocol message received, type:{}", bb.getByte(bb.readerIndex() + 1));

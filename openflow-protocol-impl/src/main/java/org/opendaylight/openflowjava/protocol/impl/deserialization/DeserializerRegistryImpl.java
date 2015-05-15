@@ -75,9 +75,8 @@ public class DeserializerRegistryImpl implements DeserializerRegistry {
         }
         OFGeneralDeserializer desInRegistry = registry.put(key, deserializer);
         if (desInRegistry != null) {
-            LOGGER.debug("Deserializer for key " + key + " overwritten. Old deserializer: "
-                    + desInRegistry.getClass().getName() + ", new deserializer: "
-                    + deserializer.getClass().getName() );
+            LOGGER.debug("Deserializer for key {} overwritten. Old deserializer: {}, new deserializer: {}",
+                    key, desInRegistry.getClass().getName(), deserializer.getClass().getName());
         }
         if (deserializer instanceof DeserializerRegistryInjector) {
             ((DeserializerRegistryInjector) deserializer).injectDeserializerRegistry(this);

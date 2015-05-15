@@ -81,9 +81,8 @@ public class SerializerRegistryImpl implements SerializerRegistry {
         }
         OFGeneralSerializer serInRegistry = registry.put(msgTypeKey, serializer);
         if (serInRegistry != null) {
-            LOGGER.debug("Serializer for key " + msgTypeKey + " overwritten. Old serializer: "
-                    + serInRegistry.getClass().getName() + ", new serializer: "
-                    + serializer.getClass().getName() );
+            LOGGER.debug("Serializer for key {} overwritten. Old serializer: {}, new serializer: {}",
+                    msgTypeKey, serInRegistry.getClass().getName(), serializer.getClass().getName());
         }
         if (serializer instanceof SerializerRegistryInjector) {
             ((SerializerRegistryInjector) serializer).injectSerializerRegistry(this);

@@ -48,14 +48,13 @@ public class UdpSimpleClientFramer extends MessageToMessageDecoder<DatagramPacke
     protected void decode(ChannelHandlerContext chc, DatagramPacket msg, List<Object> list) throws Exception {
         ByteBuf bb = msg.content();
         if (bb.readableBytes() < LENGTH_OF_HEADER) {
-            LOGGER.debug("skipping bb - too few data for header: " + bb.readableBytes());
+            LOGGER.debug("skipping bb - too few data for header: {}", bb.readableBytes());
             return;
         }
 
         int length = bb.getUnsignedShort(bb.readerIndex() + LENGTH_INDEX_IN_HEADER);
         if (bb.readableBytes() < length) {
-            LOGGER.debug("skipping bb - too few data for msg: " +
-                    bb.readableBytes() + " < " + length);
+            LOGGER.debug("skipping bb - too few data for msg: {} < {}", bb.readableBytes(), length);
             return;
         }
         LOGGER.debug("OF Protocol message received, type:{}", bb.getByte(bb.readerIndex() + 1));

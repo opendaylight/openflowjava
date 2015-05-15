@@ -7,11 +7,8 @@
  */
 package org.opendaylight.openflowjava.protocol.impl.serialization.match;
 
-import io.netty.buffer.ByteBuf;
-
-import org.opendaylight.openflowjava.util.ByteBufUtils;
-
 import com.google.common.net.InetAddresses;
+import io.netty.buffer.ByteBuf;
 
 /**
  * Parent for Ipv6 address based match entry serializers
@@ -19,7 +16,7 @@ import com.google.common.net.InetAddresses;
  */
 public abstract class AbstractOxmIpv6AddressSerializer extends AbstractOxmMatchEntrySerializer {
 
-    protected void writeIpv6Address(String textAddress, final ByteBuf outBuffer) {
+    protected void writeIpv6Address(final String textAddress, final ByteBuf outBuffer) {
         if (InetAddresses.isInetAddress(textAddress)) {
             byte[] binaryAddress = InetAddresses.forString(textAddress).getAddress();
             outBuffer.writeBytes(binaryAddress);

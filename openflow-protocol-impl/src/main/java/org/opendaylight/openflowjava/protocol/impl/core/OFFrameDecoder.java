@@ -67,8 +67,8 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
         int readableBytes = bb.readableBytes();
         if (readableBytes < LENGTH_OF_HEADER) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("skipping bytebuf - too few bytes for header: " + readableBytes + " < " + LENGTH_OF_HEADER );
-                LOGGER.debug("bb: " + ByteBufUtils.byteBufToHexString(bb));
+                LOGGER.debug("skipping bytebuf - too few bytes for header: {} < {}", readableBytes, LENGTH_OF_HEADER);
+                LOGGER.debug("bb: {}", ByteBufUtils.byteBufToHexString(bb));
             }
             return;
         }
@@ -78,9 +78,8 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
 
         if (readableBytes < length) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("skipping bytebuf - too few bytes for msg: " +
-                        readableBytes + " < " + length);
-                LOGGER.debug("bytebuffer: " + ByteBufUtils.byteBufToHexString(bb));
+                LOGGER.debug("skipping bytebuf - too few bytes for msg: {} < {}", readableBytes, length);
+                LOGGER.debug("bytebuffer: {}", ByteBufUtils.byteBufToHexString(bb));
             }
             return;
         }

@@ -10,7 +10,6 @@ package org.opendaylight.openflowjava.protocol.impl.core;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-
 import org.opendaylight.openflowjava.protocol.impl.core.connection.MessageConsumer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
@@ -28,15 +27,15 @@ public class OFDatagramPacketDecoder extends SimpleChannelInboundHandler<Version
     private DeserializationFactory deserializationFactory;
 
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, VersionMessageUdpWrapper msg)
+    public void channelRead0(final ChannelHandlerContext ctx, final VersionMessageUdpWrapper msg)
             throws Exception {
         if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("UdpVersionMessageWrapper received");
-                LOGGER.debug("<< " + ByteBufUtils.byteBufToHexString(msg.getMessageBuffer()));
+                LOGGER.debug("<< {}", ByteBufUtils.byteBufToHexString(msg.getMessageBuffer()));
         }
-        DataObject dataObject = null;
+
         try {
-            dataObject = deserializationFactory.deserialize(msg.getMessageBuffer(),msg.getVersion());
+            final DataObject dataObject = deserializationFactory.deserialize(msg.getMessageBuffer(),msg.getVersion());
             if (dataObject == null) {
                 LOGGER.warn("Translated POJO is null");
             } else {
@@ -44,8 +43,7 @@ public class OFDatagramPacketDecoder extends SimpleChannelInboundHandler<Version
                 consumer.consume(dataObject);
             }
         } catch(Exception e) {
-            LOGGER.warn("Message deserialization failed");
-            LOGGER.warn(e.getMessage(), e);
+            LOGGER.warn("Message deserialization failed", e);
             // TODO: delegate exception to allow easier deserialization
             // debugging / deserialization problem awareness
         } finally {
@@ -56,7 +54,7 @@ public class OFDatagramPacketDecoder extends SimpleChannelInboundHandler<Version
     /**
      * @param deserializationFactory
      */
-    public void setDeserializationFactory(DeserializationFactory deserializationFactory) {
+    public void setDeserializationFactory(final DeserializationFactory deserializationFactory) {
         this.deserializationFactory = deserializationFactory;
     }
 }
