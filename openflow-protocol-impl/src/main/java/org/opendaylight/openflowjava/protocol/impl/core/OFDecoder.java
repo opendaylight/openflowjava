@@ -10,9 +10,7 @@ package org.opendaylight.openflowjava.protocol.impl.core;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
-
 import java.util.List;
-
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
 import org.opendaylight.openflowjava.statistics.CounterEventTypes;
 import org.opendaylight.openflowjava.statistics.StatisticsCounters;
@@ -26,10 +24,10 @@ import org.slf4j.LoggerFactory;
  * @author michal.polkorab
  */
 public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(OFDecoder.class);
     private DeserializationFactory deserializationFactory;
-    private StatisticsCounters statisticsCounter;
+    private final StatisticsCounters statisticsCounter;
+
     /**
      * Constructor of class
      */
@@ -39,8 +37,8 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, VersionMessageWrapper msg,
-            List<Object> out) throws Exception {
+    protected void decode(final ChannelHandlerContext ctx, final VersionMessageWrapper msg,
+            final List<Object> out) throws Exception {
         statisticsCounter.incrementCounter(CounterEventTypes.US_RECEIVED_IN_OFJAVA);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("VersionMessageWrapper received");
@@ -70,8 +68,7 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
     /**
      * @param deserializationFactory
      */
-    public void setDeserializationFactory(DeserializationFactory deserializationFactory) {
+    public void setDeserializationFactory(final DeserializationFactory deserializationFactory) {
         this.deserializationFactory = deserializationFactory;
     }
-
 }
