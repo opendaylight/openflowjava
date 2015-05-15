@@ -9,7 +9,6 @@
 package org.opendaylight.openflowjava.protocol.impl.core;
 
 import io.netty.buffer.ByteBuf;
-
 import java.net.InetSocketAddress;
 
 /**
@@ -18,15 +17,14 @@ import java.net.InetSocketAddress;
  * @author michal.polkorab
  */
 public class VersionMessageUdpWrapper extends VersionMessageWrapper {
-
-    private InetSocketAddress address;
+    private final InetSocketAddress address;
 
     /**
      * @param version Openflow wire version
      * @param messageBuffer ByteBuf containing binary message
      * @param address sender address
      */
-    public VersionMessageUdpWrapper(short version, ByteBuf messageBuffer, InetSocketAddress address) {
+    public VersionMessageUdpWrapper(final short version, final ByteBuf messageBuffer, final InetSocketAddress address) {
         super(version, messageBuffer);
         this.address = address;
     }
