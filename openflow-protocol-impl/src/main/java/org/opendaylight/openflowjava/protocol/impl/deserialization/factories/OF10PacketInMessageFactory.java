@@ -9,7 +9,6 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PacketInReason;
@@ -25,7 +24,7 @@ public class OF10PacketInMessageFactory implements OFDeserializer<PacketInMessag
     private static final byte PADDING_IN_PACKET_IN_HEADER = 1;
 
     @Override
-    public PacketInMessage deserialize(ByteBuf rawMessage) {
+    public PacketInMessage deserialize(final ByteBuf rawMessage) {
         PacketInMessageBuilder builder = new PacketInMessageBuilder();
         builder.setVersion((short) EncodeConstants.OF10_VERSION_ID);
         builder.setXid(rawMessage.readUnsignedInt());
@@ -36,7 +35,9 @@ public class OF10PacketInMessageFactory implements OFDeserializer<PacketInMessag
         rawMessage.skipBytes(PADDING_IN_PACKET_IN_HEADER);
         int remainingBytes = rawMessage.readableBytes();
         if (remainingBytes > 0) {
-            builder.setData(rawMessage.readBytes(remainingBytes).array());
+            final byte[] buf = new byte[remainingBytes];
+            rawMessage.readBytes(buf);
+            builder.setData(buf);
         }
         return builder.build();
     }
