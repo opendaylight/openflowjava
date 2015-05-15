@@ -27,6 +27,8 @@ import java.util.concurrent.TimeUnit;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionReadyListener;
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueHandler;
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueHandlerRegistration;
+import org.opendaylight.openflowjava.protocol.impl.core.PacketInFilter;
+import org.opendaylight.openflowjava.protocol.impl.core.PipelineHandlers;
 import org.opendaylight.openflowjava.statistics.CounterEventTypes;
 import org.opendaylight.openflowjava.statistics.StatisticsCounters;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
@@ -513,5 +515,31 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
 
     Channel getChannel() {
         return channel;
+    }
+
+    private void disablePacketInFiltering() {
+        if (channel.pipeline().remove(PipelineHandlers.OF_PACKETIN_FILTER.name()) == null) {
+            LOG.debug("PacketIn filtering already disabled");
+        } else {
+            LOG.debug("PacketIn filtering disabled");
+        }
+    }
+
+    private void enablePacketInFiltering() {
+        if (channel.pipeline().get(PipelineHandlers.OF_PACKETIN_FILTER.name()) == null) {
+            channel.pipeline().addAfter(PipelineHandlers.OF_VERSION_DETECTOR.name(), PipelineHandlers.OF_PACKETIN_FILTER.name(),
+                PacketInFilter.getInstance());
+        } else {
+            LOG.debug("PacketIn filtering already enabled");
+        }
+    }
+
+    @Override
+    public void setPacketInFiltering(final boolean enabled) {
+        if (enabled) {
+            enablePacketInFiltering();
+        } else {
+            disablePacketInFiltering();
+        }
     }
 }
