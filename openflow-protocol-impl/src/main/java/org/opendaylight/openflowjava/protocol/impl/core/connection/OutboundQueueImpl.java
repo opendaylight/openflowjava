@@ -69,23 +69,6 @@ final class OutboundQueueImpl implements OutboundQueue {
         return new OutboundQueueImpl(manager, baseXid, queue);
     }
 
-    Long reserveEntry(final boolean forBarrier) {
-        final int offset = CURRENT_OFFSET_UPDATER.getAndIncrement(this);
-        if (offset >= reserve) {
-            if (forBarrier) {
-                LOG.debug("Queue {} offset {}/{}, using emergency slot", this, offset, queue.length);
-                return endXid;
-            } else {
-                LOG.debug("Queue {} offset {}/{}, not allowing reservation", this, offset, queue.length);
-                return null;
-            }
-        }
-
-        final Long xid = baseXid + offset;
-        LOG.debug("Queue {} allocated XID {} at offset {}", this, xid, offset);
-        return xid;
-    }
-
     @Override
     public Long reserveEntry() {
         return reserveEntry(false);
@@ -102,6 +85,39 @@ final class OutboundQueueImpl implements OutboundQueue {
         LOG.debug("Queue {} XID {} at offset {} (of {}) committed", this, xid, offset, reserveOffset);
 
         manager.ensureFlushing(this);
+    }
+
+    private Long reserveEntry(final boolean forBarrier) {
+        final int offset = CURRENT_OFFSET_UPDATER.getAndIncrement(this);
+        if (offset >= reserve) {
+            if (forBarrier) {
+                LOG.debug("Queue {} offset {}/{}, using emergency slot", this, offset, queue.length);
+                return endXid;
+            } else {
+                LOG.debug("Queue {} offset {}/{}, not allowing reservation", this, offset, queue.length);
+                return null;
+            }
+        }
+
+        final Long xid = baseXid + offset;
+        LOG.debug("Queue {} allocated XID {} at offset {}", this, xid, offset);
+        return xid;
+    }
+
+    Long reserveBarrierIfNeeded() {
+        for (int i = flushOffset; i < queue.length; ++i) {
+            final OutboundQueueEntry entry = queue[i];
+            if (!entry.isCommitted()) {
+                LOG.debug("Offset {} is not committed yet, not searching beyond it", i);
+                break;
+            }
+            if (entry.isBarrier()) {
+                LOG.debug("Barrier found at offset {}", i);
+                return null;
+            }
+        }
+
+        return reserveEntry(true);
     }
 
     /**
