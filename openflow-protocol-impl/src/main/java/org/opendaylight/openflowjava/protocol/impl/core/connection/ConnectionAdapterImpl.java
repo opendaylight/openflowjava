@@ -27,6 +27,8 @@ import java.util.concurrent.TimeUnit;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionReadyListener;
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueHandler;
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueHandlerRegistration;
+import org.opendaylight.openflowjava.protocol.impl.core.OFVersionDetector;
+import org.opendaylight.openflowjava.protocol.impl.core.PipelineHandlers;
 import org.opendaylight.openflowjava.statistics.CounterEventTypes;
 import org.opendaylight.openflowjava.statistics.StatisticsCounters;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
@@ -117,6 +119,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     private OutboundQueueManager<?> outputManager;
     private boolean disconnectOccured = false;
     private final StatisticsCounters statisticsCounters;
+    private OFVersionDetector versionDetector;
     private final InetSocketAddress address;
 
     /**
@@ -135,6 +138,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
         this.address = address;
         channel.pipeline().addLast(output);
         statisticsCounters = StatisticsCounters.getInstance();
+
         LOG.debug("ConnectionAdapter created");
     }
 
@@ -455,6 +459,9 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
 
     @Override
     public void fireConnectionReadyNotification() {
+        versionDetector = (OFVersionDetector) channel.pipeline().get(PipelineHandlers.OF_VERSION_DETECTOR.name());
+        Preconditions.checkState(versionDetector != null);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -513,5 +520,11 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
 
     Channel getChannel() {
         return channel;
+    }
+
+    @Override
+    public void setPacketInFiltering(final boolean enabled) {
+        versionDetector.setFilterPacketIns(enabled);
+        LOG.debug("PacketIn filtering {}abled", enabled ? "en" : "dis");
     }
 }
