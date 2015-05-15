@@ -61,12 +61,12 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
     public MockPlugin() {
         LOGGER.trace("Creating MockPlugin");
         finishedFuture = SettableFuture.create();
-        LOGGER.debug("mockPlugin: "+System.identityHashCode(this));
+        LOGGER.debug("mockPlugin: {}", System.identityHashCode(this));
     }
 
     @Override
     public void onSwitchConnected(ConnectionAdapter connection) {
-        LOGGER.debug("onSwitchConnected: " + connection);
+        LOGGER.debug("onSwitchConnected: {}", connection);
         this.adapter = connection;
         connection.setMessageListener(this);
         connection.setSystemListener(this);
@@ -75,25 +75,25 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
 
     @Override
     public boolean accept(InetAddress switchAddress) {
-        LOGGER.debug("MockPlugin.accept(): " + switchAddress.toString());
+        LOGGER.debug("MockPlugin.accept(): {}", switchAddress.toString());
 
         return true;
     }
 
     @Override
     public void onEchoRequestMessage(final EchoRequestMessage notification) {
-        LOGGER.debug("MockPlugin.onEchoRequestMessage() adapter: "+adapter);
+        LOGGER.debug("MockPlugin.onEchoRequestMessage() adapter: {}", adapter);
         new Thread(new Runnable() {
             @Override
             public void run() {
-                LOGGER.debug("MockPlugin.onEchoRequestMessage().run() started adapter: "+adapter);
+                LOGGER.debug("MockPlugin.onEchoRequestMessage().run() started adapter: {}", adapter);
                 EchoReplyInputBuilder replyBuilder = new EchoReplyInputBuilder();
                 replyBuilder.setVersion((short) 4);
                 replyBuilder.setXid(notification.getXid());
                 EchoReplyInput echoReplyInput = replyBuilder.build();
                 adapter.echoReply(echoReplyInput);
                 LOGGER.debug("adapter.EchoReply(Input) sent : ", echoReplyInput.toString());
-                LOGGER.debug("MockPlugin.onEchoRequestMessage().run() finished adapter: "+adapter);
+                LOGGER.debug("MockPlugin.onEchoRequestMessage().run() finished adapter: {}", adapter);
             }
         }).start();
     }
@@ -151,11 +151,10 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
             if (rpcResult.isSuccessful()) {
                 byte[] byteArray = rpcResult.getResult().getDatapathId()
                         .toByteArray();
-                LOGGER.debug("DatapathId: " + Arrays.toString(byteArray));
+                LOGGER.debug("DatapathId: {}", Arrays.toString(byteArray));
             } else {
                 RpcError rpcError = rpcResult.getErrors().iterator().next();
-                LOGGER.warn("rpcResult failed: "
-                        + rpcError.getCause().getMessage(), rpcError.getCause());
+                LOGGER.warn("rpcResult failed", rpcError.getCause());
             }
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             LOGGER.error("getSwitchFeatures() exception caught: ", e.getMessage(), e);
@@ -164,7 +163,7 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
 
     protected void shutdown() {
         try {
-            LOGGER.debug("MockPlugin.shutdown() sleeping 5... : "+System.identityHashCode(this));
+            LOGGER.debug("MockPlugin.shutdown() sleeping 5... : {}", System.identityHashCode(this));
             Thread.sleep(500);
             if (adapter != null) {
                 Future<Boolean> disconnect = adapter.disconnect();
@@ -186,14 +185,14 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
     @Override
     public void onPacketInMessage(PacketInMessage notification) {
         LOGGER.debug("PacketIn message received");
-        LOGGER.debug("BufferId: " + notification.getBufferId());
-        LOGGER.debug("TotalLength: " + notification.getTotalLen());
-        LOGGER.debug("Reason: " + notification.getReason());
-        LOGGER.debug("TableId: " + notification.getTableId());
-        LOGGER.debug("Cookie: " + notification.getCookie());
-        LOGGER.debug("Class: " + notification.getMatch().getMatchEntry().get(0).getOxmClass());
-        LOGGER.debug("Field: " + notification.getMatch().getMatchEntry().get(0).getOxmMatchField());
-        LOGGER.debug("Datasize: " + notification.getData().length);
+        LOGGER.debug("BufferId: {}", notification.getBufferId());
+        LOGGER.debug("TotalLength: {}", notification.getTotalLen());
+        LOGGER.debug("Reason: {}", notification.getReason());
+        LOGGER.debug("TableId: {}", notification.getTableId());
+        LOGGER.debug("Cookie: {}", notification.getCookie());
+        LOGGER.debug("Class: {}", notification.getMatch().getMatchEntry().get(0).getOxmClass());
+        LOGGER.debug("Field: {}", notification.getMatch().getMatchEntry().get(0).getOxmMatchField());
+        LOGGER.debug("Datasize: {}", notification.getData().length);
     }
 
     @Override
@@ -204,7 +203,7 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
 
     @Override
     public void onDisconnectEvent(DisconnectEvent notification) {
-        LOGGER.debug("disconnection occured: "+notification.getInfo());
+        LOGGER.debug("disconnection occured: {}", notification.getInfo());
     }
 
     /**
@@ -216,7 +215,7 @@ public class MockPlugin implements OpenflowProtocolListener, SwitchConnectionHan
 
     @Override
     public void onSwitchIdleEvent(SwitchIdleEvent notification) {
-        LOGGER.debug("MockPlugin.onSwitchIdleEvent() switch status: "+notification.getInfo());
+        LOGGER.debug("MockPlugin.onSwitchIdleEvent() switch status: {}", notification.getInfo());
         idleCounter ++;
     }
 

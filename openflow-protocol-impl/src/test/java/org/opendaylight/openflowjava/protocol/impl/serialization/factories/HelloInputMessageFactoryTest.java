@@ -84,7 +84,9 @@ public class HelloInputMessageFactoryTest {
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         helloFactory.serialize(message, out);
-        LOGGER.debug("bytebuf: " + ByteBufUtils.byteBufToHexString(out));
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("bytebuf: {}", ByteBufUtils.byteBufToHexString(out));
+        }
 
         BufferHelper.checkHeaderV13(out, (byte) 0, 16);
         Elements element = readElement(out).get(0);
@@ -108,7 +110,9 @@ public class HelloInputMessageFactoryTest {
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         helloFactory.serialize(message, out);
-        LOGGER.debug("bytebuf: " + ByteBufUtils.byteBufToHexString(out));
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("bytebuf: ", ByteBufUtils.byteBufToHexString(out));
+        }
 
         BufferHelper.checkHeaderV13(out, (byte) 0, 24);
         Elements element = readElement(out).get(0);
@@ -142,7 +146,7 @@ public class HelloInputMessageFactoryTest {
                 booleanList.add(false);
             }
         }
-        LOGGER.debug("boolsize " + booleanList.size());
+        LOGGER.debug("boolsize {}", booleanList.size());
         elementsBuilder.setType(HelloElementType.forValue(1));
         elementsBuilder.setVersionBitmap(booleanList);
         elementsList.add(elementsBuilder.build());

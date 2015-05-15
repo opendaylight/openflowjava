@@ -115,8 +115,7 @@ public class SimpleClient implements OFClient {
         int port;
         SimpleClient sc;
         if (args.length != 3) {
-            LOGGER.error("Usage: " + SimpleClient.class.getSimpleName()
-                    + " <host> <port> <secured>");
+            LOGGER.error("Usage: {} <host> <port> <secured>", SimpleClient.class.getSimpleName());
             LOGGER.error("Trying to use default setting.");
             InetAddress ia = InetAddress.getLocalHost();
             InetAddress[] all = InetAddress.getAllByName(ia.getHostName());

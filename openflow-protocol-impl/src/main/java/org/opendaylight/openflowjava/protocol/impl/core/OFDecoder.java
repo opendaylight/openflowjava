@@ -28,13 +28,17 @@ import org.slf4j.LoggerFactory;
 public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OFDecoder.class);
+    private final StatisticsCounters statisticsCounter;
+
+    // TODO: make this final?
     private DeserializationFactory deserializationFactory;
-    private StatisticsCounters statisticsCounter;
+
     /**
      * Constructor of class
      */
     public OFDecoder() {
         LOGGER.trace("Creating OF 1.3 Decoder");
+	// TODO: pass as argument
         statisticsCounter = StatisticsCounters.getInstance();
     }
 
@@ -44,12 +48,11 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
         statisticsCounter.incrementCounter(CounterEventTypes.US_RECEIVED_IN_OFJAVA);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("VersionMessageWrapper received");
-            LOGGER.debug("<< " + ByteBufUtils.byteBufToHexString(msg.getMessageBuffer()));
+            LOGGER.debug("<< {}", ByteBufUtils.byteBufToHexString(msg.getMessageBuffer()));
         }
 
-        DataObject dataObject = null;
         try {
-            dataObject = deserializationFactory.deserialize(msg.getMessageBuffer(),
+            final DataObject dataObject = deserializationFactory.deserialize(msg.getMessageBuffer(),
                     msg.getVersion());
             if (dataObject == null) {
                 LOGGER.warn("Translated POJO is null");
@@ -58,9 +61,8 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
                 out.add(dataObject);
                 statisticsCounter.incrementCounter(CounterEventTypes.US_DECODE_SUCCESS);
             }
-        } catch(Exception e) {
-            LOGGER.warn("Message deserialization failed");
-            LOGGER.warn(e.getMessage(), e);
+        } catch (Exception e) {
+            LOGGER.warn("Message deserialization failed", e);
             statisticsCounter.incrementCounter(CounterEventTypes.US_DECODE_FAIL);
         } finally {
             msg.getMessageBuffer().release();
