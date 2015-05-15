@@ -9,9 +9,9 @@
 */
 package org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow._switch.connection.provider.impl.rev140328;
 
+import com.google.common.base.MoreObjects;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.ThreadConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
@@ -21,8 +21,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.K
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.TransportProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Objects;
 
 /**
 *
@@ -37,7 +35,7 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
      * @param identifier
      * @param dependencyResolver
      */
-    public SwitchConnectionProviderModule(org.opendaylight.controller.config.api.ModuleIdentifier identifier, org.opendaylight.controller.config.api.DependencyResolver dependencyResolver) {
+    public SwitchConnectionProviderModule(final org.opendaylight.controller.config.api.ModuleIdentifier identifier, final org.opendaylight.controller.config.api.DependencyResolver dependencyResolver) {
         super(identifier, dependencyResolver);
     }
 
@@ -47,8 +45,8 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
      * @param oldModule
      * @param oldInstance
      */
-    public SwitchConnectionProviderModule(org.opendaylight.controller.config.api.ModuleIdentifier identifier, org.opendaylight.controller.config.api.DependencyResolver dependencyResolver,
-            SwitchConnectionProviderModule oldModule, java.lang.AutoCloseable oldInstance) {
+    public SwitchConnectionProviderModule(final org.opendaylight.controller.config.api.ModuleIdentifier identifier, final org.opendaylight.controller.config.api.DependencyResolver dependencyResolver,
+            final SwitchConnectionProviderModule oldModule, final java.lang.AutoCloseable oldInstance) {
         super(identifier, dependencyResolver, oldModule, oldInstance);
     }
 
@@ -103,39 +101,39 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
                 return new TlsConfiguration() {
                     @Override
                     public KeystoreType getTlsTruststoreType() {
-                        return Objects.firstNonNull(tlsConfig.getTruststoreType(), null);
+                        return MoreObjects.firstNonNull(tlsConfig.getTruststoreType(), null);
                     }
                     @Override
                     public String getTlsTruststore() {
-                        return Objects.firstNonNull(tlsConfig.getTruststore(), null);
+                        return MoreObjects.firstNonNull(tlsConfig.getTruststore(), null);
                     }
                     @Override
                     public KeystoreType getTlsKeystoreType() {
-                        return Objects.firstNonNull(tlsConfig.getKeystoreType(), null);
+                        return MoreObjects.firstNonNull(tlsConfig.getKeystoreType(), null);
                     }
                     @Override
                     public String getTlsKeystore() {
-                        return Objects.firstNonNull(tlsConfig.getKeystore(), null);
+                        return MoreObjects.firstNonNull(tlsConfig.getKeystore(), null);
                     }
                     @Override
                     public org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.PathType getTlsKeystorePathType() {
-                        return Objects.firstNonNull(tlsConfig.getKeystorePathType(), null);
+                        return MoreObjects.firstNonNull(tlsConfig.getKeystorePathType(), null);
                     }
                     @Override
                     public org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.PathType getTlsTruststorePathType() {
-                        return Objects.firstNonNull(tlsConfig.getTruststorePathType(), null);
+                        return MoreObjects.firstNonNull(tlsConfig.getTruststorePathType(), null);
                     }
                     @Override
                     public String getKeystorePassword() {
-                        return Objects.firstNonNull(tlsConfig.getKeystorePassword(), null);
+                        return MoreObjects.firstNonNull(tlsConfig.getKeystorePassword(), null);
                     }
                     @Override
                     public String getCertificatePassword() {
-                        return Objects.firstNonNull(tlsConfig.getCertificatePassword(), null);
+                        return MoreObjects.firstNonNull(tlsConfig.getCertificatePassword(), null);
                     }
                     @Override
                     public String getTruststorePassword() {
-                        return Objects.firstNonNull(tlsConfig.getTruststorePassword(), null);
+                        return MoreObjects.firstNonNull(tlsConfig.getTruststorePassword(), null);
                     }
                 };
             }
@@ -174,7 +172,7 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
      * @return
      * @throws UnknownHostException
      */
-    private static InetAddress extractIpAddressBin(IpAddress address) throws UnknownHostException {
+    private static InetAddress extractIpAddressBin(final IpAddress address) throws UnknownHostException {
         byte[] addressBin = null;
         if (address != null) {
             if (address.getIpv4Address() != null) {
@@ -195,7 +193,7 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
      * @param value
      * @return
      */
-    private static byte[] address2bin(String value) {
+    private static byte[] address2bin(final String value) {
         //TODO: translate ipv4 or ipv6 into byte[]
         return null;
     }
