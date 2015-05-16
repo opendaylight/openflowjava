@@ -299,6 +299,21 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
 
         LOG.debug("Dequeuing messages to channel {}", parent.getChannel());
 
+        if (!parent.getChannel().isActive()) {
+            long entries = 0;
+            LOG.debug("Channel shutdown, flushing queue...");
+            handler.onConnectionQueueChanged(null);
+
+            // FIXME: this should be in the flusher, as we need to clear any outstanding reservations, too
+            final Throwable cause = new RejectedExecutionException("Channel disconnected");
+            for (OutboundQueueImpl queue : activeQueues) {
+                entries += queue.failAll(cause);
+            }
+            activeQueues.clear();
+
+            LOG.debug("Flushed {} queue entries", entries);
+        }
+
         long messages = 0;
         for (;; ++messages) {
             if (!parent.getChannel().isWritable()) {
@@ -392,18 +407,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     @Override
     public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
-
-        long entries = 0;
-        LOG.debug("Channel shutdown, flushing queue...");
-        handler.onConnectionQueueChanged(null);
-
-        final Throwable cause = new RejectedExecutionException("Channel disconnected");
-        for (OutboundQueueImpl queue : activeQueues) {
-            entries += queue.failAll(cause);
-        }
-        activeQueues.clear();
-
-        LOG.debug("Flushed {} queue entries", entries);
+        conditionalFlush(ctx);
     }
 
     @Override
