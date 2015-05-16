@@ -9,31 +9,23 @@
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
 import static org.junit.Assert.fail;
-
-import java.util.Collections;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.opendaylight.controller.sal.common.util.Rpcs;
-import org.opendaylight.openflowjava.protocol.impl.core.connection.AbstractRpcListener;
-import org.opendaylight.openflowjava.protocol.impl.core.connection.ResponseExpectedRpcListener;
-import org.opendaylight.openflowjava.protocol.impl.core.connection.RpcResponseKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
-import org.opendaylight.yangtools.yang.common.RpcError;
-import org.opendaylight.yangtools.yang.common.RpcError.ErrorSeverity;
-import org.opendaylight.yangtools.yang.common.RpcResult;
-
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 import com.google.common.util.concurrent.SettableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import org.junit.Assert;
+import org.junit.Test;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
+import org.opendaylight.yangtools.yang.common.RpcError;
+import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 
 /**
  * @author michal.polkorab
@@ -50,7 +42,7 @@ public class ResponseExpectedRpcListenerTest {
         }
     };
     private static final int RPC_RESPONSE_EXPIRATION = 1;
-    private Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> responseCache  = CacheBuilder.newBuilder()
+    private final Cache<RpcResponseKey, ResponseExpectedRpcListener<?>> responseCache  = CacheBuilder.newBuilder()
             .concurrencyLevel(1)
             .expireAfterWrite(RPC_RESPONSE_EXPIRATION, TimeUnit.MINUTES)
             .removalListener(REMOVAL_LISTENER).build();
@@ -82,9 +74,9 @@ public class ResponseExpectedRpcListenerTest {
                 new ResponseExpectedRpcListener<>("MESSAGE", "Failed to send message", responseCache, key);
         listener.discard();
         RpcError rpcError = AbstractRpcListener.buildRpcError("Failed to send message",
-                ErrorSeverity.ERROR, "check switch connection", new TimeoutException("Request timed out"));
+                "check switch connection", new TimeoutException("Request timed out"));
         SettableFuture<RpcResult<?>> result = SettableFuture.create();
-        result.set(Rpcs.getRpcResult(false, null, Collections.singletonList(rpcError)));
+        result.set(RpcResultBuilder.failed().withRpcError(rpcError).build());
         try {
             Assert.assertEquals("Wrong result", result.get().getErrors().iterator().next().getMessage(),
                     listener.getResult().get().getErrors().iterator().next().getMessage());
@@ -107,7 +99,7 @@ public class ResponseExpectedRpcListenerTest {
         BarrierInput barrierInput = barrierBuilder.build();
         listener.completed(barrierInput);
         SettableFuture<RpcResult<?>> result = SettableFuture.create();
-        result.set(Rpcs.getRpcResult(true, barrierInput, Collections.<RpcError>emptyList()));
+        result.set(RpcResultBuilder.success(barrierInput).build());
         try {
             Assert.assertEquals("Wrong result", result.get().getErrors(), listener.getResult().get().getErrors());
             Assert.assertEquals("Wrong result", result.get().getResult(), listener.getResult().get().getResult());
