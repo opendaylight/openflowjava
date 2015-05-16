@@ -284,6 +284,9 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else if (message instanceof ErrorMessage) {
                 messageListener.onErrorMessage((ErrorMessage) message);
+                if (outputManager != null) {
+                    outputManager.onMessage((OfHeader) message);
+                }
                 statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else if (message instanceof ExperimenterMessage) {
                 messageListener.onExperimenterMessage((ExperimenterMessage) message);
