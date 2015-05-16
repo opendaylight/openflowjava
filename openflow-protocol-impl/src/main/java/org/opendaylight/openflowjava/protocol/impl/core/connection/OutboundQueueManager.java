@@ -15,9 +15,9 @@ import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueException;
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueHandler;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
@@ -397,9 +397,8 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
         LOG.debug("Channel shutdown, flushing queue...");
         handler.onConnectionQueueChanged(null);
 
-        final Throwable cause = new RejectedExecutionException("Channel disconnected");
         for (OutboundQueueImpl queue : activeQueues) {
-            entries += queue.failAll(cause);
+            entries += queue.failAll(OutboundQueueException.DEVICE_DISCONNECTED);
         }
         activeQueues.clear();
 
