@@ -12,22 +12,16 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import com.google.common.util.concurrent.SettableFuture;
 import io.netty.util.concurrent.Future;
-
-import java.util.Collections;
 import java.util.concurrent.ExecutionException;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.opendaylight.controller.sal.common.util.Rpcs;
-import org.opendaylight.openflowjava.protocol.impl.core.connection.SimpleRpcListener;
-import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
-
-import com.google.common.util.concurrent.SettableFuture;
+import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 
 /**
  * @author michal.polkorab
@@ -63,7 +57,7 @@ public class SimpleRpcListenerTest {
         SimpleRpcListener listener = new SimpleRpcListener("MESSAGE", "Failed to send message");
         listener.operationSuccessful();
         SettableFuture<RpcResult<?>> result = SettableFuture.create();
-        result.set(Rpcs.getRpcResult(true, null, Collections.<RpcError>emptyList()));
+        result.set(RpcResultBuilder.success((Void)null).build());
         try {
             Assert.assertEquals("Wrong result", result.get().getErrors(), listener.getResult().get().getErrors());
             Assert.assertEquals("Wrong result", result.get().getResult(), listener.getResult().get().getResult());
