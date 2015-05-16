@@ -15,7 +15,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * Exception which is used to report that a particular request failed on the
  * remote device (switch).
  */
-public class DeviceRequestFailedException extends Exception {
+public class DeviceRequestFailedException extends OutboundQueueException {
     private static final long serialVersionUID = 1L;
     private final Error error;
 
