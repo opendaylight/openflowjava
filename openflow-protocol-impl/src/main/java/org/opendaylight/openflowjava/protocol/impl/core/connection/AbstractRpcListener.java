@@ -12,11 +12,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import java.util.Collections;
-import org.opendaylight.controller.sal.common.util.RpcErrors;
-import org.opendaylight.controller.sal.common.util.Rpcs;
 import org.opendaylight.yangtools.yang.common.RpcError;
-import org.opendaylight.yangtools.yang.common.RpcError.ErrorSeverity;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
@@ -44,11 +40,8 @@ abstract class AbstractRpcListener<T> implements GenericFutureListener<Future<Vo
      * @param cause - details of reason
      * @return
      */
-    static RpcError buildRpcError(final String info, final ErrorSeverity severity, final String message,
-            final Throwable cause) {
-        RpcError error = RpcErrors.getRpcError(APPLICATION_TAG, TAG, info, severity, message,
-                ErrorType.RPC, cause);
-        return error;
+    static RpcError buildRpcError(final String info, final String message, final Throwable cause) {
+        return RpcResultBuilder.newError(ErrorType.RPC, TAG, message, APPLICATION_TAG, info, cause);
     }
 
     AbstractRpcListener(final Object message, final String failureInfo) {
@@ -87,12 +80,8 @@ abstract class AbstractRpcListener<T> implements GenericFutureListener<Future<Vo
     protected abstract void operationSuccessful();
 
     protected final void failedRpc(final Throwable cause) {
-        final RpcError rpcError = buildRpcError(
-                failureInfo, ErrorSeverity.ERROR, "check switch connection", cause);
-        result.set(Rpcs.getRpcResult(
-                false,
-                (T)null,
-                Collections.singletonList(rpcError)));
+        final RpcError rpcError = buildRpcError(failureInfo, "check switch connection", cause);
+        result.set(RpcResultBuilder.<T>failed().withRpcError(rpcError).build());
     }
 
     protected final void successfulRpc(final T value) {

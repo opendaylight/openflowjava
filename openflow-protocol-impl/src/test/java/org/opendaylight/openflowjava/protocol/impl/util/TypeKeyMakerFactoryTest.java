@@ -77,7 +77,7 @@ public class TypeKeyMakerFactoryTest {
         MessageTypeKey<?> key = keyMaker.make(action);
 
         Assert.assertNotNull("Null key", key);
-        Assert.assertEquals("Wrong key", new ActionSerializerKey(EncodeConstants.OF13_VERSION_ID,
+        Assert.assertEquals("Wrong key", new ActionSerializerKey<>(EncodeConstants.OF13_VERSION_ID,
                 CopyTtlInCase.class, 42L), key);
     }
 
@@ -114,7 +114,7 @@ public class TypeKeyMakerFactoryTest {
         MessageTypeKey<?> key = keyMaker.make(instruction);
 
         Assert.assertNotNull("Null key", key);
-        Assert.assertEquals("Wrong key", new InstructionSerializerKey(EncodeConstants.OF13_VERSION_ID,
+        Assert.assertEquals("Wrong key", new InstructionSerializerKey<>(EncodeConstants.OF13_VERSION_ID,
                         ClearActionsCase.class, 42L), key);
     }
 
