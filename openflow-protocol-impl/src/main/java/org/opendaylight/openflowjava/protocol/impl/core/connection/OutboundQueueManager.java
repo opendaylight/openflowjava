@@ -408,7 +408,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
 
-        LOG.debug("Channel {} shutdown, flushing queue...", parent.getChannel());
+        LOG.debug("Channel shutdown, flushing queue...");
         handler.onConnectionQueueChanged(null);
         currentQueue = null;
         queueCache.clear();
