@@ -30,6 +30,9 @@ public interface OutboundQueue {
      * with a response, the object reported will be non-null. If the request's completion
      * is implied by a barrier, the object reported will be null.
      *
+     * If this request fails on the remote device, {@link FutureCallback#onFailure(Throwable)
+     * will be called with an instance of {@link DeviceRequestFailedException}.
+     *
      * @param xid Previously-reserved XID
      * @param message Message which should be sent out, or null if the reservation
      *                should be cancelled.

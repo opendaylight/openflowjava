@@ -283,16 +283,16 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 messageListener.onEchoRequestMessage((EchoRequestMessage) message);
                 statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else if (message instanceof ErrorMessage) {
-                messageListener.onErrorMessage((ErrorMessage) message);
-                if (outputManager != null) {
-                    outputManager.onMessage((OfHeader) message);
+                // Send only unmatched errors
+                if (outputManager == null || !outputManager.onMessage((OfHeader) message)) {
+                    messageListener.onErrorMessage((ErrorMessage) message);
                 }
                 statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else if (message instanceof ExperimenterMessage) {
-                messageListener.onExperimenterMessage((ExperimenterMessage) message);
                 if (outputManager != null) {
                     outputManager.onMessage((OfHeader) message);
                 }
+                messageListener.onExperimenterMessage((ExperimenterMessage) message);
                 statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else if (message instanceof FlowRemovedMessage) {
                 messageListener.onFlowRemovedMessage((FlowRemovedMessage) message);
@@ -302,10 +302,10 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 messageListener.onHelloMessage((HelloMessage) message);
                 statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else if (message instanceof MultipartReplyMessage) {
-                messageListener.onMultipartReplyMessage((MultipartReplyMessage) message);
                 if (outputManager != null) {
                     outputManager.onMessage((OfHeader) message);
                 }
+                messageListener.onMultipartReplyMessage((MultipartReplyMessage) message);
                 statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else if (message instanceof PacketInMessage) {
                 messageListener.onPacketInMessage((PacketInMessage) message);
