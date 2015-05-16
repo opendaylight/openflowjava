@@ -33,6 +33,11 @@ public interface OutboundQueue {
      * If this request fails on the remote device, {@link FutureCallback#onFailure(Throwable)
      * will be called with an instance of {@link DeviceRequestFailedException}.
      *
+     * If the request fails due to local reasons, {@link FutureCallback#onFailure(Throwable)
+     * will be called with an instance of {@link OutboundQueueException}. In particular, if
+     * this request failed because the device disconnected, {@link OutboundQueueException#DEVICE_DISCONNECTED}
+     * will be reported.
+     *
      * @param xid Previously-reserved XID
      * @param message Message which should be sent out, or null if the reservation
      *                should be cancelled.
