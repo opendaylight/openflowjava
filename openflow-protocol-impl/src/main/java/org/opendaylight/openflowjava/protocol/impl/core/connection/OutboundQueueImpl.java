@@ -8,11 +8,14 @@
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Verify;
 import com.google.common.util.concurrent.FutureCallback;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.locks.LockSupport;
 import javax.annotation.Nonnull;
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueue;
+import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueDeviceRequestFailed;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.Error;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -204,8 +207,20 @@ final class OutboundQueueImpl implements OutboundQueue {
         }
     }
 
-    private boolean xidInRance(final long xid) {
+    // Argument is 'long' to explicitly convert before performing operations
+    private boolean xidInRange(final long xid) {
         return xid < endXid && (xid >= baseXid || baseXid > endXid);
+    }
+
+    private static boolean completeEntry(final OutboundQueueEntry entry, final OfHeader response) {
+        if (response instanceof Error) {
+            final Error err = (Error)response;
+            LOG.debug("Device-reported request XID {} failed {}:{}", response.getXid(), err.getTypeString(), err.getCodeString());
+            entry.fail(new OutboundQueueDeviceRequestFailed("Device-side failure", err));
+            return true;
+        } else {
+            return entry.complete(response);
+        }
     }
 
     /**
@@ -217,7 +232,7 @@ final class OutboundQueueImpl implements OutboundQueue {
      */
     OutboundQueueEntry pairRequest(@Nonnull final OfHeader response) {
         final Long xid = response.getXid();
-        if (!xidInRance(xid)) {
+        if (!xidInRange(xid)) {
             LOG.debug("Queue {} {}/{} ignoring XID {}", this, baseXid, queue.length, xid);
             return null;
         }
@@ -229,16 +244,23 @@ final class OutboundQueueImpl implements OutboundQueue {
             return null;
         }
 
-        if (entry.complete(response)) {
-            completeCount++;
+        if (entry.isBarrier()) {
+            // This has been a barrier -- make sure we complete all preceding requests.
+            // XXX: Barriers are expected to complete in one message.
+            //      If this assumption is changed, this logic will need to be expanded
+            //      to ensure that the requests implied by the barrier are reported as
+            //      completed *after* the barrier.
+            LOG.trace("Barrier XID {} completed, cascading completion to XIDs {} to {}", xid, baseXid + lastBarrierOffset + 1, xid - 1);
+            completeRequests(offset);
+            lastBarrierOffset = offset;
 
-            // This has been a barrier -- make sure we complete all preceding requests
-            if (entry.isBarrier()) {
-                LOG.debug("Barrier XID {} completed, cascading completion to XIDs {} to {}", xid, baseXid + lastBarrierOffset + 1, xid - 1);
-                completeRequests(offset);
-                lastBarrierOffset = offset;
-            }
+            final boolean success = completeEntry(entry, response);
+            Verify.verify(success, "Barrier request failed to complete");
+            completeCount++;
+        } else if (completeEntry(entry, response)) {
+            completeCount++;
         }
+
         return entry;
     }
 
