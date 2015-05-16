@@ -265,7 +265,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
 
     @Override
     public void consume(final DataObject message) {
-        LOG.debug("ConsumeIntern msg");
+        LOG.debug("ConsumeIntern msg on {}", channel);
         if (disconnectOccured ) {
             return;
         }
