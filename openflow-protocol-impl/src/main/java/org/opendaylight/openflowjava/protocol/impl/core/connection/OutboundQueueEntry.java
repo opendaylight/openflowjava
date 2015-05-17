@@ -76,7 +76,7 @@ final class OutboundQueueEntry {
         return reallyComplete;
     }
 
-    void fail(final Throwable cause) {
+    void fail(final Exception cause) {
         if (!completed) {
             completed = true;
             if (callback != null) {
