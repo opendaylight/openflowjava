@@ -277,6 +277,10 @@ final class OutboundQueueImpl implements OutboundQueue {
         int ret = 0;
         for (int i = lastBarrierOffset + 1; i < queue.length; ++i) {
             final OutboundQueueEntry entry = queue[i];
+            if (!entry.isCommitted()) {
+                break;
+            }
+
             if (!entry.isCompleted()) {
                 entry.fail(cause);
                 ret++;

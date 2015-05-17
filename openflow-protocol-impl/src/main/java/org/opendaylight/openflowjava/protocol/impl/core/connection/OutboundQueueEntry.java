@@ -9,6 +9,7 @@ package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FutureCallback;
+import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
@@ -76,7 +77,7 @@ final class OutboundQueueEntry {
         return reallyComplete;
     }
 
-    void fail(final Throwable cause) {
+    void fail(final OutboundQueueException cause) {
         if (!completed) {
             completed = true;
             if (callback != null) {
