@@ -280,7 +280,11 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 systemListener.onSwitchIdleEvent((SwitchIdleEvent) message);
                 // OpenFlow messages
             } else if (message instanceof EchoRequestMessage) {
-                messageListener.onEchoRequestMessage((EchoRequestMessage) message);
+                if (outputManager != null) {
+                    outputManager.onEchoRequest((EchoRequestMessage) message);
+                } else {
+                    messageListener.onEchoRequestMessage((EchoRequestMessage) message);
+                }
                 statisticsCounters.incrementCounter(CounterEventTypes.US_MESSAGE_PASS);
             } else if (message instanceof ErrorMessage) {
                 // Send only unmatched errors
