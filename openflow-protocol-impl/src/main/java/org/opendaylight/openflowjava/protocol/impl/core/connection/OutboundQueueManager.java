@@ -380,7 +380,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
      * to be writable. May only be called from Netty context.
      */
     private void conditionalFlush() {
-        if (!currentQueue.isEmpty()) {
+        if (currentQueue.needsFlush()) {
             scheduleFlush();
         } else {
             LOG.trace("Queue is empty, no flush needed");

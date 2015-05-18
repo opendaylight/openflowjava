@@ -140,7 +140,7 @@ final class OutboundQueueImpl implements OutboundQueue {
      *
      * @return True if this queue does not have unprocessed entries.
      */
-    boolean isEmpty() {
+    private boolean isEmpty() {
         int ro = reserveOffset;
         if (ro >= reserve) {
             if (queue[reserve].isCommitted()) {
@@ -177,6 +177,23 @@ final class OutboundQueueImpl implements OutboundQueue {
 
         // flushOffset implied == reserve
         return flushOffset >= queue.length || !queue[reserve].isCommitted();
+    }
+
+    boolean needsFlush() {
+        if (flushOffset < queue.length) {
+            return queue[flushOffset].isCommitted();
+        }
+
+        if (isFinished()) {
+            LOG.trace("Queue {} is finished, schedule a cleanup", this);
+            return true;
+        }
+        if (isFlushed()) {
+            LOG.trace("Queue {} is flushed, schedule a replace", this);
+            return true;
+        }
+
+        return false;
     }
 
     OfHeader flushEntry() {
