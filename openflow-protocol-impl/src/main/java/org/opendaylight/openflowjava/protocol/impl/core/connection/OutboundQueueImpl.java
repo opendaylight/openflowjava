@@ -135,12 +135,30 @@ final class OutboundQueueImpl implements OutboundQueue {
         }
     }
 
+    int startShutdown() {
+        // Increment the offset by the queue size, hence preventing any normal
+        // allocations. We should not be seeing a barrier reservation after this
+        // and if there is one issued, we can disregard it.
+        final int offset = CURRENT_OFFSET_UPDATER.getAndAdd(this, queue.length);
+
+        // If this offset is larger than reserve, trim it. That is not an accurate
+        // view of which slot was actually "reserved", but it indicates at which
+        // entry we can declare the queue flushed (e.g. at the emergency slot).
+        return offset > reserve ? reserve : offset;
+    }
+
+    boolean isShutdown(final int offset) {
+        // This queue is shutdown if the flushOffset (e.g. the next entry to
+        // be flushed) points to the offset 'reserved' in startShutdown()
+        return flushOffset >= offset;
+    }
+
     /**
      * An empty queue is a queue which has no further unflushed entries.
      *
      * @return True if this queue does not have unprocessed entries.
      */
-    boolean isEmpty() {
+    private boolean isEmpty() {
         int ro = reserveOffset;
         if (ro >= reserve) {
             if (queue[reserve].isCommitted()) {
@@ -177,6 +195,23 @@ final class OutboundQueueImpl implements OutboundQueue {
 
         // flushOffset implied == reserve
         return flushOffset >= queue.length || !queue[reserve].isCommitted();
+    }
+
+    boolean needsFlush() {
+        if (flushOffset < reserve) {
+            return queue[flushOffset].isCommitted();
+        }
+
+        if (isFlushed()) {
+            LOG.trace("Queue {} is flushed, schedule a replace", this);
+            return true;
+        }
+        if (isFinished()) {
+            LOG.trace("Queue {} is finished, schedule a cleanup", this);
+            return true;
+        }
+
+        return false;
     }
 
     OfHeader flushEntry() {
