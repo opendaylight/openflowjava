@@ -188,7 +188,7 @@ final class OutboundQueueImpl implements OutboundQueue {
     }
 
     boolean isFlushed() {
-        LOG.debug("Check queue {} for completeness (offset {}, reserve {})", flushOffset, reserve);
+        LOG.debug("Check queue {} for completeness (offset {}, reserve {})", this, flushOffset, reserve);
         if (flushOffset < reserve) {
             return false;
         }
