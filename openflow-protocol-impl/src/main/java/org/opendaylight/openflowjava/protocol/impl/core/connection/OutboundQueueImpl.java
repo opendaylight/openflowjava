@@ -71,7 +71,7 @@ final class OutboundQueueImpl implements OutboundQueue {
         }
     }
 
-    OutboundQueueImpl reuse(final long baseXid) {
+    OutboundQueueImpl reuse(final OutboundQueueManager<?> manager, final long baseXid) {
         return new OutboundQueueImpl(manager, baseXid, queue);
     }
 
