@@ -82,4 +82,11 @@ public interface ConnectionAdapter extends OpenflowProtocolService {
     @Beta
     <T extends OutboundQueueHandler> OutboundQueueHandlerRegistration<T> registerOutboundQueueHandler(T handler,
         int maxQueueDepth, long maxBarrierNanos);
+
+    /**
+     * Set filtering of PacketIn messages. By default these messages are not filtered.
+     * @param enabled True if PacketIn messages should be filtered, false if they should be reported.
+     */
+    @Beta
+    void setPacketInFiltering(boolean enabled);
 }
