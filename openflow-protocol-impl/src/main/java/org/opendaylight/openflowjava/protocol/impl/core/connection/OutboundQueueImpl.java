@@ -87,9 +87,12 @@ final class OutboundQueueImpl implements OutboundQueue {
             Preconditions.checkArgument(xid.equals(message.getXid()), "Message %s has wrong XID %s, expected %s", message, message.getXid(), xid);
         }
 
+        final int ro = reserveOffset;
+        Preconditions.checkArgument(offset < ro, "Unexpected commit to offset {} reserved {} message {}", offset, ro, message);
+
         final OutboundQueueEntry entry = queue[offset];
         entry.commit(message, callback);
-        LOG.debug("Queue {} XID {} at offset {} (of {}) committed", this, xid, offset, reserveOffset);
+        LOG.debug("Queue {} XID {} at offset {} (of {}) committed", this, xid, offset, ro);
 
         if (entry.isBarrier()) {
             int my = offset;
@@ -218,7 +221,7 @@ final class OutboundQueueImpl implements OutboundQueue {
         for (;;) {
             // No message ready
             if (isEmpty()) {
-                LOG.trace("Flushed all reserved entries up to ", flushOffset);
+                LOG.trace("Flushed all reserved entries up to {}", flushOffset);
                 return null;
             }
 
