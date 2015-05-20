@@ -35,6 +35,10 @@ public enum CounterEventTypes {
      */
     DS_FLOW_MODS_SENT,
     /**
+     * packetIn message got dropped -filtering is active
+     */
+    US_DROPPED_PACKET_IN,
+    /**
      * receive message and pass to upstream
      */
     US_RECEIVED_IN_OFJAVA,
