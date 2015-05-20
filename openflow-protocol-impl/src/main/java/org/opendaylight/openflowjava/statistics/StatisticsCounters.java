@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.opendaylight.openflowjava.protocol.spi.statistics.StatisticsHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +45,7 @@ public final class StatisticsCounters implements StatisticsHandler {
                     CounterEventTypes.DS_ENTERED_OFJAVA,
                     CounterEventTypes.DS_FLOW_MODS_ENTERED,
                     CounterEventTypes.DS_FLOW_MODS_SENT,
+            CounterEventTypes.US_DROPPED_PACKET_IN,
                     CounterEventTypes.US_DECODE_FAIL,
                     CounterEventTypes.US_DECODE_SUCCESS,
                     CounterEventTypes.US_MESSAGE_PASS,

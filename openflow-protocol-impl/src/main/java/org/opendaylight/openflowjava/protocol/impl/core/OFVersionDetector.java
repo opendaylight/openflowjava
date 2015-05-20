@@ -13,6 +13,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import java.util.List;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.statistics.CounterEventTypes;
+import org.opendaylight.openflowjava.statistics.StatisticsCounters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +30,7 @@ public class OFVersionDetector extends ByteToMessageDecoder {
     private static final byte OF13_VERSION_ID = EncodeConstants.OF13_VERSION_ID;
     private static final short OF_PACKETIN = 10;
     private static final Logger LOGGER = LoggerFactory.getLogger(OFVersionDetector.class);
+    private final StatisticsCounters statisticsCounters;
     private volatile boolean filterPacketIns;
 
     /**
@@ -35,6 +38,7 @@ public class OFVersionDetector extends ByteToMessageDecoder {
      */
     public OFVersionDetector() {
         LOGGER.trace("Creating OFVersionDetector");
+        statisticsCounters = StatisticsCounters.getInstance();
     }
 
     public void setFilterPacketIns(final boolean enabled) {
@@ -58,6 +62,7 @@ public class OFVersionDetector extends ByteToMessageDecoder {
                 messageBuffer.retain();
             } else {
                 LOGGER.debug("dropped packetin");
+                statisticsCounters.incrementCounter(CounterEventTypes.US_DROPPED_PACKET_IN);
             }
         } else {
             LOGGER.warn("detected version: {} - currently not supported", version);
