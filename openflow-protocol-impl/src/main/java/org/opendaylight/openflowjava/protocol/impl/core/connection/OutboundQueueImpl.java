@@ -66,6 +66,9 @@ final class OutboundQueueImpl implements OutboundQueue {
         this.baseXid = baseXid;
         this.endXid = baseXid + queue.length;
         this.reserve = queue.length - 1;
+    }
+
+    void retire() {
         for (OutboundQueueEntry element : queue) {
             element.reset();
         }

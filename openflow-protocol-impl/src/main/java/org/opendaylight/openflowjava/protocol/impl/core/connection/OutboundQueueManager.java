@@ -109,6 +109,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
 
     private void retireQueue(final OutboundQueueImpl queue) {
         if (queueCache.offer(queue)) {
+            queue.retire();
             LOG.trace("Saving queue {} for later reuse", queue);
         } else {
             LOG.trace("Queue {} thrown away", queue);
