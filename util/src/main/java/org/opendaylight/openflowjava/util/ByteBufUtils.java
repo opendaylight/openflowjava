@@ -9,20 +9,17 @@
 
 package org.opendaylight.openflowjava.util;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.UnpooledByteBufAllocator;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.UnsignedBytes;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.UnpooledByteBufAllocator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 
 /** Class for common operations on ByteBuf
  * @author michal.polkorab
@@ -32,6 +29,8 @@ public abstract class ByteBufUtils {
     public static final Splitter DOT_SPLITTER = Splitter.on('.');
     public static final Splitter COLON_SPLITTER = Splitter.on(':');
     private static final char[] HEX_CHARS = "0123456789ABCDEF".toCharArray();
+    private static final Splitter HEXSTRING_SPLITTER =  Splitter.onPattern("\\s+").omitEmptyStrings();
+    private static final Splitter HEXSTRING_NOSPACE_SPLITTER = Splitter.onPattern("(?<=\\G.{2})").omitEmptyStrings();
 
     private ByteBufUtils() {
         //not called
@@ -65,14 +64,9 @@ public abstract class ByteBufUtils {
      * @param withSpaces if there are spaces in string
      * @return byte[] filled with input data
      */
-    public static byte[] hexStringToBytes(final String hexSrc, final boolean withSpaces ) {
-        String splitPattern = "\\s+";
-        if (!withSpaces) {
-            splitPattern = "(?<=\\G.{2})";
-        }
-        Iterable<String> tmp = Splitter.onPattern(splitPattern)
-                .omitEmptyStrings().split(hexSrc);
-        List<String> byteChips = Lists.newArrayList(tmp);
+    public static byte[] hexStringToBytes(final String hexSrc, final boolean withSpaces) {
+        final Splitter splitter = withSpaces ? HEXSTRING_SPLITTER : HEXSTRING_NOSPACE_SPLITTER;
+        List<String> byteChips = Lists.newArrayList(splitter.split(hexSrc));
         byte[] result = new byte[byteChips.size()];
         int i = 0;
         for (String chip : byteChips) {
