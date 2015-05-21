@@ -21,27 +21,30 @@ final class OutboundQueueEntry {
     private FutureCallback<OfHeader> callback;
     private OfHeader message;
     private boolean completed;
+    private boolean barrier;
     private volatile boolean committed;
 
     void commit(final OfHeader message, final FutureCallback<OfHeader> callback) {
         this.message = message;
         this.callback = callback;
+        this.barrier = message instanceof BarrierInput;
 
         // Volatile write, needs to be last
         committed = true;
     }
 
     void reset() {
+        barrier = false;
         callback = null;
-        message = null;
         completed = false;
+        message = null;
 
         // Volatile write, needs to be last
         committed = false;
     }
 
     boolean isBarrier() {
-        return message instanceof BarrierInput;
+        return barrier;
     }
 
     boolean isCommitted() {
@@ -52,12 +55,14 @@ final class OutboundQueueEntry {
         return completed;
     }
 
-    OfHeader getMessage() {
-        return message;
+    OfHeader takeMessage() {
+        final OfHeader ret = message;
+        message = null;
+        return ret;
     }
 
     boolean complete(final OfHeader response) {
-        Preconditions.checkState(!completed, "Attempted to complete a completed message %s with response %s", message, response);
+        Preconditions.checkState(!completed, "Attempted to complete a completed message with response %s", response);
 
         // Multipart requests are special, we have to look at them to see
         // if there is something outstanding and adjust ourselves accordingly
@@ -84,7 +89,7 @@ final class OutboundQueueEntry {
                 callback.onFailure(cause);
             }
         } else {
-            LOG.warn("Ignoring failure {} for completed message {}", cause, message);
+            LOG.warn("Ignoring failure {} for completed message", cause);
         }
     }
 
