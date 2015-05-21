@@ -234,7 +234,7 @@ final class OutboundQueueImpl implements OutboundQueue {
                 return null;
             }
 
-            final OfHeader msg = entry.getMessage();
+            final OfHeader msg = entry.takeMessage();
             flushOffset++;
             if (msg != null) {
                 return msg;
