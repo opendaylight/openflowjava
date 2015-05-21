@@ -2,6 +2,7 @@ package org.opendaylight.openflowjava.protocol.impl.core;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
@@ -33,7 +34,7 @@ public class TcpConnectionInitializer implements ServerFacade,
      * Constructor
      * @param workerGroup - shared worker group
      */
-    public TcpConnectionInitializer(NioEventLoopGroup workerGroup) {
+    public TcpConnectionInitializer(EpollEventLoopGroup workerGroup) {
         Preconditions.checkNotNull(workerGroup, "WorkerGroup can't be null");
         this.workerGroup = workerGroup;
     }

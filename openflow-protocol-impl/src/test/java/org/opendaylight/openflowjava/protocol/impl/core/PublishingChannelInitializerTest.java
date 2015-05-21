@@ -17,6 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
+import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.ssl.SslHandler;
@@ -48,7 +49,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow
  */
 public class PublishingChannelInitializerTest {
 
-    @Mock SocketChannel mockSocketCh ;
+    @Mock EpollServerSocketChannel mockSocketCh ;
     @Mock ChannelPipeline mockChPipeline ;
     @Mock SwitchConnectionHandler mockSwConnHandler ;
     @Mock ConnectionAdapterFactory mockConnAdaptorFactory;
