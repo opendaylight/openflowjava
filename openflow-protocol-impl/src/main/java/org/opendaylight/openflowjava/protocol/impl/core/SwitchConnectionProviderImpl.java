@@ -9,6 +9,7 @@
 
 package org.opendaylight.openflowjava.protocol.impl.core;
 
+import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
@@ -144,7 +145,7 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider, C
             ((TcpHandler) server).setChannelInitializer(channelInitializer);
             ((TcpHandler) server).initiateEventLoopGroups(connConfig.getThreadConfiguration());
 
-            NioEventLoopGroup workerGroupFromTcpHandler = ((TcpHandler) server).getWorkerGroup();
+            EpollEventLoopGroup workerGroupFromTcpHandler = ((TcpHandler) server).getWorkerGroup();
             connectionInitializer = new TcpConnectionInitializer(workerGroupFromTcpHandler);
             connectionInitializer.setChannelInitializer(channelInitializer);
             connectionInitializer.run();

@@ -12,8 +12,8 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -50,8 +50,8 @@ public class TcpHandler implements ServerFacade {
     private int port;
     private String address;
     private final InetAddress startupAddress;
-    private NioEventLoopGroup workerGroup;
-    private NioEventLoopGroup bossGroup;
+    private EpollEventLoopGroup workerGroup;
+    private EpollEventLoopGroup bossGroup;
     private final SettableFuture<Boolean> isOnlineFuture;
     private ThreadConfiguration threadConfig;
 
@@ -96,17 +96,17 @@ public class TcpHandler implements ServerFacade {
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
-                    .channel(NioServerSocketChannel.class)
+                    .channel(EpollServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.DEBUG))
-                    .childHandler(channelInitializer)
-                    .option(ChannelOption.SO_BACKLOG, 128)
-                    .option(ChannelOption.SO_REUSEADDR, true)
-                    .childOption(ChannelOption.SO_KEEPALIVE, true)
-                    .childOption(ChannelOption.TCP_NODELAY , true)
-                    .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
-                    .childOption(ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK, DEFAULT_WRITE_HIGH_WATERMARK * 1024)
-                    .childOption(ChannelOption.WRITE_BUFFER_LOW_WATER_MARK, DEFAULT_WRITE_LOW_WATERMARK * 1024)
-                    .childOption(ChannelOption.WRITE_SPIN_COUNT, DEFAULT_WRITE_SPIN_COUNT);
+                    .childHandler(channelInitializer);
+//                    .option(ChannelOption.SO_BACKLOG, 128)
+//                    .option(ChannelOption.SO_REUSEADDR, true)
+//                    .childOption(ChannelOption.SO_KEEPALIVE, true)
+//                    .childOption(ChannelOption.TCP_NODELAY , true)
+//                    .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
+//                    .childOption(ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK, DEFAULT_WRITE_HIGH_WATERMARK * 1024)
+//                    .childOption(ChannelOption.WRITE_BUFFER_LOW_WATER_MARK, DEFAULT_WRITE_LOW_WATERMARK * 1024)
+//                    .childOption(ChannelOption.WRITE_SPIN_COUNT, DEFAULT_WRITE_SPIN_COUNT);
 
             if (startupAddress != null) {
                 f = b.bind(startupAddress.getHostAddress(), port).sync();
@@ -204,18 +204,18 @@ public class TcpHandler implements ServerFacade {
      */
     public void initiateEventLoopGroups(ThreadConfiguration threadConfiguration) {
         if (threadConfiguration != null) {
-            bossGroup = new NioEventLoopGroup(threadConfiguration.getBossThreadCount());
-            workerGroup = new NioEventLoopGroup(threadConfiguration.getWorkerThreadCount());
+            bossGroup = new EpollEventLoopGroup(threadConfiguration.getBossThreadCount());
+            workerGroup = new EpollEventLoopGroup(threadConfiguration.getWorkerThreadCount());
         } else {
-            bossGroup = new NioEventLoopGroup();
-            workerGroup = new NioEventLoopGroup();
+            bossGroup = new EpollEventLoopGroup();
+            workerGroup = new EpollEventLoopGroup();
         }
     }
 
     /**
      * @return workerGroup
      */
-    public NioEventLoopGroup getWorkerGroup() {
+    public EpollEventLoopGroup getWorkerGroup() {
         return workerGroup;
     }
 
