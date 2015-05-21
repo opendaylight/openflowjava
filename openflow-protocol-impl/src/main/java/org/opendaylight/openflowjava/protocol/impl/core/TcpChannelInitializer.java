@@ -9,6 +9,7 @@
 package org.opendaylight.openflowjava.protocol.impl.core;
 
 import io.netty.channel.Channel;
+import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.ssl.SslHandler;
@@ -29,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * Initializes TCP / TLS channel
  * @author michal.polkorab
  */
-public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChannel> {
+public class TcpChannelInitializer extends ProtocolChannelInitializer<EpollServerSocketChannel> {
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(TcpChannelInitializer.class);
@@ -53,7 +54,7 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
     }
 
     @Override
-    protected void initChannel(final SocketChannel ch) {
+    protected void initChannel(final EpollServerSocketChannel ch) {
         if (ch.remoteAddress() != null) {
             InetAddress switchAddress = ch.remoteAddress().getAddress();
             int port = ch.localAddress().getPort();
