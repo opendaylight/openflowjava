@@ -88,7 +88,7 @@ final class OutboundQueueImpl implements OutboundQueue {
         }
 
         final int ro = reserveOffset;
-        Preconditions.checkArgument(offset < ro, "Unexpected commit to offset {} reserved {} message {}", offset, ro, message);
+        Preconditions.checkArgument(offset < ro, "Unexpected commit to offset %s reserved %s message %s", offset, ro, message);
 
         final OutboundQueueEntry entry = queue[offset];
         entry.commit(message, callback);
