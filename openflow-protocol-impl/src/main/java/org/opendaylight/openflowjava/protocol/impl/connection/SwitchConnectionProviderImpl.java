@@ -141,6 +141,7 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider {
         factory.setTlsConfig(connConfig.getTlsConfiguration());
         factory.setSerializationFactory(serializationFactory);
         factory.setDeserializationFactory(deserializationFactory);
+        factory.setOutboundQueueSize(connConfig.getOutboundQueueSize());
         TransportProtocol transportProtocol = (TransportProtocol) connConfig.getTransferProtocol();
         if (transportProtocol.equals(TransportProtocol.TCP) || transportProtocol.equals(TransportProtocol.TLS)) {
             server = new TcpHandler(connConfig.getAddress(), connConfig.getPort());

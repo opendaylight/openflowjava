@@ -55,4 +55,9 @@ public interface ConnectionConfiguration {
      * @return thread numbers for TcpHandler's eventloopGroups
      */
     public ThreadConfiguration getThreadConfiguration();
+
+    /**
+     * @return size of ChannelOutbounfQueue
+     */
+    public int getOutboundQueueSize();
 }

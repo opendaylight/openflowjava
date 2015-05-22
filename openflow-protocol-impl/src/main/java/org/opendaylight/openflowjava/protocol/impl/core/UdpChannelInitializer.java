@@ -16,10 +16,12 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
  */
 public class UdpChannelInitializer extends ProtocolChannelInitializer<NioDatagramChannel> {
 
+    private int outboundQueueSize;
+
     @Override
     protected void initChannel(NioDatagramChannel ch) throws Exception {
         ch.pipeline().addLast(PipelineHandlers.OF_DATAGRAMPACKET_HANDLER.name(),
-                new OFDatagramPacketHandler(getSwitchConnectionHandler()));
+                new OFDatagramPacketHandler(getSwitchConnectionHandler(), outboundQueueSize));
         OFDatagramPacketDecoder ofDatagramPacketDecoder = new OFDatagramPacketDecoder();
         ofDatagramPacketDecoder.setDeserializationFactory(getDeserializationFactory());
         ch.pipeline().addLast(PipelineHandlers.OF_DATAGRAMPACKET_DECODER.name(),
@@ -28,5 +30,12 @@ public class UdpChannelInitializer extends ProtocolChannelInitializer<NioDatagra
         ofDatagramPacketEncoder.setSerializationFactory(getSerializationFactory());
         ch.pipeline().addLast(PipelineHandlers.OF_ENCODER.name(), ofDatagramPacketEncoder);
 //        connectionFacade.fireConnectionReadyNotification();
+    }
+
+    /**
+     * @param outboundQueueSize
+     */
+    public void setOutboungQueueSize(int outboundQueueSize) {
+        this.outboundQueueSize = outboundQueueSize;
     }
 }

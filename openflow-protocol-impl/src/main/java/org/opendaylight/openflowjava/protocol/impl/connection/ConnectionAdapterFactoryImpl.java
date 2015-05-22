@@ -24,8 +24,8 @@ public class ConnectionAdapterFactoryImpl implements ConnectionAdapterFactory {
      * @return connection adapter tcp-implementation
      */
 	@Override
-    public ConnectionFacade createConnectionFacade(Channel ch, InetSocketAddress address) {
-        return new ConnectionAdapterImpl(ch, address);
+    public ConnectionFacade createConnectionFacade(Channel ch, InetSocketAddress address, int outboundQueueSize) {
+        return new ConnectionAdapterImpl(ch, address, outboundQueueSize);
     }
 
 }

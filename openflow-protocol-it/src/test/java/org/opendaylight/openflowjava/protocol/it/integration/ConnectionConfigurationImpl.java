@@ -21,6 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.T
  */
 public class ConnectionConfigurationImpl implements ConnectionConfiguration {
 
+    private static final int OUTBOUND_QUEUE_SIZE = 1024;
     private InetAddress address;
     private int port;
     private Object transferProtocol;
@@ -92,5 +93,10 @@ public class ConnectionConfigurationImpl implements ConnectionConfiguration {
      */
     public void setThreadConfiguration(ThreadConfiguration threadConfig) {
         this.threadConfig = threadConfig;
+    }
+
+    @Override
+    public int getOutboundQueueSize() {
+        return OUTBOUND_QUEUE_SIZE;
     }
 }

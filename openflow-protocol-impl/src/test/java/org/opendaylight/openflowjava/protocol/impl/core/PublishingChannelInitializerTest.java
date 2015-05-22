@@ -48,6 +48,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow
  */
 public class PublishingChannelInitializerTest {
 
+    private static final int OUTBOUND_QUEUE_SIZE = 1024;
     @Mock SocketChannel mockSocketCh ;
     @Mock ChannelPipeline mockChPipeline ;
     @Mock SwitchConnectionHandler mockSwConnHandler ;
@@ -75,14 +76,15 @@ public class PublishingChannelInitializerTest {
         pubChInitializer.setSerializationFactory(mockSerializationFactory);
         pubChInitializer.setDeserializationFactory(mockDeserializationFactory);
         pubChInitializer.setSwitchIdleTimeout(1) ;
-        pubChInitializer.getConnectionIterator() ;
+        pubChInitializer.getConnectionIterator();
+        pubChInitializer.setOutboungQueueSize(OUTBOUND_QUEUE_SIZE);
 
         when( mockChGrp.size()).thenReturn(1) ;
         pubChInitializer.setSwitchConnectionHandler( mockSwConnHandler ) ;
 
         inetSockAddr = new InetSocketAddress(InetAddress.getLocalHost(), 8675 ) ;
 
-        when(mockConnAdaptorFactory.createConnectionFacade(mockSocketCh, null))
+        when(mockConnAdaptorFactory.createConnectionFacade(mockSocketCh, null, OUTBOUND_QUEUE_SIZE))
         .thenReturn(mockConnFacade);
         when(mockSocketCh.remoteAddress()).thenReturn(inetSockAddr) ;
         when(mockSocketCh.localAddress()).thenReturn(inetSockAddr) ;

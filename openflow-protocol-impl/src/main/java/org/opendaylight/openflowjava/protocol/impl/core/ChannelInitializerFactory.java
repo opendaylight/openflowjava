@@ -24,6 +24,7 @@ public class ChannelInitializerFactory {
     private SerializationFactory serializationFactory;
     private TlsConfiguration tlsConfig;
     private SwitchConnectionHandler switchConnectionHandler;
+    private int outboundQueueSize;
     
     /**
      * @return PublishingChannelInitializer that initializes new channels
@@ -35,6 +36,7 @@ public class ChannelInitializerFactory {
         initializer.setSerializationFactory(serializationFactory);
         initializer.setTlsConfiguration(tlsConfig);
         initializer.setSwitchConnectionHandler(switchConnectionHandler);
+        initializer.setOutboungQueueSize(outboundQueueSize);
         return initializer;
     }
 
@@ -47,6 +49,7 @@ public class ChannelInitializerFactory {
         initializer.setDeserializationFactory(deserializationFactory);
         initializer.setSerializationFactory(serializationFactory);
         initializer.setSwitchConnectionHandler(switchConnectionHandler);
+        initializer.setOutboungQueueSize(outboundQueueSize);
         return initializer;
     }
 
@@ -83,5 +86,12 @@ public class ChannelInitializerFactory {
      */
     public void setSwitchConnectionHandler(SwitchConnectionHandler switchConnectionHandler) {
         this.switchConnectionHandler = switchConnectionHandler;
+    }
+
+    /**
+     * @param outboundQueueSize
+     */
+    public void setOutboundQueueSize(int outboundQueueSize) {
+        this.outboundQueueSize = outboundQueueSize;
     }
 }

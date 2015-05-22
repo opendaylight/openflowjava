@@ -86,12 +86,6 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     /** after this time, RPC future response objects will be thrown away (in minutes) */
     public static final int RPC_RESPONSE_EXPIRATION = 1;
 
-    /**
-     * Default depth of write queue, e.g. we allow these many messages
-     * to be queued up before blocking producers.
-     */
-    public static final int DEFAULT_QUEUE_DEPTH = 1024;
-
     private static final Logger LOG = LoggerFactory
             .getLogger(ConnectionAdapterImpl.class);
     private static final Exception QUEUE_FULL_EXCEPTION =
@@ -127,14 +121,15 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
      * @param channel the channel to be set - used for communication
      * @param address client address (used only in case of UDP communication,
      *  as there is no need to store address over tcp (stable channel))
+     * @param outboundQueueSize maximal size of {@link ChannelOutboundQueue}
      */
-    public ConnectionAdapterImpl(final Channel channel, final InetSocketAddress address) {
+    public ConnectionAdapterImpl(final Channel channel, final InetSocketAddress address, int outboundQueueSize) {
         responseCache = CacheBuilder.newBuilder()
                 .concurrencyLevel(1)
                 .expireAfterWrite(RPC_RESPONSE_EXPIRATION, TimeUnit.MINUTES)
                 .removalListener(REMOVAL_LISTENER).build();
         this.channel = Preconditions.checkNotNull(channel);
-        this.output = new ChannelOutboundQueue(channel, DEFAULT_QUEUE_DEPTH);
+        this.output = new ChannelOutboundQueue(channel, outboundQueueSize);
         output.setAddress(address);
         channel.pipeline().addLast(output);
         LOG.debug("ConnectionAdapter created");
