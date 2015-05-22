@@ -21,8 +21,9 @@ public interface ConnectionAdapterFactory {
 
     /**
      * @param ch
+     * @param outboundQueueSize maximal size of {@link ChannelOutboundQueue}
      * @return connection adapter tcp-implementation
      */
-    public ConnectionFacade createConnectionFacade(Channel ch, InetSocketAddress address) ;
+    public ConnectionFacade createConnectionFacade(Channel ch, InetSocketAddress address, int outboundQueueSize);
 
 }

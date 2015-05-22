@@ -81,6 +81,7 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
         final Tls tlsConfig = getTls();
         final Threads threads = getThreads();
         final TransportProtocol transportProtocol = getTransportProtocol();
+        final int queueSize = getOutboundQueueSize();
         
         return new ConnectionConfiguration() {
             @Override
@@ -165,6 +166,10 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
                         return threads.getBossThreads();
                     }
                 };
+            }
+            @Override
+            public int getOutboundQueueSize() {
+                return queueSize;
             }
         };
     }

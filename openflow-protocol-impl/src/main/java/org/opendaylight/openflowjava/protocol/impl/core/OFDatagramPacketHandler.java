@@ -38,14 +38,17 @@ public class OFDatagramPacketHandler extends MessageToMessageDecoder<DatagramPac
     private static final byte LENGTH_INDEX_IN_HEADER = 2;
     private ConnectionAdapterFactory adapterFactory = new ConnectionAdapterFactoryImpl();
     private SwitchConnectionHandler connectionHandler;
+    private int outboundQueueSize;
 
     /**
      * Default constructor
      * @param sch the switchConnectionHandler that decides
      * what to do with incomming message / channel
+     * @param outboundQueueSize maximal size of {@link ChannelOutboundQueue}
      */
-    public OFDatagramPacketHandler(SwitchConnectionHandler sch) {
+    public OFDatagramPacketHandler(SwitchConnectionHandler sch, int outboundQueueSize) {
         this.connectionHandler = sch;
+        this.outboundQueueSize = outboundQueueSize;
     }
 
     @Override
@@ -62,7 +65,7 @@ public class OFDatagramPacketHandler extends MessageToMessageDecoder<DatagramPac
         MessageConsumer consumer = UdpConnectionMap.getMessageConsumer(msg.sender());
         if (consumer == null) {
             ConnectionFacade connectionFacade =
-                    adapterFactory.createConnectionFacade(ctx.channel(), msg.sender());
+                    adapterFactory.createConnectionFacade(ctx.channel(), msg.sender(), outboundQueueSize);
             connectionHandler.onSwitchConnected(connectionFacade);
             connectionFacade.checkListeners();
             UdpConnectionMap.addConnection(msg.sender(), connectionFacade);

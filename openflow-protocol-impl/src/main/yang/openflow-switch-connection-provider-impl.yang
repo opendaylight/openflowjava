@@ -92,6 +92,11 @@ module openflow-switch-connection-provider-impl {
                     type uint16;
                 }
             }
+            leaf outbound-queue-size {
+                description "Sets size of ChannelOutboundQueue";
+                type uint16;
+                default 1024;
+            }
         }
     }
 }

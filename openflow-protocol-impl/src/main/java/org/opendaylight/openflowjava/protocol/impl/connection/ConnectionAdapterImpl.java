@@ -127,14 +127,15 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
      * @param channel the channel to be set - used for communication
      * @param address client address (used only in case of UDP communication,
      *  as there is no need to store address over tcp (stable channel))
+     * @param outboundQueueSize maximal size of {@link ChannelOutboundQueue}
      */
-    public ConnectionAdapterImpl(final Channel channel, final InetSocketAddress address) {
+    public ConnectionAdapterImpl(final Channel channel, final InetSocketAddress address, int outboundQueueSize) {
         responseCache = CacheBuilder.newBuilder()
                 .concurrencyLevel(1)
                 .expireAfterWrite(RPC_RESPONSE_EXPIRATION, TimeUnit.MINUTES)
                 .removalListener(REMOVAL_LISTENER).build();
         this.channel = Preconditions.checkNotNull(channel);
-        this.output = new ChannelOutboundQueue(channel, DEFAULT_QUEUE_DEPTH);
+        this.output = new ChannelOutboundQueue(channel, outboundQueueSize);
         output.setAddress(address);
         channel.pipeline().addLast(output);
         LOG.debug("ConnectionAdapter created");

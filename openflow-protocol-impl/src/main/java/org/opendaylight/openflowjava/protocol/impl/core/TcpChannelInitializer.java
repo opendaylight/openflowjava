@@ -35,6 +35,7 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
             .getLogger(TcpChannelInitializer.class);
     private final DefaultChannelGroup allChannels;
     private ConnectionAdapterFactory connectionAdapterFactory;
+    private int outboundQueueSize;
 
     /**
      * default ctor
@@ -67,7 +68,7 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
         LOGGER.info("Incoming connection accepted - building pipeline");
         allChannels.add(ch);
         ConnectionFacade connectionFacade = null;
-        connectionFacade = connectionAdapterFactory.createConnectionFacade(ch, null);
+        connectionFacade = connectionAdapterFactory.createConnectionFacade(ch, null, outboundQueueSize);
         try {
             LOGGER.debug("calling plugin: " + getSwitchConnectionHandler());
             getSwitchConnectionHandler().onSwitchConnected(connectionFacade);
@@ -115,5 +116,12 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
      */
     public int size() {
         return allChannels.size();
+    }
+
+    /**
+     * @param outboundQueueSize
+     */
+    public void setOutboungQueueSize(int outboundQueueSize) {
+        this.outboundQueueSize = outboundQueueSize;
     }
 }
