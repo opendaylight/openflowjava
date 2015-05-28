@@ -77,6 +77,10 @@ final class OutboundQueueEntry {
         completed = reallyComplete;
         if (callback != null) {
             callback.onSuccess(response);
+            if (reallyComplete) {
+                // We will not need the callback anymore, make sure it can be GC'd
+                callback = null;
+            }
         }
         LOG.debug("Entry {} completed {} with response {}", this, completed, response);
         return reallyComplete;
@@ -87,10 +91,10 @@ final class OutboundQueueEntry {
             completed = true;
             if (callback != null) {
                 callback.onFailure(cause);
+                callback = null;
             }
         } else {
             LOG.warn("Ignoring failure {} for completed message", cause);
         }
     }
-
 }
