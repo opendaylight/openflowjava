@@ -1,0 +1,8 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+1: Robert Varga <nite@hq.sk>
+Code-Review+2: Michal Polkorab <michal.polkorab@pantheon.sk>
+Submitted-by: Michal Polkorab <michal.polkorab@pantheon.sk>
+Submitted-at: Fri, 29 May 2015 11:12:07 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/21391
+Project: openflowjava
+Branch: refs/heads/master
