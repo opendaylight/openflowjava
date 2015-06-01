@@ -334,7 +334,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
         long messages = 0;
         for (;; ++messages) {
             if (!parent.getChannel().isWritable()) {
-                LOG.trace("Channel is no longer writable");
+                LOG.debug("Channel is no longer writable");
                 break;
             }
 
@@ -404,7 +404,13 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     @Override
     public void channelWritabilityChanged(final ChannelHandlerContext ctx) throws Exception {
         super.channelWritabilityChanged(ctx);
-        conditionalFlush(ctx);
+
+        if (flushScheduled.compareAndSet(false, true)) {
+            LOG.debug("Writability changed, invoking flush on channel {}", parent.getChannel());
+            flush();
+        } else {
+            LOG.debug("Writablity changed, but task is already scheduled on channel {}", parent.getChannel());
+        }
     }
 
     @Override
