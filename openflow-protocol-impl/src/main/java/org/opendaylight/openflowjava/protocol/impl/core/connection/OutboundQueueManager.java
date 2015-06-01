@@ -235,10 +235,10 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
 
     private void scheduleFlush() {
         if (flushScheduled.compareAndSet(false, true)) {
-            LOG.trace("Scheduling flush task on channel {}", parent.getChannel());
+            LOG.debug("Scheduling flush task on channel {}", parent.getChannel());
             parent.getChannel().eventLoop().execute(flushRunnable);
         } else {
-            LOG.trace("Flush task is already present on channel {}", parent.getChannel());
+            LOG.debug("Flush task is already present on channel {}", parent.getChannel());
         }
     }
 
@@ -386,7 +386,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
         if (currentQueue.needsFlush() && (shutdownOffset != null || parent.getChannel().isWritable())) {
             scheduleFlush();
         } else {
-            LOG.trace("Queue is empty, no flush needed");
+            LOG.debug("Queue is empty, no flush needed");
         }
     }
 

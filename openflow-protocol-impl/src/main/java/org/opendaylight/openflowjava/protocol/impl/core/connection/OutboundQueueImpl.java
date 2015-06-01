@@ -95,14 +95,14 @@ final class OutboundQueueImpl implements OutboundQueue {
 
         final OutboundQueueEntry entry = queue[offset];
         entry.commit(message, callback);
-        LOG.debug("Queue {} XID {} at offset {} (of {}) committed", this, xid, offset, ro);
+        LOG.trace("Queue {} XID {} at offset {} (of {}) committed", this, xid, offset, ro);
 
         if (entry.isBarrier()) {
             int my = offset;
             for (;;) {
                 final int prev = BARRIER_OFFSET_UPDATER.getAndSet(this, my);
                 if (prev < my) {
-                    LOG.debug("Queue {} recorded pending barrier offset {}", this, my);
+                    LOG.trace("Queue {} recorded pending barrier offset {}", this, my);
                     break;
                 }
 
@@ -118,16 +118,16 @@ final class OutboundQueueImpl implements OutboundQueue {
         final int offset = CURRENT_OFFSET_UPDATER.getAndIncrement(this);
         if (offset >= reserve) {
             if (forBarrier) {
-                LOG.debug("Queue {} offset {}/{}, using emergency slot", this, offset, queue.length);
+                LOG.trace("Queue {} offset {}/{}, using emergency slot", this, offset, queue.length);
                 return endXid;
             } else {
-                LOG.debug("Queue {} offset {}/{}, not allowing reservation", this, offset, queue.length);
+                LOG.trace("Queue {} offset {}/{}, not allowing reservation", this, offset, queue.length);
                 return null;
             }
         }
 
         final Long xid = baseXid + offset;
-        LOG.debug("Queue {} allocated XID {} at offset {}", this, xid, offset);
+        LOG.trace("Queue {} allocated XID {} at offset {}", this, xid, offset);
         return xid;
     }
 
@@ -209,14 +209,15 @@ final class OutboundQueueImpl implements OutboundQueue {
         }
 
         if (isFlushed()) {
-            LOG.trace("Queue {} is flushed, schedule a replace", this);
+            LOG.debug("Queue {} is flushed, schedule a replace", this);
             return true;
         }
         if (isFinished()) {
-            LOG.trace("Queue {} is finished, schedule a cleanup", this);
+            LOG.debug("Queue {} is finished, schedule a cleanup", this);
             return true;
         }
 
+        LOG.debug("Queue {} does not need a flush", this);
         return false;
     }
 
