@@ -107,6 +107,7 @@ final class OutboundQueueImpl implements OutboundQueue {
                 }
 
                 // We have traveled back, recover
+                LOG.debug("Queue {} retry pending barrier {} >= {}", this, prev, my);
                 my = prev;
             }
         }
