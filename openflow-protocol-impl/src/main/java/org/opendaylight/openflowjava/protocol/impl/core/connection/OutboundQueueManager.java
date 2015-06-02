@@ -11,12 +11,8 @@ import com.google.common.base.Preconditions;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.net.InetSocketAddress;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueException;
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueHandler;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoReplyInput;
@@ -30,20 +26,6 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     private static final Logger LOG = LoggerFactory.getLogger(OutboundQueueManager.class);
 
     /**
-     * This is the default upper bound we place on the flush task running
-     * a single iteration. We relinquish control after about this amount
-     * of time.
-     */
-    private static final long DEFAULT_WORKTIME_MICROS = TimeUnit.MILLISECONDS.toMicros(100);
-
-    /**
-     * We re-check the time spent flushing every this many messages. We do this because
-     * checking after each message may prove to be CPU-intensive. Set to Integer.MAX_VALUE
-     * or similar to disable the feature.
-     */
-    private static final int WORKTIME_RECHECK_MSGS = 64;
-
-    /**
      * Default low write watermark. Channel will become writable when number of outstanding
      * bytes dips below this value.
      */
@@ -55,23 +37,24 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
      */
     private static final int DEFAULT_HIGH_WATERMARK = DEFAULT_LOW_WATERMARK * 2;
 
-
     private final Queue<OutboundQueueImpl> activeQueues = new LinkedList<>();
     private final AtomicBoolean flushScheduled = new AtomicBoolean();
+    private final StackedOutboundQueue currentQueue;
     private final ConnectionAdapterImpl parent;
     private final InetSocketAddress address;
+    private final int maxNonBarrierMessages;
     private final long maxBarrierNanos;
-    private final long maxWorkTime;
     private final T handler;
 
+    // Accessed concurrently
+    private volatile boolean reading;
+
     // Updated from netty only
-    private long lastBarrierNanos = System.nanoTime();
-    private OutboundQueueCacheSlice slice;
-    private OutboundQueueImpl currentQueue;
+    private boolean alreadyReading;
     private boolean barrierTimerEnabled;
+    private long lastBarrierNanos = System.nanoTime();
     private int nonBarrierMessages;
-    private long lastXid = 0;
-    private Integer shutdownOffset;
+    private boolean shuttingDown;
 
     // Passed to executor to request triggering of flush
     private final Runnable flushRunnable = new Runnable() {
@@ -90,17 +73,18 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     };
 
     OutboundQueueManager(final ConnectionAdapterImpl parent, final InetSocketAddress address, final T handler,
-        final OutboundQueueCacheSlice slice, final long maxBarrierNanos) {
+        final int maxNonBarrierMessages, final long maxBarrierNanos) {
         this.parent = Preconditions.checkNotNull(parent);
         this.handler = Preconditions.checkNotNull(handler);
-        this.slice = Preconditions.checkNotNull(slice);
+        Preconditions.checkArgument(maxNonBarrierMessages > 0);
+        this.maxNonBarrierMessages = maxNonBarrierMessages;
         Preconditions.checkArgument(maxBarrierNanos > 0);
         this.maxBarrierNanos = maxBarrierNanos;
         this.address = address;
-        this.maxWorkTime = TimeUnit.MICROSECONDS.toNanos(DEFAULT_WORKTIME_MICROS);
 
-        LOG.debug("Queue manager instantiated with queue slice {}", slice);
-        createQueue();
+        currentQueue = new StackedOutboundQueue(this);
+        LOG.debug("Queue manager instantiated with queue {}", currentQueue);
+        handler.onConnectionQueueChanged(currentQueue);
     }
 
     T getHandler() {
@@ -110,20 +94,6 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     @Override
     public void close() {
         handler.onConnectionQueueChanged(null);
-        if (slice != null) {
-            slice.decRef();
-            slice = null;
-        }
-    }
-
-    private void createQueue() {
-        final long baseXid = lastXid;
-        lastXid += slice.getQueueSize() + 1;
-
-        final OutboundQueueImpl queue = slice.getQueue(this, baseXid);
-        activeQueues.add(queue);
-        currentQueue = queue;
-        handler.onConnectionQueueChanged(queue);
     }
 
     private void scheduleBarrierTimer(final long now) {
@@ -150,45 +120,6 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
         LOG.trace("Barrier XID {} scheduled", xid);
     }
 
-    /**
-     * Flush an entry from the queue.
-     *
-     * @param now Time reference for 'now'. We take this as an argument, as
-     *            we need a timestamp to mark barrier messages we see swinging
-     *            by. That timestamp does not need to be completely accurate,
-     *            hence we use the flush start time. Alternative would be to
-     *            measure System.nanoTime() for each barrier -- needlessly
-     *            adding overhead.
-     *
-     * @return Entry which was flushed, null if no entry is ready.
-     */
-    OfHeader flushEntry(final long now) {
-        final OfHeader message = currentQueue.flushEntry();
-        if (currentQueue.isFlushed()) {
-            LOG.debug("Queue {} is fully flushed", currentQueue);
-            createQueue();
-        }
-
-        if (message == null) {
-            return null;
-        }
-
-        if (message instanceof BarrierInput) {
-            LOG.trace("Barrier message seen, resetting counters");
-            nonBarrierMessages = 0;
-            lastBarrierNanos = now;
-        } else {
-            nonBarrierMessages++;
-            if (nonBarrierMessages >= slice.getQueueSize()) {
-                LOG.trace("Scheduled barrier request after {} non-barrier messages", nonBarrierMessages);
-                scheduleBarrierMessage();
-            } else if (!barrierTimerEnabled) {
-                scheduleBarrierTimer(now);
-            }
-        }
-
-        return message;
-    }
 
     /**
      * Invoked whenever a message comes in from the switch. Runs matching
@@ -200,50 +131,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     boolean onMessage(final OfHeader message) {
         LOG.trace("Attempting to pair message {} to a request", message);
 
-        Iterator<OutboundQueueImpl> it = activeQueues.iterator();
-        while (it.hasNext()) {
-            final OutboundQueueImpl queue = it.next();
-            final OutboundQueueEntry entry = queue.pairRequest(message);
-
-            if (entry == null) {
-                continue;
-            }
-
-            LOG.trace("Queue {} accepted response {}", queue, message);
-
-            // This has been a barrier request, we need to flush all
-            // previous queues
-            if (entry.isBarrier() && activeQueues.size() > 1) {
-                LOG.trace("Queue {} indicated request was a barrier", queue);
-
-                it = activeQueues.iterator();
-                while (it.hasNext()) {
-                    final OutboundQueueImpl q = it.next();
-
-                    // We want to complete all queues before the current one, we will
-                    // complete the current queue below
-                    if (!queue.equals(q)) {
-                        LOG.trace("Queue {} is implied finished", q);
-                        q.completeAll();
-                        it.remove();
-                        slice.putQueue(q);
-                    } else {
-                        break;
-                    }
-                }
-            }
-
-            if (queue.isFinished()) {
-                LOG.trace("Queue {} is finished", queue);
-                it.remove();
-                slice.putQueue(queue);
-            }
-
-            return true;
-        }
-
-        LOG.debug("Failed to find completion for message {}", message);
-        return false;
+        return currentQueue.pairRequest(message);
     }
 
     private void scheduleFlush() {
@@ -255,18 +143,13 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
         }
     }
 
-    void ensureFlushing(final OutboundQueueImpl queue) {
-        Preconditions.checkState(currentQueue.equals(queue));
-        scheduleFlush();
-    }
-
     /**
      * Periodic barrier check.
      */
     protected void barrier() {
         LOG.debug("Channel {} barrier timer expired", parent.getChannel());
         barrierTimerEnabled = false;
-        if (shutdownOffset != null) {
+        if (shuttingDown) {
             LOG.trace("Channel shut down, not processing barrier");
             return;
         }
@@ -301,31 +184,19 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
         conditionalFlush();
     }
 
-    private void shutdownFlush() {
-        long entries = 0;
+    private void writeAndFlush() {
+        final long start = System.nanoTime();
 
-        // Fail all queues
-        final Iterator<OutboundQueueImpl> it = activeQueues.iterator();
-        while (it.hasNext()) {
-            final OutboundQueueImpl queue = it.next();
-
-            entries += queue.failAll(OutboundQueueException.DEVICE_DISCONNECTED);
-            if (queue.isFinished()) {
-                LOG.trace("Cleared queue {}", queue);
-                it.remove();
-            }
+        final int entries = currentQueue.writeEntries(parent.getChannel(), start);
+        if (entries > 0) {
+            LOG.debug("Flushing channel {}", parent.getChannel());
+            parent.getChannel().flush();
         }
 
-        LOG.debug("Cleared {} queue entries from channel {}", entries, parent.getChannel());
-
-        Preconditions.checkNotNull(currentQueue, "Current queue should not be null yet");
-        if (currentQueue.isShutdown(shutdownOffset)) {
-            currentQueue = null;
-            handler.onConnectionQueueChanged(null);
-            LOG.debug("Channel {} shutdown complete", parent.getChannel());
-        } else {
-            LOG.trace("Channel {} current queue not completely flushed yet", parent.getChannel());
-            rescheduleFlush();
+        if (LOG.isDebugEnabled()) {
+            final long stop = System.nanoTime();
+            LOG.debug("Flushed {} messages to channel {} in {}us", entries,
+                parent.getChannel(), TimeUnit.NANOSECONDS.toMicros(stop - start));
         }
     }
 
@@ -336,61 +207,17 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
      */
     protected void flush() {
         // If the channel is gone, just flush whatever is not completed
-        if (shutdownOffset != null) {
-            shutdownFlush();
-            return;
+        if (!shuttingDown) {
+            LOG.debug("Dequeuing messages to channel {}", parent.getChannel());
+            writeAndFlush();
+            rescheduleFlush();
+        } else if (currentQueue.finishShutdown()) {
+            handler.onConnectionQueueChanged(null);
+            LOG.debug("Channel {} shutdown complete", parent.getChannel());
+        } else {
+            LOG.trace("Channel {} current queue not completely flushed yet", parent.getChannel());
+            rescheduleFlush();
         }
-
-        final long start = System.nanoTime();
-        final long deadline = start + maxWorkTime;
-
-        LOG.debug("Dequeuing messages to channel {}", parent.getChannel());
-
-        long messages = 0;
-        for (;; ++messages) {
-            if (!parent.getChannel().isWritable()) {
-                LOG.debug("Channel {} is no longer writable", parent.getChannel());
-                break;
-            }
-
-            final OfHeader message = flushEntry(start);
-            if (message == null) {
-                LOG.trace("The queue is completely drained");
-                break;
-            }
-
-            final Object wrapper;
-            if (address == null) {
-                wrapper = new MessageListenerWrapper(message, null);
-            } else {
-                wrapper = new UdpMessageListenerWrapper(message, null, address);
-            }
-            parent.getChannel().write(wrapper);
-
-            /*
-             * Check every WORKTIME_RECHECK_MSGS for exceeded time.
-             *
-             * XXX: given we already measure our flushing throughput, we
-             *      should be able to perform dynamic adjustments here.
-             *      is that additional complexity needed, though?
-             */
-            if ((messages % WORKTIME_RECHECK_MSGS) == 0 && System.nanoTime() >= deadline) {
-                LOG.trace("Exceeded allotted work time {}us",
-                        TimeUnit.NANOSECONDS.toMicros(maxWorkTime));
-                break;
-            }
-        }
-
-        if (messages > 0) {
-            LOG.debug("Flushing {} message(s) to channel {}", messages, parent.getChannel());
-            parent.getChannel().flush();
-        }
-
-        final long stop = System.nanoTime();
-        LOG.debug("Flushed {} messages in {}us to channel {}",
-                messages, TimeUnit.NANOSECONDS.toMicros(stop - start), parent.getChannel());
-
-        rescheduleFlush();
     }
 
     /**
@@ -399,7 +226,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
      */
     private void conditionalFlush() {
         if (currentQueue.needsFlush()) {
-            if (shutdownOffset != null || parent.getChannel().isWritable()) {
+            if (shuttingDown || parent.getChannel().isWritable()) {
                 scheduleFlush();
             } else {
                 LOG.debug("Channel {} is not I/O ready, not scheduling a flush", parent.getChannel());
@@ -409,15 +236,10 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
         }
     }
 
-    private void conditionalFlush(final ChannelHandlerContext ctx) {
-        Preconditions.checkState(ctx.channel().equals(parent.getChannel()), "Inconsistent channel %s with context %s", parent.getChannel(), ctx);
-        conditionalFlush();
-    }
-
     @Override
     public void channelActive(final ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
-        conditionalFlush(ctx);
+        conditionalFlush();
     }
 
     public void handlerAdded(final ChannelHandlerContext ctx) throws Exception {
@@ -437,6 +259,8 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     public void channelWritabilityChanged(final ChannelHandlerContext ctx) throws Exception {
         super.channelWritabilityChanged(ctx);
 
+        // A simple trade-off. While we could write things right away, if there is a task
+        // schedule, let it have the work
         if (flushScheduled.compareAndSet(false, true)) {
             LOG.debug("Channel {} writability changed, invoking flush", parent.getChannel());
             flush();
@@ -449,25 +273,48 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
 
-        LOG.debug("Channel {} initiating shutdown...", parent.getChannel());
+        LOG.debug("Channel {} initiating shutdown...", ctx.channel());
 
-        /*
-         * We are dealing with a multi-threaded shutdown, as the user may still
-         * be reserving entries in the queue. We are executing in a netty thread,
-         * so neither flush nor barrier can be running, which is good news.
-         *
-         * We will eat up all the slots in the queue here and mark the offset first
-         * reserved offset and free up all the cached queues. We then schedule
-         * the flush task, which will deal with the rest of the shutdown process.
-         */
-        shutdownOffset = currentQueue.startShutdown();
-        if (slice != null) {
-            slice.decRef();
-            slice = null;
+        shuttingDown = true;
+        final long entries = currentQueue.startShutdown(ctx.channel());
+        LOG.debug("Cleared {} queue entries from channel {}", entries, ctx.channel());
+
+        scheduleFlush();
+    }
+
+    @Override
+    public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
+        // non-volatile read if we are called multiple times
+        if (!alreadyReading) {
+            alreadyReading = true;
+            reading = true;
+        }
+        super.channelRead(ctx, msg);
+    }
+
+    @Override
+    public void channelReadComplete(final ChannelHandlerContext ctx) throws Exception {
+        super.channelReadComplete(ctx);
+        alreadyReading = false;
+        reading = false;
+
+        // TODO: model this as an atomic gate. We need to sync on it to make sure
+        //       that ensureFlushing() suppresses scheudling only if this barrier
+        //       has not been crossed.
+        synchronized (this) {
+            // Run flush regardless of writability. This is not strictly required, as
+            // there may be a scheduled flush. Instead of canceling it, which is expensive,
+            // we'll steal its work. Note that more work may accumulate in the time window
+            // between now and when the task will run, so it may not be a no-op after all.
+            //
+            // The reason for this is to will the output buffer before we go into selection
+            // phase. This will make sure the pipe is full (in which case our next wake up
+            // will be the queue becoming writable).
+            writeAndFlush();
         }
 
-        LOG.trace("Channel {} reserved all entries at offset {}", parent.getChannel(), shutdownOffset);
-        scheduleFlush();
+        LOG.debug("Opportunistic write on channel {}", parent.getChannel());
+        writeAndFlush();
     }
 
     @Override
@@ -475,8 +322,64 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
         return String.format("Channel %s queue [flushing=%s]", parent.getChannel(), flushScheduled.get());
     }
 
+    void ensureFlushing() {
+        // If the channel is not writable, there's no point in waking up,
+        // once we become writable, we will run a full flush
+        if (!parent.getChannel().isWritable()) {
+            return;
+        }
+
+        // We are currently reading something, just a quick sync to ensure we will in fact
+        // flush state.
+        if (reading) {
+            synchronized (this) {
+                if (reading) {
+                    return;
+                }
+            }
+        }
+
+        // Netty thread is outside our code, we need to schedule a flush
+        // to re-synchronize.
+        scheduleFlush();
+    }
+
     void onEchoRequest(final EchoRequestMessage message) {
         final EchoReplyInput reply = new EchoReplyInputBuilder().setData(message.getData()).setVersion(message.getVersion()).setXid(message.getXid()).build();
         parent.getChannel().writeAndFlush(reply);
+    }
+
+    /**
+     * Write a message into the underlying channel.
+     *
+     * @param now Time reference for 'now'. We take this as an argument, as
+     *            we need a timestamp to mark barrier messages we see swinging
+     *            by. That timestamp does not need to be completely accurate,
+     *            hence we use the flush start time. Alternative would be to
+     *            measure System.nanoTime() for each barrier -- needlessly
+     *            adding overhead.
+     */
+    void writeMessage(final OfHeader message, final long now) {
+        final Object wrapper;
+        if (address == null) {
+            wrapper = new MessageListenerWrapper(message, null);
+        } else {
+            wrapper = new UdpMessageListenerWrapper(message, null, address);
+        }
+        parent.getChannel().write(wrapper);
+
+        if (message instanceof BarrierInput) {
+            LOG.trace("Barrier message seen, resetting counters");
+            nonBarrierMessages = 0;
+            lastBarrierNanos = now;
+        } else {
+            nonBarrierMessages++;
+            if (nonBarrierMessages >= maxNonBarrierMessages) {
+                LOG.trace("Scheduled barrier request after {} non-barrier messages", nonBarrierMessages);
+                scheduleBarrierMessage();
+            } else if (!barrierTimerEnabled) {
+                scheduleBarrierTimer(now);
+            }
+        }
     }
 }
