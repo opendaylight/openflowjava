@@ -91,6 +91,10 @@ final class StackedSegment {
         return baseXid;
     }
 
+    long getEndXid() {
+        return endXid;
+    }
+
     OutboundQueueEntry getEntry(final int offset) {
         return entries[offset];
     }
