@@ -9,6 +9,9 @@
 
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
+import static org.opendaylight.openflowjava.protocol.impl.core.PipelineHandlers.DELEGATING_INBOUND_HANDLER;
+import static org.opendaylight.openflowjava.protocol.impl.core.PipelineHandlers.OF_VERSION_DETECTOR;
+import static org.opendaylight.openflowjava.protocol.impl.core.PipelineHandlers.OUTBOUND_QUEUE_MANAGER;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -28,7 +31,6 @@ import org.opendaylight.openflowjava.protocol.api.connection.ConnectionReadyList
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueHandler;
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueHandlerRegistration;
 import org.opendaylight.openflowjava.protocol.impl.core.OFVersionDetector;
-import org.opendaylight.openflowjava.protocol.impl.core.PipelineHandlers;
 import org.opendaylight.openflowjava.statistics.CounterEventTypes;
 import org.opendaylight.openflowjava.statistics.StatisticsCounters;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
@@ -463,7 +465,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
 
     @Override
     public void fireConnectionReadyNotification() {
-        versionDetector = (OFVersionDetector) channel.pipeline().get(PipelineHandlers.OF_VERSION_DETECTOR.name());
+        versionDetector = (OFVersionDetector) channel.pipeline().get(OF_VERSION_DETECTOR.name());
         Preconditions.checkState(versionDetector != null);
 
         new Thread(new Runnable() {
@@ -508,9 +510,9 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
             final T handler, final int maxQueueDepth, final long maxBarrierNanos) {
         Preconditions.checkState(outputManager == null, "Manager %s already registered", outputManager);
 
-        final OutboundQueueManager<T> ret = new OutboundQueueManager<>(this, address, handler, maxQueueDepth, maxBarrierNanos);
+        final OutboundQueueManager<T> ret = new OutboundQueueManager<>(address, handler, maxQueueDepth, maxBarrierNanos);
         outputManager = ret;
-        channel.pipeline().addLast(outputManager);
+        channel.pipeline().addBefore(DELEGATING_INBOUND_HANDLER.name(), OUTBOUND_QUEUE_MANAGER.name(), outputManager);
 
         return new OutboundQueueHandlerRegistrationImpl<T>(handler) {
             @Override
@@ -520,10 +522,6 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
                 outputManager = null;
             }
         };
-    }
-
-    Channel getChannel() {
-        return channel;
     }
 
     @Override
