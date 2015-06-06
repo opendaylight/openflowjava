@@ -58,16 +58,17 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     private final Queue<OutboundQueueImpl> activeQueues = new LinkedList<>();
     private final AtomicBoolean flushScheduled = new AtomicBoolean();
     private final StackedOutboundQueue currentQueue;
-    private final ConnectionAdapterImpl parent;
     private final InetSocketAddress address;
     private final int maxNonBarrierMessages;
     private final long maxBarrierNanos;
     private final T handler;
+    // Updated only once, from Netty
+    private ChannelHandlerContext ctx;
 
-    // Accessed concurrently
+    // Accessed concurrently, updated from Netty only
     private volatile PipelineState state = PipelineState.IDLE;
 
-    // Updated from netty only
+    // Updated from Netty only
     private boolean alreadyReading;
     private boolean barrierTimerEnabled;
     private long lastBarrierNanos = System.nanoTime();
@@ -90,9 +91,8 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
         }
     };
 
-    OutboundQueueManager(final ConnectionAdapterImpl parent, final InetSocketAddress address, final T handler,
+    OutboundQueueManager(final InetSocketAddress address, final T handler,
         final int maxNonBarrierMessages, final long maxBarrierNanos) {
-        this.parent = Preconditions.checkNotNull(parent);
         this.handler = Preconditions.checkNotNull(handler);
         Preconditions.checkArgument(maxNonBarrierMessages > 0);
         this.maxNonBarrierMessages = maxNonBarrierMessages;
@@ -102,7 +102,6 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
 
         currentQueue = new StackedOutboundQueue(this);
         LOG.debug("Queue manager instantiated with queue {}", currentQueue);
-        handler.onConnectionQueueChanged(currentQueue);
     }
 
     T getHandler() {
@@ -123,7 +122,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
 
         final long delay = next - now;
         LOG.trace("Scheduling barrier timer {}us from now", TimeUnit.NANOSECONDS.toMicros(delay));
-        parent.getChannel().eventLoop().schedule(barrierRunnable, next - now, TimeUnit.NANOSECONDS);
+        ctx.executor().schedule(barrierRunnable, next - now, TimeUnit.NANOSECONDS);
         barrierTimerEnabled = true;
     }
 
@@ -154,10 +153,10 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
 
     private void scheduleFlush() {
         if (flushScheduled.compareAndSet(false, true)) {
-            LOG.trace("Scheduling flush task on channel {}", parent.getChannel());
-            parent.getChannel().eventLoop().execute(flushRunnable);
+            LOG.trace("Scheduling flush task on channel {}", ctx.channel());
+            ctx.executor().execute(flushRunnable);
         } else {
-            LOG.trace("Flush task is already present on channel {}", parent.getChannel());
+            LOG.trace("Flush task is already present on channel {}", ctx.channel());
         }
     }
 
@@ -165,7 +164,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
      * Periodic barrier check.
      */
     protected void barrier() {
-        LOG.debug("Channel {} barrier timer expired", parent.getChannel());
+        LOG.debug("Channel {} barrier timer expired", ctx.channel());
         barrierTimerEnabled = false;
         if (shuttingDown) {
             LOG.trace("Channel shut down, not processing barrier");
@@ -196,7 +195,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
          * such that only one flush is scheduled at any given time.
          */
         if (!flushScheduled.compareAndSet(true, false)) {
-            LOG.warn("Channel {} queue {} flusher found unscheduled", parent.getChannel(), this);
+            LOG.warn("Channel {} queue {} flusher found unscheduled", ctx.channel(), this);
         }
 
         conditionalFlush();
@@ -207,16 +206,16 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
 
         final long start = System.nanoTime();
 
-        final int entries = currentQueue.writeEntries(parent.getChannel(), start);
+        final int entries = currentQueue.writeEntries(ctx.channel(), start);
         if (entries > 0) {
-            LOG.trace("Flushing channel {}", parent.getChannel());
-            parent.getChannel().flush();
+            LOG.trace("Flushing channel {}", ctx.channel());
+            ctx.flush();
         }
 
         if (LOG.isDebugEnabled()) {
             final long stop = System.nanoTime();
             LOG.debug("Flushed {} messages to channel {} in {}us", entries,
-                parent.getChannel(), TimeUnit.NANOSECONDS.toMicros(stop - start));
+                ctx.channel(), TimeUnit.NANOSECONDS.toMicros(stop - start));
         }
 
         state = PipelineState.IDLE;
@@ -230,14 +229,14 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     protected void flush() {
         // If the channel is gone, just flush whatever is not completed
         if (!shuttingDown) {
-            LOG.trace("Dequeuing messages to channel {}", parent.getChannel());
+            LOG.trace("Dequeuing messages to channel {}", ctx.channel());
             writeAndFlush();
             rescheduleFlush();
         } else if (currentQueue.finishShutdown()) {
             handler.onConnectionQueueChanged(null);
-            LOG.debug("Channel {} shutdown complete", parent.getChannel());
+            LOG.debug("Channel {} shutdown complete", ctx.channel());
         } else {
-            LOG.trace("Channel {} current queue not completely flushed yet", parent.getChannel());
+            LOG.trace("Channel {} current queue not completely flushed yet", ctx.channel());
             rescheduleFlush();
         }
     }
@@ -248,10 +247,10 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
      */
     private void conditionalFlush() {
         if (currentQueue.needsFlush()) {
-            if (shuttingDown || parent.getChannel().isWritable()) {
+            if (shuttingDown || ctx.channel().isWritable()) {
                 scheduleFlush();
             } else {
-                LOG.debug("Channel {} is not I/O ready, not scheduling a flush", parent.getChannel());
+                LOG.debug("Channel {} is not I/O ready, not scheduling a flush", ctx.channel());
             }
         } else {
             LOG.trace("Queue is empty, no flush needed");
@@ -259,11 +258,6 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     }
 
     @Override
-    public void channelActive(final ChannelHandlerContext ctx) throws Exception {
-        super.channelActive(ctx);
-        conditionalFlush();
-    }
-
     public void handlerAdded(final ChannelHandlerContext ctx) throws Exception {
         /*
          * Tune channel write buffering. We increase the writability window
@@ -273,6 +267,10 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
          */
         ctx.channel().config().setWriteBufferLowWaterMark(DEFAULT_LOW_WATERMARK);
         ctx.channel().config().setWriteBufferHighWaterMark(DEFAULT_HIGH_WATERMARK);
+
+        // Final initialization bit and we're ready to go
+        this.ctx = Preconditions.checkNotNull(ctx);
+        handler.onConnectionQueueChanged(currentQueue);
 
         super.handlerAdded(ctx);
     }
@@ -284,7 +282,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
         // The channel is writable again. There may be a flush task on the way, but let's
         // steal its work, potentially decreasing latency. Since there is a window between
         // now and when it will run, it may still pick up some more work to do.
-        LOG.debug("Channel {} writability changed, invoking flush", parent.getChannel());
+        LOG.debug("Channel {} writability changed, invoking flush", ctx.channel());
         writeAndFlush();
     }
 
@@ -331,13 +329,13 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
 
     @Override
     public String toString() {
-        return String.format("Channel %s queue [flushing=%s]", parent.getChannel(), flushScheduled.get());
+        return String.format("Channel %s queue [flushing=%s]", ctx.channel(), flushScheduled.get());
     }
 
     void ensureFlushing() {
         // If the channel is not writable, there's no point in waking up,
         // once we become writable, we will run a full flush
-        if (!parent.getChannel().isWritable()) {
+        if (!ctx.channel().isWritable()) {
             return;
         }
 
@@ -360,7 +358,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
 
     void onEchoRequest(final EchoRequestMessage message) {
         final EchoReplyInput reply = new EchoReplyInputBuilder().setData(message.getData()).setVersion(message.getVersion()).setXid(message.getXid()).build();
-        parent.getChannel().writeAndFlush(reply);
+        ctx.writeAndFlush(reply);
     }
 
     /**
@@ -380,7 +378,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
         } else {
             wrapper = new UdpMessageListenerWrapper(message, null, address);
         }
-        parent.getChannel().write(wrapper);
+        ctx.write(wrapper);
 
         if (message instanceof BarrierInput) {
             LOG.trace("Barrier message seen, resetting counters");
