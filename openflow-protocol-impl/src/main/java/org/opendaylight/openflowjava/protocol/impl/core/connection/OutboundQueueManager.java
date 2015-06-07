@@ -43,6 +43,19 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
      */
     private static final int WORKTIME_RECHECK_MSGS = 64;
 
+    /**
+     * Default low write watermark. Channel will become writable when number of outstanding
+     * bytes dips below this value.
+     */
+    private static final int DEFAULT_LOW_WATERMARK = 128 * 1024;
+
+    /**
+     * Default write high watermark. Channel will become un-writable when number of
+     * outstanding bytes hits this value.
+     */
+    private static final int DEFAULT_HIGH_WATERMARK = DEFAULT_LOW_WATERMARK * 2;
+
+
     private final Queue<OutboundQueueImpl> activeQueues = new LinkedList<>();
     private final AtomicBoolean flushScheduled = new AtomicBoolean();
     private final ConnectionAdapterImpl parent;
@@ -317,7 +330,9 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     }
 
     /**
-     * Perform a single flush operation.
+     * Perform a single flush operation. We keep it here so we do not generate
+     * syntetic accessors for private fields. Otherwise it could be moved into
+     * {@link #flushRunnable}.
      */
     protected void flush() {
         // If the channel is gone, just flush whatever is not completed
@@ -403,6 +418,19 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     public void channelActive(final ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
         conditionalFlush(ctx);
+    }
+
+    public void handlerAdded(final ChannelHandlerContext ctx) throws Exception {
+        /*
+         * Tune channel write buffering. We increase the writability window
+         * to ensure we can flush an entire queue segment in one go. We definitely
+         * want to keep the difference above 64k, as that will ensure we use jam-packed
+         * TCP packets. UDP will fragment as appropriate.
+         */
+        ctx.channel().config().setWriteBufferHighWaterMark(DEFAULT_HIGH_WATERMARK);
+        ctx.channel().config().setWriteBufferLowWaterMark(DEFAULT_LOW_WATERMARK);
+
+        super.handlerAdded(ctx);
     }
 
     @Override
