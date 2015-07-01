@@ -8,12 +8,11 @@
 package org.opendaylight.openflowjava.protocol.api.extensibility;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
  * @author michal.polkorab
- * @param <E>
+ * @param <E> output message type
  */
 public interface HeaderDeserializer<E extends DataObject> extends OFGeneralDeserializer {
 

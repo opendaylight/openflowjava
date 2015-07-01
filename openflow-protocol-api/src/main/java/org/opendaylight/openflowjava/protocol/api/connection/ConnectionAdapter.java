@@ -57,13 +57,15 @@ public interface ConnectionAdapter extends OpenflowProtocolService {
 
     /**
      * set listener for connection became ready-to-use event
-     * @param connectionReadyListener
+     * @param connectionReadyListener listens to connection ready event
      */
     void setConnectionReadyListener(ConnectionReadyListener connectionReadyListener);
 
     /**
      * sets option for automatic channel reading;
      * if set to false, incoming messages won't be read
+     *
+     * @param autoRead target value to be switched to
      */
     void setAutoRead(boolean autoRead);
 
@@ -74,9 +76,10 @@ public interface ConnectionAdapter extends OpenflowProtocolService {
 
     /**
      * Registers a new bypass outbound queue
-     * @param handler
-     * @param maxQueueDepth
-     * @param maxBarrierNanos
+     * @param <T> handler type
+     * @param handler queue handler
+     * @param maxQueueDepth max amount of not confirmed messaged in queue (i.e. edge for barrier message)
+     * @param maxBarrierNanos regular base for barrier message
      * @return An {@link OutboundQueueHandlerRegistration}
      */
     @Beta
