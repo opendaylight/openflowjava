@@ -60,6 +60,8 @@ public interface SerializerExtensionProvider {
 
     /**
      * Registers match entry serializer
+     * @param <C> oxm type
+     * @param <F> match field type
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */

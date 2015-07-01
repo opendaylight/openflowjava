@@ -19,7 +19,7 @@ public final class ExperimenterInstructionDeserializerKey extends InstructionDes
 
     /**
      * @param version protocol wire version
-     * @param experimenterId
+     * @param experimenterId experimenter (vendor) identifier
      */
     public ExperimenterInstructionDeserializerKey(short version, Long experimenterId) {
         super(version, EncodeConstants.EXPERIMENTER_VALUE, experimenterId);

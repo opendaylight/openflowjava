@@ -19,15 +19,15 @@ public abstract class BinContent {
     }
 
     /**
-     * @param value
-     * @return int part wrapped in long
+     * @param value input integer value (might be negative)
+     * @return int part wrapped in long (always positive)
      */
     public static long intToUnsignedLong(int value) {
         return value & 0x00000000ffffffffL;
     }
 
     /**
-     * @param value
+     * @param value input long value
      * @return long cut into int
      */
     public static int longToSignedInt(long value) {

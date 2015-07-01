@@ -21,9 +21,9 @@ public class EnhancedMessageTypeKey<E, F> extends MessageTypeKey<E> {
     private final Class<F> msgType2;
 
     /**
-     * @param msgVersion
-     * @param msgType
-     * @param msgType2
+     * @param msgVersion protocol version
+     * @param msgType main type
+     * @param msgType2 subtype
      */
     public EnhancedMessageTypeKey(short msgVersion, Class<E> msgType, Class<F> msgType2) {
         super(msgVersion, msgType);
