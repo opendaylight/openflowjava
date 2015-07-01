@@ -20,7 +20,7 @@ public class InstructionDeserializerKey extends MessageCodeKey {
     /**
      * @param version protocol wire version
      * @param type instruction type
-     * @param experimenterId
+     * @param experimenterId experimenter (vendor) identifier
      */
     public InstructionDeserializerKey(short version, int type,
             Long experimenterId) {

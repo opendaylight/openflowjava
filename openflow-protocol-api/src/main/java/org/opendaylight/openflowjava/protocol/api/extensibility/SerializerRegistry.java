@@ -23,6 +23,8 @@ public interface SerializerRegistry {
     void init();
 
     /**
+     * @param <K> input key type
+     * @param <S> type of resulting serializer
      * @param msgTypeKey lookup key
      * @return serializer or NullPointerException if no serializer was found
      */
@@ -36,6 +38,7 @@ public interface SerializerRegistry {
      * If the serializer implements {@link SerializerRegistryInjector} interface,
      * the serializer is injected with SerializerRegistry instance.
      *
+     * @param <K> serializer key type
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */
@@ -44,6 +47,7 @@ public interface SerializerRegistry {
 
     /**
      * Unregisters serializer
+     * @param <K> serializer key type
      * @param key used for serializer lookup
      * @return true if serializer was removed,
      *  false if no serializer was found under specified key

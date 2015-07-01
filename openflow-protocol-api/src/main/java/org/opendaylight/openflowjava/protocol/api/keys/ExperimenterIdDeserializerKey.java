@@ -21,6 +21,7 @@ public final class ExperimenterIdDeserializerKey extends MessageCodeKey
     private Long experimenterId;
 
     /**
+     * @param <E> type of target experimenter object
      * @param version protocol wire version
      * @param experimenterId experimenter / vendor ID
      * @param objectClass class of created object

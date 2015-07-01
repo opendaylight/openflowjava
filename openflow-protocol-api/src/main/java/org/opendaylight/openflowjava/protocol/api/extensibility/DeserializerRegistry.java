@@ -22,6 +22,7 @@ public interface DeserializerRegistry {
     void init();
 
     /**
+     * @param <T> type of particular deserializer
      * @param key used for deserializer lookup
      * @return deserializer found
      */

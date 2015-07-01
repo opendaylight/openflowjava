@@ -24,7 +24,7 @@ public interface SwitchConnectionHandler {
     void onSwitchConnected(ConnectionAdapter connection);
 
     /**
-     * @param switchAddress
+     * @param switchAddress address of incoming connection (address + port)
      * @return true, if connection from switch having given address shell be accepted; false otherwise
      */
     boolean accept(InetAddress switchAddress);

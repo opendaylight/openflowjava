@@ -7,14 +7,13 @@
  */
 package org.opendaylight.openflowjava.protocol.api.extensibility;
 
-import org.opendaylight.yangtools.yang.binding.DataObject;
-
 import io.netty.buffer.ByteBuf;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
  * Does only-header serialization (such as oxm_ids, action_ids, instruction_ids)
  * @author michal.polkorab
- * @param <T>
+ * @param <T> input message type
  */
 public interface HeaderSerializer<T extends DataObject> extends OFGeneralSerializer {
 
