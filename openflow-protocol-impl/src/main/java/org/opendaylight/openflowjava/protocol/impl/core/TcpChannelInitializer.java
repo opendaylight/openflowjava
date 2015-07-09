@@ -19,6 +19,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLEngine;
 
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionAdapterFactory;
 import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionAdapterFactoryImpl;
 import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionFacade;
@@ -85,7 +87,16 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
                 SSLEngine engine = sslFactory.getServerContext().createSSLEngine();
                 engine.setNeedClientAuth(true);
                 engine.setUseClientMode(false);
-                ch.pipeline().addLast(PipelineHandlers.SSL_HANDLER.name(), new SslHandler(engine));
+                SslHandler ssl = new SslHandler(engine);
+                Future<Channel> handshakeFuture = ssl.handshakeFuture();
+                final ConnectionFacade finalConnectionFacade = connectionFacade;
+                handshakeFuture.addListener(new GenericFutureListener<Future<? super Channel>>() {
+                    @Override
+                    public void operationComplete(Future<? super Channel> future) throws Exception {
+                        finalConnectionFacade.fireConnectionReadyNotification();
+                    }
+                });
+                ch.pipeline().addLast(PipelineHandlers.SSL_HANDLER.name(), ssl);
             }
             ch.pipeline().addLast(PipelineHandlers.OF_FRAME_DECODER.name(),
                     new OFFrameDecoder(connectionFacade, tlsPresent));
