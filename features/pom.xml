@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.opendaylight.openflowjava</groupId>
     <artifactId>openflow-protocol-parent</artifactId>
-    <version>0.5.4-SNAPSHOT</version>
+    <version>0.5.4-Helium-SR4</version>
     <relativePath>../</relativePath>
   </parent>
   <artifactId>features-openflowjava</artifactId>
@@ -13,8 +13,8 @@
 
   <properties>
     <features.file>features.xml</features.file>
-    <karaf.empty.distro.version>1.4.6-SNAPSHOT</karaf.empty.distro.version>
-    <yangtools.version>0.6.6-SNAPSHOT</yangtools.version>
+    <karaf.empty.distro.version>1.4.6-Helium-SR4</karaf.empty.distro.version>
+    <yangtools.version>0.6.6-Helium-SR4</yangtools.version>
   </properties>
 
   <dependencies>

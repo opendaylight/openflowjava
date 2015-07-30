@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.openflowjava</groupId>
     <artifactId>openflow-protocol-parent</artifactId>
-    <version>0.5.4-SNAPSHOT</version>
+    <version>0.5.4-Helium-SR4</version>
     <name>openflowjava</name> <!-- Used by Sonar to set project name -->
     <packaging>pom</packaging>
 
@@ -36,22 +36,22 @@
         <url.version>1.5.0</url.version>
         <enunciate.version>1.26.2</enunciate.version>
         <jmxGeneratorPath>${project.build.directory}/yang-gen-config</jmxGeneratorPath>
-        <karaf.distro.empty.version>1.4.6-SNAPSHOT</karaf.distro.empty.version>
+        <karaf.distro.empty.version>1.4.6-Helium-SR4</karaf.distro.empty.version>
         <salGeneratorPath>${project.build.directory}/yang-gen-sal</salGeneratorPath>
         <sonar.branch>${user.name}-private-view</sonar.branch>
         <sonar.skippedModules>org.openflow.openflowj,net.sf.jung2</sonar.skippedModules>
         <logback.version>1.0.9</logback.version>
         <slf4j.version>1.7.2</slf4j.version>
-        <yang.prototype.version>1.1.4-SNAPSHOT</yang.prototype.version>
-        <ietf.model.version>2010.09.24.4.4-SNAPSHOT</ietf.model.version>
-        <yang.ext.version>2013.09.07.4.4-SNAPSHOT</yang.ext.version>
+        <yang.prototype.version>1.1.4-Helium-SR4</yang.prototype.version>
+        <ietf.model.version>2010.09.24.4.4-Helium-SR4</ietf.model.version>
+        <yang.ext.version>2013.09.07.4.4-Helium-SR4</yang.ext.version>
         <maven.bundle.version>2.4.0</maven.bundle.version>
         <guava.version>14.0.1</guava.version> 
         <netty.version>4.0.23.Final</netty.version>
         <releaseplugin.version>2.3.2</releaseplugin.version>
-        <yangtools.version>0.6.6-SNAPSHOT</yangtools.version>
-        <yangtools.generator.version>0.6.6-SNAPSHOT</yangtools.generator.version>
-	<config.version>0.2.9-SNAPSHOT</config.version>
+        <yangtools.version>0.6.6-Helium-SR4</yangtools.version>
+        <yangtools.generator.version>0.6.6-Helium-SR4</yangtools.generator.version>
+	<config.version>0.2.9-Helium-SR4</config.version>
 
         <!-- Sonar config -->
         <sonar-jacoco-listeners.version>2.4</sonar-jacoco-listeners.version>
@@ -208,7 +208,7 @@
             <dependency>
                 <groupId>org.opendaylight.controller</groupId>
                 <artifactId>config-api</artifactId>
-                <version>0.2.9-SNAPSHOT</version>
+                <version>0.2.9-Helium-SR4</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
