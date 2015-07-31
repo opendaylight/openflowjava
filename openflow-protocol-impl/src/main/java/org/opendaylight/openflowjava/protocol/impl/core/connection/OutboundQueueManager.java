@@ -8,8 +8,11 @@
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
 import com.google.common.base.Preconditions;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -358,8 +361,21 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     }
 
     void onEchoRequest(final EchoRequestMessage message) {
-        final EchoReplyInput reply = new EchoReplyInputBuilder().setData(message.getData()).setVersion(message.getVersion()).setXid(message.getXid()).build();
-        parent.getChannel().writeAndFlush(reply);
+        final EchoReplyInput reply = new EchoReplyInputBuilder().setData(message.getData())
+                .setVersion(message.getVersion()).setXid(message.getXid()).build();
+        final SimpleRpcListener simpleMsgRpcListener = new SimpleRpcListener(reply, "echo-reply sending failed");
+
+        final GenericFutureListener<Future<Void>> msgProcessListener = simpleMsgRpcListener.takeListener();
+        final Object messageListenerWrapper;
+        if (address == null) {
+            messageListenerWrapper = new MessageListenerWrapper(simpleMsgRpcListener.takeMessage(), msgProcessListener);
+        } else {
+            messageListenerWrapper = new UdpMessageListenerWrapper(simpleMsgRpcListener.takeMessage(), msgProcessListener, address);
+        }
+        final ChannelFuture channelFuture = parent.getChannel().writeAndFlush(messageListenerWrapper);
+        if (msgProcessListener != null) {
+            channelFuture.addListener(msgProcessListener);
+        }
     }
 
     /**
