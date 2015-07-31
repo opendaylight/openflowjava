@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a7ca5a3_8931c9a4",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/connection/OutboundQueueManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 378,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-07-31T13:44:01Z",
+      "side": 1,
+      "message": "can msgProcessListener be null ? isn\u0027t it unnecessary check ?",
+      "range": {
+        "startLine": 376,
+        "startChar": 8,
+        "endLine": 378,
+        "endChar": 9
+      },
+      "revId": "5a2d3068c20b5063676063c7511256e003cff24a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
