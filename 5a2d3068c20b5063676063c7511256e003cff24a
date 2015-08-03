@@ -22,6 +22,30 @@
       "revId": "5a2d3068c20b5063676063c7511256e003cff24a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a7ca5a3_64601436",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/connection/OutboundQueueManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 378,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2015-08-03T07:42:39Z",
+      "side": 1,
+      "message": "Effectively this check is now useless (copied from org.opendaylight.openflowjava.protocol.impl.core.connection.ChannelOutboundQueue).\nBut the method name \"takeListener\" implies that the listener can be pulled just once. And as this code was copied I hope that once this will be united and moved somewhere else - queue manager should not decide whether udp or tcp.",
+      "parentUuid": "5a7ca5a3_8931c9a4",
+      "range": {
+        "startLine": 376,
+        "startChar": 8,
+        "endLine": 378,
+        "endChar": 9
+      },
+      "revId": "5a2d3068c20b5063676063c7511256e003cff24a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
