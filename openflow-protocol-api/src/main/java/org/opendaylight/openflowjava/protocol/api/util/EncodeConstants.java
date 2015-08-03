@@ -20,6 +20,8 @@ public abstract class EncodeConstants {
     public static final byte OF10_VERSION_ID = 0x01;
     /** OpenFlow v1.3 wire protocol number */
     public static final byte OF13_VERSION_ID = 0x04;
+    /** OpenFlow hello message type value */
+    public static final byte OF_HELLO_MESSAGE_TYPE_VALUE = 0;
     /** Index of length in Openflow header */
     public static final int OFHEADER_LENGTH_INDEX = 2;
     /** Size of Openflow header */
