@@ -17,6 +17,7 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.TypeToClassKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloMessage;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
@@ -47,6 +48,9 @@ public class DeserializationFactory {
         DataObject dataObject = null;
         int type = rawMessage.readUnsignedByte();
         Class<?> clazz = messageClassMap.get(new TypeToClassKey(version, type));
+        if (clazz == null && EncodeConstants.OF_HELLO_MESSAGE_TYPE_VALUE == type) {
+            clazz = HelloMessage.class;
+        }
         rawMessage.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         OFDeserializer<DataObject> deserializer = registry.getDeserializer(
                 new MessageCodeKey(version, type, clazz));
