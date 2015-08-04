@@ -10,7 +10,6 @@ package org.opendaylight.openflowjava.protocol.impl.serialization;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
@@ -35,6 +34,7 @@ public class SerializerRegistryImpl implements SerializerRegistry {
     private static final Logger LOGGER = LoggerFactory.getLogger(SerializerRegistryImpl.class);
     private static final short OF10 = EncodeConstants.OF10_VERSION_ID;
     private static final short OF13 = EncodeConstants.OF13_VERSION_ID;
+    private static final short OF14 = EncodeConstants.OF14_VERSION_ID;
     private Map<MessageTypeKey<?>, OFGeneralSerializer> registry;
 
 
@@ -46,7 +46,8 @@ public class SerializerRegistryImpl implements SerializerRegistry {
 
         // match structure serializers
         registerSerializer(new MessageTypeKey<>(OF10, MatchV10.class), new OF10MatchSerializer());
-        registerSerializer(new MessageTypeKey<>(OF13, Match.class), new OF13MatchSerializer());
+        registerSerializer(new MessageTypeKey<>(OF13, Match.class), new OF13MatchSerializer(OF13));
+        registerSerializer(new MessageTypeKey<>(OF14, Match.class), new OF13MatchSerializer(OF14));
 
         // match entry serializers
         MatchEntriesInitializer.registerMatchEntrySerializers(this);

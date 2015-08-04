@@ -9,19 +9,17 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.VersatileFactory;
 import org.opendaylight.openflowjava.util.ExperimenterDeserializerKeyFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterMessage;
 
 /**
  * @author michal.polkorab
- *
  */
-public class ExperimenterMessageFactory implements OFDeserializer<ExperimenterMessage>,
+public class ExperimenterMessageFactory extends VersatileFactory implements OFDeserializer<ExperimenterMessage>,
         DeserializerRegistryInjector {
 
     /** Experimenter ID index after version, message type and length were read */
@@ -33,7 +31,7 @@ public class ExperimenterMessageFactory implements OFDeserializer<ExperimenterMe
         long expId = message.getUnsignedInt(message.readerIndex() + EXPERIMENTER_ID_INDEX);
         OFDeserializer<ExperimenterMessage> deserializer = deserializerRegistry.getDeserializer(
                 ExperimenterDeserializerKeyFactory.createExperimenterMessageDeserializerKey(
-                        EncodeConstants.OF13_VERSION_ID, expId));
+                        getVersion(), expId));
         return deserializer.deserialize(message);
     }
 

@@ -9,10 +9,10 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.VersatileFactory;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeatures;
@@ -23,10 +23,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 
 /**
  * Translates PortStatus messages
+ *
  * @author michal.polkorab
  * @author timotej.kubas
  */
-public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessage> {
+public class PortStatusMessageFactory extends VersatileFactory implements OFDeserializer<PortStatusMessage> {
 
     private static final byte PADDING_IN_PORT_STATUS_HEADER = 7;
     private static final byte PADDING_IN_OFP_PORT_HEADER_1 = 4;
@@ -35,7 +36,7 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
     @Override
     public PortStatusMessage deserialize(ByteBuf rawMessage) {
         PortStatusMessageBuilder builder = new PortStatusMessageBuilder();
-        builder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
+        builder.setVersion(getVersion());
         builder.setXid(rawMessage.readUnsignedInt());
         builder.setReason(PortReason.forValue(rawMessage.readUnsignedByte()));
         rawMessage.skipBytes(PADDING_IN_PORT_STATUS_HEADER);
@@ -57,39 +58,39 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
         return builder.build();
     }
 
-    private static PortFeatures createPortFeatures(long input){
-        final Boolean pf10mbHd = ((input) & (1<<0)) != 0;
-        final Boolean pf10mbFd = ((input) & (1<<1)) != 0;
-        final Boolean pf100mbHd = ((input) & (1<<2)) != 0;
-        final Boolean pf100mbFd = ((input) & (1<<3)) != 0;
-        final Boolean pf1gbHd = ((input) & (1<<4)) != 0;
-        final Boolean pf1gbFd = ((input) & (1<<5)) != 0;
-        final Boolean pf10gbFd = ((input) & (1<<6)) != 0;
-        final Boolean pf40gbFd = ((input) & (1<<7)) != 0;
-        final Boolean pf100gbFd = ((input) & (1<<8)) != 0;
-        final Boolean pf1tbFd = ((input) & (1<<9)) != 0;
-        final Boolean pfOther = ((input) & (1<<10)) != 0;
-        final Boolean pfCopper = ((input) & (1<<11)) != 0;
-        final Boolean pfFiber = ((input) & (1<<12)) != 0;
-        final Boolean pfAutoneg = ((input) & (1<<13)) != 0;
-        final Boolean pfPause = ((input) & (1<<14)) != 0;
-        final Boolean pfPauseAsym = ((input) & (1<<15)) != 0;
+    private static PortFeatures createPortFeatures(long input) {
+        final Boolean pf10mbHd = ((input) & (1 << 0)) != 0;
+        final Boolean pf10mbFd = ((input) & (1 << 1)) != 0;
+        final Boolean pf100mbHd = ((input) & (1 << 2)) != 0;
+        final Boolean pf100mbFd = ((input) & (1 << 3)) != 0;
+        final Boolean pf1gbHd = ((input) & (1 << 4)) != 0;
+        final Boolean pf1gbFd = ((input) & (1 << 5)) != 0;
+        final Boolean pf10gbFd = ((input) & (1 << 6)) != 0;
+        final Boolean pf40gbFd = ((input) & (1 << 7)) != 0;
+        final Boolean pf100gbFd = ((input) & (1 << 8)) != 0;
+        final Boolean pf1tbFd = ((input) & (1 << 9)) != 0;
+        final Boolean pfOther = ((input) & (1 << 10)) != 0;
+        final Boolean pfCopper = ((input) & (1 << 11)) != 0;
+        final Boolean pfFiber = ((input) & (1 << 12)) != 0;
+        final Boolean pfAutoneg = ((input) & (1 << 13)) != 0;
+        final Boolean pfPause = ((input) & (1 << 14)) != 0;
+        final Boolean pfPauseAsym = ((input) & (1 << 15)) != 0;
         return new PortFeatures(pf100gbFd, pf100mbFd, pf100mbHd, pf10gbFd, pf10mbFd, pf10mbHd, pf1gbFd,
                 pf1gbHd, pf1tbFd, pf40gbFd, pfAutoneg, pfCopper, pfFiber, pfOther, pfPause, pfPauseAsym);
     }
 
-    private static PortState createPortState(long input){
-        final Boolean psLinkDown = ((input) & (1<<0)) != 0;
-        final Boolean psBblocked  = ((input) & (1<<1)) != 0;
-        final Boolean psLive     = ((input) & (1<<2)) != 0;
+    private static PortState createPortState(long input) {
+        final Boolean psLinkDown = ((input) & (1 << 0)) != 0;
+        final Boolean psBblocked = ((input) & (1 << 1)) != 0;
+        final Boolean psLive = ((input) & (1 << 2)) != 0;
         return new PortState(psBblocked, psLinkDown, psLive);
     }
 
-    private static PortConfig createPortConfig(long input){
-        final Boolean pcPortDown   = ((input) & (1<<0)) != 0;
-        final Boolean pcNoRecv    = ((input) & (1<<2)) != 0;
-        final Boolean pcNoFwd       = ((input) & (1<<5)) != 0;
-        final Boolean pcNoPacketIn = ((input) & (1<<6)) != 0;
+    private static PortConfig createPortConfig(long input) {
+        final Boolean pcPortDown = ((input) & (1 << 0)) != 0;
+        final Boolean pcNoRecv = ((input) & (1 << 2)) != 0;
+        final Boolean pcNoFwd = ((input) & (1 << 5)) != 0;
+        final Boolean pcNoPacketIn = ((input) & (1 << 6)) != 0;
         return new PortConfig(pcNoFwd, pcNoPacketIn, pcNoRecv, pcPortDown);
     }
 }

@@ -9,23 +9,23 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.VersatileFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoOutputBuilder;
 
 /**
  * Translates EchoReply messages (both OpenFlow v1.0 and OpenFlow v1.3)
+ *
  * @author michal.polkorab
  * @author timotej.kubas
  */
-public class EchoReplyMessageFactory implements OFDeserializer<EchoOutput> {
+public class EchoReplyMessageFactory extends VersatileFactory implements OFDeserializer<EchoOutput> {
 
     @Override
     public EchoOutput deserialize(ByteBuf rawMessage) {
         EchoOutputBuilder builder = new EchoOutputBuilder();
-        builder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
+        builder.setVersion(getVersion());
         builder.setXid(rawMessage.readUnsignedInt());
         int remainingBytes = rawMessage.readableBytes();
         if (remainingBytes > 0) {

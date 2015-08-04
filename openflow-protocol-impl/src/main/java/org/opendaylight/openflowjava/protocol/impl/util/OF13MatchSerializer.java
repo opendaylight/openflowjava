@@ -9,9 +9,7 @@
 package org.opendaylight.openflowjava.protocol.impl.util;
 
 import io.netty.buffer.ByteBuf;
-
 import java.util.List;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
@@ -36,6 +34,11 @@ public class OF13MatchSerializer implements OFSerializer<Match>, SerializerRegis
     private static final byte STANDARD_MATCH_TYPE_CODE = 0;
     private static final byte OXM_MATCH_TYPE_CODE = 1;
     private SerializerRegistry registry;
+    private final short version;
+
+    public OF13MatchSerializer(short version) {
+        this.version = version;
+    }
 
     @Override
     public void serialize(Match match, ByteBuf outBuffer) {
@@ -78,7 +81,7 @@ public class OF13MatchSerializer implements OFSerializer<Match>, SerializerRegis
         for (MatchEntry entry : matchEntries) {
 
             MatchEntrySerializerKey<?, ?> key = new MatchEntrySerializerKey<>(
-                    EncodeConstants.OF13_VERSION_ID, entry.getOxmClass(), entry.getOxmMatchField());
+                    version, entry.getOxmClass(), entry.getOxmMatchField());
             if (entry.getOxmClass().equals(ExperimenterClass.class)) {
                 ExperimenterIdCase entryValue = (ExperimenterIdCase) entry.getMatchEntryValue();
                 key.setExperimenterId(entryValue.getExperimenter().getExperimenter().getValue());

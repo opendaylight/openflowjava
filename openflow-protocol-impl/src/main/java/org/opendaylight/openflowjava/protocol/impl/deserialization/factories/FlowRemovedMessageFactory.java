@@ -9,14 +9,13 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
 import java.math.BigInteger;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.VersatileFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowRemovedReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.grouping.Match;
@@ -25,25 +24,27 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 
 /**
  * Translates FlowRemoved messages
+ *
  * @author michal.polkorab
  * @author timotej.kubas
  */
-public class FlowRemovedMessageFactory implements OFDeserializer<FlowRemovedMessage>,
+public class FlowRemovedMessageFactory extends VersatileFactory implements OFDeserializer<FlowRemovedMessage>,
         DeserializerRegistryInjector {
 
     private DeserializerRegistry registry;
+    private MessageCodeKey messageCodeKey;
 
     @Override
     public FlowRemovedMessage deserialize(ByteBuf rawMessage) {
         FlowRemovedMessageBuilder builder = new FlowRemovedMessageBuilder();
-        builder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
+        builder.setVersion(getVersion());
         builder.setXid(rawMessage.readUnsignedInt());
         byte[] cookie = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         rawMessage.readBytes(cookie);
         builder.setCookie(new BigInteger(1, cookie));
         builder.setPriority(rawMessage.readUnsignedShort());
         builder.setReason(FlowRemovedReason.forValue(rawMessage.readUnsignedByte()));
-        builder.setTableId(new TableId((long)rawMessage.readUnsignedByte()));
+        builder.setTableId(new TableId((long) rawMessage.readUnsignedByte()));
         builder.setDurationSec(rawMessage.readUnsignedInt());
         builder.setDurationNsec(rawMessage.readUnsignedInt());
         builder.setIdleTimeout(rawMessage.readUnsignedShort());
@@ -54,10 +55,14 @@ public class FlowRemovedMessageFactory implements OFDeserializer<FlowRemovedMess
         byte[] byteCount = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         rawMessage.readBytes(byteCount);
         builder.setByteCount(new BigInteger(1, byteCount));
-        OFDeserializer<Match> matchDeserializer = registry.getDeserializer(new MessageCodeKey(
-                EncodeConstants.OF13_VERSION_ID, EncodeConstants.EMPTY_VALUE, Match.class));
+        OFDeserializer<Match> matchDeserializer = registry.getDeserializer(messageCodeKey);
         builder.setMatch(matchDeserializer.deserialize(rawMessage));
         return builder.build();
+    }
+
+    @Override
+    protected void onVersionAssigned() {
+        messageCodeKey = new MessageCodeKey(getVersion(), EncodeConstants.EMPTY_VALUE, Match.class);
     }
 
     @Override
