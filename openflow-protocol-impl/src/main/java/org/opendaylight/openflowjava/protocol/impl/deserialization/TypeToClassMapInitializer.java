@@ -8,7 +8,6 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization;
 
 import java.util.Map;
-
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.TypeToClassInitHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.TypeToClassKey;
@@ -59,8 +58,30 @@ public final class TypeToClassMapInitializer {
         helper.registerTypeToClass((short) 17, MultipartReplyMessage.class);
         helper.registerTypeToClass((short) 19, BarrierOutput.class);
         helper.registerTypeToClass((short) 21, GetQueueConfigOutput.class);
-        // init OF v1.0 mapping
+        // init OF v1.3 mapping
         helper = new TypeToClassInitHelper(EncodeConstants.OF13_VERSION_ID, messageClassMap);
+        helper.registerTypeToClass((short) 0, HelloMessage.class);
+        helper.registerTypeToClass((short) 1, ErrorMessage.class);
+        helper.registerTypeToClass((short) 2, EchoRequestMessage.class);
+        helper.registerTypeToClass((short) 3, EchoOutput.class);
+        helper.registerTypeToClass((short) 4, ExperimenterMessage.class);
+        helper.registerTypeToClass((short) 6, GetFeaturesOutput.class);
+        helper.registerTypeToClass((short) 8, GetConfigOutput.class);
+        helper.registerTypeToClass((short) 10, PacketInMessage.class);
+        helper.registerTypeToClass((short) 11, FlowRemovedMessage.class);
+        helper.registerTypeToClass((short) 12, PortStatusMessage.class);
+        helper.registerTypeToClass((short) 19, MultipartReplyMessage.class);
+        helper.registerTypeToClass((short) 21, BarrierOutput.class);
+        helper.registerTypeToClass((short) 23, GetQueueConfigOutput.class);
+        helper.registerTypeToClass((short) 25, RoleRequestOutput.class);
+        helper.registerTypeToClass((short) 27, GetAsyncOutput.class);
+
+        // init OF v1.4 mapping
+        registerOF14TypeToClass(messageClassMap);
+    }
+
+    private static void registerOF14TypeToClass(Map<TypeToClassKey, Class<?>> messageClassMap) {
+        TypeToClassInitHelper helper = new TypeToClassInitHelper(EncodeConstants.OF14_VERSION_ID, messageClassMap);
         helper.registerTypeToClass((short) 0, HelloMessage.class);
         helper.registerTypeToClass((short) 1, ErrorMessage.class);
         helper.registerTypeToClass((short) 2, EchoRequestMessage.class);

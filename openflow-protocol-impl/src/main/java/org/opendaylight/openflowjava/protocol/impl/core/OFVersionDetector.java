@@ -28,6 +28,8 @@ public class OFVersionDetector extends ByteToMessageDecoder {
     private static final byte OF10_VERSION_ID = EncodeConstants.OF10_VERSION_ID;
     /** Version number of OpenFlow 1.3 protocol */
     private static final byte OF13_VERSION_ID = EncodeConstants.OF13_VERSION_ID;
+    /** Version number of OpenFlow 1.4 protocol */
+    private static final byte OF14_VERSION_ID = EncodeConstants.OF14_VERSION_ID;
     private static final short OF_PACKETIN = 10;
     private static final Logger LOGGER = LoggerFactory.getLogger(OFVersionDetector.class);
     private final StatisticsCounters statisticsCounters;
@@ -55,7 +57,7 @@ public class OFVersionDetector extends ByteToMessageDecoder {
 
         final byte version = in.readByte();
         final short messageType = in.getUnsignedByte(in.readerIndex());
-        if ((version == OF13_VERSION_ID || version == OF10_VERSION_ID)
+        if ((version == OF13_VERSION_ID || version == OF10_VERSION_ID || version == OF14_VERSION_ID)
                 || EncodeConstants.OF_HELLO_MESSAGE_TYPE_VALUE == messageType) {
             LOGGER.debug("detected version: {}", version);
             if (!filterPacketIns || OF_PACKETIN != messageType) {

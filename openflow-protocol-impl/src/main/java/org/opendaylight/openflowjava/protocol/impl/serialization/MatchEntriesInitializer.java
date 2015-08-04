@@ -152,5 +152,55 @@ public final class MatchEntriesInitializer {
         helper.registerSerializer(PbbIsid.class, new OxmPbbIsidSerializer());
         helper.registerSerializer(TunnelId.class, new OxmTunnelIdSerializer());
         helper.registerSerializer(Ipv6Exthdr.class, new OxmIpv6ExtHdrSerializer());
+
+        // register OF v1.3 OpenflowBasicClass match entry serializers
+        registerOF14MatchSerializers(serializerRegistry);
+    }
+
+    private static void registerOF14MatchSerializers(SerializerRegistry serializerRegistry) {
+        Class<OpenflowBasicClass> oxmClass = OpenflowBasicClass.class;
+        MatchEntrySerializerRegistryHelper<OpenflowBasicClass> helper =
+                new MatchEntrySerializerRegistryHelper<>(EncodeConstants.OF14_VERSION_ID,
+                        oxmClass, serializerRegistry);
+        helper.registerSerializer(InPort.class, new OxmInPortSerializer());
+        helper.registerSerializer(InPhyPort.class, new OxmInPhyPortSerializer());
+        helper.registerSerializer(Metadata.class, new OxmMetadataSerializer());
+        helper.registerSerializer(EthDst.class, new OxmEthDstSerializer());
+        helper.registerSerializer(EthSrc.class, new OxmEthSrcSerializer());
+        helper.registerSerializer(EthType.class, new OxmEthTypeSerializer());
+        helper.registerSerializer(VlanVid.class, new OxmVlanVidSerializer());
+        helper.registerSerializer(VlanPcp.class, new OxmVlanPcpSerializer());
+        helper.registerSerializer(IpDscp.class, new OxmIpDscpSerializer());
+        helper.registerSerializer(IpEcn.class, new OxmIpEcnSerializer());
+        helper.registerSerializer(IpProto.class, new OxmIpProtoSerializer());
+        helper.registerSerializer(Ipv4Src.class, new OxmIpv4SrcSerializer());
+        helper.registerSerializer(Ipv4Dst.class, new OxmIpv4DstSerializer());
+        helper.registerSerializer(TcpSrc.class, new OxmTcpSrcSerializer());
+        helper.registerSerializer(TcpDst.class, new OxmTcpDstSerializer());
+        helper.registerSerializer(UdpSrc.class, new OxmUdpSrcSerializer());
+        helper.registerSerializer(UdpDst.class, new OxmUdpDstSerializer());
+        helper.registerSerializer(SctpSrc.class, new OxmSctpSrcSerializer());
+        helper.registerSerializer(SctpDst.class, new OxmSctpDstSerializer());
+        helper.registerSerializer(Icmpv4Type.class, new OxmIcmpv4TypeSerializer());
+        helper.registerSerializer(Icmpv4Code.class, new OxmIcmpv4CodeSerializer());
+        helper.registerSerializer(ArpOp.class, new OxmArpOpSerializer());
+        helper.registerSerializer(ArpSpa.class, new OxmArpSpaSerializer());
+        helper.registerSerializer(ArpTpa.class, new OxmArpTpaSerializer());
+        helper.registerSerializer(ArpSha.class, new OxmArpShaSerializer());
+        helper.registerSerializer(ArpTha.class, new OxmArpThaSerializer());
+        helper.registerSerializer(Ipv6Src.class, new OxmIpv6SrcSerializer());
+        helper.registerSerializer(Ipv6Dst.class, new OxmIpv6DstSerializer());
+        helper.registerSerializer(Ipv6Flabel.class, new OxmIpv6FlabelSerializer());
+        helper.registerSerializer(Icmpv6Type.class, new OxmIcmpv6TypeSerializer());
+        helper.registerSerializer(Icmpv6Code.class, new OxmIcmpv6CodeSerializer());
+        helper.registerSerializer(Ipv6NdTarget.class, new OxmIpv6NdTargetSerializer());
+        helper.registerSerializer(Ipv6NdSll.class, new OxmIpv6NdSllSerializer());
+        helper.registerSerializer(Ipv6NdTll.class, new OxmIpv6NdTllSerializer());
+        helper.registerSerializer(MplsLabel.class, new OxmMplsLabelSerializer());
+        helper.registerSerializer(MplsTc.class, new OxmMplsTcSerializer());
+        helper.registerSerializer(MplsBos.class, new OxmMplsBosSerializer());
+        helper.registerSerializer(PbbIsid.class, new OxmPbbIsidSerializer());
+        helper.registerSerializer(TunnelId.class, new OxmTunnelIdSerializer());
+        helper.registerSerializer(Ipv6Exthdr.class, new OxmIpv6ExtHdrSerializer());
     }
 }

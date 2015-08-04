@@ -9,23 +9,23 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.VersatileFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierOutputBuilder;
 
 /**
  * Translates BarrierReply messages (both OpenFlow v1.0 and OpenFlow v1.3)
+ *
  * @author michal.polkorab
  * @author timotej.kubas
  */
-public class BarrierReplyMessageFactory implements OFDeserializer<BarrierOutput> {
+public class BarrierReplyMessageFactory extends VersatileFactory implements OFDeserializer<BarrierOutput> {
 
     @Override
     public BarrierOutput deserialize(ByteBuf rawMessage) {
         BarrierOutputBuilder builder = new BarrierOutputBuilder();
-        builder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
+        builder.setVersion(getVersion());
         builder.setXid(rawMessage.readUnsignedInt());
         return builder.build();
     }

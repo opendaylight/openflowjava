@@ -41,7 +41,7 @@ public class SerializerRegistryImplTest {
     public void testUnRegisterSerializerNoMessageTypeKey(){
         SerializerRegistryImpl serReg = new SerializerRegistryImpl();
         serReg.init();
-        serReg.registerSerializer(new MessageTypeKey<>(OF13, Match.class), new OF13MatchSerializer());
+        serReg.registerSerializer(new MessageTypeKey<>(OF13, Match.class), new OF13MatchSerializer(OF13));
         serReg.unregisterSerializer(null);
     }
 
@@ -52,10 +52,10 @@ public class SerializerRegistryImplTest {
     public void testUnRegisterSerializer(){
         SerializerRegistryImpl serReg = new SerializerRegistryImpl();
         serReg.init();
-        serReg.registerSerializer(new MessageTypeKey<>(OF13, Match.class), new OF13MatchSerializer());
+        serReg.registerSerializer(new MessageTypeKey<>(OF13, Match.class), new OF13MatchSerializer(OF13));
         Assert.assertTrue("Wrong - unregister serializer",serReg.unregisterSerializer(new MessageTypeKey<>(OF13, Match.class)));
 
-        serReg.registerSerializer(new MessageTypeKey<>(OF13, Match.class), new OF13MatchSerializer());
+        serReg.registerSerializer(new MessageTypeKey<>(OF13, Match.class), new OF13MatchSerializer(OF13));
         Assert.assertFalse("Wrong - unregister serializer",serReg.unregisterSerializer(new MessageTypeKey<>(OF10, Match.class)));
     }
 }

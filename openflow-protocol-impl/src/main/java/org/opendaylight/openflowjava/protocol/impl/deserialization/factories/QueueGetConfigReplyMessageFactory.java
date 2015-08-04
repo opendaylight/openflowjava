@@ -9,14 +9,12 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.VersatileFactory;
 import org.opendaylight.openflowjava.util.ExperimenterDeserializerKeyFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.RateQueueProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.RateQueuePropertyBuilder;
@@ -32,10 +30,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 
 /**
  * Translates QueueGetConfigReply messages
+ *
  * @author timotej.kubas
  * @author michal.polkorab
  */
-public class QueueGetConfigReplyMessageFactory implements OFDeserializer<GetQueueConfigOutput>,
+public class QueueGetConfigReplyMessageFactory extends VersatileFactory implements OFDeserializer<GetQueueConfigOutput>,
         DeserializerRegistryInjector {
 
     private static final byte PADDING_IN_QUEUE_GET_CONFIG_REPLY_HEADER = 4;
@@ -48,7 +47,7 @@ public class QueueGetConfigReplyMessageFactory implements OFDeserializer<GetQueu
     @Override
     public GetQueueConfigOutput deserialize(ByteBuf rawMessage) {
         GetQueueConfigOutputBuilder builder = new GetQueueConfigOutputBuilder();
-        builder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
+        builder.setVersion(getVersion());
         builder.setXid((rawMessage.readUnsignedInt()));
         builder.setPort(new PortNumber(rawMessage.readUnsignedInt()));
         rawMessage.skipBytes(PADDING_IN_QUEUE_GET_CONFIG_REPLY_HEADER);
@@ -56,7 +55,7 @@ public class QueueGetConfigReplyMessageFactory implements OFDeserializer<GetQueu
         return builder.build();
     }
 
-    private List<Queues> createQueuesList(ByteBuf input){
+    private List<Queues> createQueuesList(ByteBuf input) {
         List<Queues> queuesList = new ArrayList<>();
         while (input.readableBytes() > 0) {
             QueuesBuilder queueBuilder = new QueuesBuilder();
@@ -70,7 +69,7 @@ public class QueueGetConfigReplyMessageFactory implements OFDeserializer<GetQueu
         return queuesList;
     }
 
-    private List<QueueProperty> createPropertiesList(ByteBuf input, int length){
+    private List<QueueProperty> createPropertiesList(ByteBuf input, int length) {
         int propertiesLength = length;
         List<QueueProperty> propertiesList = new ArrayList<>();
         while (propertiesLength > 0) {
@@ -91,7 +90,7 @@ public class QueueGetConfigReplyMessageFactory implements OFDeserializer<GetQueu
                 input.readerIndex(propertyStartIndex);
                 OFDeserializer<QueueProperty> deserializer = registry.getDeserializer(
                         ExperimenterDeserializerKeyFactory.createQueuePropertyDeserializerKey(
-                                EncodeConstants.OF13_VERSION_ID, expId));
+                                getVersion(), expId));
                 propertiesList.add(deserializer.deserialize(input));
                 continue;
             }

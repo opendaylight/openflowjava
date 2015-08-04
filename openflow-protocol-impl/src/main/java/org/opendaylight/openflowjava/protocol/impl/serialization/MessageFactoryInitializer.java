@@ -107,7 +107,34 @@ public final class MessageFactoryInitializer {
         registryHelper.registerSerializer(PortModInput.class, new PortModInputMessageFactory());
         registryHelper.registerSerializer(RoleRequestInput.class, new RoleRequestInputMessageFactory());
         registryHelper.registerSerializer(SetAsyncInput.class, new SetAsyncInputMessageFactory());
-        registryHelper.registerSerializer( SetConfigInput.class, new SetConfigMessageFactory());
+        registryHelper.registerSerializer(SetConfigInput.class, new SetConfigMessageFactory());
+        registryHelper.registerSerializer(TableModInput.class, new TableModInputMessageFactory());
+
+        // register OF v1.4 message serializers
+        registerOF14MessageSerializers(serializerRegistry);
+    }
+
+    private static void registerOF14MessageSerializers(SerializerRegistry serializerRegistry) {
+        CommonMessageRegistryHelper registryHelper =
+                new CommonMessageRegistryHelper(EncodeConstants.OF14_VERSION_ID, serializerRegistry);
+        registryHelper.registerSerializer(BarrierInput.class, new BarrierInputMessageFactory());
+        registryHelper.registerSerializer(EchoInput.class, new EchoInputMessageFactory());
+        registryHelper.registerSerializer(EchoReplyInput.class, new EchoReplyInputMessageFactory());
+        registryHelper.registerSerializer(ExperimenterInput.class, new ExperimenterInputMessageFactory());
+        registryHelper.registerSerializer(FlowModInput.class, new FlowModInputMessageFactory());
+        registryHelper.registerSerializer(GetAsyncInput.class, new GetAsyncRequestMessageFactory());
+        registryHelper.registerSerializer(GetConfigInput.class, new GetConfigInputMessageFactory());
+        registryHelper.registerSerializer(GetFeaturesInput.class, new GetFeaturesInputMessageFactory());
+        registryHelper.registerSerializer(GetQueueConfigInput.class, new GetQueueConfigInputMessageFactory());
+        registryHelper.registerSerializer(GroupModInput.class, new GroupModInputMessageFactory());
+        registryHelper.registerSerializer(HelloInput.class, new HelloInputMessageFactory());
+        registryHelper.registerSerializer(MeterModInput.class, new MeterModInputMessageFactory());
+        registryHelper.registerSerializer(MultipartRequestInput.class, new MultipartRequestInputFactory());
+        registryHelper.registerSerializer(PacketOutInput.class, new PacketOutInputMessageFactory());
+        registryHelper.registerSerializer(PortModInput.class, new PortModInputMessageFactory());
+        registryHelper.registerSerializer(RoleRequestInput.class, new RoleRequestInputMessageFactory());
+        registryHelper.registerSerializer(SetAsyncInput.class, new SetAsyncInputMessageFactory());
+        registryHelper.registerSerializer(SetConfigInput.class, new SetConfigMessageFactory());
         registryHelper.registerSerializer(TableModInput.class, new TableModInputMessageFactory());
     }
 }

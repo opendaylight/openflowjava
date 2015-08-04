@@ -9,9 +9,7 @@
 package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
 import java.util.List;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
@@ -108,9 +106,9 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         if (message.getMultipartRequestBody() instanceof MultipartRequestDescCase){
             serializeDescBody();
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestFlowCase) {
-            serializeFlowBody(message.getMultipartRequestBody(), outBuffer);
+            serializeFlowBody(message.getMultipartRequestBody(), outBuffer, message.getVersion());
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestAggregateCase) {
-            serializeAggregateBody(message.getMultipartRequestBody(), outBuffer);
+            serializeAggregateBody(message.getMultipartRequestBody(), outBuffer, message.getVersion());
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestTableCase) {
             serializeTableBody();
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestPortStatsCase) {
@@ -130,7 +128,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestMeterFeaturesCase) {
             serializeMeterFeaturesBody();
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestTableFeaturesCase) {
-            serializeTableFeaturesBody(message.getMultipartRequestBody(), outBuffer);
+            serializeTableFeaturesBody(message.getMultipartRequestBody(), outBuffer, message.getVersion());
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestPortDescCase) {
             serializePortDescBody();
         } else if (message.getMultipartRequestBody() instanceof MultipartRequestExperimenterCase) {
@@ -203,7 +201,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
      // The body of MultiPartPortDesc is empty
     }
 
-    private void serializeFlowBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output) {
+    private void serializeFlowBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output, final Short version) {
         MultipartRequestFlowCase flowCase = (MultipartRequestFlowCase) multipartRequestBody;
         MultipartRequestFlow flow = flowCase.getMultipartRequestFlow();
         output.writeByte(flow.getTableId().byteValue());
@@ -214,11 +212,11 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         output.writeLong(flow.getCookie().longValue());
         output.writeLong(flow.getCookieMask().longValue());
         OFSerializer<Match> serializer = registry.getSerializer(new MessageTypeKey<>(
-                EncodeConstants.OF13_VERSION_ID, Match.class));
+                version, Match.class));
         serializer.serialize(flow.getMatch(), output);
     }
 
-    private void serializeAggregateBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output) {
+    private void serializeAggregateBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output, final Short version) {
         MultipartRequestAggregateCase aggregateCase = (MultipartRequestAggregateCase) multipartRequestBody;
         MultipartRequestAggregate aggregate = aggregateCase.getMultipartRequestAggregate();
         output.writeByte(aggregate.getTableId().byteValue());
@@ -229,7 +227,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         output.writeLong(aggregate.getCookie().longValue());
         output.writeLong(aggregate.getCookieMask().longValue());
         OFSerializer<Match> serializer = registry.getSerializer(new MessageTypeKey<>(
-                EncodeConstants.OF13_VERSION_ID, Match.class));
+                version, Match.class));
         serializer.serialize(aggregate.getMatch(), output);
     }
 
@@ -268,7 +266,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         output.writeZero(PADDING_IN_MULTIPART_REQUEST_METER_CONFIG_BODY);
     }
 
-    private void serializeTableFeaturesBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output) {
+    private void serializeTableFeaturesBody(final MultipartRequestBody multipartRequestBody, final ByteBuf output, final Short version) {
         if (multipartRequestBody != null) {
             MultipartRequestTableFeaturesCase tableFeaturesCase = (MultipartRequestTableFeaturesCase) multipartRequestBody;
             MultipartRequestTableFeatures tableFeatures = tableFeaturesCase.getMultipartRequestTableFeatures();
@@ -284,56 +282,56 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
                     output.writeLong(currTableFeature.getMetadataWrite().longValue());
                     output.writeInt(createTableConfigBitmask(currTableFeature.getConfig()));
                     output.writeInt(currTableFeature.getMaxEntries().intValue());
-                    writeTableFeatureProperties(output, currTableFeature.getTableFeatureProperties());
+                    writeTableFeatureProperties(output, currTableFeature.getTableFeatureProperties(), version);
                     output.setShort(tableFeatureLengthIndex, output.writerIndex() - tableFeatureLengthIndex);
                 }
             }
         }
     }
 
-    private void writeTableFeatureProperties(final ByteBuf output, final List<TableFeatureProperties> props) {
+    private void writeTableFeatureProperties(final ByteBuf output, final List<TableFeatureProperties> props, final Short version) {
         if (props != null) {
             for (TableFeatureProperties property : props) {
                 TableFeaturesPropType type = property.getType();
                 if (type.equals(TableFeaturesPropType.OFPTFPTINSTRUCTIONS)) {
-                    writeInstructionRelatedTableProperty(output, property, INSTRUCTIONS_CODE);
+                    writeInstructionRelatedTableProperty(output, property, INSTRUCTIONS_CODE, version);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTINSTRUCTIONSMISS)) {
-                    writeInstructionRelatedTableProperty(output, property, INSTRUCTIONS_MISS_CODE);
+                    writeInstructionRelatedTableProperty(output, property, INSTRUCTIONS_MISS_CODE, version);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTNEXTTABLES)) {
                     writeNextTableRelatedTableProperty(output, property, NEXT_TABLE_CODE);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTNEXTTABLESMISS)) {
                     writeNextTableRelatedTableProperty(output, property, NEXT_TABLE_MISS_CODE);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTWRITEACTIONS)) {
-                    writeActionsRelatedTableProperty(output, property, WRITE_ACTIONS_CODE);
+                    writeActionsRelatedTableProperty(output, property, WRITE_ACTIONS_CODE, version);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTWRITEACTIONSMISS)) {
-                    writeActionsRelatedTableProperty(output, property, WRITE_ACTIONS_MISS_CODE);
+                    writeActionsRelatedTableProperty(output, property, WRITE_ACTIONS_MISS_CODE, version);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTAPPLYACTIONS)) {
-                    writeActionsRelatedTableProperty(output, property, APPLY_ACTIONS_CODE);
+                    writeActionsRelatedTableProperty(output, property, APPLY_ACTIONS_CODE, version);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTAPPLYACTIONSMISS)) {
-                    writeActionsRelatedTableProperty(output, property, APPLY_ACTIONS_MISS_CODE);
+                    writeActionsRelatedTableProperty(output, property, APPLY_ACTIONS_MISS_CODE, version);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTMATCH)) {
-                    writeOxmRelatedTableProperty(output, property, MATCH_CODE);
+                    writeOxmRelatedTableProperty(output, property, MATCH_CODE, version);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTWILDCARDS)) {
-                    writeOxmRelatedTableProperty(output, property, WILDCARDS_CODE);
+                    writeOxmRelatedTableProperty(output, property, WILDCARDS_CODE, version);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTWRITESETFIELD)) {
-                    writeOxmRelatedTableProperty(output, property, WRITE_SETFIELD_CODE);
+                    writeOxmRelatedTableProperty(output, property, WRITE_SETFIELD_CODE, version);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTWRITESETFIELDMISS)) {
-                    writeOxmRelatedTableProperty(output, property, WRITE_SETFIELD_MISS_CODE);
+                    writeOxmRelatedTableProperty(output, property, WRITE_SETFIELD_MISS_CODE, version);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTAPPLYSETFIELD)) {
-                    writeOxmRelatedTableProperty(output, property, APPLY_SETFIELD_CODE);
+                    writeOxmRelatedTableProperty(output, property, APPLY_SETFIELD_CODE, version);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTAPPLYSETFIELDMISS)) {
-                    writeOxmRelatedTableProperty(output, property, APPLY_SETFIELD_MISS_CODE);
+                    writeOxmRelatedTableProperty(output, property, APPLY_SETFIELD_MISS_CODE, version);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTEXPERIMENTER)) {
-                    writeExperimenterRelatedTableProperty(output, property);
+                    writeExperimenterRelatedTableProperty(output, property, version);
                 } else if (type.equals(TableFeaturesPropType.OFPTFPTEXPERIMENTERMISS)) {
-                    writeExperimenterRelatedTableProperty(output, property);
+                    writeExperimenterRelatedTableProperty(output, property, version);
                 }
             }
         }
     }
 
     private void writeInstructionRelatedTableProperty(final ByteBuf output,
-            final TableFeatureProperties property, final byte code) {
+                                                      final TableFeatureProperties property, final byte code, final Short version) {
         int startIndex = output.writerIndex();
         output.writeShort(code);
         int lengthIndex = output.writerIndex();
@@ -342,7 +340,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
                 getAugmentation(InstructionRelatedTableFeatureProperty.class).getInstruction();
         if (instructions != null) {
             TypeKeyMaker<Instruction> keyMaker = TypeKeyMakerFactory
-                    .createInstructionKeyMaker(EncodeConstants.OF13_VERSION_ID);
+                    .createInstructionKeyMaker(version);
             ListSerializer.serializeHeaderList(instructions, keyMaker, registry, output);
         }
         int length = output.writerIndex() - startIndex;
@@ -378,7 +376,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
     }
 
     private void writeActionsRelatedTableProperty(final ByteBuf output,
-            final TableFeatureProperties property, final byte code) {
+                                                  final TableFeatureProperties property, final byte code, final Short version) {
         int startIndex = output.writerIndex();
         output.writeShort(code);
         int lengthIndex = output.writerIndex();
@@ -387,7 +385,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
                 getAugmentation(ActionRelatedTableFeatureProperty.class).getAction();
         if (actions != null) {
             TypeKeyMaker<Action> keyMaker = TypeKeyMakerFactory
-                    .createActionKeyMaker(EncodeConstants.OF13_VERSION_ID);
+                    .createActionKeyMaker(version);
             ListSerializer.serializeHeaderList(actions, keyMaker, registry, output);
         }
         int length = output.writerIndex() - startIndex;
@@ -396,7 +394,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
     }
 
     private void writeOxmRelatedTableProperty(final ByteBuf output,
-            final TableFeatureProperties property, final byte code) {
+                                              final TableFeatureProperties property, final byte code, final Short version) {
         int startIndex = output.writerIndex();
         output.writeShort(code);
         int lengthIndex = output.writerIndex();
@@ -405,7 +403,7 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
                 getAugmentation(OxmRelatedTableFeatureProperty.class).getMatchEntry();
         if (entries != null) {
             TypeKeyMaker<MatchEntry> keyMaker = TypeKeyMakerFactory
-                    .createMatchEntriesKeyMaker(EncodeConstants.OF13_VERSION_ID);
+                    .createMatchEntriesKeyMaker(version);
             ListSerializer.serializeHeaderList(entries, keyMaker, registry, output);
         }
         int length = output.writerIndex() - startIndex;
@@ -414,11 +412,11 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
     }
 
     private void writeExperimenterRelatedTableProperty(final ByteBuf output,
-            final TableFeatureProperties property) {
+                                                       final TableFeatureProperties property, final Short version) {
         long expId = property.getAugmentation(ExperimenterIdTableFeatureProperty.class).getExperimenter().getValue();
         OFSerializer<TableFeatureProperties> serializer = registry.getSerializer(
                 ExperimenterSerializerKeyFactory.createMultipartRequestTFSerializerKey(
-                        EncodeConstants.OF13_VERSION_ID, expId));
+                        version, expId));
         serializer.serialize(property, output);
     }
 
