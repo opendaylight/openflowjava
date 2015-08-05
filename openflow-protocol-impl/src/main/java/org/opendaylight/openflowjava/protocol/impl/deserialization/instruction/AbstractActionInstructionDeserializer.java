@@ -9,17 +9,15 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.instruction;
 
 import io.netty.buffer.ByteBuf;
-
 import java.util.List;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.CodeKeyMaker;
 import org.opendaylight.openflowjava.protocol.impl.util.CodeKeyMakerFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.InstructionConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.ListDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.util.VersatileFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 
@@ -27,16 +25,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction
  * @author michal.polkorab
  *
  */
-public abstract class AbstractActionInstructionDeserializer implements OFDeserializer<Instruction>,
+public abstract class AbstractActionInstructionDeserializer extends VersatileFactory implements OFDeserializer<Instruction>,
         DeserializerRegistryInjector {
 
     private DeserializerRegistry registry;
 
     protected List<Action> deserializeActions(ByteBuf input, int instructionLength) {
         int length = instructionLength - InstructionConstants.STANDARD_INSTRUCTION_LENGTH;
-        CodeKeyMaker keyMaker = CodeKeyMakerFactory.createActionsKeyMaker(EncodeConstants.OF13_VERSION_ID);
+        CodeKeyMaker keyMaker = CodeKeyMakerFactory.createActionsKeyMaker(getVersion());
         List<Action> actions = ListDeserializer.deserializeList(
-                EncodeConstants.OF13_VERSION_ID, length, input, keyMaker, getRegistry());
+                getVersion(), length, input, keyMaker, getRegistry());
         return actions;
     }
 

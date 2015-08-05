@@ -85,7 +85,7 @@ public final class ActionDeserializerInitializer {
         helper.registerDeserializer(22, new OF13GroupActionDeserializer());
         helper.registerDeserializer(23, new OF13SetNwTtlActionDeserializer());
         helper.registerDeserializer(24, new OF13DecNwTtlActionDeserializer());
-        helper.registerDeserializer(25, new OF13SetFieldActionDeserializer());
+        helper.registerDeserializer(25, new OF13SetFieldActionDeserializer(EncodeConstants.OF13_VERSION_ID));
         helper.registerDeserializer(26, new OF13PushPbbActionDeserializer());
         helper.registerDeserializer(27, new OF13PopPbbActionDeserializer());
 
@@ -109,7 +109,7 @@ public final class ActionDeserializerInitializer {
         helper.registerDeserializer(22, new OF13GroupActionDeserializer());
         helper.registerDeserializer(23, new OF13SetNwTtlActionDeserializer());
         helper.registerDeserializer(24, new OF13DecNwTtlActionDeserializer());
-        helper.registerDeserializer(25, new OF13SetFieldActionDeserializer());
+        helper.registerDeserializer(25, new OF13SetFieldActionDeserializer(EncodeConstants.OF14_VERSION_ID));
         helper.registerDeserializer(26, new OF13PushPbbActionDeserializer());
         helper.registerDeserializer(27, new OF13PopPbbActionDeserializer());
     }

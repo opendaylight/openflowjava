@@ -10,7 +10,6 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
@@ -45,7 +44,9 @@ public class DeserializerRegistryImpl implements DeserializerRegistry {
         registerDeserializer(new MessageCodeKey(EncodeConstants.OF10_VERSION_ID,
                 EncodeConstants.EMPTY_VALUE, MatchV10.class), new OF10MatchDeserializer());
         registerDeserializer(new MessageCodeKey(EncodeConstants.OF13_VERSION_ID,
-                EncodeConstants.EMPTY_VALUE, Match.class), new MatchDeserializer());
+                EncodeConstants.EMPTY_VALUE, Match.class), new MatchDeserializer(EncodeConstants.OF13_VERSION_ID));
+        registerDeserializer(new MessageCodeKey(EncodeConstants.OF14_VERSION_ID,
+                EncodeConstants.EMPTY_VALUE, Match.class), new MatchDeserializer(EncodeConstants.OF14_VERSION_ID));
 
         // register match entry deserializers
         MatchEntryDeserializerInitializer.registerMatchEntryDeserializers(this);
