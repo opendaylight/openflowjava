@@ -88,5 +88,29 @@ public final class ActionDeserializerInitializer {
         helper.registerDeserializer(25, new OF13SetFieldActionDeserializer());
         helper.registerDeserializer(26, new OF13PushPbbActionDeserializer());
         helper.registerDeserializer(27, new OF13PopPbbActionDeserializer());
+
+        // register OF v1.4 action deserializers
+        registerOF14ActionDeserializers(registry);
+    }
+
+    private static void registerOF14ActionDeserializers(DeserializerRegistry registry) {
+        ActionDeserializerRegistryHelper helper =
+                new ActionDeserializerRegistryHelper(EncodeConstants.OF14_VERSION_ID, registry);
+        helper.registerDeserializer(0, new OF13OutputActionDeserializer());
+        helper.registerDeserializer(11, new OF13CopyTtlOutActionDeserializer());
+        helper.registerDeserializer(12, new OF13CopyTtlInActionDeserializer());
+        helper.registerDeserializer(15, new OF13SetMplsTtlActionDeserializer());
+        helper.registerDeserializer(16, new OF13DecMplsTtlActionDeserializer());
+        helper.registerDeserializer(17, new OF13PushVlanActionDeserializer());
+        helper.registerDeserializer(18, new OF13PopVlanActionDeserializer());
+        helper.registerDeserializer(19, new OF13PushMplsActionDeserializer());
+        helper.registerDeserializer(20, new OF13PopMplsActionDeserializer());
+        helper.registerDeserializer(21, new OF13SetQueueActionDeserializer());
+        helper.registerDeserializer(22, new OF13GroupActionDeserializer());
+        helper.registerDeserializer(23, new OF13SetNwTtlActionDeserializer());
+        helper.registerDeserializer(24, new OF13DecNwTtlActionDeserializer());
+        helper.registerDeserializer(25, new OF13SetFieldActionDeserializer());
+        helper.registerDeserializer(26, new OF13PushPbbActionDeserializer());
+        helper.registerDeserializer(27, new OF13PopPbbActionDeserializer());
     }
 }

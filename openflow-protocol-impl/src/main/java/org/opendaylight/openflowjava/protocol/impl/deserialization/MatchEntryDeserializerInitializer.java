@@ -8,6 +8,8 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpOpDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpShaDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpSpaDeserializer;
@@ -48,9 +50,7 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmUdpD
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmUdpSrcDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmVlanPcpDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmVlanVidDeserializer;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.MatchEntryDeserializerRegistryHelper;
-import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
 
 /**
  * @author michal.polkorab
@@ -70,6 +70,55 @@ public final class MatchEntryDeserializerInitializer {
         // register OpenflowBasicClass match entry deserializers
         MatchEntryDeserializerRegistryHelper helper =
                 new MatchEntryDeserializerRegistryHelper(EncodeConstants.OF13_VERSION_ID,
+                        OxmMatchConstants.OPENFLOW_BASIC_CLASS, registry);
+        helper.register(OxmMatchConstants.IN_PORT, new OxmInPortDeserializer());
+        helper.register(OxmMatchConstants.IN_PHY_PORT, new OxmInPhyPortDeserializer());
+        helper.register(OxmMatchConstants.METADATA, new OxmMetadataDeserializer());
+        helper.register(OxmMatchConstants.ETH_DST, new OxmEthDstDeserializer());
+        helper.register(OxmMatchConstants.ETH_SRC, new OxmEthSrcDeserializer());
+        helper.register(OxmMatchConstants.ETH_TYPE, new OxmEthTypeDeserializer());
+        helper.register(OxmMatchConstants.VLAN_VID, new OxmVlanVidDeserializer());
+        helper.register(OxmMatchConstants.VLAN_PCP, new OxmVlanPcpDeserializer());
+        helper.register(OxmMatchConstants.IP_DSCP, new OxmIpDscpDeserializer());
+        helper.register(OxmMatchConstants.IP_ECN, new OxmIpEcnDeserializer());
+        helper.register(OxmMatchConstants.IP_PROTO, new OxmIpProtoDeserializer());
+        helper.register(OxmMatchConstants.IPV4_SRC, new OxmIpv4SrcDeserializer());
+        helper.register(OxmMatchConstants.IPV4_DST, new OxmIpv4DstDeserializer());
+        helper.register(OxmMatchConstants.TCP_SRC, new OxmTcpSrcDeserializer());
+        helper.register(OxmMatchConstants.TCP_DST, new OxmTcpDstDeserializer());
+        helper.register(OxmMatchConstants.UDP_SRC, new OxmUdpSrcDeserializer());
+        helper.register(OxmMatchConstants.UDP_DST, new OxmUdpDstDeserializer());
+        helper.register(OxmMatchConstants.SCTP_SRC, new OxmSctpSrcDeserializer());
+        helper.register(OxmMatchConstants.SCTP_DST, new OxmSctpDstDeserializer());
+        helper.register(OxmMatchConstants.ICMPV4_TYPE, new OxmIcmpv4TypeDeserializer());
+        helper.register(OxmMatchConstants.ICMPV4_CODE, new OxmIcmpv4CodeDeserializer());
+        helper.register(OxmMatchConstants.ARP_OP, new OxmArpOpDeserializer());
+        helper.register(OxmMatchConstants.ARP_SPA, new OxmArpSpaDeserializer());
+        helper.register(OxmMatchConstants.ARP_TPA, new OxmArpTpaDeserializer());
+        helper.register(OxmMatchConstants.ARP_SHA, new OxmArpShaDeserializer());
+        helper.register(OxmMatchConstants.ARP_THA, new OxmArpThaDeserializer());
+        helper.register(OxmMatchConstants.IPV6_SRC, new OxmIpv6SrcDeserializer());
+        helper.register(OxmMatchConstants.IPV6_DST, new OxmIpv6DstDeserializer());
+        helper.register(OxmMatchConstants.IPV6_FLABEL, new OxmIpv6FlabelDeserializer());
+        helper.register(OxmMatchConstants.ICMPV6_TYPE, new OxmIcmpv6TypeDeserializer());
+        helper.register(OxmMatchConstants.ICMPV6_CODE, new OxmIcmpv6CodeDeserializer());
+        helper.register(OxmMatchConstants.IPV6_ND_TARGET, new OxmIpv6NdTargetDeserializer());
+        helper.register(OxmMatchConstants.IPV6_ND_SLL, new OxmIpv6NdSllDeserializer());
+        helper.register(OxmMatchConstants.IPV6_ND_TLL, new OxmIpv6NdTllDeserializer());
+        helper.register(OxmMatchConstants.MPLS_LABEL, new OxmMplsLabelDeserializer());
+        helper.register(OxmMatchConstants.MPLS_TC, new OxmMplsTcDeserializer());
+        helper.register(OxmMatchConstants.MPLS_BOS, new OxmMplsBosDeserializer());
+        helper.register(OxmMatchConstants.PBB_ISID, new OxmPbbIsidDeserializer());
+        helper.register(OxmMatchConstants.TUNNEL_ID, new OxmTunnelIdDeserializer());
+        helper.register(OxmMatchConstants.IPV6_EXTHDR, new OxmIpv6ExtHdrDeserializer());
+
+        // register OF-1.4 OpenflowBasicClass match entry deserializers
+        registerOF14MachDeserializers(registry);
+    }
+
+    private static void registerOF14MachDeserializers(DeserializerRegistry registry) {
+        MatchEntryDeserializerRegistryHelper helper =
+                new MatchEntryDeserializerRegistryHelper(EncodeConstants.OF14_VERSION_ID,
                         OxmMatchConstants.OPENFLOW_BASIC_CLASS, registry);
         helper.register(OxmMatchConstants.IN_PORT, new OxmInPortDeserializer());
         helper.register(OxmMatchConstants.IN_PHY_PORT, new OxmInPhyPortDeserializer());
