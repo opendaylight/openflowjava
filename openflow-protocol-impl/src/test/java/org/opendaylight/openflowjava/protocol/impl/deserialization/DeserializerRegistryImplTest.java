@@ -40,7 +40,7 @@ public class DeserializerRegistryImplTest {
     @Test(expected = IllegalArgumentException.class)
     public void testRegisterDeserializerNoKey(){
         DeserializerRegistryImpl serReg = new DeserializerRegistryImpl();
-        serReg.registerDeserializer(null, new MatchDeserializer());
+        serReg.registerDeserializer(null, new MatchDeserializer(EncodeConstants.OF13_VERSION_ID));
     }
 
     /**

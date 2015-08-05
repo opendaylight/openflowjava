@@ -9,10 +9,8 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.action;
 
 import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
@@ -32,7 +30,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.matc
 public class OF13SetFieldActionDeserializer extends AbstractActionDeserializer
         implements DeserializerRegistryInjector {
 
+    private final byte version;
     private DeserializerRegistry registry;
+
+    public OF13SetFieldActionDeserializer(byte version) {
+        this.version = version;
+    }
 
     @Override
     public Action deserialize(ByteBuf input) {
@@ -45,7 +48,7 @@ public class OF13SetFieldActionDeserializer extends AbstractActionDeserializer
         // get oxm_field & hasMask byte and extract the field value
         int oxmField = input.getUnsignedByte(input.readerIndex()
                 + EncodeConstants.SIZE_OF_SHORT_IN_BYTES) >>> 1;
-        MatchEntryDeserializerKey key = new MatchEntryDeserializerKey(EncodeConstants.OF13_VERSION_ID,
+        MatchEntryDeserializerKey key = new MatchEntryDeserializerKey(version,
                 oxmClass, oxmField);
         if (oxmClass == EncodeConstants.EXPERIMENTER_VALUE) {
             long expId = input.getUnsignedInt(input.readerIndex() + EncodeConstants.SIZE_OF_SHORT_IN_BYTES

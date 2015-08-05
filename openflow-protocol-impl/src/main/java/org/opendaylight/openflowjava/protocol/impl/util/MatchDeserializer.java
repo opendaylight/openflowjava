@@ -9,9 +9,7 @@
 package org.opendaylight.openflowjava.protocol.impl.util;
 
 import io.netty.buffer.ByteBuf;
-
 import java.util.List;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
@@ -31,6 +29,13 @@ public class MatchDeserializer implements OFDeserializer<Match>,
         DeserializerRegistryInjector {
 
     private DeserializerRegistry registry;
+    private final byte version;
+    private final CodeKeyMaker keyMaker;
+
+    public MatchDeserializer(byte version) {
+        this.version = version;
+        keyMaker = CodeKeyMakerFactory.createMatchEntriesKeyMaker(version);
+    }
 
     @Override
     public Match deserialize(ByteBuf input) {
@@ -48,9 +53,7 @@ public class MatchDeserializer implements OFDeserializer<Match>,
             default:
                 break;
             }
-            CodeKeyMaker keyMaker = CodeKeyMakerFactory
-                    .createMatchEntriesKeyMaker(EncodeConstants.OF13_VERSION_ID);
-            List<MatchEntry> entries = ListDeserializer.deserializeList(EncodeConstants.OF13_VERSION_ID,
+            List<MatchEntry> entries = ListDeserializer.deserializeList(version,
                     length - 2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES, input, keyMaker, registry);
             builder.setMatchEntry(entries);
             int paddingRemainder = length % EncodeConstants.PADDING;

@@ -9,9 +9,9 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.instruction;
 
 import io.netty.buffer.ByteBuf;
-
 import org.junit.Assert;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.ApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instruction.grouping.instruction.choice.ClearActionsCase;
@@ -42,11 +42,15 @@ public class AbstractInstructionDeserializerTest {
         Assert.assertTrue("Wrong type", instruction.getInstructionChoice() instanceof WriteMetadataCase);
 
         buffer = ByteBufUtils.hexStringToByteBuf("00 03 00 04");
-        instruction = new WriteActionsInstructionDeserializer().deserializeHeader(buffer);
+        final WriteActionsInstructionDeserializer writeActionsInstructionDeserializer = new WriteActionsInstructionDeserializer();
+        writeActionsInstructionDeserializer.assignVersion(EncodeConstants.OF13_VERSION_ID);
+        instruction = writeActionsInstructionDeserializer.deserializeHeader(buffer);
         Assert.assertTrue("Wrong type", instruction.getInstructionChoice() instanceof WriteActionsCase);
 
         buffer = ByteBufUtils.hexStringToByteBuf("00 04 00 04");
-        instruction = new ApplyActionsInstructionDeserializer().deserializeHeader(buffer);
+        final ApplyActionsInstructionDeserializer applyActionsInstructionDeserializer = new ApplyActionsInstructionDeserializer();
+        applyActionsInstructionDeserializer.assignVersion(EncodeConstants.OF13_VERSION_ID);
+        instruction = applyActionsInstructionDeserializer.deserializeHeader(buffer);
         Assert.assertTrue("Wrong type", instruction.getInstructionChoice() instanceof ApplyActionsCase);
 
         buffer = ByteBufUtils.hexStringToByteBuf("00 05 00 04");

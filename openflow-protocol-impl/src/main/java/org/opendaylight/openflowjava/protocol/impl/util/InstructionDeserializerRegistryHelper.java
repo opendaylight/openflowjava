@@ -9,6 +9,7 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFVersionAssignable;
 import org.opendaylight.openflowjava.protocol.api.keys.InstructionDeserializerKey;
 
 /**
@@ -36,5 +37,9 @@ public class InstructionDeserializerRegistryHelper {
     public void registerDeserializer(int code, OFGeneralDeserializer deserializer) {
         registry.registerDeserializer(new InstructionDeserializerKey(version, code,
                 null), deserializer);
+
+        if (deserializer instanceof OFVersionAssignable) {
+            ((OFVersionAssignable) deserializer).assignVersion(version);
+        }
     }
 }
