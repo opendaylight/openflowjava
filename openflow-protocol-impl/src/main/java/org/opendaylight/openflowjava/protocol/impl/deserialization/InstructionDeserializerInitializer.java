@@ -42,5 +42,19 @@ public final class InstructionDeserializerInitializer {
         helper.registerDeserializer(4, new ApplyActionsInstructionDeserializer());
         helper.registerDeserializer(5, new ClearActionsInstructionDeserializer());
         helper.registerDeserializer(6, new MeterInstructionDeserializer());
+
+        // register OF v1.4 instruction deserializers
+        registerOF14InstructionsDeserializers(registry);
+    }
+
+    private static void registerOF14InstructionsDeserializers(DeserializerRegistry registry) {
+        InstructionDeserializerRegistryHelper helper =
+                new InstructionDeserializerRegistryHelper(EncodeConstants.OF14_VERSION_ID, registry);
+        helper.registerDeserializer(1, new GoToTableInstructionDeserializer());
+        helper.registerDeserializer(2, new WriteMetadataInstructionDeserializer());
+        helper.registerDeserializer(3, new WriteActionsInstructionDeserializer());
+        helper.registerDeserializer(4, new ApplyActionsInstructionDeserializer());
+        helper.registerDeserializer(5, new ClearActionsInstructionDeserializer());
+        helper.registerDeserializer(6, new MeterInstructionDeserializer());
     }
 }
