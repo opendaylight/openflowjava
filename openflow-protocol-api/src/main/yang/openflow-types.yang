@@ -1926,4 +1926,69 @@
         }
     }
 
+    typedef port-stats-prop-type {
+        description "since OF-1.4: Port stats property types. OFPPSPT_*";
+        type enumeration {
+            enum OFPPSPT_ETHERNET {
+                value 0;
+                description "Ethernet property.";
+            }
+            enum OFPPSPT_OPTICAL {
+                value 1;
+                description "Optical property.";
+            }
+            enum OFPPSPT_EXPERIMENTER {
+                value 65535; //0xffff
+                description "Experimenter property.";
+            }
+        }
+    }
+
+    typedef port-desc-prop-type {
+        description "since OF-1.4: Port stats property types. OFPPDPT_*";
+        type enumeration {
+            enum OFPPDPT_ETHERNET {
+                value 0;
+                description "Ethernet property.";
+            }
+            enum OFPPDPT_OPTICAL {
+                value 1;
+                description "Optical property.";
+            }
+            enum OFPPDPT_EXPERIMENTER {
+                value 65535; //0xffff
+                description "Experimenter property.";
+            }
+        }
+    }
+
+    typedef port-stats-optical-flags {
+        description "since OF-1.4: Port stats optical flags. OFPOSF_*";
+        type bits {
+            bit OFPOSF_RX_TUNE {
+                position 0;
+                description "Receiver tune info valid.";
+            }
+            bit OFPOSF_TX_TUNE {
+                position 1;
+                description "Transmit tune info valid.";
+            }
+            bit OFPOSF_TX_PWR {
+                position 2;
+                description "TX Power is valid.";
+            }
+            bit OFPOSF_RX_PWR {
+                position 4;
+                description "RX Power is valid.";
+            }
+            bit OFPOSF_TX_BIAS {
+                position 5;
+                description "Transmit bias is valid.";
+            }
+            bit OFPOSF_TX_TEMP {
+                position 6;
+                description "TX Temp is valid.";
+            }
+        }
+    }
 }

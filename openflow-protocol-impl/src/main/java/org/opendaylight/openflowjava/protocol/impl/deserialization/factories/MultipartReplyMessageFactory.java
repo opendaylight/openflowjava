@@ -462,7 +462,7 @@ public class MultipartReplyMessageFactory extends VersatileFactory implements OF
         return properties;
     }
 
-    private static MultipartReplyPortStatsCase setPortStats(ByteBuf input) {
+    protected MultipartReplyPortStatsCase setPortStats(ByteBuf input) {
         MultipartReplyPortStatsCaseBuilder caseBuilder = new MultipartReplyPortStatsCaseBuilder();
         MultipartReplyPortStatsBuilder builder = new MultipartReplyPortStatsBuilder();
         List<PortStats> portStatsList = new ArrayList<>();
@@ -713,7 +713,7 @@ public class MultipartReplyMessageFactory extends VersatileFactory implements OF
                 getVersion(), input.readUnsignedInt()));
     }
 
-    private static MultipartReplyPortDescCase setPortDesc(ByteBuf input) {
+    protected MultipartReplyPortDescCase setPortDesc(ByteBuf input) {
         MultipartReplyPortDescCaseBuilder caseBuilder = new MultipartReplyPortDescCaseBuilder();
         MultipartReplyPortDescBuilder builder = new MultipartReplyPortDescBuilder();
         List<Ports> portsList = new ArrayList<>();
@@ -741,7 +741,7 @@ public class MultipartReplyMessageFactory extends VersatileFactory implements OF
         return caseBuilder.build();
     }
 
-    private static PortConfig createPortConfig(long input) {
+    protected static PortConfig createPortConfig(long input) {
         final Boolean pcPortDown = ((input) & (1 << 0)) != 0;
         final Boolean pcNRecv = ((input) & (1 << 2)) != 0;
         final Boolean pcNFwd = ((input) & (1 << 5)) != 0;
@@ -749,14 +749,14 @@ public class MultipartReplyMessageFactory extends VersatileFactory implements OF
         return new PortConfig(pcNFwd, pcNPacketIn, pcNRecv, pcPortDown);
     }
 
-    private static PortState createPortState(long input) {
+    protected static PortState createPortState(long input) {
         final Boolean psLinkDown = ((input) & (1 << 0)) != 0;
         final Boolean psBlocked = ((input) & (1 << 1)) != 0;
         final Boolean psLive = ((input) & (1 << 2)) != 0;
         return new PortState(psBlocked, psLinkDown, psLive);
     }
 
-    private static PortFeatures createPortFeatures(long input) {
+    protected static PortFeatures createPortFeatures(long input) {
         final Boolean pf10mbHd = ((input) & (1 << 0)) != 0;
         final Boolean pf10mbFd = ((input) & (1 << 1)) != 0;
         final Boolean pf100mbHd = ((input) & (1 << 2)) != 0;
