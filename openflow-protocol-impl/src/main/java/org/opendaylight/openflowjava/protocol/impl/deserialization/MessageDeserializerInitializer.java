@@ -31,6 +31,7 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF1
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10PortStatusMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10QueueGetConfigReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10StatsReplyMessageFactory;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF14MultipartReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.PacketInMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.PortStatusMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.QueueGetConfigReplyMessageFactory;
@@ -118,7 +119,7 @@ public final class MessageDeserializerInitializer {
         helper.registerDeserializer(10, null, PacketInMessage.class, new PacketInMessageFactory());
         helper.registerDeserializer(11, null, FlowRemovedMessage.class, new FlowRemovedMessageFactory());
         helper.registerDeserializer(12, null, PortStatusMessage.class, new PortStatusMessageFactory());
-        helper.registerDeserializer(19, null, MultipartReplyMessage.class, new MultipartReplyMessageFactory());
+        helper.registerDeserializer(19, null, MultipartReplyMessage.class, new OF14MultipartReplyMessageFactory());
         helper.registerDeserializer(21, null, BarrierOutput.class, new BarrierReplyMessageFactory());
         helper.registerDeserializer(23, null, GetQueueConfigOutput.class, new QueueGetConfigReplyMessageFactory());
         helper.registerDeserializer(25, null, RoleRequestOutput.class, new RoleReplyMessageFactory());
