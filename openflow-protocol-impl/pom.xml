@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.opendaylight.openflowjava</groupId>
         <artifactId>openflow-protocol-parent</artifactId>
-        <version>0.6.1-Lithium-SR1</version>
+        <version>0.6.2-SNAPSHOT</version>
     </parent>
     <artifactId>openflow-protocol-impl</artifactId>
     <packaging>bundle</packaging>
