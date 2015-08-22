@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.opendaylight.openflowjava</groupId>
         <artifactId>openflow-protocol-parent</artifactId>
-        <version>0.6.1-SNAPSHOT</version>
+        <version>0.6.1-Lithium-SR1</version>
     </parent>
     <artifactId>openflowjava-config</artifactId>
     <description>Configuration files for openflowjava statistics</description>
