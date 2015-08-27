@@ -10,8 +10,9 @@
 
     <parent>
         <groupId>org.opendaylight.openflowjava</groupId>
-        <artifactId>openflow-protocol-parent</artifactId>
+        <artifactId>openflowjava-parent</artifactId>
         <version>0.7.0-SNAPSHOT</version>
+        <relativePath>../parent</relativePath>
     </parent>
     <artifactId>openflowjava-config</artifactId>
     <description>Configuration files for openflowjava statistics</description>
