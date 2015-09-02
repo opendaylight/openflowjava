@@ -2,12 +2,14 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.opendaylight.openflowjava</groupId>
-        <artifactId>openflowjava-parent</artifactId>
-        <version>0.7.0-SNAPSHOT</version>
-        <relativePath>../parent</relativePath>
+        <groupId>org.opendaylight.mdsal</groupId>
+        <artifactId>binding-parent</artifactId>
+        <version>0.8.0-SNAPSHOT</version>
+        <relativePath/>
     </parent>
+    <groupId>org.opendaylight.openflowjava</groupId>
     <artifactId>openflow-protocol-api</artifactId>
+    <version>0.7.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Openflow Protocol Library - API</name>
     <scm>
@@ -15,46 +17,33 @@
         <tag>HEAD</tag>
     </scm>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.opendaylight.yangtools</groupId>
-                <artifactId>yang-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate-sources</goal>
-                        </goals>
-                        <configuration>
-                            <yangFilesRootDir>src/main/yang</yangFilesRootDir>
-                            <codeGenerators>
-                                <generator>
-                                    <codeGeneratorClass>
-                                        org.opendaylight.yangtools.maven.sal.api.gen.plugin.CodeGeneratorImpl
-                                    </codeGeneratorClass>
-                                    <outputBaseDir>
-                                        ${salGeneratorPath}
-                                    </outputBaseDir>
-                                </generator>
-                                <generator>
-                                    <codeGeneratorClass>org.opendaylight.yangtools.yang.unified.doc.generator.maven.DocumentationGeneratorImpl</codeGeneratorClass>
-                                    <outputBaseDir>target/site/restconf</outputBaseDir>
-                                </generator>
-                            </codeGenerators>
-                            <inspectDependencies>true</inspectDependencies>
-                        </configuration>
-                    </execution>
-                </executions>
+    <properties>
+      <mdsal.version>2.0.0-SNAPSHOT</mdsal.version>
+      <mdsal.model.version>0.8.0-SNAPSHOT</mdsal.model.version>
+    </properties>
 
-                <dependencies>
-                    <dependency>
-                        <groupId>org.opendaylight.yangtools</groupId>
-                        <artifactId>maven-sal-api-gen-plugin</artifactId>
-                        <version>${yangtools.version}</version>
-                        <type>jar</type>
-                    </dependency>
-                </dependencies>
-            </plugin>
+    <dependencyManagement>
+      <dependencies>
+      <!-- MD-SAL -->
+        <dependency>
+          <groupId>org.opendaylight.mdsal</groupId>
+          <artifactId>mdsal-artifacts</artifactId>
+          <version>${mdsal.version}</version>
+          <scope>import</scope>
+          <type>pom</type>
+        </dependency>
+
+        <dependency>
+          <groupId>org.opendaylight.mdsal.model</groupId>
+          <artifactId>mdsal-model-artifacts</artifactId>
+          <version>${mdsal.model.version}</version>
+          <scope>import</scope>
+          <type>pom</type>
+        </dependency>
+      </dependencies>
+    </dependencyManagement>
+
+    <build>
 
             <!-- TODO: maven-antrun-plugin deletes yang source files from target.
                        This is done because otherwise openflowjava models are stored in controller
@@ -96,44 +85,6 @@
                 </executions>
             </plugin>
         </plugins>
-        <pluginManagement>
-            <plugins>
-                <!--This plugin's configuration is used to store Eclipse 
-                    m2e settings only. It has no influence on the Maven build itself. -->
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>
-                                            org.opendaylight.yangtools
-                                        </groupId>
-                                        <artifactId>
-                                            yang-maven-plugin
-                                        </artifactId>
-                                        <versionRange>
-                                            (0.5.6,)
-                                        </versionRange>
-                                        <goals>
-                                            <goal>
-                                                generate-sources
-                                            </goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
     </build>
     <dependencies>
         <dependency>
@@ -145,15 +96,15 @@
             <artifactId>yang-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.yangtools.model</groupId>
+            <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>ietf-inet-types</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.yangtools.model</groupId>
+            <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>ietf-yang-types</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.yangtools.model</groupId>
+            <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>yang-ext</artifactId>
         </dependency>
         <dependency>
