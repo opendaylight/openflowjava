@@ -15,8 +15,10 @@
 
   <properties>
     <config.version>0.4.0-SNAPSHOT</config.version>
-    <mdsal.version>1.3.0-SNAPSHOT</mdsal.version>
-    <yangtools.version>0.8.0-SNAPSHOT</yangtools.version>
+    <controller.mdsal.version>1.3.0-SNAPSHOT</controller.mdsal.version>
+    <mdsal.version>2.0.0-SNAPSHOT</mdsal.version>
+    <controller.mdsal.version>1.3.0-SNAPSHOT</controller.mdsal.version>
+    <mdsal.model.version>0.8.0-SNAPSHOT</mdsal.model.version>
   </properties>
 
   <dependencyManagement>
@@ -30,11 +32,19 @@
         <type>pom</type>
       </dependency>
 
-      <!-- YANG tools -->
+      <!-- MD-SAL -->
       <dependency>
-        <groupId>org.opendaylight.yangtools</groupId>
-        <artifactId>yangtools-artifacts</artifactId>
-        <version>${yangtools.version}</version>
+        <groupId>org.opendaylight.mdsal</groupId>
+        <artifactId>mdsal-artifacts</artifactId>
+        <version>${mdsal.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+
+      <dependency>
+        <groupId>org.opendaylight.mdsal.model</groupId>
+        <artifactId>mdsal-model-artifacts</artifactId>
+        <version>${mdsal.model.version}</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
@@ -50,7 +60,7 @@
       <dependency>
         <groupId>org.opendaylight.controller</groupId>
         <artifactId>mdsal-artifacts</artifactId>
-        <version>${mdsal.version}</version>
+        <version>${controller.mdsal.version}</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
@@ -61,8 +71,16 @@
   <dependencies>
     <!-- feature dependencies -->
     <dependency>
-      <groupId>org.opendaylight.yangtools</groupId>
-      <artifactId>features-yangtools</artifactId>
+      <groupId>org.opendaylight.mdsal</groupId>
+      <artifactId>features-mdsal</artifactId>
+      <version>${mdsal.version}</version>
+      <classifier>features</classifier>
+      <type>xml</type>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.mdsal.model</groupId>
+      <artifactId>features-mdsal-model</artifactId>
+      <version>${mdsal.model.version}</version>
       <classifier>features</classifier>
       <type>xml</type>
     </dependency>
@@ -75,7 +93,7 @@
     <dependency>
       <groupId>org.opendaylight.controller</groupId>
       <artifactId>features-mdsal</artifactId>
-      <version>${mdsal.version}</version>
+      <version>${controller.mdsal.version}</version>
       <classifier>features</classifier>
       <type>xml</type>
     </dependency>
