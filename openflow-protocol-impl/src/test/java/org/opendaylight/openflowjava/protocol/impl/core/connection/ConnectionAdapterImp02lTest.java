@@ -7,24 +7,22 @@
  */
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.embedded.EmbeddedChannel;
-
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionAdapterImpl;
-import org.opendaylight.openflowjava.protocol.impl.core.connection.MessageListenerWrapper;
-import org.opendaylight.openflowjava.protocol.impl.core.connection.ResponseExpectedRpcListener;
-import org.opendaylight.openflowjava.protocol.impl.core.connection.RpcResponseKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoReplyInput;
@@ -45,11 +43,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetAsyncInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetConfigInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInput;
-
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
 
 /**
  * @author madamjak
@@ -109,8 +102,8 @@ public class ConnectionAdapterImp02lTest {
      */
     @Test
     public void testRcp() {
-        EmbeddedChannel embChannel = new EmbeddedChannel(new EmbededChannelHandler());
-        adapter = new ConnectionAdapterImpl(embChannel,InetSocketAddress.createUnresolved("localhost", 9876));
+        final EmbeddedChannel embChannel = new EmbeddedChannel(new EmbededChannelHandler());
+        adapter = new ConnectionAdapterImpl(embChannel, InetSocketAddress.createUnresolved("localhost", 9876), true);
         cache = CacheBuilder.newBuilder().concurrencyLevel(1).expireAfterWrite(RPC_RESPONSE_EXPIRATION, TimeUnit.MINUTES)
                 .removalListener(REMOVAL_LISTENER).build();
         adapter.setResponseCache(cache);
@@ -200,12 +193,12 @@ public class ConnectionAdapterImp02lTest {
      */
     private class EmbededChannelHandler extends ChannelOutboundHandlerAdapter {
         @Override
-        public void write(ChannelHandlerContext ctx, Object msg,
-                ChannelPromise promise) throws Exception {
+        public void write(final ChannelHandlerContext ctx, final Object msg,
+                final ChannelPromise promise) throws Exception {
             responseOfCall = null;
             if(msg instanceof MessageListenerWrapper){
-                MessageListenerWrapper listener = (MessageListenerWrapper) msg;
-                OfHeader ofHeader = listener.getMsg();
+                final MessageListenerWrapper listener = (MessageListenerWrapper) msg;
+                final OfHeader ofHeader = listener.getMsg();
                 responseOfCall = ofHeader;
             }
         }
