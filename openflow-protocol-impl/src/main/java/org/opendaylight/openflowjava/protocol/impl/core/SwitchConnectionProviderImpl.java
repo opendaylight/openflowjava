@@ -9,8 +9,9 @@
 
 package org.opendaylight.openflowjava.protocol.impl.core;
 
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import io.netty.channel.nio.NioEventLoopGroup;
-
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
@@ -50,9 +51,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
-
 /**
  * Exposed class for server handling<br>
  * C - {@link MatchEntrySerializerKey} parameter representing oxm_class (see specification)<br>
@@ -67,10 +65,10 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider, C
     private SwitchConnectionHandler switchConnectionHandler;
     private ServerFacade serverFacade;
     private ConnectionConfiguration connConfig;
-    private SerializationFactory serializationFactory;
-    private SerializerRegistry serializerRegistry;
-    private DeserializerRegistry deserializerRegistry;
-    private DeserializationFactory deserializationFactory;
+    private final SerializationFactory serializationFactory;
+    private final SerializerRegistry serializerRegistry;
+    private final DeserializerRegistry deserializerRegistry;
+    private final DeserializationFactory deserializationFactory;
     private TcpConnectionInitializer connectionInitializer;
 
     /** Constructor */
@@ -86,12 +84,12 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider, C
     }
 
     @Override
-    public void setConfiguration(ConnectionConfiguration connConfig) {
+    public void setConfiguration(final ConnectionConfiguration connConfig) {
         this.connConfig = connConfig;
     }
 
     @Override
-    public void setSwitchConnectionHandler(SwitchConnectionHandler switchConnectionHandler) {
+    public void setSwitchConnectionHandler(final SwitchConnectionHandler switchConnectionHandler) {
         LOGGER.debug("setSwitchConnectionHandler");
         this.switchConnectionHandler = switchConnectionHandler;
     }
@@ -117,8 +115,8 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider, C
             }
             new Thread(serverFacade).start();
             result = serverFacade.getIsOnlineFuture();
-        } catch (Exception e) {
-            SettableFuture<Boolean> exResult = SettableFuture.create();
+        } catch (final Exception e) {
+            final SettableFuture<Boolean> exResult = SettableFuture.create();
             exResult.setException(e);
             result = exResult;
         }
@@ -131,20 +129,21 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider, C
     private ServerFacade createAndConfigureServer() {
         LOGGER.debug("Configuring ..");
         ServerFacade server = null;
-        ChannelInitializerFactory factory = new ChannelInitializerFactory();
+        final ChannelInitializerFactory factory = new ChannelInitializerFactory();
         factory.setSwitchConnectionHandler(switchConnectionHandler);
         factory.setSwitchIdleTimeout(connConfig.getSwitchIdleTimeout());
         factory.setTlsConfig(connConfig.getTlsConfiguration());
         factory.setSerializationFactory(serializationFactory);
         factory.setDeserializationFactory(deserializationFactory);
-        TransportProtocol transportProtocol = (TransportProtocol) connConfig.getTransferProtocol();
+        factory.setUseBarrier(connConfig.useBarrier());
+        final TransportProtocol transportProtocol = (TransportProtocol) connConfig.getTransferProtocol();
         if (transportProtocol.equals(TransportProtocol.TCP) || transportProtocol.equals(TransportProtocol.TLS)) {
             server = new TcpHandler(connConfig.getAddress(), connConfig.getPort());
-            TcpChannelInitializer channelInitializer = factory.createPublishingChannelInitializer();
+            final TcpChannelInitializer channelInitializer = factory.createPublishingChannelInitializer();
             ((TcpHandler) server).setChannelInitializer(channelInitializer);
             ((TcpHandler) server).initiateEventLoopGroups(connConfig.getThreadConfiguration());
 
-            NioEventLoopGroup workerGroupFromTcpHandler = ((TcpHandler) server).getWorkerGroup();
+            final NioEventLoopGroup workerGroupFromTcpHandler = ((TcpHandler) server).getWorkerGroup();
             connectionInitializer = new TcpConnectionInitializer(workerGroupFromTcpHandler);
             connectionInitializer.setChannelInitializer(channelInitializer);
             connectionInitializer.run();
@@ -171,113 +170,113 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider, C
     }
 
     @Override
-    public boolean unregisterSerializer(ExperimenterSerializerKey key) {
+    public boolean unregisterSerializer(final ExperimenterSerializerKey key) {
         return serializerRegistry.unregisterSerializer((MessageTypeKey<?>) key);
     }
 
     @Override
-    public boolean unregisterDeserializer(ExperimenterDeserializerKey key) {
+    public boolean unregisterDeserializer(final ExperimenterDeserializerKey key) {
         return deserializerRegistry.unregisterDeserializer((MessageCodeKey) key);
     }
 
     @Override
-    public void registerActionSerializer(ActionSerializerKey<?> key,
-            OFGeneralSerializer serializer) {
+    public void registerActionSerializer(final ActionSerializerKey<?> key,
+            final OFGeneralSerializer serializer) {
         serializerRegistry.registerSerializer(key, serializer);
     }
 
     @Override
-    public void registerActionDeserializer(ExperimenterActionDeserializerKey key,
-            OFGeneralDeserializer deserializer) {
+    public void registerActionDeserializer(final ExperimenterActionDeserializerKey key,
+            final OFGeneralDeserializer deserializer) {
         deserializerRegistry.registerDeserializer(key, deserializer);
     }
 
     @Override
-    public void registerInstructionSerializer(InstructionSerializerKey<?> key,
-            OFGeneralSerializer serializer) {
+    public void registerInstructionSerializer(final InstructionSerializerKey<?> key,
+            final OFGeneralSerializer serializer) {
         serializerRegistry.registerSerializer(key, serializer);
     }
 
     @Override
-    public void registerInstructionDeserializer(ExperimenterInstructionDeserializerKey key,
-            OFGeneralDeserializer deserializer) {
+    public void registerInstructionDeserializer(final ExperimenterInstructionDeserializerKey key,
+            final OFGeneralDeserializer deserializer) {
         deserializerRegistry.registerDeserializer(key, deserializer);
     }
 
     @Override
-    public <C extends OxmClassBase, F extends MatchField> void registerMatchEntrySerializer(MatchEntrySerializerKey<C, F> key,
-            OFGeneralSerializer serializer) {
+    public <C extends OxmClassBase, F extends MatchField> void registerMatchEntrySerializer(final MatchEntrySerializerKey<C, F> key,
+            final OFGeneralSerializer serializer) {
         serializerRegistry.registerSerializer(key, serializer);
     }
 
     @Override
-    public void registerMatchEntryDeserializer(MatchEntryDeserializerKey key,
-            OFGeneralDeserializer deserializer) {
+    public void registerMatchEntryDeserializer(final MatchEntryDeserializerKey key,
+            final OFGeneralDeserializer deserializer) {
         deserializerRegistry.registerDeserializer(key, deserializer);
     }
 
     @Override
-    public void registerErrorDeserializer(ExperimenterIdDeserializerKey key,
-            OFDeserializer<ErrorMessage> deserializer) {
+    public void registerErrorDeserializer(final ExperimenterIdDeserializerKey key,
+            final OFDeserializer<ErrorMessage> deserializer) {
         deserializerRegistry.registerDeserializer(key, deserializer);
     }
 
     @Override
-    public void registerExperimenterMessageDeserializer(ExperimenterIdDeserializerKey key,
-            OFDeserializer<ExperimenterMessage> deserializer) {
+    public void registerExperimenterMessageDeserializer(final ExperimenterIdDeserializerKey key,
+            final OFDeserializer<ExperimenterMessage> deserializer) {
         deserializerRegistry.registerDeserializer(key, deserializer);
     }
 
     @Override
-    public void registerMultipartReplyMessageDeserializer(ExperimenterIdDeserializerKey key,
-            OFDeserializer<MultipartReplyMessage> deserializer) {
+    public void registerMultipartReplyMessageDeserializer(final ExperimenterIdDeserializerKey key,
+            final OFDeserializer<MultipartReplyMessage> deserializer) {
         deserializerRegistry.registerDeserializer(key, deserializer);
     }
 
     @Override
-    public void registerMultipartReplyTFDeserializer(ExperimenterIdDeserializerKey key,
-            OFGeneralDeserializer deserializer) {
+    public void registerMultipartReplyTFDeserializer(final ExperimenterIdDeserializerKey key,
+            final OFGeneralDeserializer deserializer) {
         deserializerRegistry.registerDeserializer(key, deserializer);
     }
 
     @Override
-    public void registerQueuePropertyDeserializer(ExperimenterIdDeserializerKey key,
-            OFDeserializer<QueueProperty> deserializer) {
+    public void registerQueuePropertyDeserializer(final ExperimenterIdDeserializerKey key,
+            final OFDeserializer<QueueProperty> deserializer) {
         deserializerRegistry.registerDeserializer(key, deserializer);
     }
 
     @Override
-    public void registerMeterBandDeserializer(ExperimenterIdDeserializerKey key,
-            OFDeserializer<MeterBandExperimenterCase> deserializer) {
+    public void registerMeterBandDeserializer(final ExperimenterIdDeserializerKey key,
+            final OFDeserializer<MeterBandExperimenterCase> deserializer) {
         deserializerRegistry.registerDeserializer(key, deserializer);
     }
 
     @Override
-    public void registerExperimenterMessageSerializer(ExperimenterIdSerializerKey<ExperimenterInput> key,
-            OFSerializer<ExperimenterInput> serializer) {
+    public void registerExperimenterMessageSerializer(final ExperimenterIdSerializerKey<ExperimenterInput> key,
+            final OFSerializer<ExperimenterInput> serializer) {
         serializerRegistry.registerSerializer(key, serializer);
     }
 
     @Override
-    public void registerMultipartRequestSerializer(ExperimenterIdSerializerKey<MultipartRequestExperimenterCase> key,
-            OFSerializer<MultipartRequestExperimenterCase> serializer) {
+    public void registerMultipartRequestSerializer(final ExperimenterIdSerializerKey<MultipartRequestExperimenterCase> key,
+            final OFSerializer<MultipartRequestExperimenterCase> serializer) {
         serializerRegistry.registerSerializer(key, serializer);
     }
 
     @Override
-    public void registerMultipartRequestTFSerializer(ExperimenterIdSerializerKey<TableFeatureProperties> key,
-            OFGeneralSerializer serializer) {
+    public void registerMultipartRequestTFSerializer(final ExperimenterIdSerializerKey<TableFeatureProperties> key,
+            final OFGeneralSerializer serializer) {
         serializerRegistry.registerSerializer(key, serializer);
     }
 
     @Override
-    public void registerMeterBandSerializer(ExperimenterIdSerializerKey<MeterBandExperimenterCase> key,
-            OFSerializer<MeterBandExperimenterCase> serializer) {
+    public void registerMeterBandSerializer(final ExperimenterIdSerializerKey<MeterBandExperimenterCase> key,
+            final OFSerializer<MeterBandExperimenterCase> serializer) {
         serializerRegistry.registerSerializer(key, serializer);
     }
 
     @Override
-    public void initiateConnection(String host, int port) {
+    public void initiateConnection(final String host, final int port) {
         connectionInitializer.initiateConnection(host, port);
     }
 

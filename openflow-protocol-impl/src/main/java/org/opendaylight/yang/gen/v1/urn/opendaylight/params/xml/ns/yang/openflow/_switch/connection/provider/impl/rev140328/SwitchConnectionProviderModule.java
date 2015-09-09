@@ -58,11 +58,11 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
     @Override
     public java.lang.AutoCloseable createInstance() {
         LOG.info("SwitchConnectionProvider started.");
-        SwitchConnectionProviderImpl switchConnectionProviderImpl = new SwitchConnectionProviderImpl();
+        final SwitchConnectionProviderImpl switchConnectionProviderImpl = new SwitchConnectionProviderImpl();
         try {
-            ConnectionConfiguration connConfiguration = createConnectionConfiguration();
+            final ConnectionConfiguration connConfiguration = createConnectionConfiguration();
             switchConnectionProviderImpl.setConfiguration(connConfiguration);
-        } catch (UnknownHostException e) {
+        } catch (final UnknownHostException e) {
             throw new IllegalArgumentException(e.getMessage(), e);
         }
         return switchConnectionProviderImpl;
@@ -78,6 +78,7 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
         final long switchIdleTimeout = getSwitchIdleTimeout();
         final Tls tlsConfig = getTls();
         final Threads threads = getThreads();
+        final Boolean useBarrier = getUseBarrier();
         final TransportProtocol transportProtocol = getTransportProtocol();
 
         return new ConnectionConfiguration() {
@@ -163,6 +164,11 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
                         return threads.getBossThreads();
                     }
                 };
+            }
+
+            @Override
+            public boolean useBarrier() {
+                return useBarrier;
             }
         };
     }

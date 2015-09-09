@@ -12,15 +12,12 @@ import io.netty.channel.Channel;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.ssl.SslHandler;
-
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import java.net.InetAddress;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
-
 import javax.net.ssl.SSLEngine;
-
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionAdapterFactory;
 import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionAdapterFactoryImpl;
 import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionFacade;
@@ -36,7 +33,7 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
     private static final Logger LOGGER = LoggerFactory
             .getLogger(TcpChannelInitializer.class);
     private final DefaultChannelGroup allChannels;
-    private ConnectionAdapterFactory connectionAdapterFactory;
+    private final ConnectionAdapterFactory connectionAdapterFactory;
 
     /**
      * default ctor
@@ -49,7 +46,7 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
      * Testing Constructor
      *
      */
-    protected TcpChannelInitializer( DefaultChannelGroup channelGroup, ConnectionAdapterFactory connAdaptorFactory ) {
+    protected TcpChannelInitializer( final DefaultChannelGroup channelGroup, final ConnectionAdapterFactory connAdaptorFactory ) {
     	allChannels = channelGroup ;
     	connectionAdapterFactory = connAdaptorFactory ;
     }
@@ -57,9 +54,9 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
     @Override
     protected void initChannel(final SocketChannel ch) {
         if (ch.remoteAddress() != null) {
-            InetAddress switchAddress = ch.remoteAddress().getAddress();
-            int port = ch.localAddress().getPort();
-            int remotePort = ch.remoteAddress().getPort();
+            final InetAddress switchAddress = ch.remoteAddress().getAddress();
+            final int port = ch.localAddress().getPort();
+            final int remotePort = ch.remoteAddress().getPort();
             LOGGER.debug("Incoming connection from (remote address): {}:{} --> :{}",
 			    switchAddress.toString(), remotePort, port);
 
@@ -72,7 +69,7 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
         LOGGER.debug("Incoming connection accepted - building pipeline");
         allChannels.add(ch);
         ConnectionFacade connectionFacade = null;
-        connectionFacade = connectionAdapterFactory.createConnectionFacade(ch, null);
+        connectionFacade = connectionAdapterFactory.createConnectionFacade(ch, null, useBarrier());
         try {
             LOGGER.debug("calling plugin: {}", getSwitchConnectionHandler());
             getSwitchConnectionHandler().onSwitchConnected(connectionFacade);
@@ -83,16 +80,16 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
             // If this channel is configured to support SSL it will only support SSL
             if (getTlsConfiguration() != null) {
                 tlsPresent = true;
-                SslContextFactory sslFactory = new SslContextFactory(getTlsConfiguration());
-                SSLEngine engine = sslFactory.getServerContext().createSSLEngine();
+                final SslContextFactory sslFactory = new SslContextFactory(getTlsConfiguration());
+                final SSLEngine engine = sslFactory.getServerContext().createSSLEngine();
                 engine.setNeedClientAuth(true);
                 engine.setUseClientMode(false);
-                SslHandler ssl = new SslHandler(engine);
-                Future<Channel> handshakeFuture = ssl.handshakeFuture();
+                final SslHandler ssl = new SslHandler(engine);
+                final Future<Channel> handshakeFuture = ssl.handshakeFuture();
                 final ConnectionFacade finalConnectionFacade = connectionFacade;
                 handshakeFuture.addListener(new GenericFutureListener<Future<? super Channel>>() {
                     @Override
-                    public void operationComplete(Future<? super Channel> future) throws Exception {
+                    public void operationComplete(final Future<? super Channel> future) throws Exception {
                         finalConnectionFacade.fireConnectionReadyNotification();
                     }
                 });
@@ -101,17 +98,17 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
             ch.pipeline().addLast(PipelineHandlers.OF_FRAME_DECODER.name(),
                     new OFFrameDecoder(connectionFacade, tlsPresent));
             ch.pipeline().addLast(PipelineHandlers.OF_VERSION_DETECTOR.name(), new OFVersionDetector());
-            OFDecoder ofDecoder = new OFDecoder();
+            final OFDecoder ofDecoder = new OFDecoder();
             ofDecoder.setDeserializationFactory(getDeserializationFactory());
             ch.pipeline().addLast(PipelineHandlers.OF_DECODER.name(), ofDecoder);
-            OFEncoder ofEncoder = new OFEncoder();
+            final OFEncoder ofEncoder = new OFEncoder();
             ofEncoder.setSerializationFactory(getSerializationFactory());
             ch.pipeline().addLast(PipelineHandlers.OF_ENCODER.name(), ofEncoder);
             ch.pipeline().addLast(PipelineHandlers.DELEGATING_INBOUND_HANDLER.name(), new DelegatingInboundHandler(connectionFacade));
             if (!tlsPresent) {
                 connectionFacade.fireConnectionReadyNotification();
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.warn("Failed to initialize channel", e);
             ch.close();
         }

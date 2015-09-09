@@ -12,13 +12,15 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,9 +28,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionReadyListener;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionAdapterImpl;
-import org.opendaylight.openflowjava.protocol.impl.core.connection.ResponseExpectedRpcListener;
-import org.opendaylight.openflowjava.protocol.impl.core.connection.RpcResponseKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierOutput;
@@ -57,11 +56,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.S
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SwitchIdleEventBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SystemNotificationsListener;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
 
 /**
  * @author michal.polkorab
@@ -98,7 +92,7 @@ public class ConnectionAdapterImplTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         when(channel.pipeline()).thenReturn(pipeline);
-        adapter = new ConnectionAdapterImpl(channel, InetSocketAddress.createUnresolved("10.0.0.1", 6653));
+        adapter = new ConnectionAdapterImpl(channel, InetSocketAddress.createUnresolved("10.0.0.1", 6653), true);
         adapter.setMessageListener(messageListener);
         adapter.setSystemListener(systemListener);
         adapter.setConnectionReadyListener(readyListener);
@@ -154,9 +148,9 @@ public class ConnectionAdapterImplTest {
     @Test
     public void testConsume2() {
         adapter.setResponseCache(mockCache);
-        BarrierOutputBuilder barrierBuilder = new BarrierOutputBuilder();
+        final BarrierOutputBuilder barrierBuilder = new BarrierOutputBuilder();
         barrierBuilder.setXid(42L);
-        BarrierOutput barrier = barrierBuilder.build();
+        final BarrierOutput barrier = barrierBuilder.build();
         adapter.consume(barrier);
         verify(mockCache, times(1)).getIfPresent(any(RpcResponseKey.class));
     }
@@ -166,19 +160,19 @@ public class ConnectionAdapterImplTest {
      */
     @Test
     public void testConsume3() {
-        BarrierInputBuilder inputBuilder = new BarrierInputBuilder();
+        final BarrierInputBuilder inputBuilder = new BarrierInputBuilder();
         inputBuilder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
         inputBuilder.setXid(42L);
-        BarrierInput barrierInput = inputBuilder.build();
-        RpcResponseKey key = new RpcResponseKey(42L, "org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierOutput");
-        ResponseExpectedRpcListener<OfHeader> listener = new ResponseExpectedRpcListener<>(barrierInput,
+        final BarrierInput barrierInput = inputBuilder.build();
+        final RpcResponseKey key = new RpcResponseKey(42L, "org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierOutput");
+        final ResponseExpectedRpcListener<OfHeader> listener = new ResponseExpectedRpcListener<>(barrierInput,
                 "failure", mockCache, key);
         cache.put(key, listener);
-        BarrierOutputBuilder barrierBuilder = new BarrierOutputBuilder();
+        final BarrierOutputBuilder barrierBuilder = new BarrierOutputBuilder();
         barrierBuilder.setXid(42L);
-        BarrierOutput barrierOutput = barrierBuilder.build();
+        final BarrierOutput barrierOutput = barrierBuilder.build();
         adapter.consume(barrierOutput);
-        ResponseExpectedRpcListener<?> ifPresent = cache.getIfPresent(key);
+        final ResponseExpectedRpcListener<?> ifPresent = cache.getIfPresent(key);
         Assert.assertNull("Listener was not discarded", ifPresent);
     }
     /**
@@ -186,10 +180,10 @@ public class ConnectionAdapterImplTest {
      */
     @Test
     public void testIsAlive(){
-        int port = 9876;
-        String host ="localhost";
-        InetSocketAddress inetSockAddr = InetSocketAddress.createUnresolved(host, port);
-        ConnectionAdapterImpl connAddapter = new ConnectionAdapterImpl(channel,inetSockAddr);
+        final int port = 9876;
+        final String host ="localhost";
+        final InetSocketAddress inetSockAddr = InetSocketAddress.createUnresolved(host, port);
+        final ConnectionAdapterImpl connAddapter = new ConnectionAdapterImpl(channel, inetSockAddr, true);
         Assert.assertEquals("Wrong - diffrence between channel.isOpen() and ConnectionAdapterImpl.isAlive()", channel.isOpen(), connAddapter.isAlive());
 
         connAddapter.disconnect();
@@ -201,10 +195,10 @@ public class ConnectionAdapterImplTest {
      */
     @Test(expected = java.lang.IllegalStateException.class)
     public void testMissingListeners(){
-        int port = 9876;
-        String host ="localhost";
-        InetSocketAddress inetSockAddr = InetSocketAddress.createUnresolved(host, port);
-        ConnectionAdapterImpl connAddapter = new ConnectionAdapterImpl(channel,inetSockAddr);
+        final int port = 9876;
+        final String host ="localhost";
+        final InetSocketAddress inetSockAddr = InetSocketAddress.createUnresolved(host, port);
+        final ConnectionAdapterImpl connAddapter = new ConnectionAdapterImpl(channel, inetSockAddr, true);
         connAddapter.setSystemListener(null);
         connAddapter.setMessageListener(null);
         connAddapter.setConnectionReadyListener(null);
