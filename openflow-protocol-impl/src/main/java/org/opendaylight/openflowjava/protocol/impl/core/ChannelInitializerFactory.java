@@ -24,17 +24,19 @@ public class ChannelInitializerFactory {
     private SerializationFactory serializationFactory;
     private TlsConfiguration tlsConfig;
     private SwitchConnectionHandler switchConnectionHandler;
+    private boolean useBarrier;
 
     /**
      * @return PublishingChannelInitializer that initializes new channels
      */
     public TcpChannelInitializer createPublishingChannelInitializer() {
-        TcpChannelInitializer initializer = new TcpChannelInitializer();
+        final TcpChannelInitializer initializer = new TcpChannelInitializer();
         initializer.setSwitchIdleTimeout(switchIdleTimeOut);
         initializer.setDeserializationFactory(deserializationFactory);
         initializer.setSerializationFactory(serializationFactory);
         initializer.setTlsConfiguration(tlsConfig);
         initializer.setSwitchConnectionHandler(switchConnectionHandler);
+        initializer.setUseBarrier(useBarrier);
         return initializer;
     }
 
@@ -42,7 +44,7 @@ public class ChannelInitializerFactory {
      * @return PublishingChannelInitializer that initializes new channels
      */
     public UdpChannelInitializer createUdpChannelInitializer() {
-        UdpChannelInitializer initializer = new UdpChannelInitializer();
+        final UdpChannelInitializer initializer = new UdpChannelInitializer();
         initializer.setSwitchIdleTimeout(switchIdleTimeOut);
         initializer.setDeserializationFactory(deserializationFactory);
         initializer.setSerializationFactory(serializationFactory);
@@ -53,35 +55,42 @@ public class ChannelInitializerFactory {
     /**
      * @param switchIdleTimeOut
      */
-    public void setSwitchIdleTimeout(long switchIdleTimeOut) {
+    public void setSwitchIdleTimeout(final long switchIdleTimeOut) {
         this.switchIdleTimeOut = switchIdleTimeOut;
     }
 
     /**
      * @param deserializationFactory
      */
-    public void setDeserializationFactory(DeserializationFactory deserializationFactory) {
+    public void setDeserializationFactory(final DeserializationFactory deserializationFactory) {
         this.deserializationFactory = deserializationFactory;
     }
 
     /**
      * @param serializationFactory
      */
-    public void setSerializationFactory(SerializationFactory serializationFactory) {
+    public void setSerializationFactory(final SerializationFactory serializationFactory) {
         this.serializationFactory = serializationFactory;
     }
 
     /**
      * @param tlsConfig
      */
-    public void setTlsConfig(TlsConfiguration tlsConfig) {
+    public void setTlsConfig(final TlsConfiguration tlsConfig) {
         this.tlsConfig = tlsConfig;
     }
 
     /**
      * @param switchConnectionHandler
      */
-    public void setSwitchConnectionHandler(SwitchConnectionHandler switchConnectionHandler) {
+    public void setSwitchConnectionHandler(final SwitchConnectionHandler switchConnectionHandler) {
         this.switchConnectionHandler = switchConnectionHandler;
+    }
+
+    /**
+     * @param useBarrier
+     */
+    public void setUseBarrier(final boolean useBarrier) {
+        this.useBarrier = useBarrier;
     }
 }
