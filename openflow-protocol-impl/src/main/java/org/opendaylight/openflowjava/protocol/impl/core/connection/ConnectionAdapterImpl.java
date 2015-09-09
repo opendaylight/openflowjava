@@ -122,20 +122,25 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     private OFVersionDetector versionDetector;
     private final InetSocketAddress address;
 
+    private final boolean useBarrier;
+
     /**
      * default ctor
      * @param channel the channel to be set - used for communication
      * @param address client address (used only in case of UDP communication,
      *  as there is no need to store address over tcp (stable channel))
      */
-    public ConnectionAdapterImpl(final Channel channel, final InetSocketAddress address) {
+    public ConnectionAdapterImpl(final Channel channel, final InetSocketAddress address, final boolean useBarrier) {
+        this.channel = Preconditions.checkNotNull(channel);
+        this.address = Preconditions.checkNotNull(address);
+        this.output = new ChannelOutboundQueue(channel, DEFAULT_QUEUE_DEPTH, address);
+
         responseCache = CacheBuilder.newBuilder()
                 .concurrencyLevel(1)
                 .expireAfterWrite(RPC_RESPONSE_EXPIRATION, TimeUnit.MINUTES)
                 .removalListener(REMOVAL_LISTENER).build();
-        this.channel = Preconditions.checkNotNull(channel);
-        this.output = new ChannelOutboundQueue(channel, DEFAULT_QUEUE_DEPTH, address);
-        this.address = address;
+
+        this.useBarrier = useBarrier;
         channel.pipeline().addLast(output);
         statisticsCounters = StatisticsCounters.getInstance();
 
@@ -250,7 +255,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
 
     @Override
     public Future<Boolean> disconnect() {
-        ChannelFuture disconnectResult = channel.disconnect();
+        final ChannelFuture disconnectResult = channel.disconnect();
         responseCache.invalidateAll();
         disconnectOccured = true;
 
@@ -328,7 +333,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
             LOG.debug("OFheader msg received");
 
             if (outputManager == null || !outputManager.onMessage((OfHeader) message)) {
-                RpcResponseKey key = createRpcResponseKey((OfHeader) message);
+                final RpcResponseKey key = createRpcResponseKey((OfHeader) message);
                 final ResponseExpectedRpcListener<?> listener = findRpcResponse(key);
                 if (listener != null) {
                     LOG.debug("corresponding rpcFuture found");
@@ -507,6 +512,10 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
     public <T extends OutboundQueueHandler> OutboundQueueHandlerRegistration<T> registerOutboundQueueHandler(
             final T handler, final int maxQueueDepth, final long maxBarrierNanos) {
         Preconditions.checkState(outputManager == null, "Manager %s already registered", outputManager);
+
+        if (useBarrier) {
+
+        }
 
         final OutboundQueueManager<T> ret = new OutboundQueueManager<>(this, address, handler, maxQueueDepth, maxBarrierNanos);
         outputManager = ret;

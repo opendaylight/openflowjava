@@ -9,7 +9,6 @@
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
 import java.net.InetAddress;
-
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.ThreadConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
@@ -21,25 +20,30 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.T
  */
 public class ConnectionConfigurationImpl implements ConnectionConfiguration {
 
-    private InetAddress address;
-    private int port;
+    private final InetAddress address;
+    private final int port;
     private Object transferProtocol;
-    private TlsConfiguration tlsConfig;
-    private long switchIdleTimeout;
+    private final TlsConfiguration tlsConfig;
+    private final long switchIdleTimeout;
     private ThreadConfiguration threadConfig;
+    private final boolean useBarrier;
 
     /**
      * Creates {@link ConnectionConfigurationImpl}
+     * 
      * @param address
      * @param port
      * @param tlsConfig
      * @param switchIdleTimeout
+     * @param useBarrier
      */
-    public ConnectionConfigurationImpl(InetAddress address, int port, TlsConfiguration tlsConfig, long switchIdleTimeout) {
+    public ConnectionConfigurationImpl(final InetAddress address, final int port, final TlsConfiguration tlsConfig,
+            final long switchIdleTimeout, final boolean useBarrier) {
         this.address = address;
         this.port = port;
         this.tlsConfig = tlsConfig;
         this.switchIdleTimeout = switchIdleTimeout;
+        this.useBarrier = useBarrier;
     }
 
     @Override
@@ -61,7 +65,7 @@ public class ConnectionConfigurationImpl implements ConnectionConfiguration {
      * Used for testing - sets transport protocol
      * @param protocol
      */
-    public void setTransferProtocol(TransportProtocol protocol) {
+    public void setTransferProtocol(final TransportProtocol protocol) {
         this.transferProtocol = protocol;
     }
 
@@ -89,7 +93,12 @@ public class ConnectionConfigurationImpl implements ConnectionConfiguration {
     /**
      * @param threadConfig thread model configuration (configures threads used)
      */
-    public void setThreadConfiguration(ThreadConfiguration threadConfig) {
+    public void setThreadConfiguration(final ThreadConfiguration threadConfig) {
         this.threadConfig = threadConfig;
+    }
+
+    @Override
+    public boolean useBarrier() {
+        return useBarrier;
     }
 }
