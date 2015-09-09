@@ -20,13 +20,10 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.ssl.SslHandler;
-
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-
 import javax.net.ssl.SSLEngine;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -76,13 +73,14 @@ public class PublishingChannelInitializerTest {
         pubChInitializer.setDeserializationFactory(mockDeserializationFactory);
         pubChInitializer.setSwitchIdleTimeout(1) ;
         pubChInitializer.getConnectionIterator() ;
+        pubChInitializer.setUseBarrier(true);
 
         when( mockChGrp.size()).thenReturn(1) ;
         pubChInitializer.setSwitchConnectionHandler( mockSwConnHandler ) ;
 
         inetSockAddr = new InetSocketAddress(InetAddress.getLocalHost(), 8675 ) ;
 
-        when(mockConnAdaptorFactory.createConnectionFacade(mockSocketCh, null))
+        when(mockConnAdaptorFactory.createConnectionFacade(mockSocketCh, null, true))
         .thenReturn(mockConnFacade);
         when(mockSocketCh.remoteAddress()).thenReturn(inetSockAddr) ;
         when(mockSocketCh.localAddress()).thenReturn(inetSockAddr) ;

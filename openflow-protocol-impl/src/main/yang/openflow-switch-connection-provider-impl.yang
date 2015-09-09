@@ -35,6 +35,12 @@ module openflow-switch-connection-provider-impl {
         case openflow-switch-connection-provider-impl {
             when "/config:modules/config:module/config:type = 'openflow-switch-connection-provider-impl'";
 
+            leaf use-barrier {
+                description "Enable barrier in Openflow java";
+                type boolean;
+                default true;
+            }
+
             leaf port {
                 description "local listening port";
                 type uint16;
