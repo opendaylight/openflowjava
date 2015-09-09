@@ -8,12 +8,12 @@
 
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -26,8 +26,6 @@ import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionPro
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.KeystoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.PathType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.TransportProtocol;
-
-import com.google.common.util.concurrent.ListenableFuture;
 
 /**
  * @author michal.polkorab
@@ -48,7 +46,7 @@ public class SwitchConnectionProviderImplTest {
      * Creates new {@link SwitchConnectionProvider} instance for each test
      * @param protocol communication protocol
      */
-    public void startUp(TransportProtocol protocol) {
+    public void startUp(final TransportProtocol protocol) {
         MockitoAnnotations.initMocks(this);
         config = null;
         if (protocol != null) {
@@ -57,10 +55,10 @@ public class SwitchConnectionProviderImplTest {
         provider = new SwitchConnectionProviderImpl();
     }
 
-    private void createConfig(TransportProtocol protocol) {
+    private void createConfig(final TransportProtocol protocol) {
         try {
             startupAddress = InetAddress.getLocalHost();
-        } catch (UnknownHostException e) {
+        } catch (final UnknownHostException e) {
             e.printStackTrace();
         }
         tlsConfiguration = null;
@@ -69,7 +67,7 @@ public class SwitchConnectionProviderImplTest {
                     "/selfSignedSwitch", PathType.CLASSPATH, KeystoreType.JKS,
                     "/selfSignedController", PathType.CLASSPATH) ;
         }
-        config = new ConnectionConfigurationImpl(startupAddress, 0, tlsConfiguration, SWITCH_IDLE_TIMEOUT);
+        config = new ConnectionConfigurationImpl(startupAddress, 0, tlsConfiguration, SWITCH_IDLE_TIMEOUT, true);
         config.setTransferProtocol(protocol);
     }
 
@@ -79,7 +77,7 @@ public class SwitchConnectionProviderImplTest {
     @Test
     public void testStartup1() {
         provider = new SwitchConnectionProviderImpl();
-        ListenableFuture<Boolean> future = provider.startup();
+        final ListenableFuture<Boolean> future = provider.startup();
         try {
             future.get(WAIT_TIMEOUT, TimeUnit.MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -94,7 +92,7 @@ public class SwitchConnectionProviderImplTest {
     public void testStartup2() {
         startUp(null);
         provider.setSwitchConnectionHandler(handler);
-        ListenableFuture<Boolean> future = provider.startup();
+        final ListenableFuture<Boolean> future = provider.startup();
         try {
             future.get(WAIT_TIMEOUT, TimeUnit.MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -109,7 +107,7 @@ public class SwitchConnectionProviderImplTest {
     public void testStartup3() {
         startUp(TransportProtocol.TCP);
         provider.setConfiguration(config);
-        ListenableFuture<Boolean> future = provider.startup();
+        final ListenableFuture<Boolean> future = provider.startup();
         try {
             future.get(WAIT_TIMEOUT, TimeUnit.MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {

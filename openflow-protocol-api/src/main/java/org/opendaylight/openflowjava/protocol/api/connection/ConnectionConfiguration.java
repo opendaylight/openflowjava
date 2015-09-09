@@ -50,4 +50,9 @@ public interface ConnectionConfiguration {
      * @return thread numbers for TcpHandler's eventloopGroups
      */
     ThreadConfiguration getThreadConfiguration();
+
+    /**
+     * @return boolean value for usability of Barrier
+     */
+    boolean useBarrier();
 }

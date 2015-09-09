@@ -62,7 +62,7 @@ public class OFDatagramPacketHandler extends MessageToMessageDecoder<DatagramPac
         MessageConsumer consumer = UdpConnectionMap.getMessageConsumer(msg.sender());
         if (consumer == null) {
             ConnectionFacade connectionFacade =
-                    adapterFactory.createConnectionFacade(ctx.channel(), msg.sender());
+                    adapterFactory.createConnectionFacade(ctx.channel(), msg.sender(), false);
             connectionHandler.onSwitchConnected(connectionFacade);
             connectionFacade.checkListeners();
             UdpConnectionMap.addConnection(msg.sender(), connectionFacade);

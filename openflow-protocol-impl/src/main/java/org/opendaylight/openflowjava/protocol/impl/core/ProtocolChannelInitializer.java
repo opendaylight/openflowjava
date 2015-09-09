@@ -10,7 +10,6 @@ package org.opendaylight.openflowjava.protocol.impl.core;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
-
 import org.opendaylight.openflowjava.protocol.api.connection.SwitchConnectionHandler;
 import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializationFactory;
@@ -28,6 +27,7 @@ public abstract class ProtocolChannelInitializer<C extends Channel>
     private SerializationFactory serializationFactory;
     private DeserializationFactory deserializationFactory;
     private TlsConfiguration tlsConfiguration;
+    private boolean useBarrier;
 
     /**
      * @param switchConnectionHandler the switchConnectionHandler to set
@@ -60,7 +60,7 @@ public abstract class ProtocolChannelInitializer<C extends Channel>
     /**
      * @param tlsConfiguration
      */
-    public void setTlsConfiguration(TlsConfiguration tlsConfiguration) {
+    public void setTlsConfiguration(final TlsConfiguration tlsConfiguration) {
         this.tlsConfiguration = tlsConfiguration;
     }
 
@@ -97,5 +97,19 @@ public abstract class ProtocolChannelInitializer<C extends Channel>
      */
     public TlsConfiguration getTlsConfiguration() {
         return tlsConfiguration;
+    }
+
+    /**
+     * @param useBarrier
+     */
+    public void setUseBarrier(final boolean useBarrier) {
+        this.useBarrier = useBarrier;
+    }
+
+    /**
+     * @return useBarrrier
+     */
+    public boolean useBarrier() {
+        return useBarrier;
     }
 }
