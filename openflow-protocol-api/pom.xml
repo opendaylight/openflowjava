@@ -43,49 +43,6 @@
       </dependencies>
     </dependencyManagement>
 
-    <build>
-      <plugins>
-            <!-- TODO: maven-antrun-plugin deletes yang source files from target.
-                       This is done because otherwise openflowjava models are stored in controller
-                       and exposed for further use - which is not desired.
-                       (https://bugs.opendaylight.org/show_bug.cgi?id=2926)
-
-                       This plugin should be removed after relevant configuration is added into 
-                       yang-maven-plugin - which is supposed to happen in BERYLLIUM release -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks>
-                                <delete>
-                                    <fileset dir="${project.build.directory}/classes/META-INF/yang">
-                                        <include name="*.yang"/>
-                                        <exclude name="openflow-types.yang"/>
-                                        <exclude name="openflow-extensible-match.yang"/>
-                                        <exclude name="openflow-action.yang"/>
-                                        <exclude name="openflow-configuration.yang"/>
-                                    </fileset>
-                                    <fileset dir="${project.build.directory}/generated-sources/yang/META-INF/yang">
-                                        <include name="*.yang"/>
-                                        <exclude name="openflow-types.yang"/>
-                                        <exclude name="openflow-extensible-match.yang"/>
-                                        <exclude name="openflow-action.yang"/>
-                                        <exclude name="openflow-configuration.yang"/>
-                                    </fileset>
-                                </delete>
-                            </tasks>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
