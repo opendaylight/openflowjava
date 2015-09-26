@@ -16,7 +16,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class OutboundQueueManager<T extends OutboundQueueHandler> extends AbstractOutboundQueueManager<T> {
+final class OutboundQueueManager<T extends OutboundQueueHandler> extends
+        AbstractOutboundQueueManager<T, StackedOutboundQueue> {
     private static final Logger LOG = LoggerFactory.getLogger(OutboundQueueManager.class);
 
     private final int maxNonBarrierMessages;
@@ -44,6 +45,10 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Abstrac
         this.maxBarrierNanos = maxBarrierNanos;
     }
 
+    @Override
+    protected StackedOutboundQueue initializeStackedOutboudnqueue() {
+        return new StackedOutboundQueue(this);
+    }
 
     private void scheduleBarrierTimer(final long now) {
         long next = lastBarrierNanos + maxBarrierNanos;
