@@ -34,7 +34,7 @@ final class StackedOutboundQueue implements OutboundQueue {
     private final List<StackedSegment> unflushedSegments = new ArrayList<>(2);
     @GuardedBy("unflushedSegments")
     private final List<StackedSegment> uncompletedSegments = new ArrayList<>(2);
-    private final OutboundQueueManager<?> manager;
+    private final AbstractOutboundQueueManager<?> manager;
 
     private volatile long allocatedXid = -1;
     private volatile long barrierXid = -1;
@@ -46,7 +46,7 @@ final class StackedOutboundQueue implements OutboundQueue {
     // Accessed from Netty only
     private int flushOffset;
 
-    StackedOutboundQueue(final OutboundQueueManager<?> manager) {
+    StackedOutboundQueue(final AbstractOutboundQueueManager<?> manager) {
         this.manager = Preconditions.checkNotNull(manager);
         firstSegment = StackedSegment.create(0L);
         uncompletedSegments.add(firstSegment);
@@ -243,9 +243,8 @@ final class StackedOutboundQueue implements OutboundQueue {
         if (bXid >= fXid) {
             LOG.debug("Barrier found at XID {} (currently at {})", bXid, fXid);
             return null;
-        } else {
-            return reserveEntry();
         }
+        return reserveEntry();
     }
 
     boolean pairRequest(final OfHeader message) {
