@@ -29,7 +29,8 @@ import org.slf4j.LoggerFactory;
  * Class capsulate basic processing for stacking requests for netty channel
  * and provide functionality for pairing request/response device message communication.
  */
-abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler> extends ChannelInboundHandlerAdapter
+abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O extends AbstractStackedOutboundQueue>
+        extends ChannelInboundHandlerAdapter
         implements AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractOutboundQueueManager.class);
@@ -67,7 +68,7 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler> exte
     private final AtomicBoolean flushScheduled = new AtomicBoolean();
     protected final ConnectionAdapterImpl parent;
     protected final InetSocketAddress address;
-    protected final StackedOutboundQueue currentQueue;
+    protected final O currentQueue;
     private final T handler;
 
     // Accessed concurrently
@@ -89,11 +90,19 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler> exte
         this.parent = Preconditions.checkNotNull(parent);
         this.handler = Preconditions.checkNotNull(handler);
         this.address = address;
-        currentQueue = new StackedOutboundQueue(this);
+        /* Note: don't wish to use reflection here */
+        currentQueue = initializeStackedOutboudnqueue();
         LOG.debug("Queue manager instantiated with queue {}", currentQueue);
 
         handler.onConnectionQueueChanged(currentQueue);
     }
+
+    /**
+     * Method has to initialize some child of {@link AbstractStackedOutboundQueue}
+     *
+     * @return correct implementation of StacketOutboundqueue
+     */
+    protected abstract O initializeStackedOutboudnqueue();
 
     @Override
     public void close() {
