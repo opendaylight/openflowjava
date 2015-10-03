@@ -122,7 +122,7 @@
      }
 
 // OFP_MULTIPART AUGMENTS
-     augment "/ofproto:multipart-request/input/ofproto:multipart-request-body/ofproto:multipart-request-experimenter-case/ofproto:multipart-request-experimenter" {
+     augment "/ofproto:multipart-request/ofproto:input/ofproto:multipart-request-body/ofproto:multipart-request-experimenter-case/ofproto:multipart-request-experimenter" {
          ext:augment-identifier "experimenter-id-multipart-request";
          leaf experimenter {
              type oft:experimenter-id;
