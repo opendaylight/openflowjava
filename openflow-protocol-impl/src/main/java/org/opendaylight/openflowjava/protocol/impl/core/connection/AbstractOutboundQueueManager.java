@@ -9,7 +9,6 @@
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
 import com.google.common.base.Preconditions;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.concurrent.Future;
@@ -17,6 +16,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import javax.annotation.Nonnull;
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueHandler;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoReplyInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoReplyInputBuilder;
@@ -33,7 +33,7 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
         extends ChannelInboundHandlerAdapter
         implements AutoCloseable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractOutboundQueueManager.class);
+    static final Logger LOG = LoggerFactory.getLogger(AbstractOutboundQueueManager.class);
 
     private static enum PipelineState {
         /**
@@ -235,20 +235,7 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
     void onEchoRequest(final EchoRequestMessage message) {
         final EchoReplyInput reply = new EchoReplyInputBuilder().setData(message.getData())
                 .setVersion(message.getVersion()).setXid(message.getXid()).build();
-        final SimpleRpcListener simpleMsgRpcListener = new SimpleRpcListener(reply, "echo-reply sending failed");
-
-        final GenericFutureListener<Future<Void>> msgProcessListener = simpleMsgRpcListener.takeListener();
-        final Object messageListenerWrapper;
-        if (address == null) {
-            messageListenerWrapper = new MessageListenerWrapper(simpleMsgRpcListener.takeMessage(), msgProcessListener);
-        } else {
-            messageListenerWrapper = new UdpMessageListenerWrapper(simpleMsgRpcListener.takeMessage(),
-                    msgProcessListener, address);
-        }
-        final ChannelFuture channelFuture = parent.getChannel().writeAndFlush(messageListenerWrapper);
-        if (msgProcessListener != null) {
-            channelFuture.addListener(msgProcessListener);
-        }
+        parent.getChannel().writeAndFlush(makeMessageListenerWrapper(reply));
     }
 
     /**
@@ -258,14 +245,38 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
      * @param now
      */
     void writeMessage(final OfHeader message, final long now) {
-        final Object wrapper;
-        if (address == null) {
-            wrapper = new MessageListenerWrapper(message, null);
-        } else {
-            wrapper = new UdpMessageListenerWrapper(message, null, address);
+        if (message != null) {
+            final Object wrapper = makeMessageListenerWrapper(message);
+            parent.getChannel().write(wrapper);
         }
-        parent.getChannel().write(wrapper);
     }
+
+    /**
+     * Wraps outgoing message and includes listener attached to this message
+     * which is send to OFEncoder for serialization. Correct wrapper is
+     * selected by communication pipeline.
+     *
+     * @return
+     */
+    private Object makeMessageListenerWrapper(@Nonnull final OfHeader msg) {
+        Preconditions.checkArgument(msg != null);
+
+        if (address == null) {
+            return new MessageListenerWrapper(msg, LOG_LISTENER);
+        }
+        return new UdpMessageListenerWrapper(msg, LOG_LISTENER, address);
+    }
+
+    /* NPE are coming from {@link OFEncoder#encode} from catch block */
+    private static final GenericFutureListener<Future<Void>> LOG_LISTENER = new GenericFutureListener<Future<Void>>() {
+
+        @Override
+        public void operationComplete(final Future<Void> future) throws Exception {
+            if (future.cause() != null) {
+                LOG.warn("Message encoding fail !", future.cause());
+            }
+        }
+    };
 
     /**
      * Perform a single flush operation. We keep it here so we do not generate
