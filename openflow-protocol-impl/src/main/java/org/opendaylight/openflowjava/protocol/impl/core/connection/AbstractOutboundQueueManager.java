@@ -258,7 +258,7 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
      *
      * @return
      */
-    private Object makeMessageListenerWrapper(@Nonnull final OfHeader msg) {
+    protected Object makeMessageListenerWrapper(@Nonnull final OfHeader msg) {
         Preconditions.checkArgument(msg != null);
 
         if (address == null) {
@@ -268,7 +268,7 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
     }
 
     /* NPE are coming from {@link OFEncoder#encode} from catch block and we don't wish to lost it */
-    private static final GenericFutureListener<Future<Void>> LOG_ENCODER_LISTENER = new GenericFutureListener<Future<Void>>() {
+    protected static final GenericFutureListener<Future<Void>> LOG_ENCODER_LISTENER = new GenericFutureListener<Future<Void>>() {
 
         private final Logger LOGGER = LoggerFactory.getLogger("LogEncoderListener");
 

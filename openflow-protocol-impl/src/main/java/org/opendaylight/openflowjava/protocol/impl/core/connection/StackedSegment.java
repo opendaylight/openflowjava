@@ -109,9 +109,17 @@ final class StackedSegment {
             LOG.debug("Device-reported request XID {} failed {}:{}", response.getXid(), err.getTypeString(), err.getCodeString());
             entry.fail(new DeviceRequestFailedException("Device-side failure", err));
             return true;
-        } else {
-            return entry.complete(response);
         }
+        return entry.complete(response);
+    }
+
+    OutboundQueueEntry findEntry(final long xid) {
+        if (! xidInRange(xid)) {
+            LOG.debug("Queue {} {}/{} ignoring XID {}", this, baseXid, entries.length, xid);
+            return null;
+        }
+        final int offset = (int)(xid - baseXid);
+        return entries[offset];
     }
 
     OutboundQueueEntry pairRequest(final OfHeader response) {
@@ -122,7 +130,7 @@ final class StackedSegment {
             return null;
         }
 
-        final int offset = (int)(xid - baseXid);
+        final int offset = (int) (xid - baseXid);
         final OutboundQueueEntry entry = entries[offset];
         if (entry.isCompleted()) {
             LOG.debug("Entry {} already is completed, not accepting response {}", entry, response);
@@ -184,7 +192,7 @@ final class StackedSegment {
     }
 
     void recycle() {
-        for (OutboundQueueEntry e : entries) {
+        for (final OutboundQueueEntry e : entries) {
             e.reset();
         }
 
