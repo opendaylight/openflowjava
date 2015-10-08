@@ -64,9 +64,12 @@ final class OutboundQueueEntry {
     }
 
     private void checkCompletionNeed() {
-        if (callback == null || PacketOutInput.class.isInstance(message)) {
+        if (callback == null || (message instanceof PacketOutInput)) {
             completed = true;
-            callback = null;
+            if (callback != null) {
+                callback.onSuccess(null);
+                callback = null;
+            }
         }
     }
 
