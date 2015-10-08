@@ -4,19 +4,19 @@
   <parent>
     <groupId>org.opendaylight.odlparent</groupId>
     <artifactId>features-parent</artifactId>
-    <version>1.5.2-Lithium-SR2</version>
+    <version>1.5.3-SNAPSHOT</version>
     <relativePath/>
   </parent>
 
   <groupId>org.opendaylight.openflowjava</groupId>
   <artifactId>features-openflowjava</artifactId>
-  <version>0.6.2-Lithium-SR2</version>
+  <version>0.6.3-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <properties>
-    <config.version>0.3.2-Lithium-SR2</config.version>
-    <mdsal.version>1.2.2-Lithium-SR2</mdsal.version>
-    <yangtools.version>0.7.2-Lithium-SR2</yangtools.version>
+    <config.version>0.3.3-SNAPSHOT</config.version>
+    <mdsal.version>1.2.3-SNAPSHOT</mdsal.version>
+    <yangtools.version>0.7.3-SNAPSHOT</yangtools.version>
   </properties>
 
   <dependencyManagement>
