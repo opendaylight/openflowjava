@@ -184,7 +184,51 @@ abstract class AbstractStackedOutboundQueue implements OutboundQueue {
         return entries;
     }
 
-    abstract boolean pairRequest(final OfHeader message);
+    boolean pairRequest(final OfHeader message) {
+        Iterator<StackedSegment> it = uncompletedSegments.iterator();
+        while (it.hasNext()) {
+            final StackedSegment queue = it.next();
+            final OutboundQueueEntry entry = queue.pairRequest(message);
+            if (entry == null) {
+                continue;
+            }
+
+            LOG.trace("Queue {} accepted response {}", queue, message);
+
+            // This has been a barrier request, we need to flush all
+            // previous queues
+            if (entry.isBarrier() && uncompletedSegments.size() > 1) {
+                LOG.trace("Queue {} indicated request was a barrier", queue);
+
+                it = uncompletedSegments.iterator();
+                while (it.hasNext()) {
+                    final StackedSegment q = it.next();
+
+                    // We want to complete all queues before the current one, we will
+                    // complete the current queue below
+                    if (!queue.equals(q)) {
+                        LOG.trace("Queue {} is implied finished", q);
+                        q.completeAll();
+                        it.remove();
+                        q.recycle();
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            if (queue.isComplete()) {
+                LOG.trace("Queue {} is finished", queue);
+                it.remove();
+                queue.recycle();
+            }
+
+            return true;
+        }
+
+        LOG.debug("Failed to find completion for message {}", message);
+        return false;
+    }
 
     boolean needsFlush() {
         // flushOffset always points to the first entry, which can be changed only

@@ -1,27 +1,31 @@
 /*
- * Copyright (c) 2015 Pantheon Technologies s.r.o. and others. All rights reserved.
+ * Copyright (c) 2015 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
+
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.google.common.util.concurrent.FutureCallback;
-import java.util.concurrent.atomic.AtomicLongFieldUpdater;
+import java.util.Iterator;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class StackedOutboundQueue extends AbstractStackedOutboundQueue {
-    private static final Logger LOG = LoggerFactory.getLogger(StackedOutboundQueue.class);
-    private static final AtomicLongFieldUpdater<StackedOutboundQueue> BARRIER_XID_UPDATER = AtomicLongFieldUpdater.newUpdater(StackedOutboundQueue.class, "barrierXid");
+/**
+ * Class is designed for stacking Statistics and propagate immediate response for all
+ * another requests.
+ */
+public class StackedOutboundQueueNoBarrier extends AbstractStackedOutboundQueue {
 
-    private volatile long barrierXid = -1;
+    private static final Logger LOG = LoggerFactory.getLogger(StackedOutboundQueueNoBarrier.class);
 
-    StackedOutboundQueue(final AbstractOutboundQueueManager<?, ?> manager) {
+    StackedOutboundQueueNoBarrier(final AbstractOutboundQueueManager<?, ?> manager) {
         super(manager);
     }
 
@@ -60,33 +64,54 @@ final class StackedOutboundQueue extends AbstractStackedOutboundQueue {
             entry = fastSegment.getEntry(fastOffset);
         }
 
-        entry.commit(message, callback);
-        if (entry.isBarrier()) {
-            long my = xid;
-            for (;;) {
-                final long prev = BARRIER_XID_UPDATER.getAndSet(this, my);
-                if (prev < my) {
-                    LOG.debug("Queue {} recorded pending barrier XID {}", this, my);
-                    break;
-                }
-
-                // We have traveled back, recover
-                LOG.debug("Queue {} retry pending barrier {} >= {}", this, prev, my);
-                my = prev;
-            }
+        if (message instanceof FlowModInput) {
+            callback.onSuccess(null);
+            entry.commit(message, null);
+        } else {
+            entry.commit(message, callback);
         }
 
         LOG.trace("Queue {} committed XID {}", this, xid);
         manager.ensureFlushing();
     }
 
-    Long reserveBarrierIfNeeded() {
-        final long bXid = barrierXid;
-        final long fXid = firstSegment.getBaseXid() + flushOffset;
-        if (bXid >= fXid) {
-            LOG.debug("Barrier found at XID {} (currently at {})", bXid, fXid);
-            return null;
+    boolean completeOldSegments(final Long xid) {
+        if (uncompletedSegments.size() > 1) {
+            Iterator<StackedSegment> it = uncompletedSegments.iterator();
+            while (it.hasNext()) {
+                final StackedSegment queue = it.next();
+                final OutboundQueueEntry entry = queue.findEntry(xid);
+                if (entry == null) {
+                    continue;
+                }
+
+                it = uncompletedSegments.iterator();
+                while (it.hasNext()) {
+                    final StackedSegment q = it.next();
+
+                    // We want to complete all queues before the current one, we will
+                    // complete the current queue below
+                    if (!queue.equals(q)) {
+                        LOG.trace("Queue {} is implied finished", q);
+                        q.completeAll();
+                        it.remove();
+                        q.recycle();
+                    } else {
+                        break;
+                    }
+                }
+
+                if (queue.isComplete()) {
+                    LOG.trace("Queue {} is finished", queue);
+                    it.remove();
+                    queue.recycle();
+                }
+
+                return true;
+            }
         }
-        return reserveEntry();
+
+        LOG.warn("Failed to find completion for XID {}", xid);
+        return false;
     }
 }

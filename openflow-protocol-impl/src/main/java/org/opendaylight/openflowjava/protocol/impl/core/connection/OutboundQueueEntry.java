@@ -58,15 +58,21 @@ final class OutboundQueueEntry {
 
     OfHeader takeMessage() {
         final OfHeader ret = message;
-        checkCompletionNeed();
+        if (!barrier) {
+            checkCompletionNeed();
+        }
         message = null;
         return ret;
     }
 
     private void checkCompletionNeed() {
-        if (callback == null || PacketOutInput.class.isInstance(message)) {
+        if (callback == null || (message instanceof PacketOutInput)) {
             completed = true;
-            callback = null;
+            if (callback != null) {
+                callback.onSuccess(null);
+                callback = null;
+            }
+            committed = false;
         }
     }
 
