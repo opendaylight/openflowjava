@@ -8,7 +8,6 @@
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
 import com.google.common.base.Preconditions;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.concurrent.Future;
@@ -16,6 +15,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import javax.annotation.Nonnull;
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueHandler;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoReplyInput;
@@ -266,6 +266,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
         conditionalFlush();
     }
 
+    @Override
     public void handlerAdded(final ChannelHandlerContext ctx) throws Exception {
         /*
          * Tune channel write buffering. We increase the writability window
@@ -363,19 +364,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
     void onEchoRequest(final EchoRequestMessage message) {
         final EchoReplyInput reply = new EchoReplyInputBuilder().setData(message.getData())
                 .setVersion(message.getVersion()).setXid(message.getXid()).build();
-        final SimpleRpcListener simpleMsgRpcListener = new SimpleRpcListener(reply, "echo-reply sending failed");
-
-        final GenericFutureListener<Future<Void>> msgProcessListener = simpleMsgRpcListener.takeListener();
-        final Object messageListenerWrapper;
-        if (address == null) {
-            messageListenerWrapper = new MessageListenerWrapper(simpleMsgRpcListener.takeMessage(), msgProcessListener);
-        } else {
-            messageListenerWrapper = new UdpMessageListenerWrapper(simpleMsgRpcListener.takeMessage(), msgProcessListener, address);
-        }
-        final ChannelFuture channelFuture = parent.getChannel().writeAndFlush(messageListenerWrapper);
-        if (msgProcessListener != null) {
-            channelFuture.addListener(msgProcessListener);
-        }
+        parent.getChannel().writeAndFlush(makeMessageListenerWrapper(reply));
     }
 
     /**
@@ -389,12 +378,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
      *            adding overhead.
      */
     void writeMessage(final OfHeader message, final long now) {
-        final Object wrapper;
-        if (address == null) {
-            wrapper = new MessageListenerWrapper(message, null);
-        } else {
-            wrapper = new UdpMessageListenerWrapper(message, null, address);
-        }
+        final Object wrapper = makeMessageListenerWrapper(message);
         parent.getChannel().write(wrapper);
 
         if (message instanceof BarrierInput) {
@@ -411,4 +395,33 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends Channel
             }
         }
     }
+
+    /**
+     * Wraps outgoing message and includes listener attached to this message
+     * which is send to OFEncoder for serialization. Correct wrapper is
+     * selected by communication pipeline.
+     *
+     * @return
+     */
+    private Object makeMessageListenerWrapper(@Nonnull final OfHeader msg) {
+        Preconditions.checkArgument(msg != null);
+
+        if (address == null) {
+            return new MessageListenerWrapper(msg, LOG_ENCODER_LISTENER);
+        }
+        return new UdpMessageListenerWrapper(msg, LOG_ENCODER_LISTENER, address);
+    }
+
+    /* NPE are coming from {@link OFEncoder#encode} from catch block and we don't wish to lost it */
+    private static final GenericFutureListener<Future<Void>> LOG_ENCODER_LISTENER = new GenericFutureListener<Future<Void>>() {
+
+        private final Logger LOGGER = LoggerFactory.getLogger("LogEncoderListener");
+
+        @Override
+        public void operationComplete(final Future<Void> future) throws Exception {
+            if (future.cause() != null) {
+                LOGGER.warn("Message encoding fail !", future.cause());
+            }
+        }
+    };
 }
