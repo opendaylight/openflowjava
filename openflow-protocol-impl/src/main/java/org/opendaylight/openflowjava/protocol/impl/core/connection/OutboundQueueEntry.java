@@ -13,6 +13,7 @@ import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueExcept
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketOutInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,8 +58,16 @@ final class OutboundQueueEntry {
 
     OfHeader takeMessage() {
         final OfHeader ret = message;
+        checkCompletionNeed();
         message = null;
         return ret;
+    }
+
+    private void checkCompletionNeed() {
+        if (callback == null || PacketOutInput.class.isInstance(message)) {
+            completed = true;
+            callback = null;
+        }
     }
 
     boolean complete(final OfHeader response) {
