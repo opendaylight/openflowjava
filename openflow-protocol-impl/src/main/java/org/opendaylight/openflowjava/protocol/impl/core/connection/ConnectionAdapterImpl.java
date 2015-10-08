@@ -47,7 +47,7 @@ public class ConnectionAdapterImpl extends AbstractConnectionAdapterStatistics i
     private ConnectionReadyListener connectionReadyListener;
     private OpenflowProtocolListener messageListener;
     private SystemNotificationsListener systemListener;
-    private OutboundQueueManager<?> outputManager;
+    private AbstractOutboundQueueManager<?, ?> outputManager;
     private OFVersionDetector versionDetector;
 
     private final boolean useBarrier;
@@ -192,11 +192,13 @@ public class ConnectionAdapterImpl extends AbstractConnectionAdapterStatistics i
             final T handler, final int maxQueueDepth, final long maxBarrierNanos) {
         Preconditions.checkState(outputManager == null, "Manager %s already registered", outputManager);
 
+        final AbstractOutboundQueueManager<T, ?> ret;
         if (useBarrier) {
-
+            ret = new OutboundQueueManager<>(this, address, handler, maxQueueDepth, maxBarrierNanos);
+        } else {
+            ret = new OutboundQueueManagerNoBarrier<>(this, address, handler);
         }
 
-        final OutboundQueueManager<T> ret = new OutboundQueueManager<>(this, address, handler, maxQueueDepth, maxBarrierNanos);
         outputManager = ret;
         /* we don't need it anymore */
         channel.pipeline().remove(output);
