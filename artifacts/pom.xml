@@ -46,7 +46,7 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>util</artifactId>
+                <artifactId>openflowjava-util</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

@@ -22,6 +22,6 @@
         <module>openflow-protocol-spi</module>
         <module>parent</module>
         <module>simple-client</module>
-        <module>util</module>
+        <module>openflowjava-util</module>
     </modules>
 </project>

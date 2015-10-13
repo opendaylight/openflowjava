@@ -9,7 +9,7 @@
         <relativePath>../parent</relativePath>
     </parent>
     <packaging>bundle</packaging>
-    <artifactId>util</artifactId>
+    <artifactId>openflowjava-util</artifactId>
 
     <dependencies>
         <dependency>
