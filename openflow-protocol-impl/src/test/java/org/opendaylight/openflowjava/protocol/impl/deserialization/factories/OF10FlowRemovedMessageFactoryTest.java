@@ -46,13 +46,14 @@ public class OF10FlowRemovedMessageFactoryTest {
         ByteBuf bb = BufferHelper.buildBuffer("00 24 08 D1 00 20 AA BB CC DD EE FF "
                 + "AA BB CC DD EE FF 00 05 10 00 00 08 07 06 00 00 10 11 12 13 01 02 03 04 "//36
                 + "50 50 20 20 "// match
-                + "00 01 02 03 04 05 06 07 00 03 01 00 00 00 00 02 "
+                + "00 01 02 03 04 05 06 07 00 03 00 03 01 00 00 00 00 02 "
                 + "00 00 00 05 00 08 00 00 00 01 02 03 04 05 06 07 00 01 02 03 04 05 06 07");//41
         FlowRemovedMessage builtByFactory = BufferHelper.deserialize(flowFactory, bb);
 
         BufferHelper.checkHeaderV10(builtByFactory);
         Assert.assertEquals("Wrong cookie", 0x0001020304050607L, builtByFactory.getCookie().longValue());
         Assert.assertEquals("Wrong priority", 0x03, builtByFactory.getPriority().intValue());
+        Assert.assertEquals("Wrong importance", 0x03, builtByFactory.getImportance().intValue());
         Assert.assertEquals("Wrong reason", 0x01, builtByFactory.getReason().getIntValue());
         Assert.assertEquals("Wrong durationSec", 0x00000002L, builtByFactory.getDurationSec().longValue());
         Assert.assertEquals("Wrong durationNsec", 0x00000005L, builtByFactory.getDurationNsec().longValue());

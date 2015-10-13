@@ -54,7 +54,7 @@ public class TableModInputMessageFactoryTest {
         TableModInputBuilder builder = new TableModInputBuilder();
         BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setTableId(new TableId(9L));
-        builder.setConfig(new TableConfig(true));
+        builder.setConfig(new TableConfig(true,true));
         TableModInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();

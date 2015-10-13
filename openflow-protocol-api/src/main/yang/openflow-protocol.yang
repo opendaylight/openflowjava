@@ -338,6 +338,9 @@
                 leaf priority {
                     type uint16;
                 }
+		leaf importance {
+                    type uint16;
+                }
                 leaf reason {
                     type oft:flow-removed-reason;
                 }
@@ -421,6 +424,9 @@
                     type uint16;
                 }
                 leaf priority {
+                    type uint16;
+                }
+		leaf importance {
                     type uint16;
                 }
                 leaf buffer-id {
@@ -728,6 +734,9 @@
                                     type uint32;
                                 }
                                 leaf priority {
+                                    type uint16;
+                                }
+				leaf importance {
                                     type uint16;
                                 }
                                 leaf idle-timeout {

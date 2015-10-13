@@ -119,7 +119,7 @@ public class OF10StatsReplyMessageFactoryTest {
         ByteBuf bb = BufferHelper.buildBuffer("00 01 00 01 00 68 01 00 "
                 + "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
                 + "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
-                + "00 00 00 02 00 00 00 03 00 04 00 05 00 06 00 00 00 00 00 00 "
+                + "00 00 00 02 00 00 00 03 00 04 00 04 00 05 00 06 00 00 00 00 00 00 "
                 + "FF 01 02 03 04 05 06 07 FF 01 02 03 04 05 06 07 FF 00 00 00 00 00 00 20 "
                 + "00 00 00 08 00 01 00 02 00 01 00 08 00 03 00 00");
 
@@ -134,6 +134,7 @@ public class OF10StatsReplyMessageFactoryTest {
         Assert.assertEquals("Wrong durationSec", 2, message.getFlowStats().get(0).getDurationSec().intValue());
         Assert.assertEquals("Wrong durationNsec", 3, message.getFlowStats().get(0).getDurationNsec().intValue());
         Assert.assertEquals("Wrong priority", 4, message.getFlowStats().get(0).getPriority().intValue());
+        Assert.assertEquals("Wrong importance", 4, message.getFlowStats().get(0).getImportance().intValue());
         Assert.assertEquals("Wrong idleTimeOut", 5, message.getFlowStats().get(0).getIdleTimeout().intValue());
         Assert.assertEquals("Wrong hardTimeOut", 6, message.getFlowStats().get(0).getHardTimeout().intValue());
         Assert.assertEquals("Wrong cookie",

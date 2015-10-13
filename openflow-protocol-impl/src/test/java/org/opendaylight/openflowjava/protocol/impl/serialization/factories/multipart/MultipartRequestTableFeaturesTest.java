@@ -121,7 +121,7 @@ public class MultipartRequestTableFeaturesTest {
         tableFeaturesBuilder.setName("AAAABBBBCCCCDDDDEEEEFFFFGGGG");
         tableFeaturesBuilder.setMetadataMatch(new BigInteger(new byte[] {0x00, 0x01, 0x02, 0x03, 0x01, 0x04, 0x08, 0x01}));
         tableFeaturesBuilder.setMetadataWrite(new BigInteger(new byte[] {0x00, 0x07, 0x01, 0x05, 0x01, 0x00, 0x03, 0x01}));
-        tableFeaturesBuilder.setConfig(new TableConfig(true));
+        tableFeaturesBuilder.setConfig(new TableConfig(true,true));
         tableFeaturesBuilder.setMaxEntries(65L);
         List<TableFeatureProperties> properties = new ArrayList<>();
         TableFeaturePropertiesBuilder propBuilder = new TableFeaturePropertiesBuilder();
@@ -184,7 +184,7 @@ public class MultipartRequestTableFeaturesTest {
         tableFeaturesBuilder.setName("AAAABBBBCCCCDDDDEEEEFFFFGGGG");
         tableFeaturesBuilder.setMetadataMatch(new BigInteger(new byte[] {0x00, 0x01, 0x02, 0x03, 0x01, 0x04, 0x08, 0x01}));
         tableFeaturesBuilder.setMetadataWrite(new BigInteger(new byte[] {0x00, 0x07, 0x01, 0x05, 0x01, 0x00, 0x03, 0x01}));
-        tableFeaturesBuilder.setConfig(new TableConfig(true));
+        tableFeaturesBuilder.setConfig(new TableConfig(true,true));
         tableFeaturesBuilder.setMaxEntries(67L);
         properties = new ArrayList<>();
         propBuilder = new TableFeaturePropertiesBuilder();
@@ -417,7 +417,7 @@ public class MultipartRequestTableFeaturesTest {
         tableFeaturesBuilder.setName("AAAABBBBCCCCDDDDEEEEFFFFGGGG");
         tableFeaturesBuilder.setMetadataMatch(new BigInteger(new byte[] {0x00, 0x01, 0x02, 0x03, 0x01, 0x04, 0x08, 0x01}));
         tableFeaturesBuilder.setMetadataWrite(new BigInteger(new byte[] {0x00, 0x07, 0x01, 0x05, 0x01, 0x00, 0x03, 0x01}));
-        tableFeaturesBuilder.setConfig(new TableConfig(true));
+        tableFeaturesBuilder.setConfig(new TableConfig(true,true));
         tableFeaturesBuilder.setMaxEntries(65L);
         List<TableFeatureProperties> properties = new ArrayList<>();
         TableFeaturePropertiesBuilder propBuilder = new TableFeaturePropertiesBuilder();

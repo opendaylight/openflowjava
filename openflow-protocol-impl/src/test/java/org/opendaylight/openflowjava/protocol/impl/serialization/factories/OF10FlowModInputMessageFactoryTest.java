@@ -92,6 +92,7 @@ public class OF10FlowModInputMessageFactoryTest {
         builder.setIdleTimeout(12);
         builder.setHardTimeout(16);
         builder.setPriority(1);
+        builder.setImportance(1);
         builder.setBufferId(2L);
         builder.setOutPort(new PortNumber(4422L));
         builder.setFlagsV10(new FlowModFlagsV10(true, false, true));
@@ -116,7 +117,7 @@ public class OF10FlowModInputMessageFactoryTest {
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         flowModFactory.serialize(message, out);
 
-        BufferHelper.checkHeaderV10(out, (byte) 14, 88);
+        BufferHelper.checkHeaderV10(out, (byte) 14, 90);
         Assert.assertEquals("Wrong wildcards", 3678463, out.readUnsignedInt());
         Assert.assertEquals("Wrong inPort", 58, out.readUnsignedShort());
         byte[] dlSrc = new byte[6];
@@ -143,6 +144,7 @@ public class OF10FlowModInputMessageFactoryTest {
         Assert.assertEquals("Wrong idleTimeOut", 12, out.readUnsignedShort());
         Assert.assertEquals("Wrong hardTimeOut", 16, out.readUnsignedShort());
         Assert.assertEquals("Wrong priority", 1, out.readUnsignedShort());
+        Assert.assertEquals("Wrong importance", 1, out.readUnsignedShort());
         Assert.assertEquals("Wrong bufferId", 2, out.readUnsignedInt());
         Assert.assertEquals("Wrong outPort", 4422, out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", 3, out.readUnsignedShort());

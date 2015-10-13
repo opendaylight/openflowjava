@@ -1276,7 +1276,11 @@
             bit OFPTC_DEPRECATED_MASK {
                 /* Deprecated bits */
                 position 3;
-            }
+	    }
+            bit OFPTC_EVICTION {
+                /* FOR EVICTION */
+                position 4;
+	    }                 
         }
     }
 

@@ -42,6 +42,7 @@ public class FlowRemovedMessageFactory implements OFDeserializer<FlowRemovedMess
         rawMessage.readBytes(cookie);
         builder.setCookie(new BigInteger(1, cookie));
         builder.setPriority(rawMessage.readUnsignedShort());
+	builder.setImportance(rawMessage.readUnsignedShort());
         builder.setReason(FlowRemovedReason.forValue(rawMessage.readUnsignedByte()));
         builder.setTableId(new TableId((long)rawMessage.readUnsignedByte()));
         builder.setDurationSec(rawMessage.readUnsignedInt());

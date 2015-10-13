@@ -91,6 +91,7 @@ public class FlowModInputMessageFactoryTest {
         builder.setIdleTimeout(12);
         builder.setHardTimeout(0);
         builder.setPriority(126);
+        builder.setImportance(126);
         builder.setBufferId(2L);
         builder.setOutPort(new PortNumber(4422L));
         builder.setOutGroup(98L);
@@ -156,7 +157,7 @@ public class FlowModInputMessageFactoryTest {
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         flowModFactory.serialize(message, out);
 
-        BufferHelper.checkHeaderV13(out,(byte) 14, 128);
+        BufferHelper.checkHeaderV13(out,(byte) 14, 130);
         cookie = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
         out.readBytes(cookie);
         Assert.assertEquals("Wrong cookie", message.getCookie(), new BigInteger(1, cookie));
@@ -168,6 +169,7 @@ public class FlowModInputMessageFactoryTest {
         Assert.assertEquals("Wrong idleTimeOut", message.getIdleTimeout().intValue(), out.readShort());
         Assert.assertEquals("Wrong hardTimeOut", message.getHardTimeout().intValue(), out.readShort());
         Assert.assertEquals("Wrong priority", message.getPriority().intValue(), out.readUnsignedShort());
+        Assert.assertEquals("Wrong importance", message.getImportance().intValue(), out.readUnsignedShort());
         Assert.assertEquals("Wrong bufferId", message.getBufferId().intValue(), out.readUnsignedInt());
         Assert.assertEquals("Wrong outPort", message.getOutPort().getValue().intValue(), out.readUnsignedInt());
         Assert.assertEquals("Wrong outGroup", message.getOutGroup().intValue(), out.readUnsignedInt());
