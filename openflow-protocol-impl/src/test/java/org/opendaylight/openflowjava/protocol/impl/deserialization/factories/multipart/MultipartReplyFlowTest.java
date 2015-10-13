@@ -71,10 +71,10 @@ public class MultipartReplyFlowTest {
     public void testMultipartReplyFlowBody(){
         ByteBuf bb = BufferHelper.buildBuffer("00 01 00 01 00 00 00 00 "+
                                               // first flow stat
-                                              "00 48 08 00 "+ // length, tableId, padding
+                                              "00 4A 08 00 "+ // length, tableId, padding
                                               "00 00 00 09 "+//durationSec
                                               "00 00 00 07 "+//durationNsec
-                                              "00 0C 00 0E 00 0F 00 1F "+//priority, idleTimeout, hardTimeout, flags
+                                              "00 0C 00 0C 00 0E 00 0F 00 1F "+//priority, importance, idleTimeout, hardTimeout, flags
                                               "00 00 00 00 "+//pad_02
                                               "FF 01 01 01 01 01 01 01 "+//cookie
                                               "EF 01 01 01 01 01 01 01 "+//packetCount
@@ -83,10 +83,10 @@ public class MultipartReplyFlowTest {
                                               "00 01 00 08 06 00 00 00 "+
                                               "00 01 00 08 06 00 00 00 "+
                                               // second flow stat
-                                              "00 48 08 00 "+ // length, tableId, padding
+                                              "00 4A 08 00 "+ // length, tableId, padding
                                               "00 00 00 09 "+//durationSec
                                               "00 00 00 07 "+//durationNsec
-                                              "00 0C 00 0E 00 0F 00 00 "+//priority, idleTimeout, hardTimeout, flags
+                                              "00 0C 00 0C 00 0E 00 0F 00 00 "+//priority, importance, idleTimeout, hardTimeout, flags
                                               "00 00 00 00 "+//pad_02
                                               "FF 01 01 01 01 01 01 01 "+//cookie
                                               "EF 01 01 01 01 01 01 01 "+//packetCount
@@ -107,6 +107,7 @@ public class MultipartReplyFlowTest {
         Assert.assertEquals("Wrong durationSec", 9, flowStats1.getDurationSec().intValue());
         Assert.assertEquals("Wrong durationNsec", 7, flowStats1.getDurationNsec().intValue());
         Assert.assertEquals("Wrong priority", 12, flowStats1.getPriority().intValue());
+        Assert.assertEquals("Wrong importance", 12, flowStats1.getImportance().intValue());
         Assert.assertEquals("Wrong idleTimeOut", 14, flowStats1.getIdleTimeout().intValue());
         Assert.assertEquals("Wrong hardTimeOut", 15, flowStats1.getHardTimeout().intValue());
         Assert.assertEquals("Wrong flags", new FlowModFlags(true, true, true, true, true), flowStats1.getFlags());
@@ -122,6 +123,7 @@ public class MultipartReplyFlowTest {
         Assert.assertEquals("Wrong durationSec", 9, flowStats1.getDurationSec().intValue());
         Assert.assertEquals("Wrong durationNsec", 7, flowStats1.getDurationNsec().intValue());
         Assert.assertEquals("Wrong priority", 12, flowStats1.getPriority().intValue());
+        Assert.assertEquals("Wrong importance", 12, flowStats1.getImportance().intValue());
         Assert.assertEquals("Wrong idleTimeOut", 14, flowStats1.getIdleTimeout().intValue());
         Assert.assertEquals("Wrong hardTimeOut", 15, flowStats1.getHardTimeout().intValue());
         Assert.assertEquals("Wrong flags", new FlowModFlags(false, false, false, false, false), flowStats1.getFlags());

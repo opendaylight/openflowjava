@@ -46,6 +46,7 @@ public class OF10FlowModInputMessageFactory implements OFSerializer<FlowModInput
         outBuffer.writeShort(message.getIdleTimeout().intValue());
         outBuffer.writeShort(message.getHardTimeout().intValue());
         outBuffer.writeShort(message.getPriority());
+        outBuffer.writeShort(message.getImportance());
         outBuffer.writeInt(message.getBufferId().intValue());
         outBuffer.writeShort(message.getOutPort().getValue().intValue());
         outBuffer.writeShort(createFlowModFlagsBitmask(message.getFlagsV10()));

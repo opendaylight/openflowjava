@@ -266,6 +266,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             flowStatsBuilder.setDurationSec(subInput.readUnsignedInt());
             flowStatsBuilder.setDurationNsec(subInput.readUnsignedInt());
             flowStatsBuilder.setPriority(subInput.readUnsignedShort());
+            flowStatsBuilder.setImportance(subInput.readUnsignedShort());
             flowStatsBuilder.setIdleTimeout(subInput.readUnsignedShort());
             flowStatsBuilder.setHardTimeout(subInput.readUnsignedShort());
             flowStatsBuilder.setFlags(createFlowModFlagsFromBitmap(subInput.readUnsignedShort()));
@@ -360,6 +361,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             featuresBuilder.setMaxEntries(input.readUnsignedInt());
             featuresBuilder.setTableFeatureProperties(createTableFeaturesProperties(input,
                     length - MULTIPART_REPLY_TABLE_FEATURES_STRUCTURE_LENGTH));
+
             features.add(featuresBuilder.build());
         }
         builder.setTableFeatures(features);
@@ -369,7 +371,8 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
 
     private static TableConfig createTableConfig(long input) {
         boolean deprecated = (input & 3) != 0;
-        return new TableConfig(deprecated);
+        boolean eviction = ((input) & (1<<2)) != 0;
+        return new TableConfig(deprecated,eviction);        
     }
 
     private List<TableFeatureProperties> createTableFeaturesProperties(ByteBuf input, int length) {

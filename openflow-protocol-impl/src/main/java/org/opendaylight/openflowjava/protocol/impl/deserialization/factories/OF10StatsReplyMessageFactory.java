@@ -150,6 +150,7 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
             flowStatsBuilder.setDurationSec(input.readUnsignedInt());
             flowStatsBuilder.setDurationNsec(input.readUnsignedInt());
             flowStatsBuilder.setPriority(input.readUnsignedShort());
+            flowStatsBuilder.setImportance(input.readUnsignedShort());
             flowStatsBuilder.setIdleTimeout(input.readUnsignedShort());
             flowStatsBuilder.setHardTimeout(input.readUnsignedShort());
             input.skipBytes(PADDING_IN_FLOW_STATS_HEADER_02);
