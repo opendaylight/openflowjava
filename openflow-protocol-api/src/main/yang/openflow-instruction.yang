@@ -14,7 +14,7 @@
     import openflow-action {prefix ofaction;}
 
     revision "2013-07-31" {
-        description "OpenFlow 1.3 - instruction model";
+        description "#NOT_PUBLISHED# OpenFlow 1.3 - instruction model";
     }
 
     container instruction-container {

@@ -11,7 +11,7 @@
     prefix "oft";
 
     revision "2013-07-31" {
-        description "OpenFlow 1.3 - common types model";
+        description "#NOT_PUBLISHED# OpenFlow 1.3 - common types model";
     }
 
     typedef port-number {
