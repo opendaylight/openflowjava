@@ -10,19 +10,21 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ExperimenterId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 
 /**
  * @author michal.polkorab
@@ -32,14 +34,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class VendorInputMessageFactoryTest {
 
     @Mock SerializerRegistry registry;
-    @Mock ExperimenterInputMessageFactory serializer;
+    @Mock OFSerializer<ExperimenterDataOfChoice> foundSerializer;
+    @Mock ExperimenterDataOfChoice vendorData;
+    VendorInputMessageFactory serializer;
 
     /**
-     * Tests {@link VendorInputMessageFactory#serialize(ExperimenterInput, ByteBuf)}
+     * Tests {@link VendorInputMessageFactory#serialize(org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterOfMessage, ByteBuf)}
      */
     @Test
     public void test() {
-        Mockito.when(registry.getSerializer((MessageTypeKey<?>) Matchers.any(MessageTypeKey.class)))
+        Mockito.when(registry.getSerializer(Matchers.<MessageTypeKey<?>>any()))
             .thenReturn(serializer);
         VendorInputMessageFactory factory = new VendorInputMessageFactory();
         factory.injectSerializerRegistry(registry);
@@ -49,9 +53,12 @@ public class VendorInputMessageFactoryTest {
         builder.setXid(12345L);
         builder.setExperimenter(new ExperimenterId(42L));
         builder.setExpType(84L);
+        builder.setExperimenterDataOfChoice(vendorData);
         ExperimenterInput experimenterInput = builder.build();
 
+        Mockito.when(registry.getSerializer(Matchers.<ExperimenterIdSerializerKey<ExperimenterDataOfChoice>>any()))
+                .thenReturn(foundSerializer);
         factory.serialize(experimenterInput, buffer);
-        Mockito.verify(serializer, Mockito.times(1)).serialize(experimenterInput, buffer);
+        Mockito.verify(foundSerializer, Mockito.times(1)).serialize(experimenterInput.getExperimenterDataOfChoice(), buffer);
     }
 }

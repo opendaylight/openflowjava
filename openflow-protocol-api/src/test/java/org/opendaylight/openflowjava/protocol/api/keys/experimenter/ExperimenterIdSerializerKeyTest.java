@@ -26,7 +26,7 @@ public class ExperimenterIdSerializerKeyTest {
      * Test ExperimenterIdSerializerKey equals and hashCode
      */
     @Test
-    public void test() {
+    public void testHashCodeAndEquals() {
         ExperimenterIdSerializerKey<?> key1 =
                 new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID, 42L, ExperimenterMessage.class);
         ExperimenterIdSerializerKey<?> key2 =
@@ -34,9 +34,6 @@ public class ExperimenterIdSerializerKeyTest {
         Assert.assertTrue("Wrong equals", key1.equals(key2));
         Assert.assertTrue("Wrong hashcode", key1.hashCode() == key2.hashCode());
         key2 = new ExperimenterIdSerializerKey<>(EncodeConstants.OF13_VERSION_ID, 42L, ExperimenterMessage.class);
-        Assert.assertFalse("Wrong equals", key1.equals(key2));
-        Assert.assertFalse("Wrong hashcode", key1.hashCode() == key2.hashCode());
-        key2 = new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID, null, ExperimenterMessage.class);
         Assert.assertFalse("Wrong equals", key1.equals(key2));
         Assert.assertFalse("Wrong hashcode", key1.hashCode() == key2.hashCode());
         key2 = new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID, 55L, ExperimenterMessage.class);
@@ -56,7 +53,7 @@ public class ExperimenterIdSerializerKeyTest {
     @Test
     public void testEquals() {
         ExperimenterIdSerializerKey<?> key1 =
-                new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID, null, ExperimenterMessage.class);
+                new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID, 41L, ExperimenterMessage.class);
         Assert.assertTrue("Wrong equal to identical object.", key1.equals(key1));
         MessageTypeKey<?>mk = new MessageTypeKey<>(EncodeConstants.OF10_VERSION_ID,ExperimenterMessage.class);
         Assert.assertFalse("Wrong equal to different class.", key1.equals(mk));

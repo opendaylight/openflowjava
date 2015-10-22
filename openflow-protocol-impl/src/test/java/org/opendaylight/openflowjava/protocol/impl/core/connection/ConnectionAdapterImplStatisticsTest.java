@@ -8,15 +8,18 @@
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
 import static org.mockito.Mockito.when;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.channel.socket.SocketChannel;
-
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -56,11 +59,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SystemNotificationsListener;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
 
 /**
  * Test counters in ConnectionAdapter (at least DS_ENTERED_OFJAVA, DS_FLOW_MODS_ENTERED and US_MESSAGE_PASS counters have to be enabled)

@@ -8,16 +8,16 @@
 
 package org.opendaylight.openflowjava.protocol.api.keys;
 
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.DataContainer;
 
 /**
  * @author michal.polkorab
  * @param <T> class of object to be serialized
  */
-public class ExperimenterIdSerializerKey<T extends DataObject> extends MessageTypeKey<T>
+public class ExperimenterIdSerializerKey<T extends DataContainer> extends MessageTypeKey<T>
         implements ExperimenterSerializerKey {
 
-    private Long experimenterId;
+    private long experimenterId;
 
     /**
      * @param msgVersion protocol wire version
@@ -25,7 +25,7 @@ public class ExperimenterIdSerializerKey<T extends DataObject> extends MessageTy
      * @param objectClass class of object to be serialized
      */
     public ExperimenterIdSerializerKey(short msgVersion,
-            Long experimenterId, Class<T> objectClass) {
+                                       long experimenterId, Class<T> objectClass) {
         super(msgVersion, objectClass);
         this.experimenterId = experimenterId;
     }
@@ -34,8 +34,12 @@ public class ExperimenterIdSerializerKey<T extends DataObject> extends MessageTy
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((experimenterId == null) ? 0 : experimenterId.hashCode());
+        result = prime * result + hashCodeOfLong(experimenterId);
         return result;
+    }
+
+    protected int hashCodeOfLong(long longValue) {
+        return (int) (longValue ^ (longValue >>> 32));
     }
 
     @Override
@@ -50,11 +54,7 @@ public class ExperimenterIdSerializerKey<T extends DataObject> extends MessageTy
             return false;
         }
         ExperimenterIdSerializerKey<?> other = (ExperimenterIdSerializerKey<?>) obj;
-        if (experimenterId == null) {
-            if (other.experimenterId != null) {
-                return false;
-            }
-        } else if (!experimenterId.equals(other.experimenterId)) {
+        if (experimenterId != other.experimenterId) {
             return false;
         }
         return true;

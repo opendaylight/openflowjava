@@ -11,62 +11,64 @@ package org.opendaylight.openflowjava.util;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdSerializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdTypeSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenterCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.grouping.TableFeatureProperties;
 
 /**
+ * Test ExperimenterSerializerKeyFactory key creation
  * @author michal.polkorab
  *
  */
 public class ExperimenterSerializerKeyFactoryTest {
 
-    /**
-     * Test ExperimenterSerializerKeyFactory key creation
-     */
     @Test
-    public void test() {
-        ExperimenterIdSerializerKey<?> createdKey = ExperimenterSerializerKeyFactory
-                .createExperimenterMessageSerializerKey(EncodeConstants.OF10_VERSION_ID, 42L);
-        ExperimenterIdSerializerKey<?> comparationKey =
-                new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID, 42L, ExperimenterInput.class);
+    public void testCreateExperimenterMessageSerializerKey() throws Exception {
+        ExperimenterIdSerializerKey<?> createdKey;
+        ExperimenterIdSerializerKey<?> comparationKey;
+
+        createdKey = ExperimenterSerializerKeyFactory
+                .createExperimenterMessageSerializerKey(EncodeConstants.OF10_VERSION_ID, 42L, 1L);
+        comparationKey = new ExperimenterIdTypeSerializerKey<>(EncodeConstants.OF10_VERSION_ID,
+                42L, 1L, ExperimenterDataOfChoice.class);
         Assert.assertEquals("Wrong key created", comparationKey, createdKey);
-        createdKey = ExperimenterSerializerKeyFactory.createExperimenterMessageSerializerKey(
-                EncodeConstants.OF10_VERSION_ID, null);
-        comparationKey = new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID,
-                null, ExperimenterInput.class);
-        Assert.assertEquals("Wrong key created", comparationKey, createdKey);
-        createdKey = ExperimenterSerializerKeyFactory.createMeterBandSerializerKey(
-                EncodeConstants.OF10_VERSION_ID, 43L);
-        comparationKey = new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID,
-                43L, MeterBandExperimenterCase.class);
-        Assert.assertEquals("Wrong key created", comparationKey, createdKey);
-        createdKey = ExperimenterSerializerKeyFactory.createMeterBandSerializerKey(
-                EncodeConstants.OF10_VERSION_ID, null);
-        comparationKey = new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID,
-                null, MeterBandExperimenterCase.class);
-        Assert.assertEquals("Wrong key created", comparationKey, createdKey);
+    }
+
+    @Test
+    public void testCreateMultipartRequestSerializerKey() throws Exception {
+        ExperimenterIdSerializerKey<?> createdKey;
+        ExperimenterIdSerializerKey<?> comparationKey;
+
         createdKey = ExperimenterSerializerKeyFactory.createMultipartRequestSerializerKey(
-                EncodeConstants.OF10_VERSION_ID, 44L);
+                EncodeConstants.OF10_VERSION_ID, 44L, 1L);
         comparationKey = new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID,
-                44L, MultipartRequestExperimenterCase.class);
+                44L, ExperimenterDataOfChoice.class);
         Assert.assertEquals("Wrong key created", comparationKey, createdKey);
-        createdKey = ExperimenterSerializerKeyFactory.createMultipartRequestSerializerKey(
-                EncodeConstants.OF10_VERSION_ID, null);
-        comparationKey = new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID,
-                null, MultipartRequestExperimenterCase.class);
-        Assert.assertEquals("Wrong key created", comparationKey, createdKey);
+    }
+
+    @Test
+    public void testCreateMultipartRequestTFSerializerKey() throws Exception {
+        ExperimenterIdSerializerKey<?> createdKey;
+        ExperimenterIdSerializerKey<?> comparationKey;
+
         createdKey = ExperimenterSerializerKeyFactory.createMultipartRequestTFSerializerKey(
                 EncodeConstants.OF10_VERSION_ID, 45L);
         comparationKey = new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID,
                 45L, TableFeatureProperties.class);
         Assert.assertEquals("Wrong key created", comparationKey, createdKey);
-        createdKey = ExperimenterSerializerKeyFactory.createMultipartRequestTFSerializerKey(
-                EncodeConstants.OF10_VERSION_ID, null);
+    }
+
+    @Test
+    public void testCreateMeterBandSerializerKey() throws Exception {
+        ExperimenterIdSerializerKey<?> createdKey;
+        ExperimenterIdSerializerKey<?> comparationKey;
+
+        createdKey = ExperimenterSerializerKeyFactory.createMeterBandSerializerKey(
+                EncodeConstants.OF10_VERSION_ID, 43L);
         comparationKey = new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID,
-                null, TableFeatureProperties.class);
+                43L, MeterBandExperimenterCase.class);
         Assert.assertEquals("Wrong key created", comparationKey, createdKey);
     }
 }
