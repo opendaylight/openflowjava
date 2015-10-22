@@ -40,16 +40,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.T
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.InPort;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ErrorMessage;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenterCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.queue.property.header.QueueProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.grouping.TableFeatureProperties;
-
-import com.google.common.util.concurrent.ListenableFuture;
 
 /**
  * @author madamjak
@@ -60,8 +56,8 @@ public class SwitchConnectionProviderImpl02Test {
     @Mock OFGeneralSerializer serializer;
     @Mock OFGeneralDeserializer deserializer;
     @Mock OFDeserializer<ErrorMessage> deserializerError;
-    @Mock OFDeserializer<ExperimenterMessage> deserializerExpMsg;
-    @Mock OFDeserializer<MultipartReplyMessage> deserializerMultipartRplMsg;
+    @Mock OFDeserializer<ExperimenterDataOfChoice> deserializerExpMsg;
+    @Mock OFDeserializer<ExperimenterDataOfChoice> deserializerMultipartRplMsg;
     @Mock OFDeserializer<QueueProperty> deserializerQueueProperty;
     @Mock OFDeserializer<MeterBandExperimenterCase> deserializerMeterBandExpCase;
     @Mock OFSerializer<ExperimenterDataOfChoice> serializerExperimenterInput;

@@ -9,16 +9,16 @@
 package org.opendaylight.openflowjava.protocol.api.keys;
 
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.DataContainer;
 
 /**
  * @author michal.polkorab
  *
  */
-public final class ExperimenterIdDeserializerKey extends MessageCodeKey
+public class ExperimenterIdDeserializerKey extends MessageCodeKey
         implements ExperimenterDeserializerKey {
 
-    private Long experimenterId;
+    private long experimenterId;
 
     /**
      * @param <E> type of target experimenter object
@@ -26,18 +26,21 @@ public final class ExperimenterIdDeserializerKey extends MessageCodeKey
      * @param experimenterId experimenter / vendor ID
      * @param objectClass class of created object
      */
-    public <E extends DataObject> ExperimenterIdDeserializerKey(short version,
-            Long experimenterId, Class<E> objectClass) {
+    public <E extends DataContainer> ExperimenterIdDeserializerKey(short version,
+                                                                   long experimenterId, Class<E> objectClass) {
         super(version, EncodeConstants.EXPERIMENTER_VALUE, objectClass);
         this.experimenterId = experimenterId;
     }
 
+    protected int hashCodeOfLong(long longValue) {
+        return (int) (longValue ^ (longValue >>> 32));
+    }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((experimenterId == null) ? 0 : experimenterId.hashCode());
+        result = prime * result + hashCodeOfLong(experimenterId);
         return result;
     }
 
@@ -53,11 +56,7 @@ public final class ExperimenterIdDeserializerKey extends MessageCodeKey
             return false;
         }
         ExperimenterIdDeserializerKey other = (ExperimenterIdDeserializerKey) obj;
-        if (experimenterId == null) {
-            if (other.experimenterId != null) {
-                return false;
-            }
-        } else if (!experimenterId.equals(other.experimenterId)) {
+        if (experimenterId != other.experimenterId) {
             return false;
         }
         return true;

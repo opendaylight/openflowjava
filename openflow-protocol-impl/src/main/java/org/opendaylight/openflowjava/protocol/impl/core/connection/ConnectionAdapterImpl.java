@@ -161,7 +161,7 @@ public class ConnectionAdapterImpl implements ConnectionFacade {
 
     @Override
     public Future<RpcResult<Void>> experimenter(final ExperimenterInput input) {
-        return sendToSwitchFuture(input, "experimenter sending failed");
+        return sendToSwitchFuture(input, "experimenter reply sending failed");
     }
 
     @Override

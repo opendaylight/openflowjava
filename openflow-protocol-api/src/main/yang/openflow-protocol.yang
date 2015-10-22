@@ -207,19 +207,7 @@
                     type binary;
                 }
             }
-            grouping experimenter {
-                reference "OFPT_EXPERIMENTER message in Openflow Switch 1.3 Spec";
-                /* Symmetric message */
-                uses ofHeader;
 
-                leaf experimenter {
-                    type oft:experimenter-id;
-                }
-                leaf exp_type {
-                    type uint32;
-                }
-            }
- 
             grouping experimenter-core {
                 description "General experimenter message content suitable for symmetric and multipart message";
                 leaf experimenter {
@@ -231,7 +219,7 @@
                 choice experimenter-data-of-choice {
                     // to be augmented by vendors
                 }
-             }
+            }
             grouping experimenter-of-message {
                 reference "OFPT_EXPERIMENTER message in Openflow Switch 1.3 Spec";
                 /* Symmetric message */
@@ -1065,7 +1053,7 @@
                     }
                     case multipart-reply-experimenter-case {
                         container multipart-reply-experimenter {
-                            // empty body - used for experimenter augmentation
+                            uses experimenter-core;
                         }
                     }
                 }
@@ -1270,7 +1258,8 @@
                 /* Symmetric message */
             }
             notification experimenter-message {
-                uses experimenter;
+                description "Experimenter request message from device.";
+                uses experimenter-of-message;
                 reference "OFPT_EXPERIMENTER message in Openflow Switch 1.3 Spec";
                 // TODO:: does switch send this when understood experimenter msg from lib?
                 /* Symmetric message */

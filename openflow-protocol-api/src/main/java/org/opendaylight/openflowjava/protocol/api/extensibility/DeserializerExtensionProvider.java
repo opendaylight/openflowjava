@@ -14,8 +14,7 @@ import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdDeserialize
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterInstructionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntryDeserializerKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ErrorMessage;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterMessage;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.queue.property.header.QueueProperty;
 
@@ -80,7 +79,7 @@ public interface DeserializerExtensionProvider {
      * @param deserializer deserializer instance
      */
     void registerExperimenterMessageDeserializer(ExperimenterIdDeserializerKey key,
-            OFDeserializer<ExperimenterMessage> deserializer);
+                                                 OFDeserializer<? extends ExperimenterDataOfChoice> deserializer);
 
     /**
      * Registers multipart-reply (stats) message deserializer
@@ -88,7 +87,7 @@ public interface DeserializerExtensionProvider {
      * @param deserializer deserializer instance
      */
     void registerMultipartReplyMessageDeserializer(ExperimenterIdDeserializerKey key,
-            OFDeserializer<MultipartReplyMessage> deserializer);
+                                                   OFDeserializer<? extends ExperimenterDataOfChoice> deserializer);
 
     /**
      * Registers multipart-reply table-features message deserializer

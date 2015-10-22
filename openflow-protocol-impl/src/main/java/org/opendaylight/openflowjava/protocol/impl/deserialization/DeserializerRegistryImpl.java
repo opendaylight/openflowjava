@@ -10,7 +10,6 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;

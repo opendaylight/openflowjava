@@ -9,7 +9,6 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories.multipart;
 
 import io.netty.buffer.ByteBuf;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,10 +17,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10StatsReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 
 /**
  * @author michal.polkorab
@@ -31,12 +32,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class OF10StatsReplyExperimenterTest {
 
     @Mock DeserializerRegistry registry;
+    @Mock private OFDeserializer<ExperimenterDataOfChoice> vendorDeserializer;
 
     /**
      * Tests {@link OF10StatsReplyMessageFactory} for experimenter body translation
      */
     @Test
     public void test() {
+        Mockito.when(registry.getDeserializer(Matchers.<MessageCodeKey>any())).thenReturn(vendorDeserializer);
         OF10StatsReplyMessageFactory factory = new OF10StatsReplyMessageFactory();
         factory.injectDeserializerRegistry(registry);
 
@@ -47,6 +50,7 @@ public class OF10StatsReplyExperimenterTest {
         BufferHelper.checkHeaderV10(builtByFactory);
         Assert.assertEquals("Wrong type", 65535, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
-        Mockito.verify(registry, Mockito.times(1)).getDeserializer(Matchers.any(MessageCodeKey.class));
+
+        Mockito.verify(vendorDeserializer).deserialize(bb);
     }
 }
