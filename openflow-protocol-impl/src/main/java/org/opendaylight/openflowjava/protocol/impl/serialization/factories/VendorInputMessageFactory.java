@@ -9,30 +9,34 @@
 package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.util.ExperimenterSerializerKeyFactory;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterOfMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 
 /**
- * Translates Vendor messages
+ * Translates Vendor messages (OF-1.0 limited version - skipping experimenter type)
  * @author michal.polkorab
  */
-public class VendorInputMessageFactory implements OFSerializer<ExperimenterInput>,
+public class VendorInputMessageFactory implements OFSerializer<ExperimenterOfMessage>,
         SerializerRegistryInjector {
 
     private SerializerRegistry registry;
 
     @Override
-    public void serialize(ExperimenterInput message, ByteBuf outBuffer) {
+    public void serialize(ExperimenterOfMessage message, ByteBuf outBuffer) {
         long expId = message.getExperimenter().getValue();
-        OFSerializer<ExperimenterInput> serializer = registry.getSerializer(
+        OFSerializer<ExperimenterDataOfChoice> serializer = registry.getSerializer(
                 ExperimenterSerializerKeyFactory.createExperimenterMessageSerializerKey(
-                        EncodeConstants.OF10_VERSION_ID, expId));
-        serializer.serialize(message, outBuffer);
+                        EncodeConstants.OF10_VERSION_ID, expId, message.getExpType().longValue()));
+
+        // write experimenterId
+        outBuffer.writeInt(message.getExperimenter().getValue().intValue());
+
+        serializer.serialize(message.getExperimenterDataOfChoice(), outBuffer);
     }
 
     @Override

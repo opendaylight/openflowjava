@@ -121,26 +121,6 @@
          }
      }
 
-// OFP_MULTIPART AUGMENTS
-     augment "/ofproto:multipart-request/ofproto:input/ofproto:multipart-request-body/ofproto:multipart-request-experimenter-case/ofproto:multipart-request-experimenter" {
-         ext:augment-identifier "experimenter-id-multipart-request";
-         leaf experimenter {
-             type oft:experimenter-id;
-         }
-         leaf exp-type {
-             type uint32;
-         }
-     }
-     augment "/ofproto:multipart-reply-message/ofproto:multipart-reply-body/ofproto:multipart-reply-experimenter-case/ofproto:multipart-reply-experimenter" {
-         ext:augment-identifier "experimenter-id-multipart-reply";
-         leaf experimenter {
-             type oft:experimenter-id;
-         }
-         leaf exp-type {
-             type uint32;
-         }
-     }
-
 // OFP_METER_BAND AUGMENTS
      augment "/ofproto:meter-band-container/ofproto:meter-band/ofproto:meter-band-experimenter-case/ofproto:meter-band-experimenter" {
          ext:augment-identifier "experimenter-id-meter-band";

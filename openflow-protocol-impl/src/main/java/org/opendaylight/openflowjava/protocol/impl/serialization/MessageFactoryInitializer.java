@@ -35,6 +35,7 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.factories.RoleR
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.SetAsyncInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.SetConfigMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.TableModInputMessageFactory;
+import org.opendaylight.openflowjava.protocol.impl.serialization.factories.VendorInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.CommonMessageRegistryHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoInput;
@@ -77,7 +78,7 @@ public final class MessageFactoryInitializer {
         registryHelper.registerSerializer(BarrierInput.class, new OF10BarrierInputMessageFactory());
         registryHelper.registerSerializer(EchoInput.class, new EchoInputMessageFactory());
         registryHelper.registerSerializer(EchoReplyInput.class, new EchoReplyInputMessageFactory());
-        registryHelper.registerSerializer(ExperimenterInput.class, new ExperimenterInputMessageFactory());
+        registryHelper.registerSerializer(ExperimenterInput.class, new VendorInputMessageFactory());
         registryHelper.registerSerializer(FlowModInput.class, new OF10FlowModInputMessageFactory());
         registryHelper.registerSerializer(GetConfigInput.class, new GetConfigInputMessageFactory());
         registryHelper.registerSerializer(GetFeaturesInput.class, new GetFeaturesInputMessageFactory());

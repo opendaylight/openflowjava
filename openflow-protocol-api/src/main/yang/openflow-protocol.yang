@@ -219,6 +219,26 @@
                     type uint32;
                 }
             }
+ 
+            grouping experimenter-core {
+                description "General experimenter message content suitable for symmetric and multipart message";
+                leaf experimenter {
+                    type oft:experimenter-id;
+                }
+                leaf exp_type {
+                    type uint32;
+                }
+                choice experimenter-data-of-choice {
+                    // to be augmented by vendors
+                }
+             }
+            grouping experimenter-of-message {
+                reference "OFPT_EXPERIMENTER message in Openflow Switch 1.3 Spec";
+                /* Symmetric message */
+                uses ofHeader;
+                uses experimenter-core;
+            }
+
         /* Switch configuration messages. */
             grouping features-request {
                 reference "OFPT_FEATURES_REQUEST message in Openflow Switch 1.3 Spec";
@@ -678,7 +698,7 @@
                     }
                     case multipart-request-experimenter-case {
                         container multipart-request-experimenter {
-                            // empty body - used for experimenter augmentation
+                            uses experimenter-core;
                         }
                     }
                 }
@@ -1280,8 +1300,9 @@
             }
 
             rpc experimenter {
+                description "Send experimenter message to device, reply is not solicitated.";
                 input {
-                    uses experimenter;
+                    uses experimenter-of-message;
                 }
             }
 
