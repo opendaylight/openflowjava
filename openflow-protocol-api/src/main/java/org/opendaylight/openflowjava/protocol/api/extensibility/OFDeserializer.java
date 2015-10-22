@@ -9,8 +9,7 @@
 package org.opendaylight.openflowjava.protocol.api.extensibility;
 
 import io.netty.buffer.ByteBuf;
-
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.DataContainer;
 
 /**
  * Uniform interface for deserializing factories
@@ -18,7 +17,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * @author timotej.kubas
  * @param <E> message code type
  */
-public interface OFDeserializer<E extends DataObject> extends OFGeneralDeserializer {
+public interface OFDeserializer<E extends DataContainer> extends OFGeneralDeserializer {
 
     /**
      * Transforms byte message into POJO/DTO (of type E).

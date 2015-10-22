@@ -9,8 +9,6 @@
 package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.UnpooledByteBufAllocator;
-
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -26,6 +24,8 @@ import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ExperimenterId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterOfMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 
 /**
  * @author michal.polkorab
@@ -34,8 +34,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class ExperimenterInputMessageFactoryTest {
 
     @Mock SerializerRegistry registry;
-    @Mock OFSerializer<ExperimenterInput> serializer;
-    private OFSerializer<ExperimenterInput> expFactory;
+    @Mock
+    private OFSerializer<ExperimenterDataOfChoice> serializer;
+    private OFSerializer<ExperimenterOfMessage> expFactory;
+    @Mock
+    private ExperimenterDataOfChoice vendorData;
+    @Mock
+    private ByteBuf out;
 
     /**
      * Sets up ExperimenterInputMessageFactory
@@ -64,9 +69,10 @@ public class ExperimenterInputMessageFactoryTest {
         ExperimenterInputBuilder builder = new ExperimenterInputBuilder();
         BufferHelper.setupHeader(builder, EncodeConstants.OF10_VERSION_ID);
         builder.setExperimenter(new ExperimenterId(42L));
+        builder.setExpType(21L);
+        builder.setExperimenterDataOfChoice(vendorData);
         ExperimenterInput input = builder.build();
 
-        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         expFactory.serialize(input, out);
     }
 
@@ -81,9 +87,10 @@ public class ExperimenterInputMessageFactoryTest {
         ExperimenterInputBuilder builder = new ExperimenterInputBuilder();
         BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setExperimenter(new ExperimenterId(42L));
+        builder.setExpType(22L);
+        builder.setExperimenterDataOfChoice(vendorData);
         ExperimenterInput input = builder.build();
 
-        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         expFactory.serialize(input, out);
     }
 
@@ -98,13 +105,15 @@ public class ExperimenterInputMessageFactoryTest {
         ExperimenterInputBuilder builder = new ExperimenterInputBuilder();
         BufferHelper.setupHeader(builder, EncodeConstants.OF10_VERSION_ID);
         builder.setExperimenter(new ExperimenterId(42L));
+        builder.setExpType(21L);
+        builder.setExperimenterDataOfChoice(vendorData);
         ExperimenterInput input = builder.build();
 
         Mockito.when(registry.getSerializer(
                 (ExperimenterIdSerializerKey<?>) Matchers.any())).thenReturn(serializer);
 
-        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         expFactory.serialize(input, out);
+        Mockito.verify(serializer, Mockito.times(1)).serialize(input.getExperimenterDataOfChoice(), out);
     }
 
     /**
@@ -118,12 +127,14 @@ public class ExperimenterInputMessageFactoryTest {
         ExperimenterInputBuilder builder = new ExperimenterInputBuilder();
         BufferHelper.setupHeader(builder, EncodeConstants.OF13_VERSION_ID);
         builder.setExperimenter(new ExperimenterId(42L));
+        builder.setExpType(21L);
+        builder.setExperimenterDataOfChoice(vendorData);
         ExperimenterInput input = builder.build();
 
         Mockito.when(registry.getSerializer(
                 (ExperimenterIdSerializerKey<?>) Matchers.any())).thenReturn(serializer);
 
-        ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         expFactory.serialize(input, out);
+        Mockito.verify(serializer, Mockito.times(1)).serialize(input.getExperimenterDataOfChoice(), out);
     }
 }

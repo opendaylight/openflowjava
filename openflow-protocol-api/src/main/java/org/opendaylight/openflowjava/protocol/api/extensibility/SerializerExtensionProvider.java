@@ -15,9 +15,8 @@ import org.opendaylight.openflowjava.protocol.api.keys.InstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OxmClassBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenterCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.grouping.TableFeatureProperties;
 
 
@@ -73,16 +72,16 @@ public interface SerializerExtensionProvider {
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */
-    void registerExperimenterMessageSerializer(ExperimenterIdSerializerKey<ExperimenterInput> key,
-            OFSerializer<ExperimenterInput> serializer);
+    void registerExperimenterMessageSerializer(ExperimenterIdSerializerKey<? extends ExperimenterDataOfChoice> key,
+                                               OFSerializer<? extends ExperimenterDataOfChoice> serializer);
 
     /**
      * Registers multipart-request (stats-request) serializer
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */
-    void registerMultipartRequestSerializer(ExperimenterIdSerializerKey<MultipartRequestExperimenterCase> key,
-            OFSerializer<MultipartRequestExperimenterCase> serializer);
+    void registerMultipartRequestSerializer(ExperimenterIdSerializerKey<? extends ExperimenterDataOfChoice> key,
+                                            OFSerializer<? extends ExperimenterDataOfChoice> serializer);
 
     /**
      * Registers multipart-request table-features serializer

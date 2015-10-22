@@ -7,9 +7,9 @@
  */
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -43,6 +43,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenterCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.queue.property.header.QueueProperty;
@@ -63,8 +64,8 @@ public class SwitchConnectionProviderImpl02Test {
     @Mock OFDeserializer<MultipartReplyMessage> deserializerMultipartRplMsg;
     @Mock OFDeserializer<QueueProperty> deserializerQueueProperty;
     @Mock OFDeserializer<MeterBandExperimenterCase> deserializerMeterBandExpCase;
-    @Mock OFSerializer<ExperimenterInput> serializerExperimenterInput;
-    @Mock OFSerializer<MultipartRequestExperimenterCase> serializerMultipartRequestExpCase;
+    @Mock OFSerializer<ExperimenterDataOfChoice> serializerExperimenterInput;
+    @Mock OFSerializer<ExperimenterDataOfChoice> serializerMultipartRequestExpCase;
     @Mock OFSerializer<MeterBandExperimenterCase> serializerMeterBandExpCase;
     private static final int SWITCH_IDLE_TIMEOUT = 2000;
     private InetAddress startupAddress;
@@ -211,14 +212,14 @@ public class SwitchConnectionProviderImpl02Test {
         Assert.assertTrue("Wrong -- unregister MeterBandDeserializer", provider.unregisterDeserializer(key11));
         Assert.assertFalse("Wrong -- unregister MeterBandDeserializer by not existing key", provider.unregisterDeserializer(key11));
         // -- registerExperimenterMessageSerializer
-        ExperimenterIdSerializerKey<ExperimenterInput> key12
-            = new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID,42L,ExperimenterInput.class);
+        ExperimenterIdSerializerKey<ExperimenterDataOfChoice> key12
+                = new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID, 42L, ExperimenterDataOfChoice.class);
         provider.registerExperimenterMessageSerializer(key12, serializerExperimenterInput);
         Assert.assertTrue("Wrong -- unregister ExperimenterMessageSerializer", provider.unregisterSerializer(key12));
         Assert.assertFalse("Wrong -- unregister ExperimenterMessageSerializer by not existing key", provider.unregisterSerializer(key12));
         //registerMultipartRequestSerializer
-        ExperimenterIdSerializerKey<MultipartRequestExperimenterCase> key13
-            = new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID,42L,MultipartRequestExperimenterCase.class);
+        ExperimenterIdSerializerKey<ExperimenterDataOfChoice> key13
+                = new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID, 42L, ExperimenterDataOfChoice.class);
         provider.registerMultipartRequestSerializer(key13, serializerMultipartRequestExpCase);
         Assert.assertTrue("Wrong -- unregister MultipartRequestSerializer", provider.unregisterSerializer(key13));
         Assert.assertFalse("Wrong -- unregister MultipartRequestSerializer by not existing key", provider.unregisterSerializer(key13));

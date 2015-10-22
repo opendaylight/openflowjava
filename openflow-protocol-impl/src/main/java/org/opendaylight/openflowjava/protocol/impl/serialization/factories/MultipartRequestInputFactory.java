@@ -9,9 +9,7 @@
 package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
 import java.util.List;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
@@ -23,7 +21,6 @@ import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMakerFactory;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.util.ExperimenterSerializerKeyFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ActionRelatedTableFeatureProperty;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ExperimenterIdMultipartRequest;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ExperimenterIdTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.InstructionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.NextTableRelatedTableFeatureProperty;
@@ -37,6 +34,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.grouping.Match;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.MultipartRequestBody;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestAggregateCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestDescCase;
@@ -144,11 +142,18 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         MultipartRequestExperimenterCase expCase =
                 (MultipartRequestExperimenterCase) message.getMultipartRequestBody();
         MultipartRequestExperimenter experimenter = expCase.getMultipartRequestExperimenter();
-        long expId = experimenter.getAugmentation(ExperimenterIdMultipartRequest.class).getExperimenter().getValue();
-        OFSerializer<MultipartRequestExperimenterCase> serializer = registry.getSerializer(
+        final long expId = experimenter.getExperimenter().getValue().longValue();
+        final long expType = experimenter.getExpType().longValue();
+
+        // write experimenterId and type
+        outBuffer.writeInt((int) expId);
+        outBuffer.writeInt((int) expType);
+
+        // serialize experimenter data
+        OFSerializer<ExperimenterDataOfChoice> serializer = registry.getSerializer(
                 ExperimenterSerializerKeyFactory.createMultipartRequestSerializerKey(
-                        EncodeConstants.OF13_VERSION_ID, expId));
-        serializer.serialize(expCase, outBuffer);
+                        EncodeConstants.OF13_VERSION_ID, expId, expType));
+        serializer.serialize(experimenter.getExperimenterDataOfChoice(), outBuffer);
     }
 
     private static int createMultipartRequestFlagsBitmask(final MultipartRequestFlags flags) {

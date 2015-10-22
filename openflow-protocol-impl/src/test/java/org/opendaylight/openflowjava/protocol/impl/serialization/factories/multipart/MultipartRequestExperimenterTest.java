@@ -10,7 +10,6 @@ package org.opendaylight.openflowjava.protocol.impl.serialization.factories.mult
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,18 +19,16 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
-import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdSerializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdTypeSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.MultipartRequestInputFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ExperimenterIdMultipartRequest;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ExperimenterIdMultipartRequestBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ExperimenterId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenterCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.MultipartRequestExperimenterCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.request.multipart.request.body.multipart.request.experimenter._case.MultipartRequestExperimenterBuilder;
 
@@ -43,7 +40,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class MultipartRequestExperimenterTest {
 
     @Mock SerializerRegistry mockRegistry;
-    @Mock OFSerializer<MultipartRequestExperimenterCase> serializer;
+    @Mock OFSerializer<ExperimenterDataOfChoice> serializer;
+
+    @Mock ExperimenterDataOfChoice vendorData;
 
     /**
      * Testing OF10StatsRequestInputFactory (Experimenter) for correct serialization
@@ -51,7 +50,7 @@ public class MultipartRequestExperimenterTest {
      */
     @Test
     public void testExperimenter() throws Exception {
-        Mockito.when(mockRegistry.getSerializer(Matchers.any(ExperimenterIdSerializerKey.class)))
+        Mockito.when(mockRegistry.getSerializer(Matchers.<ExperimenterIdTypeSerializerKey<ExperimenterDataOfChoice>>any()))
             .thenReturn(serializer);
         MultipartRequestInputFactory multipartFactory = new MultipartRequestInputFactory();
         multipartFactory.injectSerializerRegistry(mockRegistry);
@@ -61,9 +60,9 @@ public class MultipartRequestExperimenterTest {
         builder.setFlags(new MultipartRequestFlags(false));
         MultipartRequestExperimenterCaseBuilder caseBuilder = new MultipartRequestExperimenterCaseBuilder();
         MultipartRequestExperimenterBuilder expBuilder = new MultipartRequestExperimenterBuilder();
-        ExperimenterIdMultipartRequestBuilder expIdBuilder = new ExperimenterIdMultipartRequestBuilder();
-        expIdBuilder.setExperimenter(new ExperimenterId(42L));
-        expBuilder.addAugmentation(ExperimenterIdMultipartRequest.class, expIdBuilder.build());
+        expBuilder.setExperimenter(new ExperimenterId(42L));
+        expBuilder.setExpType(21L);
+        expBuilder.setExperimenterDataOfChoice(vendorData);
         caseBuilder.setMultipartRequestExperimenter(expBuilder.build());
         builder.setMultipartRequestBody(caseBuilder.build());
         MultipartRequestInput message = builder.build();
@@ -71,9 +70,9 @@ public class MultipartRequestExperimenterTest {
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
         multipartFactory.serialize(message, out);
 
-        BufferHelper.checkHeaderV13(out, (byte) 18, 16);
+        BufferHelper.checkHeaderV13(out, (byte) 18, 24);
         Assert.assertEquals("Wrong type", 65535, out.readUnsignedShort());
         Assert.assertEquals("Wrong flags", 0, out.readUnsignedShort());
-        Mockito.verify(serializer, Mockito.times(1)).serialize(Matchers.any(MultipartRequestExperimenterCase.class), Matchers.any(ByteBuf.class));
+        Mockito.verify(serializer, Mockito.times(1)).serialize(vendorData, out);
     }
 }
