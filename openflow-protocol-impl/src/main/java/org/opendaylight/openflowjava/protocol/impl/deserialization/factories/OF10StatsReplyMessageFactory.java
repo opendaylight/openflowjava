@@ -9,11 +9,9 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
@@ -26,16 +24,19 @@ import org.opendaylight.openflowjava.protocol.impl.util.OF10MatchDeserializer;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.util.ExperimenterDeserializerKeyFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ExperimenterId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartRequestFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MultipartType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.v10.grouping.MatchV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessageBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyAggregateCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyAggregateCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyDescCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyDescCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyExperimenterCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyExperimenterCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyFlowCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyFlowCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyPortStatsCase;
@@ -46,6 +47,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyTableCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.aggregate._case.MultipartReplyAggregateBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.desc._case.MultipartReplyDescBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.experimenter._case.MultipartReplyExperimenterBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow._case.MultipartReplyFlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow._case.multipart.reply.flow.FlowStats;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.flow._case.multipart.reply.flow.FlowStatsBuilder;
@@ -61,6 +63,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 
 /**
  * Translates StatsReply messages (OpenFlow v1.0)
+ *
  * @author michal.polkorab
  */
 public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartReplyMessage>,
@@ -88,22 +91,29 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
         builder.setType(MultipartType.forValue(type));
         builder.setFlags(new MultipartRequestFlags((rawMessage.readUnsignedShort() & 0x01) != 0));
         switch (MultipartType.forValue(type)) {
-        case OFPMPDESC:  builder.setMultipartReplyBody(setDesc(rawMessage));
-            break;
-        case OFPMPFLOW:  builder.setMultipartReplyBody(setFlow(rawMessage));
-            break;
-        case OFPMPAGGREGATE:  builder.setMultipartReplyBody(setAggregate(rawMessage));
-            break;
-        case OFPMPTABLE:  builder.setMultipartReplyBody(setTable(rawMessage));
-            break;
-        case OFPMPPORTSTATS:  builder.setMultipartReplyBody(setPortStats(rawMessage));
-            break;
-        case OFPMPQUEUE:  builder.setMultipartReplyBody(setQueue(rawMessage));
-            break;
-        case OFPMPEXPERIMENTER: builder.setMultipartReplyBody(setExperimenter(rawMessage));
-            break;
-        default:
-            break;
+            case OFPMPDESC:
+                builder.setMultipartReplyBody(setDesc(rawMessage));
+                break;
+            case OFPMPFLOW:
+                builder.setMultipartReplyBody(setFlow(rawMessage));
+                break;
+            case OFPMPAGGREGATE:
+                builder.setMultipartReplyBody(setAggregate(rawMessage));
+                break;
+            case OFPMPTABLE:
+                builder.setMultipartReplyBody(setTable(rawMessage));
+                break;
+            case OFPMPPORTSTATS:
+                builder.setMultipartReplyBody(setPortStats(rawMessage));
+                break;
+            case OFPMPQUEUE:
+                builder.setMultipartReplyBody(setQueue(rawMessage));
+                break;
+            case OFPMPEXPERIMENTER:
+                builder.setMultipartReplyBody(setExperimenter(rawMessage));
+                break;
+            default:
+                break;
         }
         return builder.build();
     }
@@ -295,8 +305,16 @@ public class OF10StatsReplyMessageFactory implements OFDeserializer<MultipartRep
     }
 
     private MultipartReplyExperimenterCase setExperimenter(ByteBuf input) {
-        return registry.getDeserializer(ExperimenterDeserializerKeyFactory.createMultipartReplyMessageDeserializerKey(
-                EncodeConstants.OF10_VERSION_ID, input.readUnsignedInt()));
+        final long expId = input.readUnsignedInt();
+        final OFDeserializer<ExperimenterDataOfChoice> deserializer = registry.getDeserializer(ExperimenterDeserializerKeyFactory.createMultipartReplyVendorMessageDeserializerKey(
+                EncodeConstants.OF10_VERSION_ID, expId));
+
+        final MultipartReplyExperimenterBuilder mpExperimenterBld = new MultipartReplyExperimenterBuilder()
+                .setExperimenter(new ExperimenterId(expId))
+                .setExperimenterDataOfChoice(deserializer.deserialize(input));
+        final MultipartReplyExperimenterCaseBuilder mpReplyExperimenterCaseBld = new MultipartReplyExperimenterCaseBuilder()
+                .setMultipartReplyExperimenter(mpExperimenterBld.build());
+        return mpReplyExperimenterCaseBld.build();
     }
 
     @Override
