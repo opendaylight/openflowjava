@@ -9,10 +9,10 @@
 package org.opendaylight.openflowjava.util;
 
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdTypeDeserializerKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ErrorMessage;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.MultipartReplyExperimenterCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.queue.property.header.QueueProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.grouping.TableFeatureProperties;
 
@@ -39,21 +39,43 @@ public abstract class ExperimenterDeserializerKeyFactory {
     /**
      * @param version openflow wire version
      * @param experimenterId experimenter / vendor ID
+     * @param type experimenter type according to vendor implementation
      * @return key instance
      */
-    public static ExperimenterIdDeserializerKey createExperimenterMessageDeserializerKey(
-            short version, Long experimenterId) {
-        return new ExperimenterIdDeserializerKey(version, experimenterId, ExperimenterMessage.class);
+    public static ExperimenterIdTypeDeserializerKey createExperimenterMessageDeserializerKey(
+            short version, long experimenterId, long type) {
+        return new ExperimenterIdTypeDeserializerKey(version, experimenterId, type, ExperimenterDataOfChoice.class);
+    }
+
+    /**
+     * @param version        openflow wire version
+     * @param experimenterId experimenter / vendor ID
+     * @return key instance
+     */
+    public static ExperimenterIdDeserializerKey createVendorMessageDeserializerKey(
+            short version, long experimenterId) {
+        return new ExperimenterIdDeserializerKey(version, experimenterId, ExperimenterDataOfChoice.class);
     }
 
     /**
      * @param version openflow wire version
      * @param experimenterId experimenter / vendor ID
+     * @param type
      * @return key instance
      */
-    public static ExperimenterIdDeserializerKey createMultipartReplyMessageDeserializerKey(
-            short version, Long experimenterId) {
-        return new ExperimenterIdDeserializerKey(version, experimenterId, MultipartReplyExperimenterCase.class);
+    public static ExperimenterIdTypeDeserializerKey createMultipartReplyMessageDeserializerKey(
+            short version, long experimenterId, long type) {
+        return new ExperimenterIdTypeDeserializerKey(version, experimenterId, type, ExperimenterDataOfChoice.class);
+    }
+
+    /**
+     * @param version        openflow wire version
+     * @param experimenterId experimenter / vendor ID
+     * @return key instance
+     */
+    public static ExperimenterIdDeserializerKey createMultipartReplyVendorMessageDeserializerKey(
+            short version, long experimenterId) {
+        return new ExperimenterIdDeserializerKey(version, experimenterId, ExperimenterDataOfChoice.class);
     }
 
     /**

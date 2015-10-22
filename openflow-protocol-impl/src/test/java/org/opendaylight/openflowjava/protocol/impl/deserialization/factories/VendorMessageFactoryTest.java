@@ -9,7 +9,6 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,13 +35,13 @@ public class VendorMessageFactoryTest {
      */
     @Test
     public void test() {
-        Mockito.when(registry.getDeserializer(Matchers.any(MessageCodeKey.class))).thenReturn(deserializer);
-        ByteBuf buffer = ByteBufUtils.hexStringToByteBuf("04 04 00 10 01 02 03 04 FF FF FF FF 80 00 00 00");
+        Mockito.when(registry.getDeserializer(Matchers.<MessageCodeKey>any())).thenReturn(deserializer);
+        ByteBuf buffer = ByteBufUtils.hexStringToByteBuf("01 02 03 04 FF FF FF FF 80 00 00 00");
         VendorMessageFactory factory = new VendorMessageFactory();
         factory.injectDeserializerRegistry(registry);
         factory.deserialize(buffer);
 
         Mockito.verify(deserializer, Mockito.times(1)).deserialize(buffer);
-        Assert.assertEquals("Buffer index modified", 16, buffer.readableBytes());
+        Assert.assertEquals("Buffer index modified", 4, buffer.readableBytes());
     }
 }
