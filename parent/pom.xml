@@ -12,6 +12,11 @@
     <artifactId>openflowjava-parent</artifactId>
     <version>0.7.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <name>openflowjava</name> <!-- Used by Sonar to set project name -->
+    <description>
+        Openflow protocol library - serializes and deserializes openflow messages + handles connections with openflow devices.
+    </description>
+    <url>https://wiki.opendaylight.org/view/Openflow_Protocol_Library:Main</url>
 
     <licenses>
         <license>
@@ -27,6 +32,21 @@
         <url>https://wiki.opendaylight.org/view/Openflow_Protocol_Library:Main</url>
         <tag>HEAD</tag>
     </scm>
+
+    <developers>
+        <developer>
+            <name>Michal Polkorab</name>
+            <email>michal.polkorab@pantheon.sk</email>
+            <organization>Pantheon Technologies</organization>
+            <organizationUrl>https://www.pantheon.sk/en/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Michal Rehak</name>
+            <email>mirehak@cisco.com</email>
+            <organization>Cisco Systems</organization>
+            <organizationUrl>www.cisco.com</organizationUrl>
+        </developer>
+    </developers>
 
     <properties>
         <sitedeploy>dav:http://nexus.opendaylight.org/content/sites/site</sitedeploy>
