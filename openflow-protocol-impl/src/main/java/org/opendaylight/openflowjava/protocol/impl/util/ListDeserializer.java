@@ -16,13 +16,17 @@ import java.util.List;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.HeaderDeserializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
+import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author michal.polkorab
  *
  */
 public final class ListDeserializer {
+    private static final Logger LOG = LoggerFactory.getLogger(ListDeserializer.class);
 
     private ListDeserializer() {
         throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
@@ -68,7 +72,15 @@ public final class ListDeserializer {
             items = new ArrayList<>();
             int startIndex = input.readerIndex();
             while ((input.readerIndex() - startIndex) < length){
-                HeaderDeserializer<E> deserializer = registry.getDeserializer(keyMaker.make(input));
+                HeaderDeserializer<E> deserializer;
+                MessageCodeKey key = keyMaker.make(input);
+                try {
+                    deserializer = registry.getDeserializer(key);
+                } catch (IllegalStateException e) {
+                    LOG.warn("Ignoring unsupported feature: {}", key);
+                    input.skipBytes(4);
+                    continue;
+                }
                 E item = deserializer.deserializeHeader(input);
                 items.add(item);
             }
