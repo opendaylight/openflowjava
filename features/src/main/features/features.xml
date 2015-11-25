@@ -8,6 +8,7 @@
     <repository>mvn:org.opendaylight.mdsal/features-mdsal/{{VERSION}}/xml/features</repository>
     <repository>mvn:org.opendaylight.controller/features-mdsal/{{VERSION}}/xml/features</repository>
     <repository>mvn:org.opendaylight.mdsal.model/features-mdsal-model/{{VERSION}}/xml/features</repository>
+    <repository>mvn:org.opendaylight.odlparent/features-odlparent/{{VERSION}}/xml/features</repository>
     <feature name='odl-openflowjava-all' description="OpenDaylight :: Openflow Java :: All">
         <feature version='${project.version}'>odl-openflowjava-protocol</feature>
     </feature>
@@ -16,11 +17,7 @@
         <feature version='${mdsal.model.version}'>odl-mdsal-models</feature>
         <feature version='${config.version}'>odl-config-api</feature>
         <feature version='${controller.mdsal.version}'>odl-mdsal-common</feature>
-        <bundle>mvn:io.netty/netty-buffer/{{VERSION}}</bundle>
-        <bundle>mvn:io.netty/netty-common/{{VERSION}}</bundle>
-        <bundle>mvn:io.netty/netty-transport/{{VERSION}}</bundle>
-        <bundle>mvn:io.netty/netty-codec/{{VERSION}}</bundle>
-        <bundle>mvn:io.netty/netty-handler/{{VERSION}}</bundle>
+        <feature version='[4.0.30,4.1.0)'>odl-netty</feature>
         <bundle>mvn:org.opendaylight.openflowjava/openflow-protocol-api/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.openflowjava/openflow-protocol-spi/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.openflowjava/openflow-protocol-impl/{{VERSION}}</bundle>
