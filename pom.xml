@@ -4,13 +4,13 @@
     <parent>
         <groupId>org.opendaylight.odlparent</groupId>
         <artifactId>odlparent</artifactId>
-        <version>1.5.3-SNAPSHOT</version>
+        <version>1.5.3-Lithium-SR3</version>
         <relativePath/>
     </parent>
 
     <groupId>org.opendaylight.openflowjava</groupId>
     <artifactId>openflow-protocol-parent</artifactId>
-    <version>0.6.3-SNAPSHOT</version>
+    <version>0.6.3-Lithium-SR3</version>
     <name>openflowjava</name> <!-- Used by Sonar to set project name -->
     <packaging>pom</packaging>
 
@@ -36,12 +36,12 @@
         <sitedeploy>dav:http://nexus.opendaylight.org/content/sites/site</sitedeploy>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jmxGeneratorPath>${project.build.directory}/yang-gen-config</jmxGeneratorPath>
-        <karaf.distro.empty.version>1.5.3-SNAPSHOT</karaf.distro.empty.version>
+        <karaf.distro.empty.version>1.5.3-Lithium-SR3</karaf.distro.empty.version>
         <salGeneratorPath>${project.build.directory}/yang-gen-sal</salGeneratorPath>
 
-        <config.version>0.3.3-SNAPSHOT</config.version>
-        <mdsal.version>1.2.3-SNAPSHOT</mdsal.version>
-        <yangtools.version>0.7.3-SNAPSHOT</yangtools.version>
+        <config.version>0.3.3-Lithium-SR3</config.version>
+        <mdsal.version>1.2.3-Lithium-SR3</mdsal.version>
+        <yangtools.version>0.7.3-Lithium-SR3</yangtools.version>
 
         <!-- Sonar config -->
         <sonar-jacoco-listeners.version>2.4</sonar-jacoco-listeners.version>
