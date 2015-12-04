@@ -258,7 +258,7 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
      *
      * @return
      */
-    private Object makeMessageListenerWrapper(@Nonnull final OfHeader msg) {
+    protected Object makeMessageListenerWrapper(@Nonnull final OfHeader msg) {
         Preconditions.checkArgument(msg != null);
 
         if (address == null) {
