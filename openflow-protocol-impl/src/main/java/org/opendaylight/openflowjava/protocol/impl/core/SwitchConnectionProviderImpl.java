@@ -277,4 +277,9 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider, C
         connectionInitializer.initiateConnection(host, port);
     }
 
+    @Override
+    public ConnectionConfiguration getConfiguration() {
+        return this.connConfig;
+    }
+
 }

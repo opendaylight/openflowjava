@@ -30,6 +30,12 @@ public interface SwitchConnectionProvider extends AutoCloseable,
     void setConfiguration(ConnectionConfiguration configuration);
 
     /**
+     * return the connection configuration
+     * @return configuration [protocol, port, address and supported features]
+     */
+    ConnectionConfiguration getConfiguration();
+
+    /**
      * start listening to switches, but please don't forget to do
      * {@link #setSwitchConnectionHandler(SwitchConnectionHandler)} first
      * @return future, triggered to true, when listening channel is up and running
