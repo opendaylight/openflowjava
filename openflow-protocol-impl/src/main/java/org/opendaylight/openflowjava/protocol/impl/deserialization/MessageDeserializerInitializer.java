@@ -66,12 +66,14 @@ public final class MessageDeserializerInitializer {
 
     /**
      * Registers message deserializers
-     * @param registry registry to be filled with deserializers
+     *
+     * @param registry
+     *            registry to be filled with deserializers
      */
     public static void registerMessageDeserializers(DeserializerRegistry registry) {
         // register OF v1.0 message deserializers
-        SimpleDeserializerRegistryHelper helper =
-                new SimpleDeserializerRegistryHelper(EncodeConstants.OF10_VERSION_ID, registry);
+        SimpleDeserializerRegistryHelper helper = new SimpleDeserializerRegistryHelper(EncodeConstants.OF10_VERSION_ID,
+                registry);
         helper.registerDeserializer(0, null, HelloMessage.class, new OF10HelloMessageFactory());
         helper.registerDeserializer(1, null, ErrorMessage.class, new OF10ErrorMessageFactory());
         helper.registerDeserializer(2, null, EchoRequestMessage.class, new OF10EchoRequestMessageFactory());
@@ -85,6 +87,7 @@ public final class MessageDeserializerInitializer {
         helper.registerDeserializer(17, null, MultipartReplyMessage.class, new OF10StatsReplyMessageFactory());
         helper.registerDeserializer(19, null, BarrierOutput.class, new OF10BarrierReplyMessageFactory());
         helper.registerDeserializer(21, null, GetQueueConfigOutput.class, new OF10QueueGetConfigReplyMessageFactory());
+
         // register Of v1.3 message deserializers
         helper = new SimpleDeserializerRegistryHelper(EncodeConstants.OF13_VERSION_ID, registry);
         helper.registerDeserializer(0, null, HelloMessage.class, new HelloMessageFactory());

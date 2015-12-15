@@ -69,7 +69,9 @@ public final class MessageFactoryInitializer {
 
     /**
      * Registers message serializers into provided registry
-     * @param serializerRegistry registry to be initialized with message serializers
+     *
+     * @param serializerRegistry
+     *            registry to be initialized with message serializers
      */
     public static void registerMessageSerializers(SerializerRegistry serializerRegistry) {
         // register OF v1.0 message serializers
@@ -88,6 +90,7 @@ public final class MessageFactoryInitializer {
         registryHelper.registerSerializer(PacketOutInput.class, new OF10PacketOutInputMessageFactory());
         registryHelper.registerSerializer(PortModInput.class, new OF10PortModInputMessageFactory());
         registryHelper.registerSerializer(SetConfigInput.class, new SetConfigMessageFactory());
+
         // register OF v1.3 message serializers
         version = EncodeConstants.OF13_VERSION_ID;
         registryHelper = new CommonMessageRegistryHelper(version, serializerRegistry);
@@ -108,7 +111,7 @@ public final class MessageFactoryInitializer {
         registryHelper.registerSerializer(PortModInput.class, new PortModInputMessageFactory());
         registryHelper.registerSerializer(RoleRequestInput.class, new RoleRequestInputMessageFactory());
         registryHelper.registerSerializer(SetAsyncInput.class, new SetAsyncInputMessageFactory());
-        registryHelper.registerSerializer( SetConfigInput.class, new SetConfigMessageFactory());
+        registryHelper.registerSerializer(SetConfigInput.class, new SetConfigMessageFactory());
         registryHelper.registerSerializer(TableModInput.class, new TableModInputMessageFactory());
     }
 }
