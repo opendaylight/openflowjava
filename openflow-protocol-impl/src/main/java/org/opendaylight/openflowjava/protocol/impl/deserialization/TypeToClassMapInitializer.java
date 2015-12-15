@@ -8,28 +8,43 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization;
 
 import java.util.Map;
-
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.TypeToClassInitHelper;
 import org.opendaylight.openflowjava.protocol.impl.util.TypeToClassKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoRequestMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ErrorMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowRemovedMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetAsyncInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetAsyncOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetConfigInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetConfigOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetFeaturesOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetQueueConfigInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetQueueConfigOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GroupModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartRequestInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketInMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketOutInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortModInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortStatusMessage;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.RoleRequestInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.RoleRequestOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetAsyncInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.SetConfigInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInput;
 
 /**
  * @author michal.polkorab
+ * @author giuseppex.petralia@intel.com
  *
  */
 public final class TypeToClassMapInitializer {
@@ -40,12 +55,12 @@ public final class TypeToClassMapInitializer {
 
     /**
      * Initializes type to class map
+     *
      * @param messageClassMap
      */
     public static void initializeTypeToClassMap(Map<TypeToClassKey, Class<?>> messageClassMap) {
         // init OF v1.0 mapping
-        TypeToClassInitHelper helper =
-                new TypeToClassInitHelper(EncodeConstants.OF10_VERSION_ID, messageClassMap);
+        TypeToClassInitHelper helper = new TypeToClassInitHelper(EncodeConstants.OF10_VERSION_ID, messageClassMap);
         helper.registerTypeToClass((short) 0, HelloMessage.class);
         helper.registerTypeToClass((short) 1, ErrorMessage.class);
         helper.registerTypeToClass((short) 2, EchoRequestMessage.class);
@@ -59,7 +74,7 @@ public final class TypeToClassMapInitializer {
         helper.registerTypeToClass((short) 17, MultipartReplyMessage.class);
         helper.registerTypeToClass((short) 19, BarrierOutput.class);
         helper.registerTypeToClass((short) 21, GetQueueConfigOutput.class);
-        // init OF v1.0 mapping
+        // init OF v1.3 mapping
         helper = new TypeToClassInitHelper(EncodeConstants.OF13_VERSION_ID, messageClassMap);
         helper.registerTypeToClass((short) 0, HelloMessage.class);
         helper.registerTypeToClass((short) 1, ErrorMessage.class);
@@ -76,5 +91,42 @@ public final class TypeToClassMapInitializer {
         helper.registerTypeToClass((short) 23, GetQueueConfigOutput.class);
         helper.registerTypeToClass((short) 25, RoleRequestOutput.class);
         helper.registerTypeToClass((short) 27, GetAsyncOutput.class);
+    }
+
+    /**
+     * Initializes type to class map to associate OF code to Java Class for
+     * messages for additional deserializers.
+     *
+     * @param messageClassMap
+     */
+    public static void initializeAdditionalTypeToClassMap(Map<TypeToClassKey, Class<?>> messageClassMap) {
+        // init OF v1.0 mapping
+        TypeToClassInitHelper helper = new TypeToClassInitHelper(EncodeConstants.OF10_VERSION_ID, messageClassMap);
+        helper.registerTypeToClass((short) 5, GetFeaturesInput.class);
+        helper.registerTypeToClass((short) 7, GetConfigInput.class);
+        helper.registerTypeToClass((short) 9, SetConfigInput.class);
+        helper.registerTypeToClass((short) 13, PacketOutInput.class);
+        helper.registerTypeToClass((short) 14, FlowModInput.class);
+        helper.registerTypeToClass((short) 15, PortModInput.class);
+        helper.registerTypeToClass((short) 16, MultipartRequestInput.class);
+        helper.registerTypeToClass((short) 18, BarrierInput.class);
+        helper.registerTypeToClass((short) 20, GetQueueConfigInput.class);
+        // init OF v1.3 mapping
+        helper = new TypeToClassInitHelper(EncodeConstants.OF13_VERSION_ID, messageClassMap);
+        helper.registerTypeToClass((short) 5, GetFeaturesInput.class);
+        helper.registerTypeToClass((short) 7, GetConfigInput.class);
+        helper.registerTypeToClass((short) 9, SetConfigInput.class);
+        helper.registerTypeToClass((short) 13, PacketOutInput.class);
+        helper.registerTypeToClass((short) 14, FlowModInput.class);
+        helper.registerTypeToClass((short) 15, GroupModInput.class);
+        helper.registerTypeToClass((short) 16, PortModInput.class);
+        helper.registerTypeToClass((short) 17, TableModInput.class);
+        helper.registerTypeToClass((short) 18, MultipartRequestInput.class);
+        helper.registerTypeToClass((short) 20, BarrierInput.class);
+        helper.registerTypeToClass((short) 22, GetQueueConfigInput.class);
+        helper.registerTypeToClass((short) 24, RoleRequestInput.class);
+        helper.registerTypeToClass((short) 26, GetAsyncInput.class);
+        helper.registerTypeToClass((short) 28, SetAsyncInput.class);
+        helper.registerTypeToClass((short) 29, MeterModInput.class);
     }
 }
