@@ -22,6 +22,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 /**
  * @author michal.polkorab
  * @author timotej.kubas
+ * @author giuseppex.petralia@intel.com
  */
 public class DeserializationFactory {
 
@@ -34,13 +35,19 @@ public class DeserializationFactory {
     public DeserializationFactory() {
         final Map<TypeToClassKey, Class<?>> temp = new HashMap<>();
         TypeToClassMapInitializer.initializeTypeToClassMap(temp);
+
+        // Register type to class map for additional deserializers
+        TypeToClassMapInitializer.initializeAdditionalTypeToClassMap(temp);
+
         messageClassMap = ImmutableMap.copyOf(temp);
     }
 
     /**
      * Transforms ByteBuf into correct POJO message
+     *
      * @param rawMessage
-     * @param version version decoded from OpenFlow protocol message
+     * @param version
+     *            version decoded from OpenFlow protocol message
      * @return correct POJO as DataObject
      */
     public DataObject deserialize(final ByteBuf rawMessage, final short version) {
@@ -48,8 +55,7 @@ public class DeserializationFactory {
         int type = rawMessage.readUnsignedByte();
         Class<?> clazz = messageClassMap.get(new TypeToClassKey(version, type));
         rawMessage.skipBytes(EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
-        OFDeserializer<DataObject> deserializer = registry.getDeserializer(
-                new MessageCodeKey(version, type, clazz));
+        OFDeserializer<DataObject> deserializer = registry.getDeserializer(new MessageCodeKey(version, type, clazz));
         dataObject = deserializer.deserialize(rawMessage);
         return dataObject;
     }

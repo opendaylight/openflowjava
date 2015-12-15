@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Stores and registers deserializers
+ *
  * @author michal.polkorab
  */
 public class DeserializerRegistryImpl implements DeserializerRegistry {
@@ -37,14 +38,20 @@ public class DeserializerRegistryImpl implements DeserializerRegistry {
     @Override
     public void init() {
         registry = new HashMap<>();
+
         // register message deserializers
         MessageDeserializerInitializer.registerMessageDeserializers(this);
 
+        // register additional message deserializers
+        AdditionalMessageDeserializerInitializer.registerMessageDeserializers(this);
+
         // register common structure deserializers
-        registerDeserializer(new MessageCodeKey(EncodeConstants.OF10_VERSION_ID,
-                EncodeConstants.EMPTY_VALUE, MatchV10.class), new OF10MatchDeserializer());
-        registerDeserializer(new MessageCodeKey(EncodeConstants.OF13_VERSION_ID,
-                EncodeConstants.EMPTY_VALUE, Match.class), new MatchDeserializer());
+        registerDeserializer(
+                new MessageCodeKey(EncodeConstants.OF10_VERSION_ID, EncodeConstants.EMPTY_VALUE, MatchV10.class),
+                new OF10MatchDeserializer());
+        registerDeserializer(
+                new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, EncodeConstants.EMPTY_VALUE, Match.class),
+                new MatchDeserializer());
 
         // register match entry deserializers
         MatchEntryDeserializerInitializer.registerMatchEntryDeserializers(this);
@@ -56,8 +63,7 @@ public class DeserializerRegistryImpl implements DeserializerRegistry {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends OFGeneralDeserializer> T getDeserializer(
-            MessageCodeKey key) {
+    public <T extends OFGeneralDeserializer> T getDeserializer(MessageCodeKey key) {
         OFGeneralDeserializer deserializer = registry.get(key);
         if (deserializer == null) {
             throw new IllegalStateException("Deserializer for key: " + key
@@ -67,15 +73,14 @@ public class DeserializerRegistryImpl implements DeserializerRegistry {
     }
 
     @Override
-    public void registerDeserializer(MessageCodeKey key,
-            OFGeneralDeserializer deserializer) {
+    public void registerDeserializer(MessageCodeKey key, OFGeneralDeserializer deserializer) {
         if ((key == null) || (deserializer == null)) {
             throw new IllegalArgumentException("MessageCodeKey or Deserializer is null");
         }
         OFGeneralDeserializer desInRegistry = registry.put(key, deserializer);
         if (desInRegistry != null) {
-            LOGGER.debug("Deserializer for key {} overwritten. Old deserializer: {}, new deserializer: {}",
-                    key, desInRegistry.getClass().getName(), deserializer.getClass().getName());
+            LOGGER.debug("Deserializer for key {} overwritten. Old deserializer: {}, new deserializer: {}", key,
+                    desInRegistry.getClass().getName(), deserializer.getClass().getName());
         }
         if (deserializer instanceof DeserializerRegistryInjector) {
             ((DeserializerRegistryInjector) deserializer).injectDeserializerRegistry(this);

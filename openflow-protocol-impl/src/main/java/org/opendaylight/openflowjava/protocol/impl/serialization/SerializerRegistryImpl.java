@@ -10,7 +10,6 @@ package org.opendaylight.openflowjava.protocol.impl.serialization;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
@@ -27,8 +26,11 @@ import org.slf4j.LoggerFactory;
  * Stores and handles serializers<br>
  * K - {@link MessageTypeKey} type<br>
  * S - returned serializer type
+ *
  * @author michal.polkorab
  * @author timotej.kubas
+ * @author giuseppex.petralia@intel.com
+ *
  */
 public class SerializerRegistryImpl implements SerializerRegistry {
 
@@ -37,12 +39,14 @@ public class SerializerRegistryImpl implements SerializerRegistry {
     private static final short OF13 = EncodeConstants.OF13_VERSION_ID;
     private Map<MessageTypeKey<?>, OFGeneralSerializer> registry;
 
-
     @Override
     public void init() {
         registry = new HashMap<>();
         // Openflow message type serializers
         MessageFactoryInitializer.registerMessageSerializers(this);
+
+        // Register Additional serializers
+        AdditionalMessageFactoryInitializer.registerMessageSerializers(this);
 
         // match structure serializers
         registerSerializer(new MessageTypeKey<>(OF10, MatchV10.class), new OF10MatchSerializer());
@@ -62,8 +66,7 @@ public class SerializerRegistryImpl implements SerializerRegistry {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public <K, S extends OFGeneralSerializer> S getSerializer(
-            MessageTypeKey<K> msgTypeKey) {
+    public <K, S extends OFGeneralSerializer> S getSerializer(MessageTypeKey<K> msgTypeKey) {
         OFGeneralSerializer serializer = registry.get(msgTypeKey);
         if (serializer == null) {
             throw new IllegalStateException("Serializer for key: " + msgTypeKey
@@ -74,15 +77,14 @@ public class SerializerRegistryImpl implements SerializerRegistry {
     }
 
     @Override
-    public <K> void registerSerializer(
-            MessageTypeKey<K> msgTypeKey, OFGeneralSerializer serializer) {
+    public <K> void registerSerializer(MessageTypeKey<K> msgTypeKey, OFGeneralSerializer serializer) {
         if ((msgTypeKey == null) || (serializer == null)) {
             throw new IllegalArgumentException("MessageTypeKey or Serializer is null");
         }
         OFGeneralSerializer serInRegistry = registry.put(msgTypeKey, serializer);
         if (serInRegistry != null) {
-            LOGGER.debug("Serializer for key {} overwritten. Old serializer: {}, new serializer: {}",
-                    msgTypeKey, serInRegistry.getClass().getName(), serializer.getClass().getName());
+            LOGGER.debug("Serializer for key {} overwritten. Old serializer: {}, new serializer: {}", msgTypeKey,
+                    serInRegistry.getClass().getName(), serializer.getClass().getName());
         }
         if (serializer instanceof SerializerRegistryInjector) {
             ((SerializerRegistryInjector) serializer).injectSerializerRegistry(this);
