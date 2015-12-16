@@ -1,0 +1,257 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1aa4ed85_2d20b5f6",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/deserialization/MessageDeserializerInitializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-12-16T10:40:18Z",
+      "side": 1,
+      "message": "would be nice if this part and also the same part for OF v1.3 was moved to separate class, e.g. NetIdeMessageDeserializerInitializer or similar with appropriate javadoc above the class name - where we would explain why the class registers deserializers for messages that are normally serialized\n\nThe new class would be called from DeserializerRegistryImpl.",
+      "range": {
+        "startLine": 130,
+        "startChar": 8,
+        "endLine": 138,
+        "endChar": 118
+      },
+      "revId": "9a711aef3d7c4a934369ed1d9e9edfdd0d995f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_ed793dfd",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/deserialization/TypeToClassMapInitializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-12-16T10:40:18Z",
+      "side": 1,
+      "message": "I would like to see the new registrations placed in separate method, which would be called from DeserializationFactory + javadoc",
+      "range": {
+        "startLine": 65,
+        "startChar": 8,
+        "endLine": 109,
+        "endChar": 68
+      },
+      "revId": "9a711aef3d7c4a934369ed1d9e9edfdd0d995f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_8dd8c9f0",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/deserialization/factories/BarrierInputMessageFactoryTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-12-16T10:40:18Z",
+      "side": 1,
+      "message": "startup shouldn\u0027t throw any exception (in our test cases), if it does, the test should fail",
+      "range": {
+        "startLine": 31,
+        "startChar": 26,
+        "endLine": 31,
+        "endChar": 42
+      },
+      "revId": "9a711aef3d7c4a934369ed1d9e9edfdd0d995f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_4de2d1a0",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/deserialization/factories/BarrierInputMessageFactoryTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-12-16T10:40:18Z",
+      "side": 1,
+      "message": "this is what we are testing - should be moved to test()",
+      "range": {
+        "startLine": 37,
+        "startChar": 8,
+        "endLine": 37,
+        "endChar": 68
+      },
+      "revId": "9a711aef3d7c4a934369ed1d9e9edfdd0d995f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_cded618d",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/deserialization/factories/FlowModInputMessageFactoryTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-12-16T10:40:18Z",
+      "side": 1,
+      "message": "this is not appropriate attitude to use serializer first for conversion and then deserializer again. If there is a mistake in serializer it might be fixed / reflected incorrectly\n\nMoreover, we are unnecessarily initializing whole deserializer registry. Solution would be to use BufferHelper.buildBuffer() e.g. HelloMessageFactory\n\nThe needed string could be obtained easily by running the test and after serialization using ByteBufUtils.byteBufToHexString()\n\nplease update according to this comment also other classes which contain this code",
+      "range": {
+        "startLine": 69,
+        "startChar": 8,
+        "endLine": 83,
+        "endChar": 62
+      },
+      "revId": "9a711aef3d7c4a934369ed1d9e9edfdd0d995f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_adb6e588",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/deserialization/factories/GetAsyncRequestMessageFactoryTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-12-16T10:40:18Z",
+      "side": 1,
+      "message": "should not throw exception ... same for other test classes",
+      "range": {
+        "startLine": 30,
+        "startChar": 26,
+        "endLine": 30,
+        "endChar": 42
+      },
+      "revId": "9a711aef3d7c4a934369ed1d9e9edfdd0d995f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_0dc299e9",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/deserialization/factories/GetAsyncRequestMessageFactoryTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-12-16T10:40:18Z",
+      "side": 1,
+      "message": "should be moved to test() ... same for other test classes",
+      "range": {
+        "startLine": 36,
+        "startChar": 8,
+        "endLine": 36,
+        "endChar": 68
+      },
+      "revId": "9a711aef3d7c4a934369ed1d9e9edfdd0d995f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_0d37f900",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/serialization/factories/BarrierReplyMessageFactoryTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-12-16T10:40:18Z",
+      "side": 1,
+      "message": "this should be in testSerialize() ... but in simple cases like this, I have no strong objections against moving it here",
+      "range": {
+        "startLine": 31,
+        "startChar": 8,
+        "endLine": 33,
+        "endChar": 34
+      },
+      "revId": "9a711aef3d7c4a934369ed1d9e9edfdd0d995f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_0d505931",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/serialization/factories/BarrierReplyMessageFactoryTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-12-16T10:40:18Z",
+      "side": 1,
+      "message": "this should be present in startUp() method and the serializer should be received from the registry",
+      "range": {
+        "startLine": 38,
+        "startChar": 8,
+        "endLine": 40,
+        "endChar": 24
+      },
+      "revId": "9a711aef3d7c4a934369ed1d9e9edfdd0d995f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_50e4a63a",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/serialization/factories/EchoOutputMessageFactoryTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-12-16T10:40:18Z",
+      "side": 1,
+      "message": "should be moved to testSerialize() ... + update other classes in similar manner too",
+      "range": {
+        "startLine": 33,
+        "startChar": 8,
+        "endLine": 37,
+        "endChar": 34
+      },
+      "revId": "9a711aef3d7c4a934369ed1d9e9edfdd0d995f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_30e7aa42",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/serialization/factories/EchoOutputMessageFactoryTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2015-12-16T10:40:18Z",
+      "side": 1,
+      "message": "should be moved to startUp() ... + update other classes in similar manner too",
+      "range": {
+        "startLine": 42,
+        "startChar": 8,
+        "endLine": 44,
+        "endChar": 24
+      },
+      "revId": "9a711aef3d7c4a934369ed1d9e9edfdd0d995f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
