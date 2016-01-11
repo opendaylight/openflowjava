@@ -86,16 +86,11 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends
             return;
         }
 
-        final long now = System.nanoTime();
-        final long sinceLast = now - lastBarrierNanos;
-        if (sinceLast >= maxBarrierNanos) {
-            LOG.debug("Last barrier at {} now {}, elapsed {}", lastBarrierNanos, now, sinceLast);
-            // FIXME: we should be tracking requests/responses instead of this
-            if (nonBarrierMessages == 0) {
-                LOG.trace("No messages written since last barrier, not issuing one");
-            } else {
-                scheduleBarrierMessage();
-            }
+        if (currentQueue.isBarrierNeeded()) {
+            LOG.trace("Sending a barrier message");
+            scheduleBarrierMessage();
+        } else {
+            LOG.trace("Barrier not needed, not issuing one");
         }
     }
 

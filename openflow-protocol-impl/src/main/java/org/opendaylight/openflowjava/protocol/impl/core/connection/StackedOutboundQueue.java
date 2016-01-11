@@ -51,12 +51,24 @@ final class StackedOutboundQueue extends AbstractStackedOutboundQueue {
     }
 
     Long reserveBarrierIfNeeded() {
+        if (isBarrierNeeded()) {
+            return reserveEntry();
+        }
+        return null;
+    }
+
+    /**
+     * Checks if Barrier Request is the last message enqueued. If not, one needs
+     * to be scheduled in order to collect data about previous messages.
+     * @return true if last enqueued message is Barrier Request, false otherwise
+     */
+    boolean isBarrierNeeded() {
         final long bXid = barrierXid;
         final long fXid = firstSegment.getBaseXid() + flushOffset;
         if (bXid >= fXid) {
             LOG.debug("Barrier found at XID {} (currently at {})", bXid, fXid);
-            return null;
+            return false;
         }
-        return reserveEntry();
+        return true;
     }
 }
