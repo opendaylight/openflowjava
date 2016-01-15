@@ -143,10 +143,11 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
         // we'll steal its work. Note that more work may accumulate in the time window
         // between now and when the task will run, so it may not be a no-op after all.
         //
-        // The reason for this is to will the output buffer before we go into selection
+        // The reason for this is to fill the output buffer before we go into selection
         // phase. This will make sure the pipe is full (in which case our next wake up
         // will be the queue becoming writable).
         writeAndFlush();
+        alreadyReading = false;
     }
 
     @Override
