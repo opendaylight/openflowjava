@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_91ff7a01",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/connection/AbstractOutboundQueueManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-01-15T19:56:09Z",
+      "side": 1,
+      "message": "this line is not needed: writeAndFulsh() already does this, hence this is an unneeded store to a volatile.",
+      "revId": "c0de4f2dc3bd48be3b8f2adb3c483e3d9ed36651",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
