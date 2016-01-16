@@ -66,7 +66,7 @@ abstract class AbstractStackedOutboundQueue implements OutboundQueue {
             unflushedSegments.add(newSegment);
         }
 
-        allocatedXid = uncompletedSegments.get(uncompletedSegments.size() - 1).getEndXid();
+        allocatedXid = unflushedSegments.get(unflushedSegments.size() - 1).getEndXid();
     }
 
     /*
