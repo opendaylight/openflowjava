@@ -19,6 +19,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.GenericFutureListener;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Future;
@@ -88,7 +89,7 @@ abstract class AbstractConnectionAdapter implements ConnectionAdapter {
         }
     };
 
-    protected final Channel channel;
+    protected final ChannelHandlerContext ctx;
     protected final InetSocketAddress address;
     protected boolean disconnectOccured = false;
     protected final ChannelOutboundQueue output;
@@ -98,7 +99,8 @@ abstract class AbstractConnectionAdapter implements ConnectionAdapter {
 
 
     AbstractConnectionAdapter(@Nonnull final Channel channel, @Nullable final InetSocketAddress address) {
-        this.channel = Preconditions.checkNotNull(channel);
+        Preconditions.checkNotNull(channel);
+        this.ctx = channel.pipeline().lastContext();
         this.address = address;
 
         responseCache = CacheBuilder.newBuilder().concurrencyLevel(1)
@@ -109,7 +111,7 @@ abstract class AbstractConnectionAdapter implements ConnectionAdapter {
 
     @Override
     public Future<Boolean> disconnect() {
-        final ChannelFuture disconnectResult = channel.disconnect();
+        final ChannelFuture disconnectResult = ctx.disconnect();
         responseCache.invalidateAll();
         disconnectOccured = true;
 
@@ -215,22 +217,22 @@ abstract class AbstractConnectionAdapter implements ConnectionAdapter {
 
     @Override
     public boolean isAlive() {
-        return channel.isOpen();
+        return ctx.channel().isOpen();
     }
 
     @Override
     public boolean isAutoRead() {
-        return channel.config().isAutoRead();
+        return ctx.channel().config().isAutoRead();
     }
 
     @Override
     public void setAutoRead(final boolean autoRead) {
-        channel.config().setAutoRead(autoRead);
+        ctx.channel().config().setAutoRead(autoRead);
     }
 
     @Override
     public InetSocketAddress getRemoteAddress() {
-        return (InetSocketAddress) channel.remoteAddress();
+        return (InetSocketAddress) ctx.channel().remoteAddress();
     }
 
     /**
