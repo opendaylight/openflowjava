@@ -36,9 +36,9 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends
         }
     };
 
-    OutboundQueueManager(final ConnectionAdapterImpl parent, final InetSocketAddress address, final T handler,
-        final int maxNonBarrierMessages, final long maxBarrierNanos) {
-        super(parent, address, handler);
+    OutboundQueueManager(final InetSocketAddress address, final T handler, final int maxNonBarrierMessages,
+                         final long maxBarrierNanos) {
+        super(address, handler);
         Preconditions.checkArgument(maxNonBarrierMessages > 0);
         this.maxNonBarrierMessages = maxNonBarrierMessages;
         Preconditions.checkArgument(maxBarrierNanos > 0);
@@ -59,7 +59,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends
 
         final long delay = next - now;
         LOG.trace("Scheduling barrier timer {}us from now", TimeUnit.NANOSECONDS.toMicros(delay));
-        parent.getChannel().eventLoop().schedule(barrierRunnable, next - now, TimeUnit.NANOSECONDS);
+        ctx.channel().eventLoop().schedule(barrierRunnable, next - now, TimeUnit.NANOSECONDS);
         barrierTimerEnabled = true;
     }
 
@@ -79,7 +79,7 @@ final class OutboundQueueManager<T extends OutboundQueueHandler> extends
      * Periodic barrier check.
      */
     protected void barrier() {
-        LOG.debug("Channel {} barrier timer expired", parent.getChannel());
+        LOG.debug("Channel {} barrier timer expired", ctx.channel());
         barrierTimerEnabled = false;
         if (shuttingDown) {
             LOG.trace("Channel shut down, not processing barrier");

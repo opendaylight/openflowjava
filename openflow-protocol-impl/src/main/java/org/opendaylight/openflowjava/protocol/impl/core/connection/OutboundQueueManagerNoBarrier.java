@@ -18,8 +18,8 @@ import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueHandle
 public class OutboundQueueManagerNoBarrier<T extends OutboundQueueHandler> extends
         AbstractOutboundQueueManager<T, StackedOutboundQueueNoBarrier> {
 
-    OutboundQueueManagerNoBarrier(final ConnectionAdapterImpl parent, final InetSocketAddress address, final T handler) {
-        super(parent, address, handler);
+    OutboundQueueManagerNoBarrier(final InetSocketAddress address, final T handler) {
+        super(address, handler);
     }
 
     @Override
