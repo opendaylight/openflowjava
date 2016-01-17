@@ -14,6 +14,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.embedded.EmbeddedChannel;
@@ -79,10 +80,7 @@ public class ConnectionAdapterImplStatisticsTest {
 
     @Mock SystemNotificationsListener systemListener;
     @Mock ConnectionReadyListener readyListener;
-    @Mock ChannelFuture channelFuture;
     @Mock OpenflowProtocolListener messageListener;
-    @Mock SocketChannel channel;
-    @Mock ChannelPipeline pipeline;
     @Mock EchoInput echoInput;
     @Mock BarrierInput barrierInput;
     @Mock EchoReplyInput echoReplyInput;
@@ -197,15 +195,14 @@ public class ConnectionAdapterImplStatisticsTest {
         if(!statCounters.isCounterEnabled(CounterEventTypes.US_MESSAGE_PASS)){
             Assert.fail("Counter " + CounterEventTypes.US_MESSAGE_PASS + " is not enabled");
         }
-        when(channel.pipeline()).thenReturn(pipeline);
-        adapter = new ConnectionAdapterImpl(channel, InetSocketAddress.createUnresolved("10.0.0.1", 6653), true);
+        final EmbeddedChannel embChannel = new EmbeddedChannel(new EmbededChannelHandler());
+        adapter = new ConnectionAdapterImpl(embChannel, InetSocketAddress.createUnresolved("10.0.0.1", 6653), true);
         adapter.setMessageListener(messageListener);
         adapter.setSystemListener(systemListener);
         adapter.setConnectionReadyListener(readyListener);
         cache = CacheBuilder.newBuilder().concurrencyLevel(1).expireAfterWrite(RPC_RESPONSE_EXPIRATION, TimeUnit.MINUTES)
                 .removalListener(REMOVAL_LISTENER).build();
         adapter.setResponseCache(cache);
-        when(channel.disconnect()).thenReturn(channelFuture);
         DataObject message = new EchoRequestMessageBuilder().build();
         adapter.consume(message);
         message = new ErrorMessageBuilder().build();
@@ -233,7 +230,7 @@ public class ConnectionAdapterImplStatisticsTest {
      * @author madamjak
      *
      */
-    private class EmbededChannelHandler extends ChannelOutboundHandlerAdapter {
+    protected class EmbededChannelHandler extends ChannelOutboundHandlerAdapter {
         // no operation need to test
     }
 }

@@ -9,6 +9,7 @@ package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
 import static org.mockito.Mockito.when;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import java.net.InetSocketAddress;
 import org.junit.Assert;
@@ -26,11 +27,15 @@ public class ConnectionAdapterFactoryImplTest {
     @Mock ChannelPipeline channnelPipe;
     @Mock Channel channel;
     @Mock InetSocketAddress address;
+    @Mock ChannelHandlerContext ctx;
 
     @Before
     public void startUp(){
         MockitoAnnotations.initMocks(this);
         when(channel.pipeline()).thenReturn(channnelPipe);
+        when(channnelPipe.lastContext()).thenReturn(ctx);
+        when(ctx.channel()).thenReturn(channel);
+        when(channel.isOpen()).thenReturn(true);
     }
 
     @Test

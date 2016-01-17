@@ -17,6 +17,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import java.net.InetSocketAddress;
@@ -76,6 +77,7 @@ public class ConnectionAdapterImplTest {
 
     @Mock SocketChannel channel;
     @Mock ChannelPipeline pipeline;
+    @Mock ChannelHandlerContext ctx;
     @Mock OpenflowProtocolListener messageListener;
     @Mock SystemNotificationsListener systemListener;
     @Mock ConnectionReadyListener readyListener;
@@ -92,6 +94,8 @@ public class ConnectionAdapterImplTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         when(channel.pipeline()).thenReturn(pipeline);
+        when(pipeline.lastContext()).thenReturn(ctx);
+        when(ctx.channel()).thenReturn(channel);
         adapter = new ConnectionAdapterImpl(channel, InetSocketAddress.createUnresolved("10.0.0.1", 6653), true);
         adapter.setMessageListener(messageListener);
         adapter.setSystemListener(systemListener);
@@ -99,7 +103,7 @@ public class ConnectionAdapterImplTest {
         cache = CacheBuilder.newBuilder().concurrencyLevel(1).expireAfterWrite(RPC_RESPONSE_EXPIRATION, TimeUnit.MINUTES)
                 .removalListener(REMOVAL_LISTENER).build();
         adapter.setResponseCache(cache);
-        when(channel.disconnect()).thenReturn(channelFuture);
+        when(ctx.disconnect()).thenReturn(channelFuture);
     }
 
     /**
@@ -186,6 +190,7 @@ public class ConnectionAdapterImplTest {
         final ConnectionAdapterImpl connAddapter = new ConnectionAdapterImpl(channel, inetSockAddr, true);
         Assert.assertEquals("Wrong - diffrence between channel.isOpen() and ConnectionAdapterImpl.isAlive()", channel.isOpen(), connAddapter.isAlive());
 
+        when(channel.isOpen()).thenReturn(false);
         connAddapter.disconnect();
         Assert.assertFalse("Wrong - ConnectionAdapterImpl can not be alive after disconnet.", connAddapter.isAlive());
     }

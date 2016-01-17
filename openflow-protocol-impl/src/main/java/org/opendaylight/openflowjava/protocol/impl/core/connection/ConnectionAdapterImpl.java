@@ -83,7 +83,7 @@ public class ConnectionAdapterImpl extends AbstractConnectionAdapterStatistics i
 
     @Override
     public void consumeDeviceMessage(final DataObject message) {
-        LOG.debug("ConsumeIntern msg on {}", channel);
+        LOG.debug("ConsumeIntern msg on {}", ctx.channel());
         if (disconnectOccured ) {
             return;
         }
@@ -176,7 +176,7 @@ public class ConnectionAdapterImpl extends AbstractConnectionAdapterStatistics i
 
     @Override
     public void fireConnectionReadyNotification() {
-        versionDetector = (OFVersionDetector) channel.pipeline().get(PipelineHandlers.OF_VERSION_DETECTOR.name());
+        versionDetector = (OFVersionDetector) ctx.channel().pipeline().get(PipelineHandlers.OF_VERSION_DETECTOR.name());
         Preconditions.checkState(versionDetector != null);
 
         new Thread(new Runnable() {
@@ -194,29 +194,25 @@ public class ConnectionAdapterImpl extends AbstractConnectionAdapterStatistics i
 
         final AbstractOutboundQueueManager<T, ?> ret;
         if (useBarrier) {
-            ret = new OutboundQueueManager<>(this, address, handler, maxQueueDepth, maxBarrierNanos);
+            ret = new OutboundQueueManager<>(address, handler, maxQueueDepth, maxBarrierNanos);
         } else {
             LOG.warn("OutboundQueueManager without barrier is started.");
-            ret = new OutboundQueueManagerNoBarrier<>(this, address, handler);
+            ret = new OutboundQueueManagerNoBarrier<>(address, handler);
         }
 
         outputManager = ret;
         /* we don't need it anymore */
-        channel.pipeline().remove(output);
-        channel.pipeline().addLast(outputManager);
+        ctx.channel().pipeline().remove(output);
+        ctx.channel().pipeline().addLast(outputManager);
 
         return new OutboundQueueHandlerRegistrationImpl<T>(handler) {
             @Override
             protected void removeRegistration() {
                 outputManager.close();
-                channel.pipeline().remove(outputManager);
+                ctx.channel().pipeline().remove(outputManager);
                 outputManager = null;
             }
         };
-    }
-
-    Channel getChannel() {
-        return channel;
     }
 
     @Override
