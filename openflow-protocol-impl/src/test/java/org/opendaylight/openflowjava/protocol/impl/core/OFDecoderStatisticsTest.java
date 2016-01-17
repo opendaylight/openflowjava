@@ -27,6 +27,8 @@ import org.opendaylight.openflowjava.statistics.CounterEventTypes;
 import org.opendaylight.openflowjava.statistics.StatisticsCounters;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test to count decoder events (counters US_DECODE_SUCCESS, US_DECODE_FAIL and
@@ -58,6 +60,10 @@ public class OFDecoderStatisticsTest {
         ofDecoder.setDeserializationFactory(mockDeserializationFactory);
         outList = new ArrayList<>();
         statCounters = StatisticsCounters.getInstance();
+        if (statCounters.isRunCounting()) {
+            statCounters.stopCounting();
+            statCounters.resetCounters();
+        }
         statCounters.startCounting(false, 0);
     }
 
@@ -67,13 +73,14 @@ public class OFDecoderStatisticsTest {
     @After
     public void tierDown() {
         statCounters.stopCounting();
+        statCounters.resetCounters();
     }
 
     /**
      * Test decode success counter
      */
     @Test
-    public void testDecodeSuccesfullCounter() {
+    public void testDecodeSuccesfullCounter() throws InterruptedException {
         if (!statCounters.isCounterEnabled(CounterEventTypes.US_DECODE_SUCCESS)) {
             Assert.fail("Counter " + CounterEventTypes.US_DECODE_SUCCESS + " is not enable");
         }
@@ -95,6 +102,7 @@ public class OFDecoderStatisticsTest {
         } catch (Exception e) {
             Assert.fail();
         }
+        Thread.sleep(500);
         Assert.assertEquals("Wrong - bad counter value for OFEncoder encode succesfully ",
                 count,statCounters.getCounter(CounterEventTypes.US_DECODE_SUCCESS).getCounterValue());
         Assert.assertEquals(

@@ -30,6 +30,10 @@ public class StatisticsCountersTest {
     @Before
     public void initTest(){
         statCounters = StatisticsCounters.getInstance();
+        if (statCounters.isRunCounting()) {
+            statCounters.stopCounting();
+            statCounters.resetCounters();
+        }
         statCounters.startCounting(false, 0);
     }
 
@@ -39,6 +43,7 @@ public class StatisticsCountersTest {
     @After
     public void tierDown(){
         statCounters.stopCounting();
+        statCounters.resetCounters();
     }
 
     /**

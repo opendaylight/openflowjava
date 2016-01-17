@@ -66,7 +66,6 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
     private static final int DEFAULT_HIGH_WATERMARK = DEFAULT_LOW_WATERMARK * 2;
 
     private final AtomicBoolean flushScheduled = new AtomicBoolean();
-    protected final ConnectionAdapterImpl parent;
     protected final InetSocketAddress address;
     protected final O currentQueue;
     private final T handler;
@@ -77,6 +76,7 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
     // Updated from netty only
     private boolean alreadyReading;
     protected boolean shuttingDown;
+    protected ChannelHandlerContext ctx;
 
     // Passed to executor to request triggering of flush
     protected final Runnable flushRunnable = new Runnable() {
@@ -86,8 +86,7 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
         }
     };
 
-    AbstractOutboundQueueManager(final ConnectionAdapterImpl parent, final InetSocketAddress address, final T handler) {
-        this.parent = Preconditions.checkNotNull(parent);
+    AbstractOutboundQueueManager(final InetSocketAddress address, final T handler) {
         this.handler = Preconditions.checkNotNull(handler);
         this.address = address;
         /* Note: don't wish to use reflection here */
@@ -111,7 +110,7 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
 
     @Override
     public String toString() {
-        return String.format("Channel %s queue [flushing=%s]", parent.getChannel(), flushScheduled.get());
+        return String.format("Channel %s queue [flushing=%s]", ctx.channel(), flushScheduled.get());
     }
 
     @Override
@@ -125,6 +124,7 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
         ctx.channel().config().setWriteBufferHighWaterMark(DEFAULT_HIGH_WATERMARK);
         ctx.channel().config().setWriteBufferLowWaterMark(DEFAULT_LOW_WATERMARK);
 
+        this.ctx = ctx;
         super.handlerAdded(ctx);
     }
 
@@ -157,7 +157,7 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
         // The channel is writable again. There may be a flush task on the way, but let's
         // steal its work, potentially decreasing latency. Since there is a window between
         // now and when it will run, it may still pick up some more work to do.
-        LOG.debug("Channel {} writability changed, invoking flush", parent.getChannel());
+        LOG.debug("Channel {} writability changed, invoking flush", ctx.channel());
         writeAndFlush();
     }
 
@@ -207,7 +207,7 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
     void ensureFlushing() {
         // If the channel is not writable, there's no point in waking up,
         // once we become writable, we will run a full flush
-        if (!parent.getChannel().isWritable()) {
+        if (!ctx.channel().isWritable()) {
             return;
         }
 
@@ -236,7 +236,7 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
     void onEchoRequest(final EchoRequestMessage message) {
         final EchoReplyInput reply = new EchoReplyInputBuilder().setData(message.getData())
                 .setVersion(message.getVersion()).setXid(message.getXid()).build();
-        parent.getChannel().writeAndFlush(makeMessageListenerWrapper(reply));
+        ctx.writeAndFlush(makeMessageListenerWrapper(reply));
     }
 
     /**
@@ -249,7 +249,7 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
      */
     void writeMessage(final OfHeader message, final long now) {
         final Object wrapper = makeMessageListenerWrapper(message);
-        parent.getChannel().write(wrapper);
+        ctx.write(wrapper);
     }
 
     /**
@@ -288,24 +288,24 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
     protected void flush() {
         // If the channel is gone, just flush whatever is not completed
         if (!shuttingDown) {
-            LOG.trace("Dequeuing messages to channel {}", parent.getChannel());
+            LOG.trace("Dequeuing messages to channel {}", ctx.channel());
             writeAndFlush();
             rescheduleFlush();
         } else if (currentQueue.finishShutdown()) {
             close();
-            LOG.debug("Channel {} shutdown complete", parent.getChannel());
+            LOG.debug("Channel {} shutdown complete", ctx.channel());
         } else {
-            LOG.trace("Channel {} current queue not completely flushed yet", parent.getChannel());
+            LOG.trace("Channel {} current queue not completely flushed yet", ctx.channel());
             rescheduleFlush();
         }
     }
 
     private void scheduleFlush() {
         if (flushScheduled.compareAndSet(false, true)) {
-            LOG.trace("Scheduling flush task on channel {}", parent.getChannel());
-            parent.getChannel().eventLoop().execute(flushRunnable);
+            LOG.trace("Scheduling flush task on channel {}", ctx.channel());
+            ctx.executor().execute(flushRunnable);
         } else {
-            LOG.trace("Flush task is already present on channel {}", parent.getChannel());
+            LOG.trace("Flush task is already present on channel {}", ctx.channel());
         }
     }
 
@@ -314,15 +314,15 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
 
         final long start = System.nanoTime();
 
-        final int entries = currentQueue.writeEntries(parent.getChannel(), start);
+        final int entries = currentQueue.writeEntries(ctx.channel(), start);
         if (entries > 0) {
-            LOG.trace("Flushing channel {}", parent.getChannel());
-            parent.getChannel().flush();
+            LOG.trace("Flushing channel {}", ctx.channel());
+            ctx.flush();
         }
 
         if (LOG.isDebugEnabled()) {
             final long stop = System.nanoTime();
-            LOG.debug("Flushed {} messages to channel {} in {}us", entries, parent.getChannel(),
+            LOG.debug("Flushed {} messages to channel {} in {}us", entries, ctx.channel(),
                     TimeUnit.NANOSECONDS.toMicros(stop - start));
         }
 
@@ -339,7 +339,7 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
          * such that only one flush is scheduled at any given time.
          */
         if (!flushScheduled.compareAndSet(true, false)) {
-            LOG.warn("Channel {} queue {} flusher found unscheduled", parent.getChannel(), this);
+            LOG.warn("Channel {} queue {} flusher found unscheduled", ctx.channel(), this);
         }
 
         conditionalFlush();
@@ -351,10 +351,10 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
      */
     private void conditionalFlush() {
         if (currentQueue.needsFlush()) {
-            if (shuttingDown || parent.getChannel().isWritable()) {
+            if (shuttingDown || ctx.channel().isWritable()) {
                 scheduleFlush();
             } else {
-                LOG.debug("Channel {} is not I/O ready, not scheduling a flush", parent.getChannel());
+                LOG.debug("Channel {} is not I/O ready, not scheduling a flush", ctx.channel());
             }
         } else {
             LOG.trace("Queue is empty, no flush needed");
