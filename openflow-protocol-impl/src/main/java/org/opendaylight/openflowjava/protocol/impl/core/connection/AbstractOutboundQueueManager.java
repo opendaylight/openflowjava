@@ -163,14 +163,22 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
 
     @Override
     public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
+        // First of all, delegates disconnect event notification into ConnectionAdapter -> OF Plugin -> queue.close()
+        // -> queueHandler.onConnectionQueueChanged(null). The last call causes that no more entries are enqueued
+        // in the queue.
         super.channelInactive(ctx);
 
         LOG.debug("Channel {} initiating shutdown...", ctx.channel());
 
+        // Then we start queue shutdown, start counting written messages (so that we don't keep sending messages
+        // indefinitely) and failing not completed entries.
         shuttingDown = true;
         final long entries = currentQueue.startShutdown(ctx.channel());
         LOG.debug("Cleared {} queue entries from channel {}", entries, ctx.channel());
 
+        // Finally, we schedule flush task that will take care of unflushed entries. We also cover the case,
+        // when there is more than shutdownOffset messages enqueued in unflushed segments
+        // (AbstractStackedOutboundQueue#finishShutdown()).
         scheduleFlush();
     }
 
