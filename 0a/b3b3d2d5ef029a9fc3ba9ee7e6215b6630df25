@@ -1,0 +1,8 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+1: Anil Vishnoi <vishnoianil@gmail.com>
+Code-Review+2: michal rehak <mirehak@cisco.com>
+Submitted-by: michal rehak <mirehak@cisco.com>
+Submitted-at: Wed, 27 Jan 2016 19:23:55 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/33653
+Project: openflowjava
+Branch: refs/heads/stable/beryllium
