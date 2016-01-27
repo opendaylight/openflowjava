@@ -260,16 +260,27 @@ abstract class AbstractStackedOutboundQueue implements OutboundQueue {
             final long xid = LAST_XID_OFFSET_UPDATER.addAndGet(this, StackedSegment.SEGMENT_SIZE);
             shutdownOffset = (int) (xid - firstSegment.getBaseXid() - StackedSegment.SEGMENT_SIZE);
 
-            return lockedShutdownFlush();
+            return lockedSegmentFail(uncompletedSegments);
         }
     }
 
+    /**
+     * Checks if the shutdown is in final phase -> all allowed entries (#entries < shutdownOffset) are flushed
+     * and fails all not completed entries (if in final phase)
+     * @return true if in final phase, false if a flush is needed
+     */
     boolean finishShutdown() {
+        boolean needsFlush;
         synchronized (unflushedSegments) {
-            lockedShutdownFlush();
+            lockedSegmentFail(uncompletedSegments);
+            // if no further flush is needed, than we fail the rest of unflushed segments, so that each entry
+            // is reported as unsuccessful due to channel disconnection
+            needsFlush = needsFlush();
+            if (!needsFlush) {
+                lockedSegmentFail(unflushedSegments);
+            }
         }
-
-        return !needsFlush();
+        return !needsFlush;
     }
 
     protected OutboundQueueEntry getEntry(final Long xid) {
@@ -302,12 +313,17 @@ abstract class AbstractStackedOutboundQueue implements OutboundQueue {
         return fastSegment.getEntry(fastOffset);
     }
 
+    /**
+     * Fails not completed entries in segments and frees completed segments
+     * @param segmentsList list of segments to be failed
+     * @return number of failed entries
+     */
     @GuardedBy("unflushedSegments")
-    private long lockedShutdownFlush() {
+    private long lockedSegmentFail(List<StackedSegment> segmentsList) {
         long entries = 0;
 
         // Fail all queues
-        final Iterator<StackedSegment> it = uncompletedSegments.iterator();
+        final Iterator<StackedSegment> it = segmentsList.iterator();
         while (it.hasNext()) {
             final StackedSegment segment = it.next();
 
@@ -320,4 +336,5 @@ abstract class AbstractStackedOutboundQueue implements OutboundQueue {
 
         return entries;
     }
+
 }
