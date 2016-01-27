@@ -203,7 +203,11 @@ public class ConnectionAdapterImpl extends AbstractConnectionAdapterStatistics i
         outputManager = ret;
         /* we don't need it anymore */
         channel.pipeline().remove(output);
-        channel.pipeline().addLast(outputManager);
+        // OutboundQueueManager is put before DelegatingInboundHandler because otherwise channelInactive event would
+        // be first processed in OutboundQueueManager and then in ConnectionAdapter (and Openflowplugin). This might
+        // cause problems because we are shutting down the queue before Openflowplugin knows about it.
+        channel.pipeline().addBefore(PipelineHandlers.DELEGATING_INBOUND_HANDLER.name(),
+                PipelineHandlers.CHANNEL_OUTBOUNF_QUEUE_MANAGER.name(), outputManager);
 
         return new OutboundQueueHandlerRegistrationImpl<T>(handler) {
             @Override
