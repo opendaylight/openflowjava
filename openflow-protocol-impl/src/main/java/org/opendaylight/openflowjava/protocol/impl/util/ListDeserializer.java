@@ -72,14 +72,20 @@ public final class ListDeserializer {
         if (input.readableBytes() > 0) {
             items = new ArrayList<>();
             int startIndex = input.readerIndex();
+            boolean exceptionLogged = false;
             while ((input.readerIndex() - startIndex) < length){
                 HeaderDeserializer<E> deserializer;
                 MessageCodeKey key = keyMaker.make(input);
                 try {
                     deserializer = registry.getDeserializer(key);
                 } catch (ClassCastException | IllegalStateException e) {
-                    LOG.warn("Problem during reading table feature property. Skipping unknown feature property: {}",
-                        key, e);
+                    if (!exceptionLogged) {
+                        LOG.warn("Problem during reading table feature property. Skipping unknown feature property: {}",
+                                key, e);
+                        LOG.warn("This exception is logged only once for each multipart reply (table features) to "
+                                + "prevent log flooding. There might be more of table features related exceptions.");
+                        exceptionLogged = true;
+                    }
                     input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
                     continue;
                 }
