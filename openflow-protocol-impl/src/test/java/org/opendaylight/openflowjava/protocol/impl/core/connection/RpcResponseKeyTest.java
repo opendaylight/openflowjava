@@ -40,6 +40,8 @@ public class RpcResponseKeyTest {
         key1 = new RpcResponseKey(xid1, outputClazz1);
         Assert.assertFalse("Wrong equal by outputClazz.", key1.equals(key2));
         key2 = new RpcResponseKey(xid2, outputClazz1);
+        Assert.assertFalse("Wrong equal.", key1.equals(key2));
+        key1 = new RpcResponseKey(xid2, outputClazz1);
         Assert.assertTrue("Wrong equal.", key1.equals(key2));
     }
 
