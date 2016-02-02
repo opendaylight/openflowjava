@@ -79,11 +79,19 @@ public final class ListDeserializer {
                 try {
                     deserializer = registry.getDeserializer(key);
                 } catch (ClassCastException | IllegalStateException e) {
+                    // Following "if" is only hotfix to prevent log flooding. Log flooding is originally
+                    // caused by using OVS 2.4 which directly uses / reports Nicira extensions. These extensions
+                    // are not yet (2nd February 2016) fully supported by existing OF Plugin.
+                    // TODO - simplify to correctly report exception during deserialization
                     if (!exceptionLogged) {
-                        LOG.warn("Problem during reading table feature property. Skipping unknown feature property: {}",
-                                key, e);
-                        LOG.warn("This exception is logged only once for each multipart reply (table features) to "
-                                + "prevent log flooding. There might be more of table features related exceptions.");
+                        LOG.warn("Problem during reading table feature property. Skipping unknown feature property: {}." +
+                                "If more information is needed, set org.opendaylight.openflowjava do DEBUG log level.",
+                                key, e.getMessage());
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Detailed exception: {}", e);
+                            LOG.debug("This exception is logged only once for each multipart reply (table features) to "
+                                    + "prevent log flooding. There might be more of table features related exceptions.");
+                        }
                         exceptionLogged = true;
                     }
                     input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
