@@ -12,6 +12,8 @@ package org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflo
 import com.google.common.base.MoreObjects;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
+
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.ThreadConfiguration;
 import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
@@ -135,6 +137,10 @@ public final class SwitchConnectionProviderModule extends org.opendaylight.yang.
                     @Override
                     public String getTruststorePassword() {
                         return MoreObjects.firstNonNull(tlsConfig.getTruststorePassword(), null);
+                    }
+                    @Override
+                    public List<String> getCipherSuites() {
+                        return tlsConfig.getCipherSuites();
                     }
                 };
             }

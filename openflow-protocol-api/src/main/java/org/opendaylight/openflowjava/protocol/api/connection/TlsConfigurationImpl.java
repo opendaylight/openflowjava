@@ -8,6 +8,8 @@
 
 package org.opendaylight.openflowjava.protocol.api.connection;
 
+import java.util.List;
+
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.KeystoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.PathType;
 
@@ -23,6 +25,7 @@ public class TlsConfigurationImpl implements TlsConfiguration {
     private String keyStore;
     private PathType keystorePathType;
     private PathType truststorePathType;
+    private List<String> cipherSuites;
 
     /**
      * Default constructor
@@ -35,13 +38,15 @@ public class TlsConfigurationImpl implements TlsConfiguration {
      */
     public TlsConfigurationImpl(KeystoreType trustStoreType, String trustStore,
             PathType trustStorePathType, KeystoreType keyStoreType,
-            String keyStore, PathType keyStorePathType) {
+            String keyStore, PathType keyStorePathType,
+            List<String> cipherSuites) {
         this.trustStoreType = trustStoreType;
         this.trustStore = trustStore;
         this.truststorePathType = trustStorePathType;
         this.keyStoreType = keyStoreType;
         this.keyStore = keyStore;
         this.keystorePathType = keyStorePathType;
+        this.cipherSuites = cipherSuites;
     }
 
     @Override
@@ -87,5 +92,10 @@ public class TlsConfigurationImpl implements TlsConfiguration {
     @Override
     public String getTruststorePassword() {
         return "opendaylight";
+    }
+
+    @Override
+    public List<String> getCipherSuites() {
+        return cipherSuites;
     }
 }

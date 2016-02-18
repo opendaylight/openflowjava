@@ -16,6 +16,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import java.net.InetAddress;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLEngine;
 import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionAdapterFactory;
@@ -84,6 +85,12 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
                 final SSLEngine engine = sslFactory.getServerContext().createSSLEngine();
                 engine.setNeedClientAuth(true);
                 engine.setUseClientMode(false);
+                List<String> suitesList = getTlsConfiguration().getCipherSuites();
+                if (suitesList != null && !suitesList.isEmpty()) {
+                    String[] suites = suitesList.toArray(new String[suitesList.size()]);
+                    engine.setEnabledCipherSuites(suites);
+                    LOGGER.debug("SSLEngine cipher suites are: {}; Requested Cipher Suites are: {}", engine.getEnabledCipherSuites(), suitesList);
+                }
                 final SslHandler ssl = new SslHandler(engine);
                 final Future<Channel> handshakeFuture = ssl.handshakeFuture();
                 final ConnectionFacade finalConnectionFacade = connectionFacade;
