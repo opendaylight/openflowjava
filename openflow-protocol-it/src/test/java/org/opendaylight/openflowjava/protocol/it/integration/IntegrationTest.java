@@ -39,6 +39,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.T
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
+
 /**
  * @author michal.polkorab
  * @author timotej.kubas
@@ -74,7 +76,8 @@ public class IntegrationTest {
         if (protocol.equals(TransportProtocol.TLS)) {
             tlsConfiguration = new TlsConfigurationImpl(KeystoreType.JKS,
                     "/selfSignedSwitch", PathType.CLASSPATH, KeystoreType.JKS,
-                    "/selfSignedController", PathType.CLASSPATH) ;
+                    "/selfSignedController", PathType.CLASSPATH,
+                    Lists.newArrayList("TLS_RSA_WITH_AES_128_CBC_SHA", "TLS_RSA_WITH_AES_128_CBC_SHA256")) ;
         }
         connConfig = new ConnectionConfigurationImpl(startupAddress, 0, tlsConfiguration, SWITCH_IDLE_TIMEOUT, true);
         connConfig.setTransferProtocol(protocol);
