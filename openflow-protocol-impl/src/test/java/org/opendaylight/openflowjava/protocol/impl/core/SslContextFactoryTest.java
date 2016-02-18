@@ -20,6 +20,8 @@ import org.opendaylight.openflowjava.protocol.api.connection.TlsConfigurationImp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.KeystoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.PathType;
 
+import com.google.common.collect.Lists;
+
 /**
  *
  * @author jameshall
@@ -36,7 +38,8 @@ public class SslContextFactoryTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         tlsConfiguration = new TlsConfigurationImpl(KeystoreType.JKS, "/exemplary-ctlTrustStore",
-                PathType.CLASSPATH, KeystoreType.JKS, "/exemplary-ctlKeystore", PathType.CLASSPATH) ;
+                PathType.CLASSPATH, KeystoreType.JKS, "/exemplary-ctlKeystore", PathType.CLASSPATH,
+                Lists.newArrayList("TLS_RSA_WITH_AES_128_CBC_SHA", "TLS_RSA_WITH_AES_128_CBC_SHA256")) ;
         sslContextFactory = new SslContextFactory(tlsConfiguration);
     }
 

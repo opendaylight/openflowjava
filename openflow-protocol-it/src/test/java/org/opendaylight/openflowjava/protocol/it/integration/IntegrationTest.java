@@ -74,7 +74,8 @@ public class IntegrationTest {
         if (protocol.equals(TransportProtocol.TLS)) {
             tlsConfiguration = new TlsConfigurationImpl(KeystoreType.JKS,
                     "/selfSignedSwitch", PathType.CLASSPATH, KeystoreType.JKS,
-                    "/selfSignedController", PathType.CLASSPATH) ;
+                    "/selfSignedController", PathType.CLASSPATH,
+                    new ArrayList<String>());
         }
         connConfig = new ConnectionConfigurationImpl(startupAddress, 0, tlsConfiguration, SWITCH_IDLE_TIMEOUT, true);
         connConfig.setTransferProtocol(protocol);
