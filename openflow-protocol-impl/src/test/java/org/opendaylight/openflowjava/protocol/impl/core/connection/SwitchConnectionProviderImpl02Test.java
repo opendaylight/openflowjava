@@ -7,6 +7,7 @@
  */
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
+import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -92,7 +93,8 @@ public class SwitchConnectionProviderImpl02Test {
         if (protocol.equals(TransportProtocol.TLS)) {
             tlsConfiguration = new TlsConfigurationImpl(KeystoreType.JKS,
                     "/selfSignedSwitch", PathType.CLASSPATH, KeystoreType.JKS,
-                    "/selfSignedController", PathType.CLASSPATH) ;
+                    "/selfSignedController", PathType.CLASSPATH,
+                    Lists.newArrayList("TLS_RSA_WITH_AES_128_CBC_SHA", "TLS_RSA_WITH_AES_128_CBC_SHA256")) ;
         }
         config = new ConnectionConfigurationImpl(startupAddress, 0, tlsConfiguration, SWITCH_IDLE_TIMEOUT, true);
         config.setTransferProtocol(protocol);
