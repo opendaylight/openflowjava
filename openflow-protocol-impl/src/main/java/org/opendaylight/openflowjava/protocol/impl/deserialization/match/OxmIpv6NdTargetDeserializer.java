@@ -8,10 +8,8 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.match;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Ipv6NdTarget;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
@@ -29,16 +27,16 @@ public class OxmIpv6NdTargetDeserializer extends AbstractOxmMatchEntryDeserializ
         implements OFDeserializer<MatchEntry> {
 
     @Override
-    public MatchEntry deserialize(ByteBuf input) {
+    public MatchEntry deserialize(final ByteBuf input) {
         MatchEntryBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
         addIpv6NdTargetValue(input, builder);
         return builder.build();
     }
 
-    private static void addIpv6NdTargetValue(ByteBuf input, MatchEntryBuilder builder) {
+    private static void addIpv6NdTargetValue(final ByteBuf input, final MatchEntryBuilder builder) {
         Ipv6NdTargetCaseBuilder caseBuilder = new Ipv6NdTargetCaseBuilder();
         Ipv6NdTargetBuilder ipv6Builder = new Ipv6NdTargetBuilder();
-        ipv6Builder.setIpv6Address(new Ipv6Address(ByteBufUtils.readIpv6Address(input)));
+        ipv6Builder.setIpv6Address(ByteBufUtils.readIetfIpv6Address(input));
         caseBuilder.setIpv6NdTarget(ipv6Builder.build());
         builder.setMatchEntryValue(caseBuilder.build());
     }

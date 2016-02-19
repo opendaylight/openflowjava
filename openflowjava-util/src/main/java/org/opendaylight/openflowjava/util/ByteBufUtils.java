@@ -19,6 +19,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IetfInetUtil;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6Address;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.IetfYangUtil;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 
 /** Class for common operations on ByteBuf
@@ -324,6 +329,7 @@ public abstract class ByteBufUtils {
         return sb.toString();
     }
 
+
     /**
      * Read an IPv6 address from a buffer and format it into a string of eight groups of four
      * hexadecimal digits separated by colons.
@@ -341,5 +347,23 @@ public abstract class ByteBufUtils {
         }
 
         return sb.toString();
+    }
+
+    public static Ipv4Address readIetfIpv4Address(final ByteBuf buf) {
+        final byte[] tmp = new byte[4];
+        buf.readBytes(tmp);
+        return IetfInetUtil.INSTANCE.ipv4AddressFor(tmp);
+    }
+
+    public static Ipv6Address readIetfIpv6Address(final ByteBuf buf) {
+        final byte[] tmp = new byte[16];
+        buf.readBytes(tmp);
+        return IetfInetUtil.INSTANCE.ipv6AddressFor(tmp);
+    }
+
+    public static MacAddress readIetfMacAddress(final ByteBuf buf) {
+        final byte[] tmp = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
+        buf.readBytes(tmp);
+        return IetfYangUtil.INSTANCE.macAddressFor(tmp);
     }
 }

@@ -9,11 +9,9 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.action;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.ActionChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetDlSrcCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.set.dl.src._case.SetDlSrcActionBuilder;
@@ -27,14 +25,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 public class OF10SetDlSrcActionDeserializer extends AbstractActionDeserializer {
 
     @Override
-    public Action deserialize(ByteBuf input) {
+    public Action deserialize(final ByteBuf input) {
         ActionBuilder builder = new ActionBuilder();
         input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         SetDlSrcCaseBuilder caseBuilder = new SetDlSrcCaseBuilder();
         SetDlSrcActionBuilder actionBuilder = new SetDlSrcActionBuilder();
-        byte[] address = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
-        input.readBytes(address);
-        actionBuilder.setDlSrcAddress(new MacAddress(ByteBufUtils.macAddressToString(address)));
+        actionBuilder.setDlSrcAddress(ByteBufUtils.readIetfMacAddress(input));
         caseBuilder.setSetDlSrcAction(actionBuilder.build());
         builder.setActionChoice(caseBuilder.build());
         input.skipBytes(ActionConstants.PADDING_IN_DL_ADDRESS_ACTION);
