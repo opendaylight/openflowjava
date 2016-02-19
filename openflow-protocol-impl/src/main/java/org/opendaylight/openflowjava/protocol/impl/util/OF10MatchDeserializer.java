@@ -9,12 +9,8 @@
 package org.opendaylight.openflowjava.protocol.impl.util;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowWildcardsV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.v10.grouping.MatchV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.v10.grouping.MatchV10Builder;
@@ -42,12 +38,8 @@ public class OF10MatchDeserializer implements OFDeserializer<MatchV10> {
         builder.setNwSrcMask(decodeNwSrcMask(wildcards));
         builder.setNwDstMask(decodeNwDstMask(wildcards));
         builder.setInPort(input.readUnsignedShort());
-        byte[] dlSrc = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
-        input.readBytes(dlSrc);
-        builder.setDlSrc(new MacAddress(ByteBufUtils.macAddressToString(dlSrc)));
-        byte[] dlDst = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
-        input.readBytes(dlDst);
-        builder.setDlDst(new MacAddress(ByteBufUtils.macAddressToString(dlDst)));
+        builder.setDlSrc(ByteBufUtils.readIetfMacAddress(input));
+        builder.setDlDst(ByteBufUtils.readIetfMacAddress(input));
 
         builder.setDlVlan(input.readUnsignedShort());
         builder.setDlVlanPcp(input.readUnsignedByte());
@@ -56,8 +48,8 @@ public class OF10MatchDeserializer implements OFDeserializer<MatchV10> {
         builder.setNwTos(input.readUnsignedByte());
         builder.setNwProto(input.readUnsignedByte());
         input.skipBytes(PADDING_IN_MATCH_2);
-        builder.setNwSrc(new Ipv4Address(ByteBufUtils.readIpv4Address(input)));
-        builder.setNwDst(new Ipv4Address(ByteBufUtils.readIpv4Address(input)));
+        builder.setNwSrc(ByteBufUtils.readIetfIpv4Address(input));
+        builder.setNwDst(ByteBufUtils.readIetfIpv4Address(input));
         builder.setTpSrc(input.readUnsignedShort());
         builder.setTpDst(input.readUnsignedShort());
         return builder.build();
