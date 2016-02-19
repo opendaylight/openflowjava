@@ -9,11 +9,9 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeatures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortReason;
@@ -33,7 +31,7 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
     private static final byte PADDING_IN_OFP_PORT_HEADER_2 = 2;
 
     @Override
-    public PortStatusMessage deserialize(ByteBuf rawMessage) {
+    public PortStatusMessage deserialize(final ByteBuf rawMessage) {
         PortStatusMessageBuilder builder = new PortStatusMessageBuilder();
         builder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
         builder.setXid(rawMessage.readUnsignedInt());
@@ -41,9 +39,7 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
         rawMessage.skipBytes(PADDING_IN_PORT_STATUS_HEADER);
         builder.setPortNo(rawMessage.readUnsignedInt());
         rawMessage.skipBytes(PADDING_IN_OFP_PORT_HEADER_1);
-        byte[] hwAddress = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
-        rawMessage.readBytes(hwAddress);
-        builder.setHwAddr(new MacAddress(ByteBufUtils.macAddressToString(hwAddress)));
+        builder.setHwAddr(ByteBufUtils.readIetfMacAddress(rawMessage));
         rawMessage.skipBytes(PADDING_IN_OFP_PORT_HEADER_2);
         builder.setName(ByteBufUtils.decodeNullTerminatedString(rawMessage, EncodeConstants.MAX_PORT_NAME_LENGTH));
         builder.setConfig(createPortConfig(rawMessage.readUnsignedInt()));
@@ -57,7 +53,7 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
         return builder.build();
     }
 
-    private static PortFeatures createPortFeatures(long input){
+    private static PortFeatures createPortFeatures(final long input){
         final Boolean pf10mbHd = ((input) & (1<<0)) != 0;
         final Boolean pf10mbFd = ((input) & (1<<1)) != 0;
         final Boolean pf100mbHd = ((input) & (1<<2)) != 0;
@@ -78,14 +74,14 @@ public class PortStatusMessageFactory implements OFDeserializer<PortStatusMessag
                 pf1gbHd, pf1tbFd, pf40gbFd, pfAutoneg, pfCopper, pfFiber, pfOther, pfPause, pfPauseAsym);
     }
 
-    private static PortState createPortState(long input){
+    private static PortState createPortState(final long input){
         final Boolean psLinkDown = ((input) & (1<<0)) != 0;
         final Boolean psBblocked  = ((input) & (1<<1)) != 0;
         final Boolean psLive     = ((input) & (1<<2)) != 0;
         return new PortState(psBblocked, psLinkDown, psLive);
     }
 
-    private static PortConfig createPortConfig(long input){
+    private static PortConfig createPortConfig(final long input){
         final Boolean pcPortDown   = ((input) & (1<<0)) != 0;
         final Boolean pcNoRecv    = ((input) & (1<<2)) != 0;
         final Boolean pcNoFwd       = ((input) & (1<<5)) != 0;

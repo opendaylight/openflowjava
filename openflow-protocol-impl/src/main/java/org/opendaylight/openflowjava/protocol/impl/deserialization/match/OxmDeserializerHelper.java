@@ -8,9 +8,8 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.match;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.IetfYangUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 
 /**
@@ -29,7 +28,7 @@ public final class OxmDeserializerHelper {
      * @param matchEntryLength mask length
      * @return binary mask
      */
-    public static byte[] convertMask(ByteBuf input, int matchEntryLength) {
+    public static byte[] convertMask(final ByteBuf input, final int matchEntryLength) {
         byte[] mask = new byte[matchEntryLength];
         input.readBytes(mask);
         return mask;
@@ -40,9 +39,9 @@ public final class OxmDeserializerHelper {
      * @param input input ByteBuf
      * @return mac address
      */
-    public static MacAddress convertMacAddress(ByteBuf input) {
+    public static MacAddress convertMacAddress(final ByteBuf input) {
         byte[] address = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
         input.readBytes(address);
-        return new MacAddress(ByteBufUtils.macAddressToString(address));
+        return IetfYangUtil.INSTANCE.macAddressFor(address);
     }
 }
