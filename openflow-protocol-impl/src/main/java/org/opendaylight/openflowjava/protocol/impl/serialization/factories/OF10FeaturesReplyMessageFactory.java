@@ -13,6 +13,7 @@ import java.util.Map;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.IetfYangUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionTypeV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.CapabilitiesV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfigV10;
@@ -31,7 +32,7 @@ public class OF10FeaturesReplyMessageFactory implements OFSerializer<GetFeatures
     private static final byte MESSAGE_TYPE = 6;
 
     @Override
-    public void serialize(GetFeaturesOutput message, ByteBuf outBuffer) {
+    public void serialize(final GetFeaturesOutput message, final ByteBuf outBuffer) {
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeLong(message.getDatapathId().longValue());
         outBuffer.writeInt(message.getBuffers().intValue());
@@ -41,7 +42,7 @@ public class OF10FeaturesReplyMessageFactory implements OFSerializer<GetFeatures
         outBuffer.writeInt(createActionsV10(message.getActionsV10()));
         for (PhyPort port : message.getPhyPort()) {
             outBuffer.writeShort(port.getPortNo().intValue());
-            writeMacAddress(port.getHwAddr().getValue(), outBuffer);
+            outBuffer.writeBytes(IetfYangUtil.INSTANCE.bytesFor(port.getHwAddr()));
             writeName(port.getName(), outBuffer);
             writePortConfig(port.getConfigV10(), outBuffer);
             writePortState(port.getStateV10(), outBuffer);
@@ -53,7 +54,7 @@ public class OF10FeaturesReplyMessageFactory implements OFSerializer<GetFeatures
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
-    private void writePortFeature(PortFeaturesV10 feature, ByteBuf outBuffer) {
+    private void writePortFeature(final PortFeaturesV10 feature, final ByteBuf outBuffer) {
         Map<Integer, Boolean> map = new HashMap<>();
         map.put(0, feature.is_10mbHd());
         map.put(1, feature.is_10mbFd());
@@ -71,7 +72,7 @@ public class OF10FeaturesReplyMessageFactory implements OFSerializer<GetFeatures
         outBuffer.writeInt(bitmap);
     }
 
-    private void writePortState(PortStateV10 state, ByteBuf outBuffer) {
+    private void writePortState(final PortStateV10 state, final ByteBuf outBuffer) {
         Map<Integer, Boolean> map = new HashMap<>();
         map.put(0, state.isLinkDown());
         map.put(1, state.isBlocked());
@@ -85,7 +86,7 @@ public class OF10FeaturesReplyMessageFactory implements OFSerializer<GetFeatures
         outBuffer.writeInt(bitmap);
     }
 
-    private void writePortConfig(PortConfigV10 config, ByteBuf outBuffer) {
+    private void writePortConfig(final PortConfigV10 config, final ByteBuf outBuffer) {
         Map<Integer, Boolean> map = new HashMap<>();
         map.put(0, config.isPortDown());
         map.put(1, config.isNoStp());
@@ -98,7 +99,7 @@ public class OF10FeaturesReplyMessageFactory implements OFSerializer<GetFeatures
         outBuffer.writeInt(bitmap);
     }
 
-    private static int createCapabilities(CapabilitiesV10 capabilities) {
+    private static int createCapabilities(final CapabilitiesV10 capabilities) {
         Map<Integer, Boolean> map = new HashMap<>();
         map.put(0, capabilities.isOFPCFLOWSTATS());
         map.put(1, capabilities.isOFPCTABLESTATS());
@@ -120,17 +121,7 @@ public class OF10FeaturesReplyMessageFactory implements OFSerializer<GetFeatures
 
     }
 
-    private void writeMacAddress(String macAddress, ByteBuf outBuffer) {
-        String[] macAddressParts = macAddress.split(":");
-        byte[] macAddressBytes = new byte[6];
-        for (int i = 0; i < 6; i++) {
-            Integer hex = Integer.parseInt(macAddressParts[i], 16);
-            macAddressBytes[i] = hex.byteValue();
-        }
-        outBuffer.writeBytes(macAddressBytes);
-    }
-
-    private void writeName(String name, ByteBuf outBuffer) {
+    private void writeName(final String name, final ByteBuf outBuffer) {
         byte[] nameBytes = name.getBytes();
         if (nameBytes.length < 16) {
             byte[] nameBytesPadding = new byte[16];

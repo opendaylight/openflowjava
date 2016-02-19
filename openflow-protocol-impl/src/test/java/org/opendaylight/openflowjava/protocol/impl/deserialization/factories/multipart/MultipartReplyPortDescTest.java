@@ -88,7 +88,7 @@ public class MultipartReplyPortDescTest {
         Assert.assertEquals("Wrong port desc size", 2, message.getPorts().size());
         Ports port = message.getPorts().get(0);
         Assert.assertEquals("Wrong portNo", 66051L, port.getPortNo().longValue());
-        Assert.assertEquals("Wrong macAddress", new MacAddress("08:00:27:00:B0:EB"), port.getHwAddr());
+        Assert.assertEquals("Wrong macAddress", new MacAddress("08:00:27:00:b0:eb"), port.getHwAddr());
         Assert.assertEquals("Wrong portName", "Opendaylight", port.getName());
         Assert.assertEquals("Wrong portConfig", new PortConfig(true, true, true, true), port.getConfig());
         Assert.assertEquals("Wrong portState", new PortState(true, true, true), port.getState());
@@ -104,7 +104,7 @@ public class MultipartReplyPortDescTest {
         Assert.assertEquals("Wrong maxSpeed", 128L, port.getMaxSpeed().longValue());
         port = message.getPorts().get(1);
         Assert.assertEquals("Wrong portNo", 1L, port.getPortNo().longValue());
-        Assert.assertEquals("Wrong macAddress", new MacAddress("08:00:27:00:B0:EB"), port.getHwAddr());
+        Assert.assertEquals("Wrong macAddress", new MacAddress("08:00:27:00:b0:eb"), port.getHwAddr());
         Assert.assertEquals("Wrong portName", "Opendaylight", port.getName());
         Assert.assertEquals("Wrong portConfig", new PortConfig(false, false, false, false), port.getConfig());
         Assert.assertEquals("Wrong portState", new PortState(false, false, false), port.getState());

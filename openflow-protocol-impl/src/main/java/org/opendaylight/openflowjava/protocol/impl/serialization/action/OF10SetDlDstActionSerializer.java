@@ -9,9 +9,8 @@
 package org.opendaylight.openflowjava.protocol.impl.serialization.action;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.IetfYangUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetDlDstCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
 
@@ -22,10 +21,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev1
 public class OF10SetDlDstActionSerializer extends AbstractActionSerializer {
 
     @Override
-    public void serialize(Action action, ByteBuf outBuffer) {
+    public void serialize(final Action action, final ByteBuf outBuffer) {
         super.serialize(action, outBuffer);
-        outBuffer.writeBytes(ByteBufUtils.macAddressToBytes(((SetDlDstCase) action.getActionChoice())
-                .getSetDlDstAction().getDlDstAddress().getValue()));
+        outBuffer.writeBytes(IetfYangUtil.INSTANCE.bytesFor(((SetDlDstCase) action.getActionChoice())
+                .getSetDlDstAction().getDlDstAddress()));
         outBuffer.writeZero(ActionConstants.PADDING_IN_DL_ADDRESS_ACTION);
     }
 

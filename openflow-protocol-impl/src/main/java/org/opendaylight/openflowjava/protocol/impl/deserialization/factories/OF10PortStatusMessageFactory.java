@@ -9,12 +9,10 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.OpenflowUtils;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortStatusMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortStatusMessageBuilder;
@@ -28,7 +26,7 @@ public class OF10PortStatusMessageFactory implements OFDeserializer<PortStatusMe
     private static final byte PADDING_IN_PORT_STATUS_HEADER = 7;
 
     @Override
-    public PortStatusMessage deserialize(ByteBuf rawMessage) {
+    public PortStatusMessage deserialize(final ByteBuf rawMessage) {
         PortStatusMessageBuilder builder = new PortStatusMessageBuilder();
         builder.setVersion((short) EncodeConstants.OF10_VERSION_ID);
         builder.setXid(rawMessage.readUnsignedInt());
@@ -38,11 +36,9 @@ public class OF10PortStatusMessageFactory implements OFDeserializer<PortStatusMe
         return builder.build();
     }
 
-    private static void deserializePort(ByteBuf rawMessage, PortStatusMessageBuilder builder) {
+    private static void deserializePort(final ByteBuf rawMessage, final PortStatusMessageBuilder builder) {
         builder.setPortNo((long) rawMessage.readUnsignedShort());
-        byte[] address = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
-        rawMessage.readBytes(address);
-        builder.setHwAddr(new MacAddress(ByteBufUtils.macAddressToString(address)));
+        builder.setHwAddr(ByteBufUtils.readIetfMacAddress(rawMessage));
         builder.setName(ByteBufUtils.decodeNullTerminatedString(rawMessage, EncodeConstants.MAX_PORT_NAME_LENGTH));
         builder.setConfigV10(OpenflowUtils.createPortConfig(rawMessage.readUnsignedInt()));
         builder.setStateV10(OpenflowUtils.createPortState(rawMessage.readUnsignedInt()));

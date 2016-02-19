@@ -22,7 +22,6 @@ import org.opendaylight.openflowjava.protocol.impl.util.CodeKeyMakerFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.ListDeserializer;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.util.ExperimenterDeserializerKeyFactory;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ActionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ActionRelatedTableFeaturePropertyBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.InstructionRelatedTableFeatureProperty;
@@ -182,7 +181,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     private DeserializerRegistry registry;
 
     @Override
-    public MultipartReplyMessage deserialize(ByteBuf rawMessage) {
+    public MultipartReplyMessage deserialize(final ByteBuf rawMessage) {
         MultipartReplyMessageBuilder builder = new MultipartReplyMessageBuilder();
         builder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
         builder.setXid(rawMessage.readUnsignedInt());
@@ -244,7 +243,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return builder.build();
     }
 
-    private static MultipartReplyDescCase setDesc(ByteBuf input) {
+    private static MultipartReplyDescCase setDesc(final ByteBuf input) {
         MultipartReplyDescCaseBuilder caseBuilder = new MultipartReplyDescCaseBuilder();
         MultipartReplyDescBuilder descBuilder = new MultipartReplyDescBuilder();
         byte[] mfrDescBytes = new byte[DESC_STR_LEN];
@@ -271,7 +270,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return caseBuilder.build();
     }
 
-    private MultipartReplyFlowCase setFlow(ByteBuf input) {
+    private MultipartReplyFlowCase setFlow(final ByteBuf input) {
         MultipartReplyFlowCaseBuilder caseBuilder = new MultipartReplyFlowCaseBuilder();
         MultipartReplyFlowBuilder flowBuilder = new MultipartReplyFlowBuilder();
         List<FlowStats> flowStatsList = new ArrayList<>();
@@ -312,7 +311,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return caseBuilder.build();
     }
 
-    private static FlowModFlags createFlowModFlagsFromBitmap(int input) {
+    private static FlowModFlags createFlowModFlagsFromBitmap(final int input) {
         final Boolean fmfSENDFLOWREM = (input & (1 << 0)) != 0;
         final Boolean fmfCHECKOVERLAP = (input & (1 << 1)) != 0;
         final Boolean fmfRESETCOUNTS = (input & (1 << 2)) != 0;
@@ -321,7 +320,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return new FlowModFlags(fmfCHECKOVERLAP, fmfNOBYTCOUNTS, fmfNOPKTCOUNTS, fmfRESETCOUNTS, fmfSENDFLOWREM);
     }
 
-    private static MultipartReplyAggregateCase setAggregate(ByteBuf input) {
+    private static MultipartReplyAggregateCase setAggregate(final ByteBuf input) {
         MultipartReplyAggregateCaseBuilder caseBuilder = new MultipartReplyAggregateCaseBuilder();
         MultipartReplyAggregateBuilder builder = new MultipartReplyAggregateBuilder();
         byte[] packetCount = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
@@ -336,7 +335,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return caseBuilder.build();
     }
 
-    private static MultipartReplyTableCase setTable(ByteBuf input) {
+    private static MultipartReplyTableCase setTable(final ByteBuf input) {
         MultipartReplyTableCaseBuilder caseBuilder = new MultipartReplyTableCaseBuilder();
         MultipartReplyTableBuilder builder = new MultipartReplyTableBuilder();
         List<TableStats> tableStatsList = new ArrayList<>();
@@ -358,7 +357,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return caseBuilder.build();
     }
 
-    private MultipartReplyTableFeaturesCase setTableFeatures(ByteBuf input) {
+    private MultipartReplyTableFeaturesCase setTableFeatures(final ByteBuf input) {
         MultipartReplyTableFeaturesCaseBuilder caseBuilder = new MultipartReplyTableFeaturesCaseBuilder();
         MultipartReplyTableFeaturesBuilder builder = new MultipartReplyTableFeaturesBuilder();
         List<TableFeatures> features = new ArrayList<>();
@@ -385,12 +384,12 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return caseBuilder.build();
     }
 
-    private static TableConfig createTableConfig(long input) {
+    private static TableConfig createTableConfig(final long input) {
         boolean deprecated = (input & 3) != 0;
         return new TableConfig(deprecated);
     }
 
-    private List<TableFeatureProperties> createTableFeaturesProperties(ByteBuf input, int length) {
+    private List<TableFeatureProperties> createTableFeaturesProperties(final ByteBuf input, final int length) {
         List<TableFeatureProperties> properties = new ArrayList<>();
         int tableFeaturesLength = length;
         while (tableFeaturesLength > 0) {
@@ -465,7 +464,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return properties;
     }
 
-    private static MultipartReplyPortStatsCase setPortStats(ByteBuf input) {
+    private static MultipartReplyPortStatsCase setPortStats(final ByteBuf input) {
         MultipartReplyPortStatsCaseBuilder caseBuilder = new MultipartReplyPortStatsCaseBuilder();
         MultipartReplyPortStatsBuilder builder = new MultipartReplyPortStatsBuilder();
         List<PortStats> portStatsList = new ArrayList<>();
@@ -518,7 +517,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return caseBuilder.build();
     }
 
-    private static MultipartReplyQueueCase setQueue(ByteBuf input) {
+    private static MultipartReplyQueueCase setQueue(final ByteBuf input) {
         MultipartReplyQueueCaseBuilder caseBuilder = new MultipartReplyQueueCaseBuilder();
         MultipartReplyQueueBuilder builder = new MultipartReplyQueueBuilder();
         List<QueueStats> queueStatsList = new ArrayList<>();
@@ -544,7 +543,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return caseBuilder.build();
     }
 
-    private static MultipartReplyGroupCase setGroup(ByteBuf input) {
+    private static MultipartReplyGroupCase setGroup(final ByteBuf input) {
         MultipartReplyGroupCaseBuilder caseBuilder = new MultipartReplyGroupCaseBuilder();
         MultipartReplyGroupBuilder builder = new MultipartReplyGroupBuilder();
         List<GroupStats> groupStatsList = new ArrayList<>();
@@ -584,7 +583,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return caseBuilder.build();
     }
 
-    private static MultipartReplyMeterFeaturesCase setMeterFeatures(ByteBuf input) {
+    private static MultipartReplyMeterFeaturesCase setMeterFeatures(final ByteBuf input) {
         MultipartReplyMeterFeaturesCaseBuilder caseBuilder = new MultipartReplyMeterFeaturesCaseBuilder();
         MultipartReplyMeterFeaturesBuilder builder = new MultipartReplyMeterFeaturesBuilder();
         builder.setMaxMeter(input.readUnsignedInt());
@@ -597,7 +596,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return caseBuilder.build();
     }
 
-    private static MeterFlags createMeterFlags(long input) {
+    private static MeterFlags createMeterFlags(final long input) {
         final Boolean mfKBPS = (input & (1 << 0)) != 0;
         final Boolean mfPKTPS = (input & (1 << 1)) != 0;
         final Boolean mfBURST = (input & (1 << 2)) != 0;
@@ -605,13 +604,13 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return new MeterFlags(mfBURST, mfKBPS, mfPKTPS, mfSTATS);
     }
 
-    private static MeterBandTypeBitmap createMeterBandsBitmap(long input) {
+    private static MeterBandTypeBitmap createMeterBandsBitmap(final long input) {
         final Boolean mbtDROP = (input & (1 << 1)) != 0;
         final Boolean mbtDSCPREMARK = (input & (1 << 2)) != 0;
         return new MeterBandTypeBitmap(mbtDROP, mbtDSCPREMARK);
     }
 
-    private static MultipartReplyMeterCase setMeter(ByteBuf input) {
+    private static MultipartReplyMeterCase setMeter(final ByteBuf input) {
         MultipartReplyMeterCaseBuilder caseBuilder = new MultipartReplyMeterCaseBuilder();
         MultipartReplyMeterBuilder builder = new MultipartReplyMeterBuilder();
         List<MeterStats> meterStatsList = new ArrayList<>();
@@ -650,7 +649,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return caseBuilder.build();
     }
 
-    private MultipartReplyMeterConfigCase setMeterConfig(ByteBuf input) {
+    private MultipartReplyMeterConfigCase setMeterConfig(final ByteBuf input) {
         MultipartReplyMeterConfigCaseBuilder caseBuilder = new MultipartReplyMeterConfigCaseBuilder();
         MultipartReplyMeterConfigBuilder builder = new MultipartReplyMeterConfigBuilder();
         List<MeterConfig> meterConfigList = new ArrayList<>();
@@ -711,7 +710,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return caseBuilder.build();
     }
 
-    private MultipartReplyExperimenterCase setExperimenter(ByteBuf input) {
+    private MultipartReplyExperimenterCase setExperimenter(final ByteBuf input) {
         final long expId = input.readUnsignedInt();
         final long expType = input.readUnsignedInt();
 
@@ -728,7 +727,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return mpReplyExperimenterCaseBld.build();
     }
 
-    private static MultipartReplyPortDescCase setPortDesc(ByteBuf input) {
+    private static MultipartReplyPortDescCase setPortDesc(final ByteBuf input) {
         MultipartReplyPortDescCaseBuilder caseBuilder = new MultipartReplyPortDescCaseBuilder();
         MultipartReplyPortDescBuilder builder = new MultipartReplyPortDescBuilder();
         List<Ports> portsList = new ArrayList<>();
@@ -736,9 +735,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             PortsBuilder portsBuilder = new PortsBuilder();
             portsBuilder.setPortNo(input.readUnsignedInt());
             input.skipBytes(PADDING_IN_PORT_DESC_HEADER_01);
-            byte[] hwAddress = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
-            input.readBytes(hwAddress);
-            portsBuilder.setHwAddr(new MacAddress(ByteBufUtils.macAddressToString(hwAddress)));
+            portsBuilder.setHwAddr(ByteBufUtils.readIetfMacAddress(input));
             input.skipBytes(PADDING_IN_PORT_DESC_HEADER_02);
             portsBuilder.setName(ByteBufUtils.decodeNullTerminatedString(input, EncodeConstants.MAX_PORT_NAME_LENGTH));
             portsBuilder.setConfig(createPortConfig(input.readUnsignedInt()));
@@ -756,7 +753,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return caseBuilder.build();
     }
 
-    private static PortConfig createPortConfig(long input) {
+    private static PortConfig createPortConfig(final long input) {
         final Boolean pcPortDown = ((input) & (1 << 0)) != 0;
         final Boolean pcNRecv = ((input) & (1 << 2)) != 0;
         final Boolean pcNFwd = ((input) & (1 << 5)) != 0;
@@ -764,14 +761,14 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return new PortConfig(pcNFwd, pcNPacketIn, pcNRecv, pcPortDown);
     }
 
-    private static PortState createPortState(long input) {
+    private static PortState createPortState(final long input) {
         final Boolean psLinkDown = ((input) & (1 << 0)) != 0;
         final Boolean psBlocked = ((input) & (1 << 1)) != 0;
         final Boolean psLive = ((input) & (1 << 2)) != 0;
         return new PortState(psBlocked, psLinkDown, psLive);
     }
 
-    private static PortFeatures createPortFeatures(long input) {
+    private static PortFeatures createPortFeatures(final long input) {
         final Boolean pf10mbHd = ((input) & (1 << 0)) != 0;
         final Boolean pf10mbFd = ((input) & (1 << 1)) != 0;
         final Boolean pf100mbHd = ((input) & (1 << 2)) != 0;
@@ -792,7 +789,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                 pf1gbHd, pf1tbFd, pf40gbFd, pfAutoneg, pfCopper, pfFiber, pfOther, pfPause, pfPauseAsym);
     }
 
-    private static MultipartReplyGroupFeaturesCase setGroupFeatures(ByteBuf rawMessage) {
+    private static MultipartReplyGroupFeaturesCase setGroupFeatures(final ByteBuf rawMessage) {
         MultipartReplyGroupFeaturesCaseBuilder caseBuilder = new MultipartReplyGroupFeaturesCaseBuilder();
         MultipartReplyGroupFeaturesBuilder featuresBuilder = new MultipartReplyGroupFeaturesBuilder();
         featuresBuilder.setTypes(createGroupType(rawMessage.readUnsignedInt()));
@@ -811,7 +808,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return caseBuilder.build();
     }
 
-    private static ActionType createActionBitmap(long input) {
+    private static ActionType createActionBitmap(final long input) {
         final Boolean atOutput = ((input) & (1 << 0)) != 0;
         final Boolean atCopyTTLout = ((input) & (1 << 11)) != 0;
         final Boolean atCopyTTLin = ((input) & (1 << 12)) != 0;
@@ -835,7 +832,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                 atSetField, atSetMplsTTL, atSetNWTTL, atSetQueue);
     }
 
-    private static GroupCapabilities createCapabilities(long input) {
+    private static GroupCapabilities createCapabilities(final long input) {
         final Boolean gcSelectWeight = ((input) & (1 << 0)) != 0;
         final Boolean gcSelectLiveness = ((input) & (1 << 1)) != 0;
         final Boolean gcChaining = ((input) & (1 << 2)) != 0;
@@ -843,7 +840,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return new GroupCapabilities(gcChaining, gcChainingChecks, gcSelectLiveness, gcSelectWeight);
     }
 
-    private static GroupTypes createGroupType(long input) {
+    private static GroupTypes createGroupType(final long input) {
         final Boolean gtAll = ((input) & (1 << 0)) != 0;
         final Boolean gtSelect = ((input) & (1 << 1)) != 0;
         final Boolean gtIndirect = ((input) & (1 << 2)) != 0;
@@ -851,7 +848,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
         return new GroupTypes(gtAll, gtFF, gtIndirect, gtSelect);
     }
 
-    private MultipartReplyGroupDescCase setGroupDesc(ByteBuf input) {
+    private MultipartReplyGroupDescCase setGroupDesc(final ByteBuf input) {
         MultipartReplyGroupDescCaseBuilder caseBuilder = new MultipartReplyGroupDescCaseBuilder();
         MultipartReplyGroupDescBuilder builder = new MultipartReplyGroupDescBuilder();
         List<GroupDesc> groupDescsList = new ArrayList<>();
@@ -887,7 +884,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
 
     @Override
     public void injectDeserializerRegistry(
-            DeserializerRegistry deserializerRegistry) {
+            final DeserializerRegistry deserializerRegistry) {
         registry = deserializerRegistry;
     }
 }

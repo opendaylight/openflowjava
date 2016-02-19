@@ -72,7 +72,7 @@ public class PortStatusMessageFactoryTest {
         BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong reason", 0x01, builtByFactory.getReason().getIntValue());
         Assert.assertEquals("Wrong portNumber", 66051L, builtByFactory.getPortNo().longValue());
-        Assert.assertEquals("Wrong macAddress", new MacAddress("08:00:27:00:B0:EB"), builtByFactory.getHwAddr());
+        Assert.assertEquals("Wrong macAddress", new MacAddress("08:00:27:00:b0:eb"), builtByFactory.getHwAddr());
         Assert.assertEquals("Wrong name", "s1-eth1", builtByFactory.getName());
         Assert.assertEquals("Wrong portConfig", new PortConfig(false, true, false, true), builtByFactory.getConfig());
         Assert.assertEquals("Wrong portState", new PortState(false, true, true), builtByFactory.getState());

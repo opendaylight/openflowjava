@@ -22,6 +22,7 @@ import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMaker;
 import org.opendaylight.openflowjava.protocol.impl.util.TypeKeyMakerFactory;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.util.ExperimenterSerializerKeyFactory;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.IetfYangUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ActionRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ExperimenterIdTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.InstructionRelatedTableFeatureProperty;
@@ -145,12 +146,12 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
     private static final byte APPLY_SETFIELD_MISS_CODE = 15;
 
     @Override
-    public void injectSerializerRegistry(SerializerRegistry serializerRegistry) {
+    public void injectSerializerRegistry(final SerializerRegistry serializerRegistry) {
         this.registry = serializerRegistry;
     }
 
     @Override
-    public void serialize(MultipartReplyMessage message, ByteBuf outBuffer) {
+    public void serialize(final MultipartReplyMessage message, final ByteBuf outBuffer) {
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeShort(message.getType().getIntValue());
         writeFlags(message.getFlags(), outBuffer);
@@ -205,20 +206,20 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
-    private void serializeExperimenterBody(MultipartReplyBody body, ByteBuf outBuffer) {
+    private void serializeExperimenterBody(final MultipartReplyBody body, final ByteBuf outBuffer) {
         MultipartReplyExperimenterCase experimenterCase = (MultipartReplyExperimenterCase) body;
         MultipartReplyExperimenter experimenterBody = experimenterCase.getMultipartReplyExperimenter();
         // TODO: experimenterBody does not have get methods
     }
 
-    private void writeFlags(MultipartRequestFlags flags, ByteBuf outBuffer) {
+    private void writeFlags(final MultipartRequestFlags flags, final ByteBuf outBuffer) {
         Map<Integer, Boolean> map = new HashMap<>();
         map.put(0, flags.isOFPMPFREQMORE());
         int bitmap = ByteBufUtils.fillBitMaskFromMap(map);
         outBuffer.writeShort(bitmap);
     }
 
-    private void serializeTableFeaturesBody(MultipartReplyBody body, ByteBuf outBuffer) {
+    private void serializeTableFeaturesBody(final MultipartReplyBody body, final ByteBuf outBuffer) {
         MultipartReplyTableFeaturesCase tableFeaturesCase = (MultipartReplyTableFeaturesCase) body;
         MultipartReplyTableFeatures tableFeatures = tableFeaturesCase.getMultipartReplyTableFeatures();
         for (TableFeatures tableFeature : tableFeatures.getTableFeatures()) {
@@ -375,14 +376,14 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         return result;
     }
 
-    private void writeTableConfig(TableConfig tableConfig, ByteBuf outBuffer) {
+    private void writeTableConfig(final TableConfig tableConfig, final ByteBuf outBuffer) {
         Map<Integer, Boolean> map = new HashMap<>();
         map.put(0, tableConfig.isOFPTCDEPRECATEDMASK());
         int bitmap = ByteBufUtils.fillBitMaskFromMap(map);
         outBuffer.writeInt(bitmap);
     }
 
-    private void serializeMeterFeaturesBody(MultipartReplyBody body, ByteBuf outBuffer) {
+    private void serializeMeterFeaturesBody(final MultipartReplyBody body, final ByteBuf outBuffer) {
         MultipartReplyMeterFeaturesCase meterFeaturesCase = (MultipartReplyMeterFeaturesCase) body;
         MultipartReplyMeterFeatures meterFeatures = meterFeaturesCase.getMultipartReplyMeterFeatures();
         outBuffer.writeInt(meterFeatures.getMaxMeter().intValue());
@@ -393,7 +394,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         outBuffer.writeZero(METER_FEATURES_PADDING);
     }
 
-    private void writeBandTypes(MeterBandTypeBitmap bandTypes, ByteBuf outBuffer) {
+    private void writeBandTypes(final MeterBandTypeBitmap bandTypes, final ByteBuf outBuffer) {
         Map<Integer, Boolean> map = new HashMap<>();
         map.put(0, bandTypes.isOFPMBTDROP());
         map.put(1, bandTypes.isOFPMBTDSCPREMARK());
@@ -401,7 +402,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         outBuffer.writeInt(bitmap);
     }
 
-    private void serializeMeterConfigBody(MultipartReplyBody body, ByteBuf outBuffer) {
+    private void serializeMeterConfigBody(final MultipartReplyBody body, final ByteBuf outBuffer) {
         MultipartReplyMeterConfigCase meterConfigCase = (MultipartReplyMeterConfigCase) body;
         MultipartReplyMeterConfig meter = meterConfigCase.getMultipartReplyMeterConfig();
         for (MeterConfig meterConfig : meter.getMeterConfig()) {
@@ -437,7 +438,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         outBuffer.writeInt(meterBand.getBurstSize().intValue());
     }
 
-    private void writeMeterFlags(MeterFlags flags, ByteBuf outBuffer) {
+    private void writeMeterFlags(final MeterFlags flags, final ByteBuf outBuffer) {
         Map<Integer, Boolean> map = new HashMap<>();
         map.put(0, flags.isOFPMFKBPS());
         map.put(1, flags.isOFPMFPKTPS());
@@ -447,7 +448,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         outBuffer.writeShort(bitmap);
     }
 
-    private void serializeMeterBody(MultipartReplyBody body, ByteBuf outBuffer) {
+    private void serializeMeterBody(final MultipartReplyBody body, final ByteBuf outBuffer) {
         MultipartReplyMeterCase meterCase = (MultipartReplyMeterCase) body;
         MultipartReplyMeter meter = meterCase.getMultipartReplyMeter();
         for (MeterStats meterStats : meter.getMeterStats()) {
@@ -469,7 +470,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         }
     }
 
-    private void serializeGroupFeaturesBody(MultipartReplyBody body, ByteBuf outBuffer) {
+    private void serializeGroupFeaturesBody(final MultipartReplyBody body, final ByteBuf outBuffer) {
         MultipartReplyGroupFeaturesCase groupFeaturesCase = (MultipartReplyGroupFeaturesCase) body;
         MultipartReplyGroupFeatures groupFeatures = groupFeaturesCase.getMultipartReplyGroupFeatures();
         writeGroupTypes(groupFeatures.getTypes(), outBuffer);
@@ -482,7 +483,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         }
     }
 
-    private void writeActionType(ActionType action, ByteBuf outBuffer) {
+    private void writeActionType(final ActionType action, final ByteBuf outBuffer) {
         Map<Integer, Boolean> map = new HashMap<>();
         map.put(0, action.isOFPATOUTPUT());
         map.put(1, action.isOFPATCOPYTTLOUT());
@@ -505,7 +506,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         outBuffer.writeInt(bitmap);
     }
 
-    private void writeGroupCapabilities(GroupCapabilities capabilities, ByteBuf outBuffer) {
+    private void writeGroupCapabilities(final GroupCapabilities capabilities, final ByteBuf outBuffer) {
         Map<Integer, Boolean> map = new HashMap<>();
         map.put(0, capabilities.isOFPGFCSELECTWEIGHT());
         map.put(1, capabilities.isOFPGFCSELECTLIVENESS());
@@ -515,7 +516,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         outBuffer.writeInt(bitmap);
     }
 
-    private void writeGroupTypes(GroupTypes types, ByteBuf outBuffer) {
+    private void writeGroupTypes(final GroupTypes types, final ByteBuf outBuffer) {
         Map<Integer, Boolean> map = new HashMap<>();
         map.put(0, types.isOFPGTALL());
         map.put(1, types.isOFPGTSELECT());
@@ -525,7 +526,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         outBuffer.writeInt(bitmap);
     }
 
-    private void serializeGroupDescBody(MultipartReplyBody body, ByteBuf outBuffer, MultipartReplyMessage message) {
+    private void serializeGroupDescBody(final MultipartReplyBody body, final ByteBuf outBuffer, final MultipartReplyMessage message) {
         MultipartReplyGroupDescCase groupDescCase = (MultipartReplyGroupDescCase) body;
         MultipartReplyGroupDesc group = groupDescCase.getMultipartReplyGroupDesc();
         for (GroupDesc groupDesc : group.getGroupDesc()) {
@@ -551,7 +552,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         }
     }
 
-    private void serializeGroupBody(MultipartReplyBody body, ByteBuf outBuffer) {
+    private void serializeGroupBody(final MultipartReplyBody body, final ByteBuf outBuffer) {
         MultipartReplyGroupCase groupCase = (MultipartReplyGroupCase) body;
         MultipartReplyGroup group = groupCase.getMultipartReplyGroup();
         for (GroupStats groupStats : group.getGroupStats()) {
@@ -574,7 +575,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         }
     }
 
-    private void serializeQueueBody(MultipartReplyBody body, ByteBuf outBuffer) {
+    private void serializeQueueBody(final MultipartReplyBody body, final ByteBuf outBuffer) {
         MultipartReplyQueueCase queueCase = (MultipartReplyQueueCase) body;
         MultipartReplyQueue queue = queueCase.getMultipartReplyQueue();
         for (QueueStats queueStats : queue.getQueueStats()) {
@@ -588,7 +589,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         }
     }
 
-    private void serializePortStatsBody(MultipartReplyBody body, ByteBuf outBuffer) {
+    private void serializePortStatsBody(final MultipartReplyBody body, final ByteBuf outBuffer) {
         MultipartReplyPortStatsCase portStatsCase = (MultipartReplyPortStatsCase) body;
         MultipartReplyPortStats portStats = portStatsCase.getMultipartReplyPortStats();
         for (PortStats portStat : portStats.getPortStats()) {
@@ -611,7 +612,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         }
     }
 
-    private void serializeTableBody(MultipartReplyBody body, ByteBuf outBuffer) {
+    private void serializeTableBody(final MultipartReplyBody body, final ByteBuf outBuffer) {
         MultipartReplyTableCase tableCase = (MultipartReplyTableCase) body;
         MultipartReplyTable table = tableCase.getMultipartReplyTable();
         for (TableStats tableStats : table.getTableStats()) {
@@ -623,7 +624,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         }
     }
 
-    private void serializeAggregateBody(MultipartReplyBody body, ByteBuf outBuffer) {
+    private void serializeAggregateBody(final MultipartReplyBody body, final ByteBuf outBuffer) {
         MultipartReplyAggregateCase aggregateCase = (MultipartReplyAggregateCase) body;
         MultipartReplyAggregate aggregate = aggregateCase.getMultipartReplyAggregate();
         outBuffer.writeLong(aggregate.getPacketCount().longValue());
@@ -632,7 +633,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         outBuffer.writeZero(AGGREGATE_PADDING);
     }
 
-    private void serializeFlowBody(MultipartReplyBody body, ByteBuf outBuffer, MultipartReplyMessage message) {
+    private void serializeFlowBody(final MultipartReplyBody body, final ByteBuf outBuffer, final MultipartReplyMessage message) {
         MultipartReplyFlowCase flowCase = (MultipartReplyFlowCase) body;
         MultipartReplyFlow flow = flowCase.getMultipartReplyFlow();
         for (FlowStats flowStats : flow.getFlowStats()) {
@@ -660,7 +661,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         }
     }
 
-    private void serializeDescBody(MultipartReplyBody body, ByteBuf outBuffer) {
+    private void serializeDescBody(final MultipartReplyBody body, final ByteBuf outBuffer) {
         MultipartReplyDescCase descCase = (MultipartReplyDescCase) body;
         MultipartReplyDesc desc = descCase.getMultipartReplyDesc();
         write256String(desc.getMfrDesc(), outBuffer);
@@ -670,7 +671,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         write256String(desc.getDpDesc(), outBuffer);
     }
 
-    private void write256String(String toWrite, ByteBuf outBuffer) {
+    private void write256String(final String toWrite, final ByteBuf outBuffer) {
         byte[] nameBytes = toWrite.getBytes();
         if (nameBytes.length < 256) {
             byte[] nameBytesPadding = new byte[256];
@@ -688,7 +689,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         }
     }
 
-    private void write32String(String toWrite, ByteBuf outBuffer) {
+    private void write32String(final String toWrite, final ByteBuf outBuffer) {
         byte[] nameBytes = toWrite.getBytes();
         if (nameBytes.length < 32) {
             byte[] nameBytesPadding = new byte[32];
@@ -706,14 +707,14 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         }
     }
 
-    private void serializePortDescBody(MultipartReplyBody body, ByteBuf outBuffer) {
+    private void serializePortDescBody(final MultipartReplyBody body, final ByteBuf outBuffer) {
         MultipartReplyPortDescCase portCase = (MultipartReplyPortDescCase) body;
         MultipartReplyPortDesc portDesc = portCase.getMultipartReplyPortDesc();
         for (Ports port : portDesc.getPorts()) {
             outBuffer.writeInt(port.getPortNo().intValue()); // Assuming PortNo
                                                              // = PortId
             outBuffer.writeZero(PORT_DESC_PADDING_1);
-            writeMacAddress(port.getHwAddr().getValue(), outBuffer);
+            outBuffer.writeBytes(IetfYangUtil.INSTANCE.bytesFor(port.getHwAddr()));
             outBuffer.writeZero(PORT_DESC_PADDING_2);
             writeName(port.getName(), outBuffer);
             writePortConfig(port.getConfig(), outBuffer);
@@ -727,7 +728,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         }
     }
 
-    private void writeName(String name, ByteBuf outBuffer) {
+    private void writeName(final String name, final ByteBuf outBuffer) {
         byte[] nameBytes = name.getBytes();
         if (nameBytes.length < 16) {
             byte[] nameBytesPadding = new byte[16];
@@ -746,17 +747,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
 
     }
 
-    private void writeMacAddress(String macAddress, ByteBuf outBuffer) {
-        String[] macAddressParts = macAddress.split(":");
-        byte[] macAddressBytes = new byte[6];
-        for (int i = 0; i < 6; i++) {
-            Integer hex = Integer.parseInt(macAddressParts[i], 16);
-            macAddressBytes[i] = hex.byteValue();
-        }
-        outBuffer.writeBytes(macAddressBytes);
-    }
-
-    private void writePortConfig(PortConfig config, ByteBuf outBuffer) {
+    private void writePortConfig(final PortConfig config, final ByteBuf outBuffer) {
         Map<Integer, Boolean> map = new HashMap<>();
         map.put(0, config.isPortDown());
         map.put(2, config.isNoRecv());
@@ -766,7 +757,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         outBuffer.writeInt(bitmap);
     }
 
-    private void writePortState(PortState state, ByteBuf outBuffer) {
+    private void writePortState(final PortState state, final ByteBuf outBuffer) {
         Map<Integer, Boolean> map = new HashMap<>();
         map.put(0, state.isLinkDown());
         map.put(1, state.isBlocked());
@@ -775,7 +766,7 @@ public class MultipartReplyMessageFactory implements OFSerializer<MultipartReply
         outBuffer.writeInt(bitmap);
     }
 
-    private void writePortFeatures(PortFeatures features, ByteBuf outBuffer) {
+    private void writePortFeatures(final PortFeatures features, final ByteBuf outBuffer) {
         Map<Integer, Boolean> map = new HashMap<>();
         map.put(0, features.is_10mbHd());
         map.put(1, features.is_10mbFd());

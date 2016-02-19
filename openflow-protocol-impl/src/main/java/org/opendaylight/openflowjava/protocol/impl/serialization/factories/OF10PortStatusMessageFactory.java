@@ -13,6 +13,7 @@ import java.util.Map;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.IetfYangUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfigV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeaturesV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortStateV10;
@@ -28,12 +29,12 @@ public class OF10PortStatusMessageFactory implements OFSerializer<PortStatusMess
     private static final byte PADDING = 7;
 
     @Override
-    public void serialize(PortStatusMessage message, ByteBuf outBuffer) {
+    public void serialize(final PortStatusMessage message, final ByteBuf outBuffer) {
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeByte(message.getReason().getIntValue());
         outBuffer.writeZero(PADDING);
         outBuffer.writeShort(message.getPortNo().intValue());
-        writeMacAddress(message.getHwAddr().getValue(), outBuffer);
+        outBuffer.writeBytes(IetfYangUtil.INSTANCE.bytesFor(message.getHwAddr()));
         writeName(message.getName(), outBuffer);
         writePortConfig(message.getConfigV10(), outBuffer);
         writePortState(message.getStateV10(), outBuffer);
@@ -44,7 +45,7 @@ public class OF10PortStatusMessageFactory implements OFSerializer<PortStatusMess
         ByteBufUtils.updateOFHeaderLength(outBuffer);
     }
 
-    private void writePortFeature(PortFeaturesV10 feature, ByteBuf outBuffer) {
+    private void writePortFeature(final PortFeaturesV10 feature, final ByteBuf outBuffer) {
         Map<Integer, Boolean> map = new HashMap<>();
         map.put(0, feature.is_10mbHd());
         map.put(1, feature.is_10mbFd());
@@ -62,7 +63,7 @@ public class OF10PortStatusMessageFactory implements OFSerializer<PortStatusMess
         outBuffer.writeInt(bitmap);
     }
 
-    private void writePortState(PortStateV10 state, ByteBuf outBuffer) {
+    private void writePortState(final PortStateV10 state, final ByteBuf outBuffer) {
         Map<Integer, Boolean> map = new HashMap<>();
         map.put(0, state.isLinkDown());
         map.put(1, state.isBlocked());
@@ -76,7 +77,7 @@ public class OF10PortStatusMessageFactory implements OFSerializer<PortStatusMess
         outBuffer.writeInt(bitmap);
     }
 
-    private void writePortConfig(PortConfigV10 config, ByteBuf outBuffer) {
+    private void writePortConfig(final PortConfigV10 config, final ByteBuf outBuffer) {
         Map<Integer, Boolean> map = new HashMap<>();
         map.put(0, config.isPortDown());
         map.put(1, config.isNoStp());
@@ -89,17 +90,7 @@ public class OF10PortStatusMessageFactory implements OFSerializer<PortStatusMess
         outBuffer.writeInt(bitmap);
     }
 
-    private void writeMacAddress(String macAddress, ByteBuf outBuffer) {
-        String[] macAddressParts = macAddress.split(":");
-        byte[] macAddressBytes = new byte[6];
-        for (int i = 0; i < 6; i++) {
-            Integer hex = Integer.parseInt(macAddressParts[i], 16);
-            macAddressBytes[i] = hex.byteValue();
-        }
-        outBuffer.writeBytes(macAddressBytes);
-    }
-
-    private void writeName(String name, ByteBuf outBuffer) {
+    private void writeName(final String name, final ByteBuf outBuffer) {
         byte[] nameBytes = name.getBytes();
         if (nameBytes.length < 16) {
             byte[] nameBytesPadding = new byte[16];
@@ -115,7 +106,5 @@ public class OF10PortStatusMessageFactory implements OFSerializer<PortStatusMess
         } else {
             outBuffer.writeBytes(nameBytes);
         }
-
     }
-
 }

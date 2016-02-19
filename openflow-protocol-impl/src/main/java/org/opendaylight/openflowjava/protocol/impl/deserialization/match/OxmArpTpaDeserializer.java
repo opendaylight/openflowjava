@@ -8,11 +8,9 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.match;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.ArpTpa;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
@@ -30,16 +28,16 @@ public class OxmArpTpaDeserializer extends AbstractOxmMatchEntryDeserializer
         implements OFDeserializer<MatchEntry> {
 
     @Override
-    public MatchEntry deserialize(ByteBuf input) {
+    public MatchEntry deserialize(final ByteBuf input) {
         MatchEntryBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
         addArpTpaValue(input, builder);
         return builder.build();
     }
 
-    private static void addArpTpaValue(ByteBuf input, MatchEntryBuilder builder) {
+    private static void addArpTpaValue(final ByteBuf input, final MatchEntryBuilder builder) {
         ArpTpaCaseBuilder caseBuilder = new ArpTpaCaseBuilder();
         ArpTpaBuilder arpBuilder = new ArpTpaBuilder();
-        arpBuilder.setIpv4Address(new Ipv4Address(ByteBufUtils.readIpv4Address(input)));
+        arpBuilder.setIpv4Address(ByteBufUtils.readIetfIpv4Address(input));
         if (builder.isHasMask()) {
             arpBuilder.setMask(OxmDeserializerHelper.convertMask(input, EncodeConstants.GROUPS_IN_IPV4_ADDRESS));
         }

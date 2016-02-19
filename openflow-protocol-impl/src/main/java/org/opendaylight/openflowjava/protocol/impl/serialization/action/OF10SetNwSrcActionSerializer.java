@@ -9,9 +9,8 @@
 package org.opendaylight.openflowjava.protocol.impl.serialization.action;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.impl.util.ActionConstants;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IetfInetUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetNwSrcCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.actions.grouping.Action;
 
@@ -24,12 +23,8 @@ public class OF10SetNwSrcActionSerializer extends AbstractActionSerializer {
     @Override
     public void serialize(final Action action, final ByteBuf outBuffer) {
         super.serialize(action, outBuffer);
-        Iterable<String> addressGroups = ByteBufUtils.DOT_SPLITTER
-                .split(((SetNwSrcCase) action.getActionChoice()).getSetNwSrcAction()
-                        .getIpAddress().getValue());
-        for (String group : addressGroups) {
-            outBuffer.writeByte(Short.parseShort(group));
-        }
+        outBuffer.writeBytes(IetfInetUtil.INSTANCE.ipv4AddressBytes(
+            ((SetNwSrcCase) action.getActionChoice()).getSetNwSrcAction().getIpAddress()));
     }
 
     @Override

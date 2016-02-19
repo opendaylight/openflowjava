@@ -9,13 +9,12 @@
 package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.IetfYangUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeatures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PortModInput;
@@ -36,7 +35,7 @@ public class PortModInputMessageFactory implements OFSerializer<PortModInput> {
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeInt(message.getPortNo().getValue().intValue());
         outBuffer.writeZero(PADDING_IN_PORT_MOD_MESSAGE_01);
-        outBuffer.writeBytes(ByteBufUtils.macAddressToBytes(message.getHwAddress().getValue()));
+        outBuffer.writeBytes(IetfYangUtil.INSTANCE.bytesFor(message.getHwAddress()));
         outBuffer.writeZero(PADDING_IN_PORT_MOD_MESSAGE_02);
         outBuffer.writeInt(createPortConfigBitmask(message.getConfig()));
         outBuffer.writeInt(createPortConfigBitmask(message.getMask()));

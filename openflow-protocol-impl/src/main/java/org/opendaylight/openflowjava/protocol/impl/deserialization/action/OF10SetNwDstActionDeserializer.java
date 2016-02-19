@@ -9,10 +9,8 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.action;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.ActionChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.SetNwDstCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.set.nw.dst._case.SetNwDstActionBuilder;
@@ -31,7 +29,7 @@ public class OF10SetNwDstActionDeserializer extends AbstractActionDeserializer {
         input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
         SetNwDstCaseBuilder caseBuilder = new SetNwDstCaseBuilder();
         SetNwDstActionBuilder actionBuilder = new SetNwDstActionBuilder();
-        actionBuilder.setIpAddress(new Ipv4Address(ByteBufUtils.readIpv4Address(input)));
+        actionBuilder.setIpAddress(ByteBufUtils.readIetfIpv4Address(input));
         caseBuilder.setSetNwDstAction(actionBuilder.build());
         builder.setActionChoice(caseBuilder.build());
         return builder.build();

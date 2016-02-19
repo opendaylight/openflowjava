@@ -8,7 +8,6 @@
 package org.opendaylight.openflowjava.protocol.impl.serialization.match;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
@@ -21,10 +20,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.matc
 public class OxmIpv4DstSerializer extends AbstractOxmIpv4AddressSerializer {
 
     @Override
-    public void serialize(MatchEntry entry, ByteBuf outBuffer) {
+    public void serialize(final MatchEntry entry, final ByteBuf outBuffer) {
         super.serialize(entry, outBuffer);
         Ipv4DstCase entryValue = (Ipv4DstCase) entry.getMatchEntryValue();
-        writeIpv4Address(entryValue.getIpv4Dst().getIpv4Address().getValue(), outBuffer);
+        writeIpv4Address(entryValue.getIpv4Dst().getIpv4Address(), outBuffer);
         if (entry.isHasMask()) {
             writeMask(entryValue.getIpv4Dst().getMask(), outBuffer,
                     EncodeConstants.GROUPS_IN_IPV4_ADDRESS);

@@ -8,16 +8,13 @@
 package org.opendaylight.openflowjava.protocol.impl.util;
 
 import io.netty.buffer.ByteBuf;
-
 import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.EnqueueCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.OutputActionCase;
@@ -91,14 +88,12 @@ public class OF10ActionsDeserializerTest {
         Assert.assertTrue("Wrong action type", action4.getActionChoice() instanceof StripVlanCase);
         Action action5 = actions.get(4);
         Assert.assertTrue("Wrong action type", action5.getActionChoice() instanceof SetDlSrcCase);
-        Assert.assertArrayEquals("Wrong dl-src", ByteBufUtils.macAddressToBytes("01:02:03:04:05:06"),
-                ByteBufUtils.macAddressToBytes(((SetDlSrcCase) action5.getActionChoice())
-                        .getSetDlSrcAction().getDlSrcAddress().getValue()));
+        Assert.assertEquals("Wrong dl-src", "01:02:03:04:05:06",
+            ((SetDlSrcCase) action5.getActionChoice()).getSetDlSrcAction().getDlSrcAddress().getValue());
         Action action6 = actions.get(5);
         Assert.assertTrue("Wrong action type", action6.getActionChoice() instanceof SetDlDstCase);
-        Assert.assertArrayEquals("Wrong dl-dst", ByteBufUtils.macAddressToBytes("02:03:04:05:06:07"),
-                ByteBufUtils.macAddressToBytes(((SetDlDstCase) action6.getActionChoice())
-                        .getSetDlDstAction().getDlDstAddress().getValue()));
+        Assert.assertEquals("Wrong dl-dst", "02:03:04:05:06:07",
+            ((SetDlDstCase) action6.getActionChoice()).getSetDlDstAction().getDlDstAddress().getValue());
         Action action7 = actions.get(6);
         Assert.assertTrue("Wrong action type", action7.getActionChoice() instanceof SetNwSrcCase);
         Assert.assertEquals("Wrong nw-src", new Ipv4Address("10.0.0.1"),
