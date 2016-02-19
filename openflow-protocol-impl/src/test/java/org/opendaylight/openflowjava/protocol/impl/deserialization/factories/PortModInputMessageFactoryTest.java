@@ -47,7 +47,7 @@ public class PortModInputMessageFactoryTest {
 
         // Test Message
         Assert.assertEquals("Wrong port", new PortNumber(9L), deserializedMessage.getPortNo());
-        Assert.assertEquals("Wrong hwAddr", new MacAddress("08:00:27:00:B0:EB"), deserializedMessage.getHwAddress());
+        Assert.assertEquals("Wrong hwAddr", new MacAddress("08:00:27:00:b0:eb"), deserializedMessage.getHwAddress());
         Assert.assertEquals("Wrong config", new PortConfig(true, false, true, false), deserializedMessage.getConfig());
         Assert.assertEquals("Wrong mask", new PortConfig(false, true, false, true), deserializedMessage.getMask());
         Assert.assertEquals("Wrong advertise", new PortFeatures(true, false, false, false, false, false, false, true,

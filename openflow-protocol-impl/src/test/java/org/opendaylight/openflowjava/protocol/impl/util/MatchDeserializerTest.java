@@ -161,7 +161,7 @@ public class MatchDeserializerTest {
         key.setExperimenterId(null);
         OFDeserializer<MatchEntry> entryDeserializer = registry.getDeserializer(key);
         MatchEntry entry = entryDeserializer.deserialize(buffer);
-        Assert.assertEquals("Wrong Ipv6 address format", new Ipv6Address("0000:0001:0002:0003:0004:0005:0006:0F07"),
+        Assert.assertEquals("Wrong Ipv6 address format", new Ipv6Address("0:1:2:3:4:5:6:f07"),
                 ((Ipv6SrcCase) entry.getMatchEntryValue()).getIpv6Src().getIpv6Address());
     }
 
@@ -401,7 +401,7 @@ public class MatchDeserializerTest {
         Assert.assertEquals("Wrong entry class", OpenflowBasicClass.class, entry26.getOxmClass());
         Assert.assertEquals("Wrong entry field", Ipv6Src.class, entry26.getOxmMatchField());
         Assert.assertEquals("Wrong entry hasMask", true, entry26.isHasMask());
-        Assert.assertEquals("Wrong entry value", new Ipv6Address("0000:0000:0000:0000:0000:0000:0000:0015"),
+        Assert.assertEquals("Wrong entry value", new Ipv6Address("::15"),
                 ((Ipv6SrcCase) entry26.getMatchEntryValue()).getIpv6Src().getIpv6Address());
         Assert.assertArrayEquals("Wrong entry mask",
                 ByteBufUtils.hexStringToBytes("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 16"),
@@ -410,7 +410,7 @@ public class MatchDeserializerTest {
         Assert.assertEquals("Wrong entry class", OpenflowBasicClass.class, entry27.getOxmClass());
         Assert.assertEquals("Wrong entry field", Ipv6Dst.class, entry27.getOxmMatchField());
         Assert.assertEquals("Wrong entry hasMask", true, entry27.isHasMask());
-        Assert.assertEquals("Wrong entry value", new Ipv6Address("0000:0000:0000:0000:0000:0000:0000:0017"),
+        Assert.assertEquals("Wrong entry value", new Ipv6Address("::17"),
                 ((Ipv6DstCase) entry27.getMatchEntryValue()).getIpv6Dst().getIpv6Address());
         Assert.assertArrayEquals("Wrong entry mask",
                 ByteBufUtils.hexStringToBytes("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 18"),
@@ -438,7 +438,7 @@ public class MatchDeserializerTest {
         Assert.assertEquals("Wrong entry class", OpenflowBasicClass.class, entry31.getOxmClass());
         Assert.assertEquals("Wrong entry field", Ipv6NdTarget.class, entry31.getOxmMatchField());
         Assert.assertEquals("Wrong entry hasMask", false, entry31.isHasMask());
-        Assert.assertEquals("Wrong entry value", new Ipv6Address("0000:0000:0000:0000:0000:0000:0000:0020"),
+        Assert.assertEquals("Wrong entry value", new Ipv6Address("::20"),
                 ((Ipv6NdTargetCase) entry31.getMatchEntryValue()).getIpv6NdTarget().getIpv6Address());
         MatchEntry entry32 = entries.get(32);
         Assert.assertEquals("Wrong entry class", OpenflowBasicClass.class, entry32.getOxmClass());

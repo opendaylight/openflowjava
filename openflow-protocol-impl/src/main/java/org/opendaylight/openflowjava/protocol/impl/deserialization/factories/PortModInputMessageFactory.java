@@ -11,7 +11,6 @@ import io.netty.buffer.ByteBuf;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeatures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
@@ -29,15 +28,13 @@ public class PortModInputMessageFactory implements OFDeserializer<PortModInput> 
     private static final byte PADDING_IN_PORT_MOD_MESSAGE_3 = 4;
 
     @Override
-    public PortModInput deserialize(ByteBuf rawMessage) {
+    public PortModInput deserialize(final ByteBuf rawMessage) {
         PortModInputBuilder builder = new PortModInputBuilder();
         builder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
         builder.setXid(rawMessage.readUnsignedInt());
         builder.setPortNo(new PortNumber(rawMessage.readUnsignedInt()));
         rawMessage.skipBytes(PADDING_IN_PORT_MOD_MESSAGE_1);
-        byte[] hwAddress = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
-        rawMessage.readBytes(hwAddress);
-        builder.setHwAddress(new MacAddress(ByteBufUtils.macAddressToString(hwAddress)));
+        builder.setHwAddress(ByteBufUtils.readIetfMacAddress(rawMessage));
         rawMessage.skipBytes(PADDING_IN_PORT_MOD_MESSAGE_2);
         builder.setConfig(createPortConfig(rawMessage.readUnsignedInt()));
         builder.setMask(createPortConfig(rawMessage.readUnsignedInt()));
@@ -46,7 +43,7 @@ public class PortModInputMessageFactory implements OFDeserializer<PortModInput> 
         return builder.build();
     }
 
-    private static PortConfig createPortConfig(long input) {
+    private static PortConfig createPortConfig(final long input) {
         final Boolean pcPortDown = ((input) & (1 << 0)) != 0;
         final Boolean pcNRecv = ((input) & (1 << 2)) != 0;
         final Boolean pcNFwd = ((input) & (1 << 5)) != 0;
@@ -54,7 +51,7 @@ public class PortModInputMessageFactory implements OFDeserializer<PortModInput> 
         return new PortConfig(pcNFwd, pcNPacketIn, pcNRecv, pcPortDown);
     }
 
-    private static PortFeatures createPortFeatures(long input) {
+    private static PortFeatures createPortFeatures(final long input) {
         final Boolean pf10mbHd = ((input) & (1 << 0)) != 0;
         final Boolean pf10mbFd = ((input) & (1 << 1)) != 0;
         final Boolean pf100mbHd = ((input) & (1 << 2)) != 0;

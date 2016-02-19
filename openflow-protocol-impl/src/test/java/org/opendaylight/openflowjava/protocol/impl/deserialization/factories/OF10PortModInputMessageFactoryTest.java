@@ -45,7 +45,7 @@ public class OF10PortModInputMessageFactoryTest {
         PortModInput deserializedMessage = BufferHelper.deserialize(factory, bb);
         BufferHelper.checkHeaderV10(deserializedMessage);
         Assert.assertEquals("Wrong port", new PortNumber(6633L), deserializedMessage.getPortNo());
-        Assert.assertEquals("Wrong hwAddr", new MacAddress("08:00:27:00:B0:EB"), deserializedMessage.getHwAddress());
+        Assert.assertEquals("Wrong hwAddr", new MacAddress("08:00:27:00:b0:eb"), deserializedMessage.getHwAddress());
         Assert.assertEquals("Wrong config", new PortConfigV10(true, false, false, true, false, false, true),
                 deserializedMessage.getConfigV10());
         Assert.assertEquals("Wrong mask", new PortConfigV10(false, true, true, false, false, true, false),

@@ -98,7 +98,7 @@ public class OF10FlowModInputMessageFactoryTest {
         matchBuilder.setNwDstMask((short) 0);
         matchBuilder.setInPort(58);
         matchBuilder.setDlSrc(new MacAddress("01:01:01:01:01:01"));
-        matchBuilder.setDlDst(new MacAddress("FF:FF:FF:FF:FF:FF"));
+        matchBuilder.setDlDst(new MacAddress("ff:ff:ff:ff:ff:ff"));
         matchBuilder.setDlVlan(18);
         matchBuilder.setDlVlanPcp((short) 5);
         matchBuilder.setDlType(42);

@@ -57,8 +57,8 @@ public class OF10MatchDeserializerTest {
         Assert.assertEquals("Wrong srcMask", 24, match.getNwSrcMask().shortValue());
         Assert.assertEquals("Wrong dstMask", 16, match.getNwDstMask().shortValue());
         Assert.assertEquals("Wrong in-port", 32, match.getInPort().intValue());
-        Assert.assertEquals("Wrong dl-src", new MacAddress("AA:BB:CC:DD:EE:FF"), match.getDlSrc());
-        Assert.assertEquals("Wrong dl-dst", new MacAddress("AA:BB:CC:DD:EE:FF"), match.getDlDst());
+        Assert.assertEquals("Wrong dl-src", new MacAddress("aa:bb:cc:dd:ee:ff"), match.getDlSrc());
+        Assert.assertEquals("Wrong dl-dst", new MacAddress("aa:bb:cc:dd:ee:ff"), match.getDlDst());
         Assert.assertEquals("Wrong dl-vlan", 5, match.getDlVlan().intValue());
         Assert.assertEquals("Wrong dl-vlan-pcp", 16, match.getDlVlanPcp().shortValue());
         Assert.assertEquals("Wrong dl-type", 8, match.getDlType().intValue());
@@ -85,8 +85,8 @@ public class OF10MatchDeserializerTest {
         Assert.assertEquals("Wrong srcMask", 0, match.getNwSrcMask().shortValue());
         Assert.assertEquals("Wrong dstMask", 0, match.getNwDstMask().shortValue());
         Assert.assertEquals("Wrong in-port", 32, match.getInPort().intValue());
-        Assert.assertEquals("Wrong dl-src", new MacAddress("AA:BB:CC:DD:EE:FF"), match.getDlSrc());
-        Assert.assertEquals("Wrong dl-dst", new MacAddress("AA:BB:CC:DD:EE:FF"), match.getDlDst());
+        Assert.assertEquals("Wrong dl-src", new MacAddress("aa:bb:cc:dd:ee:ff"), match.getDlSrc());
+        Assert.assertEquals("Wrong dl-dst", new MacAddress("aa:bb:cc:dd:ee:ff"), match.getDlDst());
         Assert.assertEquals("Wrong dl-vlan", 5, match.getDlVlan().intValue());
         Assert.assertEquals("Wrong dl-vlan-pcp", 16, match.getDlVlanPcp().shortValue());
         Assert.assertEquals("Wrong dl-type", 8, match.getDlType().intValue());

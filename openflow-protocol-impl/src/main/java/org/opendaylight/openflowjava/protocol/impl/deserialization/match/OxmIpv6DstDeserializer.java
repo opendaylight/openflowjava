@@ -8,11 +8,9 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.match;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Ipv6Dst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
@@ -30,16 +28,16 @@ public class OxmIpv6DstDeserializer extends AbstractOxmMatchEntryDeserializer
         implements OFDeserializer<MatchEntry> {
 
     @Override
-    public MatchEntry deserialize(ByteBuf input) {
+    public MatchEntry deserialize(final ByteBuf input) {
         MatchEntryBuilder builder = processHeader(getOxmClass(), getOxmField(), input);
         addIpv6DstValue(input, builder);
         return builder.build();
     }
 
-    private static void addIpv6DstValue(ByteBuf input, MatchEntryBuilder builder) {
+    private static void addIpv6DstValue(final ByteBuf input, final MatchEntryBuilder builder) {
         Ipv6DstCaseBuilder caseBuilder = new Ipv6DstCaseBuilder();
         Ipv6DstBuilder ipv6Builder = new Ipv6DstBuilder();
-        ipv6Builder.setIpv6Address(new Ipv6Address(ByteBufUtils.readIpv6Address(input)));
+        ipv6Builder.setIpv6Address(ByteBufUtils.readIetfIpv6Address(input));
         if (builder.isHasMask()) {
             ipv6Builder.setMask(OxmDeserializerHelper.convertMask(input, EncodeConstants.SIZE_OF_IPV6_ADDRESS_IN_BYTES));
         }

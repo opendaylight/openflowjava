@@ -11,7 +11,6 @@ import io.netty.buffer.ByteBuf;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfigV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeaturesV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
@@ -25,21 +24,19 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class OF10PortModInputMessageFactory implements OFDeserializer<PortModInput> {
 
     @Override
-    public PortModInput deserialize(ByteBuf rawMessage) {
+    public PortModInput deserialize(final ByteBuf rawMessage) {
         PortModInputBuilder builder = new PortModInputBuilder();
         builder.setVersion((short) EncodeConstants.OF10_VERSION_ID);
         builder.setXid(rawMessage.readUnsignedInt());
         builder.setPortNo(new PortNumber((long) rawMessage.readUnsignedShort()));
-        byte[] hwAddress = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
-        rawMessage.readBytes(hwAddress);
-        builder.setHwAddress(new MacAddress(ByteBufUtils.macAddressToString(hwAddress)));
+        builder.setHwAddress(ByteBufUtils.readIetfMacAddress(rawMessage));
         builder.setConfigV10(createPortConfig(rawMessage.readUnsignedInt()));
         builder.setMaskV10(createPortConfig(rawMessage.readUnsignedInt()));
         builder.setAdvertiseV10(createPortFeatures(rawMessage.readUnsignedInt()));
         return builder.build();
     }
 
-    private static PortConfigV10 createPortConfig(long input) {
+    private static PortConfigV10 createPortConfig(final long input) {
         final Boolean _portDown = ((input) & (1 << 0)) > 0;
         final Boolean _noStp = ((input) & (1 << 1)) > 0;
         final Boolean _noRecv = ((input) & (1 << 2)) > 0;
@@ -50,7 +47,7 @@ public class OF10PortModInputMessageFactory implements OFDeserializer<PortModInp
         return new PortConfigV10(_noFlood, _noFwd, _noPacketIn, _noRecv, _noRecvStp, _noStp, _portDown);
     }
 
-    private static PortFeaturesV10 createPortFeatures(long input) {
+    private static PortFeaturesV10 createPortFeatures(final long input) {
         final Boolean _10mbHd = ((input) & (1 << 0)) > 0;
         final Boolean _10mbFd = ((input) & (1 << 1)) > 0;
         final Boolean _100mbHd = ((input) & (1 << 2)) > 0;

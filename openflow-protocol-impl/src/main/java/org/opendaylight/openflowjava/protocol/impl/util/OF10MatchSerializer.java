@@ -9,9 +9,9 @@
 package org.opendaylight.openflowjava.protocol.impl.util;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.IetfYangUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowWildcardsV10;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.v10.grouping.MatchV10;
 
@@ -35,8 +35,8 @@ public class OF10MatchSerializer implements OFSerializer<MatchV10> {
     public void serialize(final MatchV10 match, final ByteBuf outBuffer) {
         outBuffer.writeInt(encodeWildcards(match.getWildcards(), match.getNwSrcMask(), match.getNwDstMask()));
         outBuffer.writeShort(match.getInPort());
-        outBuffer.writeBytes(ByteBufUtils.macAddressToBytes(match.getDlSrc().getValue()));
-        outBuffer.writeBytes(ByteBufUtils.macAddressToBytes(match.getDlDst().getValue()));
+        outBuffer.writeBytes(IetfYangUtil.INSTANCE.bytesFor(match.getDlSrc()));
+        outBuffer.writeBytes(IetfYangUtil.INSTANCE.bytesFor(match.getDlDst()));
         outBuffer.writeShort(match.getDlVlan());
         outBuffer.writeByte(match.getDlVlanPcp());
         outBuffer.writeZero(PADDING_IN_MATCH);
