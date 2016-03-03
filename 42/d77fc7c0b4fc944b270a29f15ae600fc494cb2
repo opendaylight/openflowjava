@@ -1,0 +1,7 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+2: Michal Polkorab <michal.polkorab@pantheon.sk>
+Submitted-by: Michal Polkorab <michal.polkorab@pantheon.sk>
+Submitted-at: Thu, 03 Mar 2016 14:20:22 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/35687
+Project: openflowjava
+Branch: refs/heads/stable/lithium
