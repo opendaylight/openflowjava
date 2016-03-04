@@ -44,9 +44,9 @@ public enum PipelineHandlers {
      */
     DELEGATING_INBOUND_HANDLER,
     /**
-     * Performs configurable efficient flushing
+     * Performs efficient flushing
      */
-    CHANNEL_OUTBOUND_QUEUE_MANAGER,
+    CHANNEL_OUTBOUNF_QUEUE,
     /**
      * Decodes incoming messages into message frames
      * and filters them based on version supported
