@@ -8,8 +8,6 @@
 
 package org.opendaylight.openflowjava.protocol.api.connection;
 
-import java.util.List;
-
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.KeystoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.PathType;
 
@@ -64,9 +62,4 @@ public interface TlsConfiguration {
      * @return password protecting specified truststore
      */
     String getTruststorePassword();
-
-    /**
-     * @return list of cipher suites for TLS connection
-     */
-    List<String> getCipherSuites();
 }

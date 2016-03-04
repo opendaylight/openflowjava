@@ -97,10 +97,6 @@ module openflow-switch-connection-provider-impl {
                     description "password protecting truststore";
                     type string;
                 }
-                leaf-list cipher-suites {
-                    description "combination of cryptographic algorithms used by TLS connection";
-                    type string;
-                }
             }
             container threads {
                 leaf boss-threads {

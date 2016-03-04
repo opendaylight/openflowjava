@@ -39,8 +39,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.K
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.PathType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow._switch.connection.provider.impl.rev140328.Tls;
 
-import com.google.common.collect.Lists;
-
 /**
  *
  * @author james.hall
@@ -91,8 +89,7 @@ public class PublishingChannelInitializerTest {
         when(mockSocketCh.pipeline()).thenReturn(mockChPipeline) ;
 
         tlsConfiguration = new TlsConfigurationImpl(KeystoreType.JKS, "/selfSignedSwitch", PathType.CLASSPATH,
-                KeystoreType.JKS, "/selfSignedController", PathType.CLASSPATH,
-                Lists.newArrayList("TLS_RSA_WITH_AES_128_CBC_SHA", "TLS_RSA_WITH_AES_128_CBC_SHA256"));
+                KeystoreType.JKS, "/selfSignedController", PathType.CLASSPATH);
     }
 
 
