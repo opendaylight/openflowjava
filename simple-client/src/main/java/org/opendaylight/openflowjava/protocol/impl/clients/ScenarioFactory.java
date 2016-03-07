@@ -48,6 +48,28 @@ public final class ScenarioFactory {
      * Creates stack with handshake needed messages. XID of messages:
      * <ol>
      *   <li> hello sent - 00000001
+     *   <li> hello waiting - 00000021
+     *   <li> featuresrequest waiting - 00000002
+     *   <li> featuresreply sent - 00000002
+     * </ol>
+     * @return stack filled with Handshake messages
+     */
+    public static Deque<ClientEvent> createHandshakeScenarioWithBarrier() {
+        Deque<ClientEvent> stack = new ArrayDeque<>();
+        stack.addFirst(new SendEvent(ByteBufUtils.hexStringToBytes("04 00 00 08 00 00 00 01")));
+        stack.addFirst(new WaitForMessageEvent(ByteBufUtils.hexStringToBytes("04 00 00 10 00 00 00 15 00 01 00 08 00 00 00 12"))); //Hello message 21
+        stack.addFirst(new WaitForMessageEvent(ByteBufUtils.hexStringToBytes("04 05 00 08 00 00 00 02")));
+        stack.addFirst(new SendEvent(ByteBufUtils.hexStringToBytes("04 06 00 20 00 00 00 02 "
+                + "00 01 02 03 04 05 06 07 00 01 02 03 01 00 00 00 00 01 02 03 00 01 02 03")));
+        stack.addFirst(new WaitForMessageEvent(ByteBufUtils.hexStringToBytes("04 14 00 08 00 00 00 00"))); //Barrier request
+        stack.addFirst(new SendEvent(ByteBufUtils.hexStringToBytes("04 15 00 08 00 00 00 04"))); //Barrier reply
+        return stack;
+    }
+
+    /**
+     * Creates stack with handshake needed messages. XID of messages:
+     * <ol>
+     *   <li> hello sent - 00000001
      *   <li> hello waiting - 00000002
      *   <li> featuresrequest waiting - 00000003
      *   <li> featuresreply sent - 00000003
