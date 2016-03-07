@@ -54,9 +54,11 @@ public class WaitForMessageEvent implements ClientEvent {
      * @param headerReceived header (first 8 bytes) of expected message
      */
     public void setHeaderReceived(byte[] headerReceived) {
-        this.headerReceived = new byte[headerReceived.length];
-        for (int i = 0; i < headerReceived.length; i++) {
-            this.headerReceived[i] = headerReceived[i];
+        if (headerReceived != null) {
+            this.headerReceived = new byte[headerReceived.length];
+            for (int i = 0; i < headerReceived.length; i++) {
+                this.headerReceived[i] = headerReceived[i];
+            }
         }
     }
 }

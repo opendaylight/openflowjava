@@ -58,6 +58,7 @@
         <controller.mdsal.version>1.5.0-SNAPSHOT</controller.mdsal.version>
         <mdsal.model.version>0.10.0-SNAPSHOT</mdsal.model.version>
         <yangtools.version>1.1.0-SNAPSHOT</yangtools.version>
+        <argparse4j.version>0.7.0</argparse4j.version>
     </properties>
 
     <dependencyManagement>
@@ -89,6 +90,11 @@
               <version>${controller.mdsal.version}</version>
               <scope>import</scope>
               <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>net.sourceforge.argparse4j</groupId>
+                <artifactId>argparse4j</artifactId>
+                <version>${argparse4j.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
