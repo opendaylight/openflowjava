@@ -10,6 +10,7 @@ package org.opendaylight.openflowjava.protocol.impl.clients;
 
 import java.util.Arrays;
 
+import com.google.common.base.Preconditions;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,9 +55,11 @@ public class WaitForMessageEvent implements ClientEvent {
      * @param headerReceived header (first 8 bytes) of expected message
      */
     public void setHeaderReceived(byte[] headerReceived) {
-        this.headerReceived = new byte[headerReceived.length];
-        for (int i = 0; i < headerReceived.length; i++) {
-            this.headerReceived[i] = headerReceived[i];
+        if (headerReceived != null) {
+            this.headerReceived = new byte[headerReceived.length];
+            for (int i = 0; i < headerReceived.length; i++) {
+                this.headerReceived[i] = headerReceived[i];
+            }
         }
     }
 }

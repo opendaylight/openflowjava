@@ -22,5 +22,6 @@
         <module>parent</module>
         <module>simple-client</module>
         <module>openflowjava-util</module>
+        <module>openflowjava-tools</module>
     </modules>
 </project>
