@@ -12,14 +12,13 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import javax.annotation.Nullable;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Verify;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -32,19 +31,35 @@ import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.annotation.Arg;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import org.opendaylight.openflowjava.protocol.impl.clients.CallableClient;
 import org.opendaylight.openflowjava.protocol.impl.clients.ScenarioFactory;
 import org.opendaylight.openflowjava.protocol.impl.clients.ScenarioHandler;
 import org.slf4j.LoggerFactory;
 
 /**
- * Main class, utilities for testing device's connect
+ * ConnectionTestTool class, utilities for testing device's connect
  * @author Jozef Bacigal
  * Date: 4.3.2016.
  */
-public class Main {
+public class ConnectionTestTool {
 
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(Main.class);
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(ConnectionTestTool.class);
 
+    /**
+     * Helper class to defining command line parameters
+     * Parameters:
+     * --device-count           : number of devices connection to the controller
+     * --controller-ip          : controller IP address
+     * --ssl                    : use ssl
+     * --threads                : number of thread shall be used for executor
+     * --port                   : controllers port
+     * --timeout                : timeout in seconds for whole test
+     * --scenarioTries          : number of tries of each step of scenario
+     * --timeBetweenScenario    : time in milliseconds between tries of steps of scenario
+     * --configurationName      : required parameter if using configuration load or configuration save
+     * --configurationLoad      : given parameters will be ignored and loaded from XML configuration file
+     * --configurationSave      : all parameters will be stored in XML file, name of the file is given by parameter
+     */
     public static class Params {
 
         @Arg(dest = "controller-ip")
@@ -65,13 +80,22 @@ public class Main {
         @Arg(dest = "timeout")
         public int timeout;
 
-        @Arg(dest = "freeze")
-        public int freeze;
+        @Arg(dest = "scenario-tries")
+        public int scenarioTries;
 
-        @Arg(dest = "sleep")
-        public long sleep;
+        @Arg(dest = "time-between-scenario")
+        public long timeBetweenScenario;
 
-        static ArgumentParser getParser() throws UnknownHostException {
+        @Arg(dest = "configuration-name")
+        public String configurationName;
+
+        @Arg(dest = "configuration-save")
+        public boolean configurationSave;
+
+        @Arg(dest = "configuration-load")
+        public boolean configurationLoad;
+
+        static ArgumentParser getParser() {
             final ArgumentParser parser = ArgumentParsers.newArgumentParser("openflowjava test-tool");
 
             parser.description("Openflowjava switch-controller connector simulator");
@@ -116,13 +140,31 @@ public class Main {
                     .type(Integer.class)
                     .setDefault(3)
                     .help("Number of tries in scenario, while waiting for response")
-                    .dest("freeze");
+                    .dest("scenario-tries");
 
             parser.addArgument("--timeBetweenScenario")
                     .type(Long.class)
                     .setDefault(100)
                     .help("Waiting time in milliseconds between tries.")
-                    .dest("sleep");
+                    .dest("time-between-scenario");
+
+            parser.addArgument("--configurationName")
+                    .type(String.class)
+                    .setDefault("")
+                    .help("Configuration name.")
+                    .dest("configuration-name");
+
+            parser.addArgument("--configurationLoad")
+                    .type(Boolean.class)
+                    .setDefault(false)
+                    .help("Try to load configuration from configuration file.")
+                    .dest("configuration-load");
+
+            parser.addArgument("--configurationSave")
+                    .type(Boolean.class)
+                    .setDefault(false)
+                    .help("Save the actual configuration into configuration file.")
+                    .dest("configuration-save");
 
             return parser;
         }
@@ -130,6 +172,12 @@ public class Main {
         void validate() {
             checkArgument(deviceCount > 0, "Switch count has to be > 0");
             checkArgument(threads > 0 && threads < 1024, "Switch count has to be > 0 and < 1024");
+            if (configurationSave) {
+                checkArgument(!configurationName.isEmpty(), "Cannot save configuration without a configuration name.");
+            }
+            if (configurationLoad) {
+                checkArgument(!configurationName.isEmpty(), "Cannot load configuration without a configuration name.");
+            }
         }
     }
 
@@ -137,10 +185,24 @@ public class Main {
 
         List<Callable<Boolean>> callableList = new ArrayList<>();
         final EventLoopGroup workerGroup = new NioEventLoopGroup();
+        final ConnectionToolConfigurationService toolConfigurationService = new ConnectionToolConfigurationServiceImpl();
 
         try {
-            final Params params = parseArgs(args, Params.getParser());
+            Params params = parseArgs(args, Params.getParser());
             params.validate();
+
+            if (params.configurationSave) {
+                toolConfigurationService.marshallData(params, params.configurationName);
+                LOG.info("Stop tool after configuration save.");
+                System.exit(0);
+            }
+
+            if (params.configurationLoad) {
+                String configurationName = params.configurationName;
+                params = toolConfigurationService.unMarshallData(configurationName);
+            }
+
+            Verify.verifyNotNull(params,"Parameters are null, tool will stop.");
 
             for(int loop=0;loop < params.deviceCount; loop++){
 
@@ -149,7 +211,7 @@ public class Main {
                         params.ssl,
                         InetAddress.getByName(params.controllerIP),
                         "Switch no." + String.valueOf(loop),
-                        new ScenarioHandler(ScenarioFactory.createHandshakeScenarioWithBarrier(), params.freeze, params.sleep),
+                        new ScenarioHandler(ScenarioFactory.createHandshakeScenarioWithBarrier(), params.scenarioTries, params.timeBetweenScenario),
                         new Bootstrap(),
                         workerGroup);
 
@@ -165,24 +227,27 @@ public class Main {
                listenableFutures.add(listeningExecutorService.submit(booleanCallable));
             }
             final ListenableFuture<List<Boolean>> summaryFuture = Futures.successfulAsList(listenableFutures);
-            List<Boolean> booleanList = summaryFuture.get(params.timeout, TimeUnit.SECONDS);
             Futures.addCallback(summaryFuture, new FutureCallback<List<Boolean>>() {
                 @Override
                 public void onSuccess(@Nullable final List<Boolean> booleanList) {
-                    LOG.info("Tests finished");
-                    workerGroup.shutdownGracefully();
-                    LOG.info("Summary:");
-                    int testsOK = 0;
-                    int testFailure = 0;
-                    for (Boolean aBoolean : booleanList) {
-                        if (aBoolean) {
-                            testsOK++;
-                        } else {
-                            testFailure++;
+                    if (null != booleanList) {
+                        LOG.info("Tests finished");
+                        workerGroup.shutdownGracefully();
+                        LOG.info("Summary:");
+                        int testsOK = 0;
+                        int testFailure = 0;
+                        for (Boolean aBoolean : booleanList) {
+                            if (aBoolean) {
+                                testsOK++;
+                            } else {
+                                testFailure++;
+                            }
                         }
+                        LOG.info("Tests OK: {}", testsOK);
+                        LOG.info("Tests failure: {}", testFailure);
+                    } else {
+                        LOG.warn("Results are null, something went wrong!");
                     }
-                    LOG.info("Tests OK: {}", testsOK);
-                    LOG.info("Tests failure: {}", testFailure);
                     System.exit(0);
                 }
 

@@ -12,7 +12,7 @@
     <scm>
         <url>https://wiki.opendaylight.org/view/Openflow_Protocol_Library:Main</url>
       <tag>HEAD</tag>
-  </scm>
+    </scm>
 
     <build>
         <plugins>
