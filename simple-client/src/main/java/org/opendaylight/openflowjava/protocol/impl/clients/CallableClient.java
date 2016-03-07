@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.openflowjava.tools;
+package org.opendaylight.openflowjava.protocol.impl.clients;
 
 import java.net.InetAddress;
 import java.util.concurrent.Callable;
@@ -15,9 +15,6 @@ import com.google.common.util.concurrent.SettableFuture;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import org.opendaylight.openflowjava.protocol.impl.clients.OFClient;
-import org.opendaylight.openflowjava.protocol.impl.clients.ScenarioHandler;
-import org.opendaylight.openflowjava.protocol.impl.clients.SimpleClientInitializer;
 import org.slf4j.LoggerFactory;
 
 
