@@ -31,6 +31,9 @@ public class ScenarioHandler extends Thread {
     private ChannelHandlerContext ctx;
     private int eventNumber;
     private boolean scenarioFinished = false;
+    private int freeze = 2;
+    private long sleepBetweenTries = 100l;
+    private boolean finishedOK = true;
 
     /**
      *
@@ -39,6 +42,13 @@ public class ScenarioHandler extends Thread {
     public ScenarioHandler(Deque<ClientEvent> scenario) {
         this.scenario = scenario;
         ofMsg = new LinkedBlockingQueue<>();
+    }
+
+    public ScenarioHandler(Deque<ClientEvent> scenario, int freeze, long sleepBetweenTries){
+        this.scenario = scenario;
+        ofMsg = new LinkedBlockingQueue<>();
+        this.sleepBetweenTries = sleepBetweenTries;
+        this.freeze = freeze;
     }
 
     @Override
@@ -62,18 +72,22 @@ public class ScenarioHandler extends Thread {
                 event.setCtx(ctx);
             }
             if (peek.eventExecuted()) {
+                LOG.info("Scenario step finished OK, moving to next step.");
                 scenario.removeLast();
                 eventNumber++;
                 freezeCounter = 0;
+                finishedOK = true;
             } else {
                 freezeCounter++;
             }
-            if (freezeCounter > 2) {
+            if (freezeCounter > freeze) {
                 LOG.warn("Scenario frozen: {}", freezeCounter);
+                LOG.warn("Scenario step not finished NOT OK!", freezeCounter);
+                this.finishedOK = false;
                 break;
             }
             try {
-                sleep(100);
+                sleep(sleepBetweenTries);
             } catch (InterruptedException e) {
                 LOG.error(e.getMessage(), e);
             }
@@ -125,5 +139,9 @@ public class ScenarioHandler extends Thread {
      */
     public boolean isScenarioFinished() {
         return scenarioFinished;
+    }
+
+    public boolean isFinishedOK() {
+        return finishedOK;
     }
 }
