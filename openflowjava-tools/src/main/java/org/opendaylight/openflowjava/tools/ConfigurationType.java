@@ -12,30 +12,6 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for configurationType complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="configurationType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="controller-ip" type="{}ipAddressType"/>
- *         &lt;element name="devices-count" type="{http://www.w3.org/2001/XMLSchema}positiveInteger"/>
- *         &lt;element name="ssl" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
- *         &lt;element name="threads" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0"/>
- *         &lt;element name="port" type="{http://www.w3.org/2001/XMLSchema}positiveInteger"/>
- *         &lt;element name="timeout" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0"/>
- *         &lt;element name="freeze" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0"/>
- *         &lt;element name="sleep" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
- *       &lt;/sequence>
- *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "configurationType", propOrder = {

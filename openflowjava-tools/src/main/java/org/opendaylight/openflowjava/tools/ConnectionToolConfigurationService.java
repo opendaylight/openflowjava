@@ -5,7 +5,6 @@ import org.xml.sax.SAXException;
 import javax.xml.bind.JAXBException;
 
 /**
- *
  * @author Jozef Bacigal
  * Date: 8.3.2016
  */
@@ -21,8 +20,8 @@ public interface ConnectionToolConfigurationService {
 
     /**
      * Method to save configuration into XML configuration file
-     * @param {@ConnectionTestTool.Params} params
-     * @param {@String} configurationName
+     * @param params {@link ConnectionTestTool.Params}
+     * @param configurationName {@link String}
      * @throws JAXBException
      * @throws SAXException
      */
@@ -30,8 +29,8 @@ public interface ConnectionToolConfigurationService {
 
     /**
      * Method to load data from XML configuration file. Each configuration has a name.
-     * @param {@String} configurationName
-     * @return parameters
+     * @param configurationName {@link String}
+     * @return parameters {@link org.opendaylight.openflowjava.tools.ConnectionTestTool.Params}
      * @throws SAXException
      * @throws JAXBException
      */

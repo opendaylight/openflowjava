@@ -31,7 +31,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Configurations }
-     * 
+     * @return {@link Configurations}
      */
     public Configurations createConfigurations() {
         return new Configurations();
@@ -39,7 +39,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ConfigurationType }
-     * 
+     * @return {@link ConfigurationType }
      */
     public ConfigurationType createConfigurationType() {
         return new ConfigurationType();

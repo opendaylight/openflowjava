@@ -20,7 +20,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -48,8 +47,9 @@ public class ConnectionTestTool {
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(ConnectionTestTool.class);
 
     /**
-     * Helper class to defining command line parameters
-     * Parameters:
+     * <p>Helper class to defining command line parameters</p>
+     * <p>Parameters:</p>
+     * <pre>
      * --device-count           : number of devices connection to the controller
      * --controller-ip          : controller IP address
      * --ssl                    :
@@ -61,6 +61,7 @@ public class ConnectionTestTool {
      * --configurationName      : required parameter if using configuration load or configuration save
      * --configurationLoad
      * --configurationSave
+     * </pre>
      */
     public static class Params {
 
