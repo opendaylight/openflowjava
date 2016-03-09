@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 public class SleepEvent implements ClientEvent {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SleepEvent.class);
-    private long sleepTime;
+    private final long sleepTime;
 
     /**
      *
