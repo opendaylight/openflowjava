@@ -31,9 +31,7 @@ public class SendEvent implements ClientEvent {
      */
     public SendEvent(byte[] msgToSend) {
         this.msgToSend = new byte[msgToSend.length];
-        for (int i = 0; i < msgToSend.length; i++) {
-            this.msgToSend[i] = msgToSend[i];
-        }
+        System.arraycopy(msgToSend, 0, this.msgToSend, 0, msgToSend.length);
     }
 
     @Override

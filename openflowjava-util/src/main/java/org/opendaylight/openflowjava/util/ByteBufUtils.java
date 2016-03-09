@@ -15,6 +15,10 @@ import com.google.common.collect.Lists;
 import com.google.common.primitives.UnsignedBytes;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -365,5 +369,12 @@ public abstract class ByteBufUtils {
         final byte[] tmp = new byte[EncodeConstants.MAC_ADDRESS_LENGTH];
         buf.readBytes(tmp);
         return IetfYangUtil.INSTANCE.macAddressFor(tmp);
+    }
+    
+    public static byte[] serializableList(final List<Short> list) throws IOException{
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(list);
+        return byteArrayOutputStream.toByteArray();
     }
 }
