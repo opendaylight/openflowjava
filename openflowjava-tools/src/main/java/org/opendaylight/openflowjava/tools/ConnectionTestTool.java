@@ -9,15 +9,19 @@
 package org.opendaylight.openflowjava.tools;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import javax.annotation.Nullable;
 import java.net.InetAddress;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -59,6 +63,7 @@ public class ConnectionTestTool {
      * --configurationName      : required parameter if using configuration load or configuration save
      * --configurationLoad
      * --configurationSave
+     * --xmlScenarioFile        : xml scenario file
      */
     public static class Params {
 
@@ -94,6 +99,12 @@ public class ConnectionTestTool {
 
         @Arg(dest = "configuration-load")
         public boolean configurationLoad;
+
+        @Arg(dest = "scenario-name")
+        public String scenarioName;
+
+        @Arg(dest = "scenario-file")
+        public String scenarioFile;
 
         static ArgumentParser getParser() {
             final ArgumentParser parser = ArgumentParsers.newArgumentParser("openflowjava test-tool");
@@ -166,6 +177,18 @@ public class ConnectionTestTool {
                     .help("Save the actual configuration into configuration file.")
                     .dest("configuration-save");
 
+            parser.addArgument("--scenarioName")
+                    .type(String.class)
+                    .setDefault("")
+                    .help("Scenario name it should be run")
+                    .dest("scenario-name");
+
+            parser.addArgument("--xmlScenarioFile")
+                    .type(String.class)
+                    .setDefault("")
+                    .help("Scenario XML file")
+                    .dest("scenario-file");
+
             return parser;
         }
 
@@ -177,6 +200,12 @@ public class ConnectionTestTool {
             }
             if (configurationLoad) {
                 checkArgument(!configurationName.isEmpty(), "Cannot load configuration without a configuration name.");
+            }
+            checkArgument(!scenarioName.isEmpty(),"Scenario name cannot be empty.");
+            if (!scenarioFile.isEmpty()) {
+                checkArgument(Files.exists(Paths.get(scenarioFile)), "XML file does not exists");
+                checkArgument(!Files.isDirectory(Paths.get(scenarioFile)), "XML file is not a file but directory");
+                checkArgument(Files.isReadable(Paths.get(scenarioFile)), "XML file is not readable.");
             }
         }
     }
@@ -211,7 +240,7 @@ public class ConnectionTestTool {
                         params.ssl,
                         InetAddress.getByName(params.controllerIP),
                         "Switch no." + String.valueOf(loop),
-                        new ScenarioHandler(ScenarioFactory.createHandshakeScenarioWithBarrier(), params.freeze, params.sleep),
+                        new ScenarioHandler(ScenarioFactory.getScenarioFromXml(params.scenarioName, params.scenarioFile), params.freeze, params.sleep),
                         new Bootstrap(),
                         workerGroup);
 

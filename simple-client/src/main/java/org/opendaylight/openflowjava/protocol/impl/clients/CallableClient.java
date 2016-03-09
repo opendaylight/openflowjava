@@ -33,7 +33,7 @@ public class CallableClient implements Callable<Boolean>, OFClient {
     private InetAddress ipAddress = null;
     private String name = "Empty name";
 
-    private EventLoopGroup workerGroup;
+    private final EventLoopGroup workerGroup;
     private SettableFuture<Boolean> isOnlineFuture;
     private SettableFuture<Boolean> scenarioDone;
     private ScenarioHandler scenarioHandler = null;
