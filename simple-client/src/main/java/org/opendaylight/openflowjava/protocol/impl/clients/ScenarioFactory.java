@@ -8,10 +8,15 @@
 
 package org.opendaylight.openflowjava.protocol.impl.clients;
 
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Map;
 
 import org.opendaylight.openflowjava.util.ByteBufUtils;
+import org.xml.sax.SAXException;
+
+import javax.xml.bind.JAXBException;
 
 /**
  * Class for providing prepared handshake scenario
@@ -63,6 +68,25 @@ public final class ScenarioFactory {
                 + "00 01 02 03 04 05 06 07 00 01 02 03 01 00 00 00 00 01 02 03 00 01 02 03")));
         stack.addFirst(new WaitForMessageEvent(ByteBufUtils.hexStringToBytes("04 14 00 08 00 00 00 00"))); //Barrier request
         stack.addFirst(new SendEvent(ByteBufUtils.hexStringToBytes("04 15 00 08 00 00 00 04"))); //Barrier reply
+        return stack;
+    }
+
+    /**
+     * Creates stack with handshake needed messages. XID of messages:
+     * <ol>
+     *   <li> hello sent - 00000001
+     *   <li> hello waiting - 00000021
+     *   <li> featuresrequest waiting - 00000002
+     *   <li> featuresreply sent - 00000002
+     * </ol>
+     * @return stack filled with Handshake messages
+     */
+    public static Deque<ClientEvent> getScenarioFromXml(String scenarioName) throws JAXBException, SAXException, IOException {
+        ScenarioService scenarioService = new ScenarioServiceImpl();
+        Deque<ClientEvent> stack = new ArrayDeque<>();
+        for (Map.Entry<Integer, ClientEvent> clientEvent : scenarioService.getEventsFromScenario(scenarioService.unMarshallData(scenarioName)).entrySet()) {
+            stack.addFirst(clientEvent.getValue());
+        }
         return stack;
     }
 
