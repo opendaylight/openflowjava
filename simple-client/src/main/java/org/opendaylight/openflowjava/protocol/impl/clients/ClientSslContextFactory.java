@@ -64,7 +64,7 @@ public final class ClientSslContextFactory {
     }
 
     /**
-     * @return cliencontext
+     * @return client context
      */
     public static SSLContext getClientContext() {
         return CLIENT_CONTEXT;
