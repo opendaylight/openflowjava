@@ -83,7 +83,7 @@ public class SimpleClient implements OFClient {
             LOGGER.debug("shutting down");
             try {
                 group.shutdownGracefully().get();
-                LOGGER.debug("shutdown succesful");
+                LOGGER.debug("shutdown successful");
             } catch (InterruptedException | ExecutionException e) {
                 LOGGER.error(e.getMessage(), e);
             }

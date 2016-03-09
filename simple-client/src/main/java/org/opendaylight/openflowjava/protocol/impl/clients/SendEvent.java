@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 public class SendEvent implements ClientEvent {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(SendEvent.class);
-    protected byte[] msgToSend;
+    protected final byte[] msgToSend;
     protected ChannelHandlerContext ctx;
 
     /**
@@ -31,9 +31,7 @@ public class SendEvent implements ClientEvent {
      */
     public SendEvent(byte[] msgToSend) {
         this.msgToSend = new byte[msgToSend.length];
-        for (int i = 0; i < msgToSend.length; i++) {
-            this.msgToSend[i] = msgToSend[i];
-        }
+        System.arraycopy(msgToSend, 0, this.msgToSend, 0, msgToSend.length);
     }
 
     @Override

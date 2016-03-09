@@ -95,6 +95,9 @@ public class ConnectionTestTool {
         @Arg(dest = "configuration-load")
         public boolean configurationLoad;
 
+        @Arg(dest = "scenario-name")
+        public String scenarioName;
+
         static ArgumentParser getParser() {
             final ArgumentParser parser = ArgumentParsers.newArgumentParser("openflowjava test-tool");
 
@@ -166,6 +169,12 @@ public class ConnectionTestTool {
                     .help("Save the actual configuration into configuration file.")
                     .dest("configuration-save");
 
+            parser.addArgument("--scenarioName")
+                    .type(String.class)
+                    .setDefault("")
+                    .help("Scenario name it should be run")
+                    .dest("scenario-name");
+
             return parser;
         }
 
@@ -178,6 +187,7 @@ public class ConnectionTestTool {
             if (configurationLoad) {
                 checkArgument(!configurationName.isEmpty(), "Cannot load configuration without a configuration name.");
             }
+            checkArgument(!scenarioName.isEmpty(),"Scenario name cannot be empty.");
         }
     }
 
@@ -211,7 +221,7 @@ public class ConnectionTestTool {
                         params.ssl,
                         InetAddress.getByName(params.controllerIP),
                         "Switch no." + String.valueOf(loop),
-                        new ScenarioHandler(ScenarioFactory.createHandshakeScenarioWithBarrier(), params.freeze, params.sleep),
+                        new ScenarioHandler(ScenarioFactory.getScenarioFromXml(params.scenarioName), params.freeze, params.sleep),
                         new Bootstrap(),
                         workerGroup);
 
