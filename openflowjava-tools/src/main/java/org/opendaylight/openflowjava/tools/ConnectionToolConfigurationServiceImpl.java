@@ -40,8 +40,7 @@ public class ConnectionToolConfigurationServiceImpl implements ConnectionToolCon
 
         jaxbMarshaller.setSchema(schema);
 
-        ObjectFactory objectFactory = new ObjectFactory();
-        Configurations configurations = objectFactory.createConfigurations();
+        Configurations configurations = new Configurations();
 
         List<ConfigurationType> configurationTypes = configurations.getConfiguration();
 

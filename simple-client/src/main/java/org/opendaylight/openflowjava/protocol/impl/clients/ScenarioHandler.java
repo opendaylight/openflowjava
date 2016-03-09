@@ -27,17 +27,17 @@ public class ScenarioHandler extends Thread {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioHandler.class);
     private Deque<ClientEvent> scenario;
-    private BlockingQueue<byte[]> ofMsg;
+    private final BlockingQueue<byte[]> ofMsg;
     private ChannelHandlerContext ctx;
     private int eventNumber;
     private boolean scenarioFinished = false;
     private int freeze = 2;
-    private long sleepBetweenTries = 100l;
+    private long sleepBetweenTries = 100L;
     private boolean finishedOK = true;
 
     /**
      *
-     * @param scenario
+     * @param scenario {@link Deque}
      */
     public ScenarioHandler(Deque<ClientEvent> scenario) {
         this.scenario = scenario;
@@ -67,7 +67,7 @@ public class ScenarioHandler extends Thread {
                     break;
                 }
             } else if (peek instanceof SendEvent) {
-                LOGGER.debug("Proceed - sendevent");
+                LOGGER.debug("Proceed - send event");
                 SendEvent event = (SendEvent) peek;
                 event.setCtx(ctx);
             }

@@ -85,7 +85,7 @@ public class ListeningSimpleClient implements OFClient {
             try {
                 workerGroup.shutdownGracefully().get();
                 bossGroup.shutdownGracefully().get();
-                LOGGER.debug("listening client shutdown succesful");
+                LOGGER.debug("listening client shutdown successful");
             } catch (InterruptedException | ExecutionException e) {
                 LOGGER.error(e.getMessage(), e);
             }

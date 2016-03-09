@@ -25,7 +25,7 @@ import com.google.common.util.concurrent.SettableFuture;
 public class SimpleClientInitializer extends ChannelInitializer<NioSocketChannel> {
 
     private SettableFuture<Boolean> isOnlineFuture;
-    private boolean secured;
+    private final boolean secured;
     private ScenarioHandler scenarioHandler;
 
     /**
