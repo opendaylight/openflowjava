@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_2ce1232a",
+        "filename": "openflowjava-tools/src/main/java/org/opendaylight/openflowjava/tools/ConfigurationType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-03-14T15:49:44Z",
+      "side": 1,
+      "message": "this class looks like configuration itself, not configurationType, can we rename it to Configuration or something similar ?",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 32
+      },
+      "revId": "c8fe9529e7fd1fe320b1e993bc4052bd36ef9da5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_0ce09f27",
+        "filename": "openflowjava-tools/src/main/java/org/opendaylight/openflowjava/tools/ConfigurationType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-03-14T15:49:44Z",
+      "side": 1,
+      "message": "can we save some space on javadocs and possibly remove ending spaces ?",
+      "range": {
+        "startLine": 54,
+        "startChar": 4,
+        "endLine": 157,
+        "endChar": 7
+      },
+      "revId": "c8fe9529e7fd1fe320b1e993bc4052bd36ef9da5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_8cd30f5f",
+        "filename": "openflowjava-tools/src/main/java/org/opendaylight/openflowjava/tools/ConnectionTestTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-03-14T15:49:44Z",
+      "side": 1,
+      "message": "add javadoc for missing parameters",
+      "range": {
+        "startLine": 53,
+        "startChar": 5,
+        "endLine": 61,
+        "endChar": 26
+      },
+      "revId": "c8fe9529e7fd1fe320b1e993bc4052bd36ef9da5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
