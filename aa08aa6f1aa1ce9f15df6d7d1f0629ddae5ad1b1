@@ -1,0 +1,136 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_4c33c7f5",
+        "filename": "openflowjava-tools/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-03-14T15:29:51Z",
+      "side": 1,
+      "message": "move this tools to simple-client module, do not create new one, when similar tool already exists",
+      "range": {
+        "startLine": 12,
+        "startChar": 4,
+        "endLine": 12,
+        "endChar": 34
+      },
+      "revId": "aa08aa6f1aa1ce9f15df6d7d1f0629ddae5ad1b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_ec373be1",
+        "filename": "openflowjava-tools/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-03-14T15:29:51Z",
+      "side": 1,
+      "message": "extract value to property",
+      "range": {
+        "startLine": 21,
+        "startChar": 11,
+        "endLine": 21,
+        "endChar": 36
+      },
+      "revId": "aa08aa6f1aa1ce9f15df6d7d1f0629ddae5ad1b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_ac7093a4",
+        "filename": "openflowjava-tools/src/main/java/org/opendaylight/openflowjava/tools/CallableClient.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-03-14T15:29:51Z",
+      "side": 1,
+      "message": "scenarioHandler and securedClient should be passed by setters",
+      "range": {
+        "startLine": 46,
+        "startChar": 12,
+        "endLine": 52,
+        "endChar": 47
+      },
+      "revId": "aa08aa6f1aa1ce9f15df6d7d1f0629ddae5ad1b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_cc6d17ce",
+        "filename": "openflowjava-tools/src/main/java/org/opendaylight/openflowjava/tools/CallableClient.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-03-14T15:29:51Z",
+      "side": 1,
+      "message": "please add call() method here or throw Unsupported operation exception",
+      "revId": "aa08aa6f1aa1ce9f15df6d7d1f0629ddae5ad1b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_4c6107d2",
+        "filename": "openflowjava-tools/src/main/java/org/opendaylight/openflowjava/tools/Main.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-03-14T15:29:51Z",
+      "side": 1,
+      "message": "... switch -\u003e controller connection simulator",
+      "range": {
+        "startLine": 77,
+        "startChar": 45,
+        "endLine": 77,
+        "endChar": 72
+      },
+      "revId": "aa08aa6f1aa1ce9f15df6d7d1f0629ddae5ad1b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_ccf23705",
+        "filename": "simple-client/src/main/java/org/opendaylight/openflowjava/protocol/impl/clients/WaitForMessageEvent.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-03-14T15:29:51Z",
+      "side": 1,
+      "message": "unused import",
+      "range": {
+        "startLine": 13,
+        "startChar": 1,
+        "endLine": 13,
+        "endChar": 44
+      },
+      "revId": "aa08aa6f1aa1ce9f15df6d7d1f0629ddae5ad1b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
