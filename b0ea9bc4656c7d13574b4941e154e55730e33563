@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_6c64cbb8",
+        "filename": "simple-client/src/main/java/org/opendaylight/openflowjava/protocol/impl/clients/ScenarioType.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-03-14T16:09:52Z",
+      "side": 1,
+      "message": "this should be rather Scenario than a ScenarioType - it might cause confusion",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 26
+      },
+      "revId": "b0ea9bc4656c7d13574b4941e154e55730e33563",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_cc57d7c8",
+        "filename": "simple-client/src/main/java/org/opendaylight/openflowjava/protocol/impl/clients/StepType.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-03-14T16:09:52Z",
+      "side": 1,
+      "message": "this is rather a step than a stepType",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 21
+      },
+      "revId": "b0ea9bc4656c7d13574b4941e154e55730e33563",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
