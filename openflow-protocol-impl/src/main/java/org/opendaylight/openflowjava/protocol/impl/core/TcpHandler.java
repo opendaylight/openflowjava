@@ -13,10 +13,16 @@ import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.GenericFutureListener;
+
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerSocketChannel;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -50,12 +56,14 @@ public class TcpHandler implements ServerFacade {
     private int port;
     private String address;
     private final InetAddress startupAddress;
-    private NioEventLoopGroup workerGroup;
-    private NioEventLoopGroup bossGroup;
+    private EventLoopGroup workerGroup;
+    private EventLoopGroup bossGroup;
     private final SettableFuture<Boolean> isOnlineFuture;
     private ThreadConfiguration threadConfig;
 
     private TcpChannelInitializer channelInitializer;
+
+    private Class<? extends ServerSocketChannel> socketChannelClass;
 
     /**
      * Constructor of TCPHandler that listens on selected port.
@@ -90,13 +98,13 @@ public class TcpHandler implements ServerFacade {
          * Any other setting means netty will measure the time it spent selecting
          * and spend roughly proportional time executing tasks.
          */
-        workerGroup.setIoRatio(100);
+        //workerGroup.setIoRatio(100);
 
         final ChannelFuture f;
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
-                    .channel(NioServerSocketChannel.class)
+                    .channel(socketChannelClass)
                     .handler(new LoggingHandler(LogLevel.DEBUG))
                     .childHandler(channelInitializer)
                     .option(ChannelOption.SO_BACKLOG, 128)
@@ -202,7 +210,21 @@ public class TcpHandler implements ServerFacade {
      * Initiate event loop groups
      * @param threadConfiguration number of threads to be created, if not specified in threadConfig
      */
-    public void initiateEventLoopGroups(ThreadConfiguration threadConfiguration) {
+    public void initiateEventLoopGroups(ThreadConfiguration threadConfiguration, boolean isEpollEnabled) {
+
+        if(isEpollEnabled) {
+            initiateEpollEventLoopGroups(threadConfiguration);
+        } else {
+            initiateNioEventLoopGroups(threadConfiguration);
+        }
+    }
+
+    /**
+     * Initiate Nio event loop groups
+     * @param threadConfiguration number of threads to be created, if not specified in threadConfig
+     */
+    public void initiateNioEventLoopGroups(ThreadConfiguration threadConfiguration) {
+        socketChannelClass = NioServerSocketChannel.class;
         if (threadConfiguration != null) {
             bossGroup = new NioEventLoopGroup(threadConfiguration.getBossThreadCount());
             workerGroup = new NioEventLoopGroup(threadConfiguration.getWorkerThreadCount());
@@ -210,12 +232,37 @@ public class TcpHandler implements ServerFacade {
             bossGroup = new NioEventLoopGroup();
             workerGroup = new NioEventLoopGroup();
         }
+        ((NioEventLoopGroup)workerGroup).setIoRatio(100);
+    }
+
+    /**
+     * Initiate Epoll event loop groups with Nio as fall back
+     * @param threadConfiguration
+     */
+    protected void initiateEpollEventLoopGroups(ThreadConfiguration threadConfiguration) {
+        try {
+            socketChannelClass = EpollServerSocketChannel.class;
+            if (threadConfiguration != null) {
+                    bossGroup = new EpollEventLoopGroup(threadConfiguration.getBossThreadCount());
+                workerGroup = new EpollEventLoopGroup(threadConfiguration.getWorkerThreadCount());
+            } else {
+                bossGroup = new EpollEventLoopGroup();
+                workerGroup = new EpollEventLoopGroup();
+            }
+            ((EpollEventLoopGroup)workerGroup).setIoRatio(100);
+            return;
+        } catch (Throwable ex) {
+            LOGGER.debug("Epoll initiation failed");
+        }
+
+        //Fallback mechanism
+        initiateNioEventLoopGroups(threadConfiguration);
     }
 
     /**
      * @return workerGroup
      */
-    public NioEventLoopGroup getWorkerGroup() {
+    public EventLoopGroup getWorkerGroup() {
         return workerGroup;
     }
 

@@ -47,7 +47,27 @@ public class UdpHandlerTest {
     public void testWithEmptyAddress() throws InterruptedException, ExecutionException, IOException {
         udpHandler = new UdpHandler(null, 0);
         udpHandler.setChannelInitializer(udpChannelInitializerMock);
-        Assert.assertTrue("Wrong - start server", startupServer());
+        Assert.assertTrue("Wrong - start server", startupServer(false));
+        try {
+            Assert.assertTrue(udpHandler.getIsOnlineFuture().get(1500,TimeUnit.MILLISECONDS).booleanValue());
+        } catch (TimeoutException e) {
+            Assert.fail("Wrong - getIsOnlineFuture timed out");
+        }
+        Assert.assertFalse("Wrong - port has been set to zero", udpHandler.getPort() == 0);
+        shutdownServer();
+    }
+
+    /**
+     * Test to create UdpHandler with empty address and zero port on Epoll native transport
+     * @throws InterruptedException
+     * @throws ExecutionException
+     * @throws IOException
+     */
+    @Test
+    public void testWithEmptyAddressOnEpoll() throws InterruptedException, ExecutionException, IOException {
+        udpHandler = new UdpHandler(null, 0);
+        udpHandler.setChannelInitializer(udpChannelInitializerMock);
+        Assert.assertTrue("Wrong - start server", startupServer(true));
         try {
             Assert.assertTrue(udpHandler.getIsOnlineFuture().get(1500,TimeUnit.MILLISECONDS).booleanValue());
         } catch (TimeoutException e) {
@@ -68,7 +88,7 @@ public class UdpHandlerTest {
         int port = 9874;
         udpHandler = new UdpHandler(InetAddress.getLocalHost(), port);
         udpHandler.setChannelInitializer(udpChannelInitializerMock);
-        Assert.assertTrue("Wrong - start server", startupServer());
+        Assert.assertTrue("Wrong - start server", startupServer(false));
         try {
             Assert.assertTrue(udpHandler.getIsOnlineFuture().get(1500,TimeUnit.MILLISECONDS).booleanValue());
         } catch (TimeoutException e) {
@@ -78,9 +98,34 @@ public class UdpHandlerTest {
         shutdownServer();
     }
 
-    private Boolean startupServer() throws InterruptedException, IOException, ExecutionException {
-        ListenableFuture<Boolean> online = udpHandler.getIsOnlineFuture();
+    /**
+     * Test to create UdpHandler with fill address and given port on Epoll native transport
+     * @throws InterruptedException
+     * @throws ExecutionException
+     * @throws IOException
+     */
+    @Test
+    public void testWithAddressAndPortOnEpoll() throws InterruptedException, ExecutionException, IOException{
+        int port = 9874;
+        udpHandler = new UdpHandler(InetAddress.getLocalHost(), port);
+        udpHandler.setChannelInitializer(udpChannelInitializerMock);
+        Assert.assertTrue("Wrong - start server", startupServer(true));
+        try {
+            Assert.assertTrue(udpHandler.getIsOnlineFuture().get(1500,TimeUnit.MILLISECONDS).booleanValue());
+        } catch (TimeoutException e) {
+            Assert.fail("Wrong - getIsOnlineFuture timed out");
+        }
+        Assert.assertEquals("Wrong - bad port number has been set", port, udpHandler.getPort());
+        shutdownServer();
+    }
 
+    private Boolean startupServer(boolean isEpollEnabled) throws InterruptedException, IOException, ExecutionException {
+        ListenableFuture<Boolean> online = udpHandler.getIsOnlineFuture();
+        /**
+         * Test EPoll based native transport if isEpollEnabled is true.
+         * Else use Nio based transport.
+         */
+        udpHandler.initiateEventLoopGroups(null, isEpollEnabled);
             (new Thread(udpHandler)).start();
             int retry = 0;
             while (online.isDone() != true && retry++ < 20) {

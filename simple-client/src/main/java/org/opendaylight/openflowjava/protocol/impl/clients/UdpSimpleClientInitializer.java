@@ -11,7 +11,7 @@ package org.opendaylight.openflowjava.protocol.impl.clients;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.socket.nio.NioDatagramChannel;
+import io.netty.channel.socket.DatagramChannel;
 
 import com.google.common.util.concurrent.SettableFuture;
 
@@ -19,7 +19,7 @@ import com.google.common.util.concurrent.SettableFuture;
  *
  * @author michal.polkorab
  */
-public class UdpSimpleClientInitializer extends ChannelInitializer<NioDatagramChannel> {
+public class UdpSimpleClientInitializer extends ChannelInitializer<DatagramChannel> {
 
     private SettableFuture<Boolean> isOnlineFuture;
     private ScenarioHandler scenarioHandler;
@@ -32,7 +32,7 @@ public class UdpSimpleClientInitializer extends ChannelInitializer<NioDatagramCh
     }
 
     @Override
-    public void initChannel(NioDatagramChannel ch) throws Exception {
+    public void initChannel(DatagramChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
         SimpleClientHandler simpleClientHandler = new SimpleClientHandler(isOnlineFuture, scenarioHandler);
         simpleClientHandler.setScenario(scenarioHandler);
