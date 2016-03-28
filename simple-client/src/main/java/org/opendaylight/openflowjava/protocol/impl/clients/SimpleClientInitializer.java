@@ -11,7 +11,7 @@ package org.opendaylight.openflowjava.protocol.impl.clients;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.ssl.SslHandler;
 
 import javax.net.ssl.SSLEngine;
@@ -22,7 +22,7 @@ import com.google.common.util.concurrent.SettableFuture;
  *
  * @author michal.polkorab
  */
-public class SimpleClientInitializer extends ChannelInitializer<NioSocketChannel> {
+public class SimpleClientInitializer extends ChannelInitializer<SocketChannel> {
 
     private SettableFuture<Boolean> isOnlineFuture;
     private boolean secured;
@@ -38,7 +38,7 @@ public class SimpleClientInitializer extends ChannelInitializer<NioSocketChannel
     }
 
     @Override
-    public void initChannel(NioSocketChannel ch) throws Exception {
+    public void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
         if (secured) {
             SSLEngine engine = ClientSslContextFactory.getClientContext()

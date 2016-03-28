@@ -8,16 +8,16 @@
 
 package org.opendaylight.openflowjava.protocol.impl.core;
 
-import io.netty.channel.socket.nio.NioDatagramChannel;
+import io.netty.channel.socket.DatagramChannel;
 
 /**
  * @author michal.polkorab
  *
  */
-public class UdpChannelInitializer extends ProtocolChannelInitializer<NioDatagramChannel> {
+public class UdpChannelInitializer extends ProtocolChannelInitializer<DatagramChannel> {
 
     @Override
-    protected void initChannel(NioDatagramChannel ch) throws Exception {
+    protected void initChannel(DatagramChannel ch) throws Exception {
         ch.pipeline().addLast(PipelineHandlers.OF_DATAGRAMPACKET_HANDLER.name(),
                 new OFDatagramPacketHandler(getSwitchConnectionHandler()));
         OFDatagramPacketDecoder ofDatagramPacketDecoder = new OFDatagramPacketDecoder();

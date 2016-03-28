@@ -2,9 +2,8 @@ package org.opendaylight.openflowjava.protocol.impl.core;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-
 import org.opendaylight.openflowjava.protocol.api.connection.ThreadConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,21 +27,28 @@ public class TcpConnectionInitializer implements ServerFacade,
 
     private TcpChannelInitializer channelInitializer;
     private Bootstrap b;
+    private boolean isEpollEnabled;
 
     /**
      * Constructor
      * @param workerGroup - shared worker group
      */
-    public TcpConnectionInitializer(NioEventLoopGroup workerGroup) {
+    public TcpConnectionInitializer(EventLoopGroup workerGroup, boolean isEpollEnabled) {
         Preconditions.checkNotNull(workerGroup, "WorkerGroup can't be null");
         this.workerGroup = workerGroup;
+        this.isEpollEnabled = isEpollEnabled;
     }
 
     @Override
     public void run() {
         b = new Bootstrap();
-        b.group(workerGroup).channel(NioSocketChannel.class)
-            .handler(channelInitializer);
+        if(isEpollEnabled) {
+            b.group(workerGroup).channel(EpollSocketChannel.class)
+                    .handler(channelInitializer);
+        } else {
+            b.group(workerGroup).channel(NioSocketChannel.class)
+                    .handler(channelInitializer);
+        }
     }
 
     @Override

@@ -161,7 +161,7 @@ public class SwitchConnectionProviderImplTest {
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             Assert.fail();
         }
-    }
+        }
 
     /**
      * Tests correct provider shutdown
