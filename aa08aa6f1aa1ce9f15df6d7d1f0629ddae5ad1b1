@@ -71,6 +71,30 @@
     },
     {
       "key": {
+        "uuid": "3a4c51b2_c2993470",
+        "filename": "openflowjava-tools/src/main/java/org/opendaylight/openflowjava/tools/CallableClient.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5280
+      },
+      "writtenOn": "2016-04-04T11:53:14Z",
+      "side": 1,
+      "message": "Don\u0027t agree, need to be sure that already is set when running. Or there is another reason not to send parameters through constructor ?",
+      "parentUuid": "9a3d3df0_ac7093a4",
+      "range": {
+        "startLine": 46,
+        "startChar": 12,
+        "endLine": 52,
+        "endChar": 47
+      },
+      "revId": "aa08aa6f1aa1ce9f15df6d7d1f0629ddae5ad1b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a3d3df0_cc6d17ce",
         "filename": "openflowjava-tools/src/main/java/org/opendaylight/openflowjava/tools/CallableClient.java",
         "patchSetId": 1
