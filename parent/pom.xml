@@ -49,7 +49,6 @@
     </developers>
 
     <properties>
-        <sitedeploy>dav:http://nexus.opendaylight.org/content/sites/site</sitedeploy>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jmxGeneratorPath>${project.build.directory}/yang-gen-config</jmxGeneratorPath>
         <karaf.distro.empty.version>1.6.3-SNAPSHOT</karaf.distro.empty.version>
