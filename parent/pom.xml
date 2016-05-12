@@ -4,13 +4,13 @@
     <parent>
         <groupId>org.opendaylight.odlparent</groupId>
         <artifactId>odlparent</artifactId>
-        <version>1.6.2-Beryllium-SR2</version>
+        <version>1.6.3-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <groupId>org.opendaylight.openflowjava</groupId>
     <artifactId>openflowjava-parent</artifactId>
-    <version>0.7.2-Beryllium-SR2</version>
+    <version>0.7.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>openflowjava</name> <!-- Used by Sonar to set project name -->
     <description>
@@ -52,12 +52,12 @@
         <sitedeploy>dav:http://nexus.opendaylight.org/content/sites/site</sitedeploy>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jmxGeneratorPath>${project.build.directory}/yang-gen-config</jmxGeneratorPath>
-        <karaf.distro.empty.version>1.6.2-Beryllium-SR2</karaf.distro.empty.version>
+        <karaf.distro.empty.version>1.6.3-SNAPSHOT</karaf.distro.empty.version>
         <salGeneratorPath>${project.build.directory}/yang-gen-sal</salGeneratorPath>
 
-        <config.version>0.4.2-Beryllium-SR2</config.version>
-        <mdsal.version>1.3.2-Beryllium-SR2</mdsal.version>
-        <yangtools.version>0.8.2-Beryllium-SR2</yangtools.version>
+        <config.version>0.4.3-SNAPSHOT</config.version>
+        <mdsal.version>1.3.3-SNAPSHOT</mdsal.version>
+        <yangtools.version>0.8.3-SNAPSHOT</yangtools.version>
     </properties>
 
     <dependencyManagement>
