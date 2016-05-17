@@ -103,6 +103,11 @@ public abstract class OxmMatchConstants {
     public static final int TUNNEL_ID = 38;
     /** IPv6 Extension Header pseudo-field */
     public static final int IPV6_EXTHDR = 39;
+    /** Tunnel  source address. */
+    public static final int TUN_SRC = 40;
+    /** Tunnel Dest address. */
+    public static final int TUN_DST = 41;
+
 
     /**
      * OFPXMC_NXM_1 class Constants
