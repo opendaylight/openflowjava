@@ -44,6 +44,8 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmSctpDs
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmSctpSrcSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmTcpDstSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmTcpSrcSerializer;
+import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmTunDstSerializer;
+import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmTunSrcSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmTunnelIdSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmUdpDstSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmUdpSrcSerializer;
@@ -86,6 +88,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Sctp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.SctpSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.TcpDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.TcpSrc;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.TunDst;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.TunSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.TunnelId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.UdpDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.UdpSrc;
@@ -151,6 +155,8 @@ public final class MatchEntriesInitializer {
         helper.registerSerializer(MplsBos.class, new OxmMplsBosSerializer());
         helper.registerSerializer(PbbIsid.class, new OxmPbbIsidSerializer());
         helper.registerSerializer(TunnelId.class, new OxmTunnelIdSerializer());
+        helper.registerSerializer(TunSrc.class, new OxmTunSrcSerializer());
+        helper.registerSerializer(TunDst.class, new OxmTunDstSerializer());
         helper.registerSerializer(Ipv6Exthdr.class, new OxmIpv6ExtHdrSerializer());
     }
 }

@@ -8,6 +8,8 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpOpDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpShaDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpSpaDeserializer;
@@ -43,14 +45,14 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmSctp
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmSctpSrcDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmTcpDstDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmTcpSrcDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmTunDstDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmTunSrcDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmTunnelIdDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmUdpDstDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmUdpSrcDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmVlanPcpDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmVlanVidDeserializer;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.MatchEntryDeserializerRegistryHelper;
-import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
 
 /**
  * @author michal.polkorab
@@ -111,5 +113,7 @@ public final class MatchEntryDeserializerInitializer {
         helper.register(OxmMatchConstants.PBB_ISID, new OxmPbbIsidDeserializer());
         helper.register(OxmMatchConstants.TUNNEL_ID, new OxmTunnelIdDeserializer());
         helper.register(OxmMatchConstants.IPV6_EXTHDR, new OxmIpv6ExtHdrDeserializer());
+        helper.register(OxmMatchConstants.TUN_SRC, new OxmTunSrcDeserializer());
+        helper.register(OxmMatchConstants.TUN_DST, new OxmTunDstDeserializer());
     }
 }

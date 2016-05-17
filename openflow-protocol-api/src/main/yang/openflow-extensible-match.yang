@@ -214,6 +214,14 @@
         base match-field;
         description "OXM field for IPv6 Extension Header pseudo-field";
     }
+    identity tun_src {
+        base match-field;
+        description "OXM field for tunnel IPv4 source address.";
+    }
+    identity tun_dst {
+        base match-field;
+        description "OXM field for tunnel IPv4 destination address.";
+    }
 
     grouping match-grouping {
         container match {
@@ -582,6 +590,26 @@
                 container ipv6-exthdr {
                     leaf pseudo-field {
                         type oft:ipv6-exthdr-flags;
+                    }
+                    leaf mask {
+                        type binary;
+                    }
+                }
+            }
+            case tun-src-case {
+                container tun-src {
+                    leaf ipv4-address {
+                        type inet:ipv4-address;
+                    }
+                    leaf mask {
+                        type binary;
+                    }
+                }
+            }
+            case tun-dst-case {
+                container tun-dst {
+                    leaf ipv4-address {
+                        type inet:ipv4-address;
                     }
                     leaf mask {
                         type binary;
