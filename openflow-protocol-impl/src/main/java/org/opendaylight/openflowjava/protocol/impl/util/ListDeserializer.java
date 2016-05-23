@@ -77,9 +77,8 @@ public final class ListDeserializer {
                 MessageCodeKey key = keyMaker.make(input);
                 try {
                     deserializer = registry.getDeserializer(key);
-                } catch (ClassCastException | IllegalStateException e) {
-                    LOG.warn("Problem during reading table feature property. Skipping unknown feature property: {}",
-                        key, e);
+                } catch (IllegalStateException e) {
+                    LOG.warn("Problem during reading table feature property. Skipping unknown feature property: {}", key);
                     input.skipBytes(2 * EncodeConstants.SIZE_OF_SHORT_IN_BYTES);
                     continue;
                 }
