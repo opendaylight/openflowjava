@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa57193c_ea0ad777",
+        "filename": "openflow-protocol-spi/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-05-26T06:56:59Z",
+      "side": 1,
+      "message": "why do we want to change the Export-Package if we want to keep both blueprint and configSubsystem support ? How will dependent projects see the SwitchConnectionProvider* and relevant classes (when using only config subsystem) ?\n\n+ why are we importing api.keys ?\n\n+ shouldn\u0027t it be api.keys* instead of api.keys,* ?",
+      "range": {
+        "startLine": 26,
+        "startChar": 18,
+        "endLine": 26,
+        "endChar": 100
+      },
+      "revId": "65f92a0b045baf1b669f6c153432feb7b0d04f03",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
