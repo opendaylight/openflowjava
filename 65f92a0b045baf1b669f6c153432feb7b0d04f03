@@ -22,6 +22,30 @@
       "revId": "65f92a0b045baf1b669f6c153432feb7b0d04f03",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_dc5e4112",
+        "filename": "openflow-protocol-spi/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-05-30T03:41:01Z",
+      "side": 1,
+      "message": "Unfortunately I did this patch a few weeks ago so I don\u0027t remember the details here. I think I removed Export-Package b/c it isn\u0027t needed - the plugin will figure  what needs to be exported. Since this is an SPI bundle, everything should be exported.\n\nI believe I had to explicitly import api.keys due to an unresolved import error on deployment. Using \"...api.keys,*\" tells the plugin to explicitly import ...api.keys and figure everything else out via java imports.",
+      "parentUuid": "fa57193c_ea0ad777",
+      "range": {
+        "startLine": 26,
+        "startChar": 18,
+        "endLine": 26,
+        "endChar": 100
+      },
+      "revId": "65f92a0b045baf1b669f6c153432feb7b0d04f03",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
