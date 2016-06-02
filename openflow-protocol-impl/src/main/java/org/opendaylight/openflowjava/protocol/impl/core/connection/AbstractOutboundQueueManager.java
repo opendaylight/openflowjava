@@ -299,12 +299,14 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
             LOG.trace("Dequeuing messages to channel {}", parent.getChannel());
             writeAndFlush();
             rescheduleFlush();
-        } else if (currentQueue.finishShutdown()) {
-            close();
-            LOG.debug("Channel {} shutdown complete", parent.getChannel());
         } else {
-            LOG.trace("Channel {} current queue not completely flushed yet", parent.getChannel());
-            rescheduleFlush();
+            close();
+            if (currentQueue.finishShutdown()) {
+            	LOG.debug("Channel {} shutdown complete", parent.getChannel());
+            } else {
+            	LOG.trace("Channel {} current queue not completely flushed yet", parent.getChannel());
+            	rescheduleFlush();
+            }
         }
     }
 
