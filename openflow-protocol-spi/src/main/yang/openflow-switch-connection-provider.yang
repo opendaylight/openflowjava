@@ -16,8 +16,6 @@ module openflow-switch-connection-provider {
     identity openflow-switch-connection-provider {
          base "config:service-type";
          config:java-class "org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider";
-         config:disable-osgi-service-registration;
-         status deprecated;
     }
 
     identity statistics-collection-service {

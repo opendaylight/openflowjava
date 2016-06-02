@@ -21,7 +21,6 @@ module openflow-switch-connection-provider-impl {
         base "config:module-type";
         config:provided-service openflow-switch-connection-provider:openflow-switch-connection-provider;
         config:java-name-prefix SwitchConnectionProvider;
-        status deprecated;
     }
 
     identity statistics-collection-service-impl {

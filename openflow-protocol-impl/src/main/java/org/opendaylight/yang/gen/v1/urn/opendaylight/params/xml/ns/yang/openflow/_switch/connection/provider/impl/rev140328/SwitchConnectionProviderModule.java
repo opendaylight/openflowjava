@@ -9,19 +9,29 @@
 */
 package org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow._switch.connection.provider.impl.rev140328;
 
-import com.google.common.reflect.AbstractInvocationHandler;
-import com.google.common.reflect.Reflection;
-import java.lang.reflect.Method;
-import org.opendaylight.controller.config.api.osgi.WaitingServiceTracker;
-import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
-import org.osgi.framework.BundleContext;
+import com.google.common.base.MoreObjects;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.List;
+
+import org.opendaylight.openflowjava.protocol.api.connection.ConnectionConfiguration;
+import org.opendaylight.openflowjava.protocol.api.connection.ThreadConfiguration;
+import org.opendaylight.openflowjava.protocol.api.connection.TlsConfiguration;
+import org.opendaylight.openflowjava.protocol.impl.core.SwitchConnectionProviderImpl;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.KeystoreType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.TransportProtocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * @deprecated Replaced by blueprint wiring
- */
-@Deprecated
-public final class SwitchConnectionProviderModule extends AbstractSwitchConnectionProviderModule {
-    private BundleContext bundleContext;
+*
+*/
+public final class SwitchConnectionProviderModule extends org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow._switch.connection.provider.impl.rev140328.AbstractSwitchConnectionProviderModule
+ {
+
+    private static Logger LOG = LoggerFactory
+            .getLogger(SwitchConnectionProviderModule.class);
 
     /**
      * @param identifier
@@ -43,34 +53,160 @@ public final class SwitchConnectionProviderModule extends AbstractSwitchConnecti
     }
 
     @Override
-    public AutoCloseable createInstance() {
-        // The service is provided via blueprint so wait for and return it here for backwards compatibility.
-        String typeFilter = String.format("(type=%s)", getIdentifier().getInstanceName());
-        final WaitingServiceTracker<SwitchConnectionProvider> tracker = WaitingServiceTracker.create(
-                SwitchConnectionProvider.class, bundleContext, typeFilter);
-        final SwitchConnectionProvider actualService = tracker.waitForService(WaitingServiceTracker.FIVE_MINUTES);
-
-        // We don't want to call close on the actual service as its life cycle is controlled by blueprint but
-        // we do want to close the tracker so create a proxy to override close appropriately.
-        return Reflection.newProxy(SwitchConnectionProvider.class, new AbstractInvocationHandler() {
-            @Override
-            protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
-                if (method.getName().equals("close")) {
-                    tracker.close();
-                    return null;
-                } else {
-                    return method.invoke(actualService, args);
-                }
-            }
-        });
-    }
-
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
+    protected void customValidation(){
+        // Add custom validation for module attributes here.
     }
 
     @Override
-    public boolean canReuseInstance(AbstractSwitchConnectionProviderModule oldModule) {
-        return true;
+    public java.lang.AutoCloseable createInstance() {
+        LOG.info("SwitchConnectionProvider started.");
+        final SwitchConnectionProviderImpl switchConnectionProviderImpl = new SwitchConnectionProviderImpl();
+        try {
+            final ConnectionConfiguration connConfiguration = createConnectionConfiguration();
+            switchConnectionProviderImpl.setConfiguration(connConfiguration);
+        } catch (final UnknownHostException e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
+        return switchConnectionProviderImpl;
+    }
+
+    /**
+     * @return instance configuration object
+     * @throws UnknownHostException
+     */
+    private ConnectionConfiguration createConnectionConfiguration() throws UnknownHostException {
+        final InetAddress address = extractIpAddressBin(getAddress());
+        final Integer port = getPort();
+        final long switchIdleTimeout = getSwitchIdleTimeout();
+        final Tls tlsConfig = getTls();
+        final Threads threads = getThreads();
+        final Boolean useBarrier = getUseBarrier();
+        final TransportProtocol transportProtocol = getTransportProtocol();
+
+        return new ConnectionConfiguration() {
+            @Override
+            public InetAddress getAddress() {
+                return address;
+            }
+            @Override
+            public int getPort() {
+                return port;
+            }
+            @Override
+            public Object getTransferProtocol() {
+                return transportProtocol;
+            }
+            @Override
+            public TlsConfiguration getTlsConfiguration() {
+                if (tlsConfig == null || !(TransportProtocol.TLS.equals(transportProtocol))) {
+                    return null;
+                }
+                return new TlsConfiguration() {
+                    @Override
+                    public KeystoreType getTlsTruststoreType() {
+                        return MoreObjects.firstNonNull(tlsConfig.getTruststoreType(), null);
+                    }
+                    @Override
+                    public String getTlsTruststore() {
+                        return MoreObjects.firstNonNull(tlsConfig.getTruststore(), null);
+                    }
+                    @Override
+                    public KeystoreType getTlsKeystoreType() {
+                        return MoreObjects.firstNonNull(tlsConfig.getKeystoreType(), null);
+                    }
+                    @Override
+                    public String getTlsKeystore() {
+                        return MoreObjects.firstNonNull(tlsConfig.getKeystore(), null);
+                    }
+                    @Override
+                    public org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.PathType getTlsKeystorePathType() {
+                        return MoreObjects.firstNonNull(tlsConfig.getKeystorePathType(), null);
+                    }
+                    @Override
+                    public org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.PathType getTlsTruststorePathType() {
+                        return MoreObjects.firstNonNull(tlsConfig.getTruststorePathType(), null);
+                    }
+                    @Override
+                    public String getKeystorePassword() {
+                        return MoreObjects.firstNonNull(tlsConfig.getKeystorePassword(), null);
+                    }
+                    @Override
+                    public String getCertificatePassword() {
+                        return MoreObjects.firstNonNull(tlsConfig.getCertificatePassword(), null);
+                    }
+                    @Override
+                    public String getTruststorePassword() {
+                        return MoreObjects.firstNonNull(tlsConfig.getTruststorePassword(), null);
+                    }
+                    @Override
+                    public List<String> getCipherSuites() {
+                        return tlsConfig.getCipherSuites();
+                    }
+                };
+            }
+            @Override
+            public long getSwitchIdleTimeout() {
+                return switchIdleTimeout;
+            }
+            @Override
+            public Object getSslContext() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+            @Override
+            public ThreadConfiguration getThreadConfiguration() {
+                if (threads == null) {
+                    return null;
+                }
+                return new ThreadConfiguration() {
+
+                    @Override
+                    public int getWorkerThreadCount() {
+                        return threads.getWorkerThreads();
+                    }
+
+                    @Override
+                    public int getBossThreadCount() {
+                        return threads.getBossThreads();
+                    }
+                };
+            }
+
+            @Override
+            public boolean useBarrier() {
+                return useBarrier;
+            }
+        };
+    }
+
+    /**
+     * @param address
+     * @return
+     * @throws UnknownHostException
+     */
+    private static InetAddress extractIpAddressBin(final IpAddress address) throws UnknownHostException {
+        byte[] addressBin = null;
+        if (address != null) {
+            if (address.getIpv4Address() != null) {
+                addressBin = address2bin(address.getIpv4Address().getValue());
+            } else if (address.getIpv6Address() != null) {
+                addressBin = address2bin(address.getIpv6Address().getValue());
+            }
+        }
+
+        if (addressBin == null) {
+            return null;
+        } else {
+            return InetAddress.getByAddress(addressBin);
+        }
+    }
+
+    /**
+     * @param value
+     * @return
+     */
+    private static byte[] address2bin(final String value) {
+        //TODO: translate ipv4 or ipv6 into byte[]
+        return null;
     }
 }
