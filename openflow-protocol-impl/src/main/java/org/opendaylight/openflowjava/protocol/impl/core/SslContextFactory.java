@@ -34,7 +34,7 @@ public class SslContextFactory {
     private static final String PROTOCOL = "TLS";
     private TlsConfiguration tlsConfig;
 
-    private static final Logger LOGGER = LoggerFactory
+    private static final Logger LOG = LoggerFactory
             .getLogger(SslContextFactory.class);
 
     /**
@@ -72,16 +72,16 @@ public class SslContextFactory {
             serverContext = SSLContext.getInstance(PROTOCOL);
             serverContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
         } catch (IOException e) {
-            LOGGER.warn("IOException - Failed to load keystore / truststore."
+            LOG.warn("IOException - Failed to load keystore / truststore."
                     + " Failed to initialize the server-side SSLContext", e);
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.warn("NoSuchAlgorithmException - Unsupported algorithm."
+            LOG.warn("NoSuchAlgorithmException - Unsupported algorithm."
                     + " Failed to initialize the server-side SSLContext", e);
         } catch (CertificateException e) {
-            LOGGER.warn("CertificateException - Unable to access certificate (check password)."
+            LOG.warn("CertificateException - Unable to access certificate (check password)."
                     + " Failed to initialize the server-side SSLContext", e);
         } catch (Exception e) {
-            LOGGER.warn("Exception - Failed to initialize the server-side SSLContext", e);
+            LOG.warn("Exception - Failed to initialize the server-side SSLContext", e);
         }
         return serverContext;
     }

@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class SslKeyStore {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SslKeyStore.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SslKeyStore.class);
 
     private SslKeyStore() {
         throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
@@ -48,7 +48,7 @@ public final class SslKeyStore {
             }
             break;
         case PATH:
-            LOGGER.debug("Current dir using System:"
+            LOG.debug("Current dir using System:"
                     + System.getProperty("user.dir"));
             File keystorefile = new File(filename);
             try {

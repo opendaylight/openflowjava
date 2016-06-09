@@ -87,7 +87,7 @@ public class MultipartReplyMessageFactoryTest {
                 new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, 19, MultipartReplyMessage.class));
     }
 
-    private static final Logger LOGGER = LoggerFactory
+    private static final Logger LOG = LoggerFactory
             .getLogger(MultipartReplyMessageFactoryTest.class);
 
     /**
@@ -678,7 +678,7 @@ public class MultipartReplyMessageFactoryTest {
         Assert.assertEquals("Wrong meterBandDscp.burstSize", 32, meterBandDscp.getBurstSize().intValue());
         Assert.assertEquals("Wrong meterBandDscp.precLevel", 4, meterBandDscp.getPrecLevel().intValue());
 
-        LOGGER.info(message.getMeterConfig().get(0).getFlags().toString());
+        LOG.info(message.getMeterConfig().get(0).getFlags().toString());
         Assert.assertEquals("Wrong flags01", new MeterFlags(false, true, true, false),
                              message.getMeterConfig().get(1).getFlags());
         Assert.assertEquals("Wrong meterId01", 7,

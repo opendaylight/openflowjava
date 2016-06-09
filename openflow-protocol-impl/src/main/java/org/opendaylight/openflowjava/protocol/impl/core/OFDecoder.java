@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OFDecoder.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OFDecoder.class);
     private final StatisticsCounters statisticsCounter;
 
     // TODO: make this final?
@@ -37,7 +37,7 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
      * Constructor of class
      */
     public OFDecoder() {
-        LOGGER.trace("Creating OF 1.3 Decoder");
+        LOG.trace("Creating OF 1.3 Decoder");
 	// TODO: pass as argument
         statisticsCounter = StatisticsCounters.getInstance();
     }
@@ -46,23 +46,23 @@ public class OFDecoder extends MessageToMessageDecoder<VersionMessageWrapper> {
     protected void decode(ChannelHandlerContext ctx, VersionMessageWrapper msg,
             List<Object> out) throws Exception {
         statisticsCounter.incrementCounter(CounterEventTypes.US_RECEIVED_IN_OFJAVA);
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("VersionMessageWrapper received");
-            LOGGER.debug("<< {}", ByteBufUtils.byteBufToHexString(msg.getMessageBuffer()));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("VersionMessageWrapper received");
+            LOG.debug("<< {}", ByteBufUtils.byteBufToHexString(msg.getMessageBuffer()));
         }
 
         try {
             final DataObject dataObject = deserializationFactory.deserialize(msg.getMessageBuffer(),
                     msg.getVersion());
             if (dataObject == null) {
-                LOGGER.warn("Translated POJO is null");
+                LOG.warn("Translated POJO is null");
                 statisticsCounter.incrementCounter(CounterEventTypes.US_DECODE_FAIL);
             } else {
                 out.add(dataObject);
                 statisticsCounter.incrementCounter(CounterEventTypes.US_DECODE_SUCCESS);
             }
         } catch (Exception e) {
-            LOGGER.warn("Message deserialization failed", e);
+            LOG.warn("Message deserialization failed", e);
             statisticsCounter.incrementCounter(CounterEventTypes.US_DECODE_FAIL);
         } finally {
             msg.getMessageBuffer().release();

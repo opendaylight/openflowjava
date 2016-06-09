@@ -36,7 +36,7 @@ import com.google.common.util.concurrent.SettableFuture;
  */
 public final class UdpHandler implements ServerFacade {
 
-    private static final Logger LOGGER = LoggerFactory
+    private static final Logger LOG = LoggerFactory
             .getLogger(UdpHandler.class);
     private int port;
     private EventLoopGroup group;
@@ -82,7 +82,7 @@ public final class UdpHandler implements ServerFacade {
                 f = b.bind(port).sync();
             }
         } catch (InterruptedException e) {
-            LOGGER.error("Interrupted while binding port {}", port, e);
+            LOG.error("Interrupted while binding port {}", port, e);
             return;
         }
 
@@ -93,12 +93,12 @@ public final class UdpHandler implements ServerFacade {
             // Update port, as it may have been specified as 0
             this.port = isa.getPort();
 
-            LOGGER.debug("Address from udpHandler: {}", address);
+            LOG.debug("Address from udpHandler: {}", address);
             isOnlineFuture.set(true);
-            LOGGER.info("Switch listener started and ready to accept incoming udp connections on port: {}", port);
+            LOG.info("Switch listener started and ready to accept incoming udp connections on port: {}", port);
             f.channel().closeFuture().sync();
         } catch (InterruptedException e) {
-            LOGGER.error("Interrupted while waiting for port {} shutdown", port, e);
+            LOG.error("Interrupted while waiting for port {} shutdown", port, e);
         } finally {
             shutdown();
         }
@@ -186,7 +186,7 @@ public final class UdpHandler implements ServerFacade {
             }
             return;
         } catch (Throwable ex) {
-            LOGGER.debug("Epoll initiation failed");
+            LOG.debug("Epoll initiation failed");
         }
 
         //Fallback mechanism
