@@ -23,27 +23,27 @@ import org.slf4j.LoggerFactory;
  */
 public class OFDatagramPacketDecoder extends SimpleChannelInboundHandler<VersionMessageUdpWrapper>{
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OFDatagramPacketDecoder.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OFDatagramPacketDecoder.class);
     private DeserializationFactory deserializationFactory;
 
     @Override
     public void channelRead0(final ChannelHandlerContext ctx, final VersionMessageUdpWrapper msg)
             throws Exception {
-        if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("UdpVersionMessageWrapper received");
-                LOGGER.debug("<< {}", ByteBufUtils.byteBufToHexString(msg.getMessageBuffer()));
+        if (LOG.isDebugEnabled()) {
+                LOG.debug("UdpVersionMessageWrapper received");
+                LOG.debug("<< {}", ByteBufUtils.byteBufToHexString(msg.getMessageBuffer()));
         }
 
         try {
             final DataObject dataObject = deserializationFactory.deserialize(msg.getMessageBuffer(),msg.getVersion());
             if (dataObject == null) {
-                LOGGER.warn("Translated POJO is null");
+                LOG.warn("Translated POJO is null");
             } else {
                 MessageConsumer consumer = UdpConnectionMap.getMessageConsumer(msg.getAddress());
                 consumer.consume(dataObject);
             }
         } catch(Exception e) {
-            LOGGER.warn("Message deserialization failed", e);
+            LOG.warn("Message deserialization failed", e);
             // TODO: delegate exception to allow easier deserialization
             // debugging / deserialization problem awareness
         } finally {

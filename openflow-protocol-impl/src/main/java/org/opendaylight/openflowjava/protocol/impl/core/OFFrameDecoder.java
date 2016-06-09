@@ -29,7 +29,7 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
     /** Length of OpenFlow 1.3 header */
     public static final byte LENGTH_OF_HEADER = 8;
     private static final byte LENGTH_INDEX_IN_HEADER = 2;
-    private static final Logger LOGGER = LoggerFactory.getLogger(OFFrameDecoder.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OFFrameDecoder.class);
     private ConnectionFacade connectionFacade;
     private boolean firstTlsPass = false;
 
@@ -40,7 +40,7 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
      * @param tlsPresent true is TLS is required, false otherwise
      */
     public OFFrameDecoder(ConnectionFacade connectionFacade, boolean tlsPresent) {
-        LOGGER.trace("Creating OFFrameDecoder");
+        LOG.trace("Creating OFFrameDecoder");
         if (tlsPresent) {
             firstTlsPass = true;
         }
@@ -50,11 +50,11 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         if (cause instanceof io.netty.handler.ssl.NotSslRecordException) {
-            LOGGER.warn("Not an TLS record exception - please verify TLS configuration.");
+            LOG.warn("Not an TLS record exception - please verify TLS configuration.");
         } else {
-            LOGGER.warn("Unexpected exception from downstream.", cause);
+            LOG.warn("Unexpected exception from downstream.", cause);
         }
-        LOGGER.warn("Closing connection.");
+        LOG.warn("Closing connection.");
         ctx.close();
     }
 
@@ -66,24 +66,24 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
         }
         int readableBytes = bb.readableBytes();
         if (readableBytes < LENGTH_OF_HEADER) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("skipping bytebuf - too few bytes for header: {} < {}", readableBytes, LENGTH_OF_HEADER);
-                LOGGER.debug("bb: {}", ByteBufUtils.byteBufToHexString(bb));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("skipping bytebuf - too few bytes for header: {} < {}", readableBytes, LENGTH_OF_HEADER);
+                LOG.debug("bb: {}", ByteBufUtils.byteBufToHexString(bb));
             }
             return;
         }
 
         int length = bb.getUnsignedShort(bb.readerIndex() + LENGTH_INDEX_IN_HEADER);
-        LOGGER.debug("length of actual message: {}", length);
+        LOG.debug("length of actual message: {}", length);
 
         if (readableBytes < length) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("skipping bytebuf - too few bytes for msg: {} < {}", readableBytes, length);
-                LOGGER.debug("bytebuffer: {}", ByteBufUtils.byteBufToHexString(bb));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("skipping bytebuf - too few bytes for msg: {} < {}", readableBytes, length);
+                LOG.debug("bytebuffer: {}", ByteBufUtils.byteBufToHexString(bb));
             }
             return;
         }
-        LOGGER.debug("OF Protocol message received, type:{}", bb.getByte(bb.readerIndex() + 1));
+        LOG.debug("OF Protocol message received, type:{}", bb.getByte(bb.readerIndex() + 1));
 
         ByteBuf messageBuffer = bb.slice(bb.readerIndex(), length);
         list.add(messageBuffer);

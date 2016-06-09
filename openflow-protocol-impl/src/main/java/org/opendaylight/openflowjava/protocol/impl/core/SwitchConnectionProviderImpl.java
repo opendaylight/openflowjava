@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SwitchConnectionProviderImpl implements SwitchConnectionProvider, ConnectionInitializer {
 
-    private static final Logger LOGGER = LoggerFactory
+    private static final Logger LOG = LoggerFactory
             .getLogger(SwitchConnectionProviderImpl.class);
     private SwitchConnectionHandler switchConnectionHandler;
     private ServerFacade serverFacade;
@@ -88,15 +88,15 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider, C
 
     @Override
     public void setSwitchConnectionHandler(final SwitchConnectionHandler switchConnectionHandler) {
-        LOGGER.debug("setSwitchConnectionHandler");
+        LOG.debug("setSwitchConnectionHandler");
         this.switchConnectionHandler = switchConnectionHandler;
     }
 
     @Override
     public ListenableFuture<Boolean> shutdown() {
-        LOGGER.debug("Shutdown summoned");
+        LOG.debug("Shutdown summoned");
         if(serverFacade == null){
-            LOGGER.warn("Can not shutdown - not configured or started");
+            LOG.warn("Can not shutdown - not configured or started");
             throw new IllegalStateException("SwitchConnectionProvider is not started or not configured.");
         }
         return serverFacade.shutdown();
@@ -104,7 +104,7 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider, C
 
     @Override
     public ListenableFuture<Boolean> startup() {
-        LOGGER.debug("Startup summoned");
+        LOG.debug("Startup summoned");
         ListenableFuture<Boolean> result = null;
         try {
             serverFacade = createAndConfigureServer();
@@ -125,7 +125,7 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider, C
      * @return
      */
     private ServerFacade createAndConfigureServer() {
-        LOGGER.debug("Configuring ..");
+        LOG.debug("Configuring ..");
         ServerFacade server = null;
         final ChannelInitializerFactory factory = new ChannelInitializerFactory();
         factory.setSwitchConnectionHandler(switchConnectionHandler);
