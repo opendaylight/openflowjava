@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChannel> {
 
-    private static final Logger LOGGER = LoggerFactory
+    private static final Logger LOG = LoggerFactory
             .getLogger(TcpChannelInitializer.class);
     private final DefaultChannelGroup allChannels;
     private final ConnectionAdapterFactory connectionAdapterFactory;
@@ -58,21 +58,21 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
             final InetAddress switchAddress = ch.remoteAddress().getAddress();
             final int port = ch.localAddress().getPort();
             final int remotePort = ch.remoteAddress().getPort();
-            LOGGER.debug("Incoming connection from (remote address): {}:{} --> :{}",
+            LOG.debug("Incoming connection from (remote address): {}:{} --> :{}",
 			    switchAddress.toString(), remotePort, port);
 
             if (!getSwitchConnectionHandler().accept(switchAddress)) {
                 ch.disconnect();
-                LOGGER.debug("Incoming connection rejected");
+                LOG.debug("Incoming connection rejected");
                 return;
             }
         }
-        LOGGER.debug("Incoming connection accepted - building pipeline");
+        LOG.debug("Incoming connection accepted - building pipeline");
         allChannels.add(ch);
         ConnectionFacade connectionFacade = null;
         connectionFacade = connectionAdapterFactory.createConnectionFacade(ch, null, useBarrier());
         try {
-            LOGGER.debug("calling plugin: {}", getSwitchConnectionHandler());
+            LOG.debug("calling plugin: {}", getSwitchConnectionHandler());
             getSwitchConnectionHandler().onSwitchConnected(connectionFacade);
             connectionFacade.checkListeners();
             ch.pipeline().addLast(PipelineHandlers.IDLE_HANDLER.name(), new IdleHandler(getSwitchIdleTimeout(), TimeUnit.MILLISECONDS));
@@ -87,10 +87,10 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
                 engine.setUseClientMode(false);
                 List<String> suitesList = getTlsConfiguration().getCipherSuites();
                 if (suitesList != null && !suitesList.isEmpty()) {
-                    LOGGER.debug("Requested Cipher Suites are: {}", suitesList);
+                    LOG.debug("Requested Cipher Suites are: {}", suitesList);
                     String[] suites = suitesList.toArray(new String[suitesList.size()]);
                     engine.setEnabledCipherSuites(suites);
-                    LOGGER.debug("Cipher suites enabled in SSLEngine are: {}", engine.getEnabledCipherSuites().toString());
+                    LOG.debug("Cipher suites enabled in SSLEngine are: {}", engine.getEnabledCipherSuites().toString());
                 }
                 final SslHandler ssl = new SslHandler(engine);
                 final Future<Channel> handshakeFuture = ssl.handshakeFuture();
@@ -117,7 +117,7 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
                 connectionFacade.fireConnectionReadyNotification();
             }
         } catch (final Exception e) {
-            LOGGER.warn("Failed to initialize channel", e);
+            LOG.warn("Failed to initialize channel", e);
             ch.close();
         }
     }

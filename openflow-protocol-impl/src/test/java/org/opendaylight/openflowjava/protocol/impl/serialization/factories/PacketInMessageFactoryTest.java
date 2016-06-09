@@ -121,8 +121,9 @@ public class PacketInMessageFactoryTest {
         Assert.assertEquals("Wrong oxm value", 4, serializedBuffer.readUnsignedByte());
         serializedBuffer.skipBytes(7);
         serializedBuffer.skipBytes(PADDING);
-        Assert.assertArrayEquals("Wrong data", message.getData(),
-                serializedBuffer.readBytes(serializedBuffer.readableBytes()).array());
+        byte[] readData = new byte[serializedBuffer.readableBytes()];
+        serializedBuffer.readBytes(readData);
+        Assert.assertArrayEquals("Wrong data", message.getData(), readData);
     }
 
 }

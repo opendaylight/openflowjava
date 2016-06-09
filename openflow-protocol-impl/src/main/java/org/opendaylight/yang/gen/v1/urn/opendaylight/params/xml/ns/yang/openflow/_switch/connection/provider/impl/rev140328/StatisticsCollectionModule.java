@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 */
 public class StatisticsCollectionModule extends org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow._switch.connection.provider.impl.rev140328.AbstractStatisticsCollectionModule {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsCollectionModule.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StatisticsCollectionModule.class);
 
     public StatisticsCollectionModule(org.opendaylight.controller.config.api.ModuleIdentifier identifier, org.opendaylight.controller.config.api.DependencyResolver dependencyResolver) {
         super(identifier, dependencyResolver);
@@ -54,7 +54,7 @@ public class StatisticsCollectionModule extends org.opendaylight.yang.gen.v1.urn
         if (statsConfig != null) {
             statsCounter.startCounting(statsConfig.getStatisticsCollect(), statsConfig.getLogReportDelay());
         } else {
-            LOGGER.debug("Unable to start StatisticCounter - wrong configuration");
+            LOG.debug("Unable to start StatisticCounter - wrong configuration");
         }
 
         /* Internal MXBean implementation */
@@ -93,11 +93,11 @@ public class StatisticsCollectionModule extends org.opendaylight.yang.gen.v1.urn
                     }
                     catch (Exception e) {
                         String errMsg = "Error by stoping StatisticsCollectionService.";
-                        LOGGER.error(errMsg, e);
+                        LOG.error(errMsg, e);
                         throw new IllegalStateException(errMsg, e);
                     }
                 }
-                LOGGER.info("StatisticsCollection Service consumer (instance {} turn down.)", this);
+                LOG.info("StatisticsCollection Service consumer (instance {} turn down.)", this);
             }
 
             @Override
@@ -112,7 +112,7 @@ public class StatisticsCollectionModule extends org.opendaylight.yang.gen.v1.urn
         }
 
         AutoCloseable ret = new AutoClosableStatisticsCollection();
-        LOGGER.info("StatisticsCollection service (instance {}) initialized.", ret);
+        LOG.info("StatisticsCollection service (instance {}) initialized.", ret);
         return ret;
     }
 }

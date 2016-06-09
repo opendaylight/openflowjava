@@ -283,7 +283,7 @@ public class OF13MatchSerializerTest {
         byte[] label = new byte[4];
         out.readBytes(label);
 
-        LOG.debug("label: "+ ByteBufUtils.bytesToHexString(label));
+        LOG.debug("label: {}", ByteBufUtils.bytesToHexString(label));
         Assert.assertArrayEquals("Wrong ipv6FLabel", new byte[]{0, 0x0f, (byte) 0x9e, (byte) 0x8d}, label);
     }
 

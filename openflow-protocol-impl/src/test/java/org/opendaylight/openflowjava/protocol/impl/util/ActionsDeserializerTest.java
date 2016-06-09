@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ActionsDeserializerTest {
 
-    private static final Logger LOGGER = LoggerFactory
+    private static final Logger LOG = LoggerFactory
             .getLogger(ActionsDeserializerTest.class);
     private DeserializerRegistry registry;
 
@@ -82,7 +82,7 @@ public class ActionsDeserializerTest {
                 + "00 1B 00 08 00 00 00 00");
 
         message.skipBytes(4); // skip XID
-        LOGGER.info("bytes: {}", message.readableBytes());
+        LOG.info("bytes: {}", message.readableBytes());
 
         CodeKeyMaker keyMaker = CodeKeyMakerFactory.createActionsKeyMaker(EncodeConstants.OF13_VERSION_ID);
         List<Action> actions = ListDeserializer.deserializeList(EncodeConstants.OF13_VERSION_ID,
