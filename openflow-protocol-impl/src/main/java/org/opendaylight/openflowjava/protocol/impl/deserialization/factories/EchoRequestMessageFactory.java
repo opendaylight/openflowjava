@@ -27,7 +27,9 @@ public class EchoRequestMessageFactory implements OFDeserializer<EchoRequestMess
         EchoRequestMessageBuilder builder = new EchoRequestMessageBuilder();
         builder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
         builder.setXid(rawMessage.readUnsignedInt());
-        builder.setData(rawMessage.readBytes(rawMessage.readableBytes()).array());
+        byte[] data = new byte[rawMessage.readableBytes()];
+        rawMessage.readbytes(data);
+        builder.setData(data);
         return builder.build();
     }
 }

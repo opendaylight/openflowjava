@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  */
 public class IdleHandler extends ReadTimeoutHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IdleHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IdleHandler.class);
     private boolean first = true;
 
     /**
@@ -43,7 +43,7 @@ public class IdleHandler extends ReadTimeoutHandler {
     @Override
     protected void readTimedOut(final ChannelHandlerContext ctx) throws Exception {
         if (first) {
-            LOGGER.debug("Switch idle");
+            LOG.debug("Switch idle");
             SwitchIdleEventBuilder builder = new SwitchIdleEventBuilder();
             builder.setInfo("Switch idle");
             ctx.fireChannelRead(builder.build());
