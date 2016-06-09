@@ -27,7 +27,9 @@ public class OF10EchoRequestMessageFactory implements OFDeserializer<EchoRequest
         EchoRequestMessageBuilder builder = new EchoRequestMessageBuilder();
         builder.setVersion((short) EncodeConstants.OF10_VERSION_ID);
         builder.setXid(rawMessage.readUnsignedInt());
-        builder.setData(rawMessage.readBytes(rawMessage.readableBytes()).array());
+        byte[] data = new byte[rawMessage.readableBytes()];
+        rawMessage.readBytes(data);
+        builder.setData(data);
         return builder.build();
     }
 }

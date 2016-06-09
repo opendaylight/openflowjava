@@ -47,7 +47,8 @@ public class EchoOutputMessageFactoryTest {
         ByteBuf serializedBuffer = UnpooledByteBufAllocator.DEFAULT.buffer();
         factory.serialize(message, serializedBuffer);
         BufferHelper.checkHeaderV13(serializedBuffer, MESSAGE_TYPE, 24);
-        Assert.assertArrayEquals("Wrong data", message.getData(),
-                serializedBuffer.readBytes(serializedBuffer.readableBytes()).array());
+        byte[] readData = new byte[serializedBuffer.readableBytes()];
+        serializedBuffer.readBytes(readData);
+        Assert.assertArrayEquals("Wrong data", message.getData(), readData);
     }
 }

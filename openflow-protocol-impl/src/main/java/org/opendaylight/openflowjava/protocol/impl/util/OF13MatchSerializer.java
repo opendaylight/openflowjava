@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * @author timotej.kubas
  */
 public class OF13MatchSerializer implements OFSerializer<Match>, SerializerRegistryInjector {
-    private static final Logger LOGGER = LoggerFactory.getLogger(OF13MatchSerializer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OF13MatchSerializer.class);
     private static final byte STANDARD_MATCH_TYPE_CODE = 0;
     private static final byte OXM_MATCH_TYPE_CODE = 1;
     private SerializerRegistry registry;
@@ -40,7 +40,7 @@ public class OF13MatchSerializer implements OFSerializer<Match>, SerializerRegis
     @Override
     public void serialize(Match match, ByteBuf outBuffer) {
         if (match == null) {
-            LOGGER.debug("Match is null");
+            LOG.debug("Match is null");
             return;
         }
         int matchStartIndex = outBuffer.writerIndex();
@@ -72,7 +72,7 @@ public class OF13MatchSerializer implements OFSerializer<Match>, SerializerRegis
      */
     public void serializeMatchEntries(List<MatchEntry> matchEntries, ByteBuf out) {
         if (matchEntries == null) {
-            LOGGER.debug("Match entries are null");
+            LOG.debug("Match entries are null");
             return;
         }
         for (MatchEntry entry : matchEntries) {
