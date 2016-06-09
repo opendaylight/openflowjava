@@ -279,12 +279,12 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
     /* NPE are coming from {@link OFEncoder#encode} from catch block and we don't wish to lost it */
     private static final GenericFutureListener<Future<Void>> LOG_ENCODER_LISTENER = new GenericFutureListener<Future<Void>>() {
 
-        private final Logger LOGGER = LoggerFactory.getLogger("LogEncoderListener");
+        private final Logger LOG = LoggerFactory.getLogger(GenericFutureListener.class);
 
         @Override
         public void operationComplete(final Future<Void> future) throws Exception {
             if (future.cause() != null) {
-                LOGGER.warn("Message encoding fail !", future.cause());
+                LOG.warn("Message encoding fail !", future.cause());
             }
         }
     };

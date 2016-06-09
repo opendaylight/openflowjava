@@ -25,7 +25,7 @@ import com.google.common.util.concurrent.SettableFuture;
  */
 public class SimpleClientHandler extends ChannelInboundHandlerAdapter {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(SimpleClientHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SimpleClientHandler.class);
     private static final int LENGTH_INDEX_IN_HEADER = 2;
     private SettableFuture<Boolean> isOnlineFuture;
     protected ScenarioHandler scenarioHandler;
@@ -42,20 +42,20 @@ public class SimpleClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf bb = (ByteBuf) msg;
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("<< {}", ByteBufUtils.byteBufToHexString(bb));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("<< {}", ByteBufUtils.byteBufToHexString(bb));
         }
         int length = bb.getUnsignedShort(bb.readerIndex() + LENGTH_INDEX_IN_HEADER);
-        LOGGER.trace("SimpleClientHandler - start of read");
+        LOG.trace("SimpleClientHandler - start of read");
         byte[] message = new byte[length];
         bb.readBytes(message);
         scenarioHandler.addOfMsg(message);
-        LOGGER.trace("end of read");
+        LOG.trace("end of read");
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        LOGGER.debug("Client is active");
+        LOG.debug("Client is active");
         if (isOnlineFuture != null) {
             isOnlineFuture.set(true);
             isOnlineFuture = null;

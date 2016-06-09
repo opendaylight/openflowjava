@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public class OFDatagramPacketHandler extends MessageToMessageDecoder<DatagramPacket> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OFDatagramPacketHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OFDatagramPacketHandler.class);
 
     /** Length of OpenFlow 1.3 header */
     public static final byte LENGTH_OF_HEADER = 8;
@@ -50,15 +50,15 @@ public class OFDatagramPacketHandler extends MessageToMessageDecoder<DatagramPac
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        LOGGER.warn("Unexpected exception from downstream.", cause);
-        LOGGER.warn("Closing connection.");
+        LOG.warn("Unexpected exception from downstream.", cause);
+        LOG.warn("Closing connection.");
         ctx.close();
     }
 
     @Override
     protected void decode(ChannelHandlerContext ctx, DatagramPacket msg,
             List<Object> out) throws Exception {
-        LOGGER.debug("OFDatagramPacketFramer");
+        LOG.debug("OFDatagramPacketFramer");
         MessageConsumer consumer = UdpConnectionMap.getMessageConsumer(msg.sender());
         if (consumer == null) {
             ConnectionFacade connectionFacade =
@@ -70,34 +70,34 @@ public class OFDatagramPacketHandler extends MessageToMessageDecoder<DatagramPac
         ByteBuf bb = msg.content();
         int readableBytes = bb.readableBytes();
         if (readableBytes < LENGTH_OF_HEADER) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("skipping bytebuf - too few bytes for header: {} < {}", readableBytes, LENGTH_OF_HEADER);
-                LOGGER.debug("bb: {}", ByteBufUtils.byteBufToHexString(bb));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("skipping bytebuf - too few bytes for header: {} < {}", readableBytes, LENGTH_OF_HEADER);
+                LOG.debug("bb: {}", ByteBufUtils.byteBufToHexString(bb));
             }
             return;
         }
 
         int length = bb.getUnsignedShort(bb.readerIndex() + LENGTH_INDEX_IN_HEADER);
-        LOGGER.debug("length of actual message: {}", length);
+        LOG.debug("length of actual message: {}", length);
 
         if (readableBytes < length) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("skipping bytebuf - too few bytes for msg: {} < {}", readableBytes, length);
-                LOGGER.debug("bytebuffer: {}", ByteBufUtils.byteBufToHexString(bb));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("skipping bytebuf - too few bytes for msg: {} < {}", readableBytes, length);
+                LOG.debug("bytebuffer: {}", ByteBufUtils.byteBufToHexString(bb));
             }
             return;
         }
-        LOGGER.debug("OF Protocol message received, type:{}", bb.getByte(bb.readerIndex() + 1));
+        LOG.debug("OF Protocol message received, type:{}", bb.getByte(bb.readerIndex() + 1));
 
 
         byte version = bb.readByte();
         if ((version == EncodeConstants.OF13_VERSION_ID) || (version == EncodeConstants.OF10_VERSION_ID)) {
-            LOGGER.debug("detected version: {}", version);
+            LOG.debug("detected version: {}", version);
             ByteBuf messageBuffer = bb.slice();
             out.add(new VersionMessageUdpWrapper(version, messageBuffer, msg.sender()));
             messageBuffer.retain();
         } else {
-            LOGGER.warn("detected version: {} - currently not supported", version);
+            LOG.warn("detected version: {} - currently not supported", version);
         }
         bb.skipBytes(bb.readableBytes());
     }

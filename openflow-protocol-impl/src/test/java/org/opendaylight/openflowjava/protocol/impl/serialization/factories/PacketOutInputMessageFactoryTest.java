@@ -96,7 +96,9 @@ public class PacketOutInputMessageFactoryTest {
         Assert.assertEquals("Wrong action type", 18, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         out.skipBytes(PADDING_IN_ACTION_HEADER);
-        Assert.assertArrayEquals("Wrong data", message.getData(), out.readBytes(out.readableBytes()).array());
+        byte[] readData = new byte[out.readableBytes()];
+        out.readBytes(readData);
+        Assert.assertArrayEquals("Wrong data", message.getData(), readData);
     }
 
     /**

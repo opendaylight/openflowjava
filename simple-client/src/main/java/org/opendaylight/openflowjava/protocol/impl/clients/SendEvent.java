@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SendEvent implements ClientEvent {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(SendEvent.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SendEvent.class);
     protected final byte[] msgToSend;
     protected ChannelHandlerContext ctx;
 
@@ -36,15 +36,15 @@ public class SendEvent implements ClientEvent {
 
     @Override
     public boolean eventExecuted() {
-        LOGGER.debug("sending message");
-        LOGGER.debug("start of run");
+        LOG.debug("sending message");
+        LOG.debug("start of run");
         ByteBuf buffer = ctx.alloc().buffer();
         buffer.writeBytes(msgToSend);
         ctx.writeAndFlush(buffer);
 
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(">> {}", ByteBufUtils.bytesToHexString(msgToSend));
-            LOGGER.debug("message sent");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(">> {}", ByteBufUtils.bytesToHexString(msgToSend));
+            LOG.debug("message sent");
         }
         return true;
     }

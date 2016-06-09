@@ -28,19 +28,19 @@ import io.netty.util.concurrent.Future;
  */
 public class OFDatagramPacketEncoder extends MessageToMessageEncoder<UdpMessageListenerWrapper> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OFDatagramPacketEncoder.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OFDatagramPacketEncoder.class);
     private SerializationFactory serializationFactory;
 
     @Override
     protected void encode(ChannelHandlerContext ctx,
             UdpMessageListenerWrapper wrapper, List<Object> out) throws Exception {
-        LOGGER.trace("Encoding");
+        LOG.trace("Encoding");
         try {
             ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
             serializationFactory.messageToBuffer(wrapper.getMsg().getVersion(), buffer, wrapper.getMsg());
             out.add(new DatagramPacket(buffer, wrapper.getAddress()));
         } catch(Exception e) {
-            LOGGER.warn("Message serialization failed: {}", e.getMessage());
+            LOG.warn("Message serialization failed: {}", e.getMessage());
             Future<Void> newFailedFuture = ctx.newFailedFuture(e);
             wrapper.getListener().operationComplete(newFailedFuture);
             return;

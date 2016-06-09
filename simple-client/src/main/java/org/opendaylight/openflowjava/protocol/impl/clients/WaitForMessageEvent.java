@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  */
 public class WaitForMessageEvent implements ClientEvent {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(WaitForMessageEvent.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WaitForMessageEvent.class);
     private final byte[] headerExpected;
     private byte[] headerReceived;
 
@@ -38,13 +38,13 @@ public class WaitForMessageEvent implements ClientEvent {
             return false;
         }
         if (!Arrays.equals(headerExpected, headerReceived)) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("expected msg: {}", ByteBufUtils.bytesToHexString(headerExpected));
-                LOGGER.debug("received msg: {}", ByteBufUtils.bytesToHexString(headerReceived));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("expected msg: {}", ByteBufUtils.bytesToHexString(headerExpected));
+                LOG.debug("received msg: {}", ByteBufUtils.bytesToHexString(headerReceived));
             }
             return false;
         }
-        LOGGER.debug("Headers OK");
+        LOG.debug("Headers OK");
         return true;
     }
 

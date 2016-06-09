@@ -58,7 +58,8 @@ public class OF10PacketInMessageFactoryTest {
         Assert.assertEquals("Wrong port in", message.getInPort().intValue(), serializedBuffer.readUnsignedShort());
         Assert.assertEquals("Wrong reason", message.getReason().getIntValue(), serializedBuffer.readUnsignedByte());
         serializedBuffer.skipBytes(1);
-        Assert.assertArrayEquals("Wrong data", message.getData(),
-                serializedBuffer.readBytes(serializedBuffer.readableBytes()).array());
+        byte[] readData = new byte[serializedBuffer.readableBytes()];
+        serializedBuffer.readBytes(readData);
+        Assert.assertArrayEquals("Wrong data", message.getData(), readData);
     }
 }

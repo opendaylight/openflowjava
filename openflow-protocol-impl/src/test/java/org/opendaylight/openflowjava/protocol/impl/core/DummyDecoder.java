@@ -23,13 +23,13 @@ import org.slf4j.LoggerFactory;
  */
 public class DummyDecoder extends ByteToMessageDecoder {
 
-    private static final Logger LOGGER = LoggerFactory
+    private static final Logger LOG = LoggerFactory
             .getLogger(DummyDecoder.class);
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in,
             List<Object> out) throws Exception {
-        LOGGER.debug("decoding");
+        LOG.debug("decoding");
         ctx.fireChannelReadComplete();
     }
 
