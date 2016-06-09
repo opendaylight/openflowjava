@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DeserializerRegistryImpl implements DeserializerRegistry {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DeserializerRegistryImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DeserializerRegistryImpl.class);
     private Map<MessageCodeKey, OFGeneralDeserializer> registry;
 
     /**
@@ -79,7 +79,7 @@ public class DeserializerRegistryImpl implements DeserializerRegistry {
         }
         OFGeneralDeserializer desInRegistry = registry.put(key, deserializer);
         if (desInRegistry != null) {
-            LOGGER.debug("Deserializer for key {} overwritten. Old deserializer: {}, new deserializer: {}", key,
+            LOG.debug("Deserializer for key {} overwritten. Old deserializer: {}, new deserializer: {}", key,
                     desInRegistry.getClass().getName(), deserializer.getClass().getName());
         }
         if (deserializer instanceof DeserializerRegistryInjector) {

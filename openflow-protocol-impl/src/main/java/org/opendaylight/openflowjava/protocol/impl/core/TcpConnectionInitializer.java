@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2015 Pantheon Technologies s.r.o. and others. All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+
 package org.opendaylight.openflowjava.protocol.impl.core;
 
 import io.netty.bootstrap.Bootstrap;
@@ -20,7 +28,7 @@ import com.google.common.util.concurrent.SettableFuture;
 public class TcpConnectionInitializer implements ServerFacade,
         ConnectionInitializer {
 
-    private static final Logger LOGGER = LoggerFactory
+    private static final Logger LOG = LoggerFactory
             .getLogger(TcpConnectionInitializer.class);
     private EventLoopGroup workerGroup;
     private ThreadConfiguration threadConfig;
@@ -73,7 +81,7 @@ public class TcpConnectionInitializer implements ServerFacade,
         try {
             b.connect(host, port).sync();
         } catch (InterruptedException e) {
-            LOGGER.error("Unable to initiate connection", e);
+            LOG.error("Unable to initiate connection", e);
         }
     }
 

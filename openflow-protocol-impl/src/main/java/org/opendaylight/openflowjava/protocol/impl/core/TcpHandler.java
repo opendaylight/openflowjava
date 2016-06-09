@@ -51,7 +51,7 @@ public class TcpHandler implements ServerFacade {
      */
     private static final int DEFAULT_WRITE_SPIN_COUNT = 16;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TcpHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TcpHandler.class);
 
     private int port;
     private String address;
@@ -122,7 +122,7 @@ public class TcpHandler implements ServerFacade {
                 f = b.bind(port).sync();
             }
         } catch (InterruptedException e) {
-            LOGGER.error("Interrupted while binding port {}", port, e);
+            LOG.error("Interrupted while binding port {}", port, e);
             return;
         }
 
@@ -133,12 +133,12 @@ public class TcpHandler implements ServerFacade {
             // Update port, as it may have been specified as 0
             this.port = isa.getPort();
 
-            LOGGER.debug("address from tcphandler: {}", address);
+            LOG.debug("address from tcphandler: {}", address);
             isOnlineFuture.set(true);
-            LOGGER.info("Switch listener started and ready to accept incoming tcp/tls connections on port: {}", port);
+            LOG.info("Switch listener started and ready to accept incoming tcp/tls connections on port: {}", port);
             f.channel().closeFuture().sync();
         } catch (InterruptedException e) {
-            LOGGER.error("Interrupted while waiting for port {} shutdown", port, e);
+            LOG.error("Interrupted while waiting for port {} shutdown", port, e);
         } finally {
             shutdown();
         }
@@ -252,7 +252,7 @@ public class TcpHandler implements ServerFacade {
             ((EpollEventLoopGroup)workerGroup).setIoRatio(100);
             return;
         } catch (Throwable ex) {
-            LOGGER.debug("Epoll initiation failed");
+            LOG.debug("Epoll initiation failed");
         }
 
         //Fallback mechanism
