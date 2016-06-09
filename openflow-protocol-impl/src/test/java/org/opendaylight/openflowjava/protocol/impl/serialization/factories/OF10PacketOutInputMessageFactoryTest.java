@@ -94,7 +94,9 @@ public class OF10PacketOutInputMessageFactoryTest {
         Assert.assertEquals("Wrong action type", 3, out.readUnsignedShort());
         Assert.assertEquals("Wrong action length", 8, out.readUnsignedShort());
         out.skipBytes(4);
-        Assert.assertArrayEquals("Wrong data", message.getData(), out.readBytes(out.readableBytes()).array());
+        byte[] readData = new byte[out.readableBytes()];
+        out.readBytes(readData);
+        Assert.assertArrayEquals("Wrong data", message.getData(), readData);
         Assert.assertTrue("Unread data", out.readableBytes() == 0);
     }
 

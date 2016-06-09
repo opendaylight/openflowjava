@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ScenarioHandler extends Thread {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ScenarioHandler.class);
     private Deque<ClientEvent> scenario;
     private final BlockingQueue<byte[]> ofMsg;
     private ChannelHandlerContext ctx;
@@ -55,44 +55,44 @@ public class ScenarioHandler extends Thread {
     public void run() {
         int freezeCounter = 0;
         while (!scenario.isEmpty()) {
-            LOGGER.debug("Running event #{}", eventNumber);
+            LOG.debug("Running event #{}", eventNumber);
             ClientEvent peek = scenario.peekLast();
             if (peek instanceof WaitForMessageEvent) {
-                LOGGER.debug("WaitForMessageEvent");
+                LOG.debug("WaitForMessageEvent");
                 try {
                     WaitForMessageEvent event = (WaitForMessageEvent) peek;
                     event.setHeaderReceived(ofMsg.poll(2000, TimeUnit.MILLISECONDS));
                 } catch (InterruptedException e) {
-                    LOGGER.error(e.getMessage(), e);
+                    LOG.error(e.getMessage(), e);
                     break;
                 }
             } else if (peek instanceof SendEvent) {
-                LOGGER.debug("Proceed - send event");
+                LOG.debug("Proceed - sendevent");
                 SendEvent event = (SendEvent) peek;
                 event.setCtx(ctx);
             }
             if (peek.eventExecuted()) {
-                LOGGER.info("Scenario step finished OK, moving to next step.");
+                LOG.info("Scenario step finished OK, moving to next step.");
                 scenario.removeLast();
                 eventNumber++;
                 freezeCounter = 0;
                 finishedOK = true;
             } else {
                 freezeCounter++;
+                LOG.warn("Scenario step not finished NOT OK!", freezeCounter);
             }
             if (freezeCounter > freeze) {
-                LOGGER.warn("Scenario frozen: {}", freezeCounter);
-                LOGGER.warn("Scenario step not finished NOT OK!", freezeCounter);
+                LOG.warn("Scenario frozen: {}", freezeCounter);
                 this.finishedOK = false;
                 break;
             }
             try {
                 sleep(sleepBetweenTries);
             } catch (InterruptedException e) {
-                LOGGER.error(e.getMessage(), e);
+                LOG.error(e.getMessage(), e);
             }
         }
-        LOGGER.debug("Scenario finished");
+        LOG.debug("Scenario finished");
         synchronized (this) {
             scenarioFinished = true;
             this.notify();

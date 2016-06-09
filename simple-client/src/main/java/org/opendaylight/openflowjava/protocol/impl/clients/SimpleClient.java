@@ -29,7 +29,7 @@ import com.google.common.util.concurrent.SettableFuture;
  */
 public class SimpleClient implements OFClient {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SimpleClient.class);
     private final String host;
     private final int port;
     private boolean securedClient = false;
@@ -72,20 +72,20 @@ public class SimpleClient implements OFClient {
             b.connect(host, port).sync();
 
             synchronized (scenarioHandler) {
-                LOGGER.debug("WAITING FOR SCENARIO");
+                LOG.debug("WAITING FOR SCENARIO");
                 while (! scenarioHandler.isScenarioFinished()) {
                     scenarioHandler.wait();
                 }
             }
         } catch (Exception ex) {
-            LOGGER.error(ex.getMessage(), ex);
+            LOG.error(ex.getMessage(), ex);
         } finally {
-            LOGGER.debug("shutting down");
+            LOG.debug("shutting down");
             try {
                 group.shutdownGracefully().get();
-                LOGGER.debug("shutdown successful");
+                LOG.debug("shutdown succesful");
             } catch (InterruptedException | ExecutionException e) {
-                LOGGER.error(e.getMessage(), e);
+                LOG.error(e.getMessage(), e);
             }
         }
         scenarioDone.set(true);
@@ -95,7 +95,7 @@ public class SimpleClient implements OFClient {
      * @return close future
      */
     public Future<?> disconnect() {
-        LOGGER.debug("disconnecting client");
+        LOG.debug("disconnecting client");
         return group.shutdownGracefully();
     }
 
@@ -115,8 +115,8 @@ public class SimpleClient implements OFClient {
         int port;
         SimpleClient sc;
         if (args.length != 3) {
-            LOGGER.error("Usage: {} <host> <port> <secured>", SimpleClient.class.getSimpleName());
-            LOGGER.error("Trying to use default setting.");
+            LOG.error("Usage: {} <host> <port> <secured>", SimpleClient.class.getSimpleName());
+            LOG.error("Trying to use default setting.");
             InetAddress ia = InetAddress.getLocalHost();
             InetAddress[] all = InetAddress.getAllByName(ia.getHostName());
             host = all[0].getHostAddress();

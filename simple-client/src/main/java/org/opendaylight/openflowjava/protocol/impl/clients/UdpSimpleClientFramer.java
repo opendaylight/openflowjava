@@ -29,18 +29,18 @@ public class UdpSimpleClientFramer extends MessageToMessageDecoder<DatagramPacke
     /** Length of OpenFlow 1.3 header */
     public static final byte LENGTH_OF_HEADER = 8;
     private static final byte LENGTH_INDEX_IN_HEADER = 2;
-    private static final Logger LOGGER = LoggerFactory.getLogger(UdpSimpleClientFramer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UdpSimpleClientFramer.class);
 
     /**
      * Constructor of class.
      */
     public UdpSimpleClientFramer() {
-        LOGGER.trace("Creating OFFrameDecoder");
+        LOG.trace("Creating OFFrameDecoder");
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        LOGGER.warn("Unexpected exception from downstream.", cause);
+        LOG.warn("Unexpected exception from downstream.", cause);
         ctx.close();
     }
 
@@ -48,16 +48,16 @@ public class UdpSimpleClientFramer extends MessageToMessageDecoder<DatagramPacke
     protected void decode(ChannelHandlerContext chc, DatagramPacket msg, List<Object> list) throws Exception {
         ByteBuf bb = msg.content();
         if (bb.readableBytes() < LENGTH_OF_HEADER) {
-            LOGGER.debug("skipping bb - too few data for header: {}", bb.readableBytes());
+            LOG.debug("skipping bb - too few data for header: {}", bb.readableBytes());
             return;
         }
 
         int length = bb.getUnsignedShort(bb.readerIndex() + LENGTH_INDEX_IN_HEADER);
         if (bb.readableBytes() < length) {
-            LOGGER.debug("skipping bb - too few data for msg: {} < {}", bb.readableBytes(), length);
+            LOG.debug("skipping bb - too few data for msg: {} < {}", bb.readableBytes(), length);
             return;
         }
-        LOGGER.debug("OF Protocol message received, type:{}", bb.getByte(bb.readerIndex() + 1));
+        LOG.debug("OF Protocol message received, type:{}", bb.getByte(bb.readerIndex() + 1));
 
         ByteBuf messageBuffer = bb.slice(bb.readerIndex(), length);
         list.add(messageBuffer);

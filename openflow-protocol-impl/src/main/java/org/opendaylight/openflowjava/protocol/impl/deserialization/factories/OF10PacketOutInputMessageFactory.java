@@ -47,7 +47,8 @@ public class OF10PacketOutInputMessageFactory implements OFDeserializer<PacketOu
                 rawMessage, keyMaker, registry);
         builder.setAction(actions);
 
-        byte[] data = rawMessage.readBytes(rawMessage.readableBytes()).array();
+        byte[] data = new byte[rawMessage.readableBytes()];
+        rawMessage.readBytes(data);
 
         if (data != null) {
 

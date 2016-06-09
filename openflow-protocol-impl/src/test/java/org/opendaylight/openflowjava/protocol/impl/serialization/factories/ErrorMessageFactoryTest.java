@@ -52,7 +52,8 @@ public class ErrorMessageFactoryTest {
         BufferHelper.checkHeaderV13(serializedBuffer, MESSAGE_TYPE, 28);
         Assert.assertEquals("Wrong Type", message.getType().intValue(), serializedBuffer.readShort());
         Assert.assertEquals("Wrong Code", message.getCode().intValue(), serializedBuffer.readShort());
-        Assert.assertArrayEquals("Wrong data", message.getData(),
-                serializedBuffer.readBytes(serializedBuffer.readableBytes()).array());
+        byte[] readData = new byte[serializedBuffer.readableBytes()];
+        serializedBuffer.readBytes(readData);
+        Assert.assertArrayEquals("Wrong data", message.getData(), readData);
     }
 }
