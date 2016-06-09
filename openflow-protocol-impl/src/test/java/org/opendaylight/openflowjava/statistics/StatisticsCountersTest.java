@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  */
 public class StatisticsCountersTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsCountersTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StatisticsCountersTest.class);
     private StatisticsCounters statCounters;
 
     /**
@@ -81,7 +81,7 @@ public class StatisticsCountersTest {
             Assert.fail("No counter is enabled");
         }
         incrementCounter(firstEnabledCET,testCount);
-        LOGGER.debug("Waiting to process event queue");
+        LOG.debug("Waiting to process event queue");
         Assert.assertEquals("Wrong - bad last read value.", 0,statCounters.getCounter(firstEnabledCET).getCounterLastReadValue());
         Assert.assertEquals("Wrong - bad value", testCount,statCounters.getCounter(firstEnabledCET).getCounterValue(false));
         Assert.assertEquals("Wrong - bad last read value.", 0,statCounters.getCounter(firstEnabledCET).getCounterLastReadValue());

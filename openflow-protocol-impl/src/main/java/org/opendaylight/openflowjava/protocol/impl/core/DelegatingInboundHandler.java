@@ -27,7 +27,7 @@ import com.google.common.base.Preconditions;
  */
 public class DelegatingInboundHandler extends ChannelInboundHandlerAdapter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DelegatingInboundHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DelegatingInboundHandler.class);
 
     private final MessageConsumer consumer;
     private boolean inactiveMessageSent = false;
@@ -37,7 +37,7 @@ public class DelegatingInboundHandler extends ChannelInboundHandlerAdapter {
      * @param connectionAdapter reference for adapter communicating with upper layers outside library
      */
     public DelegatingInboundHandler(final MessageConsumer connectionAdapter) {
-        LOGGER.trace("Creating DelegatingInboundHandler");
+        LOG.trace("Creating DelegatingInboundHandler");
         consumer = Preconditions.checkNotNull(connectionAdapter);
     }
 
@@ -48,7 +48,7 @@ public class DelegatingInboundHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(final ChannelHandlerContext ctx) {
-        LOGGER.debug("Channel inactive");
+        LOG.debug("Channel inactive");
         if (!inactiveMessageSent) {
             DisconnectEventBuilder builder = new DisconnectEventBuilder();
             builder.setInfo("Channel inactive");
@@ -59,7 +59,7 @@ public class DelegatingInboundHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelUnregistered(final ChannelHandlerContext ctx) {
-        LOGGER.debug("Channel unregistered");
+        LOG.debug("Channel unregistered");
         if (!inactiveMessageSent) {
             DisconnectEventBuilder builder = new DisconnectEventBuilder();
             builder.setInfo("Channel unregistered");

@@ -40,8 +40,11 @@ public class OF10ErrorMessageFactory implements OFDeserializer<ErrorMessage> {
         ErrorTypeV10 errorType = ErrorTypeV10.forValue(type);
         decodeType(builder, errorType, type);
         decodeCode(rawMessage, builder, errorType);
-        if (rawMessage.readableBytes() > 0) {
-            builder.setData(rawMessage.readBytes(rawMessage.readableBytes()).array());
+        int remainingBytes = rawMessage.readableBytes();
+        if (remainingBytes > 0) {
+            byte[] data = new byte[remainingBytes];
+            rawMessage.readBytes(data);
+            builder.setData(data);
         }
         return builder.build();
     }

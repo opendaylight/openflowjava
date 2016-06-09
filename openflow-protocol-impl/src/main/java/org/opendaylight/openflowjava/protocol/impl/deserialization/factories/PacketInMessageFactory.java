@@ -51,7 +51,9 @@ public class PacketInMessageFactory implements OFDeserializer<PacketInMessage>,
         OFDeserializer<Match> matchDeserializer = registry.getDeserializer(MATCH_KEY);
         builder.setMatch(matchDeserializer.deserialize(rawMessage));
         rawMessage.skipBytes(PADDING_IN_PACKET_IN_HEADER);
-        builder.setData(rawMessage.readBytes(rawMessage.readableBytes()).array());
+        byte[] data = new byte[rawMessage.readableBytes()];
+        rawMessage.readBytes(data);
+        builder.setData(data);
         return builder.build();
     }
 
