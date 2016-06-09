@@ -30,7 +30,7 @@ import com.google.common.util.concurrent.SettableFuture;
  */
 public class UdpSimpleClient implements OFClient {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UdpSimpleClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UdpSimpleClient.class);
     private final String host;
     private final int port;
     private EventLoopGroup group;
@@ -73,20 +73,20 @@ public class UdpSimpleClient implements OFClient {
             b.connect(host, port).sync();
 
             synchronized (scenarioHandler) {
-                LOGGER.debug("WAITING FOR SCENARIO");
+                LOG.debug("WAITING FOR SCENARIO");
                 while (! scenarioHandler.isScenarioFinished()) {
                     scenarioHandler.wait();
                 }
             }
         } catch (Exception ex) {
-            LOGGER.error(ex.getMessage(), ex);
+            LOG.error(ex.getMessage(), ex);
         } finally {
-            LOGGER.debug("shutting down");
+            LOG.debug("shutting down");
             try {
                 group.shutdownGracefully().get();
-                LOGGER.debug("shutdown succesful");
+                LOG.debug("shutdown succesful");
             } catch (InterruptedException | ExecutionException e) {
-                LOGGER.error(e.getMessage(), e);
+                LOG.error(e.getMessage(), e);
             }
         }
         scenarioDone.set(true);
@@ -96,7 +96,7 @@ public class UdpSimpleClient implements OFClient {
      * @return close future
      */
     public Future<?> disconnect() {
-        LOGGER.debug("disconnecting client");
+        LOG.debug("disconnecting client");
         return group.shutdownGracefully();
     }
 
@@ -111,8 +111,8 @@ public class UdpSimpleClient implements OFClient {
         int port;
         UdpSimpleClient sc;
         if (args.length != 2) {
-            LOGGER.error("Usage: {} <host> <port>", UdpSimpleClient.class.getSimpleName());
-            LOGGER.error("Trying to use default setting.");
+            LOG.error("Usage: {} <host> <port>", UdpSimpleClient.class.getSimpleName());
+            LOG.error("Trying to use default setting.");
             InetAddress ia = InetAddress.getLocalHost();
             InetAddress[] all = InetAddress.getAllByName(ia.getHostName());
             host = all[0].getHostAddress();

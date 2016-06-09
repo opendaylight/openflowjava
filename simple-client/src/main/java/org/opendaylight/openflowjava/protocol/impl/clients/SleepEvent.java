@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SleepEvent implements ClientEvent {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SleepEvent.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SleepEvent.class);
     private long sleepTime;
 
     /**
@@ -33,10 +33,10 @@ public class SleepEvent implements ClientEvent {
     public boolean eventExecuted() {
         try {
             Thread.sleep(sleepTime);
-            LOGGER.debug("Sleeping");
+            LOG.debug("Sleeping");
             return true;
         } catch (InterruptedException e) {
-            LOGGER.error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
         }
         return false;
     }

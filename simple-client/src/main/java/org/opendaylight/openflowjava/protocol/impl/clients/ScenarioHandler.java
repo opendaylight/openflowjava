@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ScenarioHandler extends Thread {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ScenarioHandler.class);
     private Deque<ClientEvent> scenario;
     private BlockingQueue<byte[]> ofMsg;
     private ChannelHandlerContext ctx;
@@ -45,19 +45,19 @@ public class ScenarioHandler extends Thread {
     public void run() {
         int freezeCounter = 0;
         while (!scenario.isEmpty()) {
-            LOGGER.debug("Running event #{}", eventNumber);
+            LOG.debug("Running event #{}", eventNumber);
             ClientEvent peek = scenario.peekLast();
             if (peek instanceof WaitForMessageEvent) {
-                LOGGER.debug("WaitForMessageEvent");
+                LOG.debug("WaitForMessageEvent");
                 try {
                     WaitForMessageEvent event = (WaitForMessageEvent) peek;
                     event.setHeaderReceived(ofMsg.poll(2000, TimeUnit.MILLISECONDS));
                 } catch (InterruptedException e) {
-                    LOGGER.error(e.getMessage(), e);
+                    LOG.error(e.getMessage(), e);
                     break;
                 }
             } else if (peek instanceof SendEvent) {
-                LOGGER.debug("Proceed - sendevent");
+                LOG.debug("Proceed - sendevent");
                 SendEvent event = (SendEvent) peek;
                 event.setCtx(ctx);
             }
@@ -69,16 +69,16 @@ public class ScenarioHandler extends Thread {
                 freezeCounter++;
             }
             if (freezeCounter > 2) {
-                LOGGER.warn("Scenario frozen: {}", freezeCounter);
+                LOG.warn("Scenario frozen: {}", freezeCounter);
                 break;
             }
             try {
                 sleep(100);
             } catch (InterruptedException e) {
-                LOGGER.error(e.getMessage(), e);
+                LOG.error(e.getMessage(), e);
             }
         }
-        LOGGER.debug("Scenario finished");
+        LOG.debug("Scenario finished");
         synchronized (this) {
             scenarioFinished = true;
             this.notify();

@@ -29,7 +29,7 @@ import com.google.common.util.concurrent.SettableFuture;
  */
 public class ListeningSimpleClient implements OFClient {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ListeningSimpleClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ListeningSimpleClient.class);
     private int port;
     private boolean securedClient = false;
     private EventLoopGroup workerGroup;
@@ -73,21 +73,21 @@ public class ListeningSimpleClient implements OFClient {
             isOnlineFuture.set(true);
 
             synchronized (scenarioHandler) {
-                LOGGER.debug("WAITING FOR SCENARIO");
+                LOG.debug("WAITING FOR SCENARIO");
                 while (! scenarioHandler.isScenarioFinished()) {
                     scenarioHandler.wait();
                 }
             }
         } catch (Exception ex) {
-            LOGGER.error(ex.getMessage(), ex);
+            LOG.error(ex.getMessage(), ex);
         } finally {
-            LOGGER.debug("listening client shutting down");
+            LOG.debug("listening client shutting down");
             try {
                 workerGroup.shutdownGracefully().get();
                 bossGroup.shutdownGracefully().get();
-                LOGGER.debug("listening client shutdown succesful");
+                LOG.debug("listening client shutdown succesful");
             } catch (InterruptedException | ExecutionException e) {
-                LOGGER.error(e.getMessage(), e);
+                LOG.error(e.getMessage(), e);
             }
         }
         scenarioDone.set(true);
@@ -97,7 +97,7 @@ public class ListeningSimpleClient implements OFClient {
      * @return close future
      */
     public Future<?> disconnect() {
-        LOGGER.debug("disconnecting client");
+        LOG.debug("disconnecting client");
         return workerGroup.shutdownGracefully();
     }
 

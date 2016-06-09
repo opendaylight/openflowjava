@@ -36,7 +36,7 @@ import com.google.common.util.concurrent.SettableFuture;
  */
 public final class UdpHandler implements ServerFacade {
 
-    private static final Logger LOGGER = LoggerFactory
+    private static final Logger LOG = LoggerFactory
             .getLogger(UdpHandler.class);
     private int port;
     private EventLoopGroup group;

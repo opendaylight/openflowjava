@@ -31,7 +31,7 @@ public final class StatisticsCounters implements StatisticsHandler {
      */
     public static final int MINIMAL_LOG_REPORT_PERIOD = 500;
     private static StatisticsCounters instanceHolder;
-    private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsCounters.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StatisticsCounters.class);
 
     private Timer logReporter;
     private int logReportPeriod;
@@ -70,7 +70,7 @@ public final class StatisticsCounters implements StatisticsHandler {
         runCounting = false;
         this.logReportPeriod = 0;
         this.runLogReport = false;
-        LOGGER.debug("StaticsCounters has been created");
+        LOG.debug("StaticsCounters has been created");
     }
 
     /**
@@ -83,7 +83,7 @@ public final class StatisticsCounters implements StatisticsHandler {
             return;
         }
         resetCounters();
-        LOGGER.debug("Counting started...");
+        LOG.debug("Counting started...");
         if(reportToLogs){
             startLogReport(logReportDelay);
         }
@@ -95,7 +95,7 @@ public final class StatisticsCounters implements StatisticsHandler {
      */
     public void stopCounting(){
         runCounting = false;
-        LOGGER.debug("Stop counting...");
+        LOG.debug("Stop counting...");
         stopLogReport();
     }
 
@@ -127,7 +127,7 @@ public final class StatisticsCounters implements StatisticsHandler {
         logReporter = new Timer("SC_Timer");
         logReporter.schedule(new LogReporterTask(this), this.logReportPeriod, this.logReportPeriod);
         runLogReport = true;
-        LOGGER.debug("Statistics log reporter has been scheduled with period {} ms", this.logReportPeriod);
+        LOG.debug("Statistics log reporter has been scheduled with period {} ms", this.logReportPeriod);
     }
 
     /**
@@ -137,7 +137,7 @@ public final class StatisticsCounters implements StatisticsHandler {
         if(runLogReport){
             if(logReporter != null){
                 logReporter.cancel();
-                LOGGER.debug("Statistics log reporter has been canceled");
+                LOG.debug("Statistics log reporter has been canceled");
             }
             runLogReport = false;
         }
@@ -213,7 +213,7 @@ public final class StatisticsCounters implements StatisticsHandler {
         for(CounterEventTypes cet : enabledCounters){
             countersMap.get(cet).reset();
         }
-        LOGGER.debug("StaticsCounters has been reset");
+        LOG.debug("StaticsCounters has been reset");
     }
 
     @Override
@@ -241,7 +241,7 @@ public final class StatisticsCounters implements StatisticsHandler {
         @Override
         public void run() {
             for(CounterEventTypes cet : sc.getEnabledCounters()){
-                LOG.debug(cet.name() + ": " + sc.getCountersMap().get(cet).getStat());
+                LOG.debug("{}: {}", cet.name(), sc.getCountersMap().get(cet).getStat());
             }
         }
     }
