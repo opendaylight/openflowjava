@@ -5,7 +5,7 @@ module openflow-switch-connection-provider-impl {
 
     import config {prefix config; revision-date 2013-04-05; }
     import openflow-switch-connection-provider {prefix openflow-switch-connection-provider; revision-date 2014-03-28; }
-    import ietf-inet-types {prefix ietf-inet; revision-date 2010-09-24; }
+    import ietf-inet-types {prefix ietf-inet; revision-date 2013-07-15; }
     import openflow-configuration {prefix of-config; revision-date 2014-06-30; }
     import rpc-context { prefix rpcx; revision-date 2013-06-17; }
 
