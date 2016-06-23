@@ -21,11 +21,11 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegist
 import org.opendaylight.openflowjava.protocol.api.keys.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Dscp;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6Address;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv6FlowLabel;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Dscp;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6FlowLabel;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.EtherType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.Ipv6ExthdrFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortNumber;
@@ -345,7 +345,7 @@ public class OF13MatchSerializer02Test {
         TcpSrcCaseBuilder tcpSrcCaseBuilder = new TcpSrcCaseBuilder();
         TcpSrcBuilder tcpSrcBuilder = new TcpSrcBuilder();
         tcpSrcBuilder.setPort(new org.opendaylight.yang.gen.v1.urn.ietf.params
-                .xml.ns.yang.ietf.inet.types.rev100924.PortNumber(6653));
+                .xml.ns.yang.ietf.inet.types.rev130715.PortNumber(6653));
         tcpSrcCaseBuilder.setTcpSrc(tcpSrcBuilder.build());
         entryBuilder.setMatchEntryValue(tcpSrcCaseBuilder.build());
         entries.add(entryBuilder.build());
@@ -356,7 +356,7 @@ public class OF13MatchSerializer02Test {
         TcpDstCaseBuilder tcpDstCaseBuilder = new TcpDstCaseBuilder();
         TcpDstBuilder tcpDstBuilder = new TcpDstBuilder();
         tcpDstBuilder.setPort(new org.opendaylight.yang.gen.v1.urn.ietf.params
-                .xml.ns.yang.ietf.inet.types.rev100924.PortNumber(6654));
+                .xml.ns.yang.ietf.inet.types.rev130715.PortNumber(6654));
         tcpDstCaseBuilder.setTcpDst(tcpDstBuilder.build());
         entryBuilder.setMatchEntryValue(tcpDstCaseBuilder.build());
         entries.add(entryBuilder.build());
@@ -367,7 +367,7 @@ public class OF13MatchSerializer02Test {
         UdpSrcCaseBuilder udpSrcCaseBuilder = new UdpSrcCaseBuilder();
         UdpSrcBuilder udpSrcBuilder = new UdpSrcBuilder();
         udpSrcBuilder.setPort(new org.opendaylight.yang.gen.v1.urn.ietf.params
-                .xml.ns.yang.ietf.inet.types.rev100924.PortNumber(6655));
+                .xml.ns.yang.ietf.inet.types.rev130715.PortNumber(6655));
         udpSrcCaseBuilder.setUdpSrc(udpSrcBuilder.build());
         entryBuilder.setMatchEntryValue(udpSrcCaseBuilder.build());
         entries.add(entryBuilder.build());
@@ -378,7 +378,7 @@ public class OF13MatchSerializer02Test {
         UdpDstCaseBuilder udpDstCaseBuilder = new UdpDstCaseBuilder();
         UdpDstBuilder udpDstBuilder = new UdpDstBuilder();
         udpDstBuilder.setPort(new org.opendaylight.yang.gen.v1.urn.ietf.params
-                .xml.ns.yang.ietf.inet.types.rev100924.PortNumber(6656));
+                .xml.ns.yang.ietf.inet.types.rev130715.PortNumber(6656));
         udpDstCaseBuilder.setUdpDst(udpDstBuilder.build());
         entryBuilder.setMatchEntryValue(udpDstCaseBuilder.build());
         entries.add(entryBuilder.build());
@@ -389,7 +389,7 @@ public class OF13MatchSerializer02Test {
         SctpSrcCaseBuilder sctpSrcCaseBuilder = new SctpSrcCaseBuilder();
         SctpSrcBuilder sctpSrcBuilder = new SctpSrcBuilder();
         sctpSrcBuilder.setPort(new org.opendaylight.yang.gen.v1.urn.ietf.params
-                .xml.ns.yang.ietf.inet.types.rev100924.PortNumber(6657));
+                .xml.ns.yang.ietf.inet.types.rev130715.PortNumber(6657));
         sctpSrcCaseBuilder.setSctpSrc(sctpSrcBuilder.build());
         entryBuilder.setMatchEntryValue(sctpSrcCaseBuilder.build());
         entries.add(entryBuilder.build());
@@ -400,7 +400,7 @@ public class OF13MatchSerializer02Test {
         SctpDstCaseBuilder sctpDstCaseBuilder = new SctpDstCaseBuilder();
         SctpDstBuilder sctpDstBuilder = new SctpDstBuilder();
         sctpDstBuilder.setPort(new org.opendaylight.yang.gen.v1.urn.ietf.params
-                .xml.ns.yang.ietf.inet.types.rev100924.PortNumber(6658));
+                .xml.ns.yang.ietf.inet.types.rev130715.PortNumber(6658));
         sctpDstCaseBuilder.setSctpDst(sctpDstBuilder.build());
         entryBuilder.setMatchEntryValue(sctpDstCaseBuilder.build());
         entries.add(entryBuilder.build());

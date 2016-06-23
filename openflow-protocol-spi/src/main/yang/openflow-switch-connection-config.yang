@@ -3,7 +3,7 @@ module openflow-switch-connection-config {
     namespace "urn:opendaylight:params:xml:ns:yang:openflow:switch:connection:config";
     prefix "openflow-switch-connection-config";
 
-    import ietf-inet-types {prefix ietf-inet; revision-date 2010-09-24; }
+    import ietf-inet-types {prefix ietf-inet; revision-date 2013-07-15; }
     import openflow-configuration {prefix of-config; revision-date 2014-06-30; }
 
     description
