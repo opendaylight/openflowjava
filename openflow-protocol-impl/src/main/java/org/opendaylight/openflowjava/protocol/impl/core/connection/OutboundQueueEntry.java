@@ -7,6 +7,7 @@
  */
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FutureCallback;
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueException;
@@ -24,14 +25,22 @@ final class OutboundQueueEntry {
     private boolean completed;
     private boolean barrier;
     private volatile boolean committed;
+    private OutboundQueueException lastException = null;
 
     void commit(final OfHeader message, final FutureCallback<OfHeader> callback) {
-        this.message = message;
-        this.callback = callback;
-        this.barrier = message instanceof BarrierInput;
+        if (this.completed) {
+            LOG.warn("Can't commit a completed message.");
+            if (callback != null) {
+                callback.onFailure(lastException);
+            }
+        } else {
+            this.message = message;
+            this.callback = callback;
+            this.barrier = message instanceof BarrierInput;
 
-        // Volatile write, needs to be last
-        committed = true;
+            // Volatile write, needs to be last
+            this.committed = true;
+        }
     }
 
     void reset() {
@@ -103,6 +112,7 @@ final class OutboundQueueEntry {
 
     void fail(final OutboundQueueException cause) {
         if (!completed) {
+            lastException = cause;
             completed = true;
             if (callback != null) {
                 callback.onFailure(cause);
@@ -111,5 +121,11 @@ final class OutboundQueueEntry {
         } else {
             LOG.warn("Ignoring failure {} for completed message", cause);
         }
+    }
+
+    @VisibleForTesting
+    /** This method is only for testing to prove that after queue entry is completed there is not callback future */
+    boolean hasCallback() {
+        return (callback != null);
     }
 }
