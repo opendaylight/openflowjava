@@ -22,6 +22,30 @@
       "revId": "91da96bfd0ff820b2d19aeefc6348f43a92e6b51",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_96993d71",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/core/connection/OutboundQueueEntryTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 5280
+      },
+      "writtenOn": "2016-06-28T13:29:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a561d44_c3d93985",
+      "range": {
+        "startLine": 131,
+        "startChar": 8,
+        "endLine": 131,
+        "endChar": 38
+      },
+      "revId": "91da96bfd0ff820b2d19aeefc6348f43a92e6b51",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
