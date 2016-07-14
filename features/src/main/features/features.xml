@@ -17,7 +17,7 @@
         <feature version='${mdsal.model.version}'>odl-mdsal-models</feature>
         <feature version='${config.version}'>odl-config-api</feature>
         <feature version='${controller.mdsal.version}'>odl-mdsal-common</feature>
-        <feature version='[4.0.30,4.1.0)'>odl-netty</feature>
+        <feature version='[4.0.30,5.0.0)'>odl-netty</feature>
         <bundle>mvn:org.opendaylight.openflowjava/openflow-protocol-api/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.openflowjava/openflow-protocol-spi/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.openflowjava/openflow-protocol-impl/{{VERSION}}</bundle>
