@@ -25,6 +25,9 @@ public class OxmUdpDstSerializer extends AbstractOxmMatchEntrySerializer {
         super.serialize(entry, outBuffer);
         UdpDstCase entryValue = (UdpDstCase) entry.getMatchEntryValue();
         outBuffer.writeShort(entryValue.getUdpDst().getPort().getValue().intValue());
+        if (entry.isHasMask()) {
+            outBuffer.writeShort(entryValue.getUdpDst().getMask());
+        }
     }
 
     @Override

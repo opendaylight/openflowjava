@@ -38,6 +38,9 @@ public class OxmTcpSrcDeserializer extends AbstractOxmMatchEntryDeserializer
         TcpSrcCaseBuilder caseBuilder = new TcpSrcCaseBuilder();
         TcpSrcBuilder tcpBuilder = new TcpSrcBuilder();
         tcpBuilder.setPort(new PortNumber(input.readUnsignedShort()));
+        if (builder.isHasMask()) {
+            tcpBuilder.setMask(input.readUnsignedShort());
+        }
         caseBuilder.setTcpSrc(tcpBuilder.build());
         builder.setMatchEntryValue(caseBuilder.build());
     }

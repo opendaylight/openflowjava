@@ -25,6 +25,9 @@ public class OxmTcpSrcSerializer extends AbstractOxmMatchEntrySerializer {
         super.serialize(entry, outBuffer);
         TcpSrcCase entryValue = (TcpSrcCase) entry.getMatchEntryValue();
         outBuffer.writeShort(entryValue.getTcpSrc().getPort().getValue().intValue());
+        if (entry.isHasMask()) {
+            outBuffer.writeShort(entryValue.getTcpSrc().getMask());
+        }
     }
 
     @Override

@@ -374,12 +374,18 @@
                     leaf port {
                         type inet:port-number;
                     }
+                    leaf mask {
+                        type uint16;
+                    }
                 }
             }
             case tcp-dst-case {
                 container tcp-dst {
                     leaf port {
                         type inet:port-number;
+                    }
+                    leaf mask {
+                        type uint16;
                     }
                 }
             }
@@ -388,12 +394,18 @@
                     leaf port {
                         type inet:port-number;
                     }
+                    leaf mask {
+                        type uint16;
+                    }
                 }
             }
             case udp-dst-case {
                 container udp-dst {
                     leaf port {
                         type inet:port-number;
+                    }
+                    leaf mask {
+                        type uint16;
                     }
                 }
             }

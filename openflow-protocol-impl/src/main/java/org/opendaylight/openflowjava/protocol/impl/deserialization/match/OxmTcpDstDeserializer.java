@@ -38,6 +38,9 @@ public class OxmTcpDstDeserializer extends AbstractOxmMatchEntryDeserializer
         TcpDstCaseBuilder caseBuilder = new TcpDstCaseBuilder();
         TcpDstBuilder tcpBuilder = new TcpDstBuilder();
         tcpBuilder.setPort(new PortNumber(input.readUnsignedShort()));
+        if (builder.isHasMask()) {
+            tcpBuilder.setMask(input.readUnsignedShort());
+        }
         caseBuilder.setTcpDst(tcpBuilder.build());
         builder.setMatchEntryValue(caseBuilder.build());
     }

@@ -38,6 +38,9 @@ public class OxmUdpDstDeserializer extends AbstractOxmMatchEntryDeserializer
         UdpDstCaseBuilder caseBuilder = new UdpDstCaseBuilder();
         UdpDstBuilder udpBuilder = new UdpDstBuilder();
         udpBuilder.setPort(new PortNumber(input.readUnsignedShort()));
+        if (builder.isHasMask()) {
+            udpBuilder.setMask(input.readUnsignedShort());
+        }
         caseBuilder.setUdpDst(udpBuilder.build());
         builder.setMatchEntryValue(caseBuilder.build());
     }
