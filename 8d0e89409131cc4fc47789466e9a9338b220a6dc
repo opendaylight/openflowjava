@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_1c6cb134",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/deserialization/match/OxmTcpFlagDeserializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-07-23T20:42:31Z",
+      "side": 1,
+      "message": "you need to register this deserializer in MatchEntryDeserializerInitializer",
+      "revId": "8d0e89409131cc4fc47789466e9a9338b220a6dc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_3c6ff52c",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/serialization/match/OxmTcpFlagSerializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-07-23T20:42:31Z",
+      "side": 1,
+      "message": "the combination of OxmClassCode and OxmFieldCode conflicts with MPLS_LABEL. you need to change the class to OFPXMC_NXM_1",
+      "revId": "8d0e89409131cc4fc47789466e9a9338b220a6dc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_5c72a911",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/serialization/match/OxmTcpFlagSerializerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-07-23T20:42:31Z",
+      "side": 1,
+      "message": "you probably not michal polkorab :)",
+      "revId": "8d0e89409131cc4fc47789466e9a9338b220a6dc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
