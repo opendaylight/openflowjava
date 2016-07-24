@@ -195,6 +195,13 @@
                     }
                 }
             }
+            case set-tp-flag-case {
+                container set-tp-flag-action {
+                    leaf tcp-flag {
+                        type uint16;
+                    }
+                }
+            }
             case enqueue-case {
                 container enqueue-action {
                     leaf port {

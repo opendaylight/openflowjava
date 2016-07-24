@@ -44,6 +44,7 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmSctpDs
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmSctpSrcSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmTcpDstSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmTcpSrcSerializer;
+import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmTcpFlagSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmTunnelIdSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmUdpDstSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmUdpSrcSerializer;
@@ -86,6 +87,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Sctp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.SctpSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.TcpDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.TcpSrc;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.TcpFlag;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.TunnelId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.UdpDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.UdpSrc;
@@ -127,6 +129,7 @@ public final class MatchEntriesInitializer {
         helper.registerSerializer(Ipv4Dst.class, new OxmIpv4DstSerializer());
         helper.registerSerializer(TcpSrc.class, new OxmTcpSrcSerializer());
         helper.registerSerializer(TcpDst.class, new OxmTcpDstSerializer());
+        helper.registerSerializer(TcpFlag.class, new OxmTcpFlagSerializer());
         helper.registerSerializer(UdpSrc.class, new OxmUdpSrcSerializer());
         helper.registerSerializer(UdpDst.class, new OxmUdpDstSerializer());
         helper.registerSerializer(SctpSrc.class, new OxmSctpSrcSerializer());
