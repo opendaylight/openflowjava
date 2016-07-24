@@ -42,6 +42,7 @@ public final class ActionConstants {
     public static final byte COPY_TTL_OUT_CODE = 11;
     /** Openflow v1.3 OFPAT_COPY_TTL_IN code */
     public static final byte COPY_TTL_IN_CODE = 12;
+    public static final byte SET_TCP_FLAG_CODE = 13;
     /** Openflow v1.3 OFPAT_SET_MPLS_TTL code */
     public static final byte SET_MPLS_TTL_CODE = 15;
     /** Openflow v1.3 OFPAT_DEC_MPLS_TTL code */

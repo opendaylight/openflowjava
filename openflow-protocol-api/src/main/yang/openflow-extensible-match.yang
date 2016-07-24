@@ -122,6 +122,10 @@
         base match-field;
         description "OXM field for UDP destination port.";
     }
+    identity tcp_flag {
+        base match-field;
+        description "OXM field for TCP Flag.";
+    }
     identity sctp_src {
         base match-field;
         description "OXM field for SCTP source port.";
@@ -397,6 +401,13 @@
                     }
                 }
             }
+            case tcp-flag-case {
+                container tcp-flag {
+                    leaf flag {
+                        type uint16;
+                    }
+                }
+            }
             case sctp-src-case {
                 container sctp-src {
                     leaf port {
@@ -655,6 +666,10 @@
             }
             leaf tp-dst {
                 description "TCP/UDP destination port.";
+                type uint16;
+            }
+            leaf tcp-flag {
+                description "TCP Flag.";
                 type uint16;
             }
         }

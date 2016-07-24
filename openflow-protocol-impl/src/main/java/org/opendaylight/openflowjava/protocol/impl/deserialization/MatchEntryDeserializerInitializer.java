@@ -43,6 +43,7 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmSctp
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmSctpSrcDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmTcpDstDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmTcpSrcDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmTcpFlagDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmTunnelIdDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmUdpDstDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmUdpSrcDeserializer;
@@ -86,6 +87,7 @@ public final class MatchEntryDeserializerInitializer {
         helper.register(OxmMatchConstants.IPV4_DST, new OxmIpv4DstDeserializer());
         helper.register(OxmMatchConstants.TCP_SRC, new OxmTcpSrcDeserializer());
         helper.register(OxmMatchConstants.TCP_DST, new OxmTcpDstDeserializer());
+        helper.register(OxmMatchConstants.OFPXMT_OFB_TCP_FLAGS, new OxmTcpFlagDeserializer());
         helper.register(OxmMatchConstants.UDP_SRC, new OxmUdpSrcDeserializer());
         helper.register(OxmMatchConstants.UDP_DST, new OxmUdpDstDeserializer());
         helper.register(OxmMatchConstants.SCTP_SRC, new OxmSctpSrcDeserializer());
