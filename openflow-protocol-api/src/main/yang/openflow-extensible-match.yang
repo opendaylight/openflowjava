@@ -214,6 +214,10 @@
         base match-field;
         description "OXM field for IPv6 Extension Header pseudo-field";
     }
+    identity tcp_flags {
+        base match-field;
+        description "TCP flags from the TCP header";
+    }
 
     grouping match-grouping {
         container match {
@@ -582,6 +586,16 @@
                 container ipv6-exthdr {
                     leaf pseudo-field {
                         type oft:ipv6-exthdr-flags;
+                    }
+                    leaf mask {
+                        type binary;
+                    }
+                }
+            }
+            case tcp-flags-case {
+                container tcp-flags {
+                    leaf flags {
+                        type uint16;
                     }
                     leaf mask {
                         type binary;

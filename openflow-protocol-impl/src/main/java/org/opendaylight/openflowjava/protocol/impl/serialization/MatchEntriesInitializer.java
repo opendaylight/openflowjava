@@ -9,6 +9,8 @@ package org.opendaylight.openflowjava.protocol.impl.serialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.api.util.OxmExperimenterIds;
+import org.opendaylight.openflowjava.protocol.impl.serialization.match.OnfOxmTcpFlagsSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpOpSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpShaSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpSpaSerializer;
@@ -85,6 +87,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.PbbI
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.SctpDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.SctpSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.TcpDst;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.TcpFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.TcpSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.TunnelId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.UdpDst;
@@ -108,10 +111,8 @@ public final class MatchEntriesInitializer {
      */
     public static void registerMatchEntrySerializers(SerializerRegistry serializerRegistry) {
         // register OF v1.3 OpenflowBasicClass match entry serializers
-        Class<OpenflowBasicClass> oxmClass = OpenflowBasicClass.class;
         MatchEntrySerializerRegistryHelper<OpenflowBasicClass> helper =
-                new MatchEntrySerializerRegistryHelper<>(EncodeConstants.OF13_VERSION_ID,
-                        oxmClass, serializerRegistry);
+                new MatchEntrySerializerRegistryHelper<>(EncodeConstants.OF13_VERSION_ID, serializerRegistry);
         helper.registerSerializer(InPort.class, new OxmInPortSerializer());
         helper.registerSerializer(InPhyPort.class, new OxmInPhyPortSerializer());
         helper.registerSerializer(Metadata.class, new OxmMetadataSerializer());
@@ -152,5 +153,11 @@ public final class MatchEntriesInitializer {
         helper.registerSerializer(PbbIsid.class, new OxmPbbIsidSerializer());
         helper.registerSerializer(TunnelId.class, new OxmTunnelIdSerializer());
         helper.registerSerializer(Ipv6Exthdr.class, new OxmIpv6ExtHdrSerializer());
+
+        //Register ExperimenterClass Match Serializer
+        helper.registerExperimenterSerializer(TcpFlags.class,
+                OxmExperimenterIds.getExperimenterId(OxmExperimenterIds.TCP_FLAGS)
+                ,new OnfOxmTcpFlagsSerializer());
+
     }
 }
