@@ -39,6 +39,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Ipv6
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OpenflowBasicClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OxmMatchType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.TcpFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entries.grouping.MatchEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Ipv4SrcCaseBuilder;
@@ -46,11 +47,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.matc
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Ipv6FlabelCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Ipv6NdTargetCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.Ipv6SrcCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.TcpFlagsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ipv4.src._case.Ipv4SrcBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ipv6.dst._case.Ipv6DstBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ipv6.flabel._case.Ipv6FlabelBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ipv6.nd.target._case.Ipv6NdTargetBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.ipv6.src._case.Ipv6SrcBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.entry.value.grouping.match.entry.value.tcp.flags._case.TcpFlagsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.grouping.Match;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.grouping.MatchBuilder;
 import org.slf4j.Logger;
@@ -371,21 +374,20 @@ public class OF13MatchSerializerTest {
     }
 
     /**
-     * Test serialize experimenter match entry - with no experimenter
-     * match entry serializer registered
+     * Test serialize for tcp flags experimenter match entry
      */
-    @Test(expected=IllegalStateException.class)
     public void testSerializeExperimenterMatchEntry() {
         List<MatchEntry> entries = new ArrayList<>();
         MatchEntryBuilder builder = new MatchEntryBuilder();
         builder.setOxmClass(ExperimenterClass.class);
-        builder.setOxmMatchField(OxmMatchFieldClass.class);
+        builder.setOxmMatchField(TcpFlags.class);
         builder.setHasMask(true);
-        ExperimenterIdCaseBuilder caseBuilder = new ExperimenterIdCaseBuilder();
-        ExperimenterBuilder expBuilder = new ExperimenterBuilder();
-        expBuilder.setExperimenter(new ExperimenterId(42L));
-        caseBuilder.setExperimenter(expBuilder.build());
-        builder.setMatchEntryValue(caseBuilder.build());
+        TcpFlagsCaseBuilder tcpFlagsCaseBuilder = new TcpFlagsCaseBuilder();
+        TcpFlagsBuilder tcpFlagsBuilder = new TcpFlagsBuilder();
+        tcpFlagsBuilder.setFlags(8);
+        tcpFlagsBuilder.setMask(new byte[2]);
+        tcpFlagsCaseBuilder.setTcpFlags(tcpFlagsBuilder.build());
+        builder.setMatchEntryValue(tcpFlagsCaseBuilder.build());
         entries.add(builder.build());
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
 

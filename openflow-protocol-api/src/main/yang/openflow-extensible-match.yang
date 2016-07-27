@@ -10,6 +10,7 @@
     namespace "urn:opendaylight:openflow:oxm";
     prefix "oxm";
 
+    import yang-ext {prefix ext;}
     import ietf-yang-types {prefix yang;}
     import ietf-inet-types {prefix inet;}
     import openflow-types {prefix oft;}

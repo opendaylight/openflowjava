@@ -17,6 +17,7 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegist
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.api.util.OxmExperimenterIds;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.oxm.container.match.entry.value.ExperimenterIdCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.StandardMatchType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.ExperimenterClass;
@@ -80,8 +81,7 @@ public class OF13MatchSerializer implements OFSerializer<Match>, SerializerRegis
             MatchEntrySerializerKey<?, ?> key = new MatchEntrySerializerKey<>(
                     EncodeConstants.OF13_VERSION_ID, entry.getOxmClass(), entry.getOxmMatchField());
             if (entry.getOxmClass().equals(ExperimenterClass.class)) {
-                ExperimenterIdCase entryValue = (ExperimenterIdCase) entry.getMatchEntryValue();
-                key.setExperimenterId(entryValue.getExperimenter().getExperimenter().getValue());
+                key.setExperimenterId(OxmExperimenterIds.getExperimenterId(entry.getOxmMatchField()).longValue());
             } else {
                 key.setExperimenterId(null);
             }

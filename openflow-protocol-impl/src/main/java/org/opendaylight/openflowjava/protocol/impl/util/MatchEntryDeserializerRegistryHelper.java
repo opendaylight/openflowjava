@@ -10,6 +10,7 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntryDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
 
 /**
  * @author michal.polkorab
@@ -19,18 +20,13 @@ public class MatchEntryDeserializerRegistryHelper {
 
     private short version;
     private DeserializerRegistry registry;
-    private int oxmClass;
 
     /**
      * @param version wire protocol version
-     * @param oxmClass oxm_class that will be used for match entry deserializer
-     *  registration
      * @param deserializerRegistry registry to be filled with message deserializers
      */
-    public MatchEntryDeserializerRegistryHelper(short version, int oxmClass,
-            DeserializerRegistry deserializerRegistry) {
+    public MatchEntryDeserializerRegistryHelper(short version, DeserializerRegistry deserializerRegistry) {
         this.version = version;
-        this.oxmClass = oxmClass;
         this.registry = deserializerRegistry;
     }
 
@@ -40,8 +36,16 @@ public class MatchEntryDeserializerRegistryHelper {
      * @param deserializer deserializer instance
      */
     public void register(int oxmField, OFGeneralDeserializer deserializer) {
-        MatchEntryDeserializerKey key = new MatchEntryDeserializerKey(version, oxmClass, oxmField);
+        MatchEntryDeserializerKey key = new MatchEntryDeserializerKey(
+                version, OxmMatchConstants.OPENFLOW_BASIC_CLASS, oxmField);
         key.setExperimenterId(null);
+        registry.registerDeserializer(key, deserializer);
+    }
+
+    public void registerExperimenter(int oxmField, long expId, OFGeneralDeserializer deserializer) {
+        MatchEntryDeserializerKey key = new MatchEntryDeserializerKey(
+                version, OxmMatchConstants.EXPERIMENTER_CLASS, oxmField);
+        key.setExperimenterId(expId);
         registry.registerDeserializer(key, deserializer);
     }
 }

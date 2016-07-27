@@ -8,6 +8,8 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.util.OxmExperimenterIds;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OnfOxmTcpFlagsDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpOpDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpShaDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpSpaDeserializer;
@@ -69,8 +71,7 @@ public final class MatchEntryDeserializerInitializer {
     public static void registerMatchEntryDeserializers(DeserializerRegistry registry) {
         // register OpenflowBasicClass match entry deserializers
         MatchEntryDeserializerRegistryHelper helper =
-                new MatchEntryDeserializerRegistryHelper(EncodeConstants.OF13_VERSION_ID,
-                        OxmMatchConstants.OPENFLOW_BASIC_CLASS, registry);
+                new MatchEntryDeserializerRegistryHelper(EncodeConstants.OF13_VERSION_ID, registry);
         helper.register(OxmMatchConstants.IN_PORT, new OxmInPortDeserializer());
         helper.register(OxmMatchConstants.IN_PHY_PORT, new OxmInPhyPortDeserializer());
         helper.register(OxmMatchConstants.METADATA, new OxmMetadataDeserializer());
@@ -111,5 +112,10 @@ public final class MatchEntryDeserializerInitializer {
         helper.register(OxmMatchConstants.PBB_ISID, new OxmPbbIsidDeserializer());
         helper.register(OxmMatchConstants.TUNNEL_ID, new OxmTunnelIdDeserializer());
         helper.register(OxmMatchConstants.IPV6_EXTHDR, new OxmIpv6ExtHdrDeserializer());
+
+        //Register Experimenter Match Deserializer
+        helper.registerExperimenter(OxmMatchConstants.ONFOXM_ET_TCP_FLAGS,
+                OxmExperimenterIds.getExperimenterId(OxmExperimenterIds.TCP_FLAGS),
+                new OnfOxmTcpFlagsDeserializer());
     }
 }
