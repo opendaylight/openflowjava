@@ -1,0 +1,210 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_afa448a6",
+        "filename": "openflow-protocol-api/src/main/java/org/opendaylight/openflowjava/protocol/api/util/OxmExperimenterIds.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-07-29T11:17:09Z",
+      "side": 1,
+      "message": "we probably don\u0027t need this class, experimenterID must be set in openflowplugin (or external module), TcpFlags.class is publicly accessible as it is generated from yang",
+      "range": {
+        "startLine": 21,
+        "startChar": 13,
+        "endLine": 21,
+        "endChar": 31
+      },
+      "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_ec748eff",
+        "filename": "openflow-protocol-api/src/main/yang/openflow-extensible-match.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-07-29T11:17:09Z",
+      "side": 1,
+      "message": "please add a comment that this is EXT-109",
+      "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_2c62063e",
+        "filename": "openflow-protocol-api/src/main/yang/openflow-extensible-match.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 595,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-07-29T11:17:09Z",
+      "side": 1,
+      "message": "please add a comment that this is EXT-109",
+      "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_cfa7fca5",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/deserialization/MatchEntryDeserializerInitializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-07-29T11:17:09Z",
+      "side": 1,
+      "message": "here we could use constant directly",
+      "range": {
+        "startLine": 118,
+        "startChar": 16,
+        "endLine": 118,
+        "endChar": 82
+      },
+      "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_af40c8a5",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/deserialization/match/AbstractOxmExperimenterMatchEntryDeserializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-07-29T11:17:09Z",
+      "side": 1,
+      "message": "experimenterId information should be added to match entry, not only skipped",
+      "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_afcba851",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/serialization/MatchEntriesInitializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-07-29T11:17:09Z",
+      "side": 1,
+      "message": "here we could use constant directly",
+      "range": {
+        "startLine": 159,
+        "startChar": 16,
+        "endLine": 159,
+        "endChar": 82
+      },
+      "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_0f0bb48e",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/serialization/match/OnfOxmTcpFlagsSerializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-07-29T11:17:09Z",
+      "side": 1,
+      "message": "you probably wanted to call serializeHeader() here or override serialize() in parent",
+      "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_2f067886",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/serialization/match/OnfOxmTcpFlagsSerializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-07-29T11:17:09Z",
+      "side": 1,
+      "message": "we could use constant direcly here",
+      "range": {
+        "startLine": 37,
+        "startChar": 15,
+        "endLine": 37,
+        "endChar": 81
+      },
+      "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_cf709c42",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/util/OF13MatchSerializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-07-29T11:17:09Z",
+      "side": 1,
+      "message": "the original expression must be preserved here\nThe new expression would work with openflow extensions, but wouldn\u0027t work with external experimenter messages",
+      "range": {
+        "startLine": 84,
+        "startChar": 16,
+        "endLine": 84,
+        "endChar": 114
+      },
+      "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_2f915847",
+        "filename": "openflow-protocol-impl/src/test/java/org/opendaylight/openflowjava/protocol/impl/util/OF13MatchSerializerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-07-29T11:17:09Z",
+      "side": 1,
+      "message": "this test should have been added to the test suite, it should not replace original testSerializeExperimenterMatchEntry() as this one verifies use of external codecs",
+      "range": {
+        "startLine": 379,
+        "startChar": 4,
+        "endLine": 395,
+        "endChar": 5
+      },
+      "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
