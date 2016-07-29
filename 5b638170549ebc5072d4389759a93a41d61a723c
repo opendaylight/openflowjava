@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_60235fa7",
+        "filename": "openflow-protocol-api/src/main/java/org/opendaylight/openflowjava/protocol/api/util/OxmExperimenterIds.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 65
+      },
+      "writtenOn": "2016-07-29T22:39:25Z",
+      "side": 1,
+      "message": "Michal, how do we pass this experimenter id from openflowplugin to openflowjava? I see that experimenter-id-case is augmented on oxm:match-entry-value, which is parallel to the other match criterias. So in plugin if we use experimental-id-case in plugin, it just allow to set the experimenter-id only, but we need tcp_flags value and mask as well. In following URL tcpFlagsMatch() method contains the code that actually builds the TcpFlagsMatch.\n\nhttps://git.opendaylight.org/gerrit/#/c/42630/2/openflowplugin/src/main/java/org/opendaylight/openflowplugin/openflow/md/core/sal/convertor/match/MatchConvertorImpl.java\n\nHow do i build a match that contains id + tcp_flags+ tcp_flags_mask? Apart from that i thought openflowjava can fill in these experimenter id based on the the experimenter given that these are fixed id\u0027s. So not sure if we really need it from the plugin.",
+      "parentUuid": "9a561d44_afa448a6",
+      "range": {
+        "startLine": 21,
+        "startChar": 13,
+        "endLine": 21,
+        "endChar": 31
+      },
+      "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_ec748eff",
         "filename": "openflow-protocol-api/src/main/yang/openflow-extensible-match.yang",
         "patchSetId": 1
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_003263f1",
+        "filename": "openflow-protocol-api/src/main/yang/openflow-extensible-match.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 65
+      },
+      "writtenOn": "2016-07-29T22:39:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a561d44_ec748eff",
+      "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_2c62063e",
         "filename": "openflow-protocol-api/src/main/yang/openflow-extensible-match.yang",
         "patchSetId": 1
@@ -53,6 +95,24 @@
       "writtenOn": "2016-07-29T11:17:09Z",
       "side": 1,
       "message": "please add a comment that this is EXT-109",
+      "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_a038d7d3",
+        "filename": "openflow-protocol-api/src/main/yang/openflow-extensible-match.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 595,
+      "author": {
+        "id": 65
+      },
+      "writtenOn": "2016-07-29T22:39:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a561d44_2c62063e",
       "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -99,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_605a3f2b",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/deserialization/match/AbstractOxmExperimenterMatchEntryDeserializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 65
+      },
+      "writtenOn": "2016-07-29T22:39:25Z",
+      "side": 1,
+      "message": "In this implementation we are not publishing the experimenter ID to openflowplugin, because openflowplugin don\u0027t need the experimenter-id. Please look at my comment in OxmExperimenterIds class, if we change that, we might have to pass this id to plugin.",
+      "parentUuid": "9a561d44_af40c8a5",
+      "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_afcba851",
         "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/serialization/MatchEntriesInitializer.java",
         "patchSetId": 1
@@ -139,6 +217,24 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_0049c35f",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/serialization/match/OnfOxmTcpFlagsSerializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 65
+      },
+      "writtenOn": "2016-07-29T22:39:25Z",
+      "side": 1,
+      "message": "this serialize calls the AbstractOxmExperimenterMatchEntrySerializer#serializeHeader(), do you want it to call directly?",
+      "parentUuid": "9a561d44_0f0bb48e",
+      "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_2f067886",
         "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/serialization/match/OnfOxmTcpFlagsSerializer.java",
         "patchSetId": 1
@@ -173,6 +269,30 @@
       "writtenOn": "2016-07-29T11:17:09Z",
       "side": 1,
       "message": "the original expression must be preserved here\nThe new expression would work with openflow extensions, but wouldn\u0027t work with external experimenter messages",
+      "range": {
+        "startLine": 84,
+        "startChar": 16,
+        "endLine": 84,
+        "endChar": 114
+      },
+      "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_c027cb10",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/util/OF13MatchSerializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 65
+      },
+      "writtenOn": "2016-07-29T22:39:25Z",
+      "side": 1,
+      "message": "In this patch, we are using tcp-flags-case of the match-entry-value, but because this is experimenter, it\u0027s OxmClass is set to ExperimenterClass. I took that way, because i didn\u0027t had any way to pass experimenter-id + tcp_flags + tcp_flags_master all together. For detail explanation please look at the https://git.opendaylight.org/gerrit/#/c/42631/1/openflow-protocol-api/src/main/java/org/opendaylight/openflowjava/protocol/api/util/OxmExperimenterIds.java\n\nProbably i should change the implementation to something like\n            if (entry.getOxmClass().equals(ExperimenterClass.class)) {\n                MatchEntryValue entryValue \u003d entry.getMatchEntryValue();\n                if (entryValue instanceof ExperimenterIdCase) {\n                    key.setExperimenterId(entryValue.getExperimenter().getExperimenter().getValue());\n                } else {\n                    key.setExperimenterId(OxmExperimenterIds.getExperimenterId(entry.getOxmMatchField()).longValue());\n                }\n            } else {\n                key.setExperimenterId(null);\n            }\n\nThoughts?",
+      "parentUuid": "9a561d44_cf709c42",
       "range": {
         "startLine": 84,
         "startChar": 16,
