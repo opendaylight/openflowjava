@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_5f14e7f4",
+        "filename": "openflow-protocol-api/src/main/java/org/opendaylight/openflowjava/protocol/api/util/OxmExperimenterIds.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-08-01T13:04:09Z",
+      "side": 1,
+      "message": "I am sorry, I forgot that we moved our model to use choice-case augmentations - my fault.\nIn order to use experimenterId and your fields, you must augment the experimenter-id-match-entry defined in openflow-augments and use this structure with your extensions.\nNOTE: each of experimenter-id-match-entry augmentations should be wrapped in its own container\n\n(e.g.      augment \"/oxm:oxm-container/oxm:match-entry-value/aug:experimenter-id-case\" {\n         ext:augment-identifier \"xyz\";\n         container {\n             ....\n         }\n     })",
+      "parentUuid": "9a561d44_60235fa7",
+      "range": {
+        "startLine": 21,
+        "startChar": 13,
+        "endLine": 21,
+        "endChar": 31
+      },
+      "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_ec748eff",
         "filename": "openflow-protocol-api/src/main/yang/openflow-extensible-match.yang",
         "patchSetId": 1
@@ -229,6 +253,24 @@
       "side": 1,
       "message": "this serialize calls the AbstractOxmExperimenterMatchEntrySerializer#serializeHeader(), do you want it to call directly?",
       "parentUuid": "9a561d44_0f0bb48e",
+      "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_7fca83a2",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/serialization/match/OnfOxmTcpFlagsSerializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-08-01T13:04:09Z",
+      "side": 1,
+      "message": "yes, please call it directly as it is easy to understand (hierarchy calls \u0026 overrides could mislead someone)",
+      "parentUuid": "9a561d44_0049c35f",
       "revId": "5b638170549ebc5072d4389759a93a41d61a723c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
