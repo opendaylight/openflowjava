@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_f0c40061",
+        "filename": "openflow-protocol-api/src/main/yang/openflow-experimenter-match.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 65
+      },
+      "writtenOn": "2016-08-02T01:15:44Z",
+      "side": 1,
+      "message": "Hi Michal,\n\nI tried to do it as you suggested, but while deserializing i am not able to set the augmentation (tcp-flags-match-entry) to experimenter-id-case. Similarly while serializing i am not able to get the tcp-flags-match-entry augmentation from experimenter-id-case,it actually doesn\u0027t give me the getAugmentation() method at the first place. Am i doing anything wrong here ?",
+      "revId": "435b954a674a4a88238f74f2e1c8db785d70d664",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
