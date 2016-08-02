@@ -49,6 +49,7 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmUdpS
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmVlanPcpDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmVlanVidDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.match.ext.OnfOxmTcpFlagsDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.MatchEntryDeserializerRegistryHelper;
 import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
 
@@ -111,5 +112,9 @@ public final class MatchEntryDeserializerInitializer {
         helper.register(OxmMatchConstants.PBB_ISID, new OxmPbbIsidDeserializer());
         helper.register(OxmMatchConstants.TUNNEL_ID, new OxmTunnelIdDeserializer());
         helper.register(OxmMatchConstants.IPV6_EXTHDR, new OxmIpv6ExtHdrDeserializer());
+
+        // Register approved openflow match entry deserializers
+        helper.registerExperimenter(OxmMatchConstants.ONFOXM_ET_TCP_FLAGS, OxmMatchConstants.ONFOXM_ET_TCP_FLAGS_EXP_ID,
+                new OnfOxmTcpFlagsDeserializer());
     }
 }
