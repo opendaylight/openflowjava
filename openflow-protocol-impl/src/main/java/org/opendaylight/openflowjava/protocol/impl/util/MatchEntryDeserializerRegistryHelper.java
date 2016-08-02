@@ -10,6 +10,7 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntryDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
 
 /**
  * @author michal.polkorab
@@ -42,6 +43,13 @@ public class MatchEntryDeserializerRegistryHelper {
     public void register(int oxmField, OFGeneralDeserializer deserializer) {
         MatchEntryDeserializerKey key = new MatchEntryDeserializerKey(version, oxmClass, oxmField);
         key.setExperimenterId(null);
+        registry.registerDeserializer(key, deserializer);
+    }
+
+    public void registerExperimenter(int oxmField, long expId, OFGeneralDeserializer deserializer) {
+        MatchEntryDeserializerKey key =
+                new MatchEntryDeserializerKey(version, OxmMatchConstants.EXPERIMENTER_CLASS, oxmField);
+        key.setExperimenterId(expId);
         registry.registerDeserializer(key, deserializer);
     }
 }

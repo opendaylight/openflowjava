@@ -10,6 +10,7 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.ExperimenterClass;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OxmClassBase;
 
@@ -46,4 +47,17 @@ public class MatchEntrySerializerRegistryHelper<C extends OxmClassBase> {
         key.setExperimenterId(null);
         serializerRegistry.registerSerializer(key, serializer);
     }
+
+    /**
+     * Registers ExperimenterClass type match serializer
+     * @param specificClass
+     * @param serializer
+     */
+    public <F extends MatchField> void registerExperimenterSerializer(
+            Class<F> specificClass, long expId, OFGeneralSerializer serializer) {
+        MatchEntrySerializerKey<?, ?> key = new MatchEntrySerializerKey<>(version, ExperimenterClass.class, specificClass);
+        key.setExperimenterId(expId);
+        serializerRegistry.registerSerializer(key, serializer);
+    }
+
 }

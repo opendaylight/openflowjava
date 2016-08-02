@@ -115,6 +115,15 @@ public abstract class OxmMatchConstants {
     /** NXM TCP_Flag value */
     public static final int NXM_NX_TCP_FLAG = 34;
 
+    /**
+     * ONF Approved Extensions Constants
+     */
+
+    /** ONFOXM_ET_TCP_FLAGS value */
+    public static final int ONFOXM_ET_TCP_FLAGS = 42;
+    /** ONFOXM_ET_TCP_FLAGS Experimenter Id (0x4F4E4600) */
+    public static final long ONFOXM_ET_TCP_FLAGS_EXP_ID = 1330529792;
+
     private OxmMatchConstants() {
         //not called
     }

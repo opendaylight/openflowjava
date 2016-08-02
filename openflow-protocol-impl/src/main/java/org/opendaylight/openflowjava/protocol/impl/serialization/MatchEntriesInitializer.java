@@ -9,6 +9,7 @@ package org.opendaylight.openflowjava.protocol.impl.serialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpOpSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpShaSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpSpaSerializer;
@@ -49,7 +50,9 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmUdpDst
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmUdpSrcSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmVlanPcpSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmVlanVidSerializer;
+import org.opendaylight.openflowjava.protocol.impl.serialization.match.ext.OnfOxmTcpFlagsSerializer;
 import org.opendaylight.openflowjava.protocol.impl.util.MatchEntrySerializerRegistryHelper;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.approved.extensions.rev160802.TcpFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.ArpOp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.ArpSha;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.ArpSpa;
@@ -152,5 +155,9 @@ public final class MatchEntriesInitializer {
         helper.registerSerializer(PbbIsid.class, new OxmPbbIsidSerializer());
         helper.registerSerializer(TunnelId.class, new OxmTunnelIdSerializer());
         helper.registerSerializer(Ipv6Exthdr.class, new OxmIpv6ExtHdrSerializer());
+
+        // Register approved openflow match entry serializers
+        helper.registerExperimenterSerializer(TcpFlags.class, OxmMatchConstants.ONFOXM_ET_TCP_FLAGS_EXP_ID,
+                new OnfOxmTcpFlagsSerializer());
     }
 }
