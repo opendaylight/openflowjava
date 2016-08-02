@@ -1,0 +1,40 @@
+module openflow-approved-extensions {
+    namespace "urn:opendaylight:openflow:approved:extensions";
+    prefix "ofext";
+
+    import yang-ext {prefix ext;}
+    import ietf-inet-types {prefix inet;}
+    import ietf-yang-types {prefix yang;}
+
+    import openflow-types {prefix oft;}
+    import openflow-protocol {prefix ofproto;}
+    import openflow-action {prefix ofaction;}
+    import openflow-instruction {prefix ofinstruction;}
+    import openflow-extensible-match {prefix oxm;}
+    import openflow-augments {prefix aug;}
+
+    revision "2016-08-02" {
+        description "#NOT_PUBLISHED# OpenFlow 1.3 - augments model.
+                    Please visit
+                    https://wiki.opendaylight.org/view/File:OpenFlow_Protocol_Library_-_Project_documentation.pdf
+                     - Augmentation Tables chapter";
+    }
+
+    identity tcp_flags {
+        base oxm:match-field;
+        description "TCP flags from the TCP header";
+    }
+
+    augment "/oxm:oxm-container/oxm:match-entry-value/aug:experimenter-id-case" {
+        ext:augment-identifier "tcp-flags-container";
+        container tcp-flags {
+            leaf flags {
+                type uint16;
+            }
+            leaf mask {
+                type binary;
+            }
+        }
+    }
+
+}
