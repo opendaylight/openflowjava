@@ -84,10 +84,10 @@ public final class ListDeserializer {
                     // are not yet (2nd February 2016) fully supported by existing OF Plugin.
                     // TODO - simplify to correctly report exception during deserialization
                     if (!exceptionLogged) {
-                        LOG.warn("Problem during reading table feature property. Skipping unknown feature property: {}." +
-                                "If more information is needed, set org.opendaylight.openflowjava do DEBUG log level.",
-                                key, e.getMessage());
                         if (LOG.isDebugEnabled()) {
+                            LOG.debug("Problem during reading table feature property. Skipping unknown feature property: {}." +
+                                    "If more information is needed, set org.opendaylight.openflowjava do DEBUG log level.",
+                                    key, e.getMessage());
                             LOG.debug("Detailed exception: {}", e);
                             LOG.debug("This exception is logged only once for each multipart reply (table features) to "
                                     + "prevent log flooding. There might be more of table features related exceptions.");
