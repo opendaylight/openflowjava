@@ -22,6 +22,30 @@
       "revId": "4b69afb27f842dc9d013be1ab79127068bfc4959",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_8b50a15f",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/util/ListDeserializer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 3635
+      },
+      "writtenOn": "2016-08-18T11:27:07Z",
+      "side": 1,
+      "message": "This change simply makes the default behavior more friendly in the interim, since it appears that this problem has been occurring for quite a long time, and no one has jumped up to contribute the deserializers.  The log messages can still optionally be enabled if the user wishes to debug the situation.  After all, your suggestion is to have users change the org.ops4j.pax.logging.cfg to set \"ERROR\" level for this class anyway, which effectively hides the message the same way it is hidden by decreasing the log level for the specific message (this patch).\n\nIs someone planning to contribute the missing deserializers this release?  I don\u0027t know what is better, hiding the messages by default (this patch), or making each user of OVS 2.4 + OFP/OFJ/OVSDB edit the default logging of ODL themselves (your suggested solution) to avoid superfluous messages.  Thats your call, but I did want to raise that quite a few people have mentioned this on mailing lists as a nuisance, and not extremely user friendly at present.",
+      "parentUuid": "7a6b29fe_8b0f012e",
+      "range": {
+        "startLine": 87,
+        "startChar": 24,
+        "endLine": 89,
+        "endChar": 44
+      },
+      "revId": "4b69afb27f842dc9d013be1ab79127068bfc4959",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
