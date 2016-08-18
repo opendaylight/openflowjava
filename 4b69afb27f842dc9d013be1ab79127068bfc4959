@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_8b0f012e",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/util/ListDeserializer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-08-18T09:06:32Z",
+      "side": 1,
+      "message": "This log causes problems for a long time (see commentary above the if statement), however - changing the log level just fixes the symptom, not the problem. The problem should be fixed by adding missing (de)serializers in openflowplugin (possibly for openflowjava in case of openflow approved extensions).\nThis change prevents correct notification of occuring problem and makes debugging harder (as one doesn\u0027t know that openflowjava has some problems).\nThe symptoms can be hidden easily by using ERROR log level in karaf for org.opendaylight.openflowjava.protocol.impl.util.ListDeserializer.",
+      "range": {
+        "startLine": 87,
+        "startChar": 24,
+        "endLine": 89,
+        "endChar": 44
+      },
+      "revId": "4b69afb27f842dc9d013be1ab79127068bfc4959",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
