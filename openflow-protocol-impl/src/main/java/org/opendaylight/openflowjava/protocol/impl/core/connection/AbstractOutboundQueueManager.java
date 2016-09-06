@@ -173,7 +173,7 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
         // Then we start queue shutdown, start counting written messages (so that we don't keep sending messages
         // indefinitely) and failing not completed entries.
         shuttingDown = true;
-        final long entries = currentQueue.startShutdown(ctx.channel());
+        final long entries = currentQueue.startShutdown();
         LOG.debug("Cleared {} queue entries from channel {}", entries, ctx.channel());
 
         // Finally, we schedule flush task that will take care of unflushed entries. We also cover the case,
@@ -299,7 +299,7 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
             LOG.trace("Dequeuing messages to channel {}", parent.getChannel());
             writeAndFlush();
             rescheduleFlush();
-        } else if (currentQueue.finishShutdown()) {
+        } else if (currentQueue.finishShutdown(parent.getChannel())) {
             close();
             LOG.debug("Channel {} shutdown complete", parent.getChannel());
         } else {
