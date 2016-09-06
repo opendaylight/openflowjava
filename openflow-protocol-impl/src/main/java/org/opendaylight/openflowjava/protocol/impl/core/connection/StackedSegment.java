@@ -180,6 +180,7 @@ final class StackedSegment {
 
             if (!entry.isCompleted()) {
                 entry.fail(cause);
+                completeCount++;
                 ret++;
             }
         }
