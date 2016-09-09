@@ -9,9 +9,6 @@
 package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
-import java.util.List;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
@@ -19,6 +16,7 @@ import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.util.ExperimenterSerializerKeyFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ExperimenterIdMeterBand;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ExperimenterMeterBandSubType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterBandCommons;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterModInput;
@@ -30,6 +28,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.dscp.remark._case.MeterBandDscpRemark;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.experimenter._case.MeterBandExperimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.mod.Bands;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * Translates MeterMod messages
@@ -39,6 +41,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public class MeterModInputMessageFactory implements OFSerializer<MeterModInput>,
         SerializerRegistryInjector {
 
+    private static final Logger LOG = LoggerFactory
+            .getLogger(MeterModInputMessageFactory.class);
     private static final byte MESSAGE_TYPE = 29;
     private static final short LENGTH_OF_METER_BANDS = 16;
     private static final short PADDING_IN_METER_BAND_DROP = 4;
@@ -81,12 +85,20 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput>,
                 } else if (meterBand instanceof MeterBandExperimenterCase) {
                     MeterBandExperimenterCase experimenterBandCase = (MeterBandExperimenterCase) meterBand;
                     MeterBandExperimenter experimenterBand = experimenterBandCase.getMeterBandExperimenter();
-                    long expId = experimenterBand.getAugmentation(ExperimenterIdMeterBand.class)
-                            .getExperimenter().getValue();
-                    OFSerializer<MeterBandExperimenterCase> serializer = registry.getSerializer(
-                            ExperimenterSerializerKeyFactory.createMeterBandSerializerKey(
-                                    EncodeConstants.OF13_VERSION_ID, expId));
-                    serializer.serialize(experimenterBandCase, outBuffer);
+                    ExperimenterIdMeterBand expIdMeterBand = experimenterBand.getAugmentation(ExperimenterIdMeterBand.class);
+                    if (expIdMeterBand != null) {
+                        long expId = expIdMeterBand.getExperimenter().getValue();
+                        Class<? extends ExperimenterMeterBandSubType> meterBandSubType = expIdMeterBand.getSubType();
+                        try {
+                            OFSerializer<MeterBandExperimenterCase> serializer = registry.getSerializer(
+                                    ExperimenterSerializerKeyFactory.createMeterBandSerializerKey(
+                                            EncodeConstants.OF13_VERSION_ID, expId, meterBandSubType));
+                            serializer.serialize(experimenterBandCase, outBuffer);
+                        } catch (final IllegalStateException e) {
+                            LOG.warn("Serializer for key: {} wasn't found, exception {}", ExperimenterSerializerKeyFactory.createMeterBandSerializerKey(
+                                    EncodeConstants.OF13_VERSION_ID, expId, meterBandSubType), e);
+                        }
+                    }
                 }
             }
         }
