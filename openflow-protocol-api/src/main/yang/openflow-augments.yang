@@ -127,5 +127,10 @@
          leaf experimenter {
              type oft:experimenter-id;
          }
+         leaf sub-type {
+             type identityref {
+                 base oft:experimenter-meter-band-sub-type;
+             }
+         }
      }
 }
