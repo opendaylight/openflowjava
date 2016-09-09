@@ -206,6 +206,10 @@
         description "Base identity for action types";
     }
 
+    identity experimenter-meter-sub-type {
+        description "The base identity for vendor's meters.";
+    }
+
     typedef metadata {
         type binary;
     }

@@ -10,9 +10,11 @@ package org.opendaylight.openflowjava.util;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdMeterSubTypeSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdTypeSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ExperimenterMeterSubType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.grouping.TableFeatureProperties;
@@ -70,5 +72,33 @@ public class ExperimenterSerializerKeyFactoryTest {
         comparationKey = new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID,
                 43L, MeterBandExperimenterCase.class);
         Assert.assertEquals("Wrong key created", comparationKey, createdKey);
+    }
+
+    @Test
+    public void testCreateMeterBandSubTypeSerializerKey() throws Exception {
+        ExperimenterIdSerializerKey<?> createdKey;
+        ExperimenterIdSerializerKey<?> comparationKey1;
+        ExperimenterIdSerializerKey<?> comparationKey2;
+        ExperimenterIdSerializerKey<?> comparationKey3;
+        ExperimenterIdSerializerKey<?> comparationKey4;
+        ExperimenterIdSerializerKey<?> comparationKey5;
+
+        createdKey = ExperimenterSerializerKeyFactory.createMeterBandSerializerKey(
+                EncodeConstants.OF10_VERSION_ID, 43L, ExperimenterMeterSubType.class);
+        comparationKey1 = new ExperimenterIdMeterSubTypeSerializerKey<>(EncodeConstants.OF13_VERSION_ID,
+                43L, MeterBandExperimenterCase.class, ExperimenterMeterSubType.class);
+        comparationKey2 = new ExperimenterIdMeterSubTypeSerializerKey<>(EncodeConstants.OF10_VERSION_ID,
+                42L, MeterBandExperimenterCase.class, ExperimenterMeterSubType.class);
+        comparationKey3 = new ExperimenterIdMeterSubTypeSerializerKey<>(EncodeConstants.OF10_VERSION_ID,
+                43L, null, ExperimenterMeterSubType.class);
+        comparationKey4 = new ExperimenterIdMeterSubTypeSerializerKey<>(EncodeConstants.OF10_VERSION_ID,
+                43L, MeterBandExperimenterCase.class, null);
+        comparationKey5 = new ExperimenterIdMeterSubTypeSerializerKey<>(EncodeConstants.OF10_VERSION_ID,
+                43L, MeterBandExperimenterCase.class, ExperimenterMeterSubType.class);
+        Assert.assertNotEquals("Wrong key created", comparationKey1, createdKey);
+        Assert.assertNotEquals("Wrong key created", comparationKey2, createdKey);
+        Assert.assertNotEquals("Wrong key created", comparationKey3, createdKey);
+        Assert.assertNotEquals("Wrong key created", comparationKey4, createdKey);
+        Assert.assertEquals("Wrong key created", comparationKey5, createdKey);
     }
 }

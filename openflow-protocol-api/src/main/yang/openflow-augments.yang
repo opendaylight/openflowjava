@@ -128,4 +128,12 @@
              type oft:experimenter-id;
          }
      }
+     augment "/ofproto:meter-band-container/ofproto:meter-band/ofproto:meter-band-experimenter-case/ofproto:meter-band-experimenter" {
+         ext:augment-identifier "experimenter-meter-band-sub-type";
+         leaf sub-type {
+             type identityref {
+                 base oft:experimenter-meter-sub-type;
+             }
+         }
+     }
 }

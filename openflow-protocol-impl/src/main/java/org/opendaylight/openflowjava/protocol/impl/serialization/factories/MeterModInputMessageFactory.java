@@ -9,9 +9,6 @@
 package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
-import java.util.List;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
@@ -19,6 +16,8 @@ import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.util.ExperimenterSerializerKeyFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ExperimenterIdMeterBand;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ExperimenterMeterBandSubType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ExperimenterMeterSubType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterBandCommons;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MeterModInput;
@@ -30,6 +29,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.dscp.remark._case.MeterBandDscpRemark;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.meter.band.experimenter._case.MeterBandExperimenter;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.mod.Bands;
+
+import java.util.List;
 
 /**
  * Translates MeterMod messages
@@ -83,10 +84,17 @@ public class MeterModInputMessageFactory implements OFSerializer<MeterModInput>,
                     MeterBandExperimenter experimenterBand = experimenterBandCase.getMeterBandExperimenter();
                     long expId = experimenterBand.getAugmentation(ExperimenterIdMeterBand.class)
                             .getExperimenter().getValue();
+                    ExperimenterMeterBandSubType expMeterBandSubType = experimenterBand.getAugmentation(ExperimenterMeterBandSubType.class);
+                    Class<? extends ExperimenterMeterSubType> meterBandSubType = null;
+                    if(expMeterBandSubType != null){
+                        meterBandSubType = expMeterBandSubType.getSubType();
+                    }
                     OFSerializer<MeterBandExperimenterCase> serializer = registry.getSerializer(
                             ExperimenterSerializerKeyFactory.createMeterBandSerializerKey(
-                                    EncodeConstants.OF13_VERSION_ID, expId));
-                    serializer.serialize(experimenterBandCase, outBuffer);
+                                    EncodeConstants.OF13_VERSION_ID, expId, meterBandSubType));
+                    if(serializer != null){
+                        serializer.serialize(experimenterBandCase, outBuffer);
+                    }
                 }
             }
         }
