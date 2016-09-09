@@ -8,8 +8,10 @@
 
 package org.opendaylight.openflowjava.util;
 
+import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdMeterSubTypeSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdTypeSerializerKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ExperimenterMeterBandSubType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.grouping.TableFeatureProperties;
@@ -59,6 +61,11 @@ public abstract class ExperimenterSerializerKeyFactory {
      */
     public static ExperimenterIdSerializerKey<MeterBandExperimenterCase> createMeterBandSerializerKey(
             short msgVersion, long experimenterId) {
-        return new ExperimenterIdSerializerKey<>(msgVersion, experimenterId, MeterBandExperimenterCase.class);
+        return new ExperimenterIdMeterSubTypeSerializerKey<>(msgVersion, experimenterId, MeterBandExperimenterCase.class, null);
+    }
+
+    public static ExperimenterIdSerializerKey<MeterBandExperimenterCase> createMeterBandSerializerKey(
+            short msgVersion, long experimenterId, Class<? extends ExperimenterMeterBandSubType> meterSubType) {
+        return new ExperimenterIdMeterSubTypeSerializerKey<>(msgVersion, experimenterId, MeterBandExperimenterCase.class, meterSubType);
     }
 }
