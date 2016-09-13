@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_24d96122",
+        "filename": "openflow-protocol-api/src/main/yang/openflow-augments.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-09-13T14:30:09Z",
+      "side": 1,
+      "message": "if more detailed differentiation is needed, please do it like in case of openflow actions -\u003e sub-type is present next to experimenter-id (in the same structure). In our case it is experimenter-id-meter-band",
+      "range": {
+        "startLine": 131,
+        "startChar": 4,
+        "endLine": 138,
+        "endChar": 6
+      },
+      "revId": "bb6e5012bd2bc25dd9828ce4f4d5a2d1f9d78c93",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_04d6e5f0",
+        "filename": "openflow-protocol-api/src/main/yang/openflow-types.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-09-13T14:30:09Z",
+      "side": 1,
+      "message": "please rename to something like experimenter-meter-band-sub-type",
+      "revId": "bb6e5012bd2bc25dd9828ce4f4d5a2d1f9d78c93",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_6406b987",
+        "filename": "openflow-protocol-api/src/main/yang/openflow-types.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-09-13T14:30:09Z",
+      "side": 1,
+      "message": "meter bands",
+      "range": {
+        "startLine": 210,
+        "startChar": 52,
+        "endLine": 210,
+        "endChar": 58
+      },
+      "revId": "bb6e5012bd2bc25dd9828ce4f4d5a2d1f9d78c93",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
