@@ -22,6 +22,30 @@
       "revId": "0cc9be76249e95a38700d3f391aef191d8bca198",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_516b7e1d",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/serialization/factories/MeterModInputMessageFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 5743
+      },
+      "writtenOn": "2016-09-14T09:15:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_517a5e24",
+      "range": {
+        "startLine": 91,
+        "startChar": 24,
+        "endLine": 93,
+        "endChar": 25
+      },
+      "revId": "0cc9be76249e95a38700d3f391aef191d8bca198",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
