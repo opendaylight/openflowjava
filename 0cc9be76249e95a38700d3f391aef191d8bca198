@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_517a5e24",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/serialization/factories/MeterModInputMessageFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-09-14T08:00:20Z",
+      "side": 1,
+      "message": "the serializer will never be null - if there is no serializer registered for a given key, IllegalStateException will be thrown.\n\nSo the \"if\" statement should be replaced by try - catch block, where in the catch block it should be fine to add debug log (something like: \"Serializer for key: \" + key + \"wasn\u0027t found\", + exception)",
+      "range": {
+        "startLine": 91,
+        "startChar": 24,
+        "endLine": 93,
+        "endChar": 25
+      },
+      "revId": "0cc9be76249e95a38700d3f391aef191d8bca198",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
