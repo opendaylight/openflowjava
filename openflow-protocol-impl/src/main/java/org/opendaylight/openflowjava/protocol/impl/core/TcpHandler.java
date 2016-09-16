@@ -18,6 +18,10 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.GenericFutureListener;
+import java.util.concurrent.TimeUnit.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.EventLoopGroup;
@@ -46,6 +50,17 @@ public class TcpHandler implements ServerFacade {
     private static final int DEFAULT_WRITE_HIGH_WATERMARK = 64;
     private static final int DEFAULT_WRITE_LOW_WATERMARK = 32;
     /*
+     * ERICSSON CHANGES - 24-Oct-2015 - Muthu Delay the opening of OF interface
+     * of the controller
+     */
+    // private static final String OF_LISTENER_STARUP_DELAY_CONFIG =
+    // "of.listener.startup.delay.secs";
+    // private static final int DEFAULT_OF_LISTENER_STARTUP_DELAY_VALUE = 120;
+    // private int OF_LISTENER_STARTUP_DELAY =
+    // Integer.getInteger(OF_LISTENER_STARUP_DELAY_CONFIG,
+    // DEFAULT_OF_LISTENER_STARTUP_DELAY_VALUE);
+
+    /*
      * Write spin count. This tells netty to immediately retry a non-blocking
      * write this many times before moving on to selecting.
      */
@@ -62,7 +77,8 @@ public class TcpHandler implements ServerFacade {
     private ThreadConfiguration threadConfig;
 
     private TcpChannelInitializer channelInitializer;
-
+    private SnDHandler sndHandler = new SnDHandler();
+    private java.util.HashMap statusMap = new java.util.HashMap();
     private Class<? extends ServerSocketChannel> socketChannelClass;
 
     /**
@@ -115,6 +131,24 @@ public class TcpHandler implements ServerFacade {
                     .childOption(ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK, DEFAULT_WRITE_HIGH_WATERMARK * 1024)
                     .childOption(ChannelOption.WRITE_BUFFER_LOW_WATER_MARK, DEFAULT_WRITE_LOW_WATERMARK * 1024)
                     .childOption(ChannelOption.WRITE_SPIN_COUNT, DEFAULT_WRITE_SPIN_COUNT);
+
+            /*
+             * try{ LOGGER.info("Delaying start of OF Listener by {} SECONDS",
+             * OF_LISTENER_STARTUP_DELAY);
+             * TimeUnit.SECONDS.sleep(OF_LISTENER_STARTUP_DELAY); }
+             * catch(InterruptedException iEx){ LOGGER.error(
+             * "Interrupted while delaying of OFListener start", iEx); }
+             */
+
+            /**
+             * SnD Health Check
+             */
+
+            if (sndHandler.healthCheck()) {
+                LOG.info("Health check PASSED");
+            } else {
+                LOG.error("Health check FAILED");
+            }
 
             if (startupAddress != null) {
                 f = b.bind(startupAddress.getHostAddress(), port).sync();
