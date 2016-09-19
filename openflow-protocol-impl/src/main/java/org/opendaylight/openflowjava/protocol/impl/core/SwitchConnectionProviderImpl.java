@@ -25,6 +25,7 @@ import org.opendaylight.openflowjava.protocol.api.keys.ActionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterActionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdMeterSubTypeSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterInstructionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterSerializerKey;
@@ -274,8 +275,19 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider, C
     }
 
     @Override
+    /**
+     * @deprecated Since we have used ExperimenterIdMeterSubTypeSerializerKey as MeterBandSerializer's key, in order to avoid
+     * the occurrence of an error, we should discard this function
+     */
+    @Deprecated
     public void registerMeterBandSerializer(final ExperimenterIdSerializerKey<MeterBandExperimenterCase> key,
             final OFSerializer<MeterBandExperimenterCase> serializer) {
+        serializerRegistry.registerSerializer(key, serializer);
+    }
+
+    @Override
+    public void registerMeterBandSerializer(final ExperimenterIdMeterSubTypeSerializerKey<MeterBandExperimenterCase> key,
+                                            final OFSerializer<MeterBandExperimenterCase> serializer) {
         serializerRegistry.registerSerializer(key, serializer);
     }
 

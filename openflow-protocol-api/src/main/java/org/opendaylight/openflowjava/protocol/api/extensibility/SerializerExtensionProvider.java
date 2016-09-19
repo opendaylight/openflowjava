@@ -9,6 +9,7 @@
 package org.opendaylight.openflowjava.protocol.api.extensibility;
 
 import org.opendaylight.openflowjava.protocol.api.keys.ActionSerializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdMeterSubTypeSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.InstructionSerializerKey;
@@ -92,10 +93,21 @@ public interface SerializerExtensionProvider {
             OFGeneralSerializer serializer);
 
     /**
+     * @deprecated Since we use ExperimenterIdMeterSubTypeSerializerKey as MeterBandSerializer's key, in order to avoid
+     * the occurrence of an error,we should discard this function
      * Registers meter band serializer (used in meter-mod messages)
      * @param key used for serializer lookup
      * @param serializer serializer implementation
      */
+    @Deprecated
     void registerMeterBandSerializer(ExperimenterIdSerializerKey<MeterBandExperimenterCase> key,
             OFSerializer<MeterBandExperimenterCase> serializer);
+
+    /**
+     * Registers meter band serializer (used in meter-mod messages)
+     * @param key used for serializer lookup
+     * @param serializer serializer implementation
+     */
+    void registerMeterBandSerializer(ExperimenterIdMeterSubTypeSerializerKey<MeterBandExperimenterCase> key,
+                                     OFSerializer<MeterBandExperimenterCase> serializer);
 }
