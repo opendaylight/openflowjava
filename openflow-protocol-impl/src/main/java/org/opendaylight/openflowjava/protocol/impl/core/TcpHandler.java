@@ -132,13 +132,13 @@ public class TcpHandler implements ServerFacade {
                     .childOption(ChannelOption.WRITE_BUFFER_LOW_WATER_MARK, DEFAULT_WRITE_LOW_WATERMARK * 1024)
                     .childOption(ChannelOption.WRITE_SPIN_COUNT, DEFAULT_WRITE_SPIN_COUNT);
 
-            /*
-             * try{ LOGGER.info("Delaying start of OF Listener by {} SECONDS",
-             * OF_LISTENER_STARTUP_DELAY);
-             * TimeUnit.SECONDS.sleep(OF_LISTENER_STARTUP_DELAY); }
-             * catch(InterruptedException iEx){ LOGGER.error(
-             * "Interrupted while delaying of OFListener start", iEx); }
-             */
+/*            try{
+                LOG.info("Delaying start of OF Listener by {} SECONDS", OF_LISTENER_STARTUP_DELAY);
+                TimeUnit.SECONDS.sleep(OF_LISTENER_STARTUP_DELAY);
+            }
+            catch(InterruptedException iEx){
+                LOG.error("Interrupted while delaying of OFListener start", iEx);
+            }*/
 
             /**
              * SnD Health Check

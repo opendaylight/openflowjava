@@ -48,17 +48,33 @@ public class SnDHandler {
 
     private void invokeLocalJMXCommand(String objectName, String operationToExec) {
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        if (mbs != null) {
+        boolean check = true;
+        while (check) {
+            LOGGER.error(".");
+            if (mbs != null) {
+                try {
+                    statusMap = (java.util.HashMap) mbs.invoke(new ObjectName(objectName), operationToExec, null, null);
+                    check = false;
+                } catch (MalformedObjectNameException monEx) {
+                    LOGGER.error("CRITICAL EXCEPTION : Malformed Object Name Exception");
+                    check = false;
+                } catch (MBeanException mbEx) {
+                    LOGGER.error("CRITICAL EXCEPTION : MBean Exception");
+                    check = false;
+                } catch (InstanceNotFoundException infEx) {
+                    LOGGER.error("CRITICAL EXCEPTION : Instance Not Found Exception");
+                } catch (ReflectionException rEx) {
+                    LOGGER.error("CRITICAL EXCEPTION : Reflection Exception");
+                    check = false;
+                } catch (Exception exp) {
+                    LOGGER.error("CRITICAL EXCEPTION : Exception");
+                    check = false;
+                }
+            }
             try {
-                statusMap = (java.util.HashMap) mbs.invoke(new ObjectName(objectName), operationToExec, null, null);
-            } catch (MalformedObjectNameException monEx) {
-                LOGGER.error("CRITICAL EXCEPTION : Malformed Object Name Exception");
-            } catch (MBeanException mbEx) {
-                LOGGER.error("CRITICAL EXCEPTION : MBean Exception");
-            } catch (InstanceNotFoundException infEx) {
-                LOGGER.error("CRITICAL EXCEPTION : Instance Not Found Exception");
-            } catch (ReflectionException rEx) {
-                LOGGER.error("CRITICAL EXCEPTION : Reflection Exception");
+                Thread.sleep(1000);
+            } catch (Exception eee) {
+                LOGGER.error("CRITICAL EXCEPTION : Exception in sleep...");
             }
         }
     }
