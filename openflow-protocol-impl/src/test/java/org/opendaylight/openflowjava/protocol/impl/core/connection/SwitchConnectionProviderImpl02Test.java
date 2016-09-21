@@ -9,8 +9,6 @@ package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -25,6 +23,7 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterActionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterActionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdMeterSubTypeSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterInstructionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterInstructionSerializerKey;
@@ -47,6 +46,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.queue.property.header.QueueProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.grouping.TableFeatureProperties;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * @author madamjak
@@ -228,8 +230,8 @@ public class SwitchConnectionProviderImpl02Test {
         Assert.assertTrue("Wrong -- unregister MultipartRequestTFSerializer", provider.unregisterSerializer(key14));
         Assert.assertFalse("Wrong -- unregister MultipartRequestTFSerializer by not existing key", provider.unregisterSerializer(key14));
         // -- registerMeterBandSerializer
-        final ExperimenterIdSerializerKey<MeterBandExperimenterCase> key15
-            = new ExperimenterIdSerializerKey<>(EncodeConstants.OF10_VERSION_ID,42L,MeterBandExperimenterCase.class);
+        final ExperimenterIdMeterSubTypeSerializerKey<MeterBandExperimenterCase> key15
+            = new ExperimenterIdMeterSubTypeSerializerKey<>(EncodeConstants.OF10_VERSION_ID,42L,MeterBandExperimenterCase.class,null);
         provider.registerMeterBandSerializer(key15, serializerMeterBandExpCase);
         Assert.assertTrue("Wrong -- unregister MeterBandSerializer", provider.unregisterSerializer(key15));
         Assert.assertFalse("Wrong -- unregister MeterBandSerializer by not existing key", provider.unregisterSerializer(key15));
