@@ -1,0 +1,7 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+2: Michal Polkorab <michal.polkorab@pantheon.sk>
+Submitted-by: Michal Polkorab <michal.polkorab@pantheon.sk>
+Submitted-at: Wed, 21 Sep 2016 10:59:28 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/45868
+Project: openflowjava
+Branch: refs/heads/stable/beryllium
