@@ -54,9 +54,11 @@ public class OFVersionDetector extends ByteToMessageDecoder {
         }
 
         final byte version = in.readByte();
-        if (version == OF13_VERSION_ID || version == OF10_VERSION_ID) {
+        final short messageType = in.getUnsignedByte(in.readerIndex());
+        if (version == OF13_VERSION_ID || version == OF10_VERSION_ID
+                || EncodeConstants.OF_HELLO_MESSAGE_TYPE_VALUE == messageType) {
             LOG.debug("detected version: {}", version);
-            if (!filterPacketIns || OF_PACKETIN != in.getUnsignedByte(in.readerIndex())) {
+            if (!filterPacketIns || OF_PACKETIN != messageType) {
                 ByteBuf messageBuffer = in.slice();
                 out.add(new VersionMessageWrapper(version, messageBuffer));
                 messageBuffer.retain();
