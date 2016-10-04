@@ -145,7 +145,7 @@ final class ChannelOutboundQueue extends ChannelInboundHandlerAdapter {
      */
     private void conditionalFlush() {
         if (queue.isEmpty()) {
-            LOG.trace("Queue is empty, not flush needed");
+            LOG.trace("Queue is empty, flush not needed");
             return;
         }
         if (!channel.isWritable()) {
