@@ -45,7 +45,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 /**
  * @author michal.polkorab
  * @author giuseppex.petralia@intel.com
- *
  */
 public final class TypeToClassMapInitializer {
 
@@ -55,7 +54,6 @@ public final class TypeToClassMapInitializer {
 
     /**
      * Initializes type to class map
-     *
      * @param messageClassMap
      */
     public static void initializeTypeToClassMap(Map<TypeToClassKey, Class<?>> messageClassMap) {
@@ -91,12 +89,16 @@ public final class TypeToClassMapInitializer {
         helper.registerTypeToClass((short) 23, GetQueueConfigOutput.class);
         helper.registerTypeToClass((short) 25, RoleRequestOutput.class);
         helper.registerTypeToClass((short) 27, GetAsyncOutput.class);
+        // init OF v1.4 mapping
+        helper = new TypeToClassInitHelper(EncodeConstants.OF14_VERSION_ID, messageClassMap);
+        helper.registerTypeToClass((short) 0, HelloMessage.class);
+        // init OF v1.5 mapping
+        helper = new TypeToClassInitHelper(EncodeConstants.OF15_VERSION_ID, messageClassMap);
+        helper.registerTypeToClass((short) 0, HelloMessage.class);
     }
 
     /**
-     * Initializes type to class map to associate OF code to Java Class for
-     * messages for additional deserializers.
-     *
+     * Initializes type to class map to associate OF code to Java Class for messages for additional deserializers.
      * @param messageClassMap
      */
     public static void initializeAdditionalTypeToClassMap(Map<TypeToClassKey, Class<?>> messageClassMap) {
