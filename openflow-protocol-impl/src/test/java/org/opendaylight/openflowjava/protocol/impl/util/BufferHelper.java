@@ -19,6 +19,7 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
+import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
@@ -107,7 +108,12 @@ public abstract class BufferHelper {
         checkHeader(ofHeader, (short) EncodeConstants.OF10_VERSION_ID);
     }
 
-    private static void checkHeader(OfHeader ofHeader, Short version) {
+    /**
+     * Check version and xid of OFP header.
+     * @param ofHeader OpenFlow protocol header
+     * @param version OpenFlow protocol version
+     */
+    public static void checkHeader(OfHeader ofHeader, Short version) {
         Assert.assertEquals("Wrong version", version, ofHeader.getVersion());
         Assert.assertEquals("Wrong Xid", DEFAULT_XID, ofHeader.getXid());
     }
@@ -134,7 +140,7 @@ public abstract class BufferHelper {
      * @param bb data input buffer
      * @return message decoded pojo
      */
-    public static <E extends DataObject> E deserialize(OFDeserializer<E> decoder, ByteBuf bb) {
+    public static <E extends DataContainer> E deserialize(OFDeserializer<E> decoder, ByteBuf bb) {
         return decoder.deserialize(bb);
     }
 
