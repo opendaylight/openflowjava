@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Handles messages (notifications + rpcs) and connections
+ * Handles messages (notifications + rpcs) and connections.
  * @author mirehak
  * @author michal.polkorab
  */
@@ -53,11 +53,10 @@ public class ConnectionAdapterImpl extends AbstractConnectionAdapterStatistics i
     private final boolean useBarrier;
 
     /**
-     * default ctor
-     *
+     * Default constructor.
      * @param channel the channel to be set - used for communication
      * @param address client address (used only in case of UDP communication,
-     *            as there is no need to store address over tcp (stable channel))
+     *                as there is no need to store address over tcp (stable channel))
      * @param useBarrier value is configurable by configSubsytem
      */
     public ConnectionAdapterImpl(final Channel channel, final InetSocketAddress address, final boolean useBarrier) {
@@ -84,7 +83,7 @@ public class ConnectionAdapterImpl extends AbstractConnectionAdapterStatistics i
     @Override
     public void consumeDeviceMessage(final DataObject message) {
         LOG.debug("ConsumeIntern msg on {}", channel);
-        if (disconnectOccured ) {
+        if (disconnectOccured) {
             return;
         }
         if (message instanceof Notification) {
@@ -96,7 +95,7 @@ public class ConnectionAdapterImpl extends AbstractConnectionAdapterStatistics i
                 disconnectOccured = true;
             } else if (message instanceof SwitchIdleEvent) {
                 systemListener.onSwitchIdleEvent((SwitchIdleEvent) message);
-                // OpenFlow messages
+            // OpenFlow messages
             } else if (message instanceof EchoRequestMessage) {
                 if (outputManager != null) {
                     outputManager.onEchoRequest((EchoRequestMessage) message);
@@ -116,7 +115,7 @@ public class ConnectionAdapterImpl extends AbstractConnectionAdapterStatistics i
             } else if (message instanceof FlowRemovedMessage) {
                 messageListener.onFlowRemovedMessage((FlowRemovedMessage) message);
             } else if (message instanceof HelloMessage) {
-                LOG.info("Hello received / branch");
+                LOG.info("Hello received");
                 messageListener.onHelloMessage((HelloMessage) message);
             } else if (message instanceof MultipartReplyMessage) {
                 if (outputManager != null) {
@@ -131,15 +130,15 @@ public class ConnectionAdapterImpl extends AbstractConnectionAdapterStatistics i
                 LOG.warn("message listening not supported for type: {}", message.getClass());
             }
         } else if (message instanceof OfHeader) {
-            LOG.debug("OFheader msg received");
+            LOG.debug("OF header msg received");
 
             if (outputManager == null || !outputManager.onMessage((OfHeader) message)) {
                 final RpcResponseKey key = createRpcResponseKey((OfHeader) message);
                 final ResponseExpectedRpcListener<?> listener = findRpcResponse(key);
                 if (listener != null) {
-                    LOG.debug("corresponding rpcFuture found");
+                    LOG.debug("Corresponding rpcFuture found");
                     listener.completed((OfHeader)message);
-                    LOG.debug("after setting rpcFuture");
+                    LOG.debug("After setting rpcFuture");
                     responseCache.invalidate(key);
                 } else {
                     LOG.warn("received unexpected rpc response: {}", key);
@@ -150,10 +149,6 @@ public class ConnectionAdapterImpl extends AbstractConnectionAdapterStatistics i
         }
     }
 
-    /**
-     * @param message
-     * @return
-     */
     private static RpcResponseKey createRpcResponseKey(final OfHeader message) {
         return new RpcResponseKey(message.getXid(), message.getImplementedInterface().getName());
     }
