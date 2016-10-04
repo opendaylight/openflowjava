@@ -43,9 +43,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInput;
 
 /**
+ * Util class for init OF message type to class mapping.
  * @author michal.polkorab
  * @author giuseppex.petralia@intel.com
- *
  */
 public final class TypeToClassMapInitializer {
 
@@ -54,13 +54,13 @@ public final class TypeToClassMapInitializer {
     }
 
     /**
-     * Initializes type to class map
-     *
-     * @param messageClassMap
+     * Initializes standard types mapping.
+     * @param messageClassMap type to class map
      */
     public static void initializeTypeToClassMap(Map<TypeToClassKey, Class<?>> messageClassMap) {
+        TypeToClassInitHelper helper;
         // init OF v1.0 mapping
-        TypeToClassInitHelper helper = new TypeToClassInitHelper(EncodeConstants.OF10_VERSION_ID, messageClassMap);
+        helper = new TypeToClassInitHelper(EncodeConstants.OF10_VERSION_ID, messageClassMap);
         helper.registerTypeToClass((short) 0, HelloMessage.class);
         helper.registerTypeToClass((short) 1, ErrorMessage.class);
         helper.registerTypeToClass((short) 2, EchoRequestMessage.class);
@@ -74,6 +74,7 @@ public final class TypeToClassMapInitializer {
         helper.registerTypeToClass((short) 17, MultipartReplyMessage.class);
         helper.registerTypeToClass((short) 19, BarrierOutput.class);
         helper.registerTypeToClass((short) 21, GetQueueConfigOutput.class);
+
         // init OF v1.3 mapping
         helper = new TypeToClassInitHelper(EncodeConstants.OF13_VERSION_ID, messageClassMap);
         helper.registerTypeToClass((short) 0, HelloMessage.class);
@@ -91,17 +92,24 @@ public final class TypeToClassMapInitializer {
         helper.registerTypeToClass((short) 23, GetQueueConfigOutput.class);
         helper.registerTypeToClass((short) 25, RoleRequestOutput.class);
         helper.registerTypeToClass((short) 27, GetAsyncOutput.class);
+
+        // init OF v1.4 mapping
+        helper = new TypeToClassInitHelper(EncodeConstants.OF14_VERSION_ID, messageClassMap);
+        helper.registerTypeToClass((short) 0, HelloMessage.class);
+
+        // init OF v1.5 mapping
+        helper = new TypeToClassInitHelper(EncodeConstants.OF15_VERSION_ID, messageClassMap);
+        helper.registerTypeToClass((short) 0, HelloMessage.class);
     }
 
     /**
-     * Initializes type to class map to associate OF code to Java Class for
-     * messages for additional deserializers.
-     *
-     * @param messageClassMap
+     * Initializes additional types mapping.
+     * @param messageClassMap type to class map
      */
     public static void initializeAdditionalTypeToClassMap(Map<TypeToClassKey, Class<?>> messageClassMap) {
+        TypeToClassInitHelper helper;
         // init OF v1.0 mapping
-        TypeToClassInitHelper helper = new TypeToClassInitHelper(EncodeConstants.OF10_VERSION_ID, messageClassMap);
+        helper = new TypeToClassInitHelper(EncodeConstants.OF10_VERSION_ID, messageClassMap);
         helper.registerTypeToClass((short) 5, GetFeaturesInput.class);
         helper.registerTypeToClass((short) 7, GetConfigInput.class);
         helper.registerTypeToClass((short) 9, SetConfigInput.class);
@@ -111,6 +119,7 @@ public final class TypeToClassMapInitializer {
         helper.registerTypeToClass((short) 16, MultipartRequestInput.class);
         helper.registerTypeToClass((short) 18, BarrierInput.class);
         helper.registerTypeToClass((short) 20, GetQueueConfigInput.class);
+
         // init OF v1.3 mapping
         helper = new TypeToClassInitHelper(EncodeConstants.OF13_VERSION_ID, messageClassMap);
         helper.registerTypeToClass((short) 5, GetFeaturesInput.class);

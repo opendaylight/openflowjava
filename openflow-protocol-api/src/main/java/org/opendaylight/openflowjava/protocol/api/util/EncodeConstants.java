@@ -9,7 +9,7 @@
 package org.opendaylight.openflowjava.protocol.api.util;
 
 /**
- * Stores common constants
+ * Stores common constants.
  * @author michal.polkorab
  */
 public abstract class EncodeConstants {
@@ -20,6 +20,12 @@ public abstract class EncodeConstants {
     public static final byte OF10_VERSION_ID = 0x01;
     /** OpenFlow v1.3 wire protocol number */
     public static final byte OF13_VERSION_ID = 0x04;
+    /** OpenFlow v1.4 wire protocol number */
+    public static final byte OF14_VERSION_ID = 0x05;
+    /** OpenFlow v1.5 wire protocol number */
+    public static final byte OF15_VERSION_ID = 0x06;
+    /** OpenFlow hello message type value */
+    public static final byte OF_HELLO_MESSAGE_TYPE_VALUE = 0;
     /** Index of length in Openflow header */
     public static final int OFHEADER_LENGTH_INDEX = 2;
     /** Size of Openflow header */
@@ -52,10 +58,9 @@ public abstract class EncodeConstants {
     /** Common experimenter value */
     public static final int EXPERIMENTER_VALUE = 0xFFFF;
 
-
     /** OF v1.0 maximal port name length */
     public static final byte MAX_PORT_NAME_LENGTH = 16;
-    /** OF v1.3 lenght of experimenter_ids - see Multipart TableFeatures (properties) message */
+    /** OF v1.3 length of experimenter_ids - see Multipart TableFeatures (properties) message */
     public static final byte EXPERIMENTER_IDS_LENGTH = 8;
 
     private EncodeConstants() {

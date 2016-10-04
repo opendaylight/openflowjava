@@ -47,21 +47,19 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInput;
 
 /**
+ * Test for {@link org.opendaylight.openflowjava.protocol.impl.deserialization.TypeToClassMapInitializer}.
  * @author michal.polkorab
  * @author giuseppex.petralia@intel.com
- *
  */
 public class TypeToClassMapInitializerTest {
 
     private Map<TypeToClassKey, Class<?>> messageClassMap;
 
-    /**
-     * Tests correct map initialization
-     */
     @Test
     public void test() {
         messageClassMap = new HashMap<>();
         TypeToClassMapInitializer.initializeTypeToClassMap(messageClassMap);
+
         short version = EncodeConstants.OF10_VERSION_ID;
         assertEquals("Wrong class", HelloMessage.class, messageClassMap.get(new TypeToClassKey(version, 0)));
         assertEquals("Wrong class", ErrorMessage.class, messageClassMap.get(new TypeToClassKey(version, 1)));
@@ -76,6 +74,7 @@ public class TypeToClassMapInitializerTest {
         assertEquals("Wrong class", MultipartReplyMessage.class, messageClassMap.get(new TypeToClassKey(version, 17)));
         assertEquals("Wrong class", BarrierOutput.class, messageClassMap.get(new TypeToClassKey(version, 19)));
         assertEquals("Wrong class", GetQueueConfigOutput.class, messageClassMap.get(new TypeToClassKey(version, 21)));
+
         version = EncodeConstants.OF13_VERSION_ID;
         assertEquals("Wrong class", HelloMessage.class, messageClassMap.get(new TypeToClassKey(version, 0)));
         assertEquals("Wrong class", ErrorMessage.class, messageClassMap.get(new TypeToClassKey(version, 1)));
@@ -92,6 +91,12 @@ public class TypeToClassMapInitializerTest {
         assertEquals("Wrong class", GetQueueConfigOutput.class, messageClassMap.get(new TypeToClassKey(version, 23)));
         assertEquals("Wrong class", RoleRequestOutput.class, messageClassMap.get(new TypeToClassKey(version, 25)));
         assertEquals("Wrong class", GetAsyncOutput.class, messageClassMap.get(new TypeToClassKey(version, 27)));
+
+        version = EncodeConstants.OF14_VERSION_ID;
+        assertEquals("Wrong class", HelloMessage.class, messageClassMap.get(new TypeToClassKey(version, 0)));
+
+        version = EncodeConstants.OF15_VERSION_ID;
+        assertEquals("Wrong class", HelloMessage.class, messageClassMap.get(new TypeToClassKey(version, 0)));
     }
 
     @Test

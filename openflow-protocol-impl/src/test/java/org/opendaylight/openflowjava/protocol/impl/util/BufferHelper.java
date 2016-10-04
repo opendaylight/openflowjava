@@ -107,7 +107,12 @@ public abstract class BufferHelper {
         checkHeader(ofHeader, (short) EncodeConstants.OF10_VERSION_ID);
     }
 
-    private static void checkHeader(OfHeader ofHeader, Short version) {
+    /**
+     * Check version and xid of OFP header.
+     * @param ofHeader OpenFlow protocol header
+     * @param version OpenFlow protocol version
+     */
+    public static void checkHeader(OfHeader ofHeader, Short version) {
         Assert.assertEquals("Wrong version", version, ofHeader.getVersion());
         Assert.assertEquals("Wrong Xid", DEFAULT_XID, ofHeader.getXid());
     }
