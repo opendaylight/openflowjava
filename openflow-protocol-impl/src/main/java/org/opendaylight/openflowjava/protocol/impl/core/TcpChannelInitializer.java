@@ -26,26 +26,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Initializes TCP / TLS channel
+ * Initializes TCP / TLS channel.
  * @author michal.polkorab
  */
 public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChannel> {
 
-    private static final Logger LOG = LoggerFactory
-            .getLogger(TcpChannelInitializer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TcpChannelInitializer.class);
     private final DefaultChannelGroup allChannels;
     private final ConnectionAdapterFactory connectionAdapterFactory;
 
     /**
-     * default ctor
+     * Default constructor.
      */
     public TcpChannelInitializer() {
         this( new DefaultChannelGroup("netty-receiver", null), new ConnectionAdapterFactoryImpl() );
     }
 
     /**
-     * Testing Constructor
-     *
+     * Testing constructor.
      */
     protected TcpChannelInitializer( final DefaultChannelGroup channelGroup, final ConnectionAdapterFactory connAdaptorFactory ) {
     	allChannels = channelGroup ;
@@ -72,10 +70,11 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
         ConnectionFacade connectionFacade = null;
         connectionFacade = connectionAdapterFactory.createConnectionFacade(ch, null, useBarrier());
         try {
-            LOG.debug("calling plugin: {}", getSwitchConnectionHandler());
+            LOG.debug("Calling OF plugin: {}", getSwitchConnectionHandler());
             getSwitchConnectionHandler().onSwitchConnected(connectionFacade);
             connectionFacade.checkListeners();
-            ch.pipeline().addLast(PipelineHandlers.IDLE_HANDLER.name(), new IdleHandler(getSwitchIdleTimeout(), TimeUnit.MILLISECONDS));
+            ch.pipeline().addLast(PipelineHandlers.IDLE_HANDLER.name(),
+                    new IdleHandler(getSwitchIdleTimeout(), TimeUnit.MILLISECONDS));
             boolean tlsPresent = false;
 
             // If this channel is configured to support SSL it will only support SSL
@@ -112,7 +111,8 @@ public class TcpChannelInitializer extends ProtocolChannelInitializer<SocketChan
             final OFEncoder ofEncoder = new OFEncoder();
             ofEncoder.setSerializationFactory(getSerializationFactory());
             ch.pipeline().addLast(PipelineHandlers.OF_ENCODER.name(), ofEncoder);
-            ch.pipeline().addLast(PipelineHandlers.DELEGATING_INBOUND_HANDLER.name(), new DelegatingInboundHandler(connectionFacade));
+            ch.pipeline().addLast(PipelineHandlers.DELEGATING_INBOUND_HANDLER.name(),
+                    new DelegatingInboundHandler(connectionFacade));
             if (!tlsPresent) {
                 connectionFacade.fireConnectionReadyNotification();
             }
