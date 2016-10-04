@@ -8,17 +8,15 @@
 
 package org.opendaylight.openflowjava.protocol.impl.core;
 
+import com.google.common.base.Preconditions;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-
 import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionAdapterImpl;
 import org.opendaylight.openflowjava.protocol.impl.core.connection.MessageConsumer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.DisconnectEventBuilder;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Preconditions;
 
 /**
  * Holds reference to {@link ConnectionAdapterImpl} and passes messages for further processing.
@@ -28,12 +26,11 @@ import com.google.common.base.Preconditions;
 public class DelegatingInboundHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(DelegatingInboundHandler.class);
-
     private final MessageConsumer consumer;
     private boolean inactiveMessageSent = false;
 
     /**
-     * Constructs class + creates and sets MessageConsumer
+     * Constructs class + creates and sets MessageConsumer.
      * @param connectionAdapter reference for adapter communicating with upper layers outside library
      */
     public DelegatingInboundHandler(final MessageConsumer connectionAdapter) {
