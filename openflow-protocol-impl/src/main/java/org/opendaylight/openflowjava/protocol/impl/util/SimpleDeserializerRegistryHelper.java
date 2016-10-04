@@ -12,8 +12,8 @@ import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeseria
 import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
 
 /**
+ * Helper class for deserializer registration with particular version.
  * @author michal.polkorab
- *
  */
 public class SimpleDeserializerRegistryHelper {
 
@@ -30,15 +30,18 @@ public class SimpleDeserializerRegistryHelper {
     }
 
     /**
+     * Register deserializer in registry. If deserializer supports more protocol versions assign actual one.
      * @param code code / value to distinguish between deserializers
      * @param experimenterID TODO
-     * @param deserializedObjectClass class of object that will be deserialized
-     *  by given deserializer
+     * @param deserializedObjectClass class of object that will be deserialized by given deserializer
      * @param deserializer deserializer instance
      */
-    public void registerDeserializer(int code,
-            Long experimenterID, Class<?> deserializedObjectClass, OFGeneralDeserializer deserializer) {
-        registry.registerDeserializer(new MessageCodeKey(version, code,
-                deserializedObjectClass), deserializer);
+    public void registerDeserializer(int code, Long experimenterID, Class<?> deserializedObjectClass,
+                                     OFGeneralDeserializer deserializer) {
+        registry.registerDeserializer(new MessageCodeKey(version, code, deserializedObjectClass), deserializer);
+
+        if (deserializer instanceof VersionAssignableFactory) {
+            ((VersionAssignableFactory) deserializer).assignVersion(version);
+        }
     }
 }

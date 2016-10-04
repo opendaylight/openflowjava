@@ -28,6 +28,14 @@ public class MessageCodeKey {
         this.clazz = clazz;
     }
 
+    public int getMsgType() {
+        return this.msgType;
+    }
+
+    public Class<?> getClazz() {
+        return this.clazz;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
