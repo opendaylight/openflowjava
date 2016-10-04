@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Transforms OpenFlow Protocol messages to POJOs
+ * Transforms OpenFlow Protocol messages to POJOs.
  * @author michal.polkorab
  * @author timotej.kubas
  */
@@ -34,7 +34,7 @@ public class OFEncoder extends MessageToByteEncoder<MessageListenerWrapper> {
     /** Constructor of class */
     public OFEncoder() {
         statisticsCounters = StatisticsCounters.getInstance();
-        LOG.trace("Creating OF13Encoder");
+        LOG.trace("Creating OFEncoder");
     }
 
     @Override
