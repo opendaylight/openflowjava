@@ -12,9 +12,7 @@ package org.opendaylight.openflowjava.protocol.impl.core;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-
 import java.util.List;
-
 import org.opendaylight.openflowjava.protocol.impl.core.connection.ConnectionFacade;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.slf4j.Logger;
@@ -26,7 +24,7 @@ import org.slf4j.LoggerFactory;
  */
 public class OFFrameDecoder extends ByteToMessageDecoder {
 
-    /** Length of OpenFlow 1.3 header */
+    /** Length of OpenFlow header */
     public static final byte LENGTH_OF_HEADER = 8;
     private static final byte LENGTH_INDEX_IN_HEADER = 2;
     private static final Logger LOG = LoggerFactory.getLogger(OFFrameDecoder.class);
@@ -36,7 +34,7 @@ public class OFFrameDecoder extends ByteToMessageDecoder {
     /**
      * Constructor of class.
      * @param connectionFacade  ConnectionFacade that will be notified
-     * with ConnectionReadyNotification after TLS has been successfully set up.
+     *                          with ConnectionReadyNotification after TLS has been successfully set up.
      * @param tlsPresent true is TLS is required, false otherwise
      */
     public OFFrameDecoder(ConnectionFacade connectionFacade, boolean tlsPresent) {
