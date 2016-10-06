@@ -9,58 +9,66 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
-import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
-import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.DefaultDeserialzerFactoryTest;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoRequestMessage;
 
 /**
+ * Test for {@link org.opendaylight.openflowjava.protocol.impl.deserialization.factories.EchoRequestMessageFactory}.
  * @author michal.polkorab
  * @author timotej.kubas
  */
-public class EchoRequestMessageFactoryTest {
-
-    private OFDeserializer<EchoRequestMessage> echoFactory;
+public class EchoRequestMessageFactoryTest extends DefaultDeserialzerFactoryTest<EchoRequestMessage> {
 
     /**
-     * Initializes deserializer registry and lookups correct deserializer
+     * Initializes deserializer registry and lookups OF13 deserializer.
      */
-    @Before
-    public void startUp() {
-        DeserializerRegistry registry = new DeserializerRegistryImpl();
-        registry.init();
-        echoFactory = registry.getDeserializer(
-                new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, 2, EchoRequestMessage.class));
+    public EchoRequestMessageFactoryTest() {
+        super(new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, 2, EchoRequestMessage.class));
     }
 
     /**
-     * Testing {@link EchoRequestMessageFactory} for correct translation into POJO
+     * Testing {@link EchoRequestMessageFactory} for correct header version.
+     */
+    @Test
+    public void testVersions() {
+        List<Byte> versions = new ArrayList<>(Arrays.asList(
+                EncodeConstants.OF10_VERSION_ID,
+                EncodeConstants.OF13_VERSION_ID,
+                EncodeConstants.OF14_VERSION_ID,
+                EncodeConstants.OF15_VERSION_ID
+        ));
+        ByteBuf bb = BufferHelper.buildBuffer();
+        testHeaderVersions(versions, bb);
+    }
+
+    /**
+     * Testing {@link EchoRequestMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testWithEmptyDataField() {
+        byte[] data = new byte[]{};
         ByteBuf bb = BufferHelper.buildBuffer();
-        EchoRequestMessage builtByFactory = BufferHelper.deserialize(echoFactory, bb);
+        EchoRequestMessage builtByFactory = BufferHelper.deserialize(factory, bb);
+        Assert.assertArrayEquals("Wrong data", data, builtByFactory.getData());
 
-        BufferHelper.checkHeaderV13(builtByFactory);
     }
 
     /**
-     * Testing {@link EchoRequestMessageFactory} for correct translation into POJO
+     * Testing {@link EchoRequestMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testWithDataFieldSet() {
         byte[] data = new byte[]{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
         ByteBuf bb = BufferHelper.buildBuffer(data);
-        EchoRequestMessage builtByFactory = BufferHelper.deserialize(echoFactory, bb);
-
-        BufferHelper.checkHeaderV13(builtByFactory);
+        EchoRequestMessage builtByFactory = BufferHelper.deserialize(factory, bb);
         Assert.assertArrayEquals("Wrong data", data, builtByFactory.getData());
     }
 }
