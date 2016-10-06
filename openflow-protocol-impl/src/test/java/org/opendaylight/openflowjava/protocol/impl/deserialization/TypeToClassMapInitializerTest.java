@@ -94,9 +94,13 @@ public class TypeToClassMapInitializerTest {
 
         version = EncodeConstants.OF14_VERSION_ID;
         assertEquals("Wrong class", HelloMessage.class, messageClassMap.get(new TypeToClassKey(version, 0)));
+        assertEquals("Wrong class", EchoRequestMessage.class, messageClassMap.get(new TypeToClassKey(version, 2)));
+        assertEquals("Wrong class", EchoOutput.class, messageClassMap.get(new TypeToClassKey(version, 3)));
 
         version = EncodeConstants.OF15_VERSION_ID;
         assertEquals("Wrong class", HelloMessage.class, messageClassMap.get(new TypeToClassKey(version, 0)));
+        assertEquals("Wrong class", EchoRequestMessage.class, messageClassMap.get(new TypeToClassKey(version, 2)));
+        assertEquals("Wrong class", EchoOutput.class, messageClassMap.get(new TypeToClassKey(version, 3)));
     }
 
     @Test
