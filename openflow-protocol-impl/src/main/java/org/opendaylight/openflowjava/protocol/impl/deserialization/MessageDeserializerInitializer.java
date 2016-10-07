@@ -24,7 +24,6 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF1
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10ErrorMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10FeaturesReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10FlowRemovedMessageFactory;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10GetConfigReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10HelloMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10PacketInMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10PortStatusMessageFactory;
@@ -77,7 +76,7 @@ public final class MessageDeserializerInitializer {
         helper.registerDeserializer(3, null, EchoOutput.class, new EchoReplyMessageFactory());
         helper.registerDeserializer(4, null, ExperimenterMessage.class, new VendorMessageFactory());
         helper.registerDeserializer(6, null, GetFeaturesOutput.class, new OF10FeaturesReplyMessageFactory());
-        helper.registerDeserializer(8, null, GetConfigOutput.class, new OF10GetConfigReplyMessageFactory());
+        helper.registerDeserializer(8, null, GetConfigOutput.class, new GetConfigReplyMessageFactory());
         helper.registerDeserializer(10, null, PacketInMessage.class, new OF10PacketInMessageFactory());
         helper.registerDeserializer(11, null, FlowRemovedMessage.class, new OF10FlowRemovedMessageFactory());
         helper.registerDeserializer(12, null, PortStatusMessage.class, new OF10PortStatusMessageFactory());
@@ -108,11 +107,13 @@ public final class MessageDeserializerInitializer {
         helper.registerDeserializer(0, null, HelloMessage.class, new HelloMessageFactory());
         helper.registerDeserializer(2, null, EchoRequestMessage.class, new EchoRequestMessageFactory());
         helper.registerDeserializer(3, null, EchoOutput.class, new EchoReplyMessageFactory());
+        helper.registerDeserializer(8, null, GetConfigOutput.class, new GetConfigReplyMessageFactory());
 
         // register OF v1.5 message deserializers
         helper = new SimpleDeserializerRegistryHelper(EncodeConstants.OF15_VERSION_ID, registry);
         helper.registerDeserializer(0, null, HelloMessage.class, new HelloMessageFactory());
         helper.registerDeserializer(2, null, EchoRequestMessage.class, new EchoRequestMessageFactory());
         helper.registerDeserializer(3, null, EchoOutput.class, new EchoReplyMessageFactory());
+        helper.registerDeserializer(8, null, GetConfigOutput.class, new GetConfigReplyMessageFactory());
     }
 }
