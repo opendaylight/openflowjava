@@ -12,7 +12,7 @@ import io.netty.buffer.ByteBuf;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.VersionAssignableFactory;
 import org.opendaylight.openflowjava.util.ExperimenterDeserializerKeyFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ExperimenterId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ExperimenterMessage;
@@ -20,10 +20,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 
 /**
+ * Translates Experimenter messages.
+ * OpenFlow protocol versions: 1.3, 1.4, 1.5.
  * @author michal.polkorab
- *
  */
-public class ExperimenterMessageFactory implements OFDeserializer<ExperimenterMessage>,
+public class ExperimenterMessageFactory extends VersionAssignableFactory implements OFDeserializer<ExperimenterMessage>,
         DeserializerRegistryInjector {
 
     private DeserializerRegistry deserializerRegistry;
@@ -36,11 +37,11 @@ public class ExperimenterMessageFactory implements OFDeserializer<ExperimenterMe
 
         OFDeserializer<ExperimenterDataOfChoice> deserializer = deserializerRegistry.getDeserializer(
                 ExperimenterDeserializerKeyFactory.createExperimenterMessageDeserializerKey(
-                        EncodeConstants.OF13_VERSION_ID, expId, expType));
+                        getVersion(), expId, expType));
         final ExperimenterDataOfChoice vendorData = deserializer.deserialize(message);
 
         ExperimenterMessageBuilder messageBld = new ExperimenterMessageBuilder()
-                .setVersion((short) EncodeConstants.OF13_VERSION_ID)
+                .setVersion(getVersion())
                 .setXid(xid)
                 .setExperimenter(new ExperimenterId(expId))
                 .setExpType(expType)

@@ -104,8 +104,10 @@ public final class MessageDeserializerInitializer {
         // register OF v1.4 message deserializers
         helper = new SimpleDeserializerRegistryHelper(EncodeConstants.OF14_VERSION_ID, registry);
         helper.registerDeserializer(0, null, HelloMessage.class, new HelloMessageFactory());
+        helper.registerDeserializer(1, null, ErrorMessage.class, new ErrorMessageFactory());
         helper.registerDeserializer(2, null, EchoRequestMessage.class, new EchoRequestMessageFactory());
         helper.registerDeserializer(3, null, EchoOutput.class, new EchoReplyMessageFactory());
+        helper.registerDeserializer(4, null, ExperimenterMessage.class, new ExperimenterMessageFactory());
         helper.registerDeserializer(6, null, GetFeaturesOutput.class, new FeaturesReplyMessageFactory());
         helper.registerDeserializer(8, null, GetConfigOutput.class, new GetConfigReplyMessageFactory());
         helper.registerDeserializer(21, null, BarrierOutput.class, new BarrierReplyMessageFactory());
@@ -114,7 +116,9 @@ public final class MessageDeserializerInitializer {
         helper = new SimpleDeserializerRegistryHelper(EncodeConstants.OF15_VERSION_ID, registry);
         helper.registerDeserializer(0, null, HelloMessage.class, new HelloMessageFactory());
         helper.registerDeserializer(2, null, EchoRequestMessage.class, new EchoRequestMessageFactory());
+        helper.registerDeserializer(1, null, ErrorMessage.class, new ErrorMessageFactory());
         helper.registerDeserializer(3, null, EchoOutput.class, new EchoReplyMessageFactory());
+        helper.registerDeserializer(4, null, ExperimenterMessage.class, new ExperimenterMessageFactory());
         helper.registerDeserializer(6, null, GetFeaturesOutput.class, new FeaturesReplyMessageFactory());
         helper.registerDeserializer(8, null, GetConfigOutput.class, new GetConfigReplyMessageFactory());
         helper.registerDeserializer(21, null, BarrierOutput.class, new BarrierReplyMessageFactory());
