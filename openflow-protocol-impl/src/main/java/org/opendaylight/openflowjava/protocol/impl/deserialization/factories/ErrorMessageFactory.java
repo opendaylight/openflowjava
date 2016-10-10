@@ -9,11 +9,11 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.util.VersionAssignableFactory;
 import org.opendaylight.openflowjava.util.ExperimenterDeserializerKeyFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.BadActionCode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.BadInstructionCode;
@@ -34,11 +34,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ErrorMessageBuilder;
 
 /**
- * Translates Error messages
+ * Translates Error messages.
+ * OpenFlow protocol versions: 1.3, 1.4, 1.5.
  * @author michal.polkorab
  * @author timotej.kubas
  */
-public class ErrorMessageFactory implements OFDeserializer<ErrorMessage>,
+public class ErrorMessageFactory extends VersionAssignableFactory implements OFDeserializer<ErrorMessage>,
         DeserializerRegistryInjector {
 
     private static final String UNKNOWN_CODE = "UNKNOWN_CODE";
@@ -49,14 +50,14 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage>,
     public ErrorMessage deserialize(ByteBuf rawMessage) {
         int startIndex = rawMessage.readerIndex();
         ErrorMessageBuilder builder = new ErrorMessageBuilder();
-        builder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
+        builder.setVersion(getVersion());
         builder.setXid(rawMessage.readUnsignedInt());
         int type = rawMessage.readUnsignedShort();
         ErrorType errorType = ErrorType.forValue(type);
         if (ErrorType.EXPERIMENTER.equals(errorType)) {
             OFDeserializer<ErrorMessage> deserializer = registry.getDeserializer(
                     ExperimenterDeserializerKeyFactory.createExperimenterErrorDeserializerKey(
-                            EncodeConstants.OF13_VERSION_ID, rawMessage.getUnsignedInt(
+                            getVersion(), rawMessage.getUnsignedInt(
                                     rawMessage.readerIndex() + EncodeConstants.SIZE_OF_SHORT_IN_BYTES)));
             rawMessage.readerIndex(startIndex);
             return deserializer.deserialize(rawMessage);
@@ -87,149 +88,121 @@ public class ErrorMessageFactory implements OFDeserializer<ErrorMessage>,
         int code = rawMessage.readUnsignedShort();
         if (type != null) {
             switch (type) {
-            case HELLOFAILED:
-            {
-                HelloFailedCode errorCode = HelloFailedCode.forValue(code);
-                if (errorCode != null) {
-                    setCode(builder, errorCode.getIntValue(), errorCode.name());
-                } else {
+                case HELLOFAILED:
+                    HelloFailedCode helloFailedCode = HelloFailedCode.forValue(code);
+                    if (helloFailedCode != null) {
+                        setCode(builder, helloFailedCode.getIntValue(), helloFailedCode.name());
+                    } else {
+                        setUnknownCode(builder, code);
+                    }
+                    break;
+                case BADREQUEST:
+                    BadRequestCode badRequestCode = BadRequestCode.forValue(code);
+                    if (badRequestCode != null) {
+                        setCode(builder, badRequestCode.getIntValue(), badRequestCode.name());
+                    } else {
+                        setUnknownCode(builder, code);
+                    }
+                    break;
+                case BADACTION:
+                    BadActionCode badActionCode = BadActionCode.forValue(code);
+                    if (badActionCode != null) {
+                        setCode(builder, badActionCode.getIntValue(), badActionCode.name());
+                    } else {
+                        setUnknownCode(builder, code);
+                    }
+                    break;
+                case BADINSTRUCTION:
+                    BadInstructionCode badInstructionCode = BadInstructionCode.forValue(code);
+                    if (badInstructionCode != null) {
+                        setCode(builder, badInstructionCode.getIntValue(), badInstructionCode.name());
+                    } else {
+                        setUnknownCode(builder, code);
+                    }
+                    break;
+                case BADMATCH:
+                    BadMatchCode badMatchCode = BadMatchCode.forValue(code);
+                    if (badMatchCode != null) {
+                        setCode(builder, badMatchCode.getIntValue(), badMatchCode.name());
+                    } else {
+                        setUnknownCode(builder, code);
+                    }
+                    break;
+                case FLOWMODFAILED:
+                    FlowModFailedCode flowModFailedCode = FlowModFailedCode.forValue(code);
+                    if (flowModFailedCode != null) {
+                        setCode(builder, flowModFailedCode.getIntValue(), flowModFailedCode.name());
+                    } else {
+                        setUnknownCode(builder, code);
+                    }
+                    break;
+                case GROUPMODFAILED:
+                    GroupModFailedCode groupModFailedCode = GroupModFailedCode.forValue(code);
+                    if (groupModFailedCode != null) {
+                        setCode(builder, groupModFailedCode.getIntValue(), groupModFailedCode.name());
+                    } else {
+                        setUnknownCode(builder, code);
+                    }
+                    break;
+                case PORTMODFAILED:
+                    PortModFailedCode portModFailedCode = PortModFailedCode.forValue(code);
+                    if (portModFailedCode != null) {
+                        setCode(builder, portModFailedCode.getIntValue(), portModFailedCode.name());
+                    } else {
+                        setUnknownCode(builder, code);
+                    }
+                    break;
+                case TABLEMODFAILED:
+                    TableModFailedCode tableModFailedCode = TableModFailedCode.forValue(code);
+                    if (tableModFailedCode != null) {
+                        setCode(builder, tableModFailedCode.getIntValue(), tableModFailedCode.name());
+                    } else {
+                        setUnknownCode(builder, code);
+                    }
+                    break;
+                case QUEUEOPFAILED:
+                    QueueOpFailedCode queueOpFailedCode = QueueOpFailedCode.forValue(code);
+                    if (queueOpFailedCode != null) {
+                        setCode(builder, queueOpFailedCode.getIntValue(), queueOpFailedCode.name());
+                    } else {
+                        setUnknownCode(builder, code);
+                    }
+                    break;
+                case SWITCHCONFIGFAILED:
+                    SwitchConfigFailedCode switchConfigFailedCode = SwitchConfigFailedCode.forValue(code);
+                    if (switchConfigFailedCode != null) {
+                        setCode(builder, switchConfigFailedCode.getIntValue(), switchConfigFailedCode.name());
+                    } else {
+                        setUnknownCode(builder, code);
+                    }
+                    break;
+                case ROLEREQUESTFAILED:
+                    RoleRequestFailedCode roleRequestFailedCode = RoleRequestFailedCode.forValue(code);
+                    if (roleRequestFailedCode != null) {
+                        setCode(builder, roleRequestFailedCode.getIntValue(), roleRequestFailedCode.name());
+                    } else {
+                        setUnknownCode(builder, code);
+                    }
+                    break;
+                case METERMODFAILED:
+                    MeterModFailedCode meterModFailedCode = MeterModFailedCode.forValue(code);
+                    if (meterModFailedCode != null) {
+                        setCode(builder, meterModFailedCode.getIntValue(), meterModFailedCode.name());
+                    } else {
+                        setUnknownCode(builder, code);
+                    }
+                    break;
+                case TABLEFEATURESFAILED:
+                    TableFeaturesFailedCode tableFeaturesFailedCode = TableFeaturesFailedCode.forValue(code);
+                    if (tableFeaturesFailedCode != null) {
+                        setCode(builder, tableFeaturesFailedCode.getIntValue(), tableFeaturesFailedCode.name());
+                    } else {
+                        setUnknownCode(builder, code);
+                    }
+                    break;
+                default:
                     setUnknownCode(builder, code);
-                }
-                break;
-            }
-            case BADREQUEST:
-            {
-                BadRequestCode errorCode = BadRequestCode.forValue(code);
-                if (errorCode != null) {
-                    setCode(builder, errorCode.getIntValue(), errorCode.name());
-                } else {
-                    setUnknownCode(builder, code);
-                }
-                break;
-            }
-            case BADACTION:
-            {
-                BadActionCode errorCode = BadActionCode.forValue(code);
-                if (errorCode != null) {
-                    setCode(builder, errorCode.getIntValue(), errorCode.name());
-                } else {
-                    setUnknownCode(builder, code);
-                }
-                break;
-            }
-            case BADINSTRUCTION:
-            {
-                BadInstructionCode errorCode = BadInstructionCode.forValue(code);
-                if (errorCode != null) {
-                    setCode(builder, errorCode.getIntValue(), errorCode.name());
-                } else {
-                    setUnknownCode(builder, code);
-                }
-                break;
-            }
-            case BADMATCH:
-            {
-                BadMatchCode errorCode = BadMatchCode.forValue(code);
-                if (errorCode != null) {
-                    setCode(builder, errorCode.getIntValue(), errorCode.name());
-                } else {
-                    setUnknownCode(builder, code);
-                }
-                break;
-            }
-            case FLOWMODFAILED:
-            {
-                FlowModFailedCode errorCode = FlowModFailedCode.forValue(code);
-                if (errorCode != null) {
-                    setCode(builder, errorCode.getIntValue(), errorCode.name());
-                } else {
-                    setUnknownCode(builder, code);
-                }
-                break;
-            }
-            case GROUPMODFAILED:
-            {
-                GroupModFailedCode errorCode = GroupModFailedCode.forValue(code);
-                if (errorCode != null) {
-                    setCode(builder, errorCode.getIntValue(), errorCode.name());
-                } else {
-                    setUnknownCode(builder, code);
-                }
-                break;
-            }
-            case PORTMODFAILED:
-            {
-                PortModFailedCode errorCode = PortModFailedCode.forValue(code);
-                if (errorCode != null) {
-                    setCode(builder, errorCode.getIntValue(), errorCode.name());
-                } else {
-                    setUnknownCode(builder, code);
-                }
-                break;
-            }
-            case TABLEMODFAILED:
-            {
-                TableModFailedCode errorCode = TableModFailedCode.forValue(code);
-                if (errorCode != null) {
-                    setCode(builder, errorCode.getIntValue(), errorCode.name());
-                } else {
-                    setUnknownCode(builder, code);
-                }
-                break;
-            }
-            case QUEUEOPFAILED:
-            {
-                QueueOpFailedCode errorCode = QueueOpFailedCode.forValue(code);
-                if (errorCode != null) {
-                    setCode(builder, errorCode.getIntValue(), errorCode.name());
-                } else {
-                    setUnknownCode(builder, code);
-                }
-                break;
-            }
-            case SWITCHCONFIGFAILED:
-            {
-                SwitchConfigFailedCode errorCode = SwitchConfigFailedCode.forValue(code);
-                if (errorCode != null) {
-                    setCode(builder, errorCode.getIntValue(), errorCode.name());
-                } else {
-                    setUnknownCode(builder, code);
-                }
-                break;
-            }
-            case ROLEREQUESTFAILED:
-            {
-                RoleRequestFailedCode errorCode = RoleRequestFailedCode.forValue(code);
-                if (errorCode != null) {
-                    setCode(builder, errorCode.getIntValue(), errorCode.name());
-                } else {
-                    setUnknownCode(builder, code);
-                }
-                break;
-            }
-            case METERMODFAILED:
-            {
-                MeterModFailedCode errorCode = MeterModFailedCode.forValue(code);
-                if (errorCode != null) {
-                    setCode(builder, errorCode.getIntValue(), errorCode.name());
-                } else {
-                    setUnknownCode(builder, code);
-                }
-                break;
-            }
-            case TABLEFEATURESFAILED:
-            {
-                TableFeaturesFailedCode errorCode = TableFeaturesFailedCode.forValue(code);
-                if (errorCode != null) {
-                    setCode(builder, errorCode.getIntValue(), errorCode.name());
-                } else {
-                    setUnknownCode(builder, code);
-                }
-                break;
-            }
-            default:
-                setUnknownCode(builder, code);
-                break;
+                    break;
             }
         } else {
             setUnknownCode(builder, code);
