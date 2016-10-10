@@ -106,6 +106,7 @@ public final class MessageDeserializerInitializer {
         helper.registerDeserializer(0, null, HelloMessage.class, new HelloMessageFactory());
         helper.registerDeserializer(2, null, EchoRequestMessage.class, new EchoRequestMessageFactory());
         helper.registerDeserializer(3, null, EchoOutput.class, new EchoReplyMessageFactory());
+        helper.registerDeserializer(6, null, GetFeaturesOutput.class, new FeaturesReplyMessageFactory());
         helper.registerDeserializer(8, null, GetConfigOutput.class, new GetConfigReplyMessageFactory());
         helper.registerDeserializer(21, null, BarrierOutput.class, new BarrierReplyMessageFactory());
 
@@ -114,6 +115,7 @@ public final class MessageDeserializerInitializer {
         helper.registerDeserializer(0, null, HelloMessage.class, new HelloMessageFactory());
         helper.registerDeserializer(2, null, EchoRequestMessage.class, new EchoRequestMessageFactory());
         helper.registerDeserializer(3, null, EchoOutput.class, new EchoReplyMessageFactory());
+        helper.registerDeserializer(6, null, GetFeaturesOutput.class, new FeaturesReplyMessageFactory());
         helper.registerDeserializer(8, null, GetConfigOutput.class, new GetConfigReplyMessageFactory());
         helper.registerDeserializer(21, null, BarrierOutput.class, new BarrierReplyMessageFactory());
     }
