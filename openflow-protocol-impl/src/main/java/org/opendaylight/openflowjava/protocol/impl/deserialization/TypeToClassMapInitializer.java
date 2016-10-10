@@ -103,6 +103,7 @@ public final class TypeToClassMapInitializer {
         helper.registerTypeToClass((short) 4, ExperimenterMessage.class);
         helper.registerTypeToClass((short) 6, GetFeaturesOutput.class);
         helper.registerTypeToClass((short) 8, GetConfigOutput.class);
+        helper.registerTypeToClass((short) 12, PortStatusMessage.class);
         helper.registerTypeToClass((short) 21, BarrierOutput.class);
 
         // init OF v1.5 mapping
@@ -114,6 +115,7 @@ public final class TypeToClassMapInitializer {
         helper.registerTypeToClass((short) 4, ExperimenterMessage.class);
         helper.registerTypeToClass((short) 6, GetFeaturesOutput.class);
         helper.registerTypeToClass((short) 8, GetConfigOutput.class);
+        helper.registerTypeToClass((short) 12, PortStatusMessage.class);
         helper.registerTypeToClass((short) 21, BarrierOutput.class);
     }
 

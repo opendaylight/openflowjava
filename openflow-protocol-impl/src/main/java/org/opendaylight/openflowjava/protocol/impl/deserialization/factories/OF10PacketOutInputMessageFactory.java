@@ -22,8 +22,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketOutInputBuilder;
 
 /**
- * @author giuseppex.petralia@intel.com
  *
+ * @author giuseppex.petralia@intel.com
  */
 public class OF10PacketOutInputMessageFactory implements OFDeserializer<PacketOutInput>, DeserializerRegistryInjector {
 
