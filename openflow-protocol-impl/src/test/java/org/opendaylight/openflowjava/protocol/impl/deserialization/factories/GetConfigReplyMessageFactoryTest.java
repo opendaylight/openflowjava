@@ -17,7 +17,7 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
-import org.opendaylight.openflowjava.protocol.impl.util.DefaultDeserialzerFactoryTest;
+import org.opendaylight.openflowjava.protocol.impl.util.DefaultDeserializerFactoryTest;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetConfigOutput;
 
 /**
@@ -25,7 +25,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  * @author timotej.kubas
  */
-public class GetConfigReplyMessageFactoryTest extends DefaultDeserialzerFactoryTest<GetConfigOutput> {
+public class GetConfigReplyMessageFactoryTest extends DefaultDeserializerFactoryTest<GetConfigOutput> {
 
     /**
      * Initializes deserializer registry and lookups OF13 deserializer.

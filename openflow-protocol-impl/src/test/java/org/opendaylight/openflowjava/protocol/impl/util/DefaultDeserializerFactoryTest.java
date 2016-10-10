@@ -20,13 +20,13 @@ import org.opendaylight.yangtools.yang.binding.DataContainer;
 /**
  * Super class for common stuff of deserialization factories tests.
  */
-public abstract class DefaultDeserialzerFactoryTest<T extends DataContainer> {
+public abstract class DefaultDeserializerFactoryTest<T extends DataContainer> {
 
     private DeserializerRegistry registry;
     protected OFDeserializer<T> factory;
-    private MessageCodeKey messageCodeKey;
+    protected MessageCodeKey messageCodeKey;
 
-    public DefaultDeserialzerFactoryTest(final MessageCodeKey key) {
+    public DefaultDeserializerFactoryTest(final MessageCodeKey key) {
         this.registry = new DeserializerRegistryImpl();
         this.registry.init();
         this.messageCodeKey = key;
