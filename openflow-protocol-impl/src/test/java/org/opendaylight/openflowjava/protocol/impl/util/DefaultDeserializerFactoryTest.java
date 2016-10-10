@@ -36,7 +36,7 @@ public abstract class DefaultDeserializerFactoryTest<T extends DataContainer> {
     /**
      * Test correct version after deserialization for all supported OF versions.
      * @param versions supported OF versions
-     * @param buffer byte buffer to deserialze
+     * @param buffer byte buffer to deserialize
      */
     protected void testHeaderVersions(final List<Byte> versions, final ByteBuf buffer) {
         for (short version : versions) {
