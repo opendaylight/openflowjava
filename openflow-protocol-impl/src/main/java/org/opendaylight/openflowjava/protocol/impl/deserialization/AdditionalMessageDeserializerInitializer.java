@@ -18,7 +18,6 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.Get
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.GroupModInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.MeterModInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.MultipartRequestInputMessageFactory;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10FeaturesRequestMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10FlowModInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10GetQueueConfigInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.OF10PacketOutInputMessageFactory;
@@ -66,7 +65,7 @@ public class AdditionalMessageDeserializerInitializer {
                 registry);
 
         // register OF v1.0 message deserializers
-        helper.registerDeserializer(5, null, GetFeaturesInput.class, new OF10FeaturesRequestMessageFactory());
+        helper.registerDeserializer(5, null, GetFeaturesInput.class, new GetFeaturesInputMessageFactory());
         helper.registerDeserializer(7, null, GetConfigInput.class, new GetConfigInputMessageFactory());
         helper.registerDeserializer(9, null, SetConfigInput.class, new SetConfigInputMessageFactory());
         helper.registerDeserializer(13, null, PacketOutInput.class, new OF10PacketOutInputMessageFactory());
@@ -96,12 +95,14 @@ public class AdditionalMessageDeserializerInitializer {
 
         // register OF v1.4 message deserializers
         helper = new SimpleDeserializerRegistryHelper(EncodeConstants.OF14_VERSION_ID, registry);
+        helper.registerDeserializer(5, null, GetFeaturesInput.class, new GetFeaturesInputMessageFactory());
         helper.registerDeserializer(7, null, GetConfigInput.class, new GetConfigInputMessageFactory());
         helper.registerDeserializer(9, null, SetConfigInput.class, new SetConfigInputMessageFactory());
         helper.registerDeserializer(20, null, BarrierInput.class, new BarrierInputMessageFactory());
 
         // register OF v1.5 message deserializers
         helper = new SimpleDeserializerRegistryHelper(EncodeConstants.OF15_VERSION_ID, registry);
+        helper.registerDeserializer(5, null, GetFeaturesInput.class, new GetFeaturesInputMessageFactory());
         helper.registerDeserializer(7, null, GetConfigInput.class, new GetConfigInputMessageFactory());
         helper.registerDeserializer(9, null, SetConfigInput.class, new SetConfigInputMessageFactory());
         helper.registerDeserializer(20, null, BarrierInput.class, new BarrierInputMessageFactory());

@@ -99,6 +99,7 @@ public final class TypeToClassMapInitializer {
         helper.registerTypeToClass((short) 0, HelloMessage.class);
         helper.registerTypeToClass((short) 2, EchoRequestMessage.class);
         helper.registerTypeToClass((short) 3, EchoOutput.class);
+        helper.registerTypeToClass((short) 6, GetFeaturesOutput.class);
         helper.registerTypeToClass((short) 8, GetConfigOutput.class);
         helper.registerTypeToClass((short) 21, BarrierOutput.class);
 
@@ -107,6 +108,7 @@ public final class TypeToClassMapInitializer {
         helper.registerTypeToClass((short) 0, HelloMessage.class);
         helper.registerTypeToClass((short) 2, EchoRequestMessage.class);
         helper.registerTypeToClass((short) 3, EchoOutput.class);
+        helper.registerTypeToClass((short) 6, GetFeaturesOutput.class);
         helper.registerTypeToClass((short) 8, GetConfigOutput.class);
         helper.registerTypeToClass((short) 21, BarrierOutput.class);
     }
@@ -150,12 +152,14 @@ public final class TypeToClassMapInitializer {
 
         // init OF v1.4 mapping
         helper = new TypeToClassInitHelper(EncodeConstants.OF14_VERSION_ID, messageClassMap);
+        helper.registerTypeToClass((short) 5, GetFeaturesInput.class);
         helper.registerTypeToClass((short) 7, GetConfigInput.class);
         helper.registerTypeToClass((short) 9, SetConfigInput.class);
         helper.registerTypeToClass((short) 20, BarrierInput.class);
 
         // init OF v1.5 mapping
         helper = new TypeToClassInitHelper(EncodeConstants.OF15_VERSION_ID, messageClassMap);
+        helper.registerTypeToClass((short) 5, GetFeaturesInput.class);
         helper.registerTypeToClass((short) 7, GetConfigInput.class);
         helper.registerTypeToClass((short) 9, SetConfigInput.class);
         helper.registerTypeToClass((short) 20, BarrierInput.class);
