@@ -97,12 +97,14 @@ public class TypeToClassMapInitializerTest {
         assertEquals("Wrong class", EchoRequestMessage.class, messageClassMap.get(new TypeToClassKey(version, 2)));
         assertEquals("Wrong class", EchoOutput.class, messageClassMap.get(new TypeToClassKey(version, 3)));
         assertEquals("Wrong class", GetConfigOutput.class, messageClassMap.get(new TypeToClassKey(version, 8)));
+        assertEquals("Wrong class", BarrierOutput.class, messageClassMap.get(new TypeToClassKey(version, 21)));
 
         version = EncodeConstants.OF15_VERSION_ID;
         assertEquals("Wrong class", HelloMessage.class, messageClassMap.get(new TypeToClassKey(version, 0)));
         assertEquals("Wrong class", EchoRequestMessage.class, messageClassMap.get(new TypeToClassKey(version, 2)));
         assertEquals("Wrong class", EchoOutput.class, messageClassMap.get(new TypeToClassKey(version, 3)));
         assertEquals("Wrong class", GetConfigOutput.class, messageClassMap.get(new TypeToClassKey(version, 8)));
+        assertEquals("Wrong class", BarrierOutput.class, messageClassMap.get(new TypeToClassKey(version, 21)));
     }
 
     @Test
@@ -141,10 +143,12 @@ public class TypeToClassMapInitializerTest {
         version = EncodeConstants.OF14_VERSION_ID;
         assertEquals("Wrong class", GetConfigInput.class, messageClassMap.get(new TypeToClassKey(version, 7)));
         assertEquals("Wrong class", SetConfigInput.class, messageClassMap.get(new TypeToClassKey(version, 9)));
+        assertEquals("Wrong class", BarrierInput.class, messageClassMap.get(new TypeToClassKey(version, 20)));
 
         version = EncodeConstants.OF15_VERSION_ID;
         assertEquals("Wrong class", GetConfigInput.class, messageClassMap.get(new TypeToClassKey(version, 7)));
         assertEquals("Wrong class", SetConfigInput.class, messageClassMap.get(new TypeToClassKey(version, 9)));
+        assertEquals("Wrong class", BarrierInput.class, messageClassMap.get(new TypeToClassKey(version, 20)));
     }
 
 }
