@@ -15,14 +15,14 @@ import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
-import org.opendaylight.openflowjava.protocol.impl.util.DefaultDeserialzerFactoryTest;
+import org.opendaylight.openflowjava.protocol.impl.util.DefaultDeserializerFactoryTest;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.GetConfigInput;
 
 /**
  * Test for {@link org.opendaylight.openflowjava.protocol.impl.deserialization.factories.GetConfigInputMessageFactory}.
  * @author giuseppex.petralia@intel.com
  */
-public class GetConfigInputMessageFactoryTest extends DefaultDeserialzerFactoryTest<GetConfigInput>{
+public class GetConfigInputMessageFactoryTest extends DefaultDeserializerFactoryTest<GetConfigInput> {
 
     /**
      * Initializes deserializer registry and lookups OF13 deserializer.
