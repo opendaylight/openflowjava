@@ -17,33 +17,40 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistryInjector;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.MultipartReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.DefaultDeserializerFactoryTest;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 
 /**
+ * Test for {@link org.opendaylight.openflowjava.protocol.impl.deserialization.factories.MultipartReplyMessageFactory}.
  * @author michal.polkorab
- *
  */
 @RunWith(MockitoJUnitRunner.class)
-public class MultipartReplyExperimenterTest {
+public class MultipartReplyExperimenterTest extends DefaultDeserializerFactoryTest<MultipartReplyMessage> {
 
-    @Mock DeserializerRegistry registry;
-
-    private MultipartReplyMessageFactory factory = new MultipartReplyMessageFactory();
-    @Mock
-    private OFDeserializer<ExperimenterDataOfChoice> vendorDeserializer;
+    @Mock private DeserializerRegistry registry;
+    @Mock private OFDeserializer<ExperimenterDataOfChoice> vendorDeserializer;
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Initializes deserializer registry and lookups OF 13 deserializer.
+     */
+    public MultipartReplyExperimenterTest() {
+        super(new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, 19, MultipartReplyMessage.class));
+    }
+
+    /**
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testMultipartReplyExperimenter() {
         Mockito.when(registry.getDeserializer(Matchers.<MessageCodeKey>any())).thenReturn(vendorDeserializer);
-        factory.injectDeserializerRegistry(registry);
+        ((DeserializerRegistryInjector)factory).injectDeserializerRegistry(registry);
         ByteBuf bb = BufferHelper.buildBuffer("FF FF 00 01 00 00 00 00 "
                                             + "00 00 00 01 00 00 00 02"); // expID, expType
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);

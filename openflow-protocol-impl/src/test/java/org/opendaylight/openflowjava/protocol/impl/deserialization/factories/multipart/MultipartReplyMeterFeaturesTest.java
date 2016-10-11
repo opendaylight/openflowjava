@@ -9,11 +9,13 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories.multipart;
 
 import io.netty.buffer.ByteBuf;
-
 import org.junit.Assert;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.MultipartReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.DefaultDeserializerFactoryTest;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterBandTypeBitmap;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.MeterFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
@@ -21,15 +23,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.meter.features._case.MultipartReplyMeterFeatures;
 
 /**
+ * Test for {@link org.opendaylight.openflowjava.protocol.impl.deserialization.factories.MultipartReplyMessageFactory}.
  * @author michal.polkorab
- *
  */
-public class MultipartReplyMeterFeaturesTest {
-
-    private MultipartReplyMessageFactory factory = new MultipartReplyMessageFactory();
+public class MultipartReplyMeterFeaturesTest extends DefaultDeserializerFactoryTest<MultipartReplyMessage> {
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Initializes deserializer registry and lookups OF 13 deserializer.
+     */
+    public MultipartReplyMeterFeaturesTest() {
+        super(new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, 19, MultipartReplyMessage.class));
+    }
+
+    /**
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testMultipartReplyMeterFeatures(){
@@ -41,7 +48,6 @@ public class MultipartReplyMeterFeaturesTest {
                                               );
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 11, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyMeterFeaturesCase messageCase = (MultipartReplyMeterFeaturesCase) builtByFactory.getMultipartReplyBody();
@@ -54,7 +60,7 @@ public class MultipartReplyMeterFeaturesTest {
     }
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testMultipartReplyMeterFeatures2(){
@@ -66,7 +72,6 @@ public class MultipartReplyMeterFeaturesTest {
                                               );
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 11, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyMeterFeaturesCase messageCase = (MultipartReplyMeterFeaturesCase) builtByFactory.getMultipartReplyBody();
