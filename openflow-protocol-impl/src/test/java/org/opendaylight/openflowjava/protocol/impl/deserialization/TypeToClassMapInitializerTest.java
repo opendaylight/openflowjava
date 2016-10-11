@@ -101,6 +101,7 @@ public class TypeToClassMapInitializerTest {
         assertEquals("Wrong class", GetFeaturesOutput.class, messageClassMap.get(new TypeToClassKey(version, 6)));
         assertEquals("Wrong class", GetConfigOutput.class, messageClassMap.get(new TypeToClassKey(version, 8)));
         assertEquals("Wrong class", PortStatusMessage.class, messageClassMap.get(new TypeToClassKey(version, 12)));
+        assertEquals("Wrong class", MultipartReplyMessage.class, messageClassMap.get(new TypeToClassKey(version, 19)));
         assertEquals("Wrong class", BarrierOutput.class, messageClassMap.get(new TypeToClassKey(version, 21)));
 
         version = EncodeConstants.OF15_VERSION_ID;
@@ -112,6 +113,7 @@ public class TypeToClassMapInitializerTest {
         assertEquals("Wrong class", GetFeaturesOutput.class, messageClassMap.get(new TypeToClassKey(version, 6)));
         assertEquals("Wrong class", GetConfigOutput.class, messageClassMap.get(new TypeToClassKey(version, 8)));
         assertEquals("Wrong class", PortStatusMessage.class, messageClassMap.get(new TypeToClassKey(version, 12)));
+        assertEquals("Wrong class", MultipartReplyMessage.class, messageClassMap.get(new TypeToClassKey(version, 19)));
         assertEquals("Wrong class", BarrierOutput.class, messageClassMap.get(new TypeToClassKey(version, 21)));
     }
 

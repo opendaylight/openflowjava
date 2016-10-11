@@ -9,18 +9,16 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
 import java.math.BigInteger;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
-import org.opendaylight.openflowjava.protocol.api.extensibility.OFDeserializer;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.DefaultDeserializerFactoryTest;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.CopyTtlInCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.CopyTtlOutCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.action.rev150203.action.grouping.action.choice.DecMplsTtlCase;
@@ -69,29 +67,42 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Test for {@link org.opendaylight.openflowjava.protocol.impl.deserialization.factories.MultipartReplyMessageFactory}.
  * @author timotej.kubas
  * @author michal.polkorab
  */
-public class MultipartReplyMessageFactoryTest {
+public class MultipartReplyMessageFactoryTest extends DefaultDeserializerFactoryTest<MultipartReplyMessage> {
 
-    private OFDeserializer<MultipartReplyMessage> multipartFactory;
+    private static final Logger LOG = LoggerFactory.getLogger(MultipartReplyMessageFactoryTest.class);
 
     /**
-     * Initializes deserializer registry and lookups correct deserializer
+     * Initializes deserializer registry and lookups OF 13 deserializer.
      */
-    @Before
-    public void startUp() {
-        DeserializerRegistry registry = new DeserializerRegistryImpl();
-        registry.init();
-        multipartFactory = registry.getDeserializer(
-                new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, 19, MultipartReplyMessage.class));
+    public MultipartReplyMessageFactoryTest() {
+        super(new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, 19, MultipartReplyMessage.class));
     }
 
-    private static final Logger LOG = LoggerFactory
-            .getLogger(MultipartReplyMessageFactoryTest.class);
+    /**
+     * Testing {@link MultipartReplyMessageFactory} for correct header version.
+     */
+    @Test
+    public void testVersions() {
+        List<Byte> versions = new ArrayList<>(Arrays.asList(
+                EncodeConstants.OF13_VERSION_ID,
+                EncodeConstants.OF14_VERSION_ID,
+                EncodeConstants.OF15_VERSION_ID
+        ));
+        ByteBuf bb = BufferHelper.buildBuffer("00 02 00 01 00 00 00 00 "
+                                            + "FF 01 01 01 01 01 01 01 " //packetCount
+                                            + "0F 01 01 01 01 01 01 01 " //byteCount
+                                            + "00 00 00 08 " //flowCount
+                                            + "00 00 00 00" //pad
+        );
+        testHeaderVersions(versions, bb);
+    }
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testMultipartReplyDescBody(){
@@ -129,9 +140,8 @@ public class MultipartReplyMessageFactoryTest {
         bb.writeBytes(dpDescBytes);
         bb.writeZero(DESC_STR_LEN - dpDescBytes.length);
 
-        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x00, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyDescCase messageCase = (MultipartReplyDescCase) builtByFactory.getMultipartReplyBody();
@@ -144,7 +154,7 @@ public class MultipartReplyMessageFactoryTest {
     }
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testMultipartReplyAggregateBody(){
@@ -155,9 +165,8 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 00"//pad
                                               );
 
-        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x02, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyAggregateCase messageCase = (MultipartReplyAggregateCase) builtByFactory.getMultipartReplyBody();
@@ -174,7 +183,7 @@ public class MultipartReplyMessageFactoryTest {
     }
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testMultipartReplyTableBody(){
@@ -186,9 +195,8 @@ public class MultipartReplyMessageFactoryTest {
                                               "AF 01 01 01 01 01 01 01"//matchedCount
                                               );
 
-        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x03, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
 
@@ -205,7 +213,7 @@ public class MultipartReplyMessageFactoryTest {
     }
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testMultipartReplyPortStatsBody(){
@@ -228,9 +236,8 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 04"//durationNsec
                                               );
 
-        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x04, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyPortStatsCase messageCase = (MultipartReplyPortStatsCase) builtByFactory.getMultipartReplyBody();
@@ -277,7 +284,7 @@ public class MultipartReplyMessageFactoryTest {
     }
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testMultipartReplyQueueBody(){
@@ -291,9 +298,8 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 04"//durationNsec
                                               );
 
-        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x05, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyQueueCase messageCase = (MultipartReplyQueueCase) builtByFactory.getMultipartReplyBody();
@@ -314,7 +320,7 @@ public class MultipartReplyMessageFactoryTest {
     }
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testMultipartReplyGroupBody(){
@@ -347,9 +353,8 @@ public class MultipartReplyMessageFactoryTest {
                                               "FF 02 02 02 02 02 02 02"//byteCountBucket_2.2
                                               );
 
-        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 0x06, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyGroupCase messageCase = (MultipartReplyGroupCase) builtByFactory.getMultipartReplyBody();
@@ -402,7 +407,7 @@ public class MultipartReplyMessageFactoryTest {
     }
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testMultipartReplyMeterBody(){
@@ -423,9 +428,8 @@ public class MultipartReplyMessageFactoryTest {
                                               "FF 03 03 03 03 03 03 03"//byteBandCount_03
                                               );
 
-        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 9, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyMeterCase messageCase = (MultipartReplyMeterCase) builtByFactory.getMultipartReplyBody();
@@ -465,7 +469,7 @@ public class MultipartReplyMessageFactoryTest {
     }
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testMultipartReplyMeterBodyMulti(){
@@ -500,9 +504,8 @@ public class MultipartReplyMessageFactoryTest {
                                               "FF 03 03 03 03 03 03 03"//byteBandCount_13
                                               );
 
-        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 9, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyMeterCase messageCase = (MultipartReplyMeterCase) builtByFactory.getMultipartReplyBody();
@@ -575,7 +578,7 @@ public class MultipartReplyMessageFactoryTest {
     }
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testMultipartReplyMeterConfigBody(){
@@ -595,9 +598,8 @@ public class MultipartReplyMessageFactoryTest {
                                               "04 "+//meterBandDscp.precLevel
                                               "00 00 00");//meterBandDscp.pad
 
-        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 10, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyMeterConfigCase messageCase = (MultipartReplyMeterConfigCase) builtByFactory.getMultipartReplyBody();
@@ -622,7 +624,7 @@ public class MultipartReplyMessageFactoryTest {
     }
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testMultipartReplyMeterConfigBodyMulti(){
@@ -653,9 +655,8 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00"//meterBandDscp01.pad
                                               );
 
-        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 10, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyMeterConfigCase messageCase = (MultipartReplyMeterConfigCase) builtByFactory.getMultipartReplyBody();
@@ -694,8 +695,8 @@ public class MultipartReplyMessageFactoryTest {
     }
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
-     * Test covers bodies of actions Output, Copy TTL Out, Copy TTL In
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
+     * Test covers bodies of actions Output, Copy TTL Out, Copy TTL In.
      */
     @Test
     public void testMultipartReplyGroupDescBody01(){
@@ -721,9 +722,8 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 08 "+//copyTTLIntLen
                                               "00 00 00 00"//copyTTLInPad
                                               );
-        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyGroupDescCase messageCase = (MultipartReplyGroupDescCase) builtByFactory.getMultipartReplyBody();
@@ -759,8 +759,8 @@ public class MultipartReplyMessageFactoryTest {
     }
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
-     * Test covers bodies of actions Set MPLS TTL , Dec MPLS TTL, Push VLAN. Push MPLS, Push PBB
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
+     * Test covers bodies of actions Set MPLS TTL , Dec MPLS TTL, Push VLAN. Push MPLS, Push PBB.
      */
     @Test
     public void testMultipartReplyGroupDescBody02(){
@@ -795,9 +795,8 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00"//pushPbbPad
                                               );
 
-        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyGroupDescCase messageCase = (MultipartReplyGroupDescCase) builtByFactory.getMultipartReplyBody();
@@ -837,8 +836,8 @@ public class MultipartReplyMessageFactoryTest {
     }
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
-     * Test covers bodies of actions Pop VLAN, Pop PBB, Pop MPLS, Group, Dec NW TTL
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
+     * Test covers bodies of actions Pop VLAN, Pop PBB, Pop MPLS, Group, Dec NW TTL.
      */
     @Test
     public void testMultipartReplyGroupDescBody03(){
@@ -873,9 +872,8 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 00"//decNwTtlPad
                                               );
 
-        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyGroupDescCase messageCase = (MultipartReplyGroupDescCase) builtByFactory.getMultipartReplyBody();
@@ -912,8 +910,8 @@ public class MultipartReplyMessageFactoryTest {
     }
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
-     * Test covers bodies of actions NW TTL, Experimenter
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
+     * Test covers bodies of actions NW TTL, Experimenter.
      */
     @Test
     public void testMultipartReplyGroupDescBody04(){
@@ -940,9 +938,8 @@ public class MultipartReplyMessageFactoryTest {
                                               "00 00 00 00"
                 );
 
-        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(multipartFactory, bb);
+        MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 7, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyGroupDescCase messageCase = (MultipartReplyGroupDescCase) builtByFactory.getMultipartReplyBody();

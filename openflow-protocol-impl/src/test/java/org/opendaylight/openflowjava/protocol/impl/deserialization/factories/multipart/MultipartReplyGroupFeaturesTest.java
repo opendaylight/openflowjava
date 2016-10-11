@@ -9,11 +9,13 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories.multipart;
 
 import io.netty.buffer.ByteBuf;
-
 import org.junit.Assert;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.MultipartReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.DefaultDeserializerFactoryTest;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupCapabilities;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.GroupTypes;
@@ -22,15 +24,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.group.features._case.MultipartReplyGroupFeatures;
 
 /**
+ * Test for {@link org.opendaylight.openflowjava.protocol.impl.deserialization.factories.MultipartReplyMessageFactory}.
  * @author michal.polkorab
- *
  */
-public class MultipartReplyGroupFeaturesTest {
-
-    private MultipartReplyMessageFactory factory = new MultipartReplyMessageFactory();
+public class MultipartReplyGroupFeaturesTest extends DefaultDeserializerFactoryTest<MultipartReplyMessage> {
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Initializes deserializer registry and lookups OF 13 deserializer.
+     */
+    public MultipartReplyGroupFeaturesTest() {
+        super(new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, 19, MultipartReplyMessage.class));
+    }
+
+    /**
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testMultipartReplyGroupFeatures() {
@@ -48,7 +55,6 @@ public class MultipartReplyGroupFeaturesTest {
                                               );
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 8, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyGroupFeaturesCase messageCase =
@@ -72,7 +78,7 @@ public class MultipartReplyGroupFeaturesTest {
     }
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      * (with different group types and capabilities)
      */
     @Test
@@ -91,7 +97,6 @@ public class MultipartReplyGroupFeaturesTest {
                                               );
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 8, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", true, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyGroupFeaturesCase messageCase =

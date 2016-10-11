@@ -20,6 +20,7 @@ import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.util.CodeKeyMaker;
 import org.opendaylight.openflowjava.protocol.impl.util.CodeKeyMakerFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.ListDeserializer;
+import org.opendaylight.openflowjava.protocol.impl.util.VersionAssignableFactory;
 import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.openflowjava.util.ExperimenterDeserializerKeyFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.ActionRelatedTableFeatureProperty;
@@ -140,13 +141,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.grouping.TableFeaturePropertiesBuilder;
 
 /**
- * Translates MultipartReply messages
- *
+ * Translates MultipartReply messages.
+ * OpenFlow protocol versions: 1.3, 1.4, 1.5.
  * @author timotej.kubas
  * @author michal.polkorab
  */
-public class MultipartReplyMessageFactory implements OFDeserializer<MultipartReplyMessage>,
-        DeserializerRegistryInjector {
+public class MultipartReplyMessageFactory extends VersionAssignableFactory implements
+        OFDeserializer<MultipartReplyMessage>, DeserializerRegistryInjector {
 
     private static final byte PADDING_IN_MULTIPART_REPLY_HEADER = 4;
     private static final int DESC_STR_LEN = 256;
@@ -183,7 +184,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
     @Override
     public MultipartReplyMessage deserialize(final ByteBuf rawMessage) {
         MultipartReplyMessageBuilder builder = new MultipartReplyMessageBuilder();
-        builder.setVersion((short) EncodeConstants.OF13_VERSION_ID);
+        builder.setVersion(getVersion());
         builder.setXid(rawMessage.readUnsignedInt());
         int type = rawMessage.readUnsignedShort();
         builder.setType(MultipartType.forValue(type));
@@ -297,12 +298,12 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             subInput.readBytes(byteCount);
             flowStatsBuilder.setByteCount(new BigInteger(1, byteCount));
             OFDeserializer<Match> matchDeserializer = registry.getDeserializer(new MessageCodeKey(
-                    EncodeConstants.OF13_VERSION_ID, EncodeConstants.EMPTY_VALUE, Match.class));
+                    getVersion(), EncodeConstants.EMPTY_VALUE, Match.class));
             flowStatsBuilder.setMatch(matchDeserializer.deserialize(subInput));
             CodeKeyMaker keyMaker = CodeKeyMakerFactory
-                    .createInstructionsKeyMaker(EncodeConstants.OF13_VERSION_ID);
+                    .createInstructionsKeyMaker(getVersion());
             List<Instruction> instructions = ListDeserializer.deserializeList(
-                    EncodeConstants.OF13_VERSION_ID, subInput.readableBytes(), subInput, keyMaker, registry);
+                    getVersion(), subInput.readableBytes(), subInput, keyMaker, registry);
             flowStatsBuilder.setInstruction(instructions);
             flowStatsList.add(flowStatsBuilder.build());
         }
@@ -403,8 +404,8 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
             if (type.equals(TableFeaturesPropType.OFPTFPTINSTRUCTIONS)
                     || type.equals(TableFeaturesPropType.OFPTFPTINSTRUCTIONSMISS)) {
                 InstructionRelatedTableFeaturePropertyBuilder insBuilder = new InstructionRelatedTableFeaturePropertyBuilder();
-                CodeKeyMaker keyMaker = CodeKeyMakerFactory.createInstructionsKeyMaker(EncodeConstants.OF13_VERSION_ID);
-                List<Instruction> instructions = ListDeserializer.deserializeHeaders(EncodeConstants.OF13_VERSION_ID,
+                CodeKeyMaker keyMaker = CodeKeyMakerFactory.createInstructionsKeyMaker(getVersion());
+                List<Instruction> instructions = ListDeserializer.deserializeHeaders(getVersion(),
                         propertyLength - COMMON_PROPERTY_LENGTH, input, keyMaker, registry);
                 insBuilder.setInstruction(instructions);
                 builder.addAugmentation(InstructionRelatedTableFeatureProperty.class, insBuilder.build());
@@ -426,8 +427,8 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                     || type.equals(TableFeaturesPropType.OFPTFPTAPPLYACTIONS)
                     || type.equals(TableFeaturesPropType.OFPTFPTAPPLYACTIONSMISS)) {
                 ActionRelatedTableFeaturePropertyBuilder actionBuilder = new ActionRelatedTableFeaturePropertyBuilder();
-                CodeKeyMaker keyMaker = CodeKeyMakerFactory.createActionsKeyMaker(EncodeConstants.OF13_VERSION_ID);
-                List<Action> actions = ListDeserializer.deserializeHeaders(EncodeConstants.OF13_VERSION_ID,
+                CodeKeyMaker keyMaker = CodeKeyMakerFactory.createActionsKeyMaker(getVersion());
+                List<Action> actions = ListDeserializer.deserializeHeaders(getVersion(),
                         propertyLength - COMMON_PROPERTY_LENGTH, input, keyMaker, registry);
                 actionBuilder.setAction(actions);
                 builder.addAugmentation(ActionRelatedTableFeatureProperty.class, actionBuilder.build());
@@ -439,8 +440,8 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                     || type.equals(TableFeaturesPropType.OFPTFPTAPPLYSETFIELDMISS)) {
                 OxmRelatedTableFeaturePropertyBuilder oxmBuilder = new OxmRelatedTableFeaturePropertyBuilder();
                 CodeKeyMaker keyMaker = CodeKeyMakerFactory
-                        .createMatchEntriesKeyMaker(EncodeConstants.OF13_VERSION_ID);
-                List<MatchEntry> entries = ListDeserializer.deserializeHeaders(EncodeConstants.OF13_VERSION_ID,
+                        .createMatchEntriesKeyMaker(getVersion());
+                List<MatchEntry> entries = ListDeserializer.deserializeHeaders(getVersion(),
                         propertyLength - COMMON_PROPERTY_LENGTH, input, keyMaker, registry);
                 oxmBuilder.setMatchEntry(entries);
                 builder.addAugmentation(OxmRelatedTableFeatureProperty.class, oxmBuilder.build());
@@ -449,8 +450,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                 long expId = input.readUnsignedInt();
                 input.readerIndex(propStartIndex);
                 OFDeserializer<TableFeatureProperties> propDeserializer = registry.getDeserializer(
-                        ExperimenterDeserializerKeyFactory.createMultipartReplyTFDeserializerKey(
-                                EncodeConstants.OF13_VERSION_ID, expId));
+                        ExperimenterDeserializerKeyFactory.createMultipartReplyTFDeserializerKey(getVersion(), expId));
                 TableFeatureProperties expProp = propDeserializer.deserialize(input);
                 properties.add(expProp);
                 continue;
@@ -693,8 +693,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                         long expId = input.getUnsignedInt(input.readerIndex() + 2 * EncodeConstants.SIZE_OF_INT_IN_BYTES);
                         input.readerIndex(bandStartIndex);
                         OFDeserializer<MeterBandExperimenterCase> deserializer = registry.getDeserializer(
-                                ExperimenterDeserializerKeyFactory.createMeterBandDeserializerKey(
-                                        EncodeConstants.OF13_VERSION_ID, expId));
+                                ExperimenterDeserializerKeyFactory.createMeterBandDeserializerKey(getVersion(), expId));
                         bandsBuilder.setMeterBand(deserializer.deserialize(input));
                         break;
                     default:
@@ -716,7 +715,7 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
 
         final OFDeserializer<ExperimenterDataOfChoice> deserializer = registry.getDeserializer(
                 ExperimenterDeserializerKeyFactory.createMultipartReplyMessageDeserializerKey(
-                        EncodeConstants.OF13_VERSION_ID, expId, expType));
+                        getVersion(), expId, expType));
 
         final MultipartReplyExperimenterBuilder mpExperimenterBld = new MultipartReplyExperimenterBuilder()
                 .setExperimenter(new ExperimenterId(expId))
@@ -867,8 +866,8 @@ public class MultipartReplyMessageFactory implements OFDeserializer<MultipartRep
                 bucketsBuilder.setWatchPort(new PortNumber(input.readUnsignedInt()));
                 bucketsBuilder.setWatchGroup(input.readUnsignedInt());
                 input.skipBytes(PADDING_IN_BUCKETS_HEADER);
-                CodeKeyMaker keyMaker = CodeKeyMakerFactory.createActionsKeyMaker(EncodeConstants.OF13_VERSION_ID);
-                List<Action> actions = ListDeserializer.deserializeList(EncodeConstants.OF13_VERSION_ID,
+                CodeKeyMaker keyMaker = CodeKeyMakerFactory.createActionsKeyMaker(getVersion());
+                List<Action> actions = ListDeserializer.deserializeList(getVersion(),
                         bucketsLength - BUCKETS_HEADER_LENGTH, input, keyMaker, registry);
                 bucketsBuilder.setAction(actions);
                 bucketsList.add(bucketsBuilder.build());
