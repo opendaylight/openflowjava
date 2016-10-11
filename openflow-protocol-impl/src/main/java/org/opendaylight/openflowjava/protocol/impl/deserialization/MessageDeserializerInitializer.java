@@ -111,6 +111,7 @@ public final class MessageDeserializerInitializer {
         helper.registerDeserializer(6, null, GetFeaturesOutput.class, new FeaturesReplyMessageFactory());
         helper.registerDeserializer(8, null, GetConfigOutput.class, new GetConfigReplyMessageFactory());
         helper.registerDeserializer(12, null, PortStatusMessage.class, new PortStatusMessageFactory());
+        helper.registerDeserializer(19, null, MultipartReplyMessage.class, new MultipartReplyMessageFactory());
         helper.registerDeserializer(21, null, BarrierOutput.class, new BarrierReplyMessageFactory());
 
         // register OF v1.5 message deserializers
@@ -123,6 +124,7 @@ public final class MessageDeserializerInitializer {
         helper.registerDeserializer(6, null, GetFeaturesOutput.class, new FeaturesReplyMessageFactory());
         helper.registerDeserializer(8, null, GetConfigOutput.class, new GetConfigReplyMessageFactory());
         helper.registerDeserializer(12, null, PortStatusMessage.class, new PortStatusMessageFactory());
+        helper.registerDeserializer(19, null, MultipartReplyMessage.class, new MultipartReplyMessageFactory());
         helper.registerDeserializer(21, null, BarrierOutput.class, new BarrierReplyMessageFactory());
     }
 }
