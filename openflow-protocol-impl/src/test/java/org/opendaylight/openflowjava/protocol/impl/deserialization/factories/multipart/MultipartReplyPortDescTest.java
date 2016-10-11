@@ -9,11 +9,13 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories.multipart;
 
 import io.netty.buffer.ByteBuf;
-
 import org.junit.Assert;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.MultipartReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.DefaultDeserializerFactoryTest;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.PortFeatures;
@@ -24,22 +26,26 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.multipart.reply.multipart.reply.body.multipart.reply.port.desc._case.multipart.reply.port.desc.Ports;
 
 /**
+ * Test for {@link org.opendaylight.openflowjava.protocol.impl.deserialization.factories.MultipartReplyMessageFactory}.
  * @author michal.polkorab
- *
  */
-public class MultipartReplyPortDescTest {
-
-    private MultipartReplyMessageFactory factory = new MultipartReplyMessageFactory();
+public class MultipartReplyPortDescTest extends DefaultDeserializerFactoryTest<MultipartReplyMessage> {
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Initializes deserializer registry and lookups OF 13 deserializer.
+     */
+    public MultipartReplyPortDescTest() {
+        super(new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, 19, MultipartReplyMessage.class));
+    }
+
+    /**
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testEmptyMultipartReplyPortDesc() {
         ByteBuf bb = BufferHelper.buildBuffer("00 0D 00 00 00 00 00 00");
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 13, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", false, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyPortDescCase messageCase = (MultipartReplyPortDescCase) builtByFactory.getMultipartReplyBody();
@@ -48,7 +54,7 @@ public class MultipartReplyPortDescTest {
     }
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testMultipartReplyPortDesc() {
@@ -80,7 +86,6 @@ public class MultipartReplyPortDescTest {
                                               );
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 13, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", false, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyPortDescCase messageCase = (MultipartReplyPortDescCase) builtByFactory.getMultipartReplyBody();

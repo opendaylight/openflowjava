@@ -9,13 +9,14 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization.factories.multipart;
 
 import io.netty.buffer.ByteBuf;
-
 import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Test;
+import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.MultipartReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.BufferHelper;
+import org.opendaylight.openflowjava.protocol.impl.util.DefaultDeserializerFactoryTest;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.NextTableRelatedTableFeatureProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.augments.rev150225.table.features.properties.container.table.feature.properties.NextTableIds;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.TableFeaturesPropType;
@@ -26,22 +27,26 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.grouping.TableFeatureProperties;
 
 /**
+ * Test for {@link org.opendaylight.openflowjava.protocol.impl.deserialization.factories.MultipartReplyMessageFactory}.
  * @author michal.polkorab
- *
  */
-public class MultipartReplyTableFeaturesTest {
-
-    private MultipartReplyMessageFactory factory = new MultipartReplyMessageFactory();
+public class MultipartReplyTableFeaturesTest extends DefaultDeserializerFactoryTest<MultipartReplyMessage> {
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Initializes deserializer registry and lookups OF 13 deserializer.
+     */
+    public MultipartReplyTableFeaturesTest() {
+        super(new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, 19, MultipartReplyMessage.class));
+    }
+
+    /**
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testEmptyMultipartReplyTableFeatures() {
         ByteBuf bb = BufferHelper.buildBuffer("00 0C 00 00 00 00 00 00");
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 12, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", false, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyTableFeaturesCase messageCase = (MultipartReplyTableFeaturesCase) builtByFactory.getMultipartReplyBody();
@@ -50,7 +55,7 @@ public class MultipartReplyTableFeaturesTest {
     }
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testMultipartReplyTableFeatures() {
@@ -74,7 +79,6 @@ public class MultipartReplyTableFeaturesTest {
                                               );
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 12, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", false, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyTableFeaturesCase messageCase = (MultipartReplyTableFeaturesCase) builtByFactory.getMultipartReplyBody();
@@ -97,7 +101,7 @@ public class MultipartReplyTableFeaturesTest {
     }
 
     /**
-     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO
+     * Testing {@link MultipartReplyMessageFactory} for correct translation into POJO.
      */
     @Test
     public void testMultipartReplyTableFeatures2() {
@@ -126,7 +130,6 @@ public class MultipartReplyTableFeaturesTest {
                                               );
         MultipartReplyMessage builtByFactory = BufferHelper.deserialize(factory, bb);
 
-        BufferHelper.checkHeaderV13(builtByFactory);
         Assert.assertEquals("Wrong type", 12, builtByFactory.getType().getIntValue());
         Assert.assertEquals("Wrong flag", false, builtByFactory.getFlags().isOFPMPFREQMORE());
         MultipartReplyTableFeaturesCase messageCase = (MultipartReplyTableFeaturesCase) builtByFactory.getMultipartReplyBody();
