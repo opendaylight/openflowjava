@@ -43,20 +43,6 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-              <groupId>org.opendaylight.openflowjava</groupId>
-              <artifactId>openflowjava-blueprint-config</artifactId>
-              <version>${project.version}</version>
-              <type>xml</type>
-              <classifier>config</classifier>
-            </dependency>
-            <dependency>
-              <groupId>org.opendaylight.openflowjava</groupId>
-              <artifactId>openflowjava-blueprint-config</artifactId>
-              <version>${project.version}</version>
-              <type>xml</type>
-              <classifier>legacyConfig</classifier>
-            </dependency>
-            <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>openflow-protocol-spi</artifactId>
                 <version>${project.version}</version>

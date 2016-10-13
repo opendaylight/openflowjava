@@ -22,9 +22,6 @@
         <bundle>mvn:org.opendaylight.openflowjava/openflow-protocol-spi/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.openflowjava/openflow-protocol-impl/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.openflowjava/openflowjava-util/{{VERSION}}</bundle>
-        <bundle>mvn:org.opendaylight.openflowjava/openflowjava-blueprint-config/{{VERSION}}</bundle>
         <configfile finalname="etc/opendaylight/karaf/45-openflowjava-stats.xml">mvn:org.opendaylight.openflowjava/openflowjava-config/${project.version}/xml/configstats</configfile>
-        <configfile finalname="etc/opendaylight/datastore/initial/config/default-openflow-connection-config.xml">mvn:org.opendaylight.openflowjava/openflowjava-blueprint-config/${project.version}/xml/config</configfile>
-        <configfile finalname="etc/opendaylight/datastore/initial/config/legacy-openflow-connection-config.xml">mvn:org.opendaylight.openflowjava/openflowjava-blueprint-config/${project.version}/xml/legacyConfig</configfile>
     </feature>
 </features>
