@@ -15,6 +15,7 @@
         <module>artifacts</module>
         <module>features</module>
         <module>openflowjava-config</module>
+        <module>openflowjava-blueprint-config</module>
         <module>openflow-protocol-api</module>
         <module>openflow-protocol-impl</module>
         <module>openflow-protocol-it</module>
