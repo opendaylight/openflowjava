@@ -9,7 +9,6 @@ package org.opendaylight.openflowjava.protocol.impl.serialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpOpSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpShaSerializer;
 import org.opendaylight.openflowjava.protocol.impl.serialization.match.OxmArpSpaSerializer;
@@ -96,7 +95,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.Vlan
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.VlanVid;
 
 /**
- * Initializes serializer registry with match entry serializers
+ * Initializes serializer registry with match entry serializers.
  * @author michal.polkorab
  */
 public final class MatchEntriesInitializer {
@@ -106,7 +105,7 @@ public final class MatchEntriesInitializer {
     }
 
     /**
-     * Registers match entry serializers into provided registry
+     * Registers match entry serializers into provided registry.
      * @param serializerRegistry registry to be initialized with match entry serializers
      */
     public static void registerMatchEntrySerializers(SerializerRegistry serializerRegistry) {
@@ -157,7 +156,7 @@ public final class MatchEntriesInitializer {
         helper.registerSerializer(Ipv6Exthdr.class, new OxmIpv6ExtHdrSerializer());
 
         // Register approved openflow match entry serializers
-        helper.registerExperimenterSerializer(TcpFlags.class, OxmMatchConstants.ONFOXM_ET_TCP_FLAGS_EXP_ID,
+        helper.registerExperimenterSerializer(TcpFlags.class, EncodeConstants.ONF_EXPERIMENTER_ID,
                 new OnfOxmTcpFlagsSerializer());
     }
 }
