@@ -8,6 +8,8 @@
 package org.opendaylight.openflowjava.protocol.impl.deserialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
+import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpOpDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpShaDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmArpSpaDeserializer;
@@ -48,14 +50,12 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmUdpD
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmUdpSrcDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmVlanPcpDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.OxmVlanVidDeserializer;
-import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.match.ext.OnfOxmTcpFlagsDeserializer;
 import org.opendaylight.openflowjava.protocol.impl.util.MatchEntryDeserializerRegistryHelper;
-import org.opendaylight.openflowjava.protocol.api.util.OxmMatchConstants;
 
 /**
+ * Util class for init registration of match entry deserializers.
  * @author michal.polkorab
- *
  */
 public final class MatchEntryDeserializerInitializer {
 
@@ -64,7 +64,7 @@ public final class MatchEntryDeserializerInitializer {
     }
 
     /**
-     * Registers match entry deserializers
+     * Registers match entry deserializers.
      * @param registry registry to be filled with deserializers
      */
     public static void registerMatchEntryDeserializers(DeserializerRegistry registry) {
@@ -114,7 +114,7 @@ public final class MatchEntryDeserializerInitializer {
         helper.register(OxmMatchConstants.IPV6_EXTHDR, new OxmIpv6ExtHdrDeserializer());
 
         // Register approved openflow match entry deserializers
-        helper.registerExperimenter(OxmMatchConstants.ONFOXM_ET_TCP_FLAGS, OxmMatchConstants.ONFOXM_ET_TCP_FLAGS_EXP_ID,
+        helper.registerExperimenter(EncodeConstants.ONFOXM_ET_TCP_FLAGS, EncodeConstants.ONF_EXPERIMENTER_ID,
                 new OnfOxmTcpFlagsDeserializer());
     }
 }

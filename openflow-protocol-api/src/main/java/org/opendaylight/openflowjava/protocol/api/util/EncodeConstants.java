@@ -62,8 +62,16 @@ public abstract class EncodeConstants {
 
     /** OF v1.0 maximal port name length */
     public static final byte MAX_PORT_NAME_LENGTH = 16;
-    /** OF v1.3 length of experimenter_ids - see Multipart TableFeatures (properties) message */
-    public static final byte EXPERIMENTER_IDS_LENGTH = 8;
+
+    /** ONF Approved Extensions Constants */
+    /** Experimenter ID of ONF approved extensions (0x4F4E4600) */
+    public static final long ONF_EXPERIMENTER_ID = 1330529792;
+    /** ONFOXM_ET_TCP_FLAGS value */
+    public static final int ONFOXM_ET_TCP_FLAGS = 42;
+    /** ONF_ET_BUNDLE_CONTROL message type */
+    public static final int ONF_ET_BUNDLE_CONTROL = 2300;
+    /** ONF_ET_BUNDLE_ADD_MESSAGE message type */
+    public static final int ONF_ET_BUNDLE_ADD_MESSAGE = 2301;
 
     private EncodeConstants() {
         //not called
