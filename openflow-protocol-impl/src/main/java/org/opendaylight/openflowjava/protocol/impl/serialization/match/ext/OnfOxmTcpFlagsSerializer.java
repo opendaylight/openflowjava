@@ -36,7 +36,7 @@ public class OnfOxmTcpFlagsSerializer extends AbstractOxmExperimenterMatchEntryS
      */
     @Override
     protected long getExperimenterId() {
-        return OxmMatchConstants.ONFOXM_ET_TCP_FLAGS_EXP_ID;
+        return EncodeConstants.ONF_EXPERIMENTER_ID;
     }
 
     /**
@@ -44,7 +44,7 @@ public class OnfOxmTcpFlagsSerializer extends AbstractOxmExperimenterMatchEntryS
      */
     @Override
     protected int getOxmFieldCode() {
-        return OxmMatchConstants.ONFOXM_ET_TCP_FLAGS;
+        return EncodeConstants.ONFOXM_ET_TCP_FLAGS;
     }
 
     /**
