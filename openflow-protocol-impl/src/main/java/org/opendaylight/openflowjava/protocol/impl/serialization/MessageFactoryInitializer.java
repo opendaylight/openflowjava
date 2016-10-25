@@ -9,6 +9,8 @@ package org.opendaylight.openflowjava.protocol.impl.serialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.serialization.experimenter.BundleAddMessageFactory;
+import org.opendaylight.openflowjava.protocol.impl.serialization.experimenter.BundleControlFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.BarrierInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.EchoInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.EchoReplyInputMessageFactory;
@@ -111,5 +113,11 @@ public final class MessageFactoryInitializer {
         registryHelper.registerSerializer(SetAsyncInput.class, new SetAsyncInputMessageFactory());
         registryHelper.registerSerializer(SetConfigInput.class, new SetConfigMessageFactory());
         registryHelper.registerSerializer(TableModInput.class, new TableModInputMessageFactory());
+
+        // register ONF approved experimenter serializers
+        registryHelper.registerExperimenterSerializer(EncodeConstants.ONF_EXPERIMENTER_ID,
+                EncodeConstants.ONF_ET_BUNDLE_CONTROL, new BundleControlFactory());
+        registryHelper.registerExperimenterSerializer(EncodeConstants.ONF_EXPERIMENTER_ID,
+                EncodeConstants.ONF_ET_BUNDLE_ADD_MESSAGE, new BundleAddMessageFactory());
     }
 }
