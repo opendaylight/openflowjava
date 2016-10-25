@@ -58,8 +58,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInput;
 
 /**
+ * Util class for init registration of serializers.
  * @author michal.polkorab
- *
  */
 public final class MessageFactoryInitializer {
 
@@ -68,15 +68,14 @@ public final class MessageFactoryInitializer {
     }
 
     /**
-     * Registers message serializers into provided registry
-     *
-     * @param serializerRegistry
-     *            registry to be initialized with message serializers
+     * Registers message serializers into provided registry.
+     * @param serializerRegistry registry to be initialized with message serializers
      */
     public static void registerMessageSerializers(SerializerRegistry serializerRegistry) {
+        CommonMessageRegistryHelper registryHelper;
+
         // register OF v1.0 message serializers
-        short version = EncodeConstants.OF10_VERSION_ID;
-        CommonMessageRegistryHelper registryHelper = new CommonMessageRegistryHelper(version, serializerRegistry);
+        registryHelper = new CommonMessageRegistryHelper(EncodeConstants.OF10_VERSION_ID, serializerRegistry);
         registryHelper.registerSerializer(BarrierInput.class, new OF10BarrierInputMessageFactory());
         registryHelper.registerSerializer(EchoInput.class, new EchoInputMessageFactory());
         registryHelper.registerSerializer(EchoReplyInput.class, new EchoReplyInputMessageFactory());
@@ -92,8 +91,7 @@ public final class MessageFactoryInitializer {
         registryHelper.registerSerializer(SetConfigInput.class, new SetConfigMessageFactory());
 
         // register OF v1.3 message serializers
-        version = EncodeConstants.OF13_VERSION_ID;
-        registryHelper = new CommonMessageRegistryHelper(version, serializerRegistry);
+        registryHelper = new CommonMessageRegistryHelper(EncodeConstants.OF13_VERSION_ID, serializerRegistry);
         registryHelper.registerSerializer(BarrierInput.class, new BarrierInputMessageFactory());
         registryHelper.registerSerializer(EchoInput.class, new EchoInputMessageFactory());
         registryHelper.registerSerializer(EchoReplyInput.class, new EchoReplyInputMessageFactory());

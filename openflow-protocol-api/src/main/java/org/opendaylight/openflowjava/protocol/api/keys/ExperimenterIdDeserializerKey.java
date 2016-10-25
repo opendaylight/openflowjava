@@ -13,10 +13,8 @@ import org.opendaylight.yangtools.yang.binding.DataContainer;
 
 /**
  * @author michal.polkorab
- *
  */
-public class ExperimenterIdDeserializerKey extends MessageCodeKey
-        implements ExperimenterDeserializerKey {
+public class ExperimenterIdDeserializerKey extends MessageCodeKey implements ExperimenterDeserializerKey {
 
     private long experimenterId;
 
@@ -26,8 +24,8 @@ public class ExperimenterIdDeserializerKey extends MessageCodeKey
      * @param experimenterId experimenter / vendor ID
      * @param objectClass class of created object
      */
-    public <E extends DataContainer> ExperimenterIdDeserializerKey(short version,
-                                                                   long experimenterId, Class<E> objectClass) {
+    public <E extends DataContainer> ExperimenterIdDeserializerKey(final short version, final long experimenterId,
+                                                                   final Class<E> objectClass) {
         super(version, EncodeConstants.EXPERIMENTER_VALUE, objectClass);
         this.experimenterId = experimenterId;
     }
