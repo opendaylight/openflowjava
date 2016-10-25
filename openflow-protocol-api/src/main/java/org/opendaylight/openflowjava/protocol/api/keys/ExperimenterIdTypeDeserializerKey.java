@@ -18,14 +18,15 @@ public class ExperimenterIdTypeDeserializerKey extends ExperimenterIdDeserialize
     private long type;
 
     /**
-     * @param msgVersion     protocol wire version
+     * @param <T>            type of target experimenter object
+     * @param version        protocol wire version
      * @param experimenterId experimenter / vendor ID
      * @param type           data type according to vendor implementation
      * @param objectClass    class of object to be serialized
      */
-    public <T extends DataContainer> ExperimenterIdTypeDeserializerKey(short msgVersion,
-                                                                       long experimenterId, long type, Class<T> objectClass) {
-        super(msgVersion, experimenterId, objectClass);
+    public <T extends DataContainer> ExperimenterIdTypeDeserializerKey(final short version, final long experimenterId,
+                                                                       final long type, Class<T> objectClass) {
+        super(version, experimenterId, objectClass);
         this.type = type;
     }
 

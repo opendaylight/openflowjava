@@ -69,52 +69,52 @@ public final class MessageDeserializerInitializer {
 
         // register OF v1.0 message deserializers
         helper = new SimpleDeserializerRegistryHelper(EncodeConstants.OF10_VERSION_ID, registry);
-        helper.registerDeserializer(0, null, HelloMessage.class, new OF10HelloMessageFactory());
-        helper.registerDeserializer(1, null, ErrorMessage.class, new OF10ErrorMessageFactory());
-        helper.registerDeserializer(2, null, EchoRequestMessage.class, new EchoRequestMessageFactory());
-        helper.registerDeserializer(3, null, EchoOutput.class, new EchoReplyMessageFactory());
-        helper.registerDeserializer(4, null, ExperimenterMessage.class, new VendorMessageFactory());
-        helper.registerDeserializer(6, null, GetFeaturesOutput.class, new OF10FeaturesReplyMessageFactory());
-        helper.registerDeserializer(8, null, GetConfigOutput.class, new GetConfigReplyMessageFactory());
-        helper.registerDeserializer(10, null, PacketInMessage.class, new OF10PacketInMessageFactory());
-        helper.registerDeserializer(11, null, FlowRemovedMessage.class, new OF10FlowRemovedMessageFactory());
-        helper.registerDeserializer(12, null, PortStatusMessage.class, new OF10PortStatusMessageFactory());
-        helper.registerDeserializer(17, null, MultipartReplyMessage.class, new OF10StatsReplyMessageFactory());
-        helper.registerDeserializer(19, null, BarrierOutput.class, new BarrierReplyMessageFactory());
-        helper.registerDeserializer(21, null, GetQueueConfigOutput.class, new OF10QueueGetConfigReplyMessageFactory());
+        helper.registerDeserializer(0, HelloMessage.class, new OF10HelloMessageFactory());
+        helper.registerDeserializer(1, ErrorMessage.class, new OF10ErrorMessageFactory());
+        helper.registerDeserializer(2, EchoRequestMessage.class, new EchoRequestMessageFactory());
+        helper.registerDeserializer(3, EchoOutput.class, new EchoReplyMessageFactory());
+        helper.registerDeserializer(4, ExperimenterMessage.class, new VendorMessageFactory());
+        helper.registerDeserializer(6, GetFeaturesOutput.class, new OF10FeaturesReplyMessageFactory());
+        helper.registerDeserializer(8, GetConfigOutput.class, new GetConfigReplyMessageFactory());
+        helper.registerDeserializer(10, PacketInMessage.class, new OF10PacketInMessageFactory());
+        helper.registerDeserializer(11, FlowRemovedMessage.class, new OF10FlowRemovedMessageFactory());
+        helper.registerDeserializer(12, PortStatusMessage.class, new OF10PortStatusMessageFactory());
+        helper.registerDeserializer(17, MultipartReplyMessage.class, new OF10StatsReplyMessageFactory());
+        helper.registerDeserializer(19, BarrierOutput.class, new BarrierReplyMessageFactory());
+        helper.registerDeserializer(21, GetQueueConfigOutput.class, new OF10QueueGetConfigReplyMessageFactory());
 
         // register OF v1.3 message deserializers
         helper = new SimpleDeserializerRegistryHelper(EncodeConstants.OF13_VERSION_ID, registry);
-        helper.registerDeserializer(0, null, HelloMessage.class, new HelloMessageFactory());
-        helper.registerDeserializer(1, null, ErrorMessage.class, new ErrorMessageFactory());
-        helper.registerDeserializer(2, null, EchoRequestMessage.class, new EchoRequestMessageFactory());
-        helper.registerDeserializer(3, null, EchoOutput.class, new EchoReplyMessageFactory());
-        helper.registerDeserializer(4, null, ExperimenterMessage.class, new ExperimenterMessageFactory());
-        helper.registerDeserializer(6, null, GetFeaturesOutput.class, new FeaturesReplyMessageFactory());
-        helper.registerDeserializer(8, null, GetConfigOutput.class, new GetConfigReplyMessageFactory());
-        helper.registerDeserializer(10, null, PacketInMessage.class, new PacketInMessageFactory());
-        helper.registerDeserializer(11, null, FlowRemovedMessage.class, new FlowRemovedMessageFactory());
-        helper.registerDeserializer(12, null, PortStatusMessage.class, new PortStatusMessageFactory());
-        helper.registerDeserializer(19, null, MultipartReplyMessage.class, new MultipartReplyMessageFactory());
-        helper.registerDeserializer(21, null, BarrierOutput.class, new BarrierReplyMessageFactory());
-        helper.registerDeserializer(23, null, GetQueueConfigOutput.class, new QueueGetConfigReplyMessageFactory());
-        helper.registerDeserializer(25, null, RoleRequestOutput.class, new RoleReplyMessageFactory());
-        helper.registerDeserializer(27, null, GetAsyncOutput.class, new GetAsyncReplyMessageFactory());
+        helper.registerDeserializer(0, HelloMessage.class, new HelloMessageFactory());
+        helper.registerDeserializer(1, ErrorMessage.class, new ErrorMessageFactory());
+        helper.registerDeserializer(2, EchoRequestMessage.class, new EchoRequestMessageFactory());
+        helper.registerDeserializer(3, EchoOutput.class, new EchoReplyMessageFactory());
+        helper.registerDeserializer(4, ExperimenterMessage.class, new ExperimenterMessageFactory());
+        helper.registerDeserializer(6, GetFeaturesOutput.class, new FeaturesReplyMessageFactory());
+        helper.registerDeserializer(8, GetConfigOutput.class, new GetConfigReplyMessageFactory());
+        helper.registerDeserializer(10, PacketInMessage.class, new PacketInMessageFactory());
+        helper.registerDeserializer(11, FlowRemovedMessage.class, new FlowRemovedMessageFactory());
+        helper.registerDeserializer(12, PortStatusMessage.class, new PortStatusMessageFactory());
+        helper.registerDeserializer(19, MultipartReplyMessage.class, new MultipartReplyMessageFactory());
+        helper.registerDeserializer(21, BarrierOutput.class, new BarrierReplyMessageFactory());
+        helper.registerDeserializer(23, GetQueueConfigOutput.class, new QueueGetConfigReplyMessageFactory());
+        helper.registerDeserializer(25, RoleRequestOutput.class, new RoleReplyMessageFactory());
+        helper.registerDeserializer(27, GetAsyncOutput.class, new GetAsyncReplyMessageFactory());
 
         // register OF v1.4 message deserializers
         helper = new SimpleDeserializerRegistryHelper(EncodeConstants.OF14_VERSION_ID, registry);
-        helper.registerDeserializer(0, null, HelloMessage.class, new HelloMessageFactory());
-        helper.registerDeserializer(2, null, EchoRequestMessage.class, new EchoRequestMessageFactory());
-        helper.registerDeserializer(3, null, EchoOutput.class, new EchoReplyMessageFactory());
-        helper.registerDeserializer(8, null, GetConfigOutput.class, new GetConfigReplyMessageFactory());
-        helper.registerDeserializer(21, null, BarrierOutput.class, new BarrierReplyMessageFactory());
+        helper.registerDeserializer(0, HelloMessage.class, new HelloMessageFactory());
+        helper.registerDeserializer(2, EchoRequestMessage.class, new EchoRequestMessageFactory());
+        helper.registerDeserializer(3, EchoOutput.class, new EchoReplyMessageFactory());
+        helper.registerDeserializer(8, GetConfigOutput.class, new GetConfigReplyMessageFactory());
+        helper.registerDeserializer(21, BarrierOutput.class, new BarrierReplyMessageFactory());
 
         // register OF v1.5 message deserializers
         helper = new SimpleDeserializerRegistryHelper(EncodeConstants.OF15_VERSION_ID, registry);
-        helper.registerDeserializer(0, null, HelloMessage.class, new HelloMessageFactory());
-        helper.registerDeserializer(2, null, EchoRequestMessage.class, new EchoRequestMessageFactory());
-        helper.registerDeserializer(3, null, EchoOutput.class, new EchoReplyMessageFactory());
-        helper.registerDeserializer(8, null, GetConfigOutput.class, new GetConfigReplyMessageFactory());
-        helper.registerDeserializer(21, null, BarrierOutput.class, new BarrierReplyMessageFactory());
+        helper.registerDeserializer(0, HelloMessage.class, new HelloMessageFactory());
+        helper.registerDeserializer(2, EchoRequestMessage.class, new EchoRequestMessageFactory());
+        helper.registerDeserializer(3, EchoOutput.class, new EchoReplyMessageFactory());
+        helper.registerDeserializer(8, GetConfigOutput.class, new GetConfigReplyMessageFactory());
+        helper.registerDeserializer(21, BarrierOutput.class, new BarrierReplyMessageFactory());
     }
 }

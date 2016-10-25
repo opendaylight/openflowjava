@@ -64,7 +64,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.table.features.properties.grouping.TableFeatureProperties;
 
 /**
- * Translates MultipartRequest messages
+ * Translates MultipartRequest messages.
  * @author timotej.kubas
  * @author michal.polkorab
  */
@@ -160,50 +160,26 @@ public class MultipartRequestInputFactory implements OFSerializer<MultipartReque
         return ByteBufUtils.fillBitMask(0, flags.isOFPMPFREQMORE());
     }
 
-    /**
-     * @param multipartRequestBody
-     * @param output
-     */
     private void serializeDescBody() {
         // The body of MultiPartRequestDesc is empty
     }
 
-    /**
-     * @param multipartRequestBody
-     * @param out
-     */
     private void serializeTableBody() {
      // The body of MultiPartTable is empty
     }
 
-    /**
-     * @param multipartRequestBody
-     * @param out
-     */
     private void serializeGroupDescBody() {
      // The body of MultiPartRequestGroupDesc is empty
     }
 
-    /**
-     * @param multipartRequestBody
-     * @param out
-     */
     private void serializeGroupFeaturesBody() {
      // The body of MultiPartRequestGroupFeatures is empty
     }
 
-    /**
-     * @param multipartRequestBody
-     * @param out
-     */
     private void serializeMeterFeaturesBody() {
      // The body of MultiPartMeterFeatures is empty
     }
 
-    /**
-     * @param multipartRequestBody
-     * @param out
-     */
     private void serializePortDescBody() {
      // The body of MultiPartPortDesc is empty
     }
