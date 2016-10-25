@@ -18,7 +18,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 
 /**
  * @author michal.polkorab
- *
  */
 public abstract class ExperimenterDeserializerKeyFactory {
 

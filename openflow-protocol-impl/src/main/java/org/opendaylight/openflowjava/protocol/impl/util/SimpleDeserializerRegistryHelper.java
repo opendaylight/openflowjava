@@ -10,9 +10,10 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
+import org.opendaylight.openflowjava.util.ExperimenterDeserializerKeyFactory;
 
 /**
- * Helper class for deserializer registration assigning particular version if necessary.
+ * Helper class for deserializer registration.
  * @author michal.polkorab
  */
 public class SimpleDeserializerRegistryHelper {
@@ -32,11 +33,10 @@ public class SimpleDeserializerRegistryHelper {
     /**
      * Register deserializer in registry. If deserializer supports more protocol versions assign actual one.
      * @param code code / value to distinguish between deserializers
-     * @param experimenterID TODO
      * @param deserializedObjectClass class of object that will be deserialized by given deserializer
      * @param deserializer deserializer instance
      */
-    public void registerDeserializer(final int code, final Long experimenterID, final Class<?> deserializedObjectClass,
+    public void registerDeserializer(final int code, final Class<?> deserializedObjectClass,
                                      final OFGeneralDeserializer deserializer) {
         registry.registerDeserializer(new MessageCodeKey(version, code, deserializedObjectClass), deserializer);
 
@@ -44,4 +44,17 @@ public class SimpleDeserializerRegistryHelper {
             ((VersionAssignableFactory) deserializer).assignVersion(version);
         }
     }
+
+    /**
+     * Register experimenter deserializer in registry.
+     * @param experimenterId experimenterID of experimenter message
+     * @param type type of experimenter message
+     * @param deserializer deserializer instance
+     */
+    public void registerExperimenterDeserializer (final long experimenterId, final long type,
+                                                  final OFGeneralDeserializer deserializer) {
+        registry.registerDeserializer(ExperimenterDeserializerKeyFactory
+                .createExperimenterMessageDeserializerKey(version, experimenterId, type), deserializer);
+    }
+
 }
