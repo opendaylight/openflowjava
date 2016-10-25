@@ -10,10 +10,11 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageTypeKey;
+import org.opendaylight.openflowjava.util.ExperimenterSerializerKeyFactory;
 
 /**
+ * Helper class for serializer registration.
  * @author michal.polkorab
- *
  */
 public class CommonMessageRegistryHelper {
 
@@ -21,8 +22,8 @@ public class CommonMessageRegistryHelper {
     private SerializerRegistry serializerRegistry;
 
     /**
-     * @param version
-     * @param serializerRegistry
+     * @param version wire protocol version
+     * @param serializerRegistry registry to be filled with message serializers
      */
     public CommonMessageRegistryHelper(short version, SerializerRegistry serializerRegistry) {
         this.version = version;
@@ -30,10 +31,23 @@ public class CommonMessageRegistryHelper {
     }
 
     /**
-     * @param msgType
-     * @param serializer
+     * Registers serializer in registry.
+     * @param msgType class of object that will be serialized by given serializer
+     * @param serializer serializer instance
      */
     public void registerSerializer(Class<?> msgType, OFGeneralSerializer serializer) {
         serializerRegistry.registerSerializer(new MessageTypeKey<>(version, msgType), serializer);
+    }
+
+    /**
+     * Registers experimenter serializer in registry.
+     * @param experimenterId experimenterID of experimenter message
+     * @param type type of experimenter message
+     * @param serializer serializer instance
+     */
+    public void registerExperimenterSerializer(final long experimenterId, final long type,
+                                               final OFGeneralSerializer serializer) {
+        serializerRegistry.registerSerializer(ExperimenterSerializerKeyFactory
+                .createExperimenterMessageSerializerKey(version, experimenterId, type), serializer);
     }
 }

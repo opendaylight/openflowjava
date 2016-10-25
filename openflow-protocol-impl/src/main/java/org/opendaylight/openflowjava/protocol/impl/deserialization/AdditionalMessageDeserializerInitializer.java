@@ -51,8 +51,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.TableModInput;
 
 /**
+ * Util class for init registration of additional deserializers.
  * @author giuseppex.petralia@intel.com
- *
  */
 public class AdditionalMessageDeserializerInitializer {
     private AdditionalMessageDeserializerInitializer() {
@@ -61,43 +61,40 @@ public class AdditionalMessageDeserializerInitializer {
 
     /**
      * Registers additional message deserializers.
-     *
-     * @param registry
-     *            registry to be filled with deserializers
+     * @param registry registry to be filled with deserializers
      */
-    public static void registerMessageDeserializers(DeserializerRegistry registry) {
-
-        SimpleDeserializerRegistryHelper helper = new SimpleDeserializerRegistryHelper(EncodeConstants.OF10_VERSION_ID,
-                registry);
+    public static void registerMessageDeserializers(final DeserializerRegistry registry) {
+        SimpleDeserializerRegistryHelper helper;
 
         // register OF v1.0 message deserializers
-        helper.registerDeserializer(5, null, GetFeaturesInput.class, new OF10FeaturesRequestMessageFactory());
-        helper.registerDeserializer(7, null, GetConfigInput.class, new OF10GetConfigInputMessageFactory());
-        helper.registerDeserializer(9, null, SetConfigInput.class, new OF10SetConfigMessageFactory());
-        helper.registerDeserializer(13, null, PacketOutInput.class, new OF10PacketOutInputMessageFactory());
-        helper.registerDeserializer(14, null, FlowModInput.class, new OF10FlowModInputMessageFactory());
-        helper.registerDeserializer(15, null, PortModInput.class, new OF10PortModInputMessageFactory());
-        helper.registerDeserializer(16, null, MultipartRequestInput.class, new OF10StatsRequestInputFactory());
-        helper.registerDeserializer(18, null, BarrierInput.class, new OF10BarrierInputMessageFactory());
-        helper.registerDeserializer(20, null, GetQueueConfigInput.class, new OF10GetQueueConfigInputMessageFactory());
+        helper = new SimpleDeserializerRegistryHelper(EncodeConstants.OF10_VERSION_ID, registry);
+        helper.registerDeserializer(5, GetFeaturesInput.class, new OF10FeaturesRequestMessageFactory());
+        helper.registerDeserializer(7, GetConfigInput.class, new OF10GetConfigInputMessageFactory());
+        helper.registerDeserializer(9, SetConfigInput.class, new OF10SetConfigMessageFactory());
+        helper.registerDeserializer(13, PacketOutInput.class, new OF10PacketOutInputMessageFactory());
+        helper.registerDeserializer(14, FlowModInput.class, new OF10FlowModInputMessageFactory());
+        helper.registerDeserializer(15, PortModInput.class, new OF10PortModInputMessageFactory());
+        helper.registerDeserializer(16, MultipartRequestInput.class, new OF10StatsRequestInputFactory());
+        helper.registerDeserializer(18, BarrierInput.class, new OF10BarrierInputMessageFactory());
+        helper.registerDeserializer(20, GetQueueConfigInput.class, new OF10GetQueueConfigInputMessageFactory());
 
-        // register Of v1.3 message deserializers
+        // register OF v1.3 message deserializers
         helper = new SimpleDeserializerRegistryHelper(EncodeConstants.OF13_VERSION_ID, registry);
-        helper.registerDeserializer(5, null, GetFeaturesInput.class, new GetFeaturesInputMessageFactory());
-        helper.registerDeserializer(7, null, GetConfigInput.class, new GetConfigInputMessageFactory());
-        helper.registerDeserializer(9, null, SetConfigInput.class, new SetConfigInputMessageFactory());
-        helper.registerDeserializer(13, null, PacketOutInput.class, new PacketOutInputMessageFactory());
-        helper.registerDeserializer(14, null, FlowModInput.class, new FlowModInputMessageFactory());
-        helper.registerDeserializer(15, null, GroupModInput.class, new GroupModInputMessageFactory());
-        helper.registerDeserializer(16, null, PortModInput.class, new PortModInputMessageFactory());
-        helper.registerDeserializer(17, null, TableModInput.class, new TableModInputMessageFactory());
-        helper.registerDeserializer(18, null, MultipartRequestInput.class, new MultipartRequestInputMessageFactory());
-        helper.registerDeserializer(20, null, BarrierInput.class, new BarrierInputMessageFactory());
-        helper.registerDeserializer(22, null, GetQueueConfigInput.class, new GetQueueConfigInputMessageFactory());
-        helper.registerDeserializer(24, null, RoleRequestInput.class, new RoleRequestInputMessageFactory());
-        helper.registerDeserializer(26, null, GetAsyncInput.class, new GetAsyncRequestMessageFactory());
-        helper.registerDeserializer(28, null, SetAsyncInput.class, new SetAsyncInputMessageFactory());
-        helper.registerDeserializer(29, null, MeterModInput.class, new MeterModInputMessageFactory());
+        helper.registerDeserializer(5, GetFeaturesInput.class, new GetFeaturesInputMessageFactory());
+        helper.registerDeserializer(7, GetConfigInput.class, new GetConfigInputMessageFactory());
+        helper.registerDeserializer(9, SetConfigInput.class, new SetConfigInputMessageFactory());
+        helper.registerDeserializer(13, PacketOutInput.class, new PacketOutInputMessageFactory());
+        helper.registerDeserializer(14, FlowModInput.class, new FlowModInputMessageFactory());
+        helper.registerDeserializer(15, GroupModInput.class, new GroupModInputMessageFactory());
+        helper.registerDeserializer(16, PortModInput.class, new PortModInputMessageFactory());
+        helper.registerDeserializer(17, TableModInput.class, new TableModInputMessageFactory());
+        helper.registerDeserializer(18, MultipartRequestInput.class, new MultipartRequestInputMessageFactory());
+        helper.registerDeserializer(20, BarrierInput.class, new BarrierInputMessageFactory());
+        helper.registerDeserializer(22, GetQueueConfigInput.class, new GetQueueConfigInputMessageFactory());
+        helper.registerDeserializer(24, RoleRequestInput.class, new RoleRequestInputMessageFactory());
+        helper.registerDeserializer(26, GetAsyncInput.class, new GetAsyncRequestMessageFactory());
+        helper.registerDeserializer(28, SetAsyncInput.class, new SetAsyncInputMessageFactory());
+        helper.registerDeserializer(29, MeterModInput.class, new MeterModInputMessageFactory());
     }
 
 }
