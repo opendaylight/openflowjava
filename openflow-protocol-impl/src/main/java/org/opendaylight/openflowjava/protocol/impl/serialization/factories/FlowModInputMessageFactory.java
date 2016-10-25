@@ -9,7 +9,6 @@
 package org.opendaylight.openflowjava.protocol.impl.serialization.factories;
 
 import io.netty.buffer.ByteBuf;
-
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFSerializer;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistryInjector;
@@ -22,14 +21,15 @@ import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.instruction.rev130731.instructions.grouping.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.FlowModFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.grouping.Match;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowMod;
 
 /**
- * Translates FlowMod messages
+ * Translates FlowMod messages.
+ * OF protocol versions: 1.3.
  * @author timotej.kubas
  * @author michal.polkorab
  */
-public class FlowModInputMessageFactory implements OFSerializer<FlowModInput>, SerializerRegistryInjector {
+public class FlowModInputMessageFactory implements OFSerializer<FlowMod>, SerializerRegistryInjector {
     private static final byte MESSAGE_TYPE = 14;
     private static final byte PADDING_IN_FLOW_MOD_MESSAGE = 2;
     private static final TypeKeyMaker<Instruction> INSTRUCTION_KEY_MAKER =
@@ -37,14 +37,14 @@ public class FlowModInputMessageFactory implements OFSerializer<FlowModInput>, S
     private SerializerRegistry registry;
 
     @Override
-    public void serialize(final FlowModInput message, final ByteBuf outBuffer) {
+    public void serialize(final FlowMod message, final ByteBuf outBuffer) {
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeLong(message.getCookie().longValue());
         outBuffer.writeLong(message.getCookieMask().longValue());
         outBuffer.writeByte(message.getTableId().getValue().byteValue());
         outBuffer.writeByte(message.getCommand().getIntValue());
-        outBuffer.writeShort(message.getIdleTimeout().intValue());
-        outBuffer.writeShort(message.getHardTimeout().intValue());
+        outBuffer.writeShort(message.getIdleTimeout());
+        outBuffer.writeShort(message.getHardTimeout());
         outBuffer.writeShort(message.getPriority());
         outBuffer.writeInt(message.getBufferId().intValue());
         outBuffer.writeInt(message.getOutPort().getValue().intValue());
