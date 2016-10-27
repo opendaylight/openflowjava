@@ -9,6 +9,8 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.experimenter.BundleControlFactory;
+import org.opendaylight.openflowjava.protocol.impl.deserialization.experimenter.OnfExperimenterErrorFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.BarrierReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.EchoReplyMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.deserialization.factories.EchoRequestMessageFactory;
@@ -104,6 +106,12 @@ public final class MessageDeserializerInitializer {
         helper.registerDeserializer(23, GetQueueConfigOutput.class, new QueueGetConfigReplyMessageFactory());
         helper.registerDeserializer(25, RoleRequestOutput.class, new RoleReplyMessageFactory());
         helper.registerDeserializer(27, GetAsyncOutput.class, new GetAsyncReplyMessageFactory());
+
+        // register ONF approved experimenter serializers
+        helper.registerExperimenterErrorDeserializer(EncodeConstants.ONF_EXPERIMENTER_ID,
+                new OnfExperimenterErrorFactory());
+        helper.registerExperimenterDeserializer(EncodeConstants.ONF_EXPERIMENTER_ID,
+                EncodeConstants.ONF_ET_BUNDLE_CONTROL, new BundleControlFactory());
 
         // register OF v1.4 message deserializers
         helper = new SimpleDeserializerRegistryHelper(EncodeConstants.OF14_VERSION_ID, registry);
