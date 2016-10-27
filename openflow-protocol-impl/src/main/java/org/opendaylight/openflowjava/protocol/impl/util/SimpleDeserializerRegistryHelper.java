@@ -57,4 +57,15 @@ public class SimpleDeserializerRegistryHelper {
                 .createExperimenterMessageDeserializerKey(version, experimenterId, type), deserializer);
     }
 
+    /**
+     * Register experimenter error deserializer in registry.
+     * @param experimenterId experimenterID of experimenter message
+     * @param deserializer deserializer instance
+     */
+    public void registerExperimenterErrorDeserializer (final long experimenterId,
+                                                       final OFGeneralDeserializer deserializer) {
+        registry.registerDeserializer(ExperimenterDeserializerKeyFactory
+                .createExperimenterErrorDeserializerKey(version, experimenterId), deserializer);
+    }
+
 }
