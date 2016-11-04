@@ -11,16 +11,14 @@ package org.opendaylight.openflowjava.util;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.UnpooledByteBufAllocator;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloInputBuilder;
 
@@ -30,7 +28,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  */
 public class ByteBufUtilsTest {
 
-    private byte[] expected = new byte[]{0x01, 0x02, 0x03, 0x04, 0x05, (byte) 0xff};
+    private final byte[] EXPECTED = new byte[]{0x01, 0x02, 0x03, 0x04, 0x05, (byte) 0xff};
+    private final byte[] EXPECTEDVALUES1AND255 = new byte[]{0x00, 0x01, 0x00, (byte) 0xff};
 
     /**
      * Test of {@link org.opendaylight.openflowjava.util.ByteBufUtils#hexStringToBytes(String)}
@@ -39,7 +38,7 @@ public class ByteBufUtilsTest {
     public void testHexStringToBytes() {
         byte[] data = ByteBufUtils.hexStringToBytes("01 02 03 04 05 ff");
 
-        Assert.assertArrayEquals(expected, data);
+        Assert.assertArrayEquals(EXPECTED, data);
     }
 
     /**
@@ -49,7 +48,7 @@ public class ByteBufUtilsTest {
     public void testHexStringToBytes2() {
         byte[] data = ByteBufUtils.hexStringToBytes("0102030405ff", false);
 
-        Assert.assertArrayEquals(expected, data);
+        Assert.assertArrayEquals(EXPECTED, data);
     }
 
     /**
@@ -59,7 +58,7 @@ public class ByteBufUtilsTest {
     public void testHexStringToByteBuf() {
         ByteBuf bb = ByteBufUtils.hexStringToByteBuf("01 02 03 04 05 ff");
 
-        Assert.assertArrayEquals(expected, byteBufToByteArray(bb));
+        Assert.assertArrayEquals(EXPECTED, byteBufToByteArray(bb));
     }
 
     /**
@@ -70,7 +69,7 @@ public class ByteBufUtilsTest {
         ByteBuf buffer = UnpooledByteBufAllocator.DEFAULT.buffer();
         ByteBufUtils.hexStringToByteBuf("01 02 03 04 05 ff", buffer);
 
-        Assert.assertArrayEquals(expected, byteBufToByteArray(buffer));
+        Assert.assertArrayEquals(EXPECTED, byteBufToByteArray(buffer));
     }
 
     private static byte[] byteBufToByteArray(ByteBuf bb) {
@@ -436,5 +435,17 @@ public class ByteBufUtilsTest {
         ByteBuf buffer2 = PooledByteBufAllocator.DEFAULT.buffer();
         buffer.writeShort(10);
         ipv4Address = ByteBufUtils.readIpv6Address(buffer2);
+    }
+
+    @Test
+    public void testSerializeList() throws IOException {
+
+        List<Short> shorts = new ArrayList<>();
+        shorts.add((short) 1);
+        shorts.add((short) 255);
+
+        final byte[] bytes = ByteBufUtils.serializeList(shorts);
+        Assert.assertTrue(bytes.length == shorts.size()*2);
+        Assert.assertArrayEquals(EXPECTEDVALUES1AND255, bytes);
     }
 }
