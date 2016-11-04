@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_1eb531ee",
+        "filename": "parent/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2016-11-04T14:06:04Z",
+      "side": 1,
+      "message": "This has no effect (default \u003d true). Please remove it.",
+      "range": {
+        "startLine": 107,
+        "startChar": 16,
+        "endLine": 107,
+        "endChar": 43
+      },
+      "revId": "af79dcc523a969c3ea434a516d41e6e74b23932e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_bebfddcf",
+        "filename": "parent/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2016-11-04T14:06:04Z",
+      "side": 1,
+      "message": "Please remove this completely as it is already defined in org.opendaylight.odlparent:odlparent (in form of default property for compiler plugin).",
+      "range": {
+        "startLine": 108,
+        "startChar": 16,
+        "endLine": 111,
+        "endChar": 32
+      },
+      "revId": "af79dcc523a969c3ea434a516d41e6e74b23932e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
