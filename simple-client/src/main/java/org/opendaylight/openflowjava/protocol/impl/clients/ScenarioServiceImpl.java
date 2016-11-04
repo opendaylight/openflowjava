@@ -1,20 +1,20 @@
 package org.opendaylight.openflowjava.protocol.impl.clients;
 
 import com.google.common.base.Preconditions;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
-
+import java.io.File;
+import java.io.IOException;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
+import org.opendaylight.openflowjava.util.ByteBufUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 /**
  * @author Jozef Bacigal
@@ -67,12 +67,12 @@ public class ScenarioServiceImpl implements ScenarioService {
         Preconditions.checkNotNull(scenario, "Scenario name not found. Check XML file, scenario name or directories.");
         SortedMap<Integer, ClientEvent> events = new TreeMap<>();
         Integer counter = 0;
-        for (Step stepType : scenario.getStep()) {
-            LOG.debug("Step {}: {}, type {}, bytes {}", stepType.getOrder(), stepType.getName(), stepType.getEvent().value(), stepType.getBytes().toArray());
-            switch (stepType.getEvent()) {
+        for (Step step : scenario.getStep()) {
+            LOG.debug("Step {}: {}, type {}, bytes {}", step.getOrder(), step.getName(), step.getEvent().value(), step.getBytes().toArray());
+            switch (step.getEvent()) {
                 case SLEEP_EVENT: events.put(counter++, new SleepEvent(1000)); break;
-                case SEND_EVENT: events.put(counter++, new SendEvent(ByteBufUtils.serializableList(stepType.getBytes()))); break;
-                case WAIT_FOR_MESSAGE_EVENT: events.put(counter++, new WaitForMessageEvent(ByteBufUtils.serializableList(stepType.getBytes()))); break;
+                case SEND_EVENT: events.put(counter++, new SendEvent(ByteBufUtils.serializeList(step.getBytes()))); break;
+                case WAIT_FOR_MESSAGE_EVENT: events.put(counter++, new WaitForMessageEvent(ByteBufUtils.serializeList(step.getBytes()))); break;
             }
         }
         return events;
