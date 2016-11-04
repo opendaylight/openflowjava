@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_d8d0f155",
+        "filename": "simple-client/src/main/java/org/opendaylight/openflowjava/protocol/impl/clients/ScenarioHandler.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2016-11-04T08:13:11Z",
+      "side": 1,
+      "message": "This is unnecessary.",
+      "range": {
+        "startLine": 79,
+        "startChar": 16,
+        "endLine": 79,
+        "endChar": 34
+      },
+      "revId": "036d4a9512d171371d07485f46e73d4c64a602e2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_f8f84de7",
+        "filename": "simple-client/src/main/java/org/opendaylight/openflowjava/protocol/impl/clients/ScenarioHandler.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2016-11-04T08:13:11Z",
+      "side": 1,
+      "message": "Could you merge these two logs?",
+      "revId": "036d4a9512d171371d07485f46e73d4c64a602e2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_18f429f1",
+        "filename": "simple-client/src/main/java/org/opendaylight/openflowjava/protocol/impl/clients/ScenarioHandler.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2016-11-04T08:13:11Z",
+      "side": 1,
+      "message": "Parameter is not used.",
+      "range": {
+        "startLine": 85,
+        "startChar": 63,
+        "endLine": 85,
+        "endChar": 76
+      },
+      "revId": "036d4a9512d171371d07485f46e73d4c64a602e2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
