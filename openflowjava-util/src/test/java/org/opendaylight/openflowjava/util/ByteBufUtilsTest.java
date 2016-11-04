@@ -11,16 +11,14 @@ package org.opendaylight.openflowjava.util;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.UnpooledByteBufAllocator;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.util.ByteBufUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.HelloInputBuilder;
 
@@ -436,5 +434,18 @@ public class ByteBufUtilsTest {
         ByteBuf buffer2 = PooledByteBufAllocator.DEFAULT.buffer();
         buffer.writeShort(10);
         ipv4Address = ByteBufUtils.readIpv6Address(buffer2);
+    }
+
+    @Test
+    public void testSerializeList() throws IOException {
+        List<Short> shorts = new ArrayList<>();
+        shorts.add((short) 1);      //00 01
+        shorts.add((short) 255);    //00 FF
+        byte[] bytes = ByteBufUtils.serializeList(shorts);
+        Assert.assertTrue(bytes.length == 4);
+        Assert.assertTrue(bytes[0] == 0); //00
+        Assert.assertTrue(bytes[1] == 1); //01
+        Assert.assertTrue(bytes[2] == 0); //00
+        Assert.assertTrue(bytes[3] == -1); //FF
     }
 }
