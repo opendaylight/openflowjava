@@ -13,6 +13,7 @@ import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterDeserializerK
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterInstructionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntryDeserializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ErrorMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
@@ -32,6 +33,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  */
 public interface DeserializerExtensionProvider {
+
+    /**
+     * Registers deserializer.
+     * Throws IllegalStateException when there is
+     * a deserializer already registered under given key.
+     * <p>
+     * If the deserializer implements {@link DeserializerRegistryInjector} interface,
+     * the deserializer is injected with DeserializerRegistry instance.
+     *
+     * @param key          used for deserializer lookup
+     * @param deserializer deserializer instance
+     */
+    void registerDeserializer(MessageCodeKey key,
+                              OFGeneralDeserializer deserializer);
 
     /**
      * Unregisters custom deserializer

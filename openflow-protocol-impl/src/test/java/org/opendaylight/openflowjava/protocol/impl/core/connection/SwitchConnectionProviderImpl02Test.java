@@ -29,6 +29,8 @@ import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterInstructionDe
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterInstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntryDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.keys.MessageTypeKey;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
 import org.opendaylight.openflowjava.protocol.impl.core.ServerFacade;
 import org.opendaylight.openflowjava.protocol.impl.core.SwitchConnectionProviderImpl;
@@ -241,6 +243,12 @@ public class SwitchConnectionProviderImpl02Test {
         provider.registerMatchEntrySerializer(key16, serializer);
         Assert.assertTrue("Wrong -- unregister MatchEntrySerializer", provider.unregisterSerializer(key16));
         Assert.assertFalse("Wrong -- unregister MatchEntrySerializer by not existing key", provider.unregisterSerializer(key15));
+        // -- registerSerializer
+        final MessageTypeKey key17 = new MessageTypeKey<>(EncodeConstants.OF13_VERSION_ID, TestSubType.class);
+        provider.registerSerializer(key17, serializer);
+        // -- registerDeserializer
+        final MessageCodeKey key18 = new MessageCodeKey(EncodeConstants.OF13_VERSION_ID, 42, TestSubType.class);
+        provider.registerDeserializer(key18, deserializer);
     }
 
     private static class TestSubType extends ExperimenterActionSubType {

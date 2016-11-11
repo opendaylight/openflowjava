@@ -14,6 +14,7 @@ import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdSerializerK
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.InstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.MessageTypeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OxmClassBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
@@ -33,6 +34,21 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
  * @author michal.polkorab
  */
 public interface SerializerExtensionProvider {
+
+    /**
+     * Registers serializer
+     * Throws IllegalStateException when there is
+     * a serializer already registered under given key.
+     *
+     * If the serializer implements {@link SerializerRegistryInjector} interface,
+     * the serializer is injected with SerializerRegistry instance.
+     *
+     * @param <K> serializer key type
+     * @param key used for serializer lookup
+     * @param serializer serializer implementation
+     */
+    <K> void registerSerializer(MessageTypeKey<K> key,
+            OFGeneralSerializer serializer);
 
     /**
      * Unregisters custom serializer
