@@ -11,9 +11,9 @@ package org.opendaylight.openflowjava.protocol.api.extensibility;
 import org.opendaylight.openflowjava.protocol.api.keys.ActionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdMeterSubTypeSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdSerializerKey;
-import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.InstructionSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntrySerializerKey;
+import org.opendaylight.openflowjava.protocol.api.keys.MessageTypeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.OxmClassBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
@@ -35,12 +35,28 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731
 public interface SerializerExtensionProvider {
 
     /**
-     * Unregisters custom serializer
+     * Registers serializer
+     * Throws IllegalStateException when there is
+     * a serializer already registered under given key.
+     *
+     * If the serializer implements {@link SerializerRegistryInjector} interface,
+     * the serializer is injected with SerializerRegistry instance.
+     *
+     * @param <K> serializer key type
+     * @param key used for serializer lookup
+     * @param serializer serializer implementation
+     */
+    <K> void registerSerializer(MessageTypeKey<K> key,
+            OFGeneralSerializer serializer);
+
+    /**
+     * Unregisters serializer
+     * @param <K> serializer key type
      * @param key used for serializer lookup
      * @return true if serializer was removed,
      *  false if no serializer was found under specified key
      */
-    boolean unregisterSerializer(ExperimenterSerializerKey key);
+    <K> boolean unregisterSerializer(MessageTypeKey<K> key);
 
     /**
      * Registers action serializer
