@@ -301,4 +301,13 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider, C
         return this.connConfig;
     }
 
+     @Override
+    public <K> void registerSerializer(MessageTypeKey<K> key, OFGeneralSerializer serializer) {
+        serializerRegistry.registerSerializer(key, serializer);
+    }
+
+    @Override
+    public void registerDeserializer(MessageCodeKey key, OFGeneralDeserializer deserializer) {
+       deserializerRegistry.registerDeserializer(key, deserializer);
+    }
 }
