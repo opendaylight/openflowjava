@@ -10,7 +10,6 @@ package org.opendaylight.openflowjava.protocol.impl.util;
 import org.opendaylight.openflowjava.protocol.api.extensibility.DeserializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.extensibility.OFGeneralDeserializer;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
-import org.opendaylight.openflowjava.util.ExperimenterDeserializerKeyFactory;
 
 /**
  * Helper class for deserializer registration.
@@ -43,29 +42,6 @@ public class SimpleDeserializerRegistryHelper {
         if (deserializer instanceof VersionAssignableFactory) {
             ((VersionAssignableFactory) deserializer).assignVersion(version);
         }
-    }
-
-    /**
-     * Register experimenter deserializer in registry.
-     * @param experimenterId experimenterID of experimenter message
-     * @param type type of experimenter message
-     * @param deserializer deserializer instance
-     */
-    public void registerExperimenterDeserializer (final long experimenterId, final long type,
-                                                  final OFGeneralDeserializer deserializer) {
-        registry.registerDeserializer(ExperimenterDeserializerKeyFactory
-                .createExperimenterMessageDeserializerKey(version, experimenterId, type), deserializer);
-    }
-
-    /**
-     * Register experimenter error deserializer in registry.
-     * @param experimenterId experimenterID of experimenter message
-     * @param deserializer deserializer instance
-     */
-    public void registerExperimenterErrorDeserializer (final long experimenterId,
-                                                       final OFGeneralDeserializer deserializer) {
-        registry.registerDeserializer(ExperimenterDeserializerKeyFactory
-                .createExperimenterErrorDeserializerKey(version, experimenterId), deserializer);
     }
 
 }

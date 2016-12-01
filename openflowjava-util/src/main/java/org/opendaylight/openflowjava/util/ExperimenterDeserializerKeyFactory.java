@@ -10,7 +10,6 @@ package org.opendaylight.openflowjava.util;
 
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdTypeDeserializerKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.approved.extensions.rev160802.bundle.properties.bundle.property.bundle.property.entry.bundle.experimenter.property.BundleExperimenterPropertyData;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ErrorMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
@@ -108,14 +107,4 @@ public abstract class ExperimenterDeserializerKeyFactory {
         return new ExperimenterIdDeserializerKey(version, experimenterId, MeterBandExperimenterCase.class);
     }
 
-    /**
-     * @param version openflow wire version
-     * @param experimenterId experimenter ID
-     * @param type experimenter type according to vendor implementation
-     * @return key instance
-     */
-    public static ExperimenterIdTypeDeserializerKey createBundlePropertyDeserializerKey(
-            short version, long experimenterId, long type) {
-        return new ExperimenterIdTypeDeserializerKey(version, experimenterId, type, BundleExperimenterPropertyData.class);
-    }
 }
