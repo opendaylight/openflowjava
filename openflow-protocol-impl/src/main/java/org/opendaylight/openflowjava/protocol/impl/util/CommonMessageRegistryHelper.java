@@ -39,15 +39,4 @@ public class CommonMessageRegistryHelper {
         serializerRegistry.registerSerializer(new MessageTypeKey<>(version, msgType), serializer);
     }
 
-    /**
-     * Registers experimenter serializer in registry.
-     * @param experimenterId experimenterID of experimenter message
-     * @param type type of experimenter message
-     * @param serializer serializer instance
-     */
-    public void registerExperimenterSerializer(final long experimenterId, final long type,
-                                               final OFGeneralSerializer serializer) {
-        serializerRegistry.registerSerializer(ExperimenterSerializerKeyFactory
-                .createExperimenterMessageSerializerKey(version, experimenterId, type), serializer);
-    }
 }

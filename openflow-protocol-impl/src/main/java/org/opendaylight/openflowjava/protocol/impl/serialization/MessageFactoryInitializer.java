@@ -9,8 +9,6 @@ package org.opendaylight.openflowjava.protocol.impl.serialization;
 
 import org.opendaylight.openflowjava.protocol.api.extensibility.SerializerRegistry;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.impl.serialization.experimenter.BundleAddMessageFactory;
-import org.opendaylight.openflowjava.protocol.impl.serialization.experimenter.BundleControlFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.BarrierInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.EchoInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.EchoReplyInputMessageFactory;
@@ -39,9 +37,6 @@ import org.opendaylight.openflowjava.protocol.impl.serialization.factories.SetCo
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.TableModInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.factories.VendorInputMessageFactory;
 import org.opendaylight.openflowjava.protocol.impl.util.CommonMessageRegistryHelper;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.approved.extensions.rev160802.experimenter.input.experimenter.data.of.choice.bundle.add.message.message.FlowModCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.approved.extensions.rev160802.experimenter.input.experimenter.data.of.choice.bundle.add.message.message.GroupModCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.approved.extensions.rev160802.experimenter.input.experimenter.data.of.choice.bundle.add.message.message.PortModCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoReplyInput;
@@ -116,16 +111,5 @@ public final class MessageFactoryInitializer {
         registryHelper.registerSerializer(SetAsyncInput.class, new SetAsyncInputMessageFactory());
         registryHelper.registerSerializer(SetConfigInput.class, new SetConfigMessageFactory());
         registryHelper.registerSerializer(TableModInput.class, new TableModInputMessageFactory());
-
-        // register ONF approved experimenter serializers
-        registryHelper.registerExperimenterSerializer(EncodeConstants.ONF_EXPERIMENTER_ID,
-                EncodeConstants.ONF_ET_BUNDLE_CONTROL, new BundleControlFactory());
-        registryHelper.registerExperimenterSerializer(EncodeConstants.ONF_EXPERIMENTER_ID,
-                EncodeConstants.ONF_ET_BUNDLE_ADD_MESSAGE, new BundleAddMessageFactory());
-
-        // register serializers for inner messages of BundleAddMessage
-        registryHelper.registerSerializer(FlowModCase.class, new FlowModInputMessageFactory());
-        registryHelper.registerSerializer(GroupModCase.class, new GroupModInputMessageFactory());
-        registryHelper.registerSerializer(PortModCase.class, new PortModInputMessageFactory());
     }
 }
