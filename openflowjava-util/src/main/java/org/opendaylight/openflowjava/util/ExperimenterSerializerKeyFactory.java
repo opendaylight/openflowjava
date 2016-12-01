@@ -11,7 +11,6 @@ package org.opendaylight.openflowjava.util;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdMeterSubTypeSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdSerializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdTypeSerializerKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.approved.extensions.rev160802.bundle.properties.bundle.property.bundle.property.entry.bundle.experimenter.property.BundleExperimenterPropertyData;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.common.types.rev130731.ExperimenterMeterBandSubType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
@@ -69,14 +68,4 @@ public abstract class ExperimenterSerializerKeyFactory {
         return new ExperimenterIdMeterSubTypeSerializerKey<>(msgVersion, experimenterId, MeterBandExperimenterCase.class, meterSubType);
     }
 
-    /**
-     * @param msgVersion openflow wire version
-     * @param experimenterId experimenter ID
-     * @param type experimenter type according to vendor implementation
-     * @return key instance
-     */
-    public static ExperimenterIdSerializerKey<BundleExperimenterPropertyData> createBundlePropertySerializerKey(
-            short msgVersion, long experimenterId, long type) {
-        return new ExperimenterIdTypeSerializerKey<>(msgVersion, experimenterId, type, BundleExperimenterPropertyData.class);
-    }
 }

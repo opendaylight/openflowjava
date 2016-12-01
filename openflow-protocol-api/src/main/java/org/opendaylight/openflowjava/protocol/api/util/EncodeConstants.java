@@ -68,10 +68,6 @@ public abstract class EncodeConstants {
     public static final long ONF_EXPERIMENTER_ID = 0x4F4E4600;
     /** ONFOXM_ET_TCP_FLAGS value */
     public static final int ONFOXM_ET_TCP_FLAGS = 42;
-    /** ONF_ET_BUNDLE_CONTROL message type */
-    public static final int ONF_ET_BUNDLE_CONTROL = 2300;
-    /** ONF_ET_BUNDLE_ADD_MESSAGE message type */
-    public static final int ONF_ET_BUNDLE_ADD_MESSAGE = 2301;
 
     private EncodeConstants() {
         //not called
