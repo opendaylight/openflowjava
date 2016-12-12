@@ -6,12 +6,11 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.openflowjava.protocol.impl.deserialization;
+package org.opendaylight.openflowjava.protocol.api.keys;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.impl.util.TypeToClassKey;
 /**
  *
  * @author madamjak

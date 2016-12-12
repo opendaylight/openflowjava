@@ -38,6 +38,7 @@ import org.opendaylight.openflowjava.protocol.impl.deserialization.Deserializati
 import org.opendaylight.openflowjava.protocol.impl.deserialization.DeserializerRegistryImpl;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializationFactory;
 import org.opendaylight.openflowjava.protocol.impl.serialization.SerializerRegistryImpl;
+import org.opendaylight.openflowjava.protocol.api.keys.TypeToClassKey;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.TransportProtocol;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
@@ -309,5 +310,15 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider, C
     @Override
     public void registerDeserializer(MessageCodeKey key, OFGeneralDeserializer deserializer) {
        deserializerRegistry.registerDeserializer(key, deserializer);
+    }
+
+    @Override
+    public void registerDeserializerMapping(final TypeToClassKey key, final Class<?> clazz) {
+        deserializationFactory.registerMapping(key, clazz);
+    }
+
+    @Override
+    public boolean unregisterDeserializerMapping(final TypeToClassKey key) {
+        return deserializationFactory.unregisterMapping(key);
     }
 }
