@@ -11,7 +11,7 @@ package org.opendaylight.openflowjava.protocol.impl.deserialization;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.openflowjava.protocol.api.util.EncodeConstants;
-import org.opendaylight.openflowjava.protocol.impl.util.TypeToClassKey;
+import org.opendaylight.openflowjava.protocol.api.keys.TypeToClassKey;
 /**
  *
  * @author madamjak

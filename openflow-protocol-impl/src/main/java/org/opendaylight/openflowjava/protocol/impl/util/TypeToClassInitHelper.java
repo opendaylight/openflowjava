@@ -8,6 +8,7 @@
 package org.opendaylight.openflowjava.protocol.impl.util;
 
 import java.util.Map;
+import org.opendaylight.openflowjava.protocol.api.keys.TypeToClassKey;
 
 /**
  * @author michal.polkorab
