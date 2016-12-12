@@ -14,6 +14,7 @@ import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterIdDeserialize
 import org.opendaylight.openflowjava.protocol.api.keys.ExperimenterInstructionDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MatchEntryDeserializerKey;
 import org.opendaylight.openflowjava.protocol.api.keys.MessageCodeKey;
+import org.opendaylight.openflowjava.protocol.api.keys.TypeToClassKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.ErrorMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.experimenter.core.ExperimenterDataOfChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.meter.band.header.meter.band.MeterBandExperimenterCase;
@@ -127,4 +128,18 @@ public interface DeserializerExtensionProvider {
      */
     void registerQueuePropertyDeserializer(ExperimenterIdDeserializerKey key,
             OFDeserializer<QueueProperty> deserializer);
+
+    /**
+     * Registers type to class mapping used to assign return type when deserializing message
+     * @param key type to class key
+     * @param clazz return class
+     */
+    void registerDeserializerMapping(TypeToClassKey key, Class<?> clazz);
+
+    /**
+     * Unregisters type to class mapping used to assign return type when deserializing message
+     * @param key type to class key
+     * @return true if mapping was successfully removed
+     */
+    boolean unregisterDeserializerMapping(TypeToClassKey key);
 }
