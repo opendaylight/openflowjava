@@ -1,0 +1,10 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+1: Daniel Farrell <dfarrell@redhat.com>
+Code-Review+1: Sam Hague <shague@redhat.com>
+Code-Review+1: Shuva Jyoti Kar <shuva.jyoti.kar.87@gmail.com>
+Code-Review+2: michal rehak <mirehak@cisco.com>
+Submitted-by: michal rehak <mirehak@cisco.com>
+Submitted-at: Fri, 13 Jan 2017 08:36:05 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/49386
+Project: openflowjava
+Branch: refs/heads/master
