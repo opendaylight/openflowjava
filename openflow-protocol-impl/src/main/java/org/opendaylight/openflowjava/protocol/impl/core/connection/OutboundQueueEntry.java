@@ -10,24 +10,47 @@ package org.opendaylight.openflowjava.protocol.impl.core.connection;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FutureCallback;
+
+import java.util.function.Function;
+
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.BarrierInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.PacketOutInput;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 final class OutboundQueueEntry {
     private static final Logger LOG = LoggerFactory.getLogger(OutboundQueueEntry.class);
+    private static final Function<OfHeader, Boolean> DEFAULT_IS_COMPLETE = new Function<OfHeader, Boolean>() {
+
+        @Override
+        public Boolean apply(final OfHeader message) {
+            if (message instanceof MultipartReplyMessage) {
+                return !((MultipartReplyMessage) message).getFlags().isOFPMPFREQMORE();
+            }
+
+            return true;
+        }
+
+    };
+
     private FutureCallback<OfHeader> callback;
     private OfHeader message;
     private boolean completed;
     private boolean barrier;
     private volatile boolean committed;
     private OutboundQueueException lastException = null;
+    private Function<OfHeader, Boolean> isCompletedFunction;
 
     void commit(final OfHeader message, final FutureCallback<OfHeader> callback) {
+        commit(message, callback, DEFAULT_IS_COMPLETE);
+    }
+
+    void commit(final OfHeader message, final FutureCallback<OfHeader> callback,
+            final Function<OfHeader, Boolean> isCompletedFunction) {
         if (this.completed) {
             LOG.warn("Can't commit a completed message.");
             if (callback != null) {
@@ -37,6 +60,7 @@ final class OutboundQueueEntry {
             this.message = message;
             this.callback = callback;
             this.barrier = message instanceof BarrierInput;
+            this.isCompletedFunction = isCompletedFunction;
 
             // Volatile write, needs to be last
             this.committed = true;
@@ -90,13 +114,7 @@ final class OutboundQueueEntry {
 
         // Multipart requests are special, we have to look at them to see
         // if there is something outstanding and adjust ourselves accordingly
-        final boolean reallyComplete;
-        if (response instanceof MultipartReplyMessage) {
-            reallyComplete = !((MultipartReplyMessage) response).getFlags().isOFPMPFREQMORE();
-            LOG.debug("Multipart reply {}", response);
-        } else {
-            reallyComplete = true;
-        }
+        final boolean reallyComplete = isCompletedFunction.apply(response);
 
         completed = reallyComplete;
         if (callback != null) {
