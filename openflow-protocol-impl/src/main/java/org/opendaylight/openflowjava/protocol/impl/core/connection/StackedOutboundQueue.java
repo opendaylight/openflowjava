@@ -8,8 +8,12 @@
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
 import com.google.common.util.concurrent.FutureCallback;
+
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
+import java.util.function.Function;
+
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,10 +31,11 @@ final class StackedOutboundQueue extends AbstractStackedOutboundQueue {
      * This method is expected to be called from multiple threads concurrently
      */
     @Override
-    public void commitEntry(final Long xid, final OfHeader message, final FutureCallback<OfHeader> callback) {
+    public void commitEntry(final Long xid, final OfHeader message, final FutureCallback<OfHeader> callback,
+            final Function<OfHeader, Boolean> isCompletedFunction) {
         final OutboundQueueEntry entry = getEntry(xid);
 
-        entry.commit(message, callback);
+        entry.commit(message, callback, isCompletedFunction);
         if (entry.isBarrier()) {
             long my = xid;
             for (;;) {
