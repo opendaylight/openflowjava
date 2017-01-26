@@ -10,23 +10,30 @@ package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
+import com.google.common.util.concurrent.FutureCallback;
+
 import io.netty.channel.Channel;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
+import java.util.function.Function;
+
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
+
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueue;
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueException;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 abstract class AbstractStackedOutboundQueue implements OutboundQueue {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractStackedOutboundQueue.class);
-
     protected static final AtomicLongFieldUpdater<AbstractStackedOutboundQueue> LAST_XID_OFFSET_UPDATER = AtomicLongFieldUpdater
             .newUpdater(AbstractStackedOutboundQueue.class, "lastXid");
 
@@ -53,6 +60,11 @@ abstract class AbstractStackedOutboundQueue implements OutboundQueue {
         firstSegment = StackedSegment.create(0L);
         uncompletedSegments.add(firstSegment);
         unflushedSegments.add(firstSegment);
+    }
+
+    @Override
+    public void commitEntry(final Long xid, final OfHeader message, final FutureCallback<OfHeader> callback) {
+        commitEntry(xid, message, callback, OutboundQueueEntry.DEFAULT_IS_COMPLETE);
     }
 
     @GuardedBy("unflushedSegments")
