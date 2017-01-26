@@ -9,10 +9,17 @@
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
 import com.google.common.util.concurrent.FutureCallback;
+
 import io.netty.channel.Channel;
+
+import java.util.function.Function;
+
 import javax.annotation.Nonnull;
+
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.FlowModInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.MultipartReplyMessage;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OfHeader;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,14 +39,15 @@ public class StackedOutboundQueueNoBarrier extends AbstractStackedOutboundQueue 
      * This method is expected to be called from multiple threads concurrently
      */
     @Override
-    public void commitEntry(final Long xid, final OfHeader message, final FutureCallback<OfHeader> callback) {
+    public void commitEntry(final Long xid, final OfHeader message, final FutureCallback<OfHeader> callback,
+            final Function<OfHeader, Boolean> isCompletedFunction) {
         final OutboundQueueEntry entry = getEntry(xid);
 
         if (message instanceof FlowModInput) {
             callback.onSuccess(null);
-            entry.commit(message, null);
+            entry.commit(message, null, isCompletedFunction);
         } else {
-            entry.commit(message, callback);
+            entry.commit(message, callback, isCompletedFunction);
         }
 
         LOG.trace("Queue {} committed XID {}", this, xid);
@@ -111,4 +119,5 @@ public class StackedOutboundQueueNoBarrier extends AbstractStackedOutboundQueue 
 
         return entries;
     }
+
 }
