@@ -94,7 +94,18 @@ public class FlowRemovedMessageFactoryTest {
         builder.setMatch(matchBuilder.build());
         FlowRemovedMessage message = builder.build();
         ByteBuf serializedBuffer = UnpooledByteBufAllocator.DEFAULT.buffer();
+
+        // simulate parent message
+        serializedBuffer.writeInt(1);
+        serializedBuffer.writeZero(2);
+        serializedBuffer.writeShort(3);
+
         factory.serialize(message, serializedBuffer);
+
+        // read parent message
+        serializedBuffer.readInt();
+        serializedBuffer.skipBytes(2);
+        serializedBuffer.readShort();
 
         BufferHelper.checkHeaderV13(serializedBuffer, MESSAGE_TYPE, 72);
         Assert.assertEquals("Wrong cookie", message.getCookie().longValue(), serializedBuffer.readLong());

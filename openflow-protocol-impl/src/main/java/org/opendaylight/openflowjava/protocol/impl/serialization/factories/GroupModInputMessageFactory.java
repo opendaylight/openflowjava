@@ -34,13 +34,14 @@ public class GroupModInputMessageFactory implements OFSerializer<GroupMod>, Seri
 
     @Override
     public void serialize(GroupMod message, ByteBuf outBuffer) {
+        int index = outBuffer.writerIndex();
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeShort(message.getCommand().getIntValue());
         outBuffer.writeByte(message.getType().getIntValue());
         outBuffer.writeZero(PADDING_IN_GROUP_MOD_MESSAGE);
         outBuffer.writeInt(message.getGroupId().getValue().intValue());
         serializerBuckets(message.getBucketsList(), outBuffer);
-        ByteBufUtils.updateOFHeaderLength(outBuffer);
+        ByteBufUtils.updateOFHeaderLength(outBuffer, index);
     }
 
     private void serializerBuckets(List<BucketsList> buckets, ByteBuf outBuffer) {

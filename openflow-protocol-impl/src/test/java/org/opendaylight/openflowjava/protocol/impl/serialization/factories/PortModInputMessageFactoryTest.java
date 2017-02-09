@@ -70,7 +70,18 @@ public class PortModInputMessageFactoryTest {
         PortModInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+
+        // simulate parent message
+        out.writeInt(1);
+        out.writeZero(2);
+        out.writeShort(3);
+
         portModFactory.serialize(message, out);
+
+        // read parent message
+        out.readInt();
+        out.skipBytes(2);
+        out.readShort();
 
         BufferHelper.checkHeaderV13(out, MESSAGE_TYPE, MESSAGE_LENGTH);
         Assert.assertEquals("Wrong PortNo", message.getPortNo().getValue().longValue(), out.readUnsignedInt());

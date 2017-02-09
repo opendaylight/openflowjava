@@ -33,6 +33,7 @@ public class PortModInputMessageFactory implements OFSerializer<PortMod> {
 
     @Override
     public void serialize(final PortMod message, final ByteBuf outBuffer) {
+        int index = outBuffer.writerIndex();
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeInt(message.getPortNo().getValue().intValue());
         outBuffer.writeZero(PADDING_IN_PORT_MOD_MESSAGE_01);
@@ -42,7 +43,7 @@ public class PortModInputMessageFactory implements OFSerializer<PortMod> {
         outBuffer.writeInt(createPortConfigBitmask(message.getMask()));
         outBuffer.writeInt(createPortFeaturesBitmask(message.getAdvertise()));
         outBuffer.writeZero(PADDING_IN_PORT_MOD_MESSAGE_03);
-        ByteBufUtils.updateOFHeaderLength(outBuffer);
+        ByteBufUtils.updateOFHeaderLength(outBuffer, index);
     }
 
     /**

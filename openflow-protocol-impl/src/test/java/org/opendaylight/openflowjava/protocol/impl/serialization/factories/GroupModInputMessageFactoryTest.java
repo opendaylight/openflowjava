@@ -69,7 +69,18 @@ public class GroupModInputMessageFactoryTest {
         GroupModInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+
+        // simulate parent message
+        out.writeInt(1);
+        out.writeZero(2);
+        out.writeShort(3);
+
         groupModFactory.serialize(message, out);
+
+        // read parent message
+        out.readInt();
+        out.skipBytes(2);
+        out.readShort();
 
         BufferHelper.checkHeaderV13(out, MESSAGE_TYPE, 32);
         Assert.assertEquals("Wrong command", message.getCommand().getIntValue(), out.readUnsignedShort());
