@@ -33,6 +33,7 @@ public class FlowRemovedMessageFactory implements OFSerializer<FlowRemovedMessag
 
     @Override
     public void serialize(FlowRemovedMessage message, ByteBuf outBuffer) {
+        int index = outBuffer.writerIndex();
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeLong(message.getCookie().longValue());
         outBuffer.writeShort(message.getPriority());
@@ -47,7 +48,7 @@ public class FlowRemovedMessageFactory implements OFSerializer<FlowRemovedMessag
         OFSerializer<Match> matchSerializer = registry
                 .<Match, OFSerializer<Match>> getSerializer(new MessageTypeKey<>(message.getVersion(), Match.class));
         matchSerializer.serialize(message.getMatch(), outBuffer);
-        ByteBufUtils.updateOFHeaderLength(outBuffer);
+        ByteBufUtils.updateOFHeaderLength(outBuffer, index);
     }
 
 }

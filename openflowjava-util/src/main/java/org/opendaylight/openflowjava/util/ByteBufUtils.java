@@ -137,6 +137,15 @@ public abstract class ByteBufUtils {
     }
 
     /**
+     * Write length OF header
+     * @param out writing buffer
+     * @param index writing index
+     */
+    public static void updateOFHeaderLength(final ByteBuf out, int index) {
+        out.setShort(index + EncodeConstants.OFHEADER_LENGTH_INDEX, out.writerIndex() - index);
+    }
+
+    /**
      * Fills the bitmask from boolean map where key is bit position
      * @param booleanMap bit to boolean mapping
      * @return bit mask
