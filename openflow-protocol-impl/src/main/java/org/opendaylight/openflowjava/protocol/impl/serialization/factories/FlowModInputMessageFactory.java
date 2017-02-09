@@ -38,6 +38,7 @@ public class FlowModInputMessageFactory implements OFSerializer<FlowMod>, Serial
 
     @Override
     public void serialize(final FlowMod message, final ByteBuf outBuffer) {
+        int index = outBuffer.writerIndex();
         ByteBufUtils.writeOFHeader(MESSAGE_TYPE, message, outBuffer, EncodeConstants.EMPTY_LENGTH);
         outBuffer.writeLong(message.getCookie().longValue());
         outBuffer.writeLong(message.getCookieMask().longValue());
@@ -54,7 +55,7 @@ public class FlowModInputMessageFactory implements OFSerializer<FlowMod>, Serial
         registry.<Match, OFSerializer<Match>>getSerializer(new MessageTypeKey<>(message.getVersion(), Match.class))
             .serialize(message.getMatch(), outBuffer);
         ListSerializer.serializeList(message.getInstruction(), INSTRUCTION_KEY_MAKER, registry, outBuffer);
-        ByteBufUtils.updateOFHeaderLength(outBuffer);
+        ByteBufUtils.updateOFHeaderLength(outBuffer, index);
     }
 
     @Override

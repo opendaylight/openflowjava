@@ -154,7 +154,18 @@ public class FlowModInputMessageFactoryTest {
         FlowModInput message = builder.build();
 
         ByteBuf out = UnpooledByteBufAllocator.DEFAULT.buffer();
+
+        // simulate parent message
+        out.writeInt(1);
+        out.writeZero(2);
+        out.writeShort(3);
+
         flowModFactory.serialize(message, out);
+
+        // read parent message
+        out.readInt();
+        out.skipBytes(2);
+        out.readShort();
 
         BufferHelper.checkHeaderV13(out,(byte) 14, 128);
         cookie = new byte[EncodeConstants.SIZE_OF_LONG_IN_BYTES];
