@@ -448,4 +448,22 @@ public class ByteBufUtilsTest {
         Assert.assertTrue(bytes.length == shorts.size()*2);
         Assert.assertArrayEquals(EXPECTEDVALUES1AND255, bytes);
     }
+
+    @Test
+    public void testUpdateHeader() throws IOException {
+        ByteBuf buffer = PooledByteBufAllocator.DEFAULT.buffer();
+        buffer.writeInt(1);
+        int start = buffer.writerIndex();
+        buffer.writeShort(4);
+        buffer.writeShort(EncodeConstants.EMPTY_LENGTH);
+        buffer.writeLong(8);
+        int end = buffer.writerIndex();
+
+        ByteBufUtils.updateOFHeaderLength(buffer, start);
+        Assert.assertEquals(buffer.readInt(), 1);
+        Assert.assertEquals(buffer.readShort(), 4);
+        Assert.assertEquals(buffer.readShort(), 12);
+        Assert.assertEquals(buffer.readLong(), 8l);
+        Assert.assertEquals(buffer.getShort(start + EncodeConstants.OFHEADER_LENGTH_INDEX), end - start);
+    }
 }
