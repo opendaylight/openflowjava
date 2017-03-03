@@ -11,7 +11,9 @@
     <artifactId>openflow-protocol-api</artifactId>
     <version>0.10.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
-    <name>Openflow Protocol Library - API</name>
+    <!-- <name> formatting is used by autorelease to parse and notify projects on
+         build failure. Please do not modify this unless you have a good reason. -->
+    <name>ODL :: openflowjava :: ${project.artifactId}</name>
     <scm>
         <url>https://wiki.opendaylight.org/view/Openflow_Protocol_Library:Main</url>
         <tag>HEAD</tag>

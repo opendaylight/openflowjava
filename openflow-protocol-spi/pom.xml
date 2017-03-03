@@ -9,7 +9,9 @@
     <artifactId>openflow-protocol-spi</artifactId>
     <packaging>bundle</packaging>
 
-    <name>Openflow Protocol Library - SPI</name>
+    <!-- <name> formatting is used by autorelease to parse and notify projects on
+         build failure. Please do not modify this unless you have a good reason. -->
+    <name>ODL :: openflowjava :: ${project.artifactId}</name>
     <scm>
         <url>https://wiki.opendaylight.org/view/Openflow_Protocol_Library:Main</url>
       <tag>HEAD</tag>
