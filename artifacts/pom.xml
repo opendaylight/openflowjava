@@ -22,6 +22,9 @@
     <artifactId>openflowjava-artifacts</artifactId>
     <version>0.9.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <!-- <name> formatting is used by autorelease to parse and notify projects on
+         build failure. Please do not modify this unless you have a good reason. -->
+    <name>ODL :: openflowjava :: ${project.artifactId}</name>
 
     <dependencyManagement>
         <dependencies>
@@ -94,4 +97,3 @@
     </dependencyManagement>
 
 </project>
-
