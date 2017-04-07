@@ -4,12 +4,12 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>0.9.3-SNAPSHOT</version>
+        <version>0.9.4-SNAPSHOT</version>
         <relativePath/>
     </parent>
     <groupId>org.opendaylight.openflowjava</groupId>
     <artifactId>openflow-protocol-api</artifactId>
-    <version>0.8.3-SNAPSHOT</version>
+    <version>0.8.4-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Openflow Protocol Library - API</name>
     <scm>
@@ -18,8 +18,8 @@
     </scm>
 
     <properties>
-      <mdsal.version>2.1.3-SNAPSHOT</mdsal.version>
-      <mdsal.model.version>0.9.3-SNAPSHOT</mdsal.model.version>
+      <mdsal.version>2.1.4-SNAPSHOT</mdsal.version>
+      <mdsal.model.version>0.9.4-SNAPSHOT</mdsal.model.version>
     </properties>
 
     <dependencyManagement>
