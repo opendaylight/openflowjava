@@ -7,6 +7,7 @@
  */
 package org.opendaylight.openflowjava.protocol.impl.core.connection;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.concurrent.ExecutionException;
@@ -19,16 +20,20 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.openflowjava.protocol.impl.core.UdpChannelInitializer;
 import org.opendaylight.openflowjava.protocol.impl.core.UdpHandler;
-
-import com.google.common.util.concurrent.ListenableFuture;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author madamjak
  *
  */
 public class UdpHandlerTest {
-    @Mock UdpChannelInitializer udpChannelInitializerMock;
-    UdpHandler udpHandler;
+
+    private static final Logger LOG = LoggerFactory.getLogger(UdpHandlerTest.class);
+
+    @Mock
+    private UdpChannelInitializer udpChannelInitializerMock;
+    private UdpHandler udpHandler;
     /**
      * Mock init
      */
@@ -44,12 +49,12 @@ public class UdpHandlerTest {
      * @throws IOException
      */
     @Test
-    public void testWithEmptyAddress() throws InterruptedException, ExecutionException, IOException {
+    public void testWithEmptyAddress() throws Exception {
         udpHandler = new UdpHandler(null, 0);
         udpHandler.setChannelInitializer(udpChannelInitializerMock);
         Assert.assertTrue("Wrong - start server", startupServer(false));
         try {
-            Assert.assertTrue(udpHandler.getIsOnlineFuture().get(1500,TimeUnit.MILLISECONDS).booleanValue());
+            Assert.assertTrue(udpHandler.getIsOnlineFuture().get(1500, TimeUnit.MILLISECONDS));
         } catch (TimeoutException e) {
             Assert.fail("Wrong - getIsOnlineFuture timed out");
         }
@@ -64,12 +69,12 @@ public class UdpHandlerTest {
      * @throws IOException
      */
     @Test
-    public void testWithEmptyAddressOnEpoll() throws InterruptedException, ExecutionException, IOException {
+    public void testWithEmptyAddressOnEpoll() throws Exception {
         udpHandler = new UdpHandler(null, 0);
         udpHandler.setChannelInitializer(udpChannelInitializerMock);
         Assert.assertTrue("Wrong - start server", startupServer(true));
         try {
-            Assert.assertTrue(udpHandler.getIsOnlineFuture().get(1500,TimeUnit.MILLISECONDS).booleanValue());
+            Assert.assertTrue(udpHandler.getIsOnlineFuture().get(1500,TimeUnit.MILLISECONDS));
         } catch (TimeoutException e) {
             Assert.fail("Wrong - getIsOnlineFuture timed out");
         }
@@ -84,13 +89,13 @@ public class UdpHandlerTest {
      * @throws IOException
      */
     @Test
-    public void testWithAddressAndPort() throws InterruptedException, ExecutionException, IOException{
+    public void testWithAddressAndPort() throws Exception{
         int port = 9874;
         udpHandler = new UdpHandler(InetAddress.getLocalHost(), port);
         udpHandler.setChannelInitializer(udpChannelInitializerMock);
         Assert.assertTrue("Wrong - start server", startupServer(false));
         try {
-            Assert.assertTrue(udpHandler.getIsOnlineFuture().get(1500,TimeUnit.MILLISECONDS).booleanValue());
+            Assert.assertTrue(udpHandler.getIsOnlineFuture().get(1500,TimeUnit.MILLISECONDS));
         } catch (TimeoutException e) {
             Assert.fail("Wrong - getIsOnlineFuture timed out");
         }
@@ -105,13 +110,13 @@ public class UdpHandlerTest {
      * @throws IOException
      */
     @Test
-    public void testWithAddressAndPortOnEpoll() throws InterruptedException, ExecutionException, IOException{
+    public void testWithAddressAndPortOnEpoll() throws Exception {
         int port = 9874;
         udpHandler = new UdpHandler(InetAddress.getLocalHost(), port);
         udpHandler.setChannelInitializer(udpChannelInitializerMock);
         Assert.assertTrue("Wrong - start server", startupServer(true));
         try {
-            Assert.assertTrue(udpHandler.getIsOnlineFuture().get(1500,TimeUnit.MILLISECONDS).booleanValue());
+            Assert.assertTrue(udpHandler.getIsOnlineFuture().get(1500,TimeUnit.MILLISECONDS));
         } catch (TimeoutException e) {
             Assert.fail("Wrong - getIsOnlineFuture timed out");
         }
@@ -119,25 +124,28 @@ public class UdpHandlerTest {
         shutdownServer();
     }
 
-    private Boolean startupServer(boolean isEpollEnabled) throws InterruptedException, IOException, ExecutionException {
+    private Boolean startupServer(final boolean isEpollEnabled) throws InterruptedException, IOException, ExecutionException {
         ListenableFuture<Boolean> online = udpHandler.getIsOnlineFuture();
         /**
          * Test EPoll based native transport if isEpollEnabled is true.
          * Else use Nio based transport.
          */
         udpHandler.initiateEventLoopGroups(null, isEpollEnabled);
-            (new Thread(udpHandler)).start();
-            int retry = 0;
-            while (online.isDone() != true && retry++ < 20) {
-                Thread.sleep(100);
-            }
-        return online.isDone() ;
+        (new Thread(udpHandler)).start();
+
+        boolean startedSuccessfully = false;
+        try {
+            startedSuccessfully = online.get(10, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            LOG.warn("Timeout while waiting for UDP handler to start", e);
+        }
+
+        return online.isDone();
     }
 
-    private void shutdownServer() throws InterruptedException, ExecutionException {
+    private void shutdownServer() throws InterruptedException, ExecutionException, TimeoutException {
         ListenableFuture<Boolean> shutdownRet = udpHandler.shutdown() ;
-        while ( shutdownRet.isDone() != true )
-            Thread.sleep(100) ;
-        Assert.assertTrue("Wrong - shutdown failed", shutdownRet.get());
+        final Boolean shutdownSucceeded = shutdownRet.get(10, TimeUnit.SECONDS);
+        Assert.assertTrue("Wrong - shutdown failed", shutdownSucceeded);
     }
 }
