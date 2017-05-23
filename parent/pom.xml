@@ -130,7 +130,7 @@
             </plugin>
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
-	          <artifactId>maven-checkstyle-plugin</artifactId>
+              <artifactId>maven-checkstyle-plugin</artifactId>
               <version>${checkstyle.version}</version>
               <configuration>
                 <failOnViolation>false</failOnViolation>
@@ -157,8 +157,42 @@
               </executions>
             </plugin>
             <plugin>
+              <artifactId>maven-clean-plugin</artifactId>
+              <configuration>
+                <filesets>
+                  <fileset>
+                    <directory>${jmxGeneratorPath}</directory>
+                    <includes>
+                      <include>**</include>
+                    </includes>
+                  </fileset>
+                  <fileset>
+                    <directory>${salGeneratorPath}</directory>
+                    <includes>
+                      <include>**</include>
+                    </includes>
+                  </fileset>
+                </filesets>
+              </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                  <execution>
+                    <id>add-yang-sources</id>
+                    <phase>generate-sources</phase>
+                    <goals>
+                      <goal>add-source</goal>
+                    </goals>
+                    <configuration>
+                      <sources>
+                        <source>${jmxGeneratorPath}</source>
+                        <source>${salGeneratorPath}</source>
+                      </sources>
+                    </configuration>
+                  </execution>
+                </executions>
             </plugin>
         </plugins>
         <pluginManagement>
