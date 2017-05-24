@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7af0899e_c3713479",
+        "filename": "parent/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2017-05-24T07:19:05Z",
+      "side": 1,
+      "message": "I believe this has no effect as both paths point into target folder.",
+      "range": {
+        "startLine": 159,
+        "startChar": 11,
+        "endLine": 177,
+        "endChar": 21
+      },
+      "revId": "63f0d770c0e1a10d58c4f49cd3b5ed8868bc87b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7af0899e_830f2ce1",
+        "filename": "parent/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 556
+      },
+      "writtenOn": "2017-05-24T07:19:05Z",
+      "side": 1,
+      "message": "What is real impact of this? \nI mean that project building works even without local explicit adding generated folders to source paths.",
+      "range": {
+        "startLine": 181,
+        "startChar": 16,
+        "endLine": 195,
+        "endChar": 29
+      },
+      "revId": "63f0d770c0e1a10d58c4f49cd3b5ed8868bc87b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
