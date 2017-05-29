@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3afa9182_9573e6e6",
+        "filename": "parent/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-05-29T15:16:47Z",
+      "side": 1,
+      "message": "Agreed, and removed from this change.",
+      "parentUuid": "7af0899e_c3713479",
+      "range": {
+        "startLine": 159,
+        "startChar": 11,
+        "endLine": 177,
+        "endChar": 21
+      },
+      "revId": "63f0d770c0e1a10d58c4f49cd3b5ed8868bc87b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7af0899e_830f2ce1",
         "filename": "parent/pom.xml",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2017-05-24T07:19:05Z",
       "side": 1,
       "message": "What is real impact of this? \nI mean that project building works even without local explicit adding generated folders to source paths.",
+      "range": {
+        "startLine": 181,
+        "startChar": 16,
+        "endLine": 195,
+        "endChar": 29
+      },
+      "revId": "63f0d770c0e1a10d58c4f49cd3b5ed8868bc87b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_f5806a8d",
+        "filename": "parent/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-05-29T15:16:47Z",
+      "side": 1,
+      "message": "yeah but in the Eclipse IDE the generated folders are not added as source paths to the projects (Eclipse) configuration without this, so you get a lot of red without this.  This is how all other projects do this.",
+      "parentUuid": "7af0899e_830f2ce1",
       "range": {
         "startLine": 181,
         "startChar": 16,
