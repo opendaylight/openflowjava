@@ -142,7 +142,7 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider, C
         // TODO : Add option to disable Epoll.
         boolean isEpollEnabled = Epoll.isAvailable();
 
-        if (transportProtocol.equals(TransportProtocol.TCP) || transportProtocol.equals(TransportProtocol.TLS)) {
+        if (transportProtocol != null && (transportProtocol.equals(TransportProtocol.TCP) || transportProtocol.equals(TransportProtocol.TLS))) {
             server = new TcpHandler(connConfig.getAddress(), connConfig.getPort());
             final TcpChannelInitializer channelInitializer = factory.createPublishingChannelInitializer();
             ((TcpHandler) server).setChannelInitializer(channelInitializer);
@@ -152,7 +152,7 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider, C
             connectionInitializer = new TcpConnectionInitializer(workerGroupFromTcpHandler, isEpollEnabled);
             connectionInitializer.setChannelInitializer(channelInitializer);
             connectionInitializer.run();
-        } else if (transportProtocol.equals(TransportProtocol.UDP)){
+        } else if (transportProtocol != null && transportProtocol.equals(TransportProtocol.UDP)){
             server = new UdpHandler(connConfig.getAddress(), connConfig.getPort());
             ((UdpHandler) server).initiateEventLoopGroups(connConfig.getThreadConfiguration(), isEpollEnabled);
             ((UdpHandler) server).setChannelInitializer(factory.createUdpChannelInitializer());
