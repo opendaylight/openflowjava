@@ -131,13 +131,26 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.openflowjava</groupId>
+            <artifactId>openflowjava-util</artifactId>
+        </dependency>
+        <!-- config files -->
+        <dependency>
+            <groupId>org.opendaylight.openflowjava</groupId>
+            <artifactId>openflowjava-config</artifactId>
+            <type>xml</type>
+            <classifier>configstats</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.openflowjava</groupId>
             <artifactId>openflowjava-blueprint-config</artifactId>
             <type>xml</type>
             <classifier>config</classifier>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.openflowjava</groupId>
-            <artifactId>openflowjava-util</artifactId>
+            <artifactId>openflowjava-blueprint-config</artifactId>
+            <type>xml</type>
+            <classifier>legacyConfig</classifier>
         </dependency>
     </dependencies>
 
