@@ -4,13 +4,13 @@
     <parent>
         <groupId>org.opendaylight.odlparent</groupId>
         <artifactId>odlparent</artifactId>
-        <version>1.7.4-SNAPSHOT</version>
+        <version>1.7.5-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <groupId>org.opendaylight.openflowjava</groupId>
     <artifactId>openflowjava-parent</artifactId>
-    <version>0.8.4-SNAPSHOT</version>
+    <version>0.8.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>openflowjava</name> <!-- Used by Sonar to set project name -->
     <description>
@@ -51,13 +51,13 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jmxGeneratorPath>${project.build.directory}/yang-gen-config</jmxGeneratorPath>
-        <karaf.distro.empty.version>1.7.4-SNAPSHOT</karaf.distro.empty.version>
+        <karaf.distro.empty.version>1.7.5-SNAPSHOT</karaf.distro.empty.version>
         <salGeneratorPath>${project.build.directory}/yang-gen-sal</salGeneratorPath>
 
-        <config.version>0.5.4-SNAPSHOT</config.version>
-        <controller.mdsal.version>1.4.4-SNAPSHOT</controller.mdsal.version>
-        <mdsal.model.version>0.9.4-SNAPSHOT</mdsal.model.version>
-        <yangtools.version>1.0.4-SNAPSHOT</yangtools.version>
+        <config.version>0.5.5-SNAPSHOT</config.version>
+        <controller.mdsal.version>1.4.5-SNAPSHOT</controller.mdsal.version>
+        <mdsal.model.version>0.9.5-SNAPSHOT</mdsal.model.version>
+        <yangtools.version>1.0.5-SNAPSHOT</yangtools.version>
     </properties>
 
     <dependencyManagement>
