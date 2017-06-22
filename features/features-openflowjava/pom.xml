@@ -3,180 +3,33 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.opendaylight.odlparent</groupId>
-    <artifactId>features-parent</artifactId>
-    <version>1.9.0</version>
+    <artifactId>feature-repo-parent</artifactId>
+    <version>2.0.0</version>
     <relativePath/>
   </parent>
 
   <groupId>org.opendaylight.openflowjava</groupId>
   <artifactId>features-openflowjava</artifactId>
   <version>0.10.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <packaging>feature</packaging>
   <!-- <name> formatting is used by autorelease to parse and notify projects on
        build failure. Please do not modify this unless you have a good reason. -->
   <name>ODL :: openflowjava :: ${project.artifactId}</name>
 
-  <properties>
-    <config.version>0.7.0-SNAPSHOT</config.version>
-    <controller.mdsal.version>1.6.0-SNAPSHOT</controller.mdsal.version>
-    <mdsal.version>2.3.0-SNAPSHOT</mdsal.version>
-    <mdsal.model.version>0.11.0-SNAPSHOT</mdsal.model.version>
-  </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <!-- This project -->
-      <dependency>
-        <groupId>org.opendaylight.openflowjava</groupId>
-        <artifactId>openflowjava-artifacts</artifactId>
-        <version>${project.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-
-      <!-- This project -->
-      <dependency>
-        <groupId>org.opendaylight.odlparent</groupId>
-        <artifactId>odlparent-artifacts</artifactId>
-        <version>1.9.0</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-
-      <!-- MD-SAL -->
-      <dependency>
-        <groupId>org.opendaylight.mdsal</groupId>
-        <artifactId>mdsal-artifacts</artifactId>
-        <version>${mdsal.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-
-      <dependency>
-        <groupId>org.opendaylight.mdsal.model</groupId>
-        <artifactId>mdsal-model-artifacts</artifactId>
-        <version>${mdsal.model.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-
-      <!-- Controller infrastructure -->
-      <dependency>
-        <groupId>org.opendaylight.controller</groupId>
-        <artifactId>config-artifacts</artifactId>
-        <version>${config.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-      <dependency>
-        <groupId>org.opendaylight.controller</groupId>
-        <artifactId>mdsal-artifacts</artifactId>
-        <version>${controller.mdsal.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-
   <dependencies>
-    <!-- feature dependencies -->
     <dependency>
-      <groupId>org.opendaylight.mdsal</groupId>
-      <artifactId>features-mdsal</artifactId>
-      <version>${mdsal.version}</version>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>odl-openflowjava-all</artifactId>
+      <version>${project.version}</version>
+      <type>xml</type>
       <classifier>features</classifier>
-      <type>xml</type>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.mdsal.model</groupId>
-      <artifactId>features-mdsal-model</artifactId>
-      <version>${mdsal.model.version}</version>
-      <classifier>features</classifier>
-      <type>xml</type>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.controller</groupId>
-      <artifactId>features-config</artifactId>
-      <classifier>features</classifier>
-      <type>xml</type>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.controller</groupId>
-      <artifactId>features-mdsal</artifactId>
-      <version>${controller.mdsal.version}</version>
-      <classifier>features</classifier>
-      <type>xml</type>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.odlparent</groupId>
-      <artifactId>features-odlparent</artifactId>
-      <classifier>features</classifier>
-      <type>xml</type>
-    </dependency>
-
-    <!-- bundle dependencies -->
-    <dependency>
-      <groupId>org.opendaylight.openflowjava</groupId>
-      <artifactId>openflow-protocol-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.openflowjava</groupId>
-      <artifactId>openflow-protocol-spi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.openflowjava</groupId>
-      <artifactId>openflow-protocol-impl</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.opendaylight.openflowjava</groupId>
-      <artifactId>openflowjava-blueprint-config</artifactId>
-      <type>xml</type>
-      <classifier>config</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.openflowjava</groupId>
-      <artifactId>openflowjava-blueprint-config</artifactId>
-      <type>xml</type>
-      <classifier>legacyConfig</classifier>
-    </dependency>
-
-    <dependency>
-      <groupId>org.opendaylight.openflowjava</groupId>
-      <artifactId>openflowjava-util</artifactId>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>openflowjava-config</artifactId>
+      <artifactId>odl-openflowjava-protocol</artifactId>
+      <version>${project.version}</version>
       <type>xml</type>
-      <classifier>configstats</classifier>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-codec</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-handler</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-buffer</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport-native-epoll</artifactId>
-      <!-- Explicitly bring in the linux classifier, test may fail on 32-bit linux -->
-      <classifier>linux-x86_64</classifier>
+      <classifier>features</classifier>
     </dependency>
   </dependencies>
 
