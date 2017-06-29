@@ -15,6 +15,7 @@ import java.net.InetSocketAddress;
 import org.opendaylight.openflowjava.protocol.api.connection.ConnectionReadyListener;
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueHandler;
 import org.opendaylight.openflowjava.protocol.api.connection.OutboundQueueHandlerRegistration;
+import org.opendaylight.openflowjava.protocol.api.extensibility.AlienMessageListener;
 import org.opendaylight.openflowjava.protocol.impl.core.OFVersionDetector;
 import org.opendaylight.openflowjava.protocol.impl.core.PipelineHandlers;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.EchoRequestMessage;
@@ -47,6 +48,7 @@ public class ConnectionAdapterImpl extends AbstractConnectionAdapterStatistics i
     private ConnectionReadyListener connectionReadyListener;
     private OpenflowProtocolListener messageListener;
     private SystemNotificationsListener systemListener;
+    private AlienMessageListener alienMessageListener;
     private AbstractOutboundQueueManager<?, ?> outputManager;
     private OFVersionDetector versionDetector;
 
@@ -78,6 +80,11 @@ public class ConnectionAdapterImpl extends AbstractConnectionAdapterStatistics i
     @Override
     public void setSystemListener(final SystemNotificationsListener systemListener) {
         this.systemListener = systemListener;
+    }
+
+    @Override
+    public void setAlienMessageListener(final AlienMessageListener alienMessageListener) {
+        this.alienMessageListener = alienMessageListener;
     }
 
     @Override
@@ -131,18 +138,23 @@ public class ConnectionAdapterImpl extends AbstractConnectionAdapterStatistics i
             }
         } else if (message instanceof OfHeader) {
             LOG.debug("OF header msg received");
+            boolean found = false;
 
             if (outputManager == null || !outputManager.onMessage((OfHeader) message)) {
                 final RpcResponseKey key = createRpcResponseKey((OfHeader) message);
                 final ResponseExpectedRpcListener<?> listener = findRpcResponse(key);
                 if (listener != null) {
+                    found = true;
                     LOG.debug("Corresponding rpcFuture found");
-                    listener.completed((OfHeader)message);
+                    listener.completed((OfHeader) message);
                     LOG.debug("After setting rpcFuture");
                     responseCache.invalidate(key);
-                } else {
-                    LOG.warn("received unexpected rpc response: {}", key);
                 }
+            }
+
+            if (!found && alienMessageListener != null) {
+                LOG.debug("Alien message {} received", message.getImplementedInterface());
+                alienMessageListener.onAlienMessage((OfHeader) message);
             }
         } else {
             LOG.warn("message listening not supported for type: {}", message.getClass());

@@ -10,6 +10,7 @@ package org.opendaylight.openflowjava.protocol.api.connection;
 import com.google.common.annotations.Beta;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Future;
+import org.opendaylight.openflowjava.protocol.api.extensibility.AlienMessageListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OpenflowProtocolListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.protocol.rev130731.OpenflowProtocolService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.system.rev130927.SystemNotificationsListener;
@@ -35,6 +36,7 @@ public interface ConnectionAdapter extends OpenflowProtocolService {
      * @return address of the remote end - address of a switch if connected
      */
     InetSocketAddress getRemoteAddress();
+
     /**
      * @param messageListener here will be pushed all messages from switch
      */
@@ -44,6 +46,12 @@ public interface ConnectionAdapter extends OpenflowProtocolService {
      * @param systemListener here will be pushed all system messages from library
      */
     void setSystemListener(SystemNotificationsListener systemListener);
+
+    /**
+     * Set handler for alien messages received from device
+     * @param alienMessageListener here will be pushed all alien messages from switch
+     */
+    void setAlienMessageListener(AlienMessageListener alienMessageListener);
 
     /**
      * Throws exception if any of required listeners is missing
