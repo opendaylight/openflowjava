@@ -218,6 +218,7 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider, C
     @Override
     public void registerMatchEntryDeserializer(final MatchEntryDeserializerKey key,
             final OFGeneralDeserializer deserializer) {
+        LOG.info("registerMatchEntryDeserializer :: Key {} -- deserializer {}",key,deserializer);
         deserializerRegistry.registerDeserializer(key, deserializer);
     }
 
@@ -309,16 +310,19 @@ public class SwitchConnectionProviderImpl implements SwitchConnectionProvider, C
 
     @Override
     public void registerDeserializer(MessageCodeKey key, OFGeneralDeserializer deserializer) {
-       deserializerRegistry.registerDeserializer(key, deserializer);
+        LOG.info("registerDeserializer :: Key {} -||- deserializer {}",key,deserializer);
+        deserializerRegistry.registerDeserializer(key, deserializer);
     }
 
     @Override
     public void registerDeserializerMapping(final TypeToClassKey key, final Class<?> clazz) {
+        LOG.info("registerDeserializerMapping :: Key {} -||- class {}",key,clazz);
         deserializationFactory.registerMapping(key, clazz);
     }
 
     @Override
     public boolean unregisterDeserializerMapping(final TypeToClassKey key) {
+        LOG.info("unregisterDeserializerMapping :: Key {}",key);
         return deserializationFactory.unregisterMapping(key);
     }
 }
