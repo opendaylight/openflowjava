@@ -144,12 +144,6 @@
       <artifactId>openflowjava-util</artifactId>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>openflowjava-config</artifactId>
-      <type>xml</type>
-      <classifier>configstats</classifier>
-    </dependency>
-    <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec</artifactId>
     </dependency>
