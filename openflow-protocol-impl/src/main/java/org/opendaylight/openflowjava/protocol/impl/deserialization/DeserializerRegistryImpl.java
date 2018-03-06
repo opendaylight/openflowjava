@@ -21,6 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.matc
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.match.v10.grouping.MatchV10;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.rmi.runtime.Log;
 
 /**
  * Stores and registers deserializers
@@ -89,6 +90,7 @@ public class DeserializerRegistryImpl implements DeserializerRegistry {
 
     @Override
     public boolean unregisterDeserializer(MessageCodeKey key) {
+        LOG.info("unregisterDeserializer :: key {}", key);
         if (key == null) {
             throw new IllegalArgumentException("MessageCodeKey is null");
         }
