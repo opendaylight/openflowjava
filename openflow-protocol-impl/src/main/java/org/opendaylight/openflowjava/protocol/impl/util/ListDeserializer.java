@@ -22,7 +22,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * @author michal.polkorab
  *
  */
@@ -33,7 +33,7 @@ public final class ListDeserializer {
         throw new UnsupportedOperationException("Utility class shouldn't be instantiated");
     }
 
-    /**
+    /*
      * Deserializes items into list
      * @param version openflow wire version
      * @param length length of list in ByteBuf (bytes)
@@ -44,11 +44,13 @@ public final class ListDeserializer {
      */
     public static <E extends DataObject> List<E> deserializeList(short version, int length,
             ByteBuf input, CodeKeyMaker keyMaker, DeserializerRegistry registry) {
+        LOG.info("deserializeList :: length = {} , version = {} ", length, version);
         List<E> items = null;
         if (input.readableBytes() > 0) {
             items = new ArrayList<>();
             int startIndex = input.readerIndex();
-            while ((input.readerIndex() - startIndex) < length){
+            while ((input.readerIndex() - startIndex) < length) {
+                LOG.info("deserializeList :: within while before getting deserializer");
                 OFDeserializer<E> deserializer = registry.getDeserializer(keyMaker.make(input));
                 E item = deserializer.deserialize(input);
                 items.add(item);
@@ -57,7 +59,7 @@ public final class ListDeserializer {
         return items;
     }
 
-    /**
+    /*
      * Deserializes headers of items into list (used in MultipartReplyMessage - Table features)
      * @param version openflow wire version
      * @param length length of list in ByteBuf (bytes)
@@ -73,7 +75,7 @@ public final class ListDeserializer {
             items = new ArrayList<>();
             int startIndex = input.readerIndex();
             boolean exceptionLogged = false;
-            while ((input.readerIndex() - startIndex) < length){
+            while ((input.readerIndex() - startIndex) < length) {
                 HeaderDeserializer<E> deserializer;
                 MessageCodeKey key = keyMaker.make(input);
                 try {
@@ -84,13 +86,16 @@ public final class ListDeserializer {
                     // are not yet (2nd February 2016) fully supported by existing OF Plugin.
                     // TODO - simplify to correctly report exception during deserialization
                     if (!exceptionLogged) {
-                        LOG.warn("Problem during reading table feature property. Skipping unknown feature property: {}." +
-                                "If more information is needed, set org.opendaylight.openflowjava do DEBUG log level.",
+                        LOG.warn("Problem during reading table feature property. "
+                                        + "Skipping unknown feature property: {}."
+                                + "If more information is needed, set org.opendaylight.openflowjava "
+                                        + "do DEBUG log level.",
                                 key, e.getMessage());
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("Detailed exception: {}", e);
                             LOG.debug("This exception is logged only once for each multipart reply (table features) to "
-                                    + "prevent log flooding. There might be more of table features related exceptions.");
+                                    + "prevent log flooding. "
+                                    + "There might be more of table features related exceptions.");
                         }
                         exceptionLogged = true;
                     }
