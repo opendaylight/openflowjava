@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_abc89ea8",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/TcpChannelInitializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5705
+      },
+      "writtenOn": "2016-03-02T07:38:51Z",
+      "side": 1,
+      "message": "Please use spaces instead of using tab.",
+      "revId": "560b2165ef54882d041f919e2565577ca5498ed1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_4bd7524b",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/TcpChannelInitializer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 5705
+      },
+      "writtenOn": "2016-03-02T07:38:51Z",
+      "side": 1,
+      "message": "Please use spaces instead of using tab.",
+      "range": {
+        "startLine": 62,
+        "startChar": 7,
+        "endLine": 62,
+        "endChar": 20
+      },
+      "revId": "560b2165ef54882d041f919e2565577ca5498ed1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
