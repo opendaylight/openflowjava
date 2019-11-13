@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_ba7aaa74",
+        "filename": "openflow-protocol-impl/src/main/java/org/opendaylight/openflowjava/protocol/impl/core/TcpChannelInitializer.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 664
+      },
+      "writtenOn": "2016-02-29T13:54:14Z",
+      "side": 1,
+      "message": "please use newline or even better - log requested suites in new LOGGER.debug()",
+      "range": {
+        "startLine": 92,
+        "startChar": 20,
+        "endLine": 92,
+        "endChar": 146
+      },
+      "revId": "04676bb71433fcc3a05b4cd31cfd343f821a3730",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
