@@ -1,4 +1,3 @@
 # UUID                                                                	Group Name
 #
 c9025ab9ddc1e3171919e085449f22c54f8f7b54                              	GitHub Replication
-ldap:cn=gerrit-openflowjava-commiters,ou=Groups,dc=opendaylight,dc=org	ldap/gerrit-openflowjava-commiters
